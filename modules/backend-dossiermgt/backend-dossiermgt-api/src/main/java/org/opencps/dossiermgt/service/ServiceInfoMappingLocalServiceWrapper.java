@@ -34,6 +34,15 @@ public class ServiceInfoMappingLocalServiceWrapper
 		_serviceInfoMappingLocalService = serviceInfoMappingLocalService;
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping addServiceInfoMapping(
+		long groupId, long companyId, long userId, String serviceCode,
+		String serviceCodeDVCQG)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _serviceInfoMappingLocalService.addServiceInfoMapping(groupId,
+			companyId, userId, serviceCode, serviceCodeDVCQG);
+	}
+
 	/**
 	* Adds the service info mapping to the database. Also notifies the appropriate model listeners.
 	*
@@ -80,6 +89,12 @@ public class ServiceInfoMappingLocalServiceWrapper
 		long serviceInfoMappingId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoMappingLocalService.deleteServiceInfoMapping(serviceInfoMappingId);
+	}
+
+	@Override
+	public boolean deleteServiceInfoMapping(long groupId, String serviceCode) {
+		return _serviceInfoMappingLocalService.deleteServiceInfoMapping(groupId,
+			serviceCode);
 	}
 
 	/**

@@ -885,4 +885,32 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 		return result;
 	}
+
+	@Override
+	public JSONObject mappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode,
+			String serviceCodeDVCQG) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		if (Validator.isNotNull(serviceCode) && Validator.isNotNull(serviceCodeDVCQG)) {
+			try {
+				ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.addServiceInfoMapping(
+						groupId, serviceContext.getCompanyId(), user.getUserId(), serviceCode, serviceCodeDVCQG);
+				result.put("serviceCode", serviceCode);
+				result.put("serviceCodeDVCQG", serviceCodeDVCQG);
+				result.put("serviceInfoMappingId", serviceInfoMapping.getServiceInfoMappingId());
+				result.put("groupId", serviceInfoMapping.getGroupId());
+				result.put("userId", serviceInfoMapping.getUserId());
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext,
+			String serviceCode) {
+
+		return ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(groupId, serviceCode);
+	}
 }

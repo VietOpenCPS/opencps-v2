@@ -14,6 +14,12 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+
+import java.util.Date;
+
+import org.opencps.dossiermgt.exception.NoSuchServiceInfoMappingException;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.base.ServiceInfoMappingLocalServiceBaseImpl;
 
@@ -31,14 +37,44 @@ import org.opencps.dossiermgt.service.base.ServiceInfoMappingLocalServiceBaseImp
  * @see ServiceInfoMappingLocalServiceBaseImpl
  * @see org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil
  */
-public class ServiceInfoMappingLocalServiceImpl
-	extends ServiceInfoMappingLocalServiceBaseImpl {
+public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil} to access the service info mapping local service.
 	 */
-	
+
+	public ServiceInfoMapping addServiceInfoMapping(long groupId, long companyId, long userId, String serviceCode,
+			String serviceCodeDVCQG) throws PortalException {
+		long serviceInfoMappingId = counterLocalService.increment(ServiceInfoMappingLocalServiceImpl.class.getName());
+		ServiceInfoMapping serviceInfoMapping = serviceInfoMappingPersistence.create(serviceInfoMappingId);
+		serviceInfoMapping.setGroupId(groupId);
+		serviceInfoMapping.setCompanyId(companyId);
+
+		User user = userLocalService.getUser(userId);
+		Date now = new Date();
+		serviceInfoMapping.setUserId(userId);
+		serviceInfoMapping.setUserName(user.getFullName());
+		serviceInfoMapping.setCreateDate(now);
+		serviceInfoMapping.setModifiedDate(now);
+		serviceInfoMapping.setServiceCode(serviceCode);
+		serviceInfoMapping.setServiceCodeDVCQG(serviceCodeDVCQG);
+		return serviceInfoMappingPersistence.update(serviceInfoMapping);
+	}
+
+	public boolean deleteServiceInfoMapping(long groupId, String serviceCode) {
+		ServiceInfoMapping serviceInfoMapping = serviceInfoMappingPersistence.fetchByF_GID_SC(groupId, serviceCode);
+		if (serviceInfoMapping != null) {
+			try {
+				serviceInfoMappingPersistence.remove(serviceInfoMapping.getServiceInfoMappingId());
+				return true;
+			} catch (NoSuchServiceInfoMappingException e) {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	public ServiceInfoMapping fetchDVCQGServiceCode(long groupId, String serviceCode) {
 		return serviceInfoMappingPersistence.fetchByF_GID_SC(groupId, serviceCode);
 	}
