@@ -7,7 +7,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -215,11 +214,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
@@ -285,15 +284,15 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_MONTH, CONDITION_MONTH_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
-			if (system.contains("total")){
+			if (system.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			
@@ -364,15 +363,15 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			
 			sql = StringUtil.replace(sql, CONDITION_YEAR, CONDITION_YEAR_REPLACE);
 		
-			if (domain.contains("total")){
+			if (domain.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_DOMAIN, CONDITION_DOMAIN_REPLACE);
 			}
 			
-			if (govAgency.contains("total")){
+			if (govAgency.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_GOV_AGENCY,CONDITION_GOV_AGENCY_REPLACE);
 			}
 			
-			if (system.contains("total")){
+			if (system.contains(TOTAL)){
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			
