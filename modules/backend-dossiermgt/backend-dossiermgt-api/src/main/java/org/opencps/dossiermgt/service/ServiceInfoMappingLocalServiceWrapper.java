@@ -55,6 +55,18 @@ public class ServiceInfoMappingLocalServiceWrapper
 		return _serviceInfoMappingLocalService.addServiceInfoMapping(serviceInfoMapping);
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _serviceInfoMappingLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessDelete(
+		Long id) {
+		return _serviceInfoMappingLocalService.adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new service info mapping with the primary key. Does not add the service info mapping to the database.
 	*
