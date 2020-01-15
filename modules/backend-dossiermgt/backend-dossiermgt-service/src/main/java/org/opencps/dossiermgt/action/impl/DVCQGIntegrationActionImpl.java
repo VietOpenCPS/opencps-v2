@@ -308,7 +308,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String auth_endpoint = config.getString("auth_endpoint");
 			String username = config.getString("username");
 			String password = config.getString("password");
-
+			String dstcode = config.getString("dstcode");
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("username", username);
@@ -326,6 +326,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -437,7 +438,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String adapter_url = config.getString("adapter_url");
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
-
+			String dstcode = config.getString("dstcode");
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("session", accessToken);
@@ -460,6 +461,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -513,6 +515,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
 			String accessToken = getAccessToken(config);
+			String dstcode = config.getString("dstcode");
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -539,6 +542,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -602,6 +606,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String adapter_url = config.getString("adapter_url");
 			String share_endpoint = config.getString("share_endpoint");
 			String madonvi = config.getString("madonvi");
+			String dstcode = config.getString("dstcode");
 			String accessToken = getAccessToken(config);
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
@@ -629,6 +634,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -714,6 +720,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
 			String accessToken = getAccessToken(config);
+			String dstcode = config.getString("dstcode");
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -742,6 +749,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty("dstcode", dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
@@ -876,5 +884,33 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			return syncData(serverConfig, body);
 		}
 		return result;
+	}
+
+	@Override
+	public JSONObject mappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode,
+			String serviceCodeDVCQG) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		if (Validator.isNotNull(serviceCode) && Validator.isNotNull(serviceCodeDVCQG)) {
+			try {
+				ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.addServiceInfoMapping(
+						groupId, serviceContext.getCompanyId(), user.getUserId(), serviceCode, serviceCodeDVCQG);
+				result.put("serviceCode", serviceCode);
+				result.put("serviceCodeDVCQG", serviceCodeDVCQG);
+				result.put("serviceInfoMappingId", serviceInfoMapping.getServiceInfoMappingId());
+				result.put("groupId", serviceInfoMapping.getGroupId());
+				result.put("userId", serviceInfoMapping.getUserId());
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext,
+			String serviceCode) {
+
+		return ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(groupId, serviceCode);
 	}
 }
