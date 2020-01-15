@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -30,6 +31,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -140,7 +142,8 @@ import uk.org.okapibarcode.output.Java2DRenderer;
 
 @Component(property = {
 	JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/rest/v2",
-	JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2"
+	JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.restv2",
+    "javax.portlet.resource-bundle=content.Language"
 }, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
@@ -238,7 +241,7 @@ public class BackendAPIRestApplication extends Application {
 	@Path("chao")
 	@Produces("text/plain")
 	public String working() {
-
+		_log.debug("Chao: " + LanguageUtil.get(ResourceBundle.getBundle("content/Language", Locale.getDefault()), "chao"));
 		return "It works!";
 	}
 
