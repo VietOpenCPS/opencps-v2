@@ -3,6 +3,8 @@ package org.opencps.statistic.rest.facade;
 
 import java.util.HashMap;
 
+import org.opencps.statistic.rest.util.DossierStatisticConfig;
+import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
@@ -30,7 +32,7 @@ public class OpencpsCallServiceRestFacadeImpl extends OpencpsRestFacade<String, 
 		HashMap<String, String> urlPathSegments = new HashMap<>();
 
 		// build the url
-		String url = buildUrl("http://google.com", urlPathSegments, urlQueryParams);
+		String url = buildUrl(DossierStatisticConfig.get(DossierStatisticConstants.GOOGLE_ENDPOINT), urlPathSegments, urlQueryParams);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 

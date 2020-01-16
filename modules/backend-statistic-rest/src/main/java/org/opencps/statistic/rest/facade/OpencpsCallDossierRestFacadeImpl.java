@@ -1,5 +1,9 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -26,6 +30,16 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		implements OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(OpencpsCallDossierRestFacadeImpl.class);
+
+	private static final String QUERY_PARAM_MONTH = "month";
+	private static final String QUERY_PARAM_YEAR = "year";
+	private static final String QUERY_PARAM_AGENCY = "agency";
+	private static final String QUERY_PARAM_FROM_STATISTIC_DATE = "fromStatisticDate";
+	private static final String QUERY_PARAM_TO_STATISTIC_DATE ="toStatisticDate";
+	private static final String QUERY_PARAM_SYSTEM_ID ="systemId";
+	private static final String QUERY_PARAM_TOP = "top";
+	private static final String QUERY_PARAM_START = "start";
+	private static final String QUERY_PARAM_END = "end";
 
 	@Override
 	public GetDossierResponse callRestService(GetDossierRequest payload)
@@ -67,26 +81,26 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		MultiValueMap<String, String> urlQueryParams = new LinkedMultiValueMap<>();
 		if (payload.isCalculate()) {
 			if (payload.getMonth() != null) {
-				urlQueryParams.add("month", payload.getMonth());
+				urlQueryParams.add(QUERY_PARAM_MONTH, payload.getMonth());
 			}
 			else {
-				urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
+				urlQueryParams.add(QUERY_PARAM_MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 			}
 			if (payload.getYear() != null) {
-				urlQueryParams.add("year", payload.getYear());
+				urlQueryParams.add(QUERY_PARAM_YEAR, payload.getYear());
 			}
 			else {
-				urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+				urlQueryParams.add(QUERY_PARAM_YEAR, Integer.toString(LocalDate.now().getYear()));
 			}
 		} else {
 			if (Validator.isNotNull(payload.getGovAgencyCode())) {
-				urlQueryParams.add("agency", payload.getGovAgencyCode());
+				urlQueryParams.add(QUERY_PARAM_AGENCY, payload.getGovAgencyCode());
 			}
 			if (Validator.isNotNull(payload.getFromStatisticDate())) {
-				urlQueryParams.add("fromStatisticDate", payload.getFromStatisticDate());
+				urlQueryParams.add(QUERY_PARAM_FROM_STATISTIC_DATE, payload.getFromStatisticDate());
 			}
 			if (Validator.isNotNull(payload.getToStatisticDate())) {
-				urlQueryParams.add("toStatisticDate", payload.getToStatisticDate());
+				urlQueryParams.add(QUERY_PARAM_TO_STATISTIC_DATE, payload.getToStatisticDate());
 			}
 			//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
 			//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
@@ -94,20 +108,20 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 			buildUrlQueryParams(urlQueryParams, payload);
 		}
 		//Add common params
-		urlQueryParams.add("systemId", "0,1,2");
-		urlQueryParams.add("top", "statistic");
+		urlQueryParams.add(QUERY_PARAM_SYSTEM_ID, DossierStatisticConstants.ALL_SYSTEM);
+		urlQueryParams.add(QUERY_PARAM_TOP, DossierStatisticConstants.TOP_STATISTIC);
 
 		if (payload.getStart() != 0) {
-			urlQueryParams.add("start", String.valueOf(payload.getStart()));			
+			urlQueryParams.add(QUERY_PARAM_START, String.valueOf(payload.getStart()));			
 		}
 		else {
-			urlQueryParams.add("start", "-1");
+			urlQueryParams.add(QUERY_PARAM_START, String.valueOf(QueryUtil.ALL_POS));
 		}
 		if (payload.getEnd() != 0) {
-			urlQueryParams.add("end", String.valueOf(payload.getEnd()));
+			urlQueryParams.add(QUERY_PARAM_END, String.valueOf(payload.getEnd()));
 		}
 		else {
-			urlQueryParams.add("end", "-1");
+			urlQueryParams.add(QUERY_PARAM_END, String.valueOf(QueryUtil.ALL_POS));
 		}
 		//System.out.println("fromStatisticDate: "+urlQueryParams.get("fromStatisticDate"));
 		//System.out.println("toStatisticDate: "+urlQueryParams.get("toStatisticDate"));
@@ -123,7 +137,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));
@@ -132,7 +146,7 @@ public class OpencpsCallDossierRestFacadeImpl extends OpencpsRestFacade<GetDossi
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
-			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			httpHeaders.add(HttpHeaders.AUTHORIZATION, HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + Base64.getEncoder().encodeToString((payload.getUsername() + StringPool.COLON + payload.getPassword()).getBytes()));			
 		}
 
 		return (GetDossierResponse) this

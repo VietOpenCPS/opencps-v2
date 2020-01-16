@@ -1,6 +1,6 @@
 package org.opencps.statistic.rest.facade;
 
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
@@ -10,12 +10,12 @@ import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.ServerConfigContants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import backend.feedback.constants.VotingTerm;
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import opencps.statistic.common.webservice.facade.OpencpsRestFacade;
@@ -24,6 +24,11 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		implements OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> {
 
 	//private final static Log _log = LogFactoryUtil.getLog(OpencpsCallDossierRestFacadeImpl.class);
+
+	private static final String QUERY_PARAM_MONTH = "month";
+	private static final String QUERY_PARAM_YEAR = "year";
+	private static final String QUERY_PARAM_FROM_VOTING_DATE = "fromVotingDate";
+	private static final String QUERY_PARAM_TO_VOTING_DATE = "toVotingDate";
 
 	@Override
 	public GetVotingResultResponse callRestService(GetVotingResultRequest payload)
@@ -38,31 +43,31 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		//System.out.println("payload.isCalculate(): "+payload.isCalculate());
 		if (payload.isCalculate()) {
 			if (payload.getMonth() != null) {
-				urlQueryParams.add("month", payload.getMonth());
+				urlQueryParams.add(QUERY_PARAM_MONTH, payload.getMonth());
 				//urlQueryParams.add("month", "10");
 			}
 			else {
-				urlQueryParams.add("month", Integer.toString(LocalDate.now().getMonthValue()));
+				urlQueryParams.add(QUERY_PARAM_MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 			}
 			if (payload.getYear() != null) {
-				urlQueryParams.add("year", payload.getYear());
+				urlQueryParams.add(QUERY_PARAM_YEAR, payload.getYear());
 			}
 			else {
-				urlQueryParams.add("year", Integer.toString(LocalDate.now().getYear()));
+				urlQueryParams.add(QUERY_PARAM_YEAR, Integer.toString(LocalDate.now().getYear()));
 			}
 		} else {
 //			if (Validator.isNotNull(payload.getGovAgencyCode())) {
 //				urlQueryParams.add("agency", payload.getGovAgencyCode());
 //			}
 			if (Validator.isNotNull(payload.getFromVotingDate())) {
-				urlQueryParams.add("fromVotingDate", payload.getFromVotingDate());
+				urlQueryParams.add(QUERY_PARAM_FROM_VOTING_DATE, payload.getFromVotingDate());
 			}
 			if (Validator.isNotNull(payload.getToVotingDate())) {
-				urlQueryParams.add("toVotingDate", payload.getToVotingDate());
+				urlQueryParams.add(QUERY_PARAM_TO_VOTING_DATE, payload.getToVotingDate());
 			}
 		}
 
-		urlQueryParams.add("className", "dossier");
+		urlQueryParams.add(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 
 		String endPoint = Validator.isNotNull(payload.getEndpoint()) ? payload.getEndpoint() : DossierStatisticConfig.get(DossierStatisticConstants.VOTING_ENDPOINT);
 		//System.out.println("endPoint: "+endPoint);
@@ -74,7 +79,7 @@ public class OpencpsCallVotingRestFacadeImpl extends OpencpsRestFacade<GetVoting
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));
