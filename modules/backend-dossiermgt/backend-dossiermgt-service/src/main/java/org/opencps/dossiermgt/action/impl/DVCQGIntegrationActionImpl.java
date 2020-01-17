@@ -735,6 +735,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			item.put("serviceCodeDVCQG", serviceInfoMapping.getServiceCodeDVCQG());
 			item.put("serviceNameDVCQG", serviceNameDVCQG);
 			item.put("similarityPercent", 100);
+			item.put("mapped", true);
 			result.put(item);
 
 			return result;
@@ -776,7 +777,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					item = JSONFactoryUtil.createJSONObject();
 					item.put("serviceCodeDVCQG", key);
 					item.put("serviceNameDVCQG", entry.getValue());
-
+					item.put("mapped", false);
 					_mapItems.put(key, item);
 				}
 
@@ -812,7 +813,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				JSONObject item = JSONFactoryUtil.createJSONObject();
 				item.put("serviceCodeDVCQG", key);
 				item.put("serviceNameDVCQG", entry.getValue());
-
+				item.put("mapped", false);
 				_mapItems.put(key, item);
 
 				if (weightIndex >= 0.8) {
