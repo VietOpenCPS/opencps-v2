@@ -16,7 +16,8 @@ import backend.feedback.model.Evaluation;
 public class EvaluationUtils {
 
 	private static final Log _log = LogFactoryUtil.getLog(EvaluationUtils.class);
-
+	private static final String DAY_FORMAT = "yyyyMMddHHmmss";
+	
 	public static EvaluationResultDetailModel mappingEvaluationResultDetail(Evaluation evaluation) {
 		if (evaluation == null) {
 			return null;
@@ -26,8 +27,8 @@ public class EvaluationUtils {
 		try {
 			
 			model.setCompanyId(evaluation.getCompanyId());
-			model.setCreateDate(APIDateTimeUtils.convertDateToString(evaluation.getCreateDate(), "yyyyMMddHHmmss"));
-			model.setModifiedDate(APIDateTimeUtils.convertDateToString(evaluation.getModifiedDate(), "yyyyMMddHHmmss"));
+			model.setCreateDate(APIDateTimeUtils.convertDateToString(evaluation.getCreateDate(), DAY_FORMAT));
+			model.setModifiedDate(APIDateTimeUtils.convertDateToString(evaluation.getModifiedDate(), DAY_FORMAT));
 			model.setEmployeeId(evaluation.getEmployeeId());
 			model.setEmployeeName(evaluation.getEmployeeName());
 			model.setScore(evaluation.getScore());
