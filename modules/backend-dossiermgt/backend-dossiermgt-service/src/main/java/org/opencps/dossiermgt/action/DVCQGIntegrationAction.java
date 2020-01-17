@@ -18,6 +18,7 @@ public interface DVCQGIntegrationAction {
 			String serviceCodeDVCQG);
 	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode);
 	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes);
+	//public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data);
 	//public JSONObject searchDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 	//public boolean checkExistDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 }

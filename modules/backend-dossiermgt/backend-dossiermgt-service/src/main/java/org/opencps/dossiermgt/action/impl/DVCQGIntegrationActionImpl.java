@@ -22,11 +22,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
+import org.apache.commons.text.similarity.CosineSimilarity;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
@@ -694,6 +703,142 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
+	public HashMap<String, String> getServiceInfoDVCQGMap(User user, ServiceContext serviceContext) {
+		HashMap<String, String> serviceInfoDVCQGMap = new HashMap<String, String>();
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+		if (serverConfigs != null && !serverConfigs.isEmpty()) {
+			ServerConfig serverConfig = serverConfigs.get(0);
+			JSONObject data = JSONFactoryUtil.createJSONObject();
+			data.put("service", "LayDanhSachTTHC");
+			JSONObject responseData = getSharingDictCollection(serverConfig, data);
+			if (responseData != null && responseData.has("result")) {
+				JSONArray result = responseData.getJSONArray("result");
+				JSONObject item;
+				for (int i = 0; i < result.length(); i++) {
+					item = result.getJSONObject(i);
+					serviceInfoDVCQGMap.put(item.getString("MATTHC"), item.getString("TENTTHC"));
+				}
+			}
+		}
+		return serviceInfoDVCQGMap;
+	}
+
+	public JSONArray getServiceInfoSimilarity(long groupId, String serviceCode, String serviceName,
+			HashMap<String, String> map) {
+		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
+				serviceCode);
+		String _tmpServiceName = serviceName.replaceAll("[.,-_:;\\\"\\']", "").toLowerCase();
+		JSONArray result = JSONFactoryUtil.createJSONArray();
+		if (serviceInfoMapping != null) {
+			JSONObject item = JSONFactoryUtil.createJSONObject();
+			String serviceNameDVCQG = map.get(serviceInfoMapping.getServiceCodeDVCQG());
+			item.put("serviceCodeDVCQG", serviceInfoMapping.getServiceCodeDVCQG());
+			item.put("serviceNameDVCQG", serviceNameDVCQG);
+			item.put("similarityPercent", 100);
+			result.put(item);
+
+			return result;
+		}
+
+		Map<CharSequence, Integer> vectorA = Arrays.stream(_tmpServiceName.split(" "))
+				.collect(Collectors.toMap(character -> character, character -> 1, Integer::sum));
+
+		SortedMap<Double, JSONObject> sortedMap = new TreeMap<Double, JSONObject>(Collections.reverseOrder());
+
+		CosineSimilarity documentsSimilarity = new CosineSimilarity();
+		
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+
+		if (_mapChars != null && !_mapChars.isEmpty()) {
+			_log.info("----------------------------->>>>>getServiceInfoSimilarity: get data from store: " + _mapChars.size());
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				String key = entry.getKey();
+				String name = entry.getValue().replaceAll("[.,-_:;\\\"\\']", "").toLowerCase();
+				//_log.info(key + "|" + name);
+				Map<CharSequence, Integer> vectorB = null;
+				if (_mapChars.containsKey(key)) {
+					vectorB = _mapChars.get(key);
+				} else {
+					vectorB = Arrays.stream(name.split(" "))
+							.collect(Collectors.toMap(character -> character, character -> 1, Integer::sum));
+
+					_mapChars.put(key, vectorB);
+				}
+				
+				Double weightIndex = documentsSimilarity.cosineSimilarity(vectorA, vectorB);
+				//_log.info(weightIndex);
+				JSONObject item = null;
+				if (_mapItems != null && _mapItems.containsKey(key)) {
+					item = _mapItems.get(key);
+					item.put("similarityPercent", df.format(weightIndex * 100));
+				} else {
+					item = JSONFactoryUtil.createJSONObject();
+					item.put("serviceCodeDVCQG", key);
+					item.put("serviceNameDVCQG", entry.getValue());
+
+					_mapItems.put(key, item);
+				}
+
+				if (weightIndex >= 0.8) {
+
+					item.put("similarityPercent", df.format(weightIndex * 100));
+
+					if (weightIndex >= 1) {
+
+						result.put(item);
+
+						return result;
+					}
+					sortedMap.put(weightIndex, item);
+
+				}
+			}
+		} else {
+			_log.info("----------------------------->>>>>getServiceInfoSimilarity: get new data");
+			_mapChars = new HashMap<String, Map<CharSequence, Integer>>();
+			_mapItems = new HashMap<String, JSONObject>();
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				String key = entry.getKey();
+				String name = entry.getValue().replaceAll("[.,-_:;\\\"\\']", "").toLowerCase();
+				
+				Map<CharSequence, Integer> vectorB = Arrays.stream(name.split(" "))
+						.collect(Collectors.toMap(character -> character, character -> 1, Integer::sum));
+
+				_mapChars.put(key, vectorB);
+
+				Double weightIndex = documentsSimilarity.cosineSimilarity(vectorA, vectorB);
+
+				JSONObject item = JSONFactoryUtil.createJSONObject();
+				item.put("serviceCodeDVCQG", key);
+				item.put("serviceNameDVCQG", entry.getValue());
+
+				_mapItems.put(key, item);
+
+				if (weightIndex >= 0.8) {
+			
+					item.put("similarityPercent", df.format(weightIndex * 100));
+
+					if (weightIndex >= 1) {
+						result.put(item);
+
+						return result;
+					}
+					sortedMap.put(weightIndex, item);
+
+				}
+			}
+		}
+
+		if (!sortedMap.isEmpty()) {
+			for (Map.Entry<Double, JSONObject> entry : sortedMap.entrySet()) {
+				result.put(entry.getValue());
+			}
+		}
+
+		return result;
+	}
+
 	private boolean hasSyncDossier(String dossierNo, JSONObject config, String accessToken) {
 		JSONObject searchData = searchDossier(dossierNo, config, accessToken);
 		if (searchData != null && searchData.has("result")) {
@@ -1149,6 +1294,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 															in = connection.getInputStream();
 															String mimeType = URLConnection
 																	.guessContentTypeFromStream(in);
+															//String mimeType = MimeTypesUtil.getContentType(tenmaudon);
 															actions.addServiceFileTemplate(user.getUserId(), groupId,
 																	serviceInfo.getServiceInfoId(), magiayto, tengiayto,
 																	tenmaudon, in, mimeType,
@@ -1187,4 +1333,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		return result;
 	}
+
+	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
+	private static HashMap<String, JSONObject> _mapItems = null;
 }

@@ -88,5 +88,13 @@ public interface DVCQGIManagement {
 	public Response doRemoveMappingServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @FormParam("serviceCode") String serviceCode);
+	
+	@POST
+	@Path("/getsharingqa")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getSharingQA(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body);
 
 }

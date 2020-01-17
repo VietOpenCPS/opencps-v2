@@ -66,6 +66,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response getSharingDictCollection(HttpServletRequest request, HttpServletResponse response,
 			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		
 		try {
 			_log.info("Ton ngo khong da dao choi o day1.");
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
@@ -136,5 +137,12 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			_log.error(e);
 			return Response.status(500).entity("error").build();
 		}
+	}
+
+	@Override
+	public Response getSharingQA(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		
+		return null;
 	}
 }
