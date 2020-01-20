@@ -27,9 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * 
  * @author khoavu
@@ -57,9 +54,10 @@ public final class OpencpsUtils {
 	public static final String ISO_COUNTRY_ID_US = "US";
 
 	private static final Logger LOG = LoggerFactory.getLogger(OpencpsUtils.class);
-
+	private static final String UNSUPPORTED_OPERATION_MESSAGE = "OpencpsUtils cannot be instantiated";
+	
 	private OpencpsUtils() {
-		throw new UnsupportedOperationException("OpencpsUtils cannot be instantiated");
+		throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_MESSAGE);
 	}
 
 
@@ -166,15 +164,5 @@ public final class OpencpsUtils {
 		return ISO_LOCALE_SEPERATOR;
 	}
 
-	public static void logAsFormattedJson(Logger logger, Object obj){
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            String contentFormatted = mapper.writeValueAsString(obj);
-//            logger.debug("REST request: \n {}", contentFormatted);
-//        } catch (JsonProcessingException e) {
-//        	logger.error("Error:", e);
-//            logger.debug("Error printing REST request! {}", e);
-//        }
-    }
 
 }

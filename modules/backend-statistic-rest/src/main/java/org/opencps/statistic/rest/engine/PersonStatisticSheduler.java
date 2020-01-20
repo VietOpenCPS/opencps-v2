@@ -47,6 +47,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -151,7 +152,7 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
-		payload.setClassName("employee");
+		payload.setClassName(EmployeeTerm.VALUE_EMPLOYEE);
 		// Check calculate = true => month
 		payload.setCalculate(true);
 		payload.setStart(QueryUtil.ALL_POS);

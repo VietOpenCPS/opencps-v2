@@ -55,7 +55,9 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
@@ -112,6 +114,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
@@ -162,7 +165,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		String domain = query.getDomain();
 		String system = query.getSystem();
 		if (Validator.isNull(system)) {
-			system = "0";
+			system = String.valueOf(0);
 		}
 		String groupAgencyCode = query.getGroupAgencyCode();
 		String fromStatisticDate = query.getFromStatisticDate();
@@ -215,25 +218,10 @@ public class OpencpsStatisticRestApplication extends Application {
 				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
 				toCalDate = StatisticUtils.getEndDay(toDate);
 			}
-			//System.out.println("fromStatisticDate: "+fromStatisticDate);
-			//System.out.println("toStatisticDate: "+toStatisticDate);
-			//String fromReceiveDate = query.getFromReceiveDate();
-			//String toReceiveDate = query.getToReceiveDate();
-			//String fromReleaseDate = query.getFromReleaseDate();
-			//String toReleaseDate = query.getToReleaseDate();
-			//String fromFinishDate = query.getFromFinishDate();
-			//String toFinishDate = query.getToFinishDate();
-			//_log.info("fromFinishDate: "+fromFinishDate);
-			//_log.info("toFinishDate: "+toFinishDate);
 
-			//String fromReceiveNotDoneDate = query.getFromReceiveNotDoneDate();
-			//String toReceiveNotDoneDate = query.getToReceiveNotDoneDate();
-			//boolean online = Boolean.valueOf(query.getOnline());
-			//String applicantIdNo = query.getApplicantIdNo();
-			//Integer originDossierId = query.getOriginDossierId();
 			try {
 				GetDossierRequest payload = new GetDossierRequest();
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					payload.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					payload.setGovAgencyCode(govAgencyCode);
@@ -264,8 +252,8 @@ public class OpencpsStatisticRestApplication extends Application {
 				else {
 					DossierActions actions = new DossierActionsImpl();
 					Sort[] sorts = null;
-					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-							GetterUtil.getBoolean("true")) };
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+							Boolean.TRUE) };
 					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 					params.put(Field.GROUP_ID, String.valueOf(groupId));
 					if (payload.isCalculate()) {
@@ -274,13 +262,13 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 					else {
 						if (Validator.isNotNull(payload.getGovAgencyCode())) {
-							params.put("agency", payload.getGovAgencyCode());
+							params.put(DossierTerm.AGENCY, payload.getGovAgencyCode());
 						}
 						if (Validator.isNotNull(payload.getFromStatisticDate())) {
-							params.put("fromStatisticDate", APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getFromStatisticDate()));
+							params.put(DossierTerm.FROM_STATISTIC_DATE, APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getFromStatisticDate()));
 						}
 						if (Validator.isNotNull(payload.getToStatisticDate())) {
-							params.put("toStatisticDate", APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getToStatisticDate()));
+							params.put(DossierTerm.TO_STATISTIC_DATE, APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getToStatisticDate()));
 						}				
 					}
 					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());
@@ -293,13 +281,13 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.DOSSIER_NO, payload.getDossierNo());
 					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
-					params.put("top", "statistic");
+					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId(); 
 					
 					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-					List<Document> datas = (List<Document>) jsonData.get("data");
+					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 					List<GetDossierData> dossierData = new ArrayList<>();
 					_log.debug("GET DOSSIER SIZE: " + datas.size());
 					for (Document doc : datas) {
@@ -341,8 +329,6 @@ public class OpencpsStatisticRestApplication extends Application {
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
 								false);
-						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
 						statisticData.forEach((k, v) -> 
 						statisticDataList.add(v));
@@ -364,7 +350,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(HttpStatus.INTERNAL_SERVER_ERROR.name());
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -381,14 +367,13 @@ public class OpencpsStatisticRestApplication extends Application {
 				//
 				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 				dossierStatisticRequest.setDomain(domain);
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
 				}
 				dossierStatisticRequest.setSystem(system);
 				dossierStatisticRequest.setGroupAgencyCode(groupAgencyCode);
-				//dossierStatisticRequest.setReporting(reporting);
 				dossierStatisticRequest.setGroupId(groupId);
 				dossierStatisticRequest.setStart(start);
 				dossierStatisticRequest.setEnd(end);
@@ -408,7 +393,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -420,12 +405,9 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/votings")
-	public VotingResultResponse searchVotingStatistic(@HeaderParam("groupId") long groupId,
+	public VotingResultResponse searchVotingStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
 
-		//LOG.info("GET DossierStatisticResponse");
-		//_log.info("START AgencyCode: "+query.getAgency());
-		//_log.info("START VotingCode: "+query.getVotingCode());
 		VotingStatisticFinderService votingStatisticFinderService = new VotingStatisticFinderServiceImpl();
 
 		int start = query.getStart();
@@ -456,7 +438,7 @@ public class OpencpsStatisticRestApplication extends Application {
 
 			try {
 				GetVotingResultRequest payload = new GetVotingResultRequest();
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					payload.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					payload.setGovAgencyCode(govAgencyCode);
@@ -531,7 +513,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -544,7 +526,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				VotingResultRequest votingRequest = new VotingResultRequest();
 				votingRequest.setVotingCode(votingCode);
 				votingRequest.setDomain(domain);
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					votingRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					votingRequest.setGovAgencyCode(govAgencyCode);
@@ -569,7 +551,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -582,13 +564,8 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@GET
 	@Path("/persons")
-	public PersonResponse searchPersonStatistic(@HeaderParam("groupId") long groupId,
+	public PersonResponse searchPersonStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam VotingSearchModel query) {
-
-		//LOG.info("GET DossierStatisticResponse");
-		//_log.info("START AgencyCode: "+query.getAgency());
-		//_log.info("START VotingCode: "+query.getVotingCode());
-		//_log.info("START EmployeeId: "+query.getEmployeeId());
 
 		PersonStatisticFinderService personStatisticFinderService = new PersonStatisticFinderServiceImpl();
 
@@ -632,7 +609,7 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 			try {
 				GetPersonRequest payload = new GetPersonRequest();
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					payload.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					payload.setGovAgencyCode(govAgencyCode);
@@ -698,7 +675,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -710,7 +687,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				PersonRequest personRequest = new PersonRequest();
 				personRequest.setVotingCode(votingCode);
 				personRequest.setEmployeeId(employeeId);
-				if ("all".equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
 					personRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					personRequest.setGovAgencyCode(govAgencyCode);
@@ -732,7 +709,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -749,22 +726,15 @@ public class OpencpsStatisticRestApplication extends Application {
 		//LocalDate localDate = LocalDate.now();
 
 		if (end < start) {
-			serviceExceptionDetails.setFaultCode("400");
-			serviceExceptionDetails.setFaultMessage("Invalid start, end");
+			serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
+			serviceExceptionDetails.setFaultMessage(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_INTERNAL_SERVER));
 			throwException(new OpencpsServiceException(serviceExceptionDetails));
 		}
 
-//		if (year < DossierStatisticConstants.START_YEARS || year > localDate.getYear()) {
-//			serviceExceptionDetails.setFaultCode("400");
-//			serviceExceptionDetails.setFaultMessage("Invalid year");
-//			throwException(new OpencpsServiceException(serviceExceptionDetails));
-//
-//		}
-
 		if (month != -1) {
 			if (month < 0 || month > 12) {
-				serviceExceptionDetails.setFaultCode("400");
-				serviceExceptionDetails.setFaultMessage("Invalid month");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.BAD_REQUEST.value()));
+				serviceExceptionDetails.setFaultMessage(ReadFilePropertiesUtils.get(ConstantUtils.MSG_ERROR));
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
 
 			}
@@ -780,7 +750,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	 */
 	public static void throwException(OpencpsServiceException serviceException) throws ServiceException {
 		ResponseBuilder builder = Response.status(Response.Status.NOT_ACCEPTABLE);
-		builder.type("application/json");
+		builder.type(MediaType.APPLICATION_JSON);
 		builder.entity(serviceException.getFaultDetails());
 		throw new WebApplicationException(builder.build());
 	}
@@ -855,8 +825,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			dossierResponse = new GetDossierResponse();
 			DossierActions actions = new DossierActionsImpl();
 			Sort[] sorts = null;
-			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean("true")) };
+			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+					Boolean.TRUE) };
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			if (payload.isCalculate()) {
@@ -865,19 +835,19 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			else {
 				if (Validator.isNotNull(payload.getGovAgencyCode())) {
-					params.put("agency", payload.getGovAgencyCode());
+					params.put(DossierTerm.AGENCY, payload.getGovAgencyCode());
 				}
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
-					params.put("fromStatisticDate", payload.getFromStatisticDate());
+					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());
 				}
 				if (Validator.isNotNull(payload.getToStatisticDate())) {
-					params.put("toStatisticDate", payload.getToStatisticDate());
+					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
 				}				
 			}
-			params.put("top", "statistic");
+			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			dossierResponse.setTotal(datas.size());
 			List<GetDossierData> dossierData = new ArrayList<>();
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
@@ -977,7 +947,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public DossierStatisticModel fixDossierStatistic(@HeaderParam("groupId") long groupId,
+	public DossierStatisticModel fixDossierStatistic(@HeaderParam(Field.GROUP_ID) long groupId,
 			@BeanParam DossierStatisticModel input) {
 		try {
 			if (Validator.isNotNull(input.getSystem())) {
@@ -1008,7 +978,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	@Path("/reports/fixed")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public StatisticFixedResult fixedStatistic(@HeaderParam("groupId") long groupId, @BeanParam StatisticFixedModel input) {
+	public StatisticFixedResult fixedStatistic(@HeaderParam(Field.GROUP_ID) long groupId, @BeanParam StatisticFixedModel input) {
 		int month = input.getMonth();
 		int year = input.getYear();
 		int monthCurrent = LocalDate.now().getMonthValue();
@@ -1033,8 +1003,8 @@ public class OpencpsStatisticRestApplication extends Application {
 					if (Validator.isNotNull(sc.getConfigs())) {
 						try {
 							JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
-							if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-								long publishGroupId = configObj.getLong(SyncServerTerm.SERVER_GROUP_ID);
+							if (configObj.has(Field.GROUP_ID)) {
+								long publishGroupId = configObj.getLong(Field.GROUP_ID);
 								OpencpsCallRestFacade<DossierStatisticModel, DossierStatisticModel> callReportService = new OpencpsCallStatisticRestFacadeImpl();
 								DossierStatisticModel request = new DossierStatisticModel();
 								request.setGroupId(publishGroupId);
@@ -1092,23 +1062,8 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 		
 		result.setErrorCode(0);
-		result.setErrorMessage("");
+		result.setErrorMessage(StringPool.BLANK);
 		result.setSuccess(true);
 		return result;
-	}
-	
-	@GET
-	@Path("/testsearch")
-	public String searchDossierStatistic(@HeaderParam("groupId") long groupId,
-			@QueryParam("month") Integer month, @QueryParam("year") Integer year, @QueryParam("domainCode") String domainCode, @QueryParam("govAgencyCode") String govAgencyCode) {
-		List<OpencpsDossierStatistic> allSiteDatas = OpencpsDossierStatisticLocalServiceUtil.findByG(groupId);
-		
-		OpencpsDossierStatistic statistic = DossierStatisticUtils.checkExists(month, year, domainCode, govAgencyCode, allSiteDatas);
-		if (statistic == null) {
-			return "Not found";
-		}
-		else {
-			return statistic.getTotalCount() + "";
-		}
 	}
 }

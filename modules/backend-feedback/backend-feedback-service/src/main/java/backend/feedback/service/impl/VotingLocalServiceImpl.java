@@ -54,6 +54,7 @@ import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.model.Voting;
 import backend.feedback.service.base.VotingLocalServiceBaseImpl;
+import backend.feedback.service.util.ConfigConstants;
 
 /**
  * The implementation of the voting local service.
@@ -131,12 +132,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.DELETE)
 	public Voting deleteVote(long votingId, ServiceContext serviceContext) throws NoSuchVotingException {
 
-		// try {
 		return votingPersistence.remove(votingId);
-
-		// } catch (NoSuchVotingException e) {
-		// throw new NoSuchVotingException();
-		// }
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -147,10 +143,6 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		Voting voting = votingPersistence.fetchByPrimaryKey(votingId);
-
-		// if (Validator.isNull(voting)) {
-		// throw new NotFoundException();
-		// }
 
 		Date now = new Date();
 
@@ -180,24 +172,24 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		_log.info("groupId: " + groupId);
-		String userId = (String) params.get("userId");
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
-		String fromVotingDate = GetterUtil.getString(params.get("fromVotingDate"));
-		String toVotingDate = GetterUtil.getString(params.get("toVotingDate"));
+		String fromVotingDate = GetterUtil.getString(params.get(VotingTerm.FROM_VOTING_DATE));
+		String toVotingDate = GetterUtil.getString(params.get(VotingTerm.TO_VOTING_DATE));
 		_log.info("strFromVotingDate: "+fromVotingDate);
 		_log.info("strToVotingDate: "+toVotingDate);
 
@@ -225,18 +217,10 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
-//		if (Validator.isNotNull(userId)) {
-//			MultiMatchQuery query = new MultiMatchQuery(userId);
-//
-//			query.addFields(VotingTerm.USER_ID);
-//
-//			booleanQuery.add(query, BooleanClauseOccur.MUST);
-//		}
 
 		if (Validator.isNotNull(className)) {
 			MultiMatchQuery query = new MultiMatchQuery(className);
@@ -256,9 +240,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		String fromVotingDateFilter = fromVotingDate + ConstantsTerm.HOUR_START;
 		String toVotingDateFilter = toVotingDate + ConstantsTerm.HOUR_END;
-		_log.info("FROM VOTING DATE FILTER: " + fromVotingDateFilter);
-		_log.info("TO VOTING DATE FILTER: " + toVotingDateFilter);
-		
+
 		if (Validator.isNotNull(fromVotingDate)) {
 			if (Validator.isNotNull(toVotingDate)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
@@ -294,15 +276,15 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Voting.class.getName());
 		searchContext.setEntryClassNames(new String[] { Voting.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(VotingTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(VotingTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(VotingTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
 
@@ -330,7 +312,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -393,9 +375,9 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 		Voting object = null;
 
-		if (objectData.getLong("votingId") > 0) {
+		if (objectData.getLong(VotingTerm.VOTING_ID) > 0) {
 
-			object = votingPersistence.fetchByPrimaryKey(objectData.getLong("votingId"));
+			object = votingPersistence.fetchByPrimaryKey(objectData.getLong(VotingTerm.VOTING_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -405,20 +387,20 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 
 			object = votingPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(VotingTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(VotingTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setSubject(objectData.getString("subject"));
-		object.setChoices(objectData.getString("choices"));
-		object.setTemplateNo(objectData.getString("templateNo"));
-		object.setCommentable(objectData.getBoolean("commentable"));
+		object.setClassName(objectData.getString(VotingTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(VotingTerm.CLASS_PK));
+		object.setSubject(objectData.getString(VotingTerm.SUBJECT));
+		object.setChoices(objectData.getString(VotingTerm.CHOICES));
+		object.setTemplateNo(objectData.getString(VotingTerm.TEMPLATE_NO));
+		object.setCommentable(objectData.getBoolean(VotingTerm.COMMENTABLE));
 
 		votingPersistence.update(object);
 

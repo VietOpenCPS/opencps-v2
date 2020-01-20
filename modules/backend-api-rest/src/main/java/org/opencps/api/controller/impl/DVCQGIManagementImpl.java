@@ -27,7 +27,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response doSyncDossier(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String strDossierId,
 			String isUpdating) {
-		
+
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -87,6 +87,40 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		} catch (Exception e) {
 			_log.error(e);
 			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doMappingServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCode,
+			String serviceCodeDVCQG) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			JSONObject result = actionImpl.mappingServiceInfo(user, groupId, serviceContext, serviceCode,
+					serviceCodeDVCQG);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
+		}
+	}
+
+	@Override
+	public Response doRemoveMappingServiceInfo(HttpServletRequest request, HttpServletResponse response,
+			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext,
+			String serviceCode) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			return Response.status(200)
+					.entity(String
+							.valueOf(actionImpl.removeMappingServiceInfo(user, groupId, serviceContext, serviceCode)))
+					.build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
 		}
 	}
 }

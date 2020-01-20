@@ -54,6 +54,16 @@ public class DossierStatusMappingLocalServiceUtil {
 		return getService().addDossierStatusMapping(dossierStatusMapping);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierStatusMapping adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.DossierStatusMapping adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dossier status mapping with the primary key. Does not add the dossier status mapping to the database.
 	*

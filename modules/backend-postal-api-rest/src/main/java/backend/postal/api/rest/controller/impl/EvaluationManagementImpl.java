@@ -15,13 +15,17 @@ import org.opencps.api.evaluation.model.EvaluationInputModel;
 import org.opencps.api.evaluation.model.EvaluationModels;
 import org.opencps.api.evaluation.model.EvaluationResultDetailModel;
 import org.opencps.api.evaluation.model.EvaluationResultsModel;
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -44,8 +48,8 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //			if (!auth.isAuth(serviceContext)) {
 //				throw new UnauthenticationException();
 //			}
-			if("".equals(score)){
-				score = "0";
+			if(StringPool.BLANK.equals(score)){
+				score = VnPostTerm.EVALUATION_SCORE_DEFAULT;
 			}
 			int number = Integer.parseInt(score);
 			
@@ -107,7 +111,7 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 //				throw new UnauthenticationException();
 //			}
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Evaluation evaluation = EvaluationLocalServiceUtil.addEvaluation(groupId, employeeId,
 					model.getEmployeeName(), model.getScore(), serviceContext);
@@ -125,25 +129,25 @@ public class EvaluationManagementImpl implements EvaluationManagement {
 		ErrorMsg error = new ErrorMsg();
 
 		if (e instanceof UnauthenticationException) {
-			error.setMessage("Non-Authoritative Information.");
+			error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHEN_EX));
 			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-			error.setDescription("Non-Authoritative Information.");
+			error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHEN_EX));
 
 			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		} else {
 			if (e instanceof UnauthorizationException) {
-				error.setMessage("Unauthorized.");
+				error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHOR_EX));
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Unauthorized.");
+				error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_UNAUTHOR_EX));
 
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 			} else {
 				_log.error(e);
 
-				error.setMessage("No Content.");
+				error.setMessage(ConfigProps.get(ConfigConstants.EVALUATION_NO_CONTENT_EX));
 				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-				error.setDescription("No Content.");
+				error.setDescription(ConfigProps.get(ConfigConstants.EVALUATION_NO_CONTENT_EX));
 
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 

@@ -1,6 +1,5 @@
 package backend.postal.api.rest.controller.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -17,7 +16,13 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.MimeHeaders;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPConnection;
+import javax.xml.soap.SOAPConnectionFactory;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
 
 import org.opencps.api.controller.util.InvoiceTerm;
 import org.opencps.api.einvoice.model.FsNHGTGT;
@@ -27,10 +32,14 @@ import org.opencps.api.einvoice.model.HoadonT;
 import org.opencps.api.einvoice.model.LstHoadonCtT;
 import org.opencps.api.invoice.model.InvoiceInputModel;
 import org.opencps.api.invoice.model.InvoiceServerConfigModel;
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,11 +49,15 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.search.Field;
 import backend.postal.api.rest.controller.EInvoiceManagement;
 
 public class EInvoiceManagementImpl implements EInvoiceManagement {
 
 	private static final Log _log = LogFactoryUtil.getLog(EInvoiceManagementImpl.class);
+
+	private static final String SOAPACTION_KEY = "SOAPACTION";
+	private static final String PROXY_CONNECTION_KEY = "Proxy-Connection";
 
 	public InvoiceServerConfigModel fromJSONObject(JSONObject configObj) {
 		//_log.info("configObj =============== " + JSONFactoryUtil.looseSerialize(configObj));
@@ -86,9 +99,9 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 	public Response getInvoice(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, InvoiceInputModel input) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		InvoiceServerConfigModel config = getServerConfig(groupId, "EINVOICE");
+		InvoiceServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_EINVOICE);
 		
 		if(config == null) {
 			return null;
@@ -103,12 +116,12 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		LstHoadonCtT lstHoadonCtT = new LstHoadonCtT();
 
 		HoadonT hoadon = new HoadonT();
-		hoadon.setMa("01GTKT0/001");
+		hoadon.setMa(VnPostTerm.HOADONT_MA);
 		// hoadon.setNgHd(formatDate(input.getNghd(),"dd/MM/yyyy"));
 		hoadon.setNgHd(input.getNgayHd());
 		hoadon.setSeri(input.getSeri());
-		hoadon.setMaNthue("01");
-		hoadon.setKieuSo("G");
+		hoadon.setMaNthue(VnPostTerm.HOADONT_MA_N_THUE);
+		hoadon.setKieuSo(VnPostTerm.HOADONT_KIEU_SO);
 		hoadon.setMaKh(input.getMaKhackHang());
 		hoadon.setTen(input.getTen());
 		hoadon.setPhone(input.getPhone());
@@ -154,10 +167,10 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 		fsNHGTGT.setBSoId(input.getSoid());
 		fsNHGTGT.setHoadonCt(hoadonCt);
 		fsNHGTGT.setHoadon(hoadon);
-		fsNHGTGT.setBKtraDch("");
+		fsNHGTGT.setBKtraDch(StringPool.BLANK);
 
 		// String results = "khong the ket noi den server HDDT !!!!!";
-		String abc = "";
+		String abc = StringPool.BLANK;
 
 		try {
 			//String soapEndpointUrl = "http://hoadon.cmcsoft.com/Service/iv_v/siv_v_ph_hoadon.asmx";
@@ -173,9 +186,9 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 			soapheader.detachNode();
 
 			MimeHeaders mimeHeader = message.getMimeHeaders();
-			mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/Fs_NH_GTGT");
-			mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
-			mimeHeader.setHeader("Proxy-Connection", "keep-alive");
+			mimeHeader.setHeader(SOAPACTION_KEY, VnPostTerm.MIME_HEADER_SOAPACTION);
+			mimeHeader.setHeader(HttpHeaders.CONTENT_TYPE, VnPostTerm.MIME_HEADER_CONTENT_TYPE);
+			mimeHeader.setHeader(PROXY_CONNECTION_KEY, VnPostTerm.MIME_HEADER_PROXY_CONNECTION);
 
 			JAXBContext context = JAXBContext.newInstance(fsNHGTGT.getClass());
 
@@ -196,13 +209,13 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 					protected URLConnection openConnection(URL url) throws IOException {
 						URL clone = new URL(url.toString());
 						HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
-						connection.setRequestProperty("Content-Type", "text/xml");
+						connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, VnPostTerm.SOAP_CONNECTION_CONTENT_TYPE);
 
-						connection.setRequestProperty("Accept", "application/soap+xml, text/*");
+						connection.setRequestProperty(HttpHeaders.ACCEPT, VnPostTerm.SOAP_CONNECTION_ACCEPT);
 
 						connection.setDoOutput(true);
-						connection.setConnectTimeout(3 * 1000);
-						connection.setReadTimeout(3 * 1000);
+						connection.setConnectTimeout(VnPostTerm.SOAP_CONNECTION_TIMEOUT);
+						connection.setReadTimeout(VnPostTerm.SOAP_CONNECTION_READ_TIMEOUT);
 						return connection;
 					}
 				});
@@ -214,13 +227,13 @@ public class EInvoiceManagementImpl implements EInvoiceManagement {
 				//_log.info("Response SOAP Message:");
 				// ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				
-				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName("Fs_NH_GTGTResult");
+				NodeList nodes = soapResponse.getSOAPBody().getElementsByTagName(ConfigProps.get(ConfigConstants.EINVOICE_NODELIST_TAG_NAME));
 				
 		        // check if the node exists and get the value
 		        
 		        Node node = (Node) nodes.item(0);
 		        
-		        abc = node != null ? node.getTextContent() : "";
+		        abc = node != null ? node.getTextContent() : StringPool.BLANK;
 		        
 				soapResponse.writeTo(System.out);
 				//_log.info("abc ============ " + abc );

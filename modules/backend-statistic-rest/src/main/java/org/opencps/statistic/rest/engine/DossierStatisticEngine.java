@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -45,7 +46,9 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
@@ -80,7 +83,6 @@ import org.osgi.service.component.annotations.Reference;
 public class DossierStatisticEngine extends BaseMessageListener {
 	private volatile boolean isRunningDossier = false;
 	
-	//private final static Logger LOG = LoggerFactory.getLogger(DossierStatisticEngine.class);
 	protected Log _log = LogFactoryUtil.getLog(DossierStatisticEngine.class);
 	
 	public static final int GROUP_TYPE_SITE = 1;
@@ -519,39 +521,39 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		else {
 			DossierActions actions = new DossierActionsImpl();
 			Sort[] sorts = null;
-			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
-					GetterUtil.getBoolean("true")) };
+			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+					true) };
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(DossierTerm.MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(DossierTerm.YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			}
 			else {
 				if (Validator.isNotNull(payload.getGovAgencyCode())) {
-					params.put("agency", payload.getGovAgencyCode());
+					params.put(DossierTerm.AGENCY, payload.getGovAgencyCode());
 				}
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
-					params.put("fromStatisticDate", payload.getFromStatisticDate());
+					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());
 				}
 				if (Validator.isNotNull(payload.getToStatisticDate())) {
-					params.put("toStatisticDate", payload.getToStatisticDate());
+					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
 				}				
 			}
 			//Add common params
-			String strSystemId = "0,1,2";
-			params.put("systemId", strSystemId);
-			params.put("top", "statistic");
+			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+			params.put(DossierTerm.SYSTEM_ID, strSystemId);
+			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			long companyId = company.getCompanyId(); 
@@ -570,16 +572,16 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 			
 			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get("data");
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt("total");
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
 			_log.debug("GET DOSSIER SIZE: " + datas.size());
 			_log.debug("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
-				datas = (List<Document>) jsonData2.get("data");
+				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
 				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
 			}
 
@@ -606,10 +608,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
 				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
-				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+				if (!String.valueOf(0).contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
 					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
 				}
-				if ("35818".contentEquals(doc.get(DossierTerm.GROUP_ID))) {
+				if (String.valueOf(35818).contentEquals(doc.get(DossierTerm.GROUP_ID))) {
 					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
 				}
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));

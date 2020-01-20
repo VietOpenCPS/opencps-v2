@@ -53,6 +53,7 @@ import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.base.VotingResultLocalServiceBaseImpl;
+import backend.feedback.service.util.ConfigConstants;
 
 /**
  * The implementation of the voting result local service.
@@ -129,11 +130,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 	public VotingResult deleteVoteResult(long votingResultId, ServiceContext serviceContext)
 			throws NoSuchVotingResultException {
 
-		// try {
 		return votingResultPersistence.remove(votingResultId);
-		// } catch (NoSuchVotingResultException e) {
-		// throw new NotFoundException();
-		// }
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -196,19 +193,18 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(VotingResult.class.getName());
 		searchContext.setEntryClassNames(new String[] { VotingResult.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(VotingResultTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
-
+		searchContext.setAttribute(VotingResultTerm.PARAMS, params);
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(VotingResultTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(VotingResultTerm.USER_ID);
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
 		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
 		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
@@ -241,7 +237,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingResultTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -330,16 +326,16 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(VotingResult.class.getName());
 		searchContext.setEntryClassNames(new String[] { VotingResult.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(VotingResultTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(VotingResultTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(VotingResultTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(VotingResultTerm.USER_ID);
 		String votingId = (String) params.get(VotingResultTerm.VOTING_ID);
 		int month = GetterUtil.getInteger(params.get(VotingResultTerm.MONTH_VOTING));
 		int year = GetterUtil.getInteger(params.get(VotingResultTerm.YEAR_VOTING));
@@ -372,7 +368,7 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(VotingResultTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -473,9 +469,9 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 		VotingResult object = null;
 
-		if (objectData.getLong("votingResultId") > 0) {
+		if (objectData.getLong(VotingResultTerm.VOTING_RESULT_ID) > 0) {
 
-			object = votingResultPersistence.fetchByPrimaryKey(objectData.getLong("votingResultId"));
+			object = votingResultPersistence.fetchByPrimaryKey(objectData.getLong(VotingResultTerm.VOTING_RESULT_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -485,19 +481,19 @@ public class VotingResultLocalServiceImpl extends VotingResultLocalServiceBaseIm
 
 			object = votingResultPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(VotingResultTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(VotingResultTerm.USER_ID));
 
-		object.setVotingId(objectData.getLong("votingId"));
-		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString("email"));
-		object.setComment(objectData.getString("comment"));
-		object.setSelected(objectData.getString("selected"));
+		object.setVotingId(objectData.getLong(VotingResultTerm.VOTING_ID));
+		object.setFullname(objectData.getString(VotingResultTerm.FULLNAME));
+		object.setEmail(objectData.getString(VotingResultTerm.EMAIL));
+		object.setComment(objectData.getString(VotingResultTerm.COMMENT));
+		object.setSelected(objectData.getString(VotingResultTerm.SELECTED));
 
 		votingResultPersistence.update(object);
 

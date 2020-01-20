@@ -1,5 +1,6 @@
 package backend.feedback.action.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -7,6 +8,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -22,22 +24,26 @@ import java.util.Locale;
 
 import javax.ws.rs.NotFoundException;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.feedback.action.VotingActions;
+import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;
 import backend.feedback.exception.NoSuchVotingResultException;
 import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
+import backend.feedback.service.util.ConfigConstants;
+import backend.feedback.service.util.ConfigProps;
 
 public class VotingActionsImpl implements VotingActions {
 
-	public static final Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale(ConfigProps.get(ConfigConstants.SYS_LOCALE), ConfigProps.get(ConfigConstants.SYS_LOCALE_UPP));
 
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 
@@ -47,11 +53,11 @@ public class VotingActionsImpl implements VotingActions {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
-			if (!"0".equals(classPK)) {
+			if (!ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR).equals(classPK)) {
 				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				if (count == 0) {
 					// Add new voting with classPK
-					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
 					if (votingList != null) {
 						String subject;
 						String choices;
@@ -81,27 +87,27 @@ public class VotingActionsImpl implements VotingActions {
 //			} else {
 //				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
 //			}
-//			result.put("data", votingList);
+//			result.put(ConstantUtils.DATA, votingList);
 			
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(companyId);
 
 			Hits hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			_log.info("VotingActions.getVotingList(): "+hits.getLength());
+			//_log.info("VotingActions.getVotingList(): "+hits.getLength());
 			if (hits.toList() == null || hits.toList().size() == 0) {
-				params.put("classPK", "0");
-				params.put("fromVotingDate", "");
-				params.put("toVotingDate", "");
+				params.put(VotingTerm.CLASS_PK, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
+				params.put(VotingTerm.FROM_VOTING_DATE, StringPool.BLANK);
+				params.put(VotingTerm.TO_VOTING_DATE, StringPool.BLANK);
 				hits = VotingLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 			}
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 			//long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -158,15 +164,6 @@ public class VotingActionsImpl implements VotingActions {
 		return ett;
 	}
 
-//	@Deprecated
-//	@Override
-//	public Voting getVoting(long votingId, ServiceContext serviceContext) {
-//
-//		Voting ett = VotingLocalServiceUtil.fetchVoting(votingId);
-//
-//		return ett;
-//	}
-
 	@Override
 	public void deleteVoting(long votingId, ServiceContext serviceContext)
 			throws NotFoundException, NoSuchVotingException {
@@ -187,11 +184,11 @@ public class VotingActionsImpl implements VotingActions {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);
@@ -209,36 +206,6 @@ public class VotingActionsImpl implements VotingActions {
 		VotingResultLocalServiceUtil.deleteVoteResult(votingResultId, serviceContext);
 	}
 
-//	@Override
-//	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String comment,
-//			String selected, ServiceContext serviceContext)
-//			throws PortalException, SystemException {
-//
-//		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
-//
-//		if (Validator.isNull(voting)) {
-//			throw new NotFoundException();
-//		}
-//		User user = UserLocalServiceUtil.fetchUser(userId);
-//
-//		VotingResult votingResult = VotingResultLocalServiceUtil.fetchByF_votingId_userId(userId, votingId);
-//
-//		if (user != null) {
-//			if (Validator.isNotNull(votingResult)) {
-//
-//				votingResult = VotingResultLocalServiceUtil.updateVoteResult(userId, votingResult.getVotingResultId(),
-//						votingId, user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
-//
-//			} else {
-//				// User user = UserLocalServiceUtil.
-//				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, votingId,
-//						user.getFullName(), user.getEmailAddress(), comment, selected, serviceContext);
-//			}
-//		}
-//
-//		return votingResult;
-//	}
-
 	@Override
 	public VotingResult addVotingResult(long userId, long companyId, long groupId, long votingId, String email,
 			String comment, String selected, ServiceContext serviceContext) throws PortalException, SystemException {
@@ -246,15 +213,11 @@ public class VotingActionsImpl implements VotingActions {
 		Voting voting = VotingLocalServiceUtil.fetchVoting(votingId);
 		VotingResult votingResult = null;
 
-//		MBPermissionCheckerFactoryUtil.checkReadPermisson(
-//			voting.getClassName(), voting.getClassPK(), serviceContext);
-
 		if (voting != null) {
 			User user = UserLocalServiceUtil.fetchUser(userId);
 			if (user != null && !user.isDefaultUser()) {
 				// Check employee
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				// TODO check customer
 				if (employee != null) {
 					votingResult =
 						VotingResultLocalServiceUtil.fetchByF_votingId_userId(
@@ -289,16 +252,7 @@ public class VotingActionsImpl implements VotingActions {
 				}
 			}
 			else {
-//				ResourceUser resourceUser =
-//					ResourceUserBusinessFactoryUtil.getResourceUserByEmail(
-//						groupId, voting.getClassName(), voting.getClassPK(), email);
-//				ResourceUser resourceUser = ResourceUserLocalServiceUtil.fetchByF_className_classPK_email(groupId,
-//						voting.getClassName(), voting.getClassPK(), email);
-//				if (resourceUser == null) {
-//					throw new UnauthenticationException();
-//				}
-
-				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), "",
+				votingResult = VotingResultLocalServiceUtil.addVotingResult(userId, groupId, voting.getVotingId(), StringPool.BLANK,
 						email, comment, selected, serviceContext);
 			}
 		}
@@ -318,10 +272,10 @@ public class VotingActionsImpl implements VotingActions {
 		try {
 
 			hits = VotingResultLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = VotingResultLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.error(e);

@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -58,7 +59,7 @@ public class OpencpsCallServiceInfoRestFacadeImpl extends OpencpsRestFacade<Comm
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
-			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			httpHeaders.add(HttpHeaders.AUTHORIZATION, HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + Base64.getEncoder().encodeToString((payload.getUsername() + StringPool.COLON + payload.getPassword()).getBytes()));			
 		}
 		
 		return executeGenericRestCall(url, HttpMethod.GET, httpHeaders, payload, ServiceInfoResponse.class).getBody();
