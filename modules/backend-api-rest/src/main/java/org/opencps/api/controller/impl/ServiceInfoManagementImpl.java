@@ -1054,6 +1054,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				String domainCode = doc.get(ServiceInfoTerm.DOMAIN_CODE);
 				String administrationName = doc.get(ServiceInfoTerm.ADMINISTRATION_NAME);
 				String domainName = doc.get(ServiceInfoTerm.DOMAIN_NAME);
+				item.put("serviceInfoId", GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 				item.put("serviceName", serviceName);
 				item.put("serviceCode", serviceCode);
 				item.put("administrationCode", administrationCode);

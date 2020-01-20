@@ -733,6 +733,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
 			String serviceNameDVCQG = map.get(serviceInfoMapping.getServiceCodeDVCQG());
 			item.put("serviceCodeDVCQG", serviceInfoMapping.getServiceCodeDVCQG());
+			item.put("serviceInfoMappingId", serviceInfoMapping.getServiceInfoMappingId());
 			item.put("serviceNameDVCQG", serviceNameDVCQG);
 			item.put("similarityPercent", 100);
 			item.put("mapped", true);
@@ -749,6 +750,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		CosineSimilarity documentsSimilarity = new CosineSimilarity();
 		
 		DecimalFormat df = new DecimalFormat();
+		
 		df.setMaximumFractionDigits(2);
 
 		if (_mapChars != null && !_mapChars.isEmpty()) {
@@ -778,6 +780,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					item.put("serviceCodeDVCQG", key);
 					item.put("serviceNameDVCQG", entry.getValue());
 					item.put("mapped", false);
+					item.put("serviceInfoMappingId", 0);
 					_mapItems.put(key, item);
 				}
 
@@ -813,6 +816,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				JSONObject item = JSONFactoryUtil.createJSONObject();
 				item.put("serviceCodeDVCQG", key);
 				item.put("serviceNameDVCQG", entry.getValue());
+				item.put("serviceInfoMappingId", 0);
 				item.put("mapped", false);
 				_mapItems.put(key, item);
 
@@ -1165,7 +1169,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 													durationText += nhankenh + ":" + "- Thời gian giải quyết: "
 															+ thoigiangiaiquyet + " " + donvitinh + "\n";
 													JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
-													if (philephi_arr != null) {
+													if (philephi_arr != null && philephi_arr.length() > 0) {
 														String maphilephi = philephi_arr.getJSONObject(0)
 																.getString("MAPHILEPHI");
 														double sotien = philephi_arr.getJSONObject(0)
@@ -1267,6 +1271,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 								}
 
 								serviceInfo.setGovAgencyText(sb.toString());
+								
+								ServiceInfoLocalServiceUtil.updateServiceInfo(serviceInfo);
 
 								//THANHPHANHOSO
 								List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
