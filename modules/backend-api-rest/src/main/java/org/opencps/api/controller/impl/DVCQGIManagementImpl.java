@@ -110,14 +110,14 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	@Override
 	public Response doRemoveMappingServiceInfo(HttpServletRequest request, HttpServletResponse response,
 			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext,
-			String serviceCode) {
+			long id) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			return Response.status(200)
 					.entity(String
-							.valueOf(actionImpl.removeMappingServiceInfo(user, groupId, serviceContext, serviceCode)))
+							.valueOf(actionImpl.removeMappingServiceInfo(user, groupId, serviceContext, id)))
 					.build();
 		} catch (Exception e) {
 			_log.error(e);

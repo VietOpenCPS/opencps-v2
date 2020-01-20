@@ -1047,6 +1047,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			try {
 				ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.addServiceInfoMapping(
 						groupId, serviceContext.getCompanyId(), user.getUserId(), serviceCode, serviceCodeDVCQG);
+				result.put("id", serviceInfoMapping.getServiceInfoMappingId());
 				result.put("serviceCode", serviceCode);
 				result.put("serviceCodeDVCQG", serviceCodeDVCQG);
 				result.put("serviceInfoMappingId", serviceInfoMapping.getServiceInfoMappingId());
@@ -1062,15 +1063,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext,
-			String serviceCode) {
+			long id) {
 
-		return ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(groupId, serviceCode);
+		try {
+			ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(id);
+			return true;
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
 	}
 
 	@Override
 	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
+		_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(serviceCodes)) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);

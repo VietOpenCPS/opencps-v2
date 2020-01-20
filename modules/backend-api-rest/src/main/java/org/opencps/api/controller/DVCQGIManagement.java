@@ -13,6 +13,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -65,7 +66,7 @@ public interface DVCQGIManagement {
 	
 	@POST
 	@Path("/mappingserviceinfo")
-	@Consumes({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response doMappingServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
@@ -74,7 +75,7 @@ public interface DVCQGIManagement {
 	
 	@POST
 	@Path("/syncserviceinfo")
-	@Consumes({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response doSyncServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
@@ -82,12 +83,12 @@ public interface DVCQGIManagement {
 	
 	
 	@DELETE
-	@Path("/removemappingserviceinfo")
-	@Consumes({ MediaType.APPLICATION_JSON })
+	@Path("/removemappingserviceinfo/{id}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response doRemoveMappingServiceInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("serviceCode") String serviceCode);
+			@Context ServiceContext serviceContext, @PathParam("id") long id);
 	
 	@POST
 	@Path("/getsharingqa")
