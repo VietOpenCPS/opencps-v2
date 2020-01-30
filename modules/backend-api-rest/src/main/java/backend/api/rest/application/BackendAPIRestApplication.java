@@ -83,6 +83,7 @@ import org.opencps.api.controller.impl.HolidayManagementImpl;
 import org.opencps.api.controller.impl.ImportDataManagementImpl;
 import org.opencps.api.controller.impl.JasperUtilsManagermentImpl;
 import org.opencps.api.controller.impl.JobposManagementImpl;
+import org.opencps.api.controller.impl.MailTestManagementImpl;
 import org.opencps.api.controller.impl.MenuConfigManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
 import org.opencps.api.controller.impl.NotificationManagementImpl;
@@ -225,6 +226,9 @@ public class BackendAPIRestApplication extends Application {
 		
 		singletons.add(new DVCQGIManagementImpl());
 		singletons.add(new VGCAManagementImpl());
+		
+		//Test send mail
+		singletons.add(new MailTestManagementImpl());
 		
 		singletons.add(this);
 

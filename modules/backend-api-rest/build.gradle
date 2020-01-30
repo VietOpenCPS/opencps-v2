@@ -91,6 +91,7 @@ dependencies {
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
 	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.6'
 
+	compileOnly group: "javax.mail", name: "mail", version: "1.4"
 	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 }
