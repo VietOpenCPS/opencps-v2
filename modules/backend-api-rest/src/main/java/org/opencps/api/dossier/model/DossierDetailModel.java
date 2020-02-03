@@ -200,7 +200,8 @@ import javax.xml.bind.annotation.XmlType;
     "documentNo",
     "documentDate",
     "serverNo",
-    "systemId"
+    "systemId",
+    "groupId"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -308,6 +309,15 @@ public class DossierDetailModel {
 	protected String documentDate;
 	protected String serverNo;
 	protected int systemId;
+	protected Long groupId;
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
 
 	public int getSystemId() {
 		return systemId;
