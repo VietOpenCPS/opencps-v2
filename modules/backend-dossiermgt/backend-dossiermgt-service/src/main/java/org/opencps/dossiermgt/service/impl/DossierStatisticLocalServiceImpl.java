@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
 import org.opencps.dossiermgt.model.DossierStatistic;
 import org.opencps.dossiermgt.service.base.DossierStatisticLocalServiceBaseImpl;
@@ -83,7 +85,7 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 
 		searchContext.addFullQueryEntryClassName(DossierStatistic.class.getName());
 		searchContext.setEntryClassNames(new String[] { DossierStatistic.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -163,7 +165,7 @@ public class DossierStatisticLocalServiceImpl extends DossierStatisticLocalServi
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

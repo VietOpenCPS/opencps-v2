@@ -3,7 +3,6 @@ package org.opencps.dossiermgt.constants;
 public class EFormTerm {
 
 	public static final String EFORM_ID = "eFormId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";

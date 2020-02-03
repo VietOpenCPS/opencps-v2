@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -28,6 +29,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierMarkTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.input.model.DossierMarkBatchModel;
 import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
@@ -145,9 +149,9 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 		DossierMark object = null;
 
-		if (objectData.getLong("dossierMarkId") > 0) {
+		if (objectData.getLong(DossierMarkTerm.DOSSIER_MARK_ID) > 0) {
 
-			object = dossierMarkPersistence.fetchByPrimaryKey(objectData.getLong("dossierMarkId"));
+			object = dossierMarkPersistence.fetchByPrimaryKey(objectData.getLong(DossierMarkTerm.DOSSIER_MARK_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -157,20 +161,20 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 			object = dossierMarkPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setDossierPartNo(objectData.getString("dossierPartNo"));
-		object.setFileCheck(objectData.getInt("fileCheck"));
-		object.setFileMark(objectData.getInt("fileMark"));
-		object.setFileComment(objectData.getString("fileComment"));
-		object.setRecordCount(objectData.getString("recordCount"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setDossierPartNo(objectData.getString(DossierFileTerm.DOSSIER_PART_NO));
+		object.setFileCheck(objectData.getInt(DossierMarkTerm.FILE_CHECK));
+		object.setFileMark(objectData.getInt(DossierMarkTerm.FILE_MARK));
+		object.setFileComment(objectData.getString(DossierMarkTerm.FILE_COMMENT));
+		object.setRecordCount(objectData.getString(DossierMarkTerm.RECORD_COUNT));
 
 		dossierMarkPersistence.update(object);
 
@@ -186,8 +190,6 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 
 		User userAction = userLocalService.getUser(userId);
 		for (int i = 0; i < marks.length; i++) {
-//			DossierMark object = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, marks[i].getDossierId(),
-//					marks[i].getDossierPartNo());
 			DossierMark object = mapMarks.get(marks[i].getDossierPartNo());
 			if (object != null) {
 				// Add audit fields

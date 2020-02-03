@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.util.DossierContentGenerator;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -48,7 +49,6 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 		try {
 			long dossierId = model.getDossierId();
 			long groupId = model.getGroupId();
-//			_log.info("groupId: " + groupId);
 //			_log.info("dossierId: " + dossierId);
 			ProcessOption option = null;
 			Dossier dossier = null;
@@ -56,15 +56,11 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 			if (Validator.isNotNull(dossierId)) {
 				dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			}
-//			_log.info("dossier.getServiceCode(): " + dossier.getServiceCode());
-//			_log.info("dossier.getGovAgencyCode(): " + dossier.getGovAgencyCode());
-//			_log.info("dossier.getDossierTemplateNo(): " + dossier.getDossierTemplateNo());
 			if (dossier != null) {
 				option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
 						dossier.getDossierTemplateNo(), groupId);
 	
 				long serviceProcessId = option.getServiceProcessId();
-	//			_log.info("serviceProcessId: " + serviceProcessId);
 				
 				String briefNote = StringPool.BLANK;
 				if (Validator.isNotNull(serviceProcessId)) {
@@ -90,7 +86,6 @@ public class DossierBriefNoteListenner extends BaseModelListener<DossierFile> {
 			}
 
 		} catch (PortalException e) {
-//			e.printStackTrace();
 			_log.error(e);
 		}
 	}

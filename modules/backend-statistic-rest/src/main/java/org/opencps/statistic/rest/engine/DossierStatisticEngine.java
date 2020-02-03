@@ -611,7 +611,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				if (!String.valueOf(0).contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
 					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
 				}
-				if (String.valueOf(35818).contentEquals(doc.get(DossierTerm.GROUP_ID))) {
+				if (String.valueOf(35818).contentEquals(doc.get(Field.GROUP_ID))) {
 					_log.debug("FIND DOSSIER GROUP: " + doc.get(DossierTerm.VIA_POSTAL));
 				}
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));

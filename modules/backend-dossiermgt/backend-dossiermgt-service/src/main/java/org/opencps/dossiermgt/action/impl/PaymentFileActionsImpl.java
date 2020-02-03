@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -53,11 +54,11 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 
 			hits = PaymentFileLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = PaymentFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -95,8 +96,6 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 
 		} catch (PortalException e) {
 			_log.debug(e);
-			//_log.error(e);
-//			e.printStackTrace();
 			throw new PortalException();
 		}
 
@@ -231,14 +230,6 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 				approveDatetime, accountUserName, govAgencyTaxNo, invoiceTemplateNo, invoiceIssueNo, invoiceNo,
 				serviceContext);
 
-		if (!isSync) {
-		// Add PaymentFileSync
-//		Dossier dossier = DossierLocalServiceUtil.getDossier(paymentFile.getDossierId());
-		// TODO review serverNo on this
-//		DossierSyncLocalServiceUtil.updateDossierSync(groupId, serviceContext.getUserId(), paymentFile.getDossierId(),
-//				dossier.getReferenceUid(), false, 3, paymentFile.getPrimaryKey(), paymentFile.getReferenceUid(),
-//				StringPool.BLANK);
-		}
 
 		return paymentFile;
 	}
@@ -274,11 +265,11 @@ public class PaymentFileActionsImpl implements PaymentFileActions {
 
 			hits = PaymentFileLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = PaymentFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);

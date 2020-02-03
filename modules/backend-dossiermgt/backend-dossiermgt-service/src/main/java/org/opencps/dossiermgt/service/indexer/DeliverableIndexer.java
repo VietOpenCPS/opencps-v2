@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -146,11 +147,11 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				? object.getRevalidate().getTime() : null);
 
 		document.addDateSortable(
-			ModelKeysDeliverable.ISSUEDATE + "_date", object.getIssueDate());
+			ModelKeysDeliverable.ISSUEDATE + ModelKeysDeliverable.STR_DATE, object.getIssueDate());
 		document.addDateSortable(
-			ModelKeysDeliverable.EXPIREDATE + "_date", object.getExpireDate());
+			ModelKeysDeliverable.EXPIREDATE + ModelKeysDeliverable.STR_DATE, object.getExpireDate());
 		document.addDateSortable(
-			ModelKeysDeliverable.REVALIDATE + "_date", object.getRevalidate());
+			ModelKeysDeliverable.REVALIDATE + ModelKeysDeliverable.STR_DATE, object.getRevalidate());
 
 		document.addNumberSortable(
 			ModelKeysDeliverable.DELIVERABLESTATE,
@@ -180,7 +181,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					// keyValue[0].toString() + "_data",
 					// keyValue[1].toString());
 					document.addKeyword(
-						keyValue[0].toString().toLowerCase() + "_data",
+						keyValue[0].toString().toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA,
 						keyValue[1].toString().toLowerCase());
 				}
 			}
@@ -195,7 +196,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				document.addTextSortable(
-					key + "_data", jsonObject.getString(key));
+					key + StringPool.UNDERLINE + ConstantUtils.DATA, jsonObject.getString(key));
 			}
 		}
 		catch (Exception e) {
@@ -273,7 +274,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					catch (PortalException pe) {
 						if (_log.isWarnEnabled()) {
 							_log.warn(
-								"Unable to index contact " +
 									object.getPrimaryKey(),
 								pe);
 						}
@@ -297,9 +297,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		}
 		catch (Exception e) {
 			_log.error(e);
-			_log.info(
-				"Can not parse json object from FormData: =>" + " : Cause " +
-					e.getCause());
 		}
 
 		return keyValues;
@@ -330,9 +327,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					if (Validator.isNotNull(valueObject.toString())) {
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(
 							valueObject.toString());
-						// keyValue[1] =
-						// valueObject.toString().replaceAll(Pattern.quote("/"),
-						// "_").replaceAll(Pattern.quote("-"), "_");
 					}
 					else {
 						keyValue[1] = valueObject.toString();
@@ -380,7 +374,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					JSONObject valueObject =
 						JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
 						// keyValue[1] =
 						// valueObject.toString().replaceAll(Pattern.quote("/"),
@@ -400,7 +394,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 						// keyValue[1] =
 						// strObject.toString().replaceAll(Pattern.quote("/"),
@@ -418,28 +412,5 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 		return keyValues;
 	}
-
-	// protected List<Object[]> parseJSONObject(List<Object[]> keyValues,
-	// JSONArray jsonArray) throws JSONException {
-	//
-	// if (jsonArray != null && jsonArray.length() > 0) {
-	// for (int i = 0; i < jsonArray.length(); i++) {
-	// String tempObject = String.valueOf(jsonArray.get(i));
-	// try {
-	// JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
-	// parseJSONObject(keyValues, valueObject);
-	// } catch (JSONException e) {
-	// // check json array
-	// try {
-	// JSONArray jsonArr = jsonArray.getJSONArray(i);
-	// parseJSONObject(keyValues, jsonArr);
-	// } catch (JSONException e1) {
-	// // Tinh chung cho key cha.
-	// }
-	// }
-	// }
-	// }
-	// return keyValues;
-	// }
 
 }

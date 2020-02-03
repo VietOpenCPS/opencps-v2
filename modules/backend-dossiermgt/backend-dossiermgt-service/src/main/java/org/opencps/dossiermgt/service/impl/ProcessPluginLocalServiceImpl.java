@@ -16,6 +16,7 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -23,6 +24,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.model.ProcessPlugin;
 import org.opencps.dossiermgt.service.base.ProcessPluginLocalServiceBaseImpl;
 
@@ -79,9 +82,9 @@ public class ProcessPluginLocalServiceImpl extends ProcessPluginLocalServiceBase
 
 		ProcessPlugin object = null;
 
-		if (objectData.getLong("processPluginId") > 0) {
+		if (objectData.getLong(ProcessOptionTerm.PROCESS_PLUGIN_ID) > 0) {
 
-			object = processPluginPersistence.fetchByPrimaryKey(objectData.getLong("processPluginId"));
+			object = processPluginPersistence.fetchByPrimaryKey(objectData.getLong(ProcessOptionTerm.PROCESS_PLUGIN_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -91,23 +94,23 @@ public class ProcessPluginLocalServiceImpl extends ProcessPluginLocalServiceBase
 
 			object = processPluginPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setStepCode(objectData.getString("stepCode"));
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setPluginName(objectData.getString("pluginName"));
-		object.setPluginType(objectData.getInt("pluginType"));
-		object.setSequenceNo(objectData.getString("sequenceNo"));
-		object.setPluginForm(objectData.getString("pluginForm"));
-		object.setSampleData(objectData.getString("sampleData"));
-		object.setAutoRun(objectData.getBoolean("autoRun"));
+		object.setStepCode(objectData.getString(DossierActionTerm.STEP_CODE));
+		object.setServiceProcessId(objectData.getLong(DossierActionTerm.SERVICE_PROCESS_ID));
+		object.setPluginName(objectData.getString(ProcessOptionTerm.PLUGIN_NAME));
+		object.setPluginType(objectData.getInt(ProcessOptionTerm.PLUGIN_TYPE));
+		object.setSequenceNo(objectData.getString(ProcessOptionTerm.SEQUENCE_NO));
+		object.setPluginForm(objectData.getString(ProcessOptionTerm.PLUGIN_FORM));
+		object.setSampleData(objectData.getString(ProcessOptionTerm.SAMPLE_DATA));
+		object.setAutoRun(objectData.getBoolean(ProcessOptionTerm.AUTO_RUN));
 
 		processPluginPersistence.update(object);
 

@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DeliverableTypeRole;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
@@ -35,8 +37,8 @@ public class DeliverableTypesActionsImpl implements DeliverableTypesActions {
 
 			int total = DeliverableTypeLocalServiceUtil.getDeliverableTypesCount();
 
-			result.put("total", total);
-			result.put("lstDeliverableType", lstDeliverableType);
+			result.put(ConstantUtils.TOTAL, total);
+			result.put(DeliverableTypesTerm.LIST_DELIVERABLE_TYPE, lstDeliverableType);
 
 		} catch (Exception e) {
 			_log.error(e);

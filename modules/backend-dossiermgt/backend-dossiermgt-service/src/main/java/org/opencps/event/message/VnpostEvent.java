@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 public class VnpostEvent implements MessageListener {
@@ -43,7 +44,7 @@ public class VnpostEvent implements MessageListener {
 	private void _doReceiveRequest(Message message) {		
 
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
-		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
+		long groupId = dossierObj.getLong(Field.GROUP_ID);
 		InvokeREST callRest = new InvokeREST();
 		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();

@@ -1,8 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierActionTerm {
-	public static final String DOSSIERACTION_ID = "dossierActionId";
-	public static final String GROUP_ID = "groupId";
+	public static final String DOSSIER_ACTION_ID = "dossierActionId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -25,7 +24,15 @@ public class DossierActionTerm {
 	public static final String STEP_INSTRUCTION = "stepInstruction";
 	public static final String AUTO = "auto";
 	public static final String DOSSIER_DOCUMENT_ID = "dossierDocumentId";
-	
+	public static final String JOB_POS_NAME = "jobPosName";
+	public static final String FILES = "files";
+	public static final String STATE = "state";
+	public static final String FROM_STEP_CODE = "fromStepCode";
+	public static final String FROM_STEP_NAME = "fromStepName";
+	public static final String LIST_CONTACT = "ListContacts";
+	public static final String FROM_SEQUENCE_NO = "fromSequenceNo";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String EVENT_STATUS = "eventStatus";
 	public static final int STATE_WAITING_PROCESSING = 0;
 	public static final int STATE_ALREADY_PROCESSED = 1;
 	public static final int STATE_ROLLBACK = 2;

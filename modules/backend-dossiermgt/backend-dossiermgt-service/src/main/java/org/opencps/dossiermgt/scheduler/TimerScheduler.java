@@ -35,6 +35,7 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -71,12 +72,10 @@ public class TimerScheduler extends BaseMessageListener {
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
 			isRunning = true;
-		}
-		else {
+		} else {
 			return;
 		}
 		_log.info("Invoke Timer****");
-		// get all actions that has preCondition is "timer"
 
 		// Get all dossier
 		List<Dossier> allDossierTimer;
@@ -85,7 +84,7 @@ public class TimerScheduler extends BaseMessageListener {
 		cal.setTime(now);
 		cal.add(Calendar.DATE, -2);
 		Date twoDayAgo = cal.getTime();
-		
+
 		Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 
 		// This is TEMPORARY code for auto = timer, it need to optimize later
@@ -109,7 +108,7 @@ public class TimerScheduler extends BaseMessageListener {
 			params.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossier.getDossierId()));
 			params.put(DossierTerm.REFERENCE_UID, String.valueOf(dossier.getReferenceUid()));
-			params.put(DossierActionTerm.AUTO, "timmer");
+			params.put(DossierActionTerm.AUTO, DossierTerm.KEY_TIMMER);
 
 			ErrorMsgModel errorModel = new ErrorMsgModel();
 			
@@ -137,7 +136,7 @@ public class TimerScheduler extends BaseMessageListener {
 				if (dRegUD != null && dRegUD.getStatusReg() == 3) {
 					for (ProcessAction processAction : lstProcessAction) {
 
-						if (processAction.getAutoEvent().contains("timmer")) {
+						if (processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER)) {
 							
 							String perConditionStr = processAction.getPreCondition();
 
@@ -153,6 +152,9 @@ public class TimerScheduler extends BaseMessageListener {
 							if (checkPreCondition) {
 								
 								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
+
+								_log.info("$$$$$dossierId_" + dossier.getDossierId() + "autoEvent_"
+										+ processAction.getAutoEvent());
 
 								flag = true;
 								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
@@ -185,12 +187,7 @@ public class TimerScheduler extends BaseMessageListener {
 										StringPool.BLANK,
 										actConfig.getSyncType(),
 										serviceContext, errorModel);
-								
-//								dossierActions.doAction(dossier.getGroupId(), dossier.getDossierId(),
-//										dossier.getReferenceUid(), processAction.getActionCode(),
-//										processAction.getProcessActionId(), userActionName, StringPool.BLANK,
-//										processAction.getAssignUserId(), systemUser.getUserId(), StringPool.BLANK,
-//										serviceContext);
+									
 								}
 							}
 						}
@@ -202,7 +199,7 @@ public class TimerScheduler extends BaseMessageListener {
 				} else {
 					for (ProcessAction processAction : lstProcessAction) {
 
-						if (processAction.getAutoEvent().contains("timmer")) {
+						if (processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER)) {
 							
 							String perConditionStr = processAction.getPreCondition();
 
@@ -215,10 +212,7 @@ public class TimerScheduler extends BaseMessageListener {
 									dossier.getDossierId(), systemUser.getFullName());
 
 							// String subUsers = StringPool.BLANK;
-							if (checkPreCondition && perConditionStr.contains("payok")) {
-								
-								_log.info("$$$$$dossierId_"+dossier.getDossierId() + "autoEvent_" + processAction.getAutoEvent());
-
+							if (checkPreCondition && perConditionStr.contains(DossierTerm.PAY_OK)) {
 								flag = true;
 
 								ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(dossier.getGroupId(), processAction.getActionCode());
@@ -283,9 +277,7 @@ public class TimerScheduler extends BaseMessageListener {
 				userActionName = UserLocalServiceUtil.getUser(userId).getFullName();
 			} catch (Exception e) {
 				_log.debug(e);
-				//_log.error(e);
 				_log.info("DEFAULT_NAME");
-
 				userActionName = defaultName;
 			}
 		}

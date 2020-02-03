@@ -11,6 +11,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.Date;
 
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictItem;
 
 /**
@@ -24,9 +25,9 @@ public class DictItemComparator extends OrderByComparator<DictItem> {
 
 	private static final String _defaultColumnName = "treeIndex";
 
-	public String _ORDER_BY_ASC = _TABLE_NAME + StringPool.PERIOD + getColumnName() + " ASC";
+	public String _ORDER_BY_ASC = _TABLE_NAME + StringPool.PERIOD + getColumnName() + DictItemTerm.ORDER_ASC;
 
-	public String _ORDER_BY_DESC = _TABLE_NAME + StringPool.PERIOD + getColumnName() + " DESC";
+	public String _ORDER_BY_DESC = _TABLE_NAME + StringPool.PERIOD + getColumnName() + DictItemTerm.ORDER_DESC;
 
 	private boolean _ascending;
 
@@ -98,12 +99,12 @@ public class DictItemComparator extends OrderByComparator<DictItem> {
 
 	public String getORDER_BY_ASC() {
 
-		return _TABLE_NAME + StringPool.PERIOD + getColumnName() + " ASC";
+		return DictItemTerm._TABLE_NAME + StringPool.PERIOD + getColumnName() + DictItemTerm.ORDER_ASC;
 	}
 
 	public String getORDER_BY_DESC() {
 
-		return _TABLE_NAME + StringPool.PERIOD + getColumnName() + " DESC";
+		return DictItemTerm._TABLE_NAME + StringPool.PERIOD + getColumnName() + DictItemTerm.ORDER_DESC;
 	}
 
 	@Override
@@ -175,7 +176,7 @@ public class DictItemComparator extends OrderByComparator<DictItem> {
 			try {
 				for (PropertyDescriptor pd : propertyDescriptors) {
 
-					if (pd.getReadMethod() != null && !"class".equals(pd.getName())
+					if (pd.getReadMethod() != null && !DictItemTerm.VALUE_CLASS.equals(pd.getName())
 							&& pd.getDisplayName().equals(getColumnName())) {
 
 						value = pd.getReadMethod().invoke(object);

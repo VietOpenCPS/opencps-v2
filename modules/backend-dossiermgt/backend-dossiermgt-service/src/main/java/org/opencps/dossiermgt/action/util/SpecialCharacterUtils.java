@@ -18,7 +18,30 @@ public class SpecialCharacterUtils {
 	private static Log _log = LogFactoryUtil.getLog(SpecialCharacterUtils.class);
 	
 	public static String splitSpecial(String value) {
-		String[] charSpecialArr = new String[]{"+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":","\\", "/",".", ","};
+		String[] charSpecialArr = new String[]{
+				StringPool.PLUS,
+				StringPool.DASH,
+				StringPool.EQUAL,
+				StringPool.AMPERSAND + StringPool.AMPERSAND,
+				StringPool.PIPE + StringPool.PIPE,
+				StringPool.GREATER_THAN,
+				StringPool.LESS_THAN,
+				StringPool.EXCLAMATION,
+				StringPool.OPEN_PARENTHESIS,
+				StringPool.CLOSE_PARENTHESIS,
+				StringPool.OPEN_CURLY_BRACE,
+				StringPool.CLOSE_CURLY_BRACE,
+				StringPool.OPEN_BRACKET,
+				StringPool.CLOSE_BRACKET,
+				StringPool.CARET,
+				StringPool.TILDE,
+				StringPool.QUESTION,
+				StringPool.COLON,
+				StringPool.BACK_SLASH,
+				StringPool.FORWARD_SLASH,
+				StringPool.PERIOD,
+				StringPool.COMMA };
+
 		String valueSplit = StringPool.BLANK;
 		for (int i = 0; i < charSpecialArr.length; i++) {
 			String specialCharacter = charSpecialArr[i];
@@ -65,9 +88,6 @@ public class SpecialCharacterUtils {
 			parseJSONObject(keyValues, jsonObject);
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
-			_log.info("Can not parse json object from FormData: =>"
-					+ " : Cause " + e.getCause());
 		}
 
 		return keyValues;
@@ -133,7 +153,7 @@ public class SpecialCharacterUtils {
 				try {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
 					} else {
@@ -143,10 +163,9 @@ public class SpecialCharacterUtils {
 					parseJSONObjectIndex(keyValues, json.getJSONObject(key), keyValue[0].toString());
 				} catch (JSONException e) {
 					_log.debug(e);
-					//_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
 					} else {

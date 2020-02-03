@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -27,6 +28,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.base.RegistrationTemplatesLocalServiceBaseImpl;
 
@@ -279,9 +282,9 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 		RegistrationTemplates object = null;
 
-		if (objectData.getLong("registrationTemplatesId") > 0) {
+		if (objectData.getLong(RegistrationTerm.REGISTRATION_TEMPLATES_ID) > 0) {
 
-			object = registrationTemplatesPersistence.fetchByPrimaryKey(objectData.getLong("registrationTemplatesId"));
+			object = registrationTemplatesPersistence.fetchByPrimaryKey(objectData.getLong(RegistrationTerm.REGISTRATION_TEMPLATES_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -291,22 +294,22 @@ public class RegistrationTemplatesLocalServiceImpl extends RegistrationTemplates
 
 			object = registrationTemplatesPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
-		object.setFormNo(objectData.getString("formNo"));
-		object.setFormName(objectData.getString("formName"));
-		object.setMultiple(objectData.getBoolean("multiple"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setSampleData(objectData.getString("sampleData"));
+		object.setGovAgencyCode(objectData.getString(RegistrationTerm.GOV_AGENCY_CODE));
+		object.setGovAgencyName(objectData.getString(RegistrationTerm.GOV_AGENCY_NAME));
+		object.setFormNo(objectData.getString(RegistrationFormTerm.FORM_NO));
+		object.setFormName(objectData.getString(RegistrationFormTerm.FORM_NAME));
+		object.setMultiple(objectData.getBoolean(RegistrationTerm.MULTIPLE));
+		object.setFormScript(objectData.getString(RegistrationFormTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(RegistrationFormTerm.FORM_REPORT));
+		object.setSampleData(objectData.getString(RegistrationTerm.SAMPLE_DATA));
 
 		registrationTemplatesPersistence.update(object);
 

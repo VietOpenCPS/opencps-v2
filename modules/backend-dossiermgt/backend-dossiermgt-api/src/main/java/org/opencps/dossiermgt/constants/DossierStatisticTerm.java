@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class DossierStatisticTerm {
 	public static final String DOSSIER_STATISTIC_ID = "dossierStatisticId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";

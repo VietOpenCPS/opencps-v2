@@ -15,6 +15,9 @@ import java.util.zip.ZipOutputStream;
 
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -93,15 +96,10 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		ServiceContext serviceContext)
 		throws PortalException {
 
-		// TODO
-		// Kiem tra trang thai ho so: moi hoac y/c bo sung thi moi xoa
-
 		// Dung co removed
 		return DossierFileLocalServiceUtil.removeDossierFile(
 			dossierId, referenceUid, serviceContext);
 
-		// return DossierFileLocalServiceUtil.deleteDossierFile(dossierId,
-		// referenceUid);
 	}
 
 	@Override
@@ -139,19 +137,19 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					sort + "_sortable", Sort.STRING_TYPE,
+					sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order))
 			};
 
 			Hits hits = DossierFileLocalServiceUtil.searchLucene(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total =
 				DossierFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (Exception e) {
@@ -175,7 +173,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 	public void copyFile(String orgFileName, String targetFileName)
 		throws IOException {
 
-		// TODO Auto-generated method stub
 		InputStream inStream = null;
 
 		try {
@@ -205,7 +202,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 			if (inStream != null)
 				inStream.close();
 		}
-		// _log.info("Create file " + targetFileName + " success");
 	}
 
 	@Override
@@ -296,9 +292,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					0);
 			JSONObject defaultDataObj =
 				JSONFactoryUtil.createJSONObject(defaultData);
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
-			defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
+			defaultDataObj.put(DeliverableTerm.LICENCE_NO, dossierFile.getDeliverableCode());
 			defaultData = defaultDataObj.toJSONString();
 		}
 
@@ -328,12 +322,6 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		long groupId, long dossierId, String fileTemplateNo,
 		ServiceContext serviceContext)
 		throws PortalException {
-
-		// List<DossierFile> lsDossierFile =
-		// DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossierId,
-		// fileTemplateNo, false);
-		_log.info(
-			"DOSSIERID_" + dossierId + "_FILETEMPLATENO_" + fileTemplateNo);
 
 		List<DossierFile> lsDossierFile =
 			DossierFileLocalServiceUtil.getDossierFileByDID_FTN(
@@ -385,20 +373,8 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		String name, InputStream inputStream, ServiceContext serviceContext) {
 		// long userId = serviceContext.getUserId();
 
-		// DossierFile dossierFile =
-		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,
-		// referenceUid);
-
-		// long fileEntryId = 0;
 
 		try {
-			// FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId,
-			// groupId, dossierFile.getFileEntryId(),
-			// inputStream, sourceFileName, null, 0, serviceContext);
-			//
-			// if (fileEntry != null) {
-			// fileEntryId = fileEntry.getFileEntryId();
-			// }
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

@@ -39,6 +39,7 @@ import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.exception.FileNameException;
@@ -76,6 +77,13 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -241,7 +249,7 @@ public class DossierFileLocalServiceImpl
 			String formData = AutoFillFormData.sampleDataBinding(
 				dossierPart.getSampleData(), dossierId, serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put("LicenceNo", deliverableCode);
+			formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 			formData = formDataObj.toJSONString();
 			object.setFormData(formData);
 		}
@@ -359,11 +367,6 @@ public class DossierFileLocalServiceImpl
 			object.setIsNew(true);
 		}
 
-		// String deliverableCode = PwdGenerator.getPassword(10);
-		//
-		// if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-		// object.setDeliverableCode(deliverableCode);
-		// }
 		String deliverableCode = StringPool.BLANK;
 
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
@@ -381,7 +384,7 @@ public class DossierFileLocalServiceImpl
 		}
 
 		JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-		formDataObj.put("LicenceNo", deliverableCode);
+		formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 		formData = formDataObj.toJSONString();
 		object.setFormData(formData);
 
@@ -528,7 +531,7 @@ public class DossierFileLocalServiceImpl
 			String formData = AutoFillFormData.sampleDataBinding(
 				dossierPart.getSampleData(), dossierId, serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put("LicenceNo", deliverableCode);
+			formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 			formData = formDataObj.toJSONString();
 			object.setFormData(formData);
 		}
@@ -571,18 +574,18 @@ public class DossierFileLocalServiceImpl
 				JSONObject applicantJSON =
 					JSONFactoryUtil.createJSONObject(applicantStr);
 
-				_subjectName = applicantJSON.getString("applicantName");
-				_subjectId = applicantJSON.getString("applicantId");
-				_address = applicantJSON.getString("address");
-				_cityCode = applicantJSON.getString("cityCode");
-				_cityName = applicantJSON.getString("cityName");
-				_districtCode = applicantJSON.getString("districtCode");
-				_districtName = applicantJSON.getString("districtName");
-				_wardCode = applicantJSON.getString("wardCode");
-				_wardName = applicantJSON.getString("wardName");
-				_contactName = applicantJSON.getString("contactName");
-				_contactTelNo = applicantJSON.getString("contactTelNo");
-				_contactEmail = applicantJSON.getString("contactEmail");
+				_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+				_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
+				_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
+				_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+				_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+				_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+				_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+				_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+				_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+				_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
+				_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
+				_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
 
 			}
 			catch (PortalException e1) {
@@ -601,96 +604,96 @@ public class DossierFileLocalServiceImpl
 
 				String value = String.valueOf(entry.getValue());
 
-				if (value.startsWith("_") && !value.contains(":")) {
+				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
-					if ("_subjectName".equals(value)) {
+					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
 					}
-					else if ("_subjectId".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectId);
 					}
-					else if ("_address".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
 					}
-					else if ("_cityCode".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityCode);
 					}
-					else if ("_cityName".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityName);
 					}
-					else if ("_districtCode".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtCode);
 					}
-					else if ("_districtName".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtName);
 					}
-					else if ("_wardCode".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardCode);
 					}
-					else if ("_wardName".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardName);
 					}
-					else if ("_contactName".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
 					}
-					else if ("_contactTelNo".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
 					}
-					else if ("_contactEmail".equals(value)) {
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactEmail);
 					}
 
 				}
-				else if (value.startsWith("_") && value.contains(":")) {
+				else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
+					String[] valueSplit = value.split(StringPool.COLON);
 					for (String string : valueSplit) {
-						if ("_subjectName".equals(string)) {
-							resultBinding += ", " + _subjectName;
+						if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectName;
 						}
-						else if ("_subjectId".equals(string)) {
-							resultBinding += ", " + _subjectId;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectId;
 						}
-						else if ("_address".equals(string)) {
-							resultBinding += ", " + _address;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _address;
 						}
-						else if ("_wardCode".equals(string)) {
-							resultBinding += ", " + _wardCode;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
 						}
-						else if ("_wardName".equals(string)) {
-							resultBinding += ", " + _wardName;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
 						}
-						else if ("_districtCode".equals(string)) {
-							resultBinding += ", " + _districtCode;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
 						}
-						else if ("_districtName".equals(string)) {
-							resultBinding += ", " + _districtName;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
 						}
-						else if ("_cityCode".equals(string)) {
-							resultBinding += ", " + _cityCode;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
 						}
-						else if ("_cityName".equals(string)) {
-							resultBinding += ", " + _cityName;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
 						}
-						else if ("_contactName".equals(string)) {
-							resultBinding += ", " + _contactName;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactName;
 						}
-						else if ("_contactTelNo".equals(string)) {
-							resultBinding += ", " + _contactTelNo;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactTelNo;
 						}
-						else if ("_contactEmail".equals(string)) {
-							resultBinding += ", " + _contactEmail;
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactEmail;
 						}
 					}
 
 					jsonMap.put(
 						entry.getKey(),
-						resultBinding.replaceFirst(", ", StringPool.BLANK));
+						resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
 				}
-				else if (value.startsWith("#") && value.contains("@")) {
+				else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
 					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
+					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
@@ -698,7 +701,7 @@ public class DossierFileLocalServiceImpl
 							dossierFileLocalService.getDossierFileByDID_FTNO_First(
 								dossierId, paper, false,
 								new DossierFileComparator(
-									false, "createDate", Date.class));
+									false, Field.CREATE_DATE, Date.class));
 
 						if (Validator.isNotNull(dossierFile) &&
 							Validator.isNotNull(dossierFile.getFormData())) {
@@ -709,13 +712,13 @@ public class DossierFileLocalServiceImpl
 								jsonToMap(jsonOtherData);
 							String myCHK = StringPool.BLANK;
 							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
+								if (variable.contains(StringPool.COLON)) {
+									String[] variableMuti = variable.split(StringPool.COLON);
 									for (String string : variableMuti) {
-										myCHK += ", " +
+										myCHK += StringPool.COMMA_AND_SPACE +
 											jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(", ", "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, "");
 								}
 							}
 							catch (Exception e) {
@@ -723,7 +726,7 @@ public class DossierFileLocalServiceImpl
 								_log.error(e);
 							}
 
-							if (myCHK.startsWith("#")) {
+							if (myCHK.startsWith(StringPool.POUND)) {
 								jsonMap.put(entry.getKey(), "");
 							}
 							else {
@@ -974,9 +977,6 @@ public class DossierFileLocalServiceImpl
 		// Add other fields
 
 		dossierFile.setDossierId(dossierId);
-		// if (Validator.isNull(referenceUid)) {
-		// referenceUid = PortalUUIDUtil.generate();
-		// }
 
 		dossierFile.setFileEntryId(fileEntryId);
 		if (Validator.isNull(displayName)) {
@@ -1086,14 +1086,14 @@ public class DossierFileLocalServiceImpl
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", DossierFile.class.getName());
-		msgData.put("classPK", dossierFile.getDossierFileId());
-		msgData.put("jrxmlTemplate", jrxmlTemplate);
-		msgData.put("formData", formData);
-		msgData.put("userId", serviceContext.getUserId());
+		msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
+		msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
+		msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
+		msgData.put(ConstantUtils.FORM_DATA, formData);
+		msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 		_log.debug("SEND TO CREATED FILE MODEL");
 
@@ -1162,7 +1162,6 @@ public class DossierFileLocalServiceImpl
 	public DossierFile deleteDossierFile(DossierFile dossierFile)
 		throws PortalException {
 
-		// TODO: validate remove delete dossier file
 		validateDeleteDossierFile(dossierFile);
 
 		dossierFile.setModifiedDate(new Date());
@@ -1227,7 +1226,7 @@ public class DossierFileLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -1336,7 +1335,7 @@ public class DossierFileLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -1448,8 +1447,8 @@ public class DossierFileLocalServiceImpl
 
 		if (dossier != null) {
 			if (Validator.isNotNull(dossier.getDossierStatus()) &&
-				(!"new".equalsIgnoreCase(dossier.getDossierStatus()) ||
-					!"waiting".equalsIgnoreCase(dossier.getDossierStatus()))) {
+				(!ReadFilePropertiesUtils.get(ConstantUtils.STATUS_NEW).equalsIgnoreCase(dossier.getDossierStatus()) ||
+					!ReadFilePropertiesUtils.get(ConstantUtils.STATUS_WAITING).equalsIgnoreCase(dossier.getDossierStatus()))) {
 
 				throw new InvalidDossierStatusException();
 			}
@@ -1630,10 +1629,10 @@ public class DossierFileLocalServiceImpl
 
 		DossierFile object = null;
 
-		if (objectData.getLong("dossierFileId") > 0) {
+		if (objectData.getLong(DossierFileTerm.DOSSIER_FILE_ID) > 0) {
 
 			object = dossierFilePersistence.fetchByPrimaryKey(
-				objectData.getLong("dossierFileId"));
+				objectData.getLong(DossierFileTerm.DOSSIER_FILE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -1645,34 +1644,33 @@ public class DossierFileLocalServiceImpl
 
 			object = dossierFilePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
-		object.setDossierPartNo(objectData.getString("dossierPartNo"));
-		object.setDossierPartType(objectData.getInt("dossierPartType"));
-		object.setFileTemplateNo(objectData.getString("fileTemplateNo"));
-		object.setDisplayName(objectData.getString("displayName"));
-		object.setFormData(objectData.getString("formData"));
-		// object.setFileEntryId(objectData.getString("fileEntryId"));
-		object.setOriginal(objectData.getBoolean("original"));
-		object.setEForm(objectData.getBoolean("eForm"));
-		object.setIsNew(objectData.getBoolean("isNew"));
-		object.setRemoved(objectData.getBoolean("removed"));
-		object.setSignCheck(objectData.getInt("signCheck"));
-		object.setSignInfo(objectData.getString("signInfo"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setFormSchema(objectData.getString("formSchema"));
-		object.setDeliverableCode(objectData.getString("deliverableCode"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setReferenceUid(objectData.getString(DossierTerm.REFERENCE_UID));
+		object.setDossierTemplateNo(objectData.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
+		object.setDossierPartNo(objectData.getString(DossierFileTerm.DOSSIER_PART_NO));
+		object.setDossierPartType(objectData.getInt(DossierFileTerm.DOSSIER_PART_TYPE));
+		object.setFileTemplateNo(objectData.getString(DossierFileTerm.FILE_TEMPLATE_NO));
+		object.setDisplayName(objectData.getString(DossierFileTerm.DISPLAY_NAME));
+		object.setFormData(objectData.getString(DossierFileTerm.FORM_DATA));
+		object.setOriginal(objectData.getBoolean(DossierFileTerm.ORIGINAL));
+		object.setEForm(objectData.getBoolean(DossierFileTerm.E_FORM));
+		object.setIsNew(objectData.getBoolean(DossierFileTerm.IS_NEW));
+		object.setRemoved(objectData.getBoolean(DossierFileTerm.REMOVED));
+		object.setSignCheck(objectData.getInt(DossierFileTerm.SIGN_CHECK));
+		object.setSignInfo(objectData.getString(DossierFileTerm.SIGN_INFO));
+		object.setFormScript(objectData.getString(DossierFileTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DossierFileTerm.FORM_REPORT));
+		object.setFormSchema(objectData.getString(DeliverableTerm.FORM_SCHEMA));
+		object.setDeliverableCode(objectData.getString(DeliverableTerm.DELIVERABLE_CODE));
 
 		dossierFilePersistence.update(object);
 

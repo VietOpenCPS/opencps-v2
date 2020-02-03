@@ -5,7 +5,6 @@ public class DossierTerm {
 	public static final String CONSTANT_DOSSIER_FILES = "dossierFiles";
 	public static final String CONSTANT_DOSSIER_DOC = "dossierDocuments";
 	public static final String DOSSIER_ID = "dossierId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";

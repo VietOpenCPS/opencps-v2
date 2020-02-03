@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -204,7 +206,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			JSONObject jEntryValue;
 
-			if (entryValue.startsWith("#") && entryValue.contains("@")) {
+			if (entryValue.startsWith(StringPool.POUND) && entryValue.contains(StringPool.AT)) {
 				// _log.info("INTO->getElement");
 				uEntryValue =
 					getValueElementFormData(srcFormData, entryValue, dossierId);
@@ -220,11 +222,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 			}
 
-			if (entryValue.startsWith("#") && !entryValue.contains("@")) {
+			if (entryValue.startsWith(StringPool.POUND) && !entryValue.contains(StringPool.AT)) {
 				// _log.info("INTO->getAllForm");
 
 				entryValue =
-					StringUtil.replaceFirst(entryValue, "#", StringPool.BLANK);
+					StringUtil.replaceFirst(entryValue, StringPool.POUND, StringPool.BLANK);
 
 				jEntryValue = getValueFormData(entryValue, dossierId);
 
@@ -354,12 +356,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		String rtn = StringPool.BLANK;
 
 		if (Validator.isNotNull(key)) {
-			String[] strArr = StringUtil.split(key, "@");
+			String[] strArr = StringUtil.split(key, StringPool.AT);
 
 			if (strArr.length == 2) {
 				rtn = strArr[0];
 
-				rtn = StringUtil.replaceFirst(rtn, "#", StringPool.BLANK);
+				rtn = StringUtil.replaceFirst(rtn, StringPool.POUND, StringPool.BLANK);
 			}
 		}
 		// _log.info(rtn+"_____"+key);
@@ -372,7 +374,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		String rtn = StringPool.BLANK;
 
 		if (Validator.isNotNull(key)) {
-			String[] strArr = StringUtil.split(key, "@");
+			String[] strArr = StringUtil.split(key, StringPool.AT);
 
 			if (strArr.length == 2) {
 				rtn = strArr[1];
@@ -584,7 +586,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				String expertStates = jsMappingData.getString("expertState");
 				if (expertStates.contains(dossier.getServiceCode())) {
 
-					expertState = StringUtil.split(expertStates, dossier.getServiceCode() + "@")[1].substring(0, 1);
+					expertState = StringUtil.split(expertStates, dossier.getServiceCode() + StringPool.AT)[1].substring(0, 1);
 				}
 			}
 			formDataContent.put("expertState", expertState);
@@ -658,7 +660,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				deliverableLog.put("groupId", model.getGroupId());
 				deliverableLog.put("companyId", model.getCompanyId());
-				deliverableLog.put("userId", model.getUserId());
+				deliverableLog.put(Field.USER_ID, model.getUserId());
 				deliverableLog.put("userName", model.getUserName());
 				deliverableLog.put(
 					"deliverableId", deliverable.getDeliverableId());
@@ -759,19 +761,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				Message message = new Message();
 
 				JSONObject msgData = JSONFactoryUtil.createJSONObject();
-				msgData.put("className", Deliverable.class.getName());
-				msgData.put("classPK", deliverable.getDeliverableId());
-				msgData.put("jrxmlTemplate", jrxmlTemplate);
+				msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+				msgData.put(Field.CLASS_PK, deliverable.getDeliverableId());
+				msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
 				msgData.put(
-					"formData",
+					ConstantUtils.FORM_DATA,
 					formDataContent != null
 						? formDataContent.toJSONString()
 						: StringPool.BLANK);
-				msgData.put("userId", model.getUserId());
+				msgData.put(Field.USER_ID, model.getUserId());
 
-				message.put("msgToEngine", msgData);
+				message.put(ConstantUtils.MSG_ENG, msgData);
 				MessageBusUtil.sendMessage(
-					"jasper/engine/out/destination", message);
+					ConstantUtils.JASPER_DESTINATION, message);
 			}
 		}
 		catch (Exception e) {

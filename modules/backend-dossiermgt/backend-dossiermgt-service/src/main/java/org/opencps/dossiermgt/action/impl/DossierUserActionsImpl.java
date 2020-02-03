@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierUserActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierUser;
@@ -35,7 +37,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			return DossierUserLocalServiceUtil.updateDossierUser(dossierId, userId, moderator, visited);
 		} catch (NoSuchDossierUserException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 		
 		return null;
@@ -47,7 +48,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			return DossierUserLocalServiceUtil.deleteDossierUser(dossierId, userId);
 		} catch (NoSuchDossierUserException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 		
 		return null;
@@ -64,9 +64,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 					if (Validator.isNull(spr.getCondition())) {
 //						boolean moderator = spr.getModerator();
 //						
-//						if (moderator) {
-//							mod = 1;
-//						}
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
@@ -104,7 +101,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			
 		} catch (PortalException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}
 	}
 
@@ -116,7 +112,7 @@ public class DossierUserActionsImpl implements DossierUserActions {
 		
 		if (preConditions != null && preConditions.length > 0) {
 			for (String preCondition : preConditions) {
-				if (preCondition.contains("agency")) {
+				if (preCondition.contains(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PRE_AGENCY))) {
 					String[] agencies = StringUtil.split(preCondition, StringPool.SPACE);
 					if (agencies.length == 2) {
 						if (!agencies[1].equalsIgnoreCase(dossier.getGovAgencyCode())) {
@@ -127,7 +123,7 @@ public class DossierUserActionsImpl implements DossierUserActions {
 						return false;
 					}
 				}
-				else if (preCondition.contains("service")) {
+				else if (preCondition.contains(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PRE_SERVICE))) {
 					String[] services = StringUtil.split(preCondition, StringPool.SPACE);
 					if (services.length == 2) {
 						if (!services[1].equalsIgnoreCase(dossier.getServiceCode())) {
@@ -138,7 +134,7 @@ public class DossierUserActionsImpl implements DossierUserActions {
 						return false;
 					}					
 				}
-				else if (preCondition.contains("template")) {
+				else if (preCondition.contains(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PRE_TEMPLATE))) {
 					String[] templates = StringUtil.split(preCondition, StringPool.SPACE);
 					if (templates.length == 2) {
 						if (!templates[1].equalsIgnoreCase(dossier.getDossierTemplateNo())) {
@@ -171,9 +167,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 					if (Validator.isNull(spr.getCondition())) {
 //						boolean moderator = spr.getModerator();
 //						
-//						if (moderator) {
-//							mod = 1;
-//						}
 						List<User> users = UserLocalServiceUtil.getRoleUsers(spr.getRoleId());
 						for (User user : users) {
 							org.opencps.dossiermgt.model.DossierUser du = DossierUserLocalServiceUtil.getByDossierUser(dossier.getDossierId(), user.getUserId());
@@ -211,7 +204,6 @@ public class DossierUserActionsImpl implements DossierUserActions {
 			
 		} catch (PortalException e) {
 			_log.error(e);
-//			e.printStackTrace();
 		}		
 	}
 }

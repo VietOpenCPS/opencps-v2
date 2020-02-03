@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.base.DeliverableTypeLocalServiceBaseImpl;
 
@@ -166,7 +168,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateFormScript(long groupId, long deliverableTypeId, String formScript,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormScript of DeliverableType
 
 		Date now = new Date();
 
@@ -180,7 +181,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateFormReport(long groupId, long deliverableTypeId, String formReport,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormReport of DeliverableType
 
 		Date now = new Date();
 
@@ -194,7 +194,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	public DeliverableType updateMappingData(long groupId, long deliverableTypeId, String mappingData,
 			ServiceContext serviceContext) throws PortalException, SystemException {
-		// TODO Update FormReport of DeliverableType
 
 		Date now = new Date();
 
@@ -207,10 +206,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	public DeliverableType getDeliverableTypebyId(long groupId, String deliverableTypeId) throws PortalException {
-		// TODO remove DeliverableType
-
-		// validateRemoveDeliverableType(groupId, deliverableTypeId,
-		// deliverableType_);
 
 		DeliverableType deliverableTypeObj = null;
 
@@ -306,7 +301,6 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 
 	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -330,9 +324,9 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 		DeliverableType object = null;
 
-		if (objectData.getLong("deliverableTypeId") > 0) {
+		if (objectData.getLong(DeliverableTypesTerm.DOSSIER_TYPE_ID) > 0) {
 
-			object = deliverableTypePersistence.fetchByPrimaryKey(objectData.getLong("deliverableTypeId"));
+			object = deliverableTypePersistence.fetchByPrimaryKey(objectData.getLong(DeliverableTypesTerm.DOSSIER_TYPE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -342,26 +336,24 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 			object = deliverableTypePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setTypeCode(objectData.getString("typeCode"));
-		object.setTypeName(objectData.getString("typeName"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setCodePattern(objectData.getString("codePattern"));
-		object.setCounter(objectData.getInt("counter"));
-		object.setMappingData(objectData.getString("mappingData"));
-		object.setDocSync(objectData.getInt("docSync"));
-		object.setGovAgencies(objectData.getString("govAgencies"));
-		object.setTableConfig(objectData.getString("tableConfig"));
-		object.setDataConfig(objectData.getString("dataConfig"));
+		object.setTypeCode(objectData.getString(DeliverableTypesTerm.TYPE_CODE));
+		object.setTypeName(objectData.getString(DeliverableTypesTerm.TYPE_NAME));
+		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		object.setCodePattern(objectData.getString(DeliverableTypesTerm.CODEPATTERN));
+		object.setCounter(objectData.getInt(DeliverableTypesTerm.COUNTER));
+		object.setMappingData(objectData.getString(DeliverableTypesTerm.MAPPING_DATA));
+		object.setDocSync(objectData.getInt(DeliverableTypesTerm.DOC_SYNC));
+		object.setGovAgencies(objectData.getString(DeliverableTypesTerm.GOV_AGENCIES));
 
 		deliverableTypePersistence.update(object);
 
@@ -379,27 +371,5 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	public List<DeliverableType> getDeliverableTypes(long groupId, int start, int end) {
 		return deliverableTypePersistence.findByG(groupId, start, end);
 	}
-	
-	class ModelKeys {
-		public static final String DELIVERABLETYPEID = "deliverableTypeId";
-		public static final String GROUPID = "groupId";
-		public static final String COMPANYID = "companyId";
-		public static final String USERID = "userId";
-		public static final String USERNAME = "userName";
-		public static final String CREATEDATE = "createDate";
-		public static final String MODIFIEDDATE = "modifiedDate";
-		public static final String TYPECODE = "typeCode";
-		public static final String TYPENAME = "typeName";
-		public static final String FORMSCRIPTFILEID = "formScriptFileId";
-		public static final String FORMREPORTFILEID = "formReportFileId";
-		public static final String CODEPATTERN = "codePattern";
-		public static final String COUNTER = "counter";
-		public static final String MAPPINGDATA = "mappingData";
-		public static final String DATACONFIG = "dataConfig";
-		public static final String TABLECONFIG = "tableConfig";
-		public static final String DOCSYNC = "docSync";
-		public static final String GOVAGENCIES = "govAgencies";
-		public static final String TABLE_CONFIG = "tableConfig";
-		public static final String DATA_CONFIG = "dataConfig";
-	}
+
 }

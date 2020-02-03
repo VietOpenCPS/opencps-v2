@@ -1,12 +1,10 @@
 package org.opencps.dossiermgt.action.util;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,17 +25,6 @@ public class MappingDataUtils {
 		} catch (JSONException e) {
 			_log.error(e);
 		}
-		/*
-		"deliverables": "mảng giấy cấp",
-		  "deliverableCode": "mã giấy cấp",
-		  "subject": "nội dung cấp",
-		  "issueDate": "ngày cấp",
-		  "expireDate": "ngày hết hạn",
-		  "revalidate": "ngày gian hạn"
-		*/
-		String strKeyMapping = "deliverables" + StringPool.COMMA + "deliverablecode" + StringPool.COMMA
-				+ "subject"+ StringPool.COMMA + "issuedate" + StringPool.COMMA + "expiredate"
-				+ StringPool.COMMA + "revalidate";
 
 		//Get key mappingData
 		Iterator<String> keyMapping = mappingDataJSON.keys();
@@ -59,9 +46,6 @@ public class MappingDataUtils {
 		for (String keyMap : keyMapList) {
 			valueMap = String.valueOf(mappingDataJSON.get(keyMap));
 			String valueMapLower = valueMap.toLowerCase();
-			if (Validator.isNotNull(valueMap) && !strKeyMapping.contains(valueMapLower)) {
-//				valueMap = valueMap.replaceAll(StringPool.POUND, StringPool.BLANK);
-			}
 			for (String keyForm : keyFormList) {
 				String keyFormLower = keyForm.toLowerCase();
 				if ( valueMapLower.equalsIgnoreCase(keyFormLower)) {

@@ -22,12 +22,14 @@ import java.util.List;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -173,13 +175,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									dfModel.setRemoved(df.getRemoved());
 									dfModel.setEForm(df.getEForm());
 									DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 									if (dfResult == null) {
 										if (client.isWriteLog()) {
@@ -303,11 +305,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				
 				JSONObject paymentObj = JSONFactoryUtil.createJSONObject(processAction.getPaymentFee());
 				//_log.debug("SONDT SYNC INFORM Payment object: " + paymentObj);
-				if (paymentObj.has("paymentFee")) {
-					paymentFee = paymentObj.getString("paymentFee");
+				if (paymentObj.has(PaymentFileTerm.PAYMENT_FEE)) {
+					paymentFee = paymentObj.getString(PaymentFileTerm.PAYMENT_FEE);
 				}
-				if (paymentObj.has("paymentNote")) {
-					paymentNote = paymentObj.getString("paymentNote");
+				if (paymentObj.has(PaymentFileTerm.PAYMENT_NOTE)) {
+					paymentNote = paymentObj.getString(PaymentFileTerm.PAYMENT_NOTE);
 				}
 				else {
 					paymentNote = paymentFile != null ? paymentFile.getPaymentNote() : StringPool.BLANK;
@@ -352,8 +354,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 			}
-			if (processAction.getPreCondition().contains("payok")
-					|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1")) {
+			if (processAction.getPreCondition().contains(ProcessActionTerm.PRECONDITION_PAY_OK)
+					|| processAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_INVOICE_1)) {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 				//_log.debug("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //				_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));
@@ -437,12 +439,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 //		model.setOnline("true");
 		DossierDetailModel result = client.postDossier(model);
 		StringBuilder messageText = new StringBuilder();
-		messageText.append("POST /dossiers\n");
+		messageText.append(ConstantUtils.POST_DOSSIER);
 		messageText.append(JSONFactoryUtil.looseSerialize(model));
-		messageText.append("\n");
+		messageText.append(System.lineSeparator());
 		StringBuilder acknowlegement = new StringBuilder(); 
 		acknowlegement.append(JSONFactoryUtil.looseSerialize(result));
-		acknowlegement.append("\n");
+		acknowlegement.append(System.lineSeparator());
 		
 		if (result == null || Validator.isNull(result.getDossierId())) {
 			if (client.isWriteLog()) {
@@ -500,14 +502,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
 										dfModel.setEForm(df.getEForm());
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 										if (dfResult == null) {
 											if (client.isWriteLog()) {
@@ -548,13 +550,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -573,13 +575,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 								else {
 									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 
 									if (dfResult == null) {
@@ -698,13 +700,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
 										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -745,13 +747,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setDisplayName(fileEntry.getFileName());
 										
 										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
-										messageText.append("POST /dossierfiles");
-										messageText.append("\n");
+										messageText.append(ConstantUtils.POST_DOSIER_FILE);
+										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-										messageText.append("\n");
+										messageText.append(System.lineSeparator());
 										if (dfResult != null) {
 											acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-											acknowlegement.append("\n");
+											acknowlegement.append(System.lineSeparator());
 										}
 
 										if (dfResult == null) {
@@ -770,13 +772,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 								else {
 									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
-									messageText.append("POST /dossierfiles");
-									messageText.append("\n");
+									messageText.append(ConstantUtils.POST_DOSIER_FILE);
+									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
-									messageText.append("\n");
+									messageText.append(System.lineSeparator());
 									if (dfResult != null) {
 										acknowlegement.append(JSONFactoryUtil.looseSerialize(dfResult));
-										acknowlegement.append("\n");
+										acknowlegement.append(System.lineSeparator());
 									}
 
 									if (dfResult == null) {
@@ -906,8 +908,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		//
-		if (processAction != null && (processAction.getPreCondition().contains("payok")
-				|| processAction.getPreCondition().toLowerCase().contains("sendinvoice=1"))) {
+		if (processAction != null && (processAction.getPreCondition().contains(ProcessActionTerm.PRECONDITION_PAY_OK)
+				|| processAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_INVOICE_1))) {
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fectPaymentFile(dossier.getDossierId(), dossierSync.getDossierRefUid());
 			//_log.debug("SONDT PAYMENT FILE SYNC ======================== " + JSONFactoryUtil.looseSerialize(paymentFile));
 //			_log.debug("DOSSIERID SYNC ======================== " + JSONFactoryUtil.looseSerialize(dossierSync));

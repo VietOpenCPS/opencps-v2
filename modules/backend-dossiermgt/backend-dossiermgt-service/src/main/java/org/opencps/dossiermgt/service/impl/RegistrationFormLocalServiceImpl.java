@@ -54,7 +54,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
@@ -235,14 +237,14 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				Message message = new Message();
 
 				JSONObject msgData = JSONFactoryUtil.createJSONObject();
-				msgData.put("className", RegistrationForm.class.getName());
-				msgData.put("classPK", registrationForm.getPrimaryKey());
-				msgData.put("jrxmlTemplate", formReport);
-				msgData.put("formData", formData);
-				msgData.put("userId", serviceContext.getUserId());
+				msgData.put(ConstantUtils.CLASS_NAME, RegistrationForm.class.getName());
+				msgData.put(Field.CLASS_PK , registrationForm.getPrimaryKey());
+				msgData.put(ConstantUtils.JRXML_TEMPLATE, formReport);
+				msgData.put(ConstantUtils.FORM_DATA, formData);
+				msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-				message.put("msgToEngine", msgData);
-				MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+				message.put(ConstantUtils.MSG_ENG, msgData);
+				MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 			}
 
 			registrationForm = registrationFormPersistence.update(registrationForm);
@@ -273,14 +275,14 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 				Message message = new Message();
 
 				JSONObject msgData = JSONFactoryUtil.createJSONObject();
-				msgData.put("className", RegistrationForm.class.getName());
-				msgData.put("classPK", registrationForm.getPrimaryKey());
-				msgData.put("jrxmlTemplate", formReport);
-				msgData.put("formData", formData);
-				msgData.put("userId", serviceContext.getUserId());
+				msgData.put(ConstantUtils.CLASS_NAME, RegistrationForm.class.getName());
+				msgData.put(Field.CLASS_PK, registrationForm.getPrimaryKey());
+				msgData.put(ConstantUtils.JRXML_TEMPLATE, formReport);
+				msgData.put(ConstantUtils.FORM_DATA, formData);
+				msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-				message.put("msgToEngine", msgData);
-				MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+				message.put(ConstantUtils.MSG_ENG, msgData);
+				MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 			}
 
 			registrationForm = registrationFormPersistence.update(registrationForm);
@@ -305,14 +307,14 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", RegistrationForm.class.getName());
-		msgData.put("classPK", registrationForm.getPrimaryKey());
-		msgData.put("jrxmlTemplate", jrxmlTemplate);
-		msgData.put("formData", formData);
-		msgData.put("userId", serviceContext.getUserId());
+		msgData.put(ConstantUtils.CLASS_NAME, RegistrationForm.class.getName());
+		msgData.put(Field.CLASS_PK, registrationForm.getPrimaryKey());
+		msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
+		msgData.put(ConstantUtils.FORM_DATA, formData);
+		msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 		return registrationFormPersistence.update(registrationForm);
 	}
@@ -358,7 +360,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -474,7 +476,7 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -765,11 +767,11 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 						param = null;
 						clazz = null;
 						break;
-					case "":
+					case StringPool.BLANK:
 						param = null;
 						clazz = null;
 						break;
-					case " ":
+					case StringPool.SPACE:
 						param = null;
 						clazz = null;
 						break;
@@ -1026,9 +1028,9 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 		RegistrationForm object = null;
 
-		if (objectData.getLong("registrationFormId") > 0) {
+		if (objectData.getLong(RegistrationFormTerm.REGISTRATION_FORM_ID) > 0) {
 
-			object = registrationFormPersistence.fetchByPrimaryKey(objectData.getLong("registrationFormId"));
+			object = registrationFormPersistence.fetchByPrimaryKey(objectData.getLong(RegistrationFormTerm.REGISTRATION_FORM_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -1038,23 +1040,23 @@ public class RegistrationFormLocalServiceImpl extends RegistrationFormLocalServi
 
 			object = registrationFormPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setRegistrationId(objectData.getLong("registrationId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setFormNo(objectData.getString("formNo"));
-		object.setFormName(objectData.getString("formName"));
-		object.setFormData(objectData.getString("formData"));
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
-		object.setIsNew(objectData.getBoolean("isNew"));
-		object.setRemoved(objectData.getBoolean("removed"));
+		object.setRegistrationId(objectData.getLong(RegistrationFormTerm.REGISTRATION_ID));
+		object.setReferenceUid(objectData.getString(RegistrationFormTerm.REFERENCE_UID));
+		object.setFormNo(objectData.getString(RegistrationFormTerm.FORM_NO));
+		object.setFormName(objectData.getString(RegistrationFormTerm.FORM_NAME));
+		object.setFormData(objectData.getString(RegistrationFormTerm.FORM_DATA));
+		object.setFormScript(objectData.getString(RegistrationFormTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(RegistrationFormTerm.FORM_REPORT));
+		object.setIsNew(objectData.getBoolean(RegistrationFormTerm.ISNEW));
+		object.setRemoved(objectData.getBoolean(RegistrationFormTerm.REMOVED));
 
 		registrationFormPersistence.update(object);
 

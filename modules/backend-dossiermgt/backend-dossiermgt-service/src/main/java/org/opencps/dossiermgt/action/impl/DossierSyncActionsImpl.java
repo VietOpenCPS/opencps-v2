@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierSync;
@@ -31,11 +32,11 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countDossierSyncList(action, syncType);
 			_log.info("total:"+total);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 //			
 		} catch (Exception e) {
 			_log.error(e);
@@ -54,11 +55,11 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countDossierSyncByIdList(dossierId, model, actionCodeNo);
 			_log.info("total:"+total);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 //			
 		} catch (Exception e) {
 			_log.error(e);
@@ -82,10 +83,10 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoType(groupId, dossier.getReferenceUid(), info);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -103,10 +104,10 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countForApplicantAndActionCode(groupId, actionCode);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
@@ -129,10 +130,10 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY });
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
