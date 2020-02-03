@@ -6,11 +6,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -18,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.CacheTestManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.datamgt.model.DataSearchModel;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
@@ -42,7 +39,9 @@ public class CacheTestManagementImpl implements CacheTestManagement{
 			_log.info("START CLEAR CACHE111");
 			//cache.clearCache("getActionConfig");
 			_log.info("START CLEAR CACHE2222");
-			Serializable ttt = cache.getFromCache("getActionConfig", "groupId_"+ 35823);
+			String groupIdCache = String.format(MessageUtil.getMessage(ConstantUtils.CACHE_GROUPID), 35823);
+			
+			Serializable ttt = cache.getFromCache(ConstantUtils.CACHE_GETACTIONCONFIG_KEY, groupIdCache);
 			if (ttt != null) {
 				_log.info("ttt: "+ttt.toString());
 			}

@@ -30,7 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.CertNumberManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.constants.ConstantsUtils;
 import org.opencps.dossiermgt.model.ServiceProcess;
@@ -59,7 +61,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -83,20 +85,20 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 					String[] splitPattern = StringUtil.split(cnt.getName(), StringPool.AT);
 
-					elm.put("certId", cnt.getName());
-					elm.put("pattern", splitPattern[1]);
-					elm.put("groupId", splitPattern[2]);
-					elm.put("initNumber", cnt.getCurrentId());
+					elm.put(ConstantUtils.CERT_ID, cnt.getName());
+					elm.put(ConstantUtils.CERT_PATTERN, splitPattern[1]);
+					elm.put(ConstantUtils.CERT_GROUPID, splitPattern[2]);
+					elm.put(ConstantUtils.CERT_INITNUMBER, cnt.getCurrentId());
 
 					jsArr.put(elm);
 				}
 			}
 			
-			jsObj.put("total", jsArr.length());
+			jsObj.put(ConstantUtils.TOTAL, jsArr.length());
 
-			jsObj.put("data", jsArr);
+			jsObj.put(ConstantUtils.DATA, jsArr);
 
-			return Response.status(200).entity(jsObj.toString()).build();
+			return Response.status(org.apache.commons.httpclient.util.HttpURLConnection.HTTP_OK).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -119,7 +121,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -133,12 +135,12 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-			elm.put("certId", counter.getName());
-			elm.put("pattern", splitPattern[1]);
-			elm.put("year", splitPattern[2]);
-			elm.put("initNumber", counter.getCurrentId());
+			elm.put(ConstantUtils.CERT_ID, counter.getName());
+			elm.put(ConstantUtils.CERT_PATTERN, splitPattern[1]);
+			elm.put(ConstantUtils.CERT_YEAR, splitPattern[2]);
+			elm.put(ConstantUtils.CERT_INITNUMBER, counter.getCurrentId());
 
-			return Response.status(200).entity(elm.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(elm.toString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -164,7 +166,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -190,7 +192,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 							_log.error(e);
 						}
 						if (counter != null) {
-							String contentError = certId + "đã tồn tại trong hệ thống";
+							String contentError = String.format(MessageUtil.getMessage(ConstantUtils.CERT_MESSAGE_DUPLICATE), certId);
 							return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(contentError).build(); 
 						}
 						_log.info("counter: "+counter);
@@ -199,7 +201,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 						CounterLocalServiceUtil.updateCounter(counterInit);
 					}
-					jsObj.put("status", "done");
+					jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_DONE));
 				}
 			} else {
 				if (initNumber == 0) {
@@ -222,17 +224,16 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 								CounterLocalServiceUtil.updateCounter(counterInit);
 							}
 						}
-						jsObj.put("status", "done");
-					}
+						jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_DONE));					}
 				}
 			}
 
-			return Response.status(200).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
-			return Response.status(500).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsObj.toString()).build();
 		}
 	}
 
@@ -253,7 +254,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -270,13 +271,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			
 			CounterLocalServiceUtil.updateCounter(counter);
 
-			jsObj.put("status", "done");
-			return Response.status(200).entity(jsObj.toString()).build();
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_DONE));
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
-			return Response.status(500).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsObj.toString()).build();
 		}
 	}
 
@@ -292,9 +293,9 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
-			if (!auth.isAdmin(serviceContext, "admin")) {
+			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
-						.entity("User not permission process action!!!").build();
+						.entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 			}
 
 			long _counterNumber = 0;
@@ -305,8 +306,8 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 
 			//int curYear = cal.get(Calendar.YEAR);
 			
-			DateFormat df = new SimpleDateFormat("yyyy");
-			DateFormat sdf = new SimpleDateFormat("yy");
+			DateFormat df = new SimpleDateFormat(ConstantUtils.DATEFORMAT_YYYY);
+			DateFormat sdf = new SimpleDateFormat(ConstantUtils.DATEFORMAT_YY);
 			
 			String curYear = df.format(cal.getTime());
 			String shortCurYear = sdf.format(cal.getTime());
@@ -385,7 +386,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 				throw new Exception("Don't have counter config");
 			}
 
-			return Response.status(200).entity(certNumber).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(certNumber).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -411,7 +412,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -422,13 +423,13 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			}
 			CounterLocalServiceUtil.deleteCounter(certId);
 
-			jsObj.put("status", "done");
-			return Response.status(200).entity(jsObj.toString()).build();
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_DONE));
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
-			return Response.status(500).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsObj.toString()).build();
 		}
 	}
 
@@ -448,7 +449,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -467,15 +468,15 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 						CounterLocalServiceUtil.deleteCounter(certName);
 					}
 				}
-				jsObj.put("status", "done");
+				jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_DONE));
 			}
 
-			return Response.status(200).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsObj.toString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			jsObj.put("status", "error");
+			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
-			return Response.status(500).entity(jsObj.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsObj.toString()).build();
 		}
 	}
 

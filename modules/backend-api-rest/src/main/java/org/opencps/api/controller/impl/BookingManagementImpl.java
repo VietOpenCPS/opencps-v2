@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -23,12 +24,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.booking.model.BookingDataModel;
 import org.opencps.api.booking.model.BookingInputModel;
 import org.opencps.api.booking.model.BookingResultsModel;
 import org.opencps.api.booking.model.BookingSearchModel;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.BookingManagement;
 import org.opencps.api.controller.util.BookingUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.BookingActions;
 import org.opencps.dossiermgt.action.impl.BookingActionsImpl;
@@ -49,7 +53,7 @@ public class BookingManagementImpl implements BookingManagement{
 			Locale locale, User user, ServiceContext serviceContext, String className, BookingSearchModel search) {
 
 		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 //			if (!auth.isAuth(serviceContext)) {
@@ -57,8 +61,8 @@ public class BookingManagementImpl implements BookingManagement{
 //			}
 
 			if (Validator.isNull(search.getEnd()) || search.getEnd() == 0) {
-				search.setStart(-1);
-				search.setEnd(-1);
+				search.setStart(QueryUtil.ALL_POS);
+				search.setEnd(QueryUtil.ALL_POS);
 			}
 
 			BookingResultsModel results = new BookingResultsModel();
@@ -92,10 +96,13 @@ public class BookingManagementImpl implements BookingManagement{
 				
 				Sort[] sorts = null;
 				if (Validator.isNull(search.getSort())) {
-					sorts = new Sort[] { SortFactoryUtil.create(EFormTerm.CHECK_IN_DATE + "_sortable", Sort.STRING_TYPE,
+					String checkinDateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), EFormTerm.CHECK_IN_DATE);
+					
+					sorts = new Sort[] { SortFactoryUtil.create(checkinDateSort, Sort.STRING_TYPE,
 							GetterUtil.getBoolean(search.getOrder())) };
 				} else {
-					sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
+					String searchSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), search.getSort());
+					sorts = new Sort[] { SortFactoryUtil.create(searchSort, Sort.STRING_TYPE,
 							GetterUtil.getBoolean(search.getOrder())) };
 				}
 
@@ -104,11 +111,11 @@ public class BookingManagementImpl implements BookingManagement{
 				JSONObject jsonData = actions.getBookingList(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 							search.getStart(), search.getEnd(), serviceContext);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
-				results.getData().addAll(BookingUtils.mappingForGetList((List<Document>) jsonData.get("data")));
+				results.getData().addAll(BookingUtils.mappingForGetList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -120,7 +127,7 @@ public class BookingManagementImpl implements BookingManagement{
 	public Response addBooking(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, BookingInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 		_log.info("groupId: "+groupId);
 
@@ -161,7 +168,7 @@ public class BookingManagementImpl implements BookingManagement{
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 
@@ -173,7 +180,7 @@ public class BookingManagementImpl implements BookingManagement{
 	public Response updateBookingById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, BookingInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 		long bookingId = GetterUtil.getLong(id);
 
@@ -212,7 +219,7 @@ public class BookingManagementImpl implements BookingManagement{
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -236,7 +243,7 @@ public class BookingManagementImpl implements BookingManagement{
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			_log.error(e);

@@ -113,6 +113,8 @@ public class ConstantUtils {
 	public static final String API_JSON_MESSAGE = "message";
 	public static final String API_JSON_WARNING = "warning";
 	public static final String API_JSON_EMPTY = "{}";
+	public static final String API_JSON_STATUS = "status";
+	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
 	
 	public static final String NGSP_CTDN_MESSAGE_NOT_FOUND = "ngsp.ctdn.message.notfound";
@@ -144,4 +146,18 @@ public class ConstantUtils {
 	public static final String REPORT_XML_TEMPLATE_PART_FILENAME = "report.template.part.filename";
 	public static final String FORM_JSON_TEMPLATE_PART_FILENAME = "form.template.part.filename";
 	public static final String BACKUPMASTER_ZIP_FILENAME = "backupmaster.zip";
+	public static final String CACHE_GETACTIONCONFIG_KEY = "getActionConfig";
+	public static final String CACHE_GROUPID = "cache.groupid";
+	
+	public static final String CERT_ID = "certId";
+	public static final String CERT_PATTERN = "pattern";
+	public static final String CERT_GROUPID = "groupId";
+	public static final String CERT_INITNUMBER = "initNumber";
+	public static final String CERT_YEAR = "year";
+	public static final String CERT_MESSAGE_DUPLICATE = "cert.message.duplicate";
+	public static final String API_JSON_STATUS_DONE = "api.json.status.done";
+	public static final String API_JSON_STATUS_ERROR = "api.json.status.error";
+
+	public static final String DATEFORMAT_YYYY = "yyyy";
+	public static final String DATEFORMAT_YY = "yy";
 }
