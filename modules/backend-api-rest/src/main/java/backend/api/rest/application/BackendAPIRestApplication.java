@@ -114,6 +114,7 @@ import org.opencps.api.controller.impl.VGCAManagementImpl;
 import org.opencps.api.controller.impl.VotingManagementImpl;
 import org.opencps.api.controller.impl.WorkTimeManagementImpl;
 import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.filter.KeyGenerator;
 import org.opencps.api.filter.OpenCPSKeyGenerator;
 import org.opencps.auth.api.BackendAuth;
@@ -245,7 +246,6 @@ public class BackendAPIRestApplication extends Application {
 	@Path("chao")
 	@Produces("text/plain")
 	public String working() {
-		_log.debug("Chao: " + LanguageUtil.get(ResourceBundle.getBundle("content/Language", Locale.getDefault()), "chao"));
 		return "It works!";
 	}
 
@@ -275,7 +275,7 @@ public class BackendAPIRestApplication extends Application {
 
 		try {
 			Code128 barcode = new Code128();
-			barcode.setFontName("Monospaced");
+			barcode.setFontName(ConstantUtils.MONOSPACED);
 			barcode.setFontSize(
 				Validator.isNotNull(font)
 					? Integer.valueOf(font) : ConstantUtils.DEFAULT_FONT_SIZE);
@@ -300,23 +300,27 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("barcode/" + uuid + ".png");
+			String barcodeFilename = String.format(MessageUtil.getMessage(ConstantUtils.BARCODE_FILENAME), uuid);
+			
+			File file = new File(barcodeFilename);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
+				String fileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+				
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+					ConstantUtils.CONTENT_DISPOSITION,
+					fileName);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}
@@ -364,23 +368,25 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(qrcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("barcode/" + uuid + ".png");
+			String barCodeFileName = String.format(MessageUtil.getMessage(ConstantUtils.BARCODE_FILENAME), uuid);
+			File file = new File(barCodeFileName);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+				String fileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+				
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+					ConstantUtils.CONTENT_DISPOSITION,
+					fileName);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}
@@ -422,11 +428,13 @@ public class BackendAPIRestApplication extends Application {
 			// Issue a token for the user
 			String token = issueToken(user.getEmailAddress());
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("token", token);
+			result.put(ConstantUtils.TOKEN, token);
 
 			// Return the token on the response
+			String authorization = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BEARER), token);
+			
 			return Response.ok().header(
-				AUTHORIZATION, "Bearer " + token).entity(
+				AUTHORIZATION, authorization).entity(
 					result.toJSONString()).build();
 
 		}
@@ -473,7 +481,7 @@ public class BackendAPIRestApplication extends Application {
 		@PathParam("className") String className) {
 
 		CountEntity result = new CountEntity();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long countDatabase = 0;
 		long countLucene = 0;
 
@@ -495,7 +503,7 @@ public class BackendAPIRestApplication extends Application {
 					user.getUserId(), serviceContext.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					serviceContext);
-				countLucene = jsonData.getInt("total");
+				countLucene = jsonData.getInt(ConstantUtils.TOTAL);
 			}
 			catch (PortalException e) {
 				_log.error(e);
@@ -512,7 +520,7 @@ public class BackendAPIRestApplication extends Application {
 				user.getUserId(), company.getCompanyId(), groupId, params, null,
 				-1, -1, serviceContext);
 
-			countLucene = jsonData.getLong("total");
+			countLucene = jsonData.getLong(ConstantUtils.TOTAL);
 			countDatabase =
 				DossierLocalServiceUtil.countDossierByGroup(groupId);
 		}
@@ -520,7 +528,7 @@ public class BackendAPIRestApplication extends Application {
 		result.setDatabase(countDatabase);
 		result.setLucene(countLucene);
 
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 	@Context
 	private UriInfo uriInfo;

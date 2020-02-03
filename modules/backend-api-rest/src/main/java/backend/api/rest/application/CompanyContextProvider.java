@@ -5,6 +5,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
+import org.opencps.api.constants.ConstantUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -24,7 +25,7 @@ public class CompanyContextProvider implements ContextProvider<Company> {
 	@Override
 	public Company createContext(Message message) {
 		try {
-			return _portal.getCompany((HttpServletRequest) message.getContextualProperty("HTTP.REQUEST"));
+			return _portal.getCompany((HttpServletRequest) message.getContextualProperty(ConstantUtils.HTTP_REQUEST));
 		} catch (PortalException pe) {
 			if (_log.isWarnEnabled()) {
 				_log.warn("Unable to get company", pe);

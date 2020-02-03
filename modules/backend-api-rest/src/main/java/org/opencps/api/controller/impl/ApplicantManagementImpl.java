@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -41,10 +42,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.EmployeeUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.NGSPRestClient;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
@@ -65,6 +68,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -92,7 +96,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -136,7 +140,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -182,13 +186,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -198,20 +202,21 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
 			params.put(ApplicantTerm.APPLICANTNAME, query.getApplicantName());
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getApplicants(serviceContext, serviceContext.getUserId(),
 					serviceContext.getCompanyId(), groupId, params, sorts, query.getStart(), query.getEnd(),
 					serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
-			if (jsonData != null && jsonData.getInt("total") > 0) {
-				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -253,7 +258,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -270,7 +275,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -331,7 +336,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -365,7 +370,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -409,7 +414,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 				
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -425,7 +430,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -456,7 +461,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -472,7 +477,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -508,10 +513,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
-				result.put("key", key);
-				result.put("value", input.getValue());
+				result.put(ConstantUtils.KEY, key);
+				result.put(ConstantUtils.VALUE, input.getValue());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -541,7 +546,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN))) {
 					isAdmin = true;
 					break;
 				}
@@ -566,7 +571,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 			} else {
 				throw new UnauthorizationException();
@@ -617,20 +622,32 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 			
-			resultObj.put("email", applicant.getContactEmail());
-			resultObj.put("token", applicant.getTmpPass());
+			resultObj.put(ConstantUtils.MAIL_AD, applicant.getContactEmail());
+			resultObj.put(ConstantUtils.TOKEN, applicant.getTmpPass());
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+		
+	private String getDefaultTokenUrl() {
+		return Validator.isNotNull(PropsUtil.get(ConstantUtils.NGSP_TOKEN_URL_KEY)) ? PropsUtil.get(ConstantUtils.NGSP_TOKEN_URL_KEY) : StringPool.BLANK; 
+	}
+	
+	private String getDefaultConsumerKey() {
+		return Validator.isNotNull(PropsUtil.get(ConstantUtils.NGSP_CONSUMER_KEY)) ? PropsUtil.get(ConstantUtils.NGSP_CONSUMER_KEY) : StringPool.BLANK; 
+	}
+
+	private String getDefaultSecretKey() {
+		return Validator.isNotNull(PropsUtil.get(ConstantUtils.NGSP_SECRET_KEY)) ? PropsUtil.get(ConstantUtils.NGSP_SECRET_KEY) : StringPool.BLANK; 
+	}
 
 	private MToken getToken(NGSPRestClient client) throws Exception {
-		String tokenUrl = "https://api.ngsp.gov.vn/token";
-		String consumer_key = "vDQ9b6f0LEpNeIDAAeZ4ler4mesa";
-		String secret_key = "WVN8QUVA15guZdZyuuxhh_Pw1cUa";
+		String tokenUrl = getDefaultTokenUrl();
+		String consumer_key = getDefaultConsumerKey();
+		String secret_key = getDefaultSecretKey();
 
 		if (client != null) {
 			tokenUrl = client.getBaseUrl();
@@ -641,13 +658,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		
 		return token;
 	}
-	   
+	
+	private String CTDN_NGSP_URL = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
+	private String CTDN_TOKEN = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+	
 	@Override
 	public Response ngspGetApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
-		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String apiUrl = CTDN_NGSP_URL;
+		String access_token = CTDN_TOKEN;
 		
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
@@ -671,7 +691,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, msdn);
 			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
 			
-			return Response.status(200).entity(result.toJSONString()).build();			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();			
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -681,9 +701,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
 			String contactName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
-		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String apiUrl = CTDN_NGSP_URL;
+		String access_token = CTDN_TOKEN;
 		
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
@@ -703,45 +723,45 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		try {
 			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, applicantIdNo);
 			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
-			JSONObject data = result.getJSONObject("Data");
+			JSONObject data = result.getJSONObject(ConstantUtils.NSGP_JSON_DATA);
 			JSONObject returnObj = JSONFactoryUtil.createJSONObject();
 			LevenshteinDistance levensh = LevenshteinDistance.getDefaultInstance();
 			
-			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
-				returnObj.put("error", true);
-				returnObj.put("message", "Không tìm thấy thông tin doanh nghiệp");
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
+			if (Validator.isNull(data.getJSONObject(ConstantUtils.NGSP_JSON_MAIN_INFORMATION))) {
+				returnObj.put(ConstantUtils.API_JSON_ERROR, true);
+				returnObj.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.NGSP_CTDN_MESSAGE_NOT_FOUND));
+				return Response.status(HttpURLConnection.HTTP_OK).entity(returnObj.toJSONString()).build();							
 			}
 			else {
-				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
-				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
+				JSONObject mainInfoObj = data.getJSONObject(ConstantUtils.NGSP_JSON_MAIN_INFORMATION);
+				if (Validator.isNotNull(mainInfoObj.getString(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME))) {
 					if (Validator.isNotNull(applicantName)) {
-						if (mainInfoObj.has("NAME")) {
+						if (mainInfoObj.has(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME)) {
 							int countChar = applicantName.replaceAll("\\s+", "").length();
 							
-							int distance = levensh.apply(applicantName, mainInfoObj.getString("NAME"));
+							int distance = levensh.apply(applicantName, mainInfoObj.getString(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME));
 							if (distance > (1.0 * countChar / 2)) {
-								returnObj.put("warning", true);
-								returnObj.put("message", "Thông tin tên doanh nghiệp có thể chưa đúng!");															
+								returnObj.put(ConstantUtils.API_JSON_WARNING, true);
+								returnObj.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.NGSP_CTDN_MESSAGE_NOT_CORRECT));															
 							}
 						}
 					}
 				}
-				JSONObject representativesObj = data.getJSONObject("Representatives");
+				JSONObject representativesObj = data.getJSONObject(ConstantUtils.NGSP_JSON__REPRESENTATIVES);
 				if (representativesObj != null) {
-					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
-						if (representativesObj.has("FULL_NAME")) {
+					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME))) {
+						if (representativesObj.has(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME)) {
 							int countChar = contactName.replaceAll("\\s+", "").length();
 							
-							int distance = levensh.apply(contactName, mainInfoObj.getString("FULL_NAME"));
+							int distance = levensh.apply(contactName, mainInfoObj.getString(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME));
 							if (distance > (1.0 * countChar / 2)) {
-								returnObj.put("warning", true);
-								returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+								returnObj.put(ConstantUtils.API_JSON_WARNING, true);
+								returnObj.put(ConstantUtils.API_JSON_MESSAGE, (Validator.isNotNull(returnObj.getString(ConstantUtils.API_JSON_MESSAGE)) ? returnObj.getString(ConstantUtils.API_JSON_MESSAGE) + StringPool.COMMA : StringPool.BLANK) + MessageUtil.getMessage(ConstantUtils.NGSP_CTDN_MESSAGE_REPRESENTATIVES_NOT_CORRECT));
 							}
 						}
 					}					
 				}
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
+				return Response.status(HttpURLConnection.HTTP_OK).entity(returnObj.toJSONString()).build();							
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -755,11 +775,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			
 		    String captchaId = request.getSession().getId();
-			File destDir = new File("jcaptcha");
+			File destDir = new File(ConstantUtils.JCAPTCHA_DIR);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
-			File file = new File("jcaptcha/" + captchaId  + ".png");
+			String captchafileName = String.format(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_FILENAME), captchaId);
+			
+			File file = new File(captchafileName);
 			if (!file.exists()) {
 				file.createNewFile();				
 			}
@@ -768,12 +790,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			    BufferedImage challengeImage = instance.getImageChallengeForID(
 			    captchaId, Locale.US );
 			    try {
-					ImageIO.write( challengeImage, "png", file );
+					ImageIO.write( challengeImage, ConstantUtils.PNG_EXTENSION, file );
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "image/png");
+					String fileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+					
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+							fileName);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 					return responseBuilder.build();
 				    
@@ -794,7 +817,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -810,7 +833,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -828,18 +851,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		        	_log.info("Check captcha result: " + isResponseCorrect);
 		        	if (!isResponseCorrect) {
 		        		ErrorMsgModel error = new ErrorMsgModel();
-		        		error.setMessage("Captcha incorrect");
+		        		error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
 		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-		    			error.setDescription("Captcha incorrect");
+		    			error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
 
 		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        	}
 		        } catch (CaptchaServiceException e) {
 		        	_log.debug(e);
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 		        }
@@ -875,7 +898,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -888,7 +911,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantActions actions = new ApplicantActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
 		
 		try {
@@ -898,14 +921,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			if (Validator.isNotNull(jsonObject.getString("duplicate"))
-					&& jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())) {
+			if (Validator.isNotNull(jsonObject.getString(ConstantUtils.EMPLOYEE_VALID_JSON_DUPLICATE))
+					&& jsonObject.getString(ConstantUtils.EMPLOYEE_VALID_JSON_DUPLICATE).equals(Boolean.TRUE.toString())) {
 
 				return Response.status(409).entity(employeeAccountModel).build();
 
 			} else {
 
-				return Response.status(200).entity(employeeAccountModel).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(employeeAccountModel).build();
 
 			}
 
@@ -924,13 +947,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("modified_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(ConstantUtils.ES_MODIFIED_SORTABLE, Sort.STRING_TYPE,
 					true) };
 
 			Hits hits = null;
@@ -976,7 +999,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 
-			return Response.status(200).entity("{}").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_EMPTY).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
