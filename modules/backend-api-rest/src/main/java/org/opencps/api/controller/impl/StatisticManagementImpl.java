@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -58,7 +57,6 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -796,53 +794,53 @@ public class StatisticManagementImpl implements StatisticManagement {
 	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String from, String to) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		String query = "{\r\n" + 
-				"  \"size\": 0,\r\n" + 
-				"  \"query\": {\r\n" + 
-				"    \"bool\": {\r\n" + 
-				"      \"filter\": [\r\n" + 
-				"        {\r\n" + 
-				"          \"term\": {\r\n" + 
-				"            \"entryClassName\": \"org.opencps.dossiermgt.model.DossierAction\"\r\n" + 
-				"          }\r\n" + 
-				"        },\r\n" + 
-				"		{\r\n" + 
-				"			\"range\" : {\r\n" + 
-				"				\"modified\" : { \r\n" + 
-				"					\"gte\" : \"20190709000000\",\r\n" + 
-				"					\"lte\": \"20190609235959\"\r\n" + 
-				"				}\r\n" + 
-				"			}			\r\n" + 
-				"		}\r\n" + 
-				"      ],\r\n" + 
-				"	  \"must_not\" : {\r\n" + 
-				"        \"term\" : {\r\n" + 
-				"          \"actionOverdue\" : 0\r\n" + 
-				"        }\r\n" + 
-				"      },\r\n" + 
-				"	  \"must\": {\r\n" + 
-				"		\"term\": {\r\n" + 
-				"			\"groupId\": 51801\r\n" + 
-				"		}\r\n" + 
-				"	  }	  \r\n" + 
-				"    }\r\n" + 
-				"  },\r\n" + 
-				"  \"aggs\": {\r\n" + 
-				"    \"group_by_user_id\": {\r\n" + 
-				"      \"terms\": {\r\n" + 
-				"		\"size\":10000,\r\n" + 
-				"        \"field\": \"userId\"\r\n" + 
-				"      },\r\n" + 
-				"	  \"aggs\": {\r\n" + 
-				"		\"count\":{\r\n" + 
-				"			\"cardinality\": {\r\n" + 
-				"				\"field\": \"dossierId_Number_sortable\"\r\n" + 
-				"			}\r\n" + 
-				"		}			\r\n" + 
-				"	  }\r\n" + 
-				"    }\r\n" + 
-				"  }\r\n" + 
-				"}'";		
+//		String query = "{\r\n" + 
+//				"  \"size\": 0,\r\n" + 
+//				"  \"query\": {\r\n" + 
+//				"    \"bool\": {\r\n" + 
+//				"      \"filter\": [\r\n" + 
+//				"        {\r\n" + 
+//				"          \"term\": {\r\n" + 
+//				"            \"entryClassName\": \"org.opencps.dossiermgt.model.DossierAction\"\r\n" + 
+//				"          }\r\n" + 
+//				"        },\r\n" + 
+//				"		{\r\n" + 
+//				"			\"range\" : {\r\n" + 
+//				"				\"modified\" : { \r\n" + 
+//				"					\"gte\" : \"20190709000000\",\r\n" + 
+//				"					\"lte\": \"20190609235959\"\r\n" + 
+//				"				}\r\n" + 
+//				"			}			\r\n" + 
+//				"		}\r\n" + 
+//				"      ],\r\n" + 
+//				"	  \"must_not\" : {\r\n" + 
+//				"        \"term\" : {\r\n" + 
+//				"          \"actionOverdue\" : 0\r\n" + 
+//				"        }\r\n" + 
+//				"      },\r\n" + 
+//				"	  \"must\": {\r\n" + 
+//				"		\"term\": {\r\n" + 
+//				"			\"groupId\": 51801\r\n" + 
+//				"		}\r\n" + 
+//				"	  }	  \r\n" + 
+//				"    }\r\n" + 
+//				"  },\r\n" + 
+//				"  \"aggs\": {\r\n" + 
+//				"    \"group_by_user_id\": {\r\n" + 
+//				"      \"terms\": {\r\n" + 
+//				"		\"size\":10000,\r\n" + 
+//				"        \"field\": \"userId\"\r\n" + 
+//				"      },\r\n" + 
+//				"	  \"aggs\": {\r\n" + 
+//				"		\"count\":{\r\n" + 
+//				"			\"cardinality\": {\r\n" + 
+//				"				\"field\": \"dossierId_Number_sortable\"\r\n" + 
+//				"			}\r\n" + 
+//				"		}			\r\n" + 
+//				"	  }\r\n" + 
+//				"    }\r\n" + 
+//				"  }\r\n" + 
+//				"}'";		
 		Date fromDate = APIDateTimeUtils.convertVNStrToDate(from);
 		Date toDate = APIDateTimeUtils.convertVNStrToDate(to);
 		List lstStatistics = DossierActionLocalServiceUtil.findActionOverdue(fromDate, toDate, groupId);
@@ -856,6 +854,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
 			} catch (JSONException e1) {
+				_log.debug(e1);
 			}
 		}
 		List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
@@ -895,6 +894,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					result.put(obj);					
 				}
 			} catch (JSONException e) {
+				_log.debug(e);
 			}
 		}
 
@@ -943,6 +943,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					}
 				}
 			} catch (JSONException e1) {
+				_log.debug(e1);
 			}
 		}		
 		
@@ -1004,6 +1005,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					}
 				}
 			} catch (JSONException e1) {
+				_log.debug(e1);
 			}
 
 		}

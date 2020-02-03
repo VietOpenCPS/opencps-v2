@@ -3024,9 +3024,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierAction dossierAction =
 				DossierActionLocalServiceUtil.fetchDossierAction(
 					dossier.getDossierActionId());
-			if (dossierAction != null) {
-				// if (dossierAction != null && dossierAction.isRollbackable())
-				// {
+			if (dossierAction != null && isAdmin) {
 				DossierActionLocalServiceUtil.updateState(
 					dossierAction.getDossierActionId(),
 					DossierActionTerm.STATE_ROLLBACK);
@@ -3060,7 +3058,9 @@ public class DossierManagementImpl implements DossierManagement {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);
 				}
 			}
-			else if (dossierAction != null && isAdmin) {
+			else if (dossierAction != null) {
+				// if (dossierAction != null && dossierAction.isRollbackable())
+				// {
 				DossierActionLocalServiceUtil.updateState(
 					dossierAction.getDossierActionId(),
 					DossierActionTerm.STATE_ROLLBACK);
@@ -6821,8 +6821,8 @@ public class DossierManagementImpl implements DossierManagement {
 				ConvertDossierFromV1Dot9Utils.readExcelFileWithHeaderConfig(
 					dataHandle.getInputStream());
 
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId =
+//				GetterUtil.getLong(header.getHeaderString("groupId"));
 			for (int i = 0; i < dataApplicant.length(); i++) {
 
 				try {
@@ -6910,11 +6910,11 @@ public class DossierManagementImpl implements DossierManagement {
 				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
 				"dvc@2019");
 			// here sonoo is database name, root is username and password
-			String query = "select * from thanhnv_dossier_mapped_done";
-			if (groupId > 0) {
-
-				query += " where groupId=" + groupId;
-			}
+			//String query = "select * from thanhnv_dossier_mapped_done";
+//			if (groupId > 0) {
+//
+//				query += " where groupId=" + groupId;
+//			}
 			stmt = con.createStatement();
 			rs = stmt.executeQuery("select * from thanhnv_view_dossier_import");
 
@@ -7002,11 +7002,11 @@ public class DossierManagementImpl implements DossierManagement {
 				"dvc@2019");
 			// here sonoo is database name, root is username and password
 			stmt = con.createStatement();
-			String query = "select * from thanhnv_dossierPart_mapped_done2";
-			if (groupId > 0) {
-
-				query += " where groupId=" + groupId;
-			}
+//			String query = "select * from thanhnv_dossierPart_mapped_done2";
+//			if (groupId > 0) {
+//
+//				query += " where groupId=" + groupId;
+//			}
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(
 				"select * from thanhnv_view_dossierFile_import");

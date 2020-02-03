@@ -32,7 +32,6 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -51,7 +50,6 @@ import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.ImportDataUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.datamgt.model.DictItemInputModel;
-import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
@@ -62,7 +60,6 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -843,7 +840,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			DictcollectionInterface dictItemDataUtil =
 				new DictCollectionActions();
 			PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
-			DictItemModel dictItemModel = new DictItemModel();
+			//DictItemModel dictItemModel = new DictItemModel();
 			DictCollectionTempInterface dictItemDataTempUtil =
 				new org.opencps.synchronization.action.impl.DictCollectionActions();
 
@@ -893,7 +890,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					String sibling = input.getSibling();
 					String metaData = HtmlUtil.escape(input.getMetaData());
 
-					DictItem dictItemObj = dictItemDataUtil.addDictItems(
+					dictItemDataUtil.addDictItems(
 						user.getUserId(), groupId, collectionCode,
 						parentItemCode, itemCode, itemName, itemNameEN,
 						itemDescription, sibling, input.getLevel(), metaData,

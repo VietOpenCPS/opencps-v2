@@ -111,7 +111,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static final String TEMP_DOSSIERACTIONID = "dossierActionId";
 	public static final String TEMP_VIAPOST = "viaPost";
 	public static final String TEMP_POSTADDRESS = "postAddress";
-	public static final String TEMP_PASSWORD_ = "password";
+	public static final String TEMP_SECRET_ = "password";
 	public static final String TEMP_NOTIFICATION = "notification";
 	public static final String TEMP_VIAPOSTAL = "viaPostal";
 	public static final String TEMP_POSTALADDRESS = "postalAddress";
@@ -183,7 +183,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			String fileTemplateNo =
 				dossier.getDossierTemplateNo() + "-" + dossierPartNo;
 			String displayName = j.getString("partName");
-			String fileName = j.getString("fileName");
+			//String fileName = j.getString("fileName");
 
 			DossierFile oldDossierFile =
 				DossierFileLocalServiceUtil.getByG_DID_PART_NAME(
@@ -241,18 +241,17 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-
 			System.out.println(j.getString("fileUrl"));
-			_log.info(e);
+			_log.debug(e);
 		}
 	}
 
-	public static void main(String[] args) {
-
-		getFileFromDVCOld(
-			"http://dvc.mt.gov.vn/documents/20182/3850206/_1487395415897.txt");
-
-	}
+//	public static void main(String[] args) {
+//
+//		getFileFromDVCOld(
+//			"http://dvc.mt.gov.vn/documents/20182/3850206/_1487395415897.txt");
+//
+//	}
 
 	public static InputStream getFileFromDVCOld(String url) {
 
@@ -279,8 +278,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (br != null) {
@@ -288,8 +286,7 @@ public class ConvertDossierFromV1Dot9Utils {
 					br.close();
 				}
 				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.debug(e);
 				}
 			}
 		}
@@ -363,7 +360,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		objectData.put(TEMP_DOSSIERACTIONID, 0l);
 		objectData.put(TEMP_VIAPOST, 0);
 		objectData.put(TEMP_POSTADDRESS, "");
-		objectData.put(TEMP_PASSWORD_, "1111");
+		objectData.put(TEMP_SECRET_, "1111");
 		objectData.put(TEMP_NOTIFICATION, "0");
 		objectData.put(TEMP_VIAPOSTAL, 1);
 		objectData.put(TEMP_POSTALADDRESS, "");
@@ -418,15 +415,15 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		objectData = j;
+		//objectData = j;
 
-		objectData.put(TEMP_DOSSIERNAME, objectData.get(TEMP_SERVICENAME));
+		objectData.put(TEMP_DOSSIERNAME, j.get(TEMP_SERVICENAME));
 		objectData.put(
-			TEMP_PROCESSNO, "QT_" + objectData.get(TEMP_SERVICECODE));
+			TEMP_PROCESSNO, "QT_" + j.get(TEMP_SERVICECODE));
 		objectData.put(
-			TEMP_DOSSIERTEMPLATENO, "MAU_" + objectData.get(TEMP_SERVICECODE));
+			TEMP_DOSSIERTEMPLATENO, "MAU_" + j.get(TEMP_SERVICECODE));
 		objectData.put(
-			TEMP_DOSSIERTEMPLATENAME, objectData.get(TEMP_SERVICENAME));
+			TEMP_DOSSIERTEMPLATENAME, j.get(TEMP_SERVICENAME));
 
 		Dossier dossier = DossierLocalServiceUtil.getByDossierNo(
 			objectData.getLong(TEMP_GROUPID),
@@ -474,7 +471,6 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-			// e.printStackTrace();
 			_log.error(e);
 		}
 
@@ -593,7 +589,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (workbook != null) {
@@ -601,8 +597,7 @@ public class ConvertDossierFromV1Dot9Utils {
 					workbook.close();
 				}
 				catch (IOException e) {
-					e.printStackTrace();
-					// _log.debug(e);
+					_log.debug(e);
 				}
 			}
 		}
@@ -623,8 +618,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+			_log.debug(e);
 			return null;
 		}
 
@@ -649,7 +643,7 @@ public class ConvertDossierFromV1Dot9Utils {
 						result).getTime();
 				}
 				catch (ParseException e) {
-
+					_log.debug(e);
 					return null;
 				}
 			}
@@ -772,7 +766,7 @@ public class ConvertDossierFromV1Dot9Utils {
 				TEMP_DOSSIERACTIONID, rs.getString(TEMP_DOSSIERACTIONID));
 			objectData.put(TEMP_VIAPOST, rs.getString(TEMP_VIAPOST));
 			objectData.put(TEMP_POSTADDRESS, rs.getString(TEMP_POSTADDRESS));
-			objectData.put(TEMP_PASSWORD_, rs.getString("password_"));
+			objectData.put(TEMP_SECRET_, rs.getString("password_"));
 			objectData.put(TEMP_NOTIFICATION, rs.getString(TEMP_NOTIFICATION));
 			objectData.put(TEMP_VIAPOSTAL, rs.getString(TEMP_VIAPOSTAL));
 			objectData.put(
@@ -854,8 +848,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			objectData.put(TEMP_DOCUMENTDATE, rs.getString(TEMP_DOCUMENTDATE));
 		}
 		catch (SQLException e) {
-
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return objectData;
@@ -882,8 +875,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		}
 		catch (SQLException e) {
-
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return objectData;
@@ -901,7 +893,7 @@ public class ConvertDossierFromV1Dot9Utils {
 					result).getTime();
 			}
 			catch (ParseException e) {
-
+				_log.debug(e);
 				return null;
 			}
 		}
