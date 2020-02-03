@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class PaymentFileTerm {
 	public static final String PAYMENT_FILE_ID = "paymentFileId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -29,6 +28,7 @@ public class PaymentFileTerm {
 	public static final String INVOICE_ISSUE_NO = "invoiceIssueNo";
 	public static final String INVOICE_NO = "invoiceNo";
 	public static final String INVOICE_FILE_ENTRY_ID = "invoiceFileEntryId";
+	public static final String INVOICE_PAYLOAD = "invoicePayload";
 	// Search payment file
 	public static final String SERVICE = "sevice";
 	public static final String AGENCY = "agency";

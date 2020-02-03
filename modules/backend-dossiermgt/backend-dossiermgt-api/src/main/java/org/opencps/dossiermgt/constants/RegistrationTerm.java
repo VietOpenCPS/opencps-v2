@@ -29,4 +29,8 @@ public class RegistrationTerm {
 	public static final String CONTACT_EMAIL = "contactEmail";
 	public static final String GOV_AGENCY_NAME = "govAgencyName";
 	public static final String REPRESENTATIVE_ENTERPRISE = "representativeEnterprise";
+	
+	public static final String REGISTRATION_TEMPLATES_ID = "registrationTemplatesId";
+	public static final String MULTIPLE = "multiple";
+	public static final String SAMPLE_DATA = "sampleData";
 }

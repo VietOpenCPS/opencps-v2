@@ -24,7 +24,6 @@ public class StatisticActionsImpl implements StatisticActions {
 		SearchContext searchContext = new SearchContext();
 		searchContext.setCompanyId(companyId);
 		String statusCode = StringPool.BLANK;
-//		JSONArray statistics = JSONFactoryUtil.createJSONArray();
 		long total = 0;
 		try {
 			statusCode = GetterUtil.getString(params.get(DossierTerm.STATUS));
@@ -35,7 +34,6 @@ public class StatisticActionsImpl implements StatisticActions {
 			}
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 		}
 
 		return total;

@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ import org.apache.commons.io.IOUtils;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.datamgt.util.DateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.ModelKeysDeliverableLog;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -39,27 +42,27 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 		Message message = new Message();
 
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", Deliverable.class.getName());
-		msgData.put("classPK", model.getDeliverableId());
-		msgData.put("jrxmlTemplate", getJrxmlTemplate(model));
-		msgData.put("formData", model.getFormData());
-		msgData.put("userId", model.getUserId());
+		msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+		msgData.put(Field.CLASS_PK, model.getDeliverableId());
+		msgData.put(ConstantUtils.JRXML_TEMPLATE, getJrxmlTemplate(model));
+		msgData.put(ConstantUtils.FORM_DATA, model.getFormData());
+		msgData.put(Field.USER_ID, model.getUserId());
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
+		objectData.put(Field.GROUP_ID, model.getGroupId());
 		objectData.put(ModelKeysDeliverableLog.COMPANYID, model.getCompanyId());
 		objectData.put(ModelKeysDeliverableLog.USERID, model.getUserId());
 
 		objectData.put(ModelKeysDeliverableLog.DELIVERABLEID, model.getDeliverableId());
-		objectData.put(ModelKeysDeliverableLog.DOSSIERUID, model.getUuid());
+		objectData.put(ModelKeysDeliverableLog.DOSSIER_UID, model.getUuid());
 		objectData.put(ModelKeysDeliverableLog.AUTHOR, model.getUserName());
 		objectData.put(ModelKeysDeliverableLog.CONTENT, "ADD");
-		objectData.put(ModelKeysDeliverableLog.DELIVERABLEACTION, model.getDeliverableState());
-		objectData.put(ModelKeysDeliverableLog.ACTIONDATE, new Date().getTime());
+		objectData.put(ModelKeysDeliverableLog.DELIVERABLE_ACTION, model.getDeliverableState());
+		objectData.put(ModelKeysDeliverableLog.ACTION_DATE, new Date().getTime());
 
 		objectData.put(ModelKeysDeliverableLog.PAYLOAD, model.getFormData());
 
@@ -70,23 +73,23 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 	public void onAfterUpdate(Deliverable model) throws ModelListenerException {
 		JSONObject objectData = JSONFactoryUtil.createJSONObject();
 
-		objectData.put(ModelKeysDeliverableLog.GROUPID, model.getGroupId());
+		objectData.put(Field.GROUP_ID, model.getGroupId());
 		objectData.put(ModelKeysDeliverableLog.COMPANYID, model.getCompanyId());
 		objectData.put(ModelKeysDeliverableLog.USERID, model.getUserId());
 
 		objectData.put(ModelKeysDeliverableLog.DELIVERABLEID, model.getDeliverableId());
-		objectData.put(ModelKeysDeliverableLog.DOSSIERUID, model.getUuid());
+		objectData.put(ModelKeysDeliverableLog.DOSSIER_UID, model.getUuid());
 		objectData.put(ModelKeysDeliverableLog.AUTHOR, model.getUserName());
-		objectData.put(ModelKeysDeliverableLog.CONTENT, "UPDATE");
-		objectData.put(ModelKeysDeliverableLog.DELIVERABLEACTION, model.getDeliverableState());
-		objectData.put(ModelKeysDeliverableLog.ACTIONDATE, new Date().getTime());
+		objectData.put(ModelKeysDeliverableLog.CONTENT, ConstantUtils.UPDATE_UPCASE);
+		objectData.put(ModelKeysDeliverableLog.DELIVERABLE_ACTION, model.getDeliverableState());
+		objectData.put(ModelKeysDeliverableLog.ACTION_DATE, new Date().getTime());
 
 		objectData.put(ModelKeysDeliverableLog.PAYLOAD, model.getFormData());
 
 		DeliverableLogLocalServiceUtil.adminProcessData(objectData);
 
 		List<FileAttach> fileAttachs = FileAttachLocalServiceUtil.findByF_className_classPK(model.getGroupId(),
-				Deliverable.class.getName() + "FileEntryId", String.valueOf(model.getDeliverableId()));
+				Deliverable.class.getName() + ConstantUtils.FILE_ENTRY_ID, String.valueOf(model.getDeliverableId()));
 
 		boolean isAttact = false;
 
@@ -100,39 +103,39 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 		try {
 			JSONObject mappingData = JSONFactoryUtil.createJSONObject(openCPSDeliverableType.getMappingData());
 
-			if (Validator.isNotNull(mappingData.getString("deliverableCode"))) {
+			if (Validator.isNotNull(mappingData.getString(DeliverableTerm.DELIVERABLE_CODE))) {
 
 				if (Validator.isNull(model.getDeliverableCode())) {
 
 					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-					model.setDeliverableCode(formDataObject.getString(mappingData.getString("deliverableCode")));
+					model.setDeliverableCode(formDataObject.getString(mappingData.getString(DeliverableTerm.DELIVERABLE_CODE)));
 
 					DeliverableLocalServiceUtil.updateDeliverable(model);
 				}
 
 			}
 
-			if (Validator.isNotNull(mappingData.getString("subject"))) {
+			if (Validator.isNotNull(mappingData.getString(DeliverableTerm.SUBJECT))) {
 
 				if (Validator.isNull(model.getSubject())) {
 
 					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-					model.setSubject(formDataObject.getString(mappingData.getString("subject")));
+					model.setSubject(formDataObject.getString(mappingData.getString(DeliverableTerm.SUBJECT)));
 
 					DeliverableLocalServiceUtil.updateDeliverable(model);
 				}
 
 			}
 
-			if (Validator.isNotNull(mappingData.getString("issueDate"))) {
+			if (Validator.isNotNull(mappingData.getString(DeliverableTerm.ISSUE_DATE))) {
 
 				if (Validator.isNull(model.getIssueDate())) {
 
 					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-					String issueDateStr = formDataObject.getString(mappingData.getString("issueDate"));
+					String issueDateStr = formDataObject.getString(mappingData.getString(DeliverableTerm.ISSUE_DATE));
 
 					try {
 						Date issueDate = DateTimeUtils.convertStringToDate(issueDateStr);
@@ -147,13 +150,13 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 			}
 
-			if (Validator.isNotNull(mappingData.getString("expireDate"))) {
+			if (Validator.isNotNull(mappingData.getString(DeliverableTerm.EXPIRE_DATE))) {
 
 				if (Validator.isNull(model.getExpireDate())) {
 
 					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-					String expireDateStr = formDataObject.getString(mappingData.getString("expireDate"));
+					String expireDateStr = formDataObject.getString(mappingData.getString(DeliverableTerm.EXPIRE_DATE));
 
 					try {
 						Date expireDate = DateTimeUtils.convertStringToDate(expireDateStr);
@@ -168,13 +171,13 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 			}
 
-			if (Validator.isNotNull(mappingData.getString("revalidate"))) {
+			if (Validator.isNotNull(mappingData.getString(DeliverableTerm.REVALIDATE))) {
 
 				if (Validator.isNull(model.getRevalidate())) {
 
 					JSONObject formDataObject = JSONFactoryUtil.createJSONObject(model.getFormData());
 
-					String revalidateStr = formDataObject.getString(mappingData.getString("revalidate"));
+					String revalidateStr = formDataObject.getString(mappingData.getString(DeliverableTerm.REVALIDATE));
 
 					try {
 						Date revalidate = DateTimeUtils.convertStringToDate(revalidateStr);
@@ -198,14 +201,14 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 			Message message = new Message();
 
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put("className", Deliverable.class.getName());
-			msgData.put("classPK", model.getDeliverableId());
-			msgData.put("jrxmlTemplate", getJrxmlTemplate(model));
-			msgData.put("formData", model.getFormData());
-			msgData.put("userId", model.getUserId());
+			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+			msgData.put(Field.CLASS_PK, model.getDeliverableId());
+			msgData.put(ConstantUtils.JRXML_TEMPLATE, getJrxmlTemplate(model));
+			msgData.put(ConstantUtils.FORM_DATA, model.getFormData());
+			msgData.put(Field.USER_ID, model.getUserId());
 
-			message.put("msgToEngine", msgData);
-			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			message.put(ConstantUtils.MSG_ENG, msgData);
+			MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 			//_log.info("SEND TO CREATED FILE MODEL");
 		}	

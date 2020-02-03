@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -21,6 +22,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -123,7 +128,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						try {
 							JSONObject payloadFile = JSONFactoryUtil.createJSONObject(log.getPayload());
 
-							dossierFileId = GetterUtil.getLong(payloadFile.get("dossierFileId"));
+							dossierFileId = GetterUtil.getLong(payloadFile.get(DossierFileTerm.DOSSIER_FILE_ID));
 						} catch (Exception e) {
 							_log.debug(e);
 						}
@@ -134,9 +139,9 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							if (Validator.isNotNull(dossierFile) && dossierFile.getFileEntryId() > 0) {
 								JSONObject file = JSONFactoryUtil.createJSONObject();
 
-								file.put("dossierFileId", dossierFile.getDossierFileId());
-								file.put("fileName", dossierFile.getDisplayName());
-								file.put("createDate", APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
+								file.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFile.getDossierFileId());
+								file.put(DossierFileTerm.FILE_NAME, dossierFile.getDisplayName());
+								file.put(Field.CREATE_DATE, APIDateTimeUtils.convertDateToString(dossierFile.getCreateDate(),
 										APIDateTimeUtils._TIMESTAMP));
 								files.put(file);
 							}
@@ -154,38 +159,37 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				
 				if (lstProcessSteps.size() > 0) {
 					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
-					payload.put("dossierStatusText", jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
+					payload.put(DossierTerm.DOSSIER_STATUS_TEXT, jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
 				}
-				payload.put("dossierActionId", model.getDossierActionId());
-				payload.put("jobPosName", jobPosName);
-				payload.put("stepName", model.getActionName());
-				payload.put("stepCode", model.getStepCode());
-				payload.put("stepInstruction", model.getStepInstruction());
-				payload.put("files", files);
+				payload.put(DossierActionTerm.DOSSIER_ACTION_ID, model.getDossierActionId());
+				payload.put(DossierActionTerm.JOB_POS_NAME, jobPosName);
+				payload.put(DossierActionTerm.STEP_NAME, model.getActionName());
+				payload.put(DossierActionTerm.STEP_CODE, model.getStepCode());
+				payload.put(DossierActionTerm.STEP_INSTRUCTION, model.getStepInstruction());
+				payload.put(DossierActionTerm.FILES, files);
 
 				serviceContext.setCompanyId(model.getCompanyId());
 				serviceContext.setUserId(userId);
-
 				ProcessAction processAction = ProcessActionLocalServiceUtil
 						.getByNameActionNo(model.getServiceProcessId(), model.getActionCode(), model.getActionName());
 
 				boolean ok = true;
 
 				if (Validator.isNotNull(processAction)) {
-					if ((processAction.getPreCondition().contains("cancelling")
-							&& processAction.getAutoEvent().contains("timmer"))
-							|| (processAction.getPreCondition().contains("correcting")
-									&& processAction.getAutoEvent().contains("timmer"))
-							|| (processAction.getPreCondition().contains("submitting"))
-									&& processAction.getAutoEvent().contains("timmer")) {
+					if ((processAction.getPreCondition().contains(ConstantsTerm.CANCELLING)
+							&& processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER))
+							|| (processAction.getPreCondition().contains(ConstantsTerm.CORRECTING)
+									&& processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER))
+							|| (processAction.getPreCondition().contains(ConstantsTerm.SUBMITTING))
+									&& processAction.getAutoEvent().contains(DossierTerm.KEY_TIMMER)) {
 						ok = false;
 
 					}
 				}
 
-				if (Validator.isNotNull(processAction) && (processAction.getPreCondition().contains("reject_cancelling")
-						|| processAction.getPreCondition().contains("reject_correcting")
-						|| processAction.getPreCondition().contains("reject_submitting"))) {
+				if (Validator.isNotNull(processAction) && (processAction.getPreCondition().contains(ConstantsTerm.REJECT_CANCELLING)
+						|| processAction.getPreCondition().contains(ConstantsTerm.REJECT_CORRECTING)
+						|| processAction.getPreCondition().contains(ConstantsTerm.REJECT_SUBMITTING))) {
 					ok = false;
 				}
 
@@ -207,8 +211,8 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 
 		if (Validator.isNotNull(model.getSyncActionCode()) && model.getSyncActionCode().length() != 0) {
 			String content = "On DossiserAction Created";
-			String notificationType = "";
-			String payload = "";
+			String notificationType = StringPool.BLANK;
+			String payload = StringPool.BLANK;
 
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(model.getCompanyId());
@@ -227,29 +231,6 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			}
 		}
 	}
-
-//	private String getUserName(long userId, long groupId) {
-//		String userName = StringPool.BLANK;
-//
-//		Employee employee = null;
-//
-//		Applicant applicant = null;
-//
-//		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-//
-//		if (Validator.isNotNull(employee)) {
-//			return employee.getFullName();
-//
-//		}
-//
-//		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-//
-//		if (Validator.isNotNull(applicant)) {
-//			return applicant.getApplicantName();
-//		}
-//
-//		return userName;
-//	}
 
 	private Log _log = LogFactoryUtil.getLog(DossierActionListenner.class.getName());
 }

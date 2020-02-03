@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class StepConfigTerm {
+	public static final String STEP_CONFIG_ID = "stepConfigId";
 	public static final String STEP_CODE = "stepCode";
 	public static final String STEP_NAME = "stepName";
 	public static final String STEP_TYPE = "stepType";

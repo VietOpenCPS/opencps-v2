@@ -135,7 +135,7 @@ public class DossierPartIndexer extends BaseIndexer<DossierPart> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

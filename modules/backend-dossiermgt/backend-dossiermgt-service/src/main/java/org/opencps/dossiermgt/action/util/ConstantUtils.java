@@ -33,7 +33,7 @@ public class ConstantUtils {
 	public static final String ROLE_NAME = "roleName";
 	public static final String CLASS_NAME = "className";
 	public static final String GENDER = "gender";
-	public static final String JRMX_TEMPLATE = "jrxmlTemplate";
+	public static final String JRXML_TEMPLATE = "jrxmlTemplate";
 	public static final String FORM_DATA = "formData";
 	public static final String MSG_ENG = "msgToEngine";
 	public static final String JASPER_DESTINATION = "jasper/engine/out/destination";
@@ -52,6 +52,7 @@ public class ConstantUtils {
 	public static final String VALUE_CODE = "code";
 	public static final String FORM_UPCASE = "FORM";
 	public static final String JASPER_UPCASE = "JASPER";
+	public static final String UPDATE_UPCASE = "UPDATE";
 	
 	public static final String ORIGINAL_TODO = "2,3";
 

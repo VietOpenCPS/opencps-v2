@@ -33,5 +33,14 @@ public class ApplicantTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final int PASSWORD_LENGHT = 10;
 	public static final String REPRE_ENTERPRISE = "representativeEnterprise";
+	
+	// key ATTT
+	public static final String SUBJECT_ID = "subjectId";
+	public static final String SUBJECT_NAME = "subjectName";
+	public static final String EMPLOYEE_EMPLOYEE_NO = "employee_employeeNo";
+	public static final String EMPLOYEE_FULL_NAME = "employee_fullName";
+	public static final String EMPLOYEE_TITLE = "employee_title";
+	public static final String CUR_DATE = "curDate";
+	public static final String REPRESENTATIVE = "representative";
 
 }

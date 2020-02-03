@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.liferay.petra.string.StringPool;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -121,7 +122,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}
@@ -142,8 +143,6 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 			parseJSONObject(keyValues, jsonObject);
 		} catch (Exception e) {
 			_log.error(e);
-			_log.info("Can not parse json object from FormData: =>"
-					+ " : Cause " + e.getCause());
 		}
 
 		return keyValues;
@@ -210,7 +209,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 				try {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
 //						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
@@ -223,7 +222,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 //						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
@@ -238,26 +237,4 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 		return keyValues;
 	}
 
-//	protected List<Object[]> parseJSONObject(List<Object[]> keyValues, JSONArray jsonArray) throws JSONException {
-//
-//		if (jsonArray != null && jsonArray.length() > 0) {
-//			for (int i = 0; i < jsonArray.length(); i++) {
-//				String tempObject = String.valueOf(jsonArray.get(i));
-//				try {
-//					JSONObject valueObject = JSONFactoryUtil.createJSONObject(tempObject);
-//					parseJSONObject(keyValues, valueObject);
-//				} catch (JSONException e) {
-//					// check json array
-//					try {
-//						JSONArray jsonArr = jsonArray.getJSONArray(i);
-//						parseJSONObject(keyValues, jsonArr);
-//					} catch (JSONException e1) {
-//						// Tinh chung cho key cha.
-//					}
-//				}
-//			}
-//		}
-//		return keyValues;
-//	}
-	
 }

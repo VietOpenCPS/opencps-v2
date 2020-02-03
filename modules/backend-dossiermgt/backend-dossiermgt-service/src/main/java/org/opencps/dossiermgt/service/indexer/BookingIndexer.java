@@ -22,9 +22,9 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
-import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -107,8 +107,8 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 			}
 
 			document.addTextSortable(BookingTerm.SPEAKING, String.valueOf(object.getSpeaking()));
-			document.addTextSortable("serviceGroupCode", object.getServiceGroupCode());
-			document.addNumberSortable("count", object.getCount());
+			document.addTextSortable(BookingTerm.SERVICE_GROUP_CODE, object.getServiceGroupCode());
+			document.addNumberSortable(ConstantUtils.VALUE_COUNT, object.getCount());
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -163,7 +163,7 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

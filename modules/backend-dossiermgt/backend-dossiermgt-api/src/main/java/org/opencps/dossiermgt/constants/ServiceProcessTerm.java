@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class ServiceProcessTerm {
 	public static final String SERVICEPROCESS_ID = "serviceProcessId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -22,4 +21,8 @@ public class ServiceProcessTerm {
 	public static final String SERVER_NAME = "serverName";
 	public static final String PAYMENT_FEE = "paymentFee";
 	public static final String DOSSIER_GROUP_PATTERN = "dossierGroupPattern";
+	
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String SEQUENCE_NAME = "sequenceName";
+	public static final String SEQUENCE_ROLE = "sequenceRole";
 }

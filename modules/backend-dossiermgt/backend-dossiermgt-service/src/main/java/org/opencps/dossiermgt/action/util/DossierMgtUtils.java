@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -67,7 +68,7 @@ public class DossierMgtUtils {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
 		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
-		obj.put(DossierTerm.GROUP_ID, dossier.getGroupId());
+		obj.put(Field.GROUP_ID, dossier.getGroupId());
 		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
 		obj.put(DossierTerm.REFERENCE_UID, dossier.getReferenceUid());
 		obj.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -190,34 +191,37 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
 		
 		for (ProcessSequence ps : lstSequences) {		
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-			sequenceObj.put("sequenceNo", ps.getSequenceNo());
-			sequenceObj.put("sequenceName", ps.getSequenceName());
-			sequenceObj.put("sequenceRole", ps.getSequenceRole());
-			sequenceObj.put("durationCount", ps.getDurationCount());
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_NO, ps.getSequenceNo());
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_NAME, ps.getSequenceName());
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_ROLE, ps.getSequenceRole());
+			sequenceObj.put(ServiceProcessTerm.DURATION_COUNT, ps.getDurationCount());
 			
 			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+				sequenceObj.put(DossierTerm.STATUS_TEXT, lastDA.getStepName());
 			}
 			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
 				
 			DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
 			if (lastAction != null) {
-				sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
+				sequenceObj.put(DossierTerm.START_DATE, lastAction.getCreateDate().getTime());
 			}			
 			
 			if (lstDossierActions.size() > 0) {
 				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
 				if (lastDASequence.getActionOverdue() != 0) {
-					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
-					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+					String preText = (lastDASequence.getActionOverdue() > 0
+							? ReadFilePropertiesUtils.get(ConstantUtils.TIME_UNDUE)
+							: ReadFilePropertiesUtils.get(ConstantUtils.TIME_OVER));
+					sequenceObj.put(DossierTerm.OVERDUE_TEXT, preText + lastDASequence.getActionOverdue()
+							+ ReadFilePropertiesUtils.get(ConstantUtils.TIME_DAY));
 				}
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
@@ -230,13 +234,13 @@ public class DossierMgtUtils {
 					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
-						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put(Field.USER_ID, dau.getUserId());
 						//
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
 						if (employee != null) {
-							assignUserObj.put("userName", employee.getFullName());
+							assignUserObj.put(Field.USER_NAME, employee.getFullName());
 						} else {
-							assignUserObj.put("userName", u.getFullName());
+							assignUserObj.put(Field.USER_NAME, u.getFullName());
 						}
 						
 						assignUserArr.put(assignUserObj);					
@@ -247,60 +251,60 @@ public class DossierMgtUtils {
 				if (!lstUsers.contains(da.getUserId())) {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put(Field.USER_ID, da.getUserId());
 
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
 					if (employee != null) {
-						assignUserObj.put("userName", employee.getFullName());
+						assignUserObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						assignUserObj.put("userName", da.getUserName());
+						assignUserObj.put(Field.USER_NAME, da.getUserName());
 					}
 					
 					assignUserArr.put(assignUserObj);					
 				}
 			}
 			
-			sequenceObj.put("assignUsers", assignUserArr);
+			sequenceObj.put(ProcessActionTerm.ASSIGN_USERS, assignUserArr);
 			
 			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
 			for (DossierAction da : lstDossierActions) {
 				JSONObject actionObj = JSONFactoryUtil.createJSONObject();
 				
 				actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
-				actionObj.put("fromStepCode", da.getFromStepCode());
-				actionObj.put("fromStepName", da.getFromStepName());
-				actionObj.put("sequenceNo", da.getSequenceNo());
-				actionObj.put("dossierId", da.getDossierId());
-				actionObj.put("serviceProcessId", da.getServiceProcessId());
-				actionObj.put("previousActionId", da.getPreviousActionId());
-				actionObj.put("actionCode", da.getActionCode());
-				actionObj.put("actionName", da.getActionName());
-				actionObj.put("actionNote", da.getActionNote());
-				actionObj.put("actionUser", da.getActionUser());
-				actionObj.put("actionOverdue", da.getActionOverdue());
-				actionObj.put("payload", da.getPayload());
-				actionObj.put("pending", da.getPending());
-				actionObj.put("rollbackable", da.getRollbackable());
-				actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
-				actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
-				actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
-				actionObj.put("nextActionId", da.getNextActionId());
-				actionObj.put("state", da.getState());
-				actionObj.put("stepCode", da.getStepCode());
-				actionObj.put("stepName", da.getStepName());
-				actionObj.put("userId", da.getUserId());				
+				actionObj.put(DossierActionTerm.FROM_STEP_CODE, da.getFromStepCode());
+				actionObj.put(DossierActionTerm.FROM_STEP_NAME, da.getFromStepName());
+				actionObj.put(ServiceProcessTerm.SEQUENCE_NO, da.getSequenceNo());
+				actionObj.put(DossierTerm.DOSSIER_ID, da.getDossierId());
+				actionObj.put(ServiceProcessTerm.SERVICEPROCESS_ID, da.getServiceProcessId());
+				actionObj.put(DossierActionTerm.PREVIOUS_ACTION_ID, da.getPreviousActionId());
+				actionObj.put(DossierActionTerm.ACTION_CODE, da.getActionCode());
+				actionObj.put(DossierActionTerm.ACTION_NAME, da.getActionName());
+				actionObj.put(DossierActionTerm.ACTION_NOTE, da.getActionNote());
+				actionObj.put(DossierActionTerm.ACTION_USER, da.getActionUser());
+				actionObj.put(DossierActionTerm.ACTION_OVER_DUE, da.getActionOverdue());
+				actionObj.put(DossierActionTerm.PAYLOAD, da.getPayload());
+				actionObj.put(DossierActionTerm.PENDING, da.getPending());
+				actionObj.put(DossierActionTerm.ROLLBACK_ABLE, da.getRollbackable());
+				actionObj.put(Field.CREATE_DATE, da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
+				actionObj.put(DossierTerm.MODIFIED_DATE, da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
+				actionObj.put(DossierTerm.DUE_DATE, da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
+				actionObj.put(DossierActionTerm.NEXT_ACTION_ID, da.getNextActionId());
+				actionObj.put(DossierActionTerm.STATE, da.getState());
+				actionObj.put(DossierActionTerm.STEP_CODE, da.getStepCode());
+				actionObj.put(DossierActionTerm.STEP_NAME, da.getStepName());
+				actionObj.put(Field.USER_ID, da.getUserId());
 				
 				_log.debug("Action obj: " + actionObj.toJSONString());
 				actionsArr.put(actionObj);
 			}			
 			
-			sequenceObj.put("actions", actionsArr);
+			sequenceObj.put(ProcessActionTerm.KEY_ACTIONS, actionsArr);
 			
 			sequenceArr.put(sequenceObj);
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -311,7 +315,7 @@ public class DossierMgtUtils {
 		result.put(ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
 		result.put(ServiceProcessTerm.DURATION_UNIT, serviceProcess.getDurationUnit());
 		result.put(ServiceProcessTerm.DURATION_COUNT, serviceProcess.getDurationCount());
-		result.put("total", lstSequences.size());
+		result.put(ConstantUtils.TOTAL, lstSequences.size());
 		JSONArray sequenceArr = JSONFactoryUtil.createJSONArray();
 		DossierAction lastDA = null;
 		if (dossierActionId > 0) {
@@ -346,34 +350,38 @@ public class DossierMgtUtils {
 		}
 		lstPublishSequences = ProcessSequenceLocalServiceUtil.getByG_SID_SNOS(groupId, serviceProcess.getServiceProcessId(), sns);
 		
-		for (ProcessSequence ps : lstPublishSequences) {		
+		for (ProcessSequence ps : lstPublishSequences) {
 			JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-			sequenceObj.put("sequenceNo", ps.getSequenceNo());
-			sequenceObj.put("sequenceName", ps.getSequenceName());
-			sequenceObj.put("sequenceRole", ps.getSequenceRole());
-			sequenceObj.put("durationCount", ps.getDurationCount());
-			
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_NO, ps.getSequenceNo());
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_NAME, ps.getSequenceName());
+			sequenceObj.put(ServiceProcessTerm.SEQUENCE_ROLE, ps.getSequenceRole());
+			sequenceObj.put(ServiceProcessTerm.DURATION_COUNT, ps.getDurationCount());
+
 			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
-				sequenceObj.put("statusText", "Đang thực hiện: " + lastDA.getStepName());
+				sequenceObj.put(DossierTerm.STATUS_TEXT, lastDA.getStepName());
 			}
-			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
-				
-			DossierAction lastAction = lstPrevDossierActions.size() > 0 ? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1) : null;
+			List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(groupId,
+					dossier.getDossierId(), ps.getSequenceNo());
+			List<DossierAction> lstPrevDossierActions = DossierActionLocalServiceUtil
+					.findDossierActionByG_DID_SN(groupId, dossier.getDossierId(), ps.getSequenceNo());
+
+			DossierAction lastAction = lstPrevDossierActions.size() > 0
+					? lstPrevDossierActions.get(lstPrevDossierActions.size() - 1)
+					: null;
 			if (lastAction != null) {
-				sequenceObj.put("startDate", lastAction.getCreateDate().getTime());
-			}			
-			
+				sequenceObj.put(DossierTerm.START_DATE, lastAction.getCreateDate().getTime());
+			}
+
 			if (lstDossierActions.size() > 0) {
 				DossierAction lastDASequence = lstDossierActions.get(lstDossierActions.size() - 1);
 				if (lastDASequence.getActionOverdue() != 0) {
-					String preText = (lastDASequence.getActionOverdue() > 0 ? "Còn " : "Quá ");
-					sequenceObj.put("overdueText", preText + lastDASequence.getActionOverdue() + " ngày");
+					String preText = (lastDASequence.getActionOverdue() > 0 ? ReadFilePropertiesUtils.get(ConstantUtils.TIME_UNDUE) : ReadFilePropertiesUtils.get(ConstantUtils.TIME_OVER));
+					sequenceObj.put(DossierTerm.OVERDUE_TEXT, preText + lastDASequence.getActionOverdue() + ReadFilePropertiesUtils.get(ConstantUtils.TIME_DAY));
 				}
 			}
 			JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
 			List<Long> lstUsers = new ArrayList<>();
-			
+
 			if (lastDA != null && lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 				for (DossierActionUser dau : lstDus) {
 					User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
@@ -381,13 +389,13 @@ public class DossierMgtUtils {
 					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
-						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put(Field.USER_ID, dau.getUserId());
 						//
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
 						if (employee != null) {
-							assignUserObj.put("userName", employee.getFullName());
+							assignUserObj.put(Field.USER_NAME, employee.getFullName());
 						} else {
-							assignUserObj.put("userName", u.getFullName());
+							assignUserObj.put(Field.USER_NAME, u.getFullName());
 						}
 						
 						assignUserArr.put(assignUserObj);					
@@ -398,20 +406,20 @@ public class DossierMgtUtils {
 				if (!lstUsers.contains(da.getUserId())) {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put(Field.USER_ID, da.getUserId());
 
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
 					if (employee != null) {
-						assignUserObj.put("userName", employee.getFullName());
+						assignUserObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						assignUserObj.put("userName", da.getUserName());
+						assignUserObj.put(Field.USER_NAME, da.getUserName());
 					}
 					
 					assignUserArr.put(assignUserObj);					
 				}
 			}
 			
-			sequenceObj.put("assignUsers", assignUserArr);
+			sequenceObj.put(ProcessActionTerm.ASSIGN_USERS, assignUserArr);
 			
 			JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
 			for (DossierAction da : lstDossierActions) {
@@ -419,41 +427,41 @@ public class DossierMgtUtils {
 					JSONObject actionObj = JSONFactoryUtil.createJSONObject();
 					
 					actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
-					actionObj.put("fromStepCode", da.getFromStepCode());
-					actionObj.put("fromStepName", da.getFromStepName());
-					actionObj.put("sequenceNo", da.getSequenceNo());
-					actionObj.put("dossierId", da.getDossierId());
-					actionObj.put("serviceProcessId", da.getServiceProcessId());
-					actionObj.put("previousActionId", da.getPreviousActionId());
-					actionObj.put("actionCode", da.getActionCode());
-					actionObj.put("actionName", da.getActionName());
-					actionObj.put("actionNote", da.getActionNote());
-					actionObj.put("actionUser", da.getActionUser());
-					actionObj.put("actionOverdue", da.getActionOverdue());
-					actionObj.put("payload", da.getPayload());
-					actionObj.put("pending", da.getPending());
-					actionObj.put("rollbackable", da.getRollbackable());
-					actionObj.put("createDate", da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
-					actionObj.put("modifiedDate", da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
-					actionObj.put("dueDate", da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
-					actionObj.put("nextActionId", da.getNextActionId());
-					actionObj.put("state", da.getState());
-					actionObj.put("stepCode", da.getStepCode());
-					actionObj.put("stepName", da.getStepName());
-					actionObj.put("userId", da.getUserId());				
+					actionObj.put(DossierActionTerm.FROM_STEP_CODE, da.getFromStepCode());
+					actionObj.put(DossierActionTerm.FROM_STEP_NAME, da.getFromStepName());
+					actionObj.put(ServiceProcessTerm.SEQUENCE_NO, da.getSequenceNo());
+					actionObj.put(DossierTerm.DOSSIER_ID, da.getDossierId());
+					actionObj.put(ServiceProcessTerm.SERVICEPROCESS_ID, da.getServiceProcessId());
+					actionObj.put(DossierActionTerm.PREVIOUS_ACTION_ID, da.getPreviousActionId());
+					actionObj.put(DossierActionTerm.ACTION_CODE, da.getActionCode());
+					actionObj.put(DossierActionTerm.ACTION_NAME, da.getActionName());
+					actionObj.put(DossierActionTerm.ACTION_NOTE, da.getActionNote());
+					actionObj.put(DossierActionTerm.ACTION_USER, da.getActionUser());
+					actionObj.put(DossierActionTerm.ACTION_OVER_DUE, da.getActionOverdue());
+					actionObj.put(DossierActionTerm.PAYLOAD, da.getPayload());
+					actionObj.put(DossierActionTerm.PENDING, da.getPending());
+					actionObj.put(DossierActionTerm.ROLLBACK_ABLE, da.getRollbackable());
+					actionObj.put(Field.CREATE_DATE, da.getCreateDate() != null ? da.getCreateDate().getTime() : 0l);
+					actionObj.put(DossierTerm.MODIFIED_DATE, da.getModifiedDate() != null ? da.getModifiedDate().getTime() : 0l);
+					actionObj.put(DossierTerm.DUE_DATE, da.getDueDate() != null ? da.getDueDate().getTime() : 0l);
+					actionObj.put(DossierActionTerm.NEXT_ACTION_ID, da.getNextActionId());
+					actionObj.put(DossierActionTerm.STATE, da.getState());
+					actionObj.put(DossierActionTerm.STEP_CODE, da.getStepCode());
+					actionObj.put(DossierActionTerm.STEP_NAME, da.getStepName());
+					actionObj.put(Field.USER_ID, da.getUserId());
 					
 					_log.debug("Action obj: " + actionObj.toJSONString());
 					actionsArr.put(actionObj);					
 				}
 			}			
 			
-			sequenceObj.put("actions", actionsArr);
+			sequenceObj.put(ProcessActionTerm.KEY_ACTIONS, actionsArr);
 			
 			sequenceArr.put(sequenceObj);
 			
 		}
 		
-		result.put("data", sequenceArr);
+		result.put(ConstantUtils.DATA, sequenceArr);
 		return result;
 	}
 	
@@ -465,7 +473,6 @@ public class DossierMgtUtils {
 			}
 		} catch (JSONException e) {
 			_log.debug(e);
-			//_log.error(e);
 			return false;
 		}
 		
@@ -507,131 +514,128 @@ public class DossierMgtUtils {
 			preCondition = preCondition.trim();
 			
 			switch (preCondition) {
-				case "payok":
-					result = result && checkPayOk(dossier);
+			case DossierTerm.PAY_OK:
+				result = result && checkPayOk(dossier);
+				break;
+			case DossierTerm.PAY_NOT_OK:
+				result = result && checkPayNotOk(dossier);
+				break;
+			case DossierTerm.DOSSIER_STATUS_CANCELLING:
+				result = result && checkCancelling(dossier);
+				break;
+
+			case DossierTerm.DOSSIER_STATUS_CORRECTING:
+				result = result && checkCorrecting(dossier);
 					break;
-				case "paynotok":
-					result = result && checkPayNotOk(dossier);
-					break;
-				case "cancelling":
-					result = result && checkCancelling(dossier);
-					break;
-	
-				case "reject_cancelling":
-					result = result && checkCancelling(dossier);
-					break;
-	
-				case "correcting":
-					result = result && checkCorrecting(dossier);
-					break;
-	
-				case "reject_correcting":
-					result = result && checkCorrecting(dossier);
-					break;
-	
-				case "submitting":
-					result = result && checkSubmitting(dossier);
-					break;
-	
-				case "reject_submitting":
-					result = result && checkSubmitting(dossier);
-					break;
-	
-				case "waiting":
-					result = result && checkWaiting(preCondition, dossier);
-					break;
-					
-				case "online=true":
-					result = result && checkDossierOnline(dossier);
-					break;
-				case "online=false":
-					result = result && checkDossierOnegate(dossier);
-					break;
-				default:
-					break;
+			
+			case "reject_correcting":
+				result = result && checkCorrecting(dossier);
+				break;
+
+			case DossierTerm.SUBMITTING:
+				result = result && checkSubmitting(dossier);
+				break;
+			
+			case "reject_submitting":
+				result = result && checkSubmitting(dossier);
+				break;
+
+
+			case DossierTerm.DOSSIER_STATUS_WAITING:
+				result = result && checkWaiting(preCondition, dossier);
+				break;
+
+			case DossierTerm.ONLINE_TRUE:
+				result = result && checkDossierOnline(dossier);
+				break;
+			case DossierTerm.ONLINE_FALSE:
+				result = result && checkDossierOnegate(dossier);
+				break;
+			default:
+				break;
 			}
-			if (preCondition.contains("service=")) {
-				String[] splitCodes = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_SERVICE)) {
+				String[] splitCodes = preCondition.split(StringPool.EQUAL);
 				if (splitCodes.length == 2) {
 					result = result && checkServiceCode(splitCodes[1], dossier);
-				}			
+				}
 			}
-			if (preCondition.contains("notservicecode=")) {
-				String[] splitCodes = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_NOT_SERVICE_CODE)) {
+				String[] splitCodes = preCondition.split(StringPool.EQUAL);
 				if (splitCodes.length == 2) {
 					result = result && checkNotServiceCode(splitCodes[1], dossier);
 				}			
 			}
-			if (preCondition.contains("agency=")) {
-				String[] splitAgencies = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.AGENCY)) {
+				String[] splitAgencies = preCondition.split(StringPool.EQUAL);
 				if (splitAgencies.length == 2) {
 					result = result && checkAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
-			if (preCondition.contains("notagencycode=")) {
-				String[] splitAgencies = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_NOT_AGENCY_CODE)) {
+				String[] splitAgencies = preCondition.split(StringPool.EQUAL);
 				if (splitAgencies.length == 2) {
 					result = result && checkNotAgencyCode(splitAgencies[1], dossier);
 				}							
 			}
-			if (preCondition.contains("template=")) {
-				String[] splitTemplates = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_TEMPLATE)) {
+				String[] splitTemplates = preCondition.split(StringPool.EQUAL);
 				if (splitTemplates.length == 2) {
 					result = result && checkTemplateCode(splitTemplates[1], dossier);
 				}											
 			}
-			if (preCondition.contains("originality=")) {
-				String[] splitOriginalities = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_ORIGINAL)) {
+				String[] splitOriginalities = preCondition.split(StringPool.EQUAL);
 				if (splitOriginalities.length == 2) {
 					result = result && checkOriginality(splitOriginalities[1], dossier);
 				}															
 			}
-			if (preCondition.contains("stepdone=")) {
-				String[] splitSteps = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_STEP_DONE)) {
+				String[] splitSteps = preCondition.split(StringPool.EQUAL);
 				if (splitSteps.length == 2) {
 					result = result && checkStepDone(splitSteps[1], dossier);
 				}																			
 			}
-			if (preCondition.contains("stepnotdone=")) {
-				String[] splitSteps = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_STEP_NOT_DONE)) {
+				String[] splitSteps = preCondition.split(StringPool.EQUAL);
 				if (splitSteps.length == 2) {
 					result = result && checkStepNotDone(splitSteps[1], dossier);
-				}																			
+				}
 			}
-			if (preCondition.contains("#")) {
-				String[] splitBiens = preCondition.split("=");
+			if (preCondition.contains(StringPool.POUND)) {
+				String[] splitBiens = preCondition.split(StringPool.EQUAL);
 				if (splitBiens.length == 2) {
 					result = result && checkBien(splitBiens[0], splitBiens[1], dossier);
-				}																							
+				}
 			}
-			if (preCondition.contains("viapostal=")) {
-				String[] splitViaPostals = preCondition.split("=");
+			if (preCondition.contains(DossierTerm.CONTAIN_VIA_POSTAL)) {
+				String[] splitViaPostals = preCondition.split(StringPool.EQUAL);
 				if (splitViaPostals.length == 2) {
 					result = result && checkViaPostal(splitViaPostals[1], dossier);
 				}																							
 			}
-			if (preCondition.contains("roledone=")) {
-				String[] splitRoles = preCondition.split("=");
-				System.out.println(splitRoles[0] + "," + splitRoles[1]);
+			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_DONE)) {
+				String[] splitRoles = preCondition.split(StringPool.EQUAL);
+				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 				if (splitRoles.length == 2) {
 					result = result && checkRoleDone(splitRoles[1], dossier);
 				}																			
 			}
-			if (preCondition.contains("rolecode=")) {
-				String[] splitRoles = preCondition.split("=");
-				System.out.println(splitRoles[0] + "," + splitRoles[1]);
+			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
+				String[] splitRoles = preCondition.split(StringPool.EQUAL);
+				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 				if (splitRoles.length == 2) {
 					result = result && checkRoleCode(splitRoles[1], dossier);
 				}
 			}
-			if (preCondition.contains("waiting_overdue>")) {
-				String[] splitDuration = preCondition.split(">");
+			if (preCondition.contains(DossierTerm.CONTAIN_WAITING_OVERDUE_THAN)) {
+				String[] splitDuration = preCondition.split(StringPool.GREATER_THAN);
 				if (splitDuration.length == 2) {
 					result = result && checkWaitingOverdueGreaterThan(splitDuration[1], dossier);
 				}
 			}
-			if (preCondition.contains("waiting_overdue<=")) {
-				String[] splitDuration = preCondition.split("<=");
+			if (preCondition.contains(DossierTerm.CONTAIN_WAITING_OVERDUE_LESS)) {
+				String[] splitDuration = preCondition.split(StringPool.LESS_THAN_OR_EQUAL);
 				if (splitDuration.length == 2) {
 					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
 				}
@@ -688,8 +692,8 @@ public class DossierMgtUtils {
 
 	private static boolean checkStepDone(String stepCode, Dossier dossier) {
 		if (Validator.isNotNull(stepCode)) {
-			if (stepCode.contains("|")) {
-				String[] stepArr = stepCode.split("|");
+			if (stepCode.contains(StringPool.PIPE)) {
+				String[] stepArr = stepCode.split(StringPool.PIPE);
 				for (String step : stepArr) {
 					List<DossierAction> lstDActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), step);
 					if (lstDActions.size() > 0) {
@@ -765,12 +769,12 @@ public class DossierMgtUtils {
 		ServiceContext context = new ServiceContext();
 		context.setUserId(dossier.getUserId());
 		JSONObject jsonObj = JSONFactoryUtil.createJSONObject();
-		jsonObj.put("key", key);
+		jsonObj.put(ConstantUtils.VALUE_KEY, key);
 		String dataBinding = AutoFillFormData.sampleDataBinding(jsonObj.toJSONString(), dossier.getDossierId(), context);
 		JSONObject resultObj;
 		try {
 			resultObj = JSONFactoryUtil.createJSONObject(dataBinding);
-			if (resultObj.has("key") && resultObj.getString("key").equals(value)) {
+			if (resultObj.has(ConstantUtils.VALUE_KEY) && resultObj.getString(ConstantUtils.VALUE_KEY).equals(value)) {
 				return true;
 			}
 			else {
@@ -869,22 +873,10 @@ public class DossierMgtUtils {
 	}
 	
 	private static boolean checkWaiting(String preCondition, Dossier dossier) {
-//		long dossierActionId = dossier.getDossierActionId();
-//		DossierAction action = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-//		Date actionDate = action.getModifiedDate();
 		String[] waitingArr = StringUtil.split(preCondition);
 		if (waitingArr.length != 2) {
 			return false;
 		}
-		String condition = waitingArr[0];
-//		String nBlock = waitingArr[1];
-		if ("waiting".equals(condition)) {
-			
-		}
-		else {
-			return false;
-		}
-		
 		return false;
 	}
 

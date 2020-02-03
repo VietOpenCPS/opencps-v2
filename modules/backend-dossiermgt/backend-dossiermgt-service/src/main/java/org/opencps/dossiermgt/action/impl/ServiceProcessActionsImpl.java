@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.ServiceProcessActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -54,8 +55,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		count =
 			ServiceProcessLocalServiceUtil.countLucene(params, searchContext);
 
-		result.put("total", count);
-		result.put("data", hits.toList());
+		result.put(ConstantUtils.TOTAL, count);
+		result.put(ConstantUtils.DATA, hits.toList());
 
 		return result;
 	}
@@ -118,8 +119,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
 		long count = processRoles.size();
 
-		results.put("total", count);
-		results.put("data", processRoles);
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, processRoles);
 
 		return results;
 	}
@@ -163,8 +164,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			params, sorts, start, end, searchContext);
 		count = ProcessStepLocalServiceUtil.countLucene(params, searchContext);
 
-		results.put("total", count);
-		results.put("data", hits.toList());
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, hits.toList());
 
 		return results;
 	}
@@ -223,8 +224,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			ProcessStepRoleLocalServiceUtil.findByP_S_ID(processStepId);
 		long count = processStepRoles.size();
 
-		results.put("total", count);
-		results.put("data", processStepRoles);
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, processStepRoles);
 
 		return results;
 	}
@@ -278,8 +279,8 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		count =
 			ProcessActionLocalServiceUtil.searchCount(params, searchContext);
 
-		results.put("total", count);
-		results.put("data", hits.toList());
+		results.put(ConstantUtils.TOTAL, count);
+		results.put(ConstantUtils.DATA, hits.toList());
 
 		return results;
 	}
@@ -456,7 +457,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -486,7 +486,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -543,9 +542,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			}
 		}
 		catch (Exception e) {
-			// e.printStackTrace();
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 
@@ -574,7 +571,6 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			// _log.error(e);
 			return false;
 		}
 

@@ -2,7 +2,6 @@ package org.opencps.dossiermgt.constants;
 
 public class DossierFileTerm {
 	public static final String DOSSIER_FILE_ID = "dossierFileId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID  = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -26,4 +25,8 @@ public class DossierFileTerm {
 	public static final String COUNTER = "counter";
 	public static final String FILE_TYPE = "fileType";
 	public static final String IS_SYNC = "isSync";
+	public static final String FILE_NAME = "fileName";
+	public static final String URL_EFROM_PATH = "eforms";
+	public static final String KEY_FILE = "file";
+	public static final String FILE_ATTACH = "fileAttach";
 }

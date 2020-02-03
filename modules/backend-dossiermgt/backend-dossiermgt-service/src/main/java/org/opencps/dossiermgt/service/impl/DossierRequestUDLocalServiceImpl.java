@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -28,6 +29,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DossierRequestUD;
 import org.opencps.dossiermgt.service.base.DossierRequestUDLocalServiceBaseImpl;
 
@@ -158,9 +161,9 @@ public class DossierRequestUDLocalServiceImpl extends DossierRequestUDLocalServi
 
 		DossierRequestUD object = null;
 
-		if (objectData.getLong("DossierRequestUDId") > 0) {
+		if (objectData.getLong(DossierRequestUDId) > 0) {
 
-			object = dossierRequestUDPersistence.fetchByPrimaryKey(objectData.getLong("DossierRequestUDId"));
+			object = dossierRequestUDPersistence.fetchByPrimaryKey(objectData.getLong(DossierRequestUDId));
 
 			object.setModifiedDate(new Date());
 
@@ -170,24 +173,28 @@ public class DossierRequestUDLocalServiceImpl extends DossierRequestUDLocalServi
 
 			object = dossierRequestUDPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setDossierId(objectData.getLong("dossierId"));
-		object.setReferenceUid(objectData.getString("referenceUid"));
-		object.setRequestType(objectData.getString("requestType"));
-		object.setComment(objectData.getString("comment"));
-		object.setIsNew(objectData.getInt("isNew"));
-		object.setStatusReg(objectData.getInt("statusReg"));
+		object.setDossierId(objectData.getLong(DossierTerm.DOSSIER_ID));
+		object.setRequestType(objectData.getString(requestType));
+		object.setComment(objectData.getString(comment));
+		object.setReferenceUid(objectData.getString(DossierTerm.REFERENCE_UID));
+		object.setIsNew(objectData.getInt(DossierFileTerm.IS_NEW));
+		object.setStatusReg(objectData.getInt(DossierTerm.STATUS_REG));
 
 		dossierRequestUDPersistence.update(object);
 
 		return object;
 	}
+
+	private static final String DossierRequestUDId = "DossierRequestUDId";
+	private static final String requestType = "requestType";
+	private static final String comment = "comment";
 }

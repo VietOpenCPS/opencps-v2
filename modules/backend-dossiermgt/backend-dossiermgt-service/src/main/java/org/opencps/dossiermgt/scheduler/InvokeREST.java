@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.io.BufferedReader;
@@ -19,8 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 
 public class InvokeREST {
 	
@@ -31,16 +36,16 @@ public class InvokeREST {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -48,16 +53,16 @@ public class InvokeREST {
 			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
 			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 			
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
-			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+			conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
 			
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -75,17 +80,15 @@ public class InvokeREST {
 				sb.append(output);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, conn.getResponseCode());
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
-//			e.printStackTrace();
 			_log.error(e);
 		} catch (IOException e) {
 			_log.error(e);
-//			e.printStackTrace();
 
 		}
 
@@ -105,16 +108,16 @@ public class InvokeREST {
 		try {
 
 			String urlPath = pathBase;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -122,18 +125,18 @@ public class InvokeREST {
 			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
 			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+			conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -145,15 +148,15 @@ public class InvokeREST {
 
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)
-					postData.append('&');
-				postData.append(java.net.URLEncoder.encode(param.getKey(), "UTF-8"));
-				postData.append('=');
-				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+					postData.append(StringPool.AMPERSAND.charAt(0));
+				postData.append(java.net.URLEncoder.encode(param.getKey(), ConstantUtils.UTF_8));
+				postData.append(StringPool.EQUAL.charAt(0));
+				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
 			}
 
-			byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+			byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
 
-			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+			conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 
 			conn.getOutputStream().write(postDataBytes);
 
@@ -167,18 +170,16 @@ public class InvokeREST {
 				sb.append(output);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, conn.getResponseCode());
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
 			_log.error(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
 			_log.debug(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 
 		} finally {
@@ -191,7 +192,6 @@ public class InvokeREST {
 					br.close();
 				} catch (IOException e) {
 					_log.debug(e);
-					//_log.error(e);
 				}
 			}
 
@@ -208,26 +208,25 @@ public class InvokeREST {
 
 		try {
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
 			String requestURL;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				requestURL = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				requestURL = pathBase + endPoint;
 			}
 			else {
-				requestURL = pathBase + "/" + endPoint;
+				requestURL = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 
 			
-			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
-			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
+			MultipartUtility multipart = new MultipartUtility(requestURL, ConstantUtils.UTF_8, groupId, authStringEnc);
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -236,10 +235,10 @@ public class InvokeREST {
 			}
 
 			if (file != null) {
-				multipart.addFilePart("file", file);				
+				multipart.addFilePart(DossierFileTerm.KEY_FILE, file);				
 			}
 			else {
-				multipart.addFormField("file", StringPool.BLANK);
+				multipart.addFormField(DossierFileTerm.KEY_FILE, StringPool.BLANK);
 			}
 
 			List<String> res = multipart.finish();
@@ -250,14 +249,13 @@ public class InvokeREST {
 				sb.append(line);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_OK);
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, HttpURLConnection.HTTP_OK);
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
-			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
-			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
+			response.put(DossierTerm.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), e.getMessage());
 		}
 
 		return response;
@@ -271,24 +269,24 @@ public class InvokeREST {
 
 		try {
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
 			String requestURL;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				requestURL = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				requestURL = pathBase + endPoint;
 			}
 			else {
-				requestURL = pathBase + "/" + endPoint;
+				requestURL = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			
-			MultipartUtility multipart = new MultipartUtility(requestURL, "UTF-8", groupId, authStringEnc);
+			MultipartUtility multipart = new MultipartUtility(requestURL, ConstantUtils.UTF_8, groupId, authStringEnc);
 			// TODO; check logic here, if ref fileId in SERVER equal CLIENT
 
 			if (!properties.isEmpty()) {
@@ -298,10 +296,10 @@ public class InvokeREST {
 			}
 
 			if (file != null) {
-				multipart.addFilePartWithFileName("file", file, fileName);				
+				multipart.addFilePartWithFileName(DossierFileTerm.KEY_FILE, file, fileName);				
 			}
 			else {
-				multipart.addFormField("file", StringPool.BLANK);
+				multipart.addFormField(DossierFileTerm.KEY_FILE, StringPool.BLANK);
 			}
 
 			List<String> res = multipart.finish();
@@ -311,14 +309,13 @@ public class InvokeREST {
 				sb.append(line);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_OK);
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, HttpURLConnection.HTTP_OK);
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
-			response.put(RESTFulConfiguration.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
-			response.put(RESTFulConfiguration.MESSAGE, e.getMessage());
+			response.put(DossierTerm.STATUS, HttpURLConnection.HTTP_FORBIDDEN);
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), e.getMessage());
 		}
 
 		return response;
@@ -337,16 +334,16 @@ public class InvokeREST {
 		try {
 
 			String urlPath = pathBase;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -354,18 +351,18 @@ public class InvokeREST {
 			conn.setConnectTimeout(OpenCPSConfigUtil.getRestConnectionTimeout());
 			conn.setReadTimeout(OpenCPSConfigUtil.getRestReadTimeout());
 
-			String authString = username + ":" + password;
+			String authString = username + StringPool.COLON + password;
 
 			String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-			conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+			conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
 
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("groupId", String.valueOf(groupId));
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+			conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -383,18 +380,16 @@ public class InvokeREST {
 				sb.append(output);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, conn.getResponseCode());
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
 			_log.debug(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
 			_log.debug(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 
 		} finally {
@@ -407,7 +402,6 @@ public class InvokeREST {
 					br.close();
 				} catch (IOException e) {
 					_log.debug(e);
-					//_log.error(e);
 				}
 			}
 
@@ -428,16 +422,16 @@ public class InvokeREST {
 		try {
 
 			String urlPath = pathBase;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -449,7 +443,7 @@ public class InvokeREST {
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
 
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
@@ -461,15 +455,15 @@ public class InvokeREST {
 
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)
-					postData.append('&');
-				postData.append(java.net.URLEncoder.encode(param.getKey(), "UTF-8"));
-				postData.append('=');
-				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+					postData.append(StringPool.AMPERSAND.charAt(0));
+				postData.append(java.net.URLEncoder.encode(param.getKey(), ConstantUtils.UTF_8));
+				postData.append(StringPool.EQUAL.charAt(0));
+				postData.append(java.net.URLEncoder.encode(String.valueOf(param.getValue()), ConstantUtils.UTF_8));
 			}
 
-			byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+			byte[] postDataBytes = postData.toString().getBytes(ConstantUtils.UTF_8);
 
-			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+			conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 
 			conn.getOutputStream().write(postDataBytes);
 
@@ -483,18 +477,16 @@ public class InvokeREST {
 				sb.append(output);
 			}
 
-			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, conn.getResponseCode());
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
 			_log.error(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
 			_log.debug(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 
 		} finally {
@@ -507,7 +499,6 @@ public class InvokeREST {
 					br.close();
 				} catch (IOException e) {
 					_log.debug(e);
-					//_log.error(e);
 				}
 			}
 
@@ -526,16 +517,16 @@ public class InvokeREST {
 		try {
 
 			String urlPath = pathBase;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/"))
-					|| (pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) && endPoint.startsWith(StringPool.FORWARD_SLASH))
+					|| (pathBase.endsWith(StringPool.FORWARD_SLASH) && !endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -547,13 +538,13 @@ public class InvokeREST {
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("Authorization", "Bearer " + token);
-			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
+			conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, "Bearer " + token);
+			conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
 			
-			byte[] postDataBytes = raw.getBytes("UTF-8");
+			byte[] postDataBytes = raw.getBytes(ConstantUtils.UTF_8);
 
-			conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+			conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, String.valueOf(postDataBytes.length));
 			conn.getOutputStream().write(postDataBytes);
 
 			br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
@@ -565,18 +556,16 @@ public class InvokeREST {
 			while ((output = br.readLine()) != null) {
 				sb.append(output);
 			}
-			response.put(RESTFulConfiguration.STATUS, conn.getResponseCode());
-			response.put(RESTFulConfiguration.MESSAGE, sb.toString());
+			response.put(DossierTerm.STATUS, conn.getResponseCode());
+			response.put(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG), sb.toString());
 
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
 			_log.error(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 		} catch (IOException e) {
 			_log.debug(e);
-			//_log.error(e);
 			_log.error("Can't invoke api " + pathBase + endPoint);
 
 		} finally {
@@ -589,7 +578,6 @@ public class InvokeREST {
 					br.close();
 				} catch (IOException e) {
 					_log.debug(e);
-					//_log.error(e);
 				}
 			}
 

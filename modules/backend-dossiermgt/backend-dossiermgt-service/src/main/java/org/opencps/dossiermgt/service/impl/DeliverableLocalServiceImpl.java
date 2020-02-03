@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,6 +68,8 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -77,6 +80,7 @@ import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalService;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -131,14 +135,9 @@ public class DeliverableLocalServiceImpl
 		String expireDate, String revalidate, String deliverableState,
 		ServiceContext serviceContext) {
 
-		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
-
-		// User userAction = userLocalService.getUser(userId);
-
-		// referenceUid = UUID.randomUUID().toString();
 
 		long deliverableId =
 			counterLocalService.increment(Deliverable.class.getName());
@@ -193,7 +192,6 @@ public class DeliverableLocalServiceImpl
 		String expireDate, String revalidate, String deliverableState,
 		long dossierId, long fileEntryId, ServiceContext serviceContext) {
 
-		// TODO Add RegistrationForm
 		long userId = serviceContext.getUserId();
 
 		Date now = new Date();
@@ -266,8 +264,6 @@ public class DeliverableLocalServiceImpl
 			counterLocalService.increment(Deliverable.class.getName());
 
 		Deliverable object = deliverablePersistence.create(deliverableId);
-		// DeliverableType dlvType =
-		// deliverableTypePersistence.fetchByG_DLT(groupId, deliverableType);
 
 		/// Add audit fields
 		object.setGroupId(groupId);
@@ -318,7 +314,6 @@ public class DeliverableLocalServiceImpl
 		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		// String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<Deliverable> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
@@ -351,7 +346,7 @@ public class DeliverableLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -422,14 +417,6 @@ public class DeliverableLocalServiceImpl
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
-		// if (Validator.isNotNull(groupId)) {
-		// MultiMatchQuery query = new MultiMatchQuery(groupId);
-		//
-		// query.addFields(Field.GROUP_ID);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
-
 		// Extra fields
 		String state =
 			GetterUtil.getString(params.get(DeliverableTerm.DELIVERABLE_STATE));
@@ -479,7 +466,7 @@ public class DeliverableLocalServiceImpl
 		}
 
 		if (Validator.isNotNull(deliverableId) &&
-			!"0".equalsIgnoreCase(deliverableId)) {
+			!String.valueOf(0).equalsIgnoreCase(deliverableId)) {
 			MultiMatchQuery query = new MultiMatchQuery(deliverableId);
 
 			query.addFields(DeliverableTerm.DELIVERABLE_ID);
@@ -506,7 +493,6 @@ public class DeliverableLocalServiceImpl
 		throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		// String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<Deliverable> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
@@ -538,10 +524,8 @@ public class DeliverableLocalServiceImpl
 
 		// Set value header
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] {
-			CLASS_NAME
-		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -607,14 +591,6 @@ public class DeliverableLocalServiceImpl
 
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
-
-		// if (Validator.isNotNull(groupId)) {
-		// MultiMatchQuery query = new MultiMatchQuery(groupId);
-		//
-		// query.addFields(Field.GROUP_ID);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
 
 		// Extra fields
 		String state =
@@ -723,18 +699,8 @@ public class DeliverableLocalServiceImpl
 			object.setDeliverableState(Integer.valueOf(deliverableState));
 		}
 		catch (Exception e) {
-			// TODO
 			_log.error(e);
 		}
-		// TODO:????
-		// try {
-		// DeliverableLog deliverableLog = deliverableLogPersistence.fi(groupId,
-		// id);
-
-		// } catch (Exception e) {
-		// TODO: handle exception
-		// _log.error(e);
-		// }
 		return deliverablePersistence.update(object);
 	}
 
@@ -805,14 +771,14 @@ public class DeliverableLocalServiceImpl
 		Message message = new Message();
 		// _log.info("Document script: " + dt.getDocumentScript());
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put("className", Deliverable.class.getName());
-		msgData.put("classPK", object.getDeliverableId());
-		msgData.put("jrxmlTemplate", result);
-		msgData.put("formData", formData);
-		msgData.put("userId", userId);
+		msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+		msgData.put(Field.CLASS_PK, object.getDeliverableId());
+		msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
+		msgData.put(ConstantUtils.FORM_DATA, formData);
+		msgData.put(Field.USER_ID, userId);
 
-		message.put("msgToEngine", msgData);
-		MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 
 		return deliverablePersistence.update(object);
 	}
@@ -1371,8 +1337,8 @@ public class DeliverableLocalServiceImpl
 
 		Deliverable object = null;
 
-		long deliverableId = objectData.getLong("deliverableId");
-		long groupId = objectData.getLong("groupId");
+		long deliverableId = objectData.getLong(DeliverableTerm.DELIVERABLE_ID);
+		long groupId = objectData.getLong(Field.GROUP_ID);
 		boolean flagAttach = false;
 		if (deliverableId > 0) {
 
@@ -1381,8 +1347,8 @@ public class DeliverableLocalServiceImpl
 			try {
 				JSONObject jsonDeli =
 					JSONFactoryUtil.createJSONObject(object.getFormData());
-				if (jsonDeli != null && jsonDeli.has("fileAttach")) {
-					flagAttach = jsonDeli.getBoolean("fileAttach");
+				if (jsonDeli != null && jsonDeli.has(DeliverableTerm.FILE_ATTACH)) {
+					flagAttach = jsonDeli.getBoolean(DeliverableTerm.FILE_ATTACH);
 				}
 			}
 			catch (JSONException e) {
@@ -1397,67 +1363,40 @@ public class DeliverableLocalServiceImpl
 			object = deliverablePersistence.create(deliverableId);
 
 			object.setGroupId(groupId);
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
 		object.setModifiedDate(new Date());
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
 		//
-		// String deliverableCode = objectData.getString("deliverableCode");
-		// object.setDeliverableCode(deliverableCode);
-		// object.setDeliverableName(objectData.getString("deliverableName"));
-		//
-		String deliverableType = objectData.getString("deliverableType");
+		String deliverableType = objectData.getString(DeliverableTerm.DELIVERABLE_TYPE);
 		object.setDeliverableType(deliverableType);
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setGovAgencyCode(objectData.getString(DossierTerm.GOV_AGENCY_CODE));
 		//
-		String govAgencyName = objectData.getString("govAgencyName");
+		String govAgencyName = objectData.getString(DossierTerm.GOV_AGENCY_NAME);
 		if (Validator.isNull(govAgencyName)) {
 			govAgencyName = getDictItemName(
-				groupId, "GOVERNMENT_AGENCY",
-				objectData.getString("govAgencyCode"));
+				groupId, ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY),
+				objectData.getString(DossierTerm.GOV_AGENCY_CODE));
 		}
 
 		object.setGovAgencyName(govAgencyName);
 		// applicant
-		// String applicantIdNo = objectData.getString("applicantIdNo");
-		// String applicantIdName = objectData.getString("applicantName");
-		// object.setApplicantIdNo(applicantIdNo);
-
-		// if (Validator.isNull(applicantIdName)) {
-		// Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0,
-		// applicantIdNo);
-		// if (applicant != null) {
-		// applicantIdName = applicant.getApplicantName();
-		// }
-		// }
-		// object.setApplicantName(applicantIdName);
-		// object.setSubject(objectData.getString("subject"));
-		// long expireDateLong = objectData.getLong("expireDate");
-		// long issueDateLong = objectData.getLong("issueDate");
-		// long revalidateLong = objectData.getLong("revalidate");
-		// if (expireDateLong > 0)
-		// object.setExpireDate(new Date(expireDateLong));
-		// if (issueDateLong > 0)
-		// object.setIssueDate(new Date(issueDateLong));
-		// if (revalidateLong > 0)
-		// object.setRevalidate(new Date(revalidateLong));
-		//
 		JSONObject jsonData = null;
 		try {
 			jsonData = JSONFactoryUtil.createJSONObject(
-				objectData.getString("formData"));
+				objectData.getString(ConstantUtils.FORM_DATA));
 
-			String deliverableCode = jsonData.getString("deliverableCode");
+			String deliverableCode = jsonData.getString(DeliverableTerm.DELIVERABLE_CODE);
 			if (Validator.isNotNull(deliverableCode)) {
 				object.setDeliverableCode(deliverableCode);
 			}
 			//
-			String deliverableName = jsonData.getString("deliverableName");
+			String deliverableName = jsonData.getString(DeliverableTerm.DELIVERABLE_NAME);
 			if (Validator.isNotNull(deliverableName)) {
 				object.setDeliverableName(deliverableName);
 			}
@@ -1470,22 +1409,22 @@ public class DeliverableLocalServiceImpl
 				}
 			}
 			//
-			String applicantName = jsonData.getString("applicantName");
+			String applicantName = jsonData.getString(ApplicantTerm.APPLICANTNAME);
 			if (Validator.isNotNull(applicantName)) {
 				object.setApplicantName(applicantName);
 			}
 			//
-			String applicantIdNo = jsonData.getString("applicantIdNo");
+			String applicantIdNo = jsonData.getString(ApplicantTerm.APPLICANTIDNO);
 			if (Validator.isNotNull(applicantIdNo)) {
 				object.setApplicantIdNo(applicantIdNo);
 			}
 			//
-			String subject = jsonData.getString("subject");
+			String subject = jsonData.getString(DeliverableTerm.SUBJECT);
 			if (Validator.isNotNull(subject)) {
 				object.setSubject(subject);
 			}
 			//
-			String deliverableState = jsonData.getString("deliverableState");
+			String deliverableState = jsonData.getString(DeliverableTerm.DELIVERABLE_STATE);
 			if (Validator.isNotNull(deliverableState)) {
 				object.setDeliverableState(Integer.valueOf(deliverableState));
 			}
@@ -1495,9 +1434,9 @@ public class DeliverableLocalServiceImpl
 			//
 			SimpleDateFormat sdf =
 				new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-			String strExpireDate = jsonData.getString("expireDate");
-			String strIssueDate = jsonData.getString("issueDate");
-			String strRevalidate = jsonData.getString("revaliDate");
+			String strExpireDate = jsonData.getString(DeliverableTerm.EXPIRE_DATE);
+			String strIssueDate = jsonData.getString(DeliverableTerm.ISSUE_DATE);
+			String strRevalidate = jsonData.getString(DeliverableTerm.REVALIDATE);
 			if (Validator.isNotNull(strExpireDate)) {
 				Date expireDate = sdf.parse(strExpireDate);
 				if (expireDate != null) {
@@ -1528,7 +1467,7 @@ public class DeliverableLocalServiceImpl
 		}
 
 		if (jsonData != null) {
-			jsonData.put("fileAttach", flagAttach);
+			jsonData.put(DeliverableTerm.FILE_ATTACH, flagAttach);
 			object.setFormData(jsonData.toJSONString());
 		}
 		else {
@@ -1550,13 +1489,11 @@ public class DeliverableLocalServiceImpl
 		object.setFormScriptFileId(formScriptFileId);
 		object.setFormReportFileId(formReportFileId);
 
-		object.setFormScript(objectData.getString("formScript"));
-		object.setFormReport(objectData.getString("formReport"));
+		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
 
 		// new field to save QD
-		object.setFormReport(objectData.getString("fileAttachs"));
-
-		// object.setDeliverableState(objectData.getInt("deliverableState"));
+		object.setFormReport(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 
 		object = deliverablePersistence.update(object);
 
@@ -1594,17 +1531,17 @@ public class DeliverableLocalServiceImpl
 			Message message = new Message();
 			// _log.info("Document script: " + dt.getDocumentScript());
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put("className", Deliverable.class.getName());
-			msgData.put("classPK", object.getDeliverableId());
-			msgData.put("jrxmlTemplate", result);
+			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+			msgData.put(Field.CLASS_PK, object.getDeliverableId());
+			msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
 			msgData.put(
-				"formData",
+					ConstantUtils.FORM_DATA,
 				jsonData != null ? jsonData.toJSONString() : StringPool.BLANK);
-			msgData.put("userId", objectData.getLong("userId"));
+			msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
 
-			message.put("msgToEngine", msgData);
+			message.put(ConstantUtils.MSG_ENG, msgData);
 			MessageBusUtil.sendMessage(
-				"jasper/engine/out/destination", message);
+					ConstantUtils.JASPER_DESTINATION, message);
 		}
 
 		return object;

@@ -97,7 +97,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -261,7 +261,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

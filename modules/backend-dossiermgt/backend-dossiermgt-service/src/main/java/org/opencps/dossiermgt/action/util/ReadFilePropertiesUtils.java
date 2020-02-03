@@ -11,7 +11,7 @@ public class ReadFilePropertiesUtils {
 	}
 
 	private ReadFilePropertiesUtils() {
-		_configuration = ConfigurationFactoryUtil.getConfiguration(getClass().getClassLoader(), "constants");
+		_configuration = ConfigurationFactoryUtil.getConfiguration(getClass().getClassLoader(), ConstantUtils.FILE_CONSTANTS);
 	}
 
 	private static ReadFilePropertiesUtils _instance = new ReadFilePropertiesUtils();

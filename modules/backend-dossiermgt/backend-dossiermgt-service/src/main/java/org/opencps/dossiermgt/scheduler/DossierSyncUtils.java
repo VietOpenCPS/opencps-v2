@@ -10,14 +10,17 @@ import com.liferay.portal.kernel.json.JSONObject;
 
 public class DossierSyncUtils {
 
+	public static final String dossierId = "dossierId";
+	public static final String dossierSyncId = "dossierSyncId";
+	public static final String method = "method";
 	public static ArrayList<DossierSyncOrderedModel> convertToModel(JSONArray array) {
 		ArrayList<DossierSyncOrderedModel> dossierSyncModels = new ArrayList<DossierSyncOrderedModel>();
 
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject jsElm = array.getJSONObject(i);
 
-			DossierSyncOrderedModel dsm = new DossierSyncOrderedModel(jsElm.getLong("dossierSyncId"),
-					jsElm.getLong("dossierId"), jsElm.getInt("method"));
+			DossierSyncOrderedModel dsm = new DossierSyncOrderedModel(jsElm.getLong(dossierSyncId),
+					jsElm.getLong(dossierId), jsElm.getInt(method));
 			
 			dossierSyncModels.add(dsm);
 		}

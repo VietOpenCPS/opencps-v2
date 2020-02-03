@@ -128,7 +128,7 @@ public class DossierFileIndexer extends BaseIndexer<DossierFile> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index DossierFile " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

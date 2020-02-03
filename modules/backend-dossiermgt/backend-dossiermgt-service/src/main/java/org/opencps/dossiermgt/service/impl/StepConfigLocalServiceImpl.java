@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.StepConfigTerm;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
 import org.opencps.dossiermgt.model.StepConfig;
@@ -154,20 +156,6 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 	}
 
 	public StepConfig getByCode(long groupId, String stepCode) {
-//		if (stepCode != null) {
-//			Serializable stepConfigCache = CacheLocalServiceUtil.getFromCache("StepConfig", groupId +"_"+ stepCode);
-//			StepConfig stepConfig = null;
-//			if (stepConfigCache == null) {
-//				stepConfig = stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
-//				if (stepConfig != null) {
-//					CacheLocalServiceUtil.addToCache("StepConfig",
-//							groupId +"_"+ stepCode, (Serializable) stepConfig,
-//							(int) Time.MINUTE * 15);
-//				}
-//			} else {
-//				stepConfig = (StepConfig) stepConfigCache;
-//			}
-//		}
 		return stepConfigPersistence.fetchByF_BY_stepCode(groupId, stepCode);
 
 	}
@@ -265,17 +253,17 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 
 		StepConfig object = null;
 
-		if (objectData.getLong("stepConfigId") > 0) {
+		if (objectData.getLong(StepConfigTerm.STEP_CONFIG_ID) > 0) {
 
-			object = stepConfigPersistence.fetchByPrimaryKey(objectData.getLong("stepConfigId"));
+			object = stepConfigPersistence.fetchByPrimaryKey(objectData.getLong(StepConfigTerm.STEP_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
 		} else {
 
 			try {
-				validate(objectData.getLong("groupId"), objectData.getString("stepCode"),
-						objectData.getLong("stepConfigId"));
+				validate(objectData.getLong(Field.GROUP_ID), objectData.getString("stepCode"),
+						objectData.getLong(StepConfigTerm.STEP_CONFIG_ID));
 			} catch (PortalException e) {
 				_log.debug(e);
 				return null;
@@ -285,22 +273,22 @@ public class StepConfigLocalServiceImpl extends StepConfigLocalServiceBaseImpl {
 
 			object = stepConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setStepCode(objectData.getString("stepCode"));
-		object.setStepName(objectData.getString("stepName"));
-		object.setStepType(objectData.getInt("stepType"));
-		object.setDossierStatus(objectData.getString("dossierStatus"));
-		object.setDossierSubStatus(objectData.getString("dossierSubStatus"));
-		object.setMenuGroup(objectData.getString("menuGroup"));
-		object.setMenuStepName(objectData.getString("menuStepName"));
-		object.setButtonConfig(objectData.getString("buttonConfig"));
+		object.setStepCode(objectData.getString(StepConfigTerm.STEP_CODE));
+		object.setStepName(objectData.getString(StepConfigTerm.STEP_NAME));
+		object.setStepType(objectData.getInt(StepConfigTerm.STEP_TYPE));
+		object.setDossierStatus(objectData.getString(StepConfigTerm.DOSSIER_STATUS));
+		object.setDossierSubStatus(objectData.getString(StepConfigTerm.DOSSIER_SUB_STATUS));
+		object.setMenuGroup(objectData.getString(StepConfigTerm.MENU_GROUP));
+		object.setMenuStepName(objectData.getString(StepConfigTerm.MENU_STEP_NAME));
+		object.setButtonConfig(objectData.getString(StepConfigTerm.BUTTON_CONFIG));
 
 		stepConfigPersistence.update(object);
 

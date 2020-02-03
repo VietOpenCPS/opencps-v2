@@ -42,7 +42,17 @@ public class CheckFileUtils {
 
 	private static boolean checkExtentionFile(DataHandler handle) {
 		//return false;
-		String[] extentionArr = { "png", "pdf", "doc", "docx", "xls", "xlsx", "jpg", "jpeg", "txt", "rtf", "xml", "zip", "rar" };
+		String[] extentionArr = { ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PDF),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_DOC),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_DOCX),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XLS),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XLSX),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_JPEG),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_TXT),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_RTF),
+				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XML)};
 		
 		String extentFile = FilenameUtils.getExtension(handle.getName());
 		for (String extend : extentionArr) {

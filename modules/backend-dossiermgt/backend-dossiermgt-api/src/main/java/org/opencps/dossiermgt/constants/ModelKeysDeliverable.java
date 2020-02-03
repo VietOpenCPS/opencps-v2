@@ -27,5 +27,6 @@ public class ModelKeysDeliverable {
 	public static final String FILEENTRYID = "fileEntryId";
 	public static final String DOCSYNC = "docSync";
 	public static final String DOSSIERID = "dossierId";
+	public static final String STR_DATE = "_date";
 	
 }

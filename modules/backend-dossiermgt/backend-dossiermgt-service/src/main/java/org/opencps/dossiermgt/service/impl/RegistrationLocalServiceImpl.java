@@ -50,6 +50,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.RegistrationFormActions;
 import org.opencps.dossiermgt.action.impl.RegistrationFormActionsImpl;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.service.base.RegistrationLocalServiceBaseImpl;
@@ -253,7 +254,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -337,7 +338,7 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -589,9 +590,9 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		Registration object = null;
 
-		if (objectData.getLong("registrationId") > 0) {
+		if (objectData.getLong(RegistrationTerm.REGISTRATION_ID) > 0) {
 
-			object = registrationPersistence.fetchByPrimaryKey(objectData.getLong("registrationId"));
+			object = registrationPersistence.fetchByPrimaryKey(objectData.getLong(RegistrationTerm.REGISTRATION_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -601,63 +602,63 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 			object = registrationPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setApplicantName(objectData.getString("applicantName"));
-		object.setApplicantIdType(objectData.getString("applicantIdType"));
-		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
-		if (Validator.isNotNull(objectData.getString("applicantIdDate"))) {
+		object.setApplicantName(objectData.getString(RegistrationTerm.APPLICATION_NAME));
+		object.setApplicantIdType(objectData.getString(RegistrationTerm.APPLICATION_ID_TYPE));
+		object.setApplicantIdNo(objectData.getString(RegistrationTerm.APPLICATION_ID_NO));
+		if (Validator.isNotNull(objectData.getString(RegistrationTerm.APPLICATION_ID_DATE))) {
 			try {
-				Date idDate = UserMgtUtils.convertDate(objectData.getString("applicantIdDate"));
+				Date idDate = UserMgtUtils.convertDate(objectData.getString(RegistrationTerm.APPLICATION_ID_DATE));
 
 				object.setApplicantIdDate(idDate);
 			} catch (Exception e) {
 				_log.error(e);
 			}
 		}
-		object.setAddress(objectData.getString("address"));
-		object.setContactName(objectData.getString("contactName"));
-		object.setContactTelNo(objectData.getString("contactTelNo"));
-		object.setContactEmail(objectData.getString("contactEmail"));
-		object.setRegistrationClass(objectData.getString("registrationClass"));
-		object.setRegistrationState(objectData.getInt("registrationState"));
-		object.setSubmitting(objectData.getBoolean("submitting"));
-		object.setRepresentativeEnterprise(objectData.getString("representativeEnterprise"));
+		object.setAddress(objectData.getString(RegistrationTerm.ADDRESS));
+		object.setContactName(objectData.getString(RegistrationTerm.CONTACT_NAME));
+		object.setContactTelNo(objectData.getString(RegistrationTerm.CONTACT_TEL_NO));
+		object.setContactEmail(objectData.getString(RegistrationTerm.CONTACT_EMAIL));
+		object.setRegistrationClass(objectData.getString(RegistrationTerm.REGISTRATION_CLASS));
+		object.setRegistrationState(objectData.getInt(RegistrationTerm.REGISTRATIONSTATE));
+		object.setSubmitting(objectData.getBoolean(RegistrationTerm.SUBMITTING));
+		object.setRepresentativeEnterprise(objectData.getString(RegistrationTerm.REPRESENTATIVE_ENTERPRISE));
 
-		object.setCityCode(objectData.getString("cityCode"));
-		object.setDistrictCode(objectData.getString("districtCode"));
-		object.setWardCode(objectData.getString("wardCode"));
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
+		object.setCityCode(objectData.getString(RegistrationTerm.CITY_CODE));
+		object.setDistrictCode(objectData.getString(RegistrationTerm.DISTRICT_CODE));
+		object.setWardCode(objectData.getString(RegistrationTerm.WARD_CODE));
+		object.setGovAgencyCode(objectData.getString(RegistrationTerm.GOV_AGENCY_CODE));
 
 		DictItem govAgencyName = DictCollectionUtils.getDictItemByCode(DataMGTConstants.GOVERNMENT_AGENCY,
-				objectData.getString("govAgencyCode"), objectData.getLong("groupId"));
+				objectData.getString(RegistrationTerm.GOV_AGENCY_CODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(govAgencyName)) {
 			object.setGovAgencyName(govAgencyName.getItemName());
 		}
 
 		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("cityCode"), objectData.getLong("groupId"));
+				objectData.getString(RegistrationTerm.CITY_CODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("districtCode"), objectData.getLong("groupId"));
+				objectData.getString(RegistrationTerm.DISTRICT_CODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
 		}
 
 		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("wardCode"), objectData.getLong("groupId"));
+				objectData.getString(RegistrationTerm.WARD_CODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());
@@ -665,26 +666,26 @@ public class RegistrationLocalServiceImpl extends RegistrationLocalServiceBaseIm
 
 		RegistrationFormActions actionForm = new RegistrationFormActionsImpl();
 
-		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong("groupId"),
-				objectData.getString("applicantIdNo"), objectData.getString("govAgencyCode"), 2);
+		List<Registration> registrations = registrationPersistence.findByG_APPNO_GOVCODE(objectData.getLong(Field.GROUP_ID),
+				objectData.getString(RegistrationTerm.APPLICATION_ID_NO), objectData.getString(RegistrationTerm.GOV_AGENCY_CODE), 2);
 
 		ServiceContext serviceContext = new ServiceContext();
-		serviceContext.setUserId(objectData.getLong("userId"));
-		serviceContext.setScopeGroupId(objectData.getLong("groupId"));
-		serviceContext.setCompanyId(objectData.getLong("companyId"));
+		serviceContext.setUserId(objectData.getLong(Field.USER_ID));
+		serviceContext.setScopeGroupId(objectData.getLong(Field.GROUP_ID));
+		serviceContext.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 
 		try {
 
 			if (registrations.size() == 0) {
 
-				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong("groupId"),
-						objectData.getLong("companyId"), objectData.getLong("registrationId"),
-						objectData.getString("govAgencyCode"), serviceContext);
+				actionForm.addRegistrationFormbaseonRegTemplate(objectData.getLong(Field.GROUP_ID),
+						objectData.getLong(Field.COMPANY_ID), objectData.getLong(RegistrationTerm.REGISTRATION_ID),
+						objectData.getString(RegistrationTerm.GOV_AGENCY_CODE), serviceContext);
 
 			} else {
 				Registration oldRegistration = registrations.get(0);
-				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong("groupId"),
-						oldRegistration.getRegistrationId(), objectData.getLong("registrationId"), serviceContext);
+				actionForm.cloneRegistrationFormByRegistrationId(objectData.getLong(Field.GROUP_ID),
+						oldRegistration.getRegistrationId(), objectData.getLong(RegistrationTerm.REGISTRATION_ID), serviceContext);
 			}
 
 		} catch (PortalException e) {

@@ -75,8 +75,6 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 		document.addNumberSortable(Field.ENTRY_CLASS_PK, object.getPrimaryKey());
-		_log.info("object.getPrimaryKey(): "+object.getPrimaryKey());
-		_log.info("ServiceInfo: "+object.getServiceInfoId());
 
 		String serviceCode = object.getServiceCode();
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, serviceCode);
@@ -173,7 +171,7 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 							indexableActionableDynamicQuery.addDocuments(document);
 						} catch (PortalException pe) {
 							if (_log.isWarnEnabled()) {
-								_log.warn("Unable to index contact " + object.getPrimaryKey(), pe);
+								_log.warn(object.getPrimaryKey(), pe);
 							}
 						}
 					}

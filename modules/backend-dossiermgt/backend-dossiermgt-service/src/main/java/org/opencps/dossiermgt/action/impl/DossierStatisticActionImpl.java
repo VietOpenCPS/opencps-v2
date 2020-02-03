@@ -1,12 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.DossierStatisticAction;
-import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -16,6 +9,14 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.action.DossierStatisticAction;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.model.DossierStatistic;
+import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
 
 public class DossierStatisticActionImpl implements DossierStatisticAction {
 
@@ -64,9 +65,9 @@ public class DossierStatisticActionImpl implements DossierStatisticAction {
 
 			hits = DossierStatisticLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 			long total = DossierStatisticLocalServiceUtil.countLucene(params, searchContext);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);

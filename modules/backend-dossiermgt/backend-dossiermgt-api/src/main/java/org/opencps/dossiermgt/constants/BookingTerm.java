@@ -3,7 +3,6 @@ package org.opencps.dossiermgt.constants;
 public class BookingTerm {
 
 	public static final String BOOKING_ID = "bookingId";
-	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
@@ -24,4 +23,5 @@ public class BookingTerm {
 	public static final String FROM_CHECK_IN_DATE = "fromCheckinDate";
 	public static final String TO_CHECK_IN_DATE = "toCheckinDate";
 	public static final String SPEAKING = "speaking";
+	public static final String SERVICE_GROUP_CODE = "serviceGroupCode";
 }

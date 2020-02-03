@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -20,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -32,6 +34,8 @@ import org.opencps.dossiermgt.service.comparator.DossierActionComparator;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -100,46 +104,46 @@ public class AutoFillFormData {
 						JSONObject applicantJSON = JSONFactoryUtil
 								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
 
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
+						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
+						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
+						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
+						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
+						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
+						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
+						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 //						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
+						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
 
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_representative = applicantJSON.getString("representativeEnterprise");
+						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
+						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
+						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
+						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
+						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
+						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
+						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
+						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
+						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					}
 
@@ -163,9 +167,9 @@ public class AutoFillFormData {
 
 					// _log.info(employeeJSON);
 
-					_employee_employeeNo = employeeJSON.getString("employeeNo");
-					_employee_fullName = employeeJSON.getString("fullName");
-					_employee_title = employeeJSON.getString("title");
+					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
+					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
+					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -187,127 +191,127 @@ public class AutoFillFormData {
 
 				String value = String.valueOf(entry.getValue());
 
-				if (value.startsWith("_") && !value.contains(":")) {
+				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
-					if ("_subjectName".equals(value)) {
+					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
-					} else if ("_subjectId".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectId);
-					} else if ("_address".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if ("_cityCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityCode);
-					} else if ("_cityName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityName);
-					} else if ("_districtCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtCode);
-					} else if ("_districtName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtName);
-					} else if ("_wardCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardCode);
-					} else if ("_wardName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardName);
-					} else if ("_contactName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
-					} else if ("_contactTelNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
-					} else if ("_contactEmail".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactEmail);
-					} else if ("_receiveDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.FROM_RECEIVEDATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _receiveDate);
-					} else if ("_dossierNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
-					} else if ("_employee_employeeNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
-					} else if ("_employee_fullName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
-					} else if ("_employee_title".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_title);
-					} else if ("_applicantName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantName);
-					} else if ("_applicantIdType".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdType);
-					} else if ("_applicantIdNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
-					} else if ("_applicantIdDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDDATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
-					} else if ("_curDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CUR_DATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _curDate);
-					} else if ("_representative".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.REPRESENTATIVE).equals(value)) {
 						jsonMap.put(entry.getKey(), _representative);
-					} else if ("_govAgencyName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _govAgencyName);
-					} else if ("_serviceName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
 					}
 
-				} else if (value.startsWith("_") && value.contains(":")) {
+				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
+					String[] valueSplit = value.split(StringPool.COLON);
 					for (String string : valueSplit) {
-						if ("_subjectName".equals(string)) {
-							resultBinding += ", " + _subjectName;
-						} else if ("_subjectId".equals(string)) {
-							resultBinding += ", " + _subjectId;
-						} else if ("_address".equals(string)) {
-							resultBinding += ", " + _address;
-						} else if ("_wardCode".equals(string)) {
-							resultBinding += ", " + _wardCode;
-						} else if ("_wardName".equals(string)) {
-							resultBinding += ", " + _wardName;
-						} else if ("_districtCode".equals(string)) {
-							resultBinding += ", " + _districtCode;
-						} else if ("_districtName".equals(string)) {
-							resultBinding += ", " + _districtName;
-						} else if ("_cityCode".equals(string)) {
-							resultBinding += ", " + _cityCode;
-						} else if ("_cityName".equals(string)) {
-							resultBinding += ", " + _cityName;
-						} else if ("_contactName".equals(string)) {
-							resultBinding += ", " + _contactName;
-						} else if ("_contactTelNo".equals(string)) {
-							resultBinding += ", " + _contactTelNo;
-						} else if ("_contactEmail".equals(string)) {
-							resultBinding += ", " + _contactEmail;
-						} else if ("_receiveDate".equals(value)) {
-							resultBinding += ", " + _receiveDate;
-						} else if ("_dossierNo".equals(value)) {
-							resultBinding += ", " + _dossierNo;
-						} else if ("_employee_employeeNo".equals(value)) {
-							resultBinding += ", " + _employee_employeeNo;
-						} else if ("_employee_fullName".equals(value)) {
-							resultBinding += ", " + _employee_fullName;
-						} else if ("_employee_title".equals(value)) {
-							resultBinding += ", " + _employee_title;
-						} else if ("_applicantName".equals(value)) {
-							resultBinding += ", " + _applicantName;
-						} else if ("_applicantIdType".equals(value)) {
-							resultBinding += ", " + _applicantIdType;
-						} else if ("_applicantIdNo".equals(value)) {
-							resultBinding += ", " + _applicantIdNo;
-						} else if ("_applicantIdDate".equals(value)) {
-							resultBinding += ", " + _applicantIdDate;
-						} else if ("_curDate".equals(value)) {
-							resultBinding += ", " + _curDate;
-						} else if ("_representative".equals(value)) {
-							resultBinding += ", " + _representative;
-						} else if ("_govAgencyName".equals(value)) {
+						if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectId;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _address;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactTelNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactEmail;
+						} else if ((StringPool.UNDERLINE + DossierTerm.RECEIVE_DATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _receiveDate;
+						} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _dossierNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_employeeNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_fullName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_title;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdType;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDDATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdDate;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CUR_DATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _curDate;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.REPRESENTATIVE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _representative;
+						} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _govAgencyName);
-						} else if ("_serviceName".equals(value)) {
+						} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _serviceName);
 						}
 					}
 
-					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(", ", StringPool.BLANK));
+					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
-				} else if (value.startsWith("#") && value.contains("@")) {
+				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
 					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
+					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-								paper, false, new DossierFileComparator(false, "createDate", Date.class));
+								paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
@@ -317,12 +321,12 @@ public class AutoFillFormData {
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
+								if (variable.contains(StringPool.COLON)) {
+									String[] variableMuti = variable.split(StringPool.COLON);
 									for (String string : variableMuti) {
-										myCHK += ", " + jsonOtherMap.get(string).toString();
+										myCHK += StringPool.COMMA_AND_SPACE + jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(", ", "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, "");
 								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
@@ -332,7 +336,7 @@ public class AutoFillFormData {
 								//_log.error(e);
 							}
 
-							if (myCHK.startsWith("#")) {
+							if (myCHK.startsWith(StringPool.POUND)) {
 								jsonMap.put(entry.getKey(), "");
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
@@ -354,7 +358,7 @@ public class AutoFillFormData {
 					//_log.info("START paper: "+paper);
 					try {
 						DossierAction dossierAction = DossierActionLocalServiceUtil.getByDID_CODE_First(dossierId,
-								paper, new DossierActionComparator(false, "createDate", Date.class));
+								paper, new DossierActionComparator(false, Field.CREATE_DATE, Date.class));
 						//_log.info("START dossierAction: "+dossierAction);
 
 						if (Validator.isNotNull(dossierAction) && Validator.isNotNull(dossierAction.getPayload())
@@ -506,46 +510,46 @@ public class AutoFillFormData {
 						JSONObject applicantJSON = JSONFactoryUtil
 								.createJSONObject(JSONFactoryUtil.looseSerialize(registration));
 
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-//						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_applicantIdDate = applicantJSON.getString("representativeEnterprise");
+						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
+						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
+						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
+						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
+						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
+						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
+						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
+//						_applicantIdDate = applicantJSON.getString(ApplicantTerm.applicantIdDate);
+						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					} else {
 						String applicantStr = applicantActions.getApplicantByUserId(serviceContext);
 
 						JSONObject applicantJSON = JSONFactoryUtil.createJSONObject(applicantStr);
 
-						_subjectName = applicantJSON.getString("applicantName");
-						_subjectId = applicantJSON.getString("applicantId");
-						_address = applicantJSON.getString("address");
-						_cityCode = applicantJSON.getString("cityCode");
-						_cityName = applicantJSON.getString("cityName");
-						_districtCode = applicantJSON.getString("districtCode");
-						_districtName = applicantJSON.getString("districtName");
-						_wardCode = applicantJSON.getString("wardCode");
-						_wardName = applicantJSON.getString("wardName");
-						_contactName = applicantJSON.getString("contactName");
-						_contactTelNo = applicantJSON.getString("contactTelNo");
-						_contactEmail = applicantJSON.getString("contactEmail");
-						_applicantName = applicantJSON.getString("applicantName");
-						_applicantIdType = applicantJSON.getString("applicantIdType");
-						_applicantIdNo = applicantJSON.getString("applicantIdNo");
-						_applicantIdDate = applicantJSON.getString("applicantIdDate");
-						_representative = applicantJSON.getString("representativeEnterprise");
+						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
+						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
+						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
+						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
+						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
+						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
+						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
+						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
+						_representative = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					}
 
@@ -569,9 +573,9 @@ public class AutoFillFormData {
 
 					// _log.info(employeeJSON);
 
-					_employee_employeeNo = employeeJSON.getString("employeeNo");
-					_employee_fullName = employeeJSON.getString("fullName");
-					_employee_title = employeeJSON.getString("title");
+					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
+					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
+					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -593,127 +597,127 @@ public class AutoFillFormData {
 
 				String value = String.valueOf(entry.getValue());
 
-				if (value.startsWith("_") && !value.contains(":")) {
+				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
-					if ("_subjectName".equals(value)) {
+					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
-					} else if ("_subjectId".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectId);
-					} else if ("_address".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if ("_cityCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityCode);
-					} else if ("_cityName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _cityName);
-					} else if ("_districtCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtCode);
-					} else if ("_districtName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _districtName);
-					} else if ("_wardCode".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardCode);
-					} else if ("_wardName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _wardName);
-					} else if ("_contactName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
-					} else if ("_contactTelNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
-					} else if ("_contactEmail".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactEmail);
-					} else if ("_receiveDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.RECEIVE_DATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _receiveDate);
-					} else if ("_dossierNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _dossierNo);
-					} else if ("_employee_employeeNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_employeeNo);
-					} else if ("_employee_fullName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_fullName);
-					} else if ("_employee_title".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_title);
-					} else if ("_applicantName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantName);
-					} else if ("_applicantIdType".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdType);
-					} else if ("_applicantIdNo".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
-					} else if ("_applicantIdDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDDATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdDate);
-					} else if ("_curDate".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.CUR_DATE).equals(value)) {
 						jsonMap.put(entry.getKey(), _curDate);
-					} else if ("_representative".equals(value)) {
+					} else if ((StringPool.UNDERLINE + ApplicantTerm.REPRESENTATIVE).equals(value)) {
 						jsonMap.put(entry.getKey(), _representative);
-					} else if ("_govAgencyName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _govAgencyName);
-					} else if ("_serviceName".equals(value)) {
+					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
 					}
 
-				} else if (value.startsWith("_") && value.contains(":")) {
+				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
-					String[] valueSplit = value.split(":");
+					String[] valueSplit = value.split(StringPool.COLON);
 					for (String string : valueSplit) {
-						if ("_subjectName".equals(string)) {
-							resultBinding += ", " + _subjectName;
-						} else if ("_subjectId".equals(string)) {
-							resultBinding += ", " + _subjectId;
-						} else if ("_address".equals(string)) {
-							resultBinding += ", " + _address;
-						} else if ("_wardCode".equals(string)) {
-							resultBinding += ", " + _wardCode;
-						} else if ("_wardName".equals(string)) {
-							resultBinding += ", " + _wardName;
-						} else if ("_districtCode".equals(string)) {
-							resultBinding += ", " + _districtCode;
-						} else if ("_districtName".equals(string)) {
-							resultBinding += ", " + _districtName;
-						} else if ("_cityCode".equals(string)) {
-							resultBinding += ", " + _cityCode;
-						} else if ("_cityName".equals(string)) {
-							resultBinding += ", " + _cityName;
-						} else if ("_contactName".equals(string)) {
-							resultBinding += ", " + _contactName;
-						} else if ("_contactTelNo".equals(string)) {
-							resultBinding += ", " + _contactTelNo;
-						} else if ("_contactEmail".equals(string)) {
-							resultBinding += ", " + _contactEmail;
-						} else if ("_receiveDate".equals(value)) {
-							resultBinding += ", " + _receiveDate;
-						} else if ("_dossierNo".equals(value)) {
-							resultBinding += ", " + _dossierNo;
-						} else if ("_employee_employeeNo".equals(value)) {
-							resultBinding += ", " + _employee_employeeNo;
-						} else if ("_employee_fullName".equals(value)) {
-							resultBinding += ", " + _employee_fullName;
-						} else if ("_employee_title".equals(value)) {
-							resultBinding += ", " + _employee_title;
-						} else if ("_applicantName".equals(value)) {
-							resultBinding += ", " + _applicantName;
-						} else if ("_applicantIdType".equals(value)) {
-							resultBinding += ", " + _applicantIdType;
-						} else if ("_applicantIdNo".equals(value)) {
-							resultBinding += ", " + _applicantIdNo;
-						} else if ("_applicantIdDate".equals(value)) {
-							resultBinding += ", " + _applicantIdDate;
-						} else if ("_curDate".equals(value)) {
-							resultBinding += ", " + _curDate;
-						} else if ("_representative".equals(value)) {
-							resultBinding += ", " + _representative;
-						} else if ("_govAgencyName".equals(value)) {
+						if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _subjectId;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _address;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactTelNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTEMAIL).equals(string)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _contactEmail;
+						} else if ((StringPool.UNDERLINE + DossierTerm.RECEIVE_DATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _receiveDate;
+						} else if ((StringPool.UNDERLINE + DossierTerm.DOSSIER_NO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _dossierNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_EMPLOYEE_NO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_employeeNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_FULL_NAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_fullName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_title;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdType;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdNo;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDDATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdDate;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.CUR_DATE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _curDate;
+						} else if ((StringPool.UNDERLINE + ApplicantTerm.REPRESENTATIVE).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _representative;
+						} else if ((StringPool.UNDERLINE + DossierTerm.GOV_AGENCY_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _govAgencyName);
-						} else if ("_serviceName".equals(value)) {
+						} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _serviceName);
 						}
 					}
 
-					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(", ", StringPool.BLANK));
+					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
-				} else if (value.startsWith("#") && value.contains("@")) {
+				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
 					String newString = value.substring(1);
-					String[] stringSplit = newString.split("@");
+					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
 					try {
 						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossier.getDossierId(),
-								paper, false, new DossierFileComparator(false, "createDate", Date.class));
+								paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
@@ -723,12 +727,12 @@ public class AutoFillFormData {
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {
-								if (variable.contains(":")) {
-									String[] variableMuti = variable.split(":");
+								if (variable.contains(StringPool.COLON)) {
+									String[] variableMuti = variable.split(StringPool.COLON);
 									for (String string : variableMuti) {
-										myCHK += ", " + jsonOtherMap.get(string).toString();
+										myCHK += StringPool.COMMA_AND_SPACE + jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(", ", "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
@@ -738,13 +742,13 @@ public class AutoFillFormData {
 								//_log.error(e);
 							}
 
-							if (myCHK.startsWith("#")) {
-								jsonMap.put(entry.getKey(), "");
+							if (myCHK.startsWith(StringPool.POUND)) {
+								jsonMap.put(entry.getKey(), StringPool.BLANK);
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
 							}
 						} else {
-							jsonMap.put(entry.getKey(), "");
+							jsonMap.put(entry.getKey(), StringPool.BLANK);
 						}
 					} catch (SystemException e) {
 //						e.printStackTrace();
@@ -760,7 +764,7 @@ public class AutoFillFormData {
 					//_log.info("START paper: "+paper);
 					try {
 						DossierAction dossierAction = DossierActionLocalServiceUtil.getByDID_CODE_First(dossier.getDossierId(),
-								paper, new DossierActionComparator(false, "createDate", Date.class));
+								paper, new DossierActionComparator(false, Field.CREATE_DATE, Date.class));
 						//_log.info("START dossierAction: "+dossierAction);
 
 						if (Validator.isNotNull(dossierAction) && Validator.isNotNull(dossierAction.getPayload())
@@ -783,12 +787,12 @@ public class AutoFillFormData {
 			}
 
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-				if (entry.getValue().getClass().getName().contains("JSONArray")) {
+				if (entry.getValue().getClass().getName().contains(ConstantUtils.KEY_JSON_ARRAY)) {
 					result.put(entry.getKey(), (JSONArray) entry.getValue());
-				} else if (entry.getValue().getClass().getName().contains("JSONObject")) {
+				} else if (entry.getValue().getClass().getName().contains(ConstantUtils.KEY_JSON_OBJECT)) {
 					result.put(entry.getKey(), (JSONObject) entry.getValue());
 				} else {
-					result.put(entry.getKey(), entry.getValue() + "");
+					result.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
 				}
 			}
 		} catch (JSONException e) {

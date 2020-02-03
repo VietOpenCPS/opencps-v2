@@ -37,6 +37,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.RegistrationLogTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.base.RegistrationLogLocalServiceBaseImpl;
@@ -107,7 +109,7 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -144,7 +146,7 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -189,9 +191,9 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 
 		RegistrationLog object = null;
 
-		if (objectData.getLong("registrationLogId") > 0) {
+		if (objectData.getLong(RegistrationLogTerm.REGISTRATION_LOG_ID) > 0) {
 
-			object = registrationLogPersistence.fetchByPrimaryKey(objectData.getLong("registrationLogId"));
+			object = registrationLogPersistence.fetchByPrimaryKey(objectData.getLong(RegistrationLogTerm.REGISTRATION_LOG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -201,18 +203,18 @@ public class RegistrationLogLocalServiceImpl extends RegistrationLogLocalService
 
 			object = registrationLogPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setRegistrationId(objectData.getLong("registrationId"));
-		object.setAuthor(objectData.getString("author"));
-		object.setContent(objectData.getString("content"));
-		object.setPayload(objectData.getString("payload"));
+		object.setRegistrationId(objectData.getLong(RegistrationLogTerm.REGISTRATION_ID));
+		object.setAuthor(objectData.getString(RegistrationLogTerm.AUTHOR));
+		object.setContent(objectData.getString(RegistrationLogTerm.CONTENT));
+		object.setPayload(objectData.getString(RegistrationLogTerm.PAYLOAD));
 
 		registrationLogPersistence.update(object);
 
