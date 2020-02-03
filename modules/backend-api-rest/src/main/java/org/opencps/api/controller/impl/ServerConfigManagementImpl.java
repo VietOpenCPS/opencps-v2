@@ -418,6 +418,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String hoTen = query.getHoTen();
 			String ngaySinh = query.getNgaySinh();
 			String noiSinh = query.getNoiSinh();
+			String flagSearch = query.getFlagSearch();
+			String classNameInput = query.getClassName();
+			String classPKInput = query.getClassPK();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -487,6 +490,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								if (urlGet.contains("{noiSinh}")) {
 									urlGet = urlGet.replace("{noiSinh}", Validator.isNotNull(noiSinh) ? URLEncoder.encode(String.valueOf(noiSinh), "UTF-8") : StringPool.BLANK);
 								}
+								if (urlGet.contains("{flagSearch}")) {
+									urlGet = urlGet.replace("{flagSearch}", Validator.isNotNull(flagSearch) ? URLEncoder.encode(String.valueOf(flagSearch), "UTF-8") : StringPool.BLANK);
+								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
 //										.replaceAll("{parentId}", parentId)
@@ -552,6 +558,118 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								sb.append((char) cp);
 							}
 							System.out.println("RESULT PROXY: " + sb.toString());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
+						}
+						else if ("POST".equals(method) || "PUT".equals(method)) {
+							System.out.println("method INSERT OR UPDATE: "+method);
+							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
+							String urlUpdate = jsonConfig.getString("url");
+							System.out.println("urlUpdate: "+urlUpdate);
+							
+							//
+							long groupIdUpdate = 0;
+							String authStrEnc = StringPool.BLANK;
+							String classNameUpdate = StringPool.BLANK;
+							String classPKUpdate = StringPool.BLANK;
+							//
+							String params = jsonConfig.getString("params");
+							System.out.println("params: "+params);
+							JSONObject jsonBodyData = JSONFactoryUtil.createJSONObject();
+							if (Validator.isNotNull(params)) {
+								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(params);
+								//
+								String strHeader = jsonParams.getString("header");
+								if (Validator.isNotNull(strHeader)) {
+									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(strHeader);
+									//
+									groupIdUpdate = jsonHeader.getLong("groupId");
+									System.out.println("groupIdUpdate: "+groupIdUpdate);
+									
+								}
+								//
+								String strBody = jsonParams.getString("body");
+								if (Validator.isNotNull(strBody)) {
+									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(strBody);
+									//
+									classNameUpdate = jsonBody.getString("className");
+									if (classNameUpdate.contains("{className}")) {
+										classNameUpdate = classNameUpdate.replace("{className}", Validator.isNotNull(classNameInput) ? URLEncoder.encode(String.valueOf(classNameInput), "UTF-8") : StringPool.BLANK);
+									}
+									classPKUpdate = jsonBody.getString("classPK");
+									if (classPKUpdate.contains("{classPK}")) {
+										classPKUpdate = classPKUpdate.replace("{classPK}", Validator.isNotNull(classPKInput) ? URLEncoder.encode(String.valueOf(classPKInput), "UTF-8") : StringPool.BLANK);
+									}
+									
+									jsonBodyData.put("className", classNameUpdate);
+									jsonBodyData.put("classPK", classPKUpdate);
+									System.out.println("className: "+classNameUpdate);
+									System.out.println("classPK: "+classPKUpdate);
+									
+								}
+							}
+							
+							//AUTHEN
+							String authenticate = jsonConfig.getString("authenticate");
+							System.out.println("authenticate: "+authenticate);
+							if (Validator.isNotNull(authenticate)) {
+								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);
+								//
+								String type = jsonAuthen.getString("type");
+								System.out.println("type: "+type);
+								if ("base".equals(type)) {
+									String userName = jsonAuthen.getString("username");
+									String password = jsonAuthen.getString("password");
+									System.out.println("userName: "+userName);
+									System.out.println("password: "+password);
+									//
+									if (Validator.isNotNull(userName) && Validator.isNotNull(password)) {
+										authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+									}
+								}
+							}
+
+							StringBuilder postData = new StringBuilder();
+							Iterator<?> keys = jsonBodyData.keys();
+							while (keys.hasNext()) {
+								String key = (String) keys.next();
+								if (!"".equals(postData.toString())) {
+									postData.append("&");
+								}
+								postData.append(key);
+								postData.append("=");
+								postData.append(jsonBodyData.get(key));
+							}
+
+							URL urlVal = new URL(urlUpdate);
+							_log.debug("API URL: " + urlVal);
+							java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+							conn.setRequestProperty("groupId", GetterUtil.getString(groupIdUpdate));
+							conn.setRequestMethod(method);
+							conn.setRequestProperty("Accept", "application/json");
+							if (Validator.isNotNull(authStrEnc)) {
+								conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+							}
+							_log.debug("BASIC AUTHEN: " + authStrEnc);
+							conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+							conn.setRequestProperty("Content-Length",
+									"" + Integer.toString(postData.toString().getBytes().length));
+
+							conn.setUseCaches(false);
+							conn.setDoInput(true);
+							conn.setDoOutput(true);
+							_log.debug("POST DATA: " + postData.toString());
+							OutputStream os = conn.getOutputStream();
+							os.write(postData.toString().getBytes());
+							os.close();
+
+								
+							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+							int cp;
+							while ((cp = brf.read()) != -1) {
+								sb.append((char) cp);
+							}
+							_log.debug("RESULT PROXY: " + sb.toString());
 							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
 						}
 						

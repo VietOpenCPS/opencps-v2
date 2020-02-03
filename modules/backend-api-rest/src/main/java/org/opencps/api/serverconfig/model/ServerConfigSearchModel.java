@@ -61,7 +61,10 @@ import javax.xml.bind.annotation.XmlType;
     "soHoChieu",
     "hoTen",
     "ngaySinh",
-    "noiSinh"
+    "noiSinh",
+    "flagSearch",
+    "className",
+    "classPK"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -107,6 +110,12 @@ public class ServerConfigSearchModel {
     protected String ngaySinh;
 	@QueryParam("noiSinh")
     protected String noiSinh;
+	@QueryParam("flagSearch")
+    protected String flagSearch;
+	@QueryParam("className")
+    protected String className;
+	@QueryParam("classPK")
+    protected String classPK;
 
     /**
      * Gets the value of the keyword property.
@@ -354,6 +363,30 @@ public class ServerConfigSearchModel {
 
 	public void setNoiSinh(String noiSinh) {
 		this.noiSinh = noiSinh;
+	}
+
+	public String getFlagSearch() {
+		return flagSearch;
+	}
+
+	public void setFlagSearch(String flagSearch) {
+		this.flagSearch = flagSearch;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getClassPK() {
+		return classPK;
+	}
+
+	public void setClassPK(String classPK) {
+		this.classPK = classPK;
 	}
 
 }
