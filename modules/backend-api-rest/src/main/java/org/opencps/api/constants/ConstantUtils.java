@@ -87,11 +87,15 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_PNG = "image/png";
 	public static final String MEDIA_TYPE_XML = "application/xml";
 	public static final String MEDIA_TYPE_ZIP = "application/zip";
+	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
+	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
+	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
 	
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String ATTACHMENT_FILENAME = "attachment.filename";
 	public static final String HTTP_HEADER_BEARER = "http.header.bearer";
 	public static final String QUERY_SORT = "query.sort";
+	public static final String QUERY_NUMBER_SORT = "query.number.sort";
 	public static final String TIMEZONE_ASIA_HOCHIMINH = "Asia/Ho_Chi_Minh";
 	
 	public static final String KEY = "key";
@@ -116,6 +120,9 @@ public class ConstantUtils {
 	public static final String API_JSON_STATUS = "status";
 	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
+	public static final String API_MESSAGE_FILENOTFOUND = "api.message.filenotfound";
+	public static final String API_MESSAGE_COMMENT_REMOVESUCCESS = "api.json.comment.message.removesuccess";
+	public static final String API_MESSAGE_NOTFOUND = "api.message.notfound";
 	
 	public static final String NGSP_CTDN_MESSAGE_NOT_FOUND = "ngsp.ctdn.message.notfound";
 	public static final String NGSP_CTDN_MESSAGE_NOT_CORRECT = "ngsp.ctdn.message.notcorrect";
@@ -160,4 +167,32 @@ public class ConstantUtils {
 
 	public static final String DATEFORMAT_YYYY = "yyyy";
 	public static final String DATEFORMAT_YY = "yy";
+	
+	public static final String API_GROUPID_KEY = "groupId";
+	public static final String API_KEYWORDS_KEY = "keywords";
+	public static final String API_CLASSNAME_KEY = "className";
+	public static final String API_CLASSPK_KEY = "classPK";
+	public static final String API_STATUS_KEY = "status";
+	public static final String API_DEFAULT_EMAIL = "default@liferay.com";
+	public static final String API_JSON_DATA_ITEMLV = "itemLv";
+	
+	public static final String API_JSON_DEFAULTSIGNATURE_SIGNEDFILE = "signedFile";
+	public static final String API_JSON_DEFAULTSIGNATURE_SIGN = "sign";
+	public static final String API_JSON_DEFAULTSIGNATURE_SIGNFIELDNAME = "signFieldName";
+	public static final String API_JSON_DEFAULTSIGNATURE_FILENAME = "fileName";
+	public static final String API_JSON_DEFAULTSIGNATURE_EXPERTSTATE = "expertState";
+	
+	public static final String API_JSON_DEFAULTSIGNATURE_MSG = "msg";
+	public static final String API_JSON_DEFAULTSIGNATURE_FILEENTRYID = "fileEntryId";
+	public static final String API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS = "api.data.defaultsignature.success";
+	public static final String API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID = "api.data.defaultsignature.fileEntryId";
+	
+	public static final String HASHCOMPUTED_MESSAGE_KEY = "message";
+	public static final String HASHCOMPUTED_HASHCOMPUTERS_KEY = "hashComputers";
+	public static final String HASHCOMPUTED_SIGNFIELDNAMES_KEY = "signFieldNames";
+	public static final String HASHCOMPUTED_FILENAMES_KEY = "fileNames";
+	public static final String HASHCOMPUTED_FULLPATHSIGNED_KEY = "fullPathSigned";
+	public static final String HASHCOMPUTED_EMAILUSER_KEY = "emailUser";
+	public static final String HASHCOMPUTED_TYPESIGNATURE_KEY = "typeSignature";
+	public static final String HASHCOMPUTED_POSTSTEPCODE_KEY = "postStepCode";
 }
