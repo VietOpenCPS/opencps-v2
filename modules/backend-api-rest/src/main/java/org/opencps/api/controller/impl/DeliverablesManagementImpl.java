@@ -14,8 +14,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.util.DeliverableUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
@@ -96,16 +98,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			// Default sort by modifiedDate
+			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					dateSort, Sort.STRING_TYPE, true)
 			};
 
 			if (Validator.isNotNull(search.getSort()) &&
 				Validator.isNotNull(search.getOrder())) {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), search.getSort());
+				
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						search.getSort() + "_sortable", Sort.STRING_TYPE,
+						querySort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder()))
 				};
 			}
@@ -138,12 +144,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				search.getStart(), search.getEnd(), serviceContext);
 			// JSONObject result = action.getListDeliverable(state, agency,
 			// type, applicant);
-			// results.setTotal(jsonData.getInt("total"));
-			results.put("total", jsonData.getInt("total"));
+			// results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
 			// results.getData()
 			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			// jsonData.get(ConstantUtils.DATA)));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -158,7 +164,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
@@ -327,7 +333,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			JSONObject results = JSONFactoryUtil.createJSONObject(
 				DeliverableUtils.mappingToDeliverableFormDataModel(
-					(List<Document>) jsonData.get("data")));
+					(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
@@ -573,15 +579,15 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				serviceContext.getCompanyId(), params, sorts, startSearch,
 				endSearch, serviceContext);
 
-			// _log.info("total: "+jsonData.getInt("total"));
-			// results.setTotal(jsonData.getInt("total"));
+			// _log.info("total: "+jsonData.getInt(ConstantUtils.TOTAL));
+			// results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			// results.getData()
 			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
+			// jsonData.get(ConstantUtils.DATA)));
 
 			// TODO
-			results.put("total", jsonData.getInt("total"));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -596,7 +602,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
@@ -682,11 +688,11 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			user.getUserId(), serviceContext.getCompanyId(), params, null, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(ConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long deliverableId = GetterUtil.getLong(
 					document.get(DeliverableTerm.DELIVERABLE_ID));
@@ -741,7 +747,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			// DeliverableUtils.readWorkBooksDeliverabe(
 			// file, userId, groupId, serviceContext);
 			//
-			// result.put("total", deliverables.size());
+			// result.put(ConstantUtils.TOTAL, deliverables.size());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
@@ -847,7 +853,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				}
 			}
 
-			result.put("total", size);
+			result.put(ConstantUtils.TOTAL, size);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
