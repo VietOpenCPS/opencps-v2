@@ -1348,7 +1348,26 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		return result;
 	}
+	
+	@Override
+	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" + serverConfigs.size());
+		if (serverConfigs != null && !serverConfigs.isEmpty()) {
+			try {
+				ServerConfig serverConfig = serverConfigs.get(0);
+				//JSONObject result = getSharingData(serverConfig, data);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		
+		return null;
+	}
 
 	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
 	private static HashMap<String, JSONObject> _mapItems = null;
+
+	
 }
