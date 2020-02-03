@@ -4,6 +4,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -31,10 +32,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -67,20 +68,16 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -128,56 +125,56 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 
 			Sort[] sorts = null;
-//			_log.info("sorts: "+query.getSort());
+			//			_log.info("sorts: "+query.getSort());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
-					GetterUtil.getBoolean(query.getOrder())) };
+						GetterUtil.getBoolean(query.getOrder())) };
 			} else if (Validator.isNotNull(query.getSort())) {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable", Sort.STRING_TYPE,
-						GetterUtil.getBoolean(query.getOrder())) };
+				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable",
+						Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 			}
 
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
-				groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
+					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			//_log.info("jsonData.hit: "+jsonData.get("data"));
-				
-			results.setTotal(jsonData.getInt("total"));
-			results.getData()
-				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
-			
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//		    
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(results).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(results).build();				
-//			}
 
-//			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-//			CacheControl cc = new CacheControl();
-//			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.ok(results);
-//				builder.tag(etag);
-//			}
-//			
-//		    builder.cacheControl(cc);
-//		    
-//		    return builder.build();
-		    return Response.status(200).entity(results).build();
+			results.setTotal(jsonData.getInt("total"));
+			results.getData().addAll(ServiceInfoUtils
+					.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
+
+			//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+			//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			//		    
+			//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			//				builder = Response.status(200);
+			//				CacheControl cc = new CacheControl();
+			//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			//				cc.setPrivate(true);	
+			//				builder.tag(etag);
+			//				return builder.status(200).entity(results).cacheControl(cc).build();
+			//			}
+			//			else {
+			//				return Response.status(200).entity(results).build();				
+			//			}
+
+			//			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
+			//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
+			//			CacheControl cc = new CacheControl();
+			//			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			//				builder = Response.ok(results);
+			//				builder.tag(etag);
+			//			}
+			//			
+			//		    builder.cacheControl(cc);
+			//		    
+			//		    return builder.build();
+			return Response.status(200).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -220,13 +217,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
 			String domainCode = HtmlUtil.escape(input.getDomainCode());
 			String active = HtmlUtil.escape(input.getActive());
-			
-			ServiceInfo serviceInfo = actions.updateServiceInfo(userId, groupId, input.getServiceInfoId(),
-					serviceCode, serviceName, processText, methodText,
-					dossierText, conditionText, durationText, applicantText,
-					resultText, regularText, feeText, administrationCode,
-					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					input.getGovAgencyText(), serviceContext);
+
+			ServiceInfo serviceInfo = actions.updateServiceInfo(userId, groupId, input.getServiceInfoId(), serviceCode,
+					serviceName, processText, methodText, dossierText, conditionText, durationText, applicantText,
+					resultText, regularText, feeText, administrationCode, domainCode, input.getMaxLevel(),
+					GetterUtil.getBoolean(active), input.getGovAgencyText(), serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
@@ -262,21 +257,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-		
+
 			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-			cc.setPrivate(true);	
-	
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			cc.setPrivate(true);
+
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
 				builder = Response.ok(results);
 				builder.tag(etag);
 			}
-		    
-		    builder.cacheControl(cc);
-		    return builder.build();
-		    
+
+			builder.cacheControl(cc);
+			return builder.build();
+
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -317,13 +312,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			String administrationCode = HtmlUtil.escape(input.getAdministrationCode());
 			String domainCode = HtmlUtil.escape(input.getDomainCode());
 			String active = HtmlUtil.escape(input.getActive());
-			
+
 			ServiceInfo serviceInfo = actions.updateServiceInfo(user.getUserId(), groupId, GetterUtil.getLong(id),
-					serviceCode, serviceName, processText, methodText,
-					dossierText, conditionText, durationText, applicantText,
-					resultText, regularText, feeText, administrationCode,
-					domainCode, input.getMaxLevel(), GetterUtil.getBoolean(active),
-					input.getGovAgencyText(), serviceContext);
+					serviceCode, serviceName, processText, methodText, dossierText, conditionText, durationText,
+					applicantText, resultText, regularText, feeText, administrationCode, domainCode,
+					input.getMaxLevel(), GetterUtil.getBoolean(active), input.getGovAgencyText(), serviceContext);
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
@@ -390,7 +383,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				boolean eformFlag = Boolean.valueOf(query.geteForm());
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, eformFlag, query.getStart(),
 						query.getEnd());
-				
+
 				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
 
 				results.setTotal(jsonData.getInt("total"));
@@ -398,9 +391,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 				return Response.status(200).entity(results).build();
 			} else {
-				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(),
-						query.getEnd());
-				
+				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(), query.getEnd());
+
 				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
 
 				results.setTotal(jsonData.getInt("total"));
@@ -446,10 +438,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			inputStream = dataHandler.getInputStream();
 
-
 			serviceFileTemplate = actions.addServiceFileTemplate(userId, groupId, GetterUtil.getLong(id),
-					fileTemplateNo, templateName, fileName,
-					inputStream, fileType, fileSize, serviceContext);
+					fileTemplateNo, templateName, fileName, inputStream, fileType, fileSize, serviceContext);
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
 
@@ -481,7 +471,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		}
 		return buf;
 	}
-
 
 	@Override
 	public Response downloadFileTemplateOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
@@ -550,30 +539,30 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, Request requestCC) {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
+
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		
+
 		try {
 			results = actions.getStatisticByLevel(serviceContext, groupId);
-			
-//			_log.info(results);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//		    
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
-//			}
-			
+
+			//			_log.info(results);
+			//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+			//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			//		    
+			//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			//				builder = Response.status(200);
+			//				CacheControl cc = new CacheControl();
+			//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			//				cc.setPrivate(true);	
+			//				builder.tag(etag);
+			//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			//			}
+			//			else {
+			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
+			//			}
+
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -584,11 +573,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getStatisticByAgency(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
+
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		
+
 		try {
 			//Sort agency
 			Sort[] sorts = null;
@@ -600,17 +589,17 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						GetterUtil.getBoolean(search.getOrder())) };
 			}
 			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
-			
-//			_log.info(results);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+
+			//			_log.info(results);
+			//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+			//			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			//				builder = Response.status(200);
+			//				CacheControl cc = new CacheControl();
+			//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			//				cc.setPrivate(true);	
+			//				builder.tag(etag);
+			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
@@ -622,11 +611,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getStatisticByDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
+
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		
+
 		try {
 			//Sort agency
 			Sort[] sorts = null;
@@ -639,25 +628,24 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 			if (Validator.isNotNull(agency)) {
 				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
-			}
-			else {
+			} else {
 				results = actions.getStatisticByDomain(groupId, sorts, serviceContext);
 			}
-//			_log.info(results);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
-//			}
-			
+			//			_log.info(results);
+			//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
+			//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			//				builder = Response.status(200);
+			//				CacheControl cc = new CacheControl();
+			//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+			//				cc.setPrivate(true);	
+			//				builder.tag(etag);
+			//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			//			}
+			//			else {
+			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			//			}
+
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -710,10 +698,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
 					.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
 			if (fileTemplate != null) {
-					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormReportFileId());
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormReportFileId());
 
-					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+				is = dlFileEntry.getContentStream();
+				result = IOUtils.toString(is, "UTF-8");
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -741,10 +729,10 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			ServiceFileTemplate fileTemplate = ServiceFileTemplateLocalServiceUtil
 					.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
 			if (fileTemplate != null) {
-					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormScriptFileId());
+				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormScriptFileId());
 
-					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+				is = dlFileEntry.getContentStream();
+				result = IOUtils.toString(is, "UTF-8");
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -780,7 +768,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.USER_ID, userId);
-			_log.info("USER_ID: "+userId);
+			_log.info("USER_ID: " + userId);
 
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(DossierTerm.SUBMIT_DATE + "_Number_sortable", Sort.LONG_TYPE, true) };
@@ -789,11 +777,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(company.getCompanyId());
-			
+
 			Hits hits = DossierLocalServiceUtil.searchLucene(params, sorts, -1, -1, searchContext);
 			if (hits != null) {
 				List<Document> docList = hits.toList();
-				
+
 				Integer start = search.getStart();
 				Integer end = search.getEnd();
 				StringBuilder sb = new StringBuilder();
@@ -808,7 +796,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						}
 					}
 				}
-				_log.info("sb: "+sb.toString());
+				_log.info("sb: " + sb.toString());
 				if (sb.length() > 0) {
 					// Convert the sb of Array
 					String[] serviceArr = sb.toString().split(StringPool.COMMA);
@@ -862,18 +850,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Response resolveConflictServiceInfo(
-		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext) {
+	public Response resolveConflictServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		// long userId = user.getUserId();
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
-		Indexer<ServiceInfo> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class);
+		Indexer<ServiceInfo> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class);
 
-		LinkedHashMap<String, Object> params =
-			new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 		params.put(Field.GROUP_ID, String.valueOf(groupId));
 
 		// get JSON data deliverable
@@ -886,18 +871,14 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		if (total > 0) {
 			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
 			for (Document document : lstDocuments) {
-				long serviceInfoId = GetterUtil.getLong(
-					document.get(Field.ENTRY_CLASS_PK));
-				long companyId =
-					GetterUtil.getLong(document.get(Field.COMPANY_ID));
+				long serviceInfoId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
+				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
 				String uid = document.get(Field.UID);
-				ServiceInfo oldServiceInfo =
-					ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
+				ServiceInfo oldServiceInfo = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 				if (oldServiceInfo == null) {
 					try {
 						indexer.delete(companyId, uid);
-					}
-					catch (SearchException e) {
+					} catch (SearchException e) {
 						_log.error(e);
 					}
 				}
@@ -910,8 +891,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	@Override
 	public Response updateFileTemplateOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, String templateNo,
-			Attachment fileScript, Attachment fileReport, String templateName, String strFileEntryId, String eForm, String strFormScriptFileId,
-			String strFormReportFileId, String eFormNoPattern, String eFormNamePattern) {
+			Attachment fileScript, Attachment fileReport, String templateName, String strFileEntryId, String eForm,
+			String strFormScriptFileId, String strFormReportFileId, String eFormNoPattern, String eFormNamePattern) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
@@ -927,21 +908,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				throw new UnauthenticationException();
 			}
 
-			serviceFileTemplate = ServiceFileTemplateLocalServiceUtil.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
-			
+			serviceFileTemplate = ServiceFileTemplateLocalServiceUtil
+					.fetchByF_serviceInfoId_fileTemplateNo(serviceInfoId, templateNo);
+
 			if (serviceFileTemplate != null) {
 				//Check formScript
 				long formScriptId = 0;
 				long formReportId = 0;
 				if (fileScript != null) {
 					DataHandler handlerScript = fileScript.getDataHandler();
-					
+
 					if (handlerScript != null && handlerScript.getInputStream() != null) {
-						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-								userId, groupId, 0, handlerScript.getInputStream(), 
-								FilenameUtils.getExtension(handlerScript.getName()), 
-								handlerScript.getName()
-								.substring(handlerScript.getName().lastIndexOf(".") + 1),
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, 0,
+								handlerScript.getInputStream(), FilenameUtils.getExtension(handlerScript.getName()),
+								handlerScript.getName().substring(handlerScript.getName().lastIndexOf(".") + 1),
 								handlerScript.getInputStream().available(), serviceContext);
 						if (fileEntry != null) {
 							formScriptId = fileEntry.getFileEntryId();
@@ -954,11 +934,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					DataHandler handlerReport = fileReport.getDataHandler();
 
 					if (handlerReport != null && handlerReport.getInputStream() != null) {
-						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
-								userId, groupId, 0, handlerReport.getInputStream(), 
-								FilenameUtils.getExtension(handlerReport.getName()), 
-								handlerReport.getName()
-								.substring(handlerReport.getName().lastIndexOf(".") + 1),
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, 0,
+								handlerReport.getInputStream(), FilenameUtils.getExtension(handlerReport.getName()),
+								handlerReport.getName().substring(handlerReport.getName().lastIndexOf(".") + 1),
 								handlerReport.getInputStream().available(), serviceContext);
 						if (fileEntry != null) {
 							formReportId = fileEntry.getFileEntryId();
@@ -971,25 +949,25 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				serviceFileTemplate.setFormReportFileId(formReportId);
 				if (Validator.isNotNull(templateName))
 					serviceFileTemplate.setTemplateName(templateName);
-				
+
 				long fileEntryId = GetterUtil.getLong(strFileEntryId);
 				if (fileEntryId > 0)
 					serviceFileTemplate.setFileEntryId(fileEntryId);
-				
+
 				if (Validator.isNotNull(eForm))
 					serviceFileTemplate.setEForm(GetterUtil.getBoolean(eForm));
-				
+
 				long formScriptFileId = GetterUtil.getLong(strFormScriptFileId);
 				if (formScriptFileId > 0)
 					serviceFileTemplate.setFormScriptFileId(formScriptFileId);
-				
+
 				long formReportFileId = GetterUtil.getLong(strFormReportFileId);
 				if (formReportFileId > 0)
 					serviceFileTemplate.setFormReportFileId(formReportFileId);
-				
+
 				if (Validator.isNotNull(eFormNoPattern))
 					serviceFileTemplate.setEFormNoPattern(eFormNoPattern);
-				
+
 				if (Validator.isNotNull(eFormNamePattern))
 					serviceFileTemplate.setEFormNamePattern(eFormNamePattern);
 
@@ -1005,4 +983,100 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		}
 	}
 
+	@Override
+	public Response getServiceInfoMappingSuggest(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query, Request requestCC) {
+
+		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+
+		DVCQGIntegrationActionImpl dvcqgIntegrationActionImpl = new DVCQGIntegrationActionImpl();
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			//params.put(Field.KEYWORD_SEARCH, query.getKeyword());
+			//Keyword search like
+			String keywordSearch = query.getKeyword();
+			String keySearch = StringPool.BLANK;
+			if (Validator.isNotNull(keywordSearch)) {
+				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+			}
+			params.put(Field.KEYWORD_SEARCH, keySearch);
+
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
+			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
+			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
+			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
+
+			Sort[] sorts = null;
+			//			_log.info("sorts: "+query.getSort());
+			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
+					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			} else if (Validator.isNotNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+						GetterUtil.getBoolean(query.getOrder())) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable",
+						Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+			}
+
+			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
+					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			if(_serviceInfoDVCQGMap == null) {
+				_serviceInfoDVCQGMap = dvcqgIntegrationActionImpl.getServiceInfoDVCQGMap(user,
+						serviceContext);
+			}
+			
+
+			List<Document> documents = (List<Document>) jsonData.get("data");
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+			for (Document doc : documents) {
+				JSONObject item = JSONFactoryUtil.createJSONObject();
+				String serviceName = doc.get(ServiceInfoTerm.SERVICE_NAME);
+				String serviceCode = doc.get(ServiceInfoTerm.SERVICE_CODE);
+				String administrationCode = doc.get(ServiceInfoTerm.ADMINISTRATION_CODE);
+				String domainCode = doc.get(ServiceInfoTerm.DOMAIN_CODE);
+				String administrationName = doc.get(ServiceInfoTerm.ADMINISTRATION_NAME);
+				String domainName = doc.get(ServiceInfoTerm.DOMAIN_NAME);
+				item.put("serviceInfoId", GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
+				item.put("serviceName", serviceName);
+				item.put("serviceCode", serviceCode);
+				item.put("administrationCode", administrationCode);
+				item.put("domainCode", domainCode);
+				item.put("administrationName", administrationName);
+				item.put("domainName", domainName);
+				JSONArray mapping = dvcqgIntegrationActionImpl.getServiceInfoSimilarity(groupId, serviceCode,
+						serviceName, _serviceInfoDVCQGMap);
+				item.put("similarity", mapping);
+				data.put(item);
+			}
+
+			//_log.info("jsonData.hit: "+jsonData.get("data"));
+			results.put("total", jsonData.getInt("total"));
+			results.put("data", data);
+
+			return Response.status(200).entity(results.toJSONString()).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
+
+	private static HashMap<String, String> _serviceInfoDVCQGMap = null;
 }
