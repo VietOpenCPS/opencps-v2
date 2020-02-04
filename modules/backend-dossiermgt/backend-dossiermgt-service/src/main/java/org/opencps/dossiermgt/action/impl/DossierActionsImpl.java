@@ -122,6 +122,7 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
+	public static final String SPECIAL_STATUS_KEY = "specialStatus";
 	
 	CacheActions cache = new CacheActionsImpl();
 	long ttl = OpenCPSConfigUtil.getCacheTTL();
@@ -208,7 +209,7 @@ public class DossierActionsImpl implements DossierActions {
 //						_log.info("metaData: " + metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString("specialStatus");
+							specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
 //							_log.info("specialStatus: " + specialStatus);
 
 						} catch (Exception e) {
@@ -252,7 +253,7 @@ public class DossierActionsImpl implements DossierActions {
 //							_log.info("metaData: " + metaData);
 							try {
 								JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-								specialStatus = metaJson.getString("specialStatus");
+								specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
 //								_log.info("specialStatus: " + specialStatus);
 
 							} catch (Exception e) {
@@ -2999,7 +3000,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 						// _log.info("metaData: " +metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString("specialStatus");
+							specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
 							// _log.info("specialStatus: " +specialStatus);
 
 						} catch (Exception e) {
@@ -3429,153 +3430,6 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		}
 	}
 
-//	@Override
-//	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
-//			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
-//			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
-//			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-//			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-//			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-//			boolean online, boolean notification, String applicantNote, int originality, 
-//			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-//			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
-//			Date endorsementDate, Date extendDate,
-//			Date processDate, ServiceContext context)
-//			throws PortalException {
-//
-////		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-//		Date appIdDate = null;
-////		try {
-////			appIdDate = sdf.parse(applicantIdDate);
-////		} catch (Exception e) {
-////			// TODO: handle exception
-////			_log.debug(e);
-////			//_log.error(e);
-////		}
-//
-//		Dossier dossier = null;
-//
-//		try {
-//
-//			//Process
-//			dossier = DossierLocalServiceUtil.publishDossier(groupId, dossierId, referenceUid, counter, serviceCode,
-//					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
-//					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
-//					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-//					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate, modifiedDate, submitDate, receiveDate, dueDate,
-//					releaseDate, finishDate, cancellingDate, correctingDate, 
-//					endorsementDate, extendDate,
-//					processDate, context);
-//
-//		} catch (Exception e) {
-//			_log.debug(e);
-//			//_log.error(e);
-//		}
-//
-//		return dossier;
-//	}
-
-	private Map<String, Object> createParamsInvoice(PaymentFile oldPaymentFile, Dossier dossier, int intpaymentMethod) {
-		Map<String, Object> params = new HashMap<>();
-
-		StringBuilder address = new StringBuilder();
-		address.append(dossier.getAddress());
-		address.append(", ");
-		address.append(dossier.getWardName());
-		address.append(", ");
-		address.append(dossier.getDistrictName());
-		address.append(", ");
-		address.append(dossier.getCityName());
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
-		String dateformatted = sdf.format(new Date());
-		_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
-		
-		params.put("userName", "HA");	
-		params.put("passWord", "1"); 	    	
-		params.put("soid", "0"); 
-		params.put("maHoadon", "01GTKT0/001"); 
-		params.put("ngayHd", dateformatted); //"01/08/2018"
-		params.put("seri", "12314"); 
-		params.put("maNthue", "01"); 
-		params.put("kieuSo", "G"); 
-		params.put("maKhackHang", Long.toString(dossier.getUserId()));
-		params.put("ten", dossier.getApplicantName());
-		params.put("phone", dossier.getContactTelNo());
-		if(dossier.getApplicantIdType().contentEquals("business")) {
-			params.put("tax", dossier.getApplicantIdNo()); 
-		} else {
-			params.put("tax", "");
-		}
-		params.put("dchi", address); 
-		params.put("maTk", ""); 
-		params.put("tenNh", ""); 
-		params.put("mailH", GetterUtil.getString(dossier.getContactEmail()));
-		params.put("phoneH", GetterUtil.getString(dossier.getContactTelNo()));
-		params.put("tenM", GetterUtil.getString(dossier.getDelegateName()));
-		params.put("maKhL", "K");
-		params.put("maNt", "VND");
-		params.put("tg", "1");
-		if(intpaymentMethod == 3) {
-			params.put("hthuc", "M");
-		}else {
-			params.put("hthuc", "C");
-		}
-		params.put("han", "");
-		params.put("tlGgia", "0");
-		params.put("ggia", "0");
-		params.put("phi", "0");
-		params.put("noidung", dossier.getDossierNo());
-		params.put("tien", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("ttoan", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("maVtDetail", dossier.getDossierNo());
-		params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
-		params.put("dvtDetail", "bo");
-		params.put("luongDetail", "1");
-		params.put("giaDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("tienDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("tsDetail", "0");
-		params.put("thueDetail", "0");
-		params.put("ttoanDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
-
-		return params;
-	}
-
-	private int checkPaymentMethodinPrecondition(String preCondition) {
-		//_log.info("SONDT checkPaymentMethodinPrecondition preCondition ===== " + preCondition);
-		int paymentMethod = 0;
-		String[] preConditions = StringUtil.split(preCondition);
-		for(String pre : preConditions) {
-			pre = pre.trim();
-			//_log.info("SONDT checkPaymentMethodinPrecondition pre ===== " + pre);
-			if (pre.toLowerCase().contains("paymentmethod=")) {
-				String[] splitPaymentMethod = pre.split("=");
-				//_log.info("SONDT checkPaymentMethodinPrecondition splitPaymentMethod ===== " + splitPaymentMethod);
-				if (splitPaymentMethod.length == 2) {
-					paymentMethod = Integer.parseInt(splitPaymentMethod[1]);
-					//_log.info("SONDT checkPaymentMethodinPrecondition paymentMethod in if ===== " + paymentMethod);
-				}
-				break;
-			}
-		}
-		_log.info("SONDT checkPaymentMethodinPrecondition paymentMethod ===== " + paymentMethod);
-		return paymentMethod;
-	}
-
-	private String checkPaymentMethod(int mt) {
-		String pmMethod = "";
-		if (mt == 1) {
-			pmMethod = "Chuyển khoản";//KeyPay
-		} else if (mt == 2) {
-			pmMethod = "Chuyển khoản";
-		} else if (mt == 3) {
-			pmMethod = "Tiền mặt";
-		}
-
-		_log.info("SONDT checkPaymentMethod pmMethod ===== " + pmMethod);
-		return pmMethod;
-	}
-
 	@Override
 	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps) {
 		List<User> lstUser = new ArrayList<>();
@@ -3764,33 +3618,6 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			return null;
 		}		
 	}	
-	
-	private void updateStatus(Dossier dossier, String status, String statusText, String subStatus,
-			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
-			throws PortalException {
-
-		Date now = new Date();
-
-		dossier.setModifiedDate(now);
-
-		dossier.setDossierStatus(status);
-		dossier.setDossierStatusText(statusText);
-		dossier.setDossierSubStatus(subStatus);
-		dossier.setDossierSubStatusText(subStatusText);
-		dossier.setLockState(lockState);
-		dossier.setDossierNote(stepInstruction);
-
-		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
-			dossier.setReleaseDate(now);
-		}
-
-		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
-			dossier.setFinishDate(now);
-			if (dossier.getReleaseDate() == null) {
-				dossier.setReleaseDate(now);
-			}
-		}
-	}
 
 	@Override
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
@@ -3927,14 +3754,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			// Create DossierAction
 			DossierAction dossierAction = null;
 			if (dossierId == 0) {
-				String fromStepCode = "300";
-				String fromStepName = "Trả kết quả";
-				String fromSequenceNo = "04";
-				String actionCode = "4000";
-				String actionUser = "Tiếp nhận";
-				String actionName = "Trả hoàn thiện";
-				String stepCode = "400";
-				String stepName = "Hoàn thành";
+				String fromStepCode = DossierActionTerm.publishImportDossier_fromStepCode;
+				String fromStepName = DossierActionTerm.publishImportDossier_fromStepName;
+				String fromSequenceNo = DossierActionTerm.publishImportDossier_fromSequenceNo;
+				String actionCode = DossierActionTerm.publishImportDossier_actionCode;
+				String actionUser = DossierActionTerm.publishImportDossier_actionUser;
+				String actionName = DossierActionTerm.publishImportDossier_actionName;
+				String stepCode = DossierActionTerm.publishImportDossier_stepCode;
+				String stepName = DossierActionTerm.publishImportDossier_stepName;
 				dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
 						option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName, fromSequenceNo,
 						actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1, serviceContext);
@@ -3943,14 +3770,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				if (dossierActionList != null && dossierActionList.size() > 0) {
 					dossierAction = dossierActionList.get(0);
 				} else {
-					String fromStepCode = "300";
-					String fromStepName = "Trả kết quả";
-					String fromSequenceNo = "04";
-					String actionCode = "4000";
-					String actionUser = "Tiếp nhận";
-					String actionName = "Trả hoàn thiện";
-					String stepCode = "400";
-					String stepName = "Hoàn thành";
+					String fromStepCode = DossierActionTerm.publishImportDossier_fromStepCode;
+					String fromStepName = DossierActionTerm.publishImportDossier_fromStepName;
+					String fromSequenceNo = DossierActionTerm.publishImportDossier_fromSequenceNo;
+					String actionCode = DossierActionTerm.publishImportDossier_actionCode;
+					String actionUser = DossierActionTerm.publishImportDossier_actionUser;
+					String actionName = DossierActionTerm.publishImportDossier_actionName;
+					String stepCode = DossierActionTerm.publishImportDossier_stepCode;
+					String stepName = DossierActionTerm.publishImportDossier_stepName;
 					dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
 							option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName,
 							fromSequenceNo, actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1,

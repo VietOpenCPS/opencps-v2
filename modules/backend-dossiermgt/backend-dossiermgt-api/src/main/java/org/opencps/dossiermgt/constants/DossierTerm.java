@@ -181,10 +181,13 @@ public class DossierTerm {
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
 	public static final String REGISTER_BOOK_NAME = "registerBookName";
 	public static final String DOSSIER_REGISTER = "dossierRegister";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String SEQUENCE_NAME = "sequenceName";
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
 	public static final String NEXT_SEQUENCE_NO = "nextSequenceNo";
 	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
+	public static final String NEXT_CREATE_DATE = "nextCreateDate";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
@@ -251,6 +254,9 @@ public class DossierTerm {
 	
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
+	
+	public static final String VNPOST_DOSSIER_DESTINATION = "vnpost/dossier/in/destination";
+	public static final String KYSO_ENGINE_OUT_DESTINATION = "kyso/engine/out/destination";
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.RegistrationActions;
 import org.opencps.dossiermgt.action.RegistrationLogActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.RegistrationFormTerm;
 import org.opencps.dossiermgt.model.Registration;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationLog;
@@ -13,6 +15,7 @@ import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -20,6 +23,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
@@ -43,7 +47,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		if (listRegistration.size() == 0) {
 			return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType,
 					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-					wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0, "",
+					wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0,  StringPool.BLANK,
 					representativeEnterprise, serviceContext);
 		} else {
 			Registration registration = listRegistration.get(0);
@@ -54,7 +58,7 @@ public class RegistrationActionsImpl implements RegistrationActions {
 				return RegistrationLocalServiceUtil.insert(groupId, companyId, applicantName, applicantIdType,
 						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName,
 						wardCode, wardName, contactName, contactTelNo, contactEmail, govAgencyCode, govAgencyName, 0,
-						"", representativeEnterprise, serviceContext);
+						 StringPool.BLANK, representativeEnterprise, serviceContext);
 			} else {
 				return registration;
 			}
@@ -87,19 +91,19 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		}
 
 		// add registrationLog
-		String content = "";
+		String content =  StringPool.BLANK;
 		RegistrationLogActions registrationLogActions = new RegistrationLogActionsImpl();
 		List<RegistrationLog> lstRegistrationLog = registrationLogActions.getRegistrationLogbyId(groupId,
 				registrationId);
 		if (lstRegistrationLog.size() == 0) {
-			content = "1";
+			content = String.valueOf(1);
 		} else {
 			content = String.valueOf(Integer.valueOf(lstRegistrationLog.get(0).getContent()) + 1);
 		}
 
 		if (Validator.isNotNull(lstRegistrationFormchange)) {
 			if (registrationState == 2 || registrationState == 3) {
-				addLog("", groupId, userId, registrationId, content, lstRegistrationFormchange);
+				addLog( StringPool.BLANK, groupId, userId, registrationId, content, lstRegistrationFormchange);
 			}
 		}
 
@@ -129,21 +133,21 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		for (RegistrationForm registrationForm : payload) {
 			JSONObject mediaItemsJsonObject = JSONFactoryUtil.createJSONObject();
 
-			mediaItemsJsonObject.put("registrationFormId", registrationForm.getRegistrationFormId());
-			mediaItemsJsonObject.put("groupId", registrationForm.getGroupId());
-			mediaItemsJsonObject.put("userId", registrationForm.getUserId());
-			mediaItemsJsonObject.put("createDate", registrationForm.getCreateDate());
-			mediaItemsJsonObject.put("modifiedDate", registrationForm.getModifiedDate());
-			mediaItemsJsonObject.put("registrationId", registrationForm.getRegistrationId());
-			mediaItemsJsonObject.put("referenceUid", registrationForm.getReferenceUid());
-			mediaItemsJsonObject.put("formNo", registrationForm.getFormNo());
-			mediaItemsJsonObject.put("formName", registrationForm.getFormName());
-			mediaItemsJsonObject.put("formData", registrationForm.getFormData());
-			mediaItemsJsonObject.put("formScript", registrationForm.getFormScript());
-			mediaItemsJsonObject.put("formReport", registrationForm.getFormReport());
-			mediaItemsJsonObject.put("fileEntryId", registrationForm.getFileEntryId());
-			mediaItemsJsonObject.put("isNew", registrationForm.getIsNew());
-			mediaItemsJsonObject.put("removed", registrationForm.getRemoved());
+			mediaItemsJsonObject.put(RegistrationFormTerm.REGISTRATION_FORM_ID, registrationForm.getRegistrationFormId());
+			mediaItemsJsonObject.put(Field.GROUP_ID, registrationForm.getGroupId());
+			mediaItemsJsonObject.put(Field.USER_ID, registrationForm.getUserId());
+			mediaItemsJsonObject.put(RegistrationFormTerm.CREATE_DATE, registrationForm.getCreateDate());
+			mediaItemsJsonObject.put(RegistrationFormTerm.MODIFIED_DATE, registrationForm.getModifiedDate());
+			mediaItemsJsonObject.put(RegistrationFormTerm.REGISTRATION_ID, registrationForm.getRegistrationId());
+			mediaItemsJsonObject.put(RegistrationFormTerm.REFERENCE_UID, registrationForm.getReferenceUid());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FORM_NO, registrationForm.getFormNo());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FORM_NAME, registrationForm.getFormName());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FORM_DATA, registrationForm.getFormData());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FORM_SCRIPT, registrationForm.getFormScript());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FORM_REPORT, registrationForm.getFormReport());
+			mediaItemsJsonObject.put(RegistrationFormTerm.FILE_ENTRY_ID, registrationForm.getFileEntryId());
+			mediaItemsJsonObject.put(RegistrationFormTerm.ISNEW, registrationForm.getIsNew());
+			mediaItemsJsonObject.put(RegistrationFormTerm.REMOVED, registrationForm.getRemoved());
 			jsArray.put(mediaItemsJsonObject);
 		}
 		// jsonObj.put("result", jsArray.to);
@@ -173,9 +177,9 @@ public class RegistrationActionsImpl implements RegistrationActions {
 
 			hits = RegistrationLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
-			result.put("total",
+			result.put(ConstantUtils.TOTAL,
 					RegistrationLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext));
 
 		} catch (Exception e) {
@@ -209,11 +213,11 @@ public class RegistrationActionsImpl implements RegistrationActions {
 			
 			hits = RegistrationFormLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
 			
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 			
 			long total = RegistrationFormLocalServiceUtil.countLucene(params, searchContext);
 			
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);

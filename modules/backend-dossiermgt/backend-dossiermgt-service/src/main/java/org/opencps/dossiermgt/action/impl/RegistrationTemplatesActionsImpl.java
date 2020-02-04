@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.RegistrationTemplatesActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationTemplatesLocalServiceUtil;
 
@@ -30,8 +32,8 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 
 			int total = lstRegistrationTemplates.size();
 
-			result.put("total", total);
-			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
+			result.put(ConstantUtils.TOTAL, total);
+			result.put(RegistrationTerm.LST_REGISTRATION_TEMPLATE, lstRegistrationTemplates);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -54,8 +56,8 @@ public class RegistrationTemplatesActionsImpl implements RegistrationTemplatesAc
 						.getRegistrationTemplatesbyGOVCODE(groupId, govAgencyCode);
 			}
 
-			result.put("total", lstRegistrationTemplates.size());
-			result.put("lstRegistrationTemplate", lstRegistrationTemplates);
+			result.put(ConstantUtils.TOTAL, lstRegistrationTemplates.size());
+			result.put(RegistrationTerm.LST_REGISTRATION_TEMPLATE, lstRegistrationTemplates);
 
 		} catch (Exception e) {
 			_log.error(e);
