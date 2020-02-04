@@ -524,8 +524,8 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 		
 		try {
-			String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 			if (multipartFile != null) {
+				String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
 						UUID.randomUUID() + "_" + fileName,
 						multipartFile.getOriginalFilename()
@@ -652,8 +652,8 @@ public class RestfulController {
 		serviceContext.setScopeGroupId(groupId);
 
 		try {
-			String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 			if (multipartFile != null) {
+				String fileName = HtmlUtil.escape(multipartFile.getOriginalFilename());
 				FileEntry fileEntry = FileUploadUtils.uploadFile(userId, companyId, groupId, multipartFile.getInputStream(),
 						UUID.randomUUID() + "_" + fileName,
 						multipartFile.getOriginalFilename()

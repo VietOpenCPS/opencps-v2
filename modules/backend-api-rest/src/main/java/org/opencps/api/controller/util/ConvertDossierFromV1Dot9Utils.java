@@ -256,7 +256,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static InputStream getFileFromDVCOld(String url) {
 
 		URL oracle;
-		BufferedReader br = null;
+		//BufferedReader br = null;
 		InputStream result = null;
 		try {
 			oracle = new URL(url);
@@ -281,14 +281,14 @@ public class ConvertDossierFromV1Dot9Utils {
 			_log.debug(e);
 		}
 		finally {
-			if (br != null) {
-				try {
-					br.close();
-				}
-				catch (IOException e) {
-					_log.debug(e);
-				}
-			}
+//			if (br != null) {
+//				try {
+//					br.close();
+//				}
+//				catch (IOException e) {
+//					_log.debug(e);
+//				}
+//			}
 		}
 		return result;
 	}

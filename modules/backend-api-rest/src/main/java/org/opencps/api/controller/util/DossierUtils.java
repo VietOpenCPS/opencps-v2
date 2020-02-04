@@ -86,7 +86,7 @@ public class DossierUtils {
 			DossierActionUser dau = DossierActionUserLocalServiceUtil.getByDossierAndUser(dossierActionId, userId);
 			User user = UserLocalServiceUtil.fetchUser(userId);
 			boolean isAdministratorData = false;
-			int assignedCheck = 0;
+			//int assignedCheck = 0;
 			if (user != null) {
 				List<Role> userRoles = user.getRoles();
 				for (Role r : userRoles) {
@@ -203,8 +203,8 @@ public class DossierUtils {
 			long dateNowTimeStamp = now.getTime();
 			Long dueDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.DUE_DATE_TIMESTAMP));
 			Long releaseDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.RELEASE_DATE_TIMESTAMP));
-			Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
-			Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
+			//Long extendDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.EXTEND_DATE_TIMESTAMP));
+			//Long finishDateTimeStamp = GetterUtil.getLong(doc.get(DossierTerm.FINISH_DATE_TIMESTAMP));
 			int valueCompareRelease = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_RELEASE));
 			int valueCompareFinish = GetterUtil.getInteger(doc.get(DossierTerm.VALUE_COMPARE_FINISH));
 			
@@ -1453,19 +1453,19 @@ public class DossierUtils {
 		return model;
 	}
 	
-	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && 
-				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
-	}
+//	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && 
+//				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
+//	}
 
-	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate != 0 && (dueDate == 0
-				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
-	}
+//	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate != 0 && (dueDate == 0
+//				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
+//	}
 
-	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
-	}
+//	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
+//	}
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)

@@ -101,7 +101,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("ChuHoSo", dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals("business")) {
+			if ("business".equalsIgnoreCase(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
@@ -210,7 +210,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("ChuHoSo", dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals("business")) {
+			if ("business".equalsIgnoreCase(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
@@ -374,7 +374,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private String getAccessToken(ServerConfig serverConfig) {
 
-		HttpURLConnection conn = null;
+		//HttpURLConnection conn = null;
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -383,11 +383,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return StringPool.BLANK;
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
 		}
+//		finally {
+//			if (conn != null) {
+//				conn.disconnect();
+//			}
+//		}
 	}
 
 	@Override
@@ -844,7 +845,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put("data", synsObjects);
 				body.put("service", "DongBoHoSoMC");
 				result = syncData(serverConfig, body);
-				if (result.has("error_code") && result.getString("error_code").equals("00")) {
+				if (result.has("error_code") && "00".equals(result.getString("error_code"))) {
 					body = JSONFactoryUtil.createJSONObject();
 					synsObjects = JSONFactoryUtil.createJSONArray();
 					JSONObject _tmp = createSyncDossierStatusBodyRequest(groupId, dossier);

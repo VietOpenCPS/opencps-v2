@@ -181,9 +181,9 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+//		Date extendDate = Validator.isNull(dossierData.getExtendDate())
+//				? null
+//				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());

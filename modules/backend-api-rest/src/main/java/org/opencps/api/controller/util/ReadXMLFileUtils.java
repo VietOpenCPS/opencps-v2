@@ -22,12 +22,14 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
@@ -816,6 +818,8 @@ public class ReadXMLFileUtils {
 								if (Validator.isNotNull(subFileName)) {
 									try {
 									DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+									builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+									builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 									builderFactory.setNamespaceAware(true);
 
 									DocumentBuilder parser = builderFactory.newDocumentBuilder();
@@ -839,6 +843,8 @@ public class ReadXMLFileUtils {
 						if (Validator.isNotNull(subFileName)) {
 							try {
 								DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+								builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+								builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 								builderFactory.setNamespaceAware(true);
 	
 								DocumentBuilder parser = builderFactory.newDocumentBuilder();
@@ -861,6 +867,10 @@ public class ReadXMLFileUtils {
 			String strError = StringPool.BLANK;
 			try {
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+				builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+				builderFactory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+				builderFactory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+				builderFactory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 				builderFactory.setNamespaceAware(true);
 
 				DocumentBuilder parser = builderFactory.newDocumentBuilder();

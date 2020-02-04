@@ -143,7 +143,7 @@ public class AutoFillFormData {
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
-						_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
+						//_applicantIdDate = applicantJSON.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE);
 
 					}
 

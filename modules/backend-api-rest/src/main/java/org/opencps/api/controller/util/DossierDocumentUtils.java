@@ -135,7 +135,7 @@ public class DossierDocumentUtils {
 					}
 				}
 				catch (Exception e) {
-					
+					_log.debug(e);
 				}
 			}			
 		}

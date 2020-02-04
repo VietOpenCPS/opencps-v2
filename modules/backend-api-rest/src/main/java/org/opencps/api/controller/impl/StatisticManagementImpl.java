@@ -909,6 +909,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
 			} catch (JSONException e) {
+				_log.debug(e);
 			}
 		}
 		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);
@@ -958,6 +959,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				userIdArr[count++] = actionOverdueDataJsonArray.getLong(0);
 			} catch (JSONException e) {
+				_log.debug(e);
 			}
 		}
 		lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, userIdArr);

@@ -16,7 +16,6 @@ package org.opencps.statistic.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -371,10 +370,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				month, year, govAgencyCode, domainCode, system);
 
 		Date now = new Date();
-		long dossierStatisticId = 0l;
+		//long dossierStatisticId = 0l;
 		// _log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
-			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
 			dossierStatistic.setCreateDate(now);
 			dossierStatistic.setModifiedDate(now);
@@ -480,10 +479,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				month, year, govAgencyCode, domainCode, system);
 
 		Date now = new Date();
-		long dossierStatisticId = 0l;
+		//long dossierStatisticId = 0l;
 		// _log.debug(dossierStatisticId);
 		if (dossierStatistic == null) {
-			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
+			long dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);
 			dossierStatistic.setCreateDate(now);
 			dossierStatistic.setModifiedDate(now);

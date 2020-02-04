@@ -2,7 +2,7 @@ package org.opencps.sms.service.constants;
 
 public interface SMSGatewayConfig {
      String GW_USER_NAME = "";
-     String GQ_PASSWORD = "";
+     String GQ_SECRET_CODE = "";
      
      interface MessageTypes{
          String TEXT = "text";

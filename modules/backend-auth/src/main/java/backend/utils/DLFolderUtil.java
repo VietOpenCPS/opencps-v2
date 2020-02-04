@@ -160,7 +160,7 @@ public class DLFolderUtil {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		return dlFolder;
 	}

@@ -20,19 +20,14 @@ import java.io.File;
 import java.util.Date;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
 public class Engine implements MessageListener {
@@ -238,24 +233,27 @@ public class Engine implements MessageListener {
 					}
 				}
 				
-    			ServiceContext serviceContext = new ServiceContext();
-    			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
-    			serviceContext.setUserId(dossierDocument.getUserId());
-    
-    			long fileEntryId = 0;
-    
-    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, dossierDocument.getGroupId(), file, filePath,
-    					serviceContext);
-    
-    			fileEntryId = fileEntry.getFileEntryId();
-    
-    			dossierDocument.setDocumentFileId(fileEntryId);
-    
-    			DossierDocumentLocalServiceUtil.updateDossierDocument(dossierDocument);
-    
-    			Indexer<DossierDocument> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierDocument.class);
-    
-    			indexer.reindex(dossierDocument);
+				if (dossierDocument != null) {
+					ServiceContext serviceContext = new ServiceContext();
+	    			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
+	    			serviceContext.setUserId(dossierDocument.getUserId());
+	    
+	    			long fileEntryId = 0;
+	    
+	    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, dossierDocument.getGroupId(), file, filePath,
+	    					serviceContext);
+	    
+	    			fileEntryId = fileEntry.getFileEntryId();
+	    
+	    			dossierDocument.setDocumentFileId(fileEntryId);
+	    
+	    			DossierDocumentLocalServiceUtil.updateDossierDocument(dossierDocument);
+	    
+	    			Indexer<DossierDocument> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierDocument.class);
+	    
+	    			indexer.reindex(dossierDocument);
+				}
+    			
 				
 			}
 //			else if (engineClass.isAssignableFrom(Deliverable.class)) {

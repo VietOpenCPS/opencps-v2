@@ -1,15 +1,20 @@
 
 package org.opencps.api.controller.util;
 
-import java.io.BufferedReader;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,15 +33,6 @@ import org.opencps.api.deliverable.model.DeliverableUpdateModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
-
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.util.Validator;
 
 public class DeliverableUtils {
 
@@ -315,7 +311,7 @@ public class DeliverableUtils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (workbook != null) {
@@ -323,8 +319,7 @@ public class DeliverableUtils {
 					workbook.close();
 				}
 				catch (IOException e) {
-					e.printStackTrace();
-					// _log.debug(e);
+					_log.debug(e);
 				}
 			}
 		}
@@ -351,8 +346,7 @@ public class DeliverableUtils {
 			deliverableObj.put("formData", formData);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+			_log.debug(e);
 		}
 
 		return deliverableObj;
@@ -401,21 +395,27 @@ public class DeliverableUtils {
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 			}
-			out.close();
-			in.close();
+			//out.close();
+			//in.close();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
-			if (out != null || in != null) {
+			if (out != null) {
 				try {
 					out.close();
+				}
+				catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+			if (in != null) {
+				try {
 					in.close();
 				}
 				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					_log.debug(e);
 				}
 			}
 		}

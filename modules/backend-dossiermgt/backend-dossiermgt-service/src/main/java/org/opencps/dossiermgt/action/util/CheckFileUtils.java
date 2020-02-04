@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.activation.DataHandler;
-import javax.activation.MimeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 public class CheckFileUtils {
+
+	private static Log _log = LogFactoryUtil.getLog(CheckFileUtils.class);
 
 	public static boolean checkFileUpload(Attachment attachment) {
 		if (attachment == null) {
@@ -35,6 +36,7 @@ public class CheckFileUtils {
 				return false;
 			}
 		} catch (IOException e1) {
+			_log.debug(e1);
 			return false;
 		}
 		return true;

@@ -83,9 +83,9 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        
 					
 					if ("/statistics".equalsIgnoreCase(url) && serverUrl.contains("/v2")) {
-						apiUrl = serverUrl.replace("/v2", url);
+						apiUrl += serverUrl.replace("/v2", url);
 					} else {
-						apiUrl = serverUrl + url;
+						apiUrl += serverUrl + url;
 					}
 			        if ("GET".equals(method)) {
 						urlVal = new URL(apiUrl + "?" + postData.toString());			        	

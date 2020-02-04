@@ -98,10 +98,8 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
@@ -111,8 +109,8 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -122,6 +120,7 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.constants.CacheTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
@@ -816,7 +815,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
 					dossier, curStatus, curSubStatus, prevStatus,
-					dateOption != null ? dateOption : actionConfig.getDateOption(), option, serviceProcess, context);
+					dateOption != null ? dateOption : actionConfig != null ? actionConfig.getDateOption() : 0, option, serviceProcess, context);
 			for (Map.Entry<String, Boolean> entry : resultFlagChanged.entrySet()) {
 				flagChanged.put(entry.getKey(), entry.getValue());
 			}
@@ -1043,6 +1042,7 @@ public class CPSDossierBusinessLocalServiceImpl
 										}
 										_log.debug("RESULT PROXY: " + sb.toString());
 									} catch (IOException e) {
+										_log.debug(e);
 										_log.debug("Something went wrong while reading/writing in stream!!");
 									}
 								}
@@ -1504,12 +1504,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 			}
 
-			if (Validator.isNotNull(oldPaymentFile) ) {
+			if (oldPaymentFile != null) {
 				String paymentMethod = StringPool.BLANK;
 				if (intpaymentMethod != 0) {
 					paymentMethod = checkPaymentMethod(intpaymentMethod);
 				}
-				if(Validator.isNotNull(resultObj)) {
+				if(resultObj != null) {
 					oldPaymentFile.setEinvoice(resultObj.toString());
 					oldPaymentFile.setInvoicePayload(params.toString());
 					if (Validator.isNotNull(paymentMethod)) {
@@ -2011,7 +2011,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
 		
 		params.put(Field.USER_NAME, "HA");	
-		params.put("passWord", "1"); 	    	
+		params.put(CInvoiceTerm.secretCode, "1"); 	    	
 		params.put("soid", String.valueOf(0)); 
 		params.put("maHoadon", "01GTKT0/001"); 
 		params.put("ngayHd", dateformatted); //"01/08/2018"
@@ -2450,10 +2450,10 @@ public class CPSDossierBusinessLocalServiceImpl
 							double hoursCount = extendDateTimeStamp * 1.0 / (1000 * 60 * 60);
 							_log.debug("hoursCount: "+hoursCount);
 							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
-							List<Holiday> holidayList = HolidayLocalServiceUtil
-									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
-							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
-									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
+//							List<Holiday> holidayList = HolidayLocalServiceUtil
+//									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
+//							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+//									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
 
 							//Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
 							//		dossier.getDueDate(), hoursCount, holidayList,
@@ -2935,7 +2935,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}			
 

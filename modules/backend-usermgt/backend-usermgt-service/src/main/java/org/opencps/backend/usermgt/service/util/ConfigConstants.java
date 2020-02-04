@@ -238,14 +238,14 @@ public class ConfigConstants {
 
 	public static final String EMP_ACTION_LOCALE = "org.opencps.employee.action.locale";
 	public static final String EMP_ACTION_LOCALE_UPP = "org.opencps.employee.action.locale.upp";
-	public static final String EMP_ACTION_PWD_GEN_1 = "org.opencps.employee.action.pwd.gen.1";
-	public static final String EMP_ACTION_PWD_GEN_2 = "org.opencps.employee.action.pwd.gen.2";
-	public static final String EMP_ACTION_PWD_GEN_3 = "org.opencps.employee.action.pwd.gen.3";
-	public static final String EMP_ACTION_PWD_GEN_4 = "org.opencps.employee.action.pwd.gen.4";
-	public static final String EMP_ACTION_PWD_GEN_5_1 = "org.opencps.employee.action.pwd.gen.5.1";
-	public static final String EMP_ACTION_PWD_GEN_5_2 = "org.opencps.employee.action.pwd.gen.5.2";
-	public static final String EMP_ACTION_PWD_GEN_5_3 = "org.opencps.employee.action.pwd.gen.5.3";
-	public static final String EMP_ACTION_PWD_GEN_5_4 = "org.opencps.employee.action.pwd.gen.5.4";
+	public static final String EMP_ACTION_SECRET_GEN_1 = "org.opencps.employee.action.pwd.gen.1";
+	public static final String EMP_ACTION_SECRET_GEN_2 = "org.opencps.employee.action.pwd.gen.2";
+	public static final String EMP_ACTION_SECRET_GEN_3 = "org.opencps.employee.action.pwd.gen.3";
+	public static final String EMP_ACTION_SECRET_GEN_4 = "org.opencps.employee.action.pwd.gen.4";
+	public static final String EMP_ACTION_SECRET_GEN_5_1 = "org.opencps.employee.action.pwd.gen.5.1";
+	public static final String EMP_ACTION_SECRET_GEN_5_2 = "org.opencps.employee.action.pwd.gen.5.2";
+	public static final String EMP_ACTION_SECRET_GEN_5_3 = "org.opencps.employee.action.pwd.gen.5.3";
+	public static final String EMP_ACTION_SECRET_GEN_5_4 = "org.opencps.employee.action.pwd.gen.5.4";
 	public static final String EMP_ACTION_LOCK_EMP_USER_STATUS = "org.opencps.employee.action.lock.emp.user.status";
 	public static final String EMP_ACTION_LOCK_EMP_USER_SEND_BY = "org.opencps.employee.action.lock.emp.user.sendby";
 	public static final String EMP_ACTION_CREATE_NEW_EMP_ROLE = "org.opencps.employee.action.create.new.emp.role";

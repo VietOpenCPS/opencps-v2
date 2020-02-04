@@ -119,7 +119,7 @@ public class EmployeeTerm {
 	public static final String EMP_ACTION_CREATE_NEW_EMP_USERNAME = "USERNAME";
 	public static final String EMP_ACTION_CREATE_NEW_EMP_USEREMAIL =
 		"USEREMAIL";
-	public static final String EMP_ACTION_CREATE_NEW_EMP_PASSWORD = "PASSWORD";
+	public static final String EMP_ACTION_CREATE_NEW_EMP_SECRET_CODE = "PASSWORD";
 
 	public static final String KEYWORDS = "keywords";
 	public static final String IS_ACCOUNT = "isAccount";
