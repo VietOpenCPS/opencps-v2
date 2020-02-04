@@ -2,6 +2,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -28,8 +30,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierActionManagement;
 import org.opencps.api.controller.util.DossierActionUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActiontoUser;
 import org.opencps.api.dossieraction.model.DossierActionSearchModel;
@@ -61,7 +65,6 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -70,7 +73,6 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -92,7 +94,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug("groupId: " + groupId + "| dossierId: " + dossierId);
 
@@ -103,8 +105,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			// }
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params =
@@ -115,9 +117,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			params.put(DossierActionTerm.ACTION_CODE, query.getActionCode());
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					query.getSort() + "_sortable", Sort.STRING_TYPE,
+					querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder()))
 			};
 
@@ -180,13 +184,13 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 									dueDateUtils = new DueDateUtils(
 										now, stepDuedate, 1, groupId);
-									overType = "Còn ";
+									overType = MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_UNDUETYPE);
 								}
 								else {
 
 									dueDateUtils = new DueDateUtils(
 										stepDuedate, now, 1, groupId);
-									overType = "Quá hạn ";
+									overType = MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_OVERDUETYPE);
 								}
 								if (dossier.getDurationUnit() == 0) {
 
@@ -195,11 +199,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 											dueDateUtils.getOverDueCalcToString());
 								}
 								else {
-
+									String stepOverDue = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_STEPOVERDUE), dueDateUtils.getOverDueCalcToHours());
+									
 									result.setStepOverdue(
-										overType +
-											dueDateUtils.getOverDueCalcToHours() +
-											" giờ");
+										stepOverDue);
 								}
 							}
 							_log.debug(
@@ -428,7 +431,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				result.setTotal(0);
 			}
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -444,15 +447,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug(
 				"groupId: " + groupId + "| dossierId: " + dossierId +
 					"| actionId: " + actionId);
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params =
@@ -464,9 +467,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			params.put(DossierActionTerm.ACTION_CODE, query.getActionCode());
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					query.getSort() + "_sortable", Sort.STRING_TYPE,
+					querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder()))
 			};
 
@@ -497,14 +502,14 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				// danh sach thanh phan cua ho so lien thong
 				List<DossierTemplatePartDataModel> dossierParts =
 					DossierActionUtils.getDossierPartCrossDossier(
-						groupId, (ProcessAction) jsonData.get("processAction"),
+						groupId, (ProcessAction) jsonData.get(ConstantUtils.DOSSIERACTION_PROCESS_ACTION),
 						dossier);
 				_log.debug(dossierParts.size());
 
 				result.setDossierParts(dossierParts);
 			}
 			_log.debug(result);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -520,7 +525,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug(
 				"groupId: " + groupId + "| dossierId: " + dossierId +
@@ -545,9 +550,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			params.put(DossierActionTerm.ACTION_CODE, actionCode);
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					query.getSort() + "_sortable", Sort.STRING_TYPE,
+					querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder()))
 			};
 
@@ -566,7 +572,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			else {
 				result.setTotal(0);
 			}
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -586,7 +592,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		try {
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			Dossier dossier = null;
 			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -670,10 +676,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					}
 					result.getData().addAll(datas);
 				}
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
-				return Response.status(403).entity(null).build();
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(null).build();
 			}
 		}
 		catch (Exception e) {
@@ -692,7 +698,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			String referenceUid = null;
 			if (dossierId == 0) {
@@ -703,9 +709,9 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				groupId, dossierId, referenceUid);
 
 			listContacts = DossierActionUtils.mappingToDoListContacts(
-				(List<Dossier>) jsonData.get("ListContacts"));
+				(List<Dossier>) jsonData.get(ConstantUtils.DOSSIERACTION_LIST_CONTACTS));
 
-			return Response.status(200).entity(listContacts).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(listContacts).build();
 
 		}
 		catch (Exception e) {
@@ -798,44 +804,44 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 						JSONObject jsonData =
 							JSONFactoryUtil.createJSONObject(formData);
 						formDetail.put(
-							"so_chung_chi", jsonData.get("so_chung_chi"));
+							ConstantUtils.DELIVERABLE_DATAFORM_SOCHUNGCHI, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_SOCHUNGCHI));
 						formDetail.put(
-							"nguoi_ky_cc", jsonData.get("nguoi_ky_cc"));
+							ConstantUtils.DELIVERABLE_DATAFORM_NGUOIKYCC, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_NGUOIKYCC));
 						formDetail.put(
-							"ngay_ky_cc", jsonData.get("ngay_ky_cc"));
+							ConstantUtils.DELIVERABLE_DATAFORM_NGAYKYCC, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_NGAYKYCC));
 						formDetail.put(
-							"ten_doanh_nghiep",
-							jsonData.get("ten_doanh_nghiep"));
+							ConstantUtils.DELIVERABLE_DATAFORM_TEN_DOANH_NGHIEP,
+							jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_TEN_DOANH_NGHIEP));
 						formDetail.put(
-							"ma_so_doanh_nghiep",
-							jsonData.get("ma_so_doanh_nghiep"));
-						formDetail.put("ma_ho_so", jsonData.get("ma_ho_so"));
-						formDetail.put("so_ho_so", jsonData.get("so_ho_so"));
+							ConstantUtils.DELIVERABLE_DATAFORM_MASO_DOANH_NGHIEP,
+							jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_MASO_DOANH_NGHIEP));
+						formDetail.put(ConstantUtils.DELIVERABLE_DATAFORM_MA_HOSO, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_MA_HOSO));
+						formDetail.put(ConstantUtils.DELIVERABLE_DATAFORM_SO_HOSO, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_MA_HOSO));
 						formDetail.put(
-							"ngay_tiep_nhan", jsonData.get("ngay_tiep_nhan"));
-						formDetail.put("ngay_gui", jsonData.get("ngay_gui"));
+							ConstantUtils.DELIVERABLE_DATAFORM_NGAY_TIEP_NHAN, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_NGAY_TIEP_NHAN));
+						formDetail.put(ConstantUtils.DELIVERABLE_DATAFORM_NGAY_GUI, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_NGAY_GUI));
 						formDetail.put(
-							"loai_san_pham", jsonData.get("loai_san_pham"));
-						formDetail.put("nhan_hieu", jsonData.get("nhan_hieu"));
+							ConstantUtils.DELIVERABLE_DATAFORM_LOAI_SAN_PHAM, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_LOAI_SAN_PHAM));
+						formDetail.put(ConstantUtils.DELIVERABLE_DATAFORM_NHAN_HIEU, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_NHAN_HIEU));
 						formDetail.put(
-							"ma_kieu_loai", jsonData.get("ma_kieu_loai"));
+							ConstantUtils.DELIVERABLE_DATAFORM_MA_KIEU_LOAI, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_MA_KIEU_LOAI));
 						formDetail.put(
-							"ten_thuong_mai", jsonData.get("ten_thuong_mai"));
+							ConstantUtils.DELIVERABLE_DATAFORM_TEN_THUONG_MAI, jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_TEN_THUONG_MAI));
 
 						String strReport =
-							String.valueOf(jsonData.get("bien_ban"));
+							String.valueOf(jsonData.get(ConstantUtils.DELIVERABLE_DATAFORM_BIEN_BAN));
 						try {
 							JSONObject jsonReportData =
 								JSONFactoryUtil.createJSONObject(strReport);
 							formDetail.put(
-								"bien_ban@hinh_thuc_cap_giay_text",
-								jsonReportData.get("hinh_thuc_cap_giay_text"));
+								ConstantUtils.DELIVERABLE_DATAFORM_BIENBAN_HINHTHUCCAPGIAY,
+								jsonReportData.get(ConstantUtils.DELIVERABLE_DATAFORM_HINHTHUCCAPGIAY_KEY));
 							formDetail.put(
-								"bien_ban@so_bien_ban",
-								jsonReportData.get("so_bien_ban"));
+								ConstantUtils.DELIVERABLE_DATAFORM_BIENBAN_SOBIENBAN,
+								jsonReportData.get(ConstantUtils.DELIVERABLE_DATAFORM_SOBIENBAN_KEY));
 							formDetail.put(
-								"bien_ban@dang_kiem_vien_chinh",
-								jsonReportData.get("dang_kiem_vien_chinh"));
+								ConstantUtils.DELIVERABLE_DATAFORM_BIENBAN_DANGKIEMVIENCHINH,
+								jsonReportData.get(ConstantUtils.DELIVERABLE_DATAFORM_DANGKIEMVIENCHINH_KEY));
 							results.put(formDetail);
 						}
 						catch (Exception e) {
@@ -850,7 +856,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			}
 
 			// _log.info("Result: "+ results);
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 		}
 		catch (Exception e) {

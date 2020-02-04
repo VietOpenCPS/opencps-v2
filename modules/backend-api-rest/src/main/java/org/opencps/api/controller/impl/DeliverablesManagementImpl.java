@@ -157,9 +157,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
 				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+					DeliverableTerm.TEN_CHUNG_CHI, doc.get(DeliverableTerm.DELIVERABLE_NAME));
 				formJson.put(
-					"deliverableCode",
+					DeliverableTerm.DELIVERABLE_CODE,
 					doc.get(DeliverableTerm.DELIVERABLE_CODE));
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
@@ -540,7 +540,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			int startSearch = -1;
 			int endSearch = -1;
-			if (Validator.isNotNull(end) && !"0".equals(end)) {
+			if (Validator.isNotNull(end) && !ConstantUtils.QUERY_ZERO.equals(end)) {
 				startSearch = Integer.parseInt(start);
 				endSearch = Integer.parseInt(end);
 			}
@@ -551,9 +551,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			_log.info("agencyNo: " + agencyNo + "*typeCode*: " + typeCode);
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 
-			String pattern = String.valueOf(keyJson.get("query"));
-			String paramValues = String.valueOf(keyJson.get("values"));
-			String paramTypes = String.valueOf(keyJson.get("type"));
+			String pattern = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_QUERY_KEY));
+			String paramValues = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_VALUES_KEY));
+			String paramTypes = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_TYPE_KEY));
 
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
@@ -562,17 +562,18 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
 			params.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DeliverableTerm.DELIVERABLE_STATE, deliverableState);
-			params.put("pattern", pattern);
-			params.put("paramValues", paramValues);
-			params.put("paramTypes", paramTypes);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PATTERN_KEY, pattern);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PARAMVALUES_KEY, paramValues);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PARAMTYPES_KEY, paramTypes);
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 			// DeliverableResultModel results = new DeliverableResultModel();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-
+			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					dateSort, Sort.STRING_TYPE, true)
 			};
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByTypecode(
@@ -595,9 +596,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
 				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+					DeliverableTerm.TEN_CHUNG_CHI, doc.get(DeliverableTerm.DELIVERABLE_NAME));
 				formJson.put(
-					"deliverableCode",
+					DeliverableTerm.DELIVERABLE_CODE,
 					doc.get(DeliverableTerm.DELIVERABLE_CODE));
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
@@ -712,7 +713,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 		}
 
-		return Response.status(HttpURLConnection.HTTP_OK).entity("{}").build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_EMPTY).build();
 	}
 
 	@Override
@@ -734,7 +735,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
@@ -773,7 +774,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("success", true);
+			results.put(ConstantUtils.API_JSON_SUCCESS, true);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
@@ -810,7 +811,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
@@ -830,21 +831,21 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
 
-				if (Validator.isNotNull(deliverable.get("deliverableCode"))) {
+				if (Validator.isNotNull(deliverable.get(DeliverableTerm.DELIVERABLE_CODE))) {
 
 					Deliverable deliverableObj =
 						DeliverableLocalServiceUtil.getByF_GID_DCODE(
-							groupId, deliverable.getString("deliverableCode"));
+							groupId, deliverable.getString(DeliverableTerm.DELIVERABLE_CODE));
 
 					deliverable.put(
-						"deliverableId", Validator.isNotNull(deliverableObj)
+						DeliverableTerm.DELIVERABLE_ID, Validator.isNotNull(deliverableObj)
 							? deliverableObj.getDeliverableId() : 0);
 					deliverable.put(Field.GROUP_ID, groupId);
-					deliverable.put("userId", userId);
-					deliverable.put("companyId", companyId);
-					deliverable.put("userName", userName);
-					deliverable.put("deliverableType", deliverableType);
-					deliverable.put("fileAttach", false);
+					deliverable.put(Field.USER_ID, userId);
+					deliverable.put(Field.COMPANY_ID, companyId);
+					deliverable.put(Field.USER_NAME, userName);
+					deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableType);
+					deliverable.put(DeliverableTerm.FILE_ATTACH, false);
 					deliverableObj =
 						DeliverableLocalServiceUtil.adminProcessData(
 							deliverable);
@@ -872,7 +873,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		result.put("url", StringPool.BLANK);
+		result.put(DeliverableTerm.URL, StringPool.BLANK);
 		try {
 
 			_log.info(
@@ -893,7 +894,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
@@ -911,10 +912,10 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
 					deliverable.getFileEntryId());
 
-				result.put("fileName", fileEntry.getFileName());
-				result.put("fileType", fileEntry.getMimeType());
+				result.put(ConstantUtils.DELIVERABLE_DL_FILENAME, fileEntry.getFileName());
+				result.put(ConstantUtils.DELIVERABLE_DL_FILETYPE, fileEntry.getMimeType());
 				result.put(
-					"url",
+					DeliverableTerm.URL,
 					DLUtil.getPreviewURL(
 						fileEntry, fileEntry.getFileVersion(),
 						serviceContext.getThemeDisplay(), StringPool.BLANK));

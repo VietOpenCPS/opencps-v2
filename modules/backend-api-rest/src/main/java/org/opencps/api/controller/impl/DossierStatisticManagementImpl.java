@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierStatisticManagement;
 import org.opencps.api.controller.util.DossierStatisticUtils;
 import org.opencps.api.dossierstatistic.model.DossierStatisticDetailModel;
@@ -56,7 +58,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		DossierStatisticYearResultsModel results = new DossierStatisticYearResultsModel();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		List<DossierStatisticYearDataModel> lstDossierStatisticYearDataModel = new ArrayList<DossierStatisticYearDataModel>();
 
@@ -86,7 +88,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 		results.setTotal(lstDossierStatisticYearDataModel.size());
 		results.getData().addAll(lstDossierStatisticYearDataModel);
 
-		return Response.status(200).entity(results).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -99,7 +101,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -115,11 +117,11 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 			JSONObject jsonData = actions.getDossierStatistic(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, -1, serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(
-					DossierStatisticUtils.mappingToDossierStatistictModel((List<Document>) jsonData.get("data")));
+					DossierStatisticUtils.mappingToDossierStatistictModel((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -132,7 +134,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -149,7 +151,7 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 
 			DossierStatisticDetailModel result = DossierStatisticUtils.mappingToDossierStatisticModel(dossierStatistic);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

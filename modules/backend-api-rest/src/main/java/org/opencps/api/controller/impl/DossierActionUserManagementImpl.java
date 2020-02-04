@@ -2,6 +2,7 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -16,7 +17,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierActionUserManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.dossieractionuser.model.DossierActionUserModel;
 import org.opencps.api.dossieractionuser.model.DossierActionUserResultModel;
 import org.opencps.auth.api.BackendAuth;
@@ -45,7 +48,7 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Indexer<Dossier> indexer = IndexerRegistryUtil
 				.nullSafeGetIndexer(Dossier.class);
 		
@@ -54,8 +57,8 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 			}
 			Dossier dossier = null;
 			try {
@@ -133,11 +136,11 @@ public class DossierActionUserManagementImpl implements DossierActionUserManagem
 					
 					indexer.reindex(dossier);
 					
-					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier action user already exists!").build();									
+					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(MessageUtil.getMessage(ConstantUtils.DOSSIERACTIONUSER_USERNOTEXISTS)).build();									
 				}
 			}
 			else {
-				return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("Dossier not exists!").build();				
+				return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(MessageUtil.getMessage(ConstantUtils.DOSSIERACTIONUSER_DOSSIERNOTEXISTS)).build();				
 			}
 			
 		} catch (Exception e) {

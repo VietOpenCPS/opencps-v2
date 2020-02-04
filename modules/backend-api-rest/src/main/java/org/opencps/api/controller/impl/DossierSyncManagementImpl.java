@@ -9,8 +9,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierSyncManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21DataModel;
 import org.opencps.api.v21.dossiersync.model.DossierSyncV21ResultsModel;
 import org.opencps.auth.api.BackendAuth;
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -717,15 +720,15 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				end = -1;
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getDossierSyncByAction(groupId, action, start, end, serviceContext);
 			DossierSyncV21ResultsModel results = new DossierSyncV21ResultsModel();
 			
-			results.setTotal(jsonData.getInt("total"));
-			if (jsonData != null && jsonData.getInt("total") > 0) {
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
 				List<DossierSyncV21DataModel> lstDatas = new ArrayList<>();
-				List<DossierSync> lstSyncs = (List<DossierSync>)jsonData.get("data");
+				List<DossierSync> lstSyncs = (List<DossierSync>)jsonData.get(ConstantUtils.DATA);
 				for (DossierSync ds : lstSyncs) {
 					DossierSyncV21DataModel model = new DossierSyncV21DataModel();
 					model.setActionCode(ds.getActionCode());
@@ -754,22 +757,22 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 			ErrorMsg error = new ErrorMsg();
 
 			if (e instanceof UnauthenticationException) {
-				error.setMessage("Non-Authoritative Information.");
+				error.setMessage(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_NONAUTHORATIVE));
 				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription("Non-Authoritative Information.");
+				error.setDescription(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_NONAUTHORATIVE));
 
 				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 			} else {
 				if (e instanceof UnauthorizationException) {
-					error.setMessage("Unauthorized.");
+					error.setMessage(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_NONAUTHORATIVE));
 					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription("Unauthorized.");
+					error.setDescription(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_NONAUTHORATIVE));
 
 					return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(error).build();
 
 				} else {
 
-					error.setMessage("Internal Server Error");
+					error.setMessage(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_INTERNAL_SERVER_ERROR));
 					error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
 					error.setDescription(e.getMessage());
 

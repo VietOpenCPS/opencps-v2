@@ -8,6 +8,9 @@ public class ConstantUtils {
 	public static final String EXTENTION_TXT = ".txt";
 	public static final String EXTENTION_ZIP = ".zip";
 	
+	public static final String ZIP = "zip";
+	public static final String XML = "xml";
+	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "dicts";
@@ -77,6 +80,7 @@ public class ConstantUtils {
 	public static final String DATA= "data";
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	public static final String CONTENT_TYPE = "Content-Type";
+	public static final String CONTENT_LENGTH = "Content-Length";
 	public static final String MAIL_AD = "email";
 	public static final String TOKEN = "token";
 	public static final String CONTENT_LANGUAGE = "content/Language";
@@ -87,12 +91,14 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_PNG = "image/png";
 	public static final String MEDIA_TYPE_XML = "application/xml";
 	public static final String MEDIA_TYPE_ZIP = "application/zip";
+	public static final String MEDIA_TYPE_PDF = "application/pdf";
 	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
 	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
 	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
 	
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String ATTACHMENT_FILENAME = "attachment.filename";
+	public static final String INLINE_FILENAME = "inline.filename";
 	public static final String HTTP_HEADER_BEARER = "http.header.bearer";
 	public static final String QUERY_SORT = "query.sort";
 	public static final String QUERY_NUMBER_SORT = "query.number.sort";
@@ -118,6 +124,9 @@ public class ConstantUtils {
 	public static final String API_JSON_WARNING = "warning";
 	public static final String API_JSON_EMPTY = "{}";
 	public static final String API_JSON_STATUS = "status";
+	public static final String API_JSON_NOCONTENT = "No Content";
+	public static final String API_JSON_MESSAGE_NONAUTHORATIVE = "api.json.message.nonauthorative";
+	public static final String API_JSON_MESSAGE_INTERNAL_SERVER_ERROR = "api.json.message.internalservererror";
 	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
 	public static final String API_MESSAGE_FILENOTFOUND = "api.message.filenotfound";
@@ -175,6 +184,9 @@ public class ConstantUtils {
 	public static final String API_STATUS_KEY = "status";
 	public static final String API_DEFAULT_EMAIL = "default@liferay.com";
 	public static final String API_JSON_DATA_ITEMLV = "itemLv";
+	public static final String API_JSON_SUCCESS = "success";
+	public static final String API_JSON_URL = "url";
+	public static final String API_MESSAGE_GROUPID_NOT_EXISTS = "api.message.groupidnotexists";
 	
 	public static final String API_JSON_DEFAULTSIGNATURE_SIGNEDFILE = "signedFile";
 	public static final String API_JSON_DEFAULTSIGNATURE_SIGN = "sign";
@@ -195,4 +207,53 @@ public class ConstantUtils {
 	public static final String HASHCOMPUTED_EMAILUSER_KEY = "emailUser";
 	public static final String HASHCOMPUTED_TYPESIGNATURE_KEY = "typeSignature";
 	public static final String HASHCOMPUTED_POSTSTEPCODE_KEY = "postStepCode";
+	
+	public static final String QUERY_ZERO = "0";
+	public static final String DELIVERABLE_DATAFORM_QUERY_KEY = "query";
+	public static final String DELIVERABLE_DATAFORM_VALUES_KEY = "values";
+	public static final String DELIVERABLE_DATAFORM_TYPE_KEY = "type";
+	public static final String DELIVERABLE_DATAFORM_PATTERN_KEY = "pattern";
+	public static final String DELIVERABLE_DATAFORM_PARAMVALUES_KEY = "paramValues";
+	public static final String DELIVERABLE_DATAFORM_PARAMTYPES_KEY = "paramTypes";
+	public static final String DELIVERABLE_DATAFORM_SOCHUNGCHI = "so_chung_chi";
+	public static final String DELIVERABLE_DATAFORM_NGUOIKYCC = "nguoi_ky_cc";
+	public static final String DELIVERABLE_DATAFORM_NGAYKYCC = "ngay_ky_cc";
+	public static final String DELIVERABLE_DATAFORM_TEN_DOANH_NGHIEP = "ten_doanh_nghiep";
+	public static final String DELIVERABLE_DATAFORM_MASO_DOANH_NGHIEP = "ma_so_doanh_nghiep";
+	public static final String DELIVERABLE_DATAFORM_MA_HOSO = "ma_ho_so";
+	public static final String DELIVERABLE_DATAFORM_SO_HOSO = "so_ho_so";
+	public static final String DELIVERABLE_DATAFORM_NGAY_TIEP_NHAN = "ngay_tiep_nhan";
+	public static final String DELIVERABLE_DATAFORM_NGAY_GUI = "ngay_gui";
+	public static final String DELIVERABLE_DATAFORM_LOAI_SAN_PHAM = "loai_san_pham";
+	public static final String DELIVERABLE_DATAFORM_NHAN_HIEU = "nhan_hieu";
+	public static final String DELIVERABLE_DATAFORM_MA_KIEU_LOAI = "ma_kieu_loai";
+	public static final String DELIVERABLE_DATAFORM_TEN_THUONG_MAI = "ten_thuong_mai";
+	public static final String DELIVERABLE_DATAFORM_BIEN_BAN = "bien_ban";
+	public static final String DELIVERABLE_DATAFORM_BIENBAN_HINHTHUCCAPGIAY = "bien_ban@hinh_thuc_cap_giay_text";
+	public static final String DELIVERABLE_DATAFORM_HINHTHUCCAPGIAY_KEY = "hinh_thuc_cap_giay_text";
+	public static final String DELIVERABLE_DATAFORM_BIENBAN_SOBIENBAN = "bien_ban@so_bien_ban";	
+	public static final String DELIVERABLE_DATAFORM_SOBIENBAN_KEY = "so_bien_ban";	
+	public static final String DELIVERABLE_DATAFORM_BIENBAN_DANGKIEMVIENCHINH = "bien_ban@dang_kiem_vien_chinh";	
+	public static final String DELIVERABLE_DATAFORM_DANGKIEMVIENCHINH_KEY = "dang_kiem_vien_chinh";	
+
+	public static final String DELIVERABLE_DL_FILENAME = "fileName";
+	public static final String DELIVERABLE_DL_FILETYPE = "fileType";
+	public static final String DELIVERABLE_LIST_DELIVERABLE_TYPE = "lstDeliverableType";
+	
+	public static final String DOSSIERACTION_OVERDUETYPE = "dossieraction.overdue";
+	public static final String DOSSIERACTION_UNDUETYPE = "dossieraction.undue";
+	public static final String DOSSIERACTION_STEPOVERDUE = "dossieraction.stepoverdue";
+	public static final String DOSSIERACTION_PROCESS_ACTION = "processAction";
+	public static final String DOSSIERACTION_LIST_CONTACTS = "ListContacts";
+	public static final String DOSSIERACTIONUSER_USERNOTEXISTS = "dossieractionuser.usernotexists";
+	public static final String DOSSIERACTIONUSER_DOSSIERNOTEXISTS = "dossieractionuser.dossiernotexists";
+	
+	public static final String DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW = "jasper/engine/preview/destination";
+	public static final String DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE = "dossierdocument.message.previewrenderingnotavailable";
+	public static final String DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS = "dossierdocument.message.dossierwasnotonprocess";
+	public static final String DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID = "dossierdocument.message.cannotgetdossierwithid";
+	public static final String DOSSIERDOCUMENT_PROCESSSEQUENCEARR_KEY = "processSequenceArr";
+	
+	public static final String DOSSIERFILE_MESSAGE_FILEFORMATERROR = "dossierfile.message.fileformaterror";
+	public static final String DOSSIERFILE_MESSAGE_FOLDERISNOTSTRUCTURE = "dossierfile.message.folderisnotstructure";
 }

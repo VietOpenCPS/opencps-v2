@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -41,6 +42,7 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
@@ -77,7 +79,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String password) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DossierFileResultsModel results = new DossierFileResultsModel();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -150,7 +152,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					results.setTotal(0);
 				}
 			}
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -168,7 +170,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String displayName, String fileType, String isSync, String formData,
 		String removed, String eForm, Long modifiedDate) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.debug("In dossier file create");
 		try {
 //			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
@@ -191,7 +193,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			_log.debug("__End bind to dossierFile" + new Date());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -207,7 +209,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -225,7 +227,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -240,7 +242,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String referenceUid, String password) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -275,11 +277,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -300,7 +302,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		String referenceUid, Attachment file) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
@@ -318,7 +320,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -352,7 +354,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
 					id, referenceUid);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				dossierFile.getFormData()).build();
 
 		}
@@ -379,7 +381,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				DossierFileLocalServiceUtil.getDossierFileByReferenceUid(
 					id, referenceUid);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				dossierFile.getFormScript()).build();
 
 		}
@@ -394,7 +396,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		String referenceUid, String formdata) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -406,7 +408,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -422,7 +424,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -438,7 +440,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -455,7 +457,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -475,15 +477,15 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				query.getOrder(), serviceContext);
 
 			List<Document> documents =
-				(List<Document>) dossierFileJsonObject.get("data");
+				(List<Document>) dossierFileJsonObject.get(ConstantUtils.DATA);
 
-			results.setTotal(dossierFileJsonObject.getInt("total"));
+			results.setTotal(dossierFileJsonObject.getInt(ConstantUtils.TOTAL));
 
 			results.getData().addAll(
 				DossierFileUtils.mappingToDossierFileSearchResultsModel(
 					documents));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -527,16 +529,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 				}
 				// int index = realPath.lastIndexOf("\\");
-				int index = realPath.lastIndexOf("/");
+				int index = realPath.lastIndexOf(StringPool.SLASH);
 				File d = null;
 				if (index > 0) {
 					d = new File(pathName.substring(0, index));
 				}
 				if (d != null) {
 					for (File f : d.listFiles()) {
-						if ("zip".equals(
+						if (ConstantUtils.ZIP.equals(
 							f.getName().substring(
-								f.getName().lastIndexOf(".") + 1))) {
+								f.getName().lastIndexOf(StringPool.COMMA) + 1))) {
 							f.delete();
 						}
 						if (f.isDirectory()) {
@@ -558,7 +560,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						// String fileName = pathName + "\\" +
 						// fileEntry.getFileName();
 						String fileName =
-							pathName + "/" + fileEntry.getFileName();
+							pathName + StringPool.SLASH + fileEntry.getFileName();
 						File dir = new File(pathName);
 						if (!dir.exists()) {
 							dir.mkdirs();
@@ -573,9 +575,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				// pathName.substring(index + 1, pathName.length()) + ".zip");
 				action.zipDirectory(
 					dirName,
-					pathName.substring(0, index) + "/" +
+					pathName.substring(0, index) + StringPool.SLASH +
 						pathName.substring(index + 1, pathName.length()) +
-						".zip");
+						ConstantUtils.EXTENTION_ZIP);
 				// TODO:
 				// Nen danh sach dossierFiles thanh file zip sau day gui lai
 				// client
@@ -584,22 +586,22 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				// pathName.substring(0, index) + "\\" +
 				// pathName.substring(index + 1, pathName.length()) + ".zip");
 				File fi = new File(
-					pathName.substring(0, index) + "/" +
+					pathName.substring(0, index) + StringPool.SLASH +
 						pathName.substring(index + 1, pathName.length()) +
-						".zip");
-
+						ConstantUtils.EXTENTION_ZIP);
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fi.getName());
 				ResponseBuilder responseBuilder = Response.ok(fi);
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fi.getName() + "\"");
-				responseBuilder.header("Content-Type", "application/zip");
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
 
 				return responseBuilder.build();
 			}
 			else {
 				return Response.status(
 					HttpURLConnection.HTTP_NO_CONTENT).entity(
-						"No Content").build();
+						MessageUtil.getMessage(ConstantUtils.API_JSON_NOCONTENT)).build();
 			}
 		}
 		catch (Exception e) {
@@ -613,7 +615,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		String referenceUid, String formdata) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -625,7 +627,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -641,7 +643,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -661,9 +663,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			result.put("status", "success");
+			result.put(ConstantUtils.API_JSON_STATUS, ConstantUtils.API_JSON_SUCCESS);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.serialize(result)).build();
 
 		}
@@ -672,10 +674,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			result.put("status", "error");
-			result.put("message", "error");
+			result.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
+			result.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
-			return Response.status(500).entity(
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 				JSONFactoryUtil.serialize(result)).build();
 		}
 	}
@@ -687,7 +689,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String deliverableCode) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.debug("********START *********");
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -710,12 +712,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			if (dossierFile != null) {
-				results.put("dossierId", dossierFile.getDossierId());
-				results.put("referenceUid", dossierFile.getReferenceUid());
+				results.put(DossierTerm.DOSSIER_ID, dossierFile.getDossierId());
+				results.put(DossierTerm.REFERENCE_UID, dossierFile.getReferenceUid());
 			}
 
 			_log.debug("********END *********");
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -731,7 +733,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		DossierFileResultsModel results = new DossierFileResultsModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -765,7 +767,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				results.setTotal(0);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -795,7 +797,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -841,11 +843,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
 				responseBuilder.header(
-					"Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -867,12 +869,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Attachment file) {
 
 		_log.info("uploadFileEntry");
-		System.out.println("uploadFileEntry");
+//		System.out.println("uploadFileEntry");
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 =
 			new backend.auth.api.BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		InputStream fileInputStream = null;
 
@@ -882,10 +884,10 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				return Response.status(
 					HttpURLConnection.HTTP_UNAUTHORIZED).entity(
-						"User not permission process!").build();
+						MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 			}
 
 			DossierFileActions action = new DossierFileActionsImpl();
@@ -915,7 +917,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (!strGroupId.contains(String.valueOf(groupId))) {
 				return Response.status(
 					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-						"GroupId not exits!").build();
+						MessageUtil.getMessage(ConstantUtils.API_MESSAGE_GROUPID_NOT_EXISTS)).build();
 			}
 
 			// Process FILE
@@ -923,7 +925,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
-						.entity("File attach error format!").build();
+						.entity(MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FILEFORMATERROR)).build();
 			}
 
 			fileInputStream = dataHandle.getInputStream();
@@ -931,7 +933,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: " + extFile);
 			if (Validator.isNotNull(extFile)) {
-				if ("zip".equals(extFile.toLowerCase())) {
+				if (ConstantUtils.ZIP.equals(extFile.toLowerCase())) {
 					String pathFolder = ImportZipFileUtils.getFolderPath(
 						fileName, ConstantUtils.DEST_DIRECTORY);
 					// //delete folder if exits
@@ -968,11 +970,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					if (Validator.isNull(result)) {
 						return Response.status(
 							HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-								"Folder is not structure").build();
+								MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FOLDERISNOTSTRUCTURE)).build();
 					}
 					_log.info("LamTV_IMPORT DONE_ZIP");
 				}
-				else if ("xml".equals(extFile.toLowerCase())) {
+				else if (ConstantUtils.XML.equals(extFile.toLowerCase())) {
 					String pathFile = ConstantUtils.DEST_DIRECTORY +
 						StringPool.SLASH + fileName;
 					// //delete folder if exits
@@ -1012,7 +1014,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				}
 			}
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1029,7 +1031,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		DossierFileResultsModel results = new DossierFileResultsModel();
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long startTime = System.currentTimeMillis();
 		try {
 
@@ -1074,7 +1076,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			CacheActions cache = new CacheActionsImpl();
 			cache.clearCache();
 			
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -1090,7 +1092,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -1108,7 +1110,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1123,7 +1125,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String applicantIdNo, DossierFileSearchModel query) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1163,7 +1165,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				}
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -1199,7 +1201,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					DossierFileUtils.mappingToDossierFileModel(dossierFile);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -1228,7 +1230,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			List<DossierFile> dossierFiles = action.addDossierFile(
 				rootDossierFileIds.split(StringPool.COMMA),
 				dossierIds.split(StringPool.COMMA),
-				GetterUtil.getLong(header.getHeaderString("groupId")),
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID)),
 				company.getCompanyId(), user.getUserId(), user.getFullName(),
 				serviceContext);
 
@@ -1238,7 +1240,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			results.getData().addAll(
 				DossierFileUtils.mappingToDossierFileData(dossierFiles));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
 
@@ -1273,7 +1275,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					DossierFileUtils.mappingToDossierFileModel(dossierFile);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
 
@@ -1307,12 +1309,12 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
+				String inlineFilename = String.format(MessageUtil.getMessage(ConstantUtils.INLINE_FILENAME), fileEntry.getFileName());
 				responseBuilder.header(
-					"Content-Disposition",
-					"inline; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
-				responseBuilder.header("Content-Length", file.length());
+					ConstantUtils.CONTENT_DISPOSITION,
+					inlineFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(ConstantUtils.CONTENT_LENGTH, file.length());
 
 				return responseBuilder.build();
 			}
