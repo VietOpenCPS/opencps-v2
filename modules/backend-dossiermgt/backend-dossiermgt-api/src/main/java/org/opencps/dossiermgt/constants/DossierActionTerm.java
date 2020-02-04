@@ -44,4 +44,13 @@ public class DossierActionTerm {
 	
 	public static final String OUTSIDE_ACTION_9100 = "9100";
 	public static final String OUTSIDE_ACTION_ROLLBACK = "9000";
+	
+	public static final String publishImportDossier_fromStepCode = "300";
+	public static final String publishImportDossier_fromStepName = "Trả kết quả";
+	public static final String publishImportDossier_fromSequenceNo = "04";
+	public static final String publishImportDossier_actionCode = "4000";
+	public static final String publishImportDossier_actionUser = "Tiếp nhận";
+	public static final String publishImportDossier_actionName = "Trả hoàn thiện";
+	public static final String publishImportDossier_stepCode = "400";
+	public static final String publishImportDossier_stepName = "Hoàn thành";
 }

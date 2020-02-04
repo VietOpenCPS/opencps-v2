@@ -231,6 +231,9 @@ public class ConstantUtils {
 	public static final String BUSINESS_DOMAIN = "org.opencps.value.bussiness.domain";
 	public static final String ACTIVITY_TYPE = "org.opencps.value.activity.type";
 	public static final String DOCUMENT_TYPE = "org.opencps.value.document.type";
+	public static final String VNPOST_CITY_CODE = "org.opencps.value.vnpost.city";
+	public static final String REGISTER_BOOK = "org.opencps.value.register.book";
+	
 	public static final String METHOD_ADD_TO_GROUP = "org.opencps.method.addgroup";
 	public static final String METHOD_REMOVE_FROM_GROUP = "org.opencps.method.removegroup";
 	public static final String BASE_URI = "org.opencps.value.base.url";

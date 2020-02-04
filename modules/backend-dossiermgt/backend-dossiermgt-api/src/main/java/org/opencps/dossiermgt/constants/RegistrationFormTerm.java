@@ -16,4 +16,5 @@ public class RegistrationFormTerm {
 	public static final String FORM_DATA = "formData";
 	public static final String FORM_SCRIPT = "formScript";
 	public static final String FORM_REPORT = "formReport";
+	public static final String FILE_ENTRY_ID = "fileEntryId";
 }

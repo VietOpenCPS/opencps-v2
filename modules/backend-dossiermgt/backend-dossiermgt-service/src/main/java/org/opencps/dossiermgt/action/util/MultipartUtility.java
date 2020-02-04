@@ -14,6 +14,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -54,15 +57,15 @@ public class MultipartUtility {
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
-		httpConn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
-		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
+		httpConn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
+		httpConn.setRequestProperty(HttpHeaders.USER_AGENT, "OpenCPS-Agent");
 
-		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+		httpConn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStringEnc);
 
 		httpConn.setRequestMethod(HttpMethods.POST);
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
-		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();
@@ -82,14 +85,14 @@ public class MultipartUtility {
 		httpConn.setDoOutput(true); // indicates POST method
 		httpConn.setDoInput(true);
 		httpConn.setRequestProperty(ConstantUtils.CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
-		httpConn.setRequestProperty("User-Agent", "OpenCPS-Agent");
+		httpConn.setRequestProperty(HttpHeaders.USER_AGENT, "OpenCPS-Agent");
 
-		httpConn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+		httpConn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStringEnc);
 
 		httpConn.setRequestMethod(method);
 		httpConn.setDoInput(true);
 		httpConn.setDoOutput(true);
-		httpConn.setRequestProperty("Accept", "application/json");
+		httpConn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 		httpConn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupId));
 
 		outputStream = httpConn.getOutputStream();

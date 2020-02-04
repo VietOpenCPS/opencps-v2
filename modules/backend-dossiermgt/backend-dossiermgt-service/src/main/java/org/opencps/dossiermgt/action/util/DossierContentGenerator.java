@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -111,8 +112,8 @@ public class DossierContentGenerator {
 			int count = 0;
 
 			while (m.find()) {
-				briefNotePattern = briefNotePattern.replace(m.group(0), "$variable" + count + "$");
-				patternContentMaps.put("$variable" + count + "$", m.group(1));
+				briefNotePattern = briefNotePattern.replace(m.group(0), "$variable" + count + StringPool.DOLLAR);
+				patternContentMaps.put("$variable" + count + StringPool.DOLLAR, m.group(1));
 				m = r.matcher(briefNotePattern);
 				count++;
 			}
@@ -120,7 +121,7 @@ public class DossierContentGenerator {
 			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {
 				String tmpKey = entry.getKey();
 				String patternContent = entry.getValue();
-				String[] textSplit = StringUtil.split(patternContent, "@");
+				String[] textSplit = StringUtil.split(patternContent, StringPool.AT);
 				if (textSplit == null || textSplit.length < 2) {
 					briefNotePattern = briefNotePattern.replace(tmpKey, StringPool.BLANK);
 				} else {
@@ -128,7 +129,7 @@ public class DossierContentGenerator {
 					String fileTemplateNo = textSplit[1];
 					
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-							fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
+							fileTemplateNo, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 					
 					
 					if (dossierFile == null) {

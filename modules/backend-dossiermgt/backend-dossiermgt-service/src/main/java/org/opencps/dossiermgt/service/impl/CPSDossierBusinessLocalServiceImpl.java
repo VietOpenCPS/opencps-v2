@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -77,6 +78,7 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -122,14 +124,17 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.constants.CacheTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -250,7 +255,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		throws PortalException {
 		if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			//Create new HSLT
-			String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String createDossiers = proAction.getCreateDossiers();
@@ -853,6 +858,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierAction;
 	}
 	
+	public static final String CACHE_ServiceProcess = "ServiceProcess";
+	public static final String CREATE_DOCUMENT = "CREATE_DOCUMENT";
+	public static final String CHANGE_DATE = "CHANGE_DATE";
+	public static final String CALL_API = "CALL_API";
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig, ProcessOption option, ProcessAction proAction,
 			String actionCode, String actionUser, String actionNote, String payload, String assignUsers, 
 			String payment,
@@ -907,11 +916,11 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
-			Serializable serviceProcessCache = cache.getFromCache("ServiceProcess", groupId +StringPool.UNDERLINE+ serviceProcessId);
+			Serializable serviceProcessCache = cache.getFromCache(CACHE_ServiceProcess, groupId +StringPool.UNDERLINE+ serviceProcessId);
 			if (serviceProcessCache == null) {
 				serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
 				if (serviceProcess != null) {
-					cache.addToCache("ServiceProcess",
+					cache.addToCache(CACHE_ServiceProcess,
 							groupId +StringPool.UNDERLINE+ serviceProcessId, (Serializable) serviceProcess,
 							ttl);
 				}
@@ -929,39 +938,39 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (Validator.isNotNull(postAction)) {
 				JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
 				if (jsonPostData != null) {
-					JSONObject jsonDocument = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CREATE_DOCUMENT"));
-					if (jsonDocument != null && jsonDocument.has("documentType")) {
-						documentTypeList = jsonDocument.getString("documentType");
+					JSONObject jsonDocument = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CREATE_DOCUMENT));
+					if (jsonDocument != null && jsonDocument.has(DossierDocumentTerm.DOCUMENT_TYPE)) {
+						documentTypeList = jsonDocument.getString(DossierDocumentTerm.DOCUMENT_TYPE);
 						flagDocument = true;
 					}
-					JSONObject jsonChangeDate = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CHANGE_DATE"));
-					if (jsonChangeDate != null && jsonChangeDate.has("dateOption")) {
-						String strDateOption = jsonChangeDate.getString("dateOption");
+					JSONObject jsonChangeDate = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CHANGE_DATE));
+					if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
+						String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
 						if (Validator.isNotNull(strDateOption)) {
 							dateOption = Integer.valueOf(strDateOption);
 						}
 					}
-					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString("CALL_API"));
-					if (jsonCallAPI != null && jsonCallAPI.has("serverNo")) {
-						String serverNo = jsonCallAPI.getString("serverNo");
+					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CALL_API));
+					if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
+						String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
 						if (Validator.isNotNull(serverNo)) {
 							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
 							if (serverConfig != null) {
 								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 								//
 								String method = StringPool.BLANK;
-								if (configObj != null && configObj.has("method")) {
-									method = configObj.getString("method");
+								if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
+									method = configObj.getString(KeyPayTerm.METHOD);
 									System.out.println("method: "+method);
 								}
 								//params
 								JSONObject jsonParams = null;
-								if (configObj != null && configObj.has("params")) {
-									jsonParams = JSONFactoryUtil.createJSONObject(configObj.getString("params"));
+								if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
+									jsonParams = JSONFactoryUtil.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
 								}
 								if (jsonParams != null) {
-									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(jsonParams.getString("header"));
-									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(jsonParams.getString("body"));
+									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
+									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
 									
 									
 									String authStrEnc = StringPool.BLANK;
@@ -975,10 +984,10 @@ public class CPSDossierBusinessLocalServiceImpl
 										while (keys.hasNext()) {
 											String key = (String) keys.next();
 											if (!StringPool.BLANK.equals(postData.toString())) {
-												postData.append("&");
+												postData.append(StringPool.AMPERSAND);
 											}
 											postData.append(key);
-											postData.append("=");
+											postData.append(StringPool.EQUAL);
 											postData.append(jsonBody.get(key));
 										}
 
@@ -988,7 +997,7 @@ public class CPSDossierBusinessLocalServiceImpl
 												&& Validator.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
 											authStrEnc = Base64.getEncoder()
 													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
-															+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET))
+															+ StringPool.COLON + configObj.getString(SyncServerTerm.SERVER_SECRET))
 																	.getBytes());
 										}
 										if (configObj.has(SyncServerTerm.SERVER_URL)) {
@@ -1001,28 +1010,28 @@ public class CPSDossierBusinessLocalServiceImpl
 											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
 										}
 										if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
-											if (jsonHeader.has("groupId")) {
-												groupIdRequest = String.valueOf(jsonHeader.getLong("groupId"));
+											if (jsonHeader.has(Field.GROUP_ID)) {
+												groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
 											}
 										}
 
-										if ("GET".equals(method)) {
-											urlVal = new URL(apiUrl + "?" + postData.toString());
+										if (HttpMethods.GET.equals(method)) {
+											urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
 										} else {
 											urlVal = new URL(apiUrl);
 										}
 										_log.debug("API URL: " + apiUrl);
 										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
 												.openConnection();
-										conn.setRequestProperty("groupId", groupIdRequest);
+										conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 										conn.setRequestMethod(method);
-										conn.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
+										conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 										if (Validator.isNotNull(authStrEnc)) {
-											conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+											conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
 										}
-										if ("POST".equals(method) || "PUT".equals(method)) {
-											conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-											conn.setRequestProperty("Content-Length",
+										if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
+											conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+											conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
 													StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
 
 											conn.setUseCaches(false);
@@ -1177,14 +1186,14 @@ public class CPSDossierBusinessLocalServiceImpl
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {
         	payloadObj.put(
-					"Dossier", JSONFactoryUtil.createJSONObject(
+					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 						JSONFactoryUtil.looseSerialize(dossier)));
         	
         	if (dossierAction != null) {
-        		payloadObj.put("actionCode", dossierAction.getActionCode());
-        		payloadObj.put("actionUser", dossierAction.getActionUser());
-        		payloadObj.put("actionName", dossierAction.getActionName());
-        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
+        		payloadObj.put(DossierActionTerm.ACTION_USER, dossierAction.getActionUser());
+        		payloadObj.put(DossierActionTerm.ACTION_NAME, dossierAction.getActionName());
+        		payloadObj.put(DossierActionTerm.ACTION_NOTE, dossierAction.getActionNote());
         	}
         	//
 			if (payloadObject != null) {
@@ -1229,10 +1238,10 @@ public class CPSDossierBusinessLocalServiceImpl
 	        cal.setTime(now);
 	        	  
 			if (notiTemplate != null) {
-				if ("minutely".equals(notiTemplate.getInterval())) {
+				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
 			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
 				}
-				else if ("hourly".equals(notiTemplate.getInterval())) {
+				else if (KeyPayTerm.HOURLY.equals(notiTemplate.getInterval())) {
 			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
 				}
 				else {
@@ -1240,7 +1249,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith("APLC")) {
+				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -1277,7 +1286,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith("USER")) {
+				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
 					
 				}				
 			}
@@ -1303,10 +1312,10 @@ public class CPSDossierBusinessLocalServiceImpl
         calEmpl.setTime(now);
         
         if (emplTemplate != null) {
-			if ("minutely".equals(emplTemplate.getInterval())) {
+			if (KeyPayTerm.MINUTELY.equals(emplTemplate.getInterval())) {
 				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
 			}
-			else if ("hourly".equals(emplTemplate.getInterval())) {
+			else if (KeyPayTerm.HOURLY.equals(emplTemplate.getInterval())) {
 				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
 			}
 			else {
@@ -1520,12 +1529,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				if (Validator.isNotNull(payment)) {
 					try {
 						JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-						if (paymentObj.has("paymentNote")) {
-							oldPaymentFile.setPaymentNote(paymentObj.getString("paymentNote"));
+						if (paymentObj.has(KeyPayTerm.PAYMENTNOTE)) {
+							oldPaymentFile.setPaymentNote(paymentObj.getString(KeyPayTerm.PAYMENTNOTE));
 							String epaymentProfile = oldPaymentFile.getEpaymentProfile();
 							if (Validator.isNotNull(epaymentProfile)) {
 								JSONObject jsonEpayment = JSONFactoryUtil.createJSONObject(epaymentProfile);
-								jsonEpayment.put("paymentNote", paymentObj.getString("paymentNote"));
+								jsonEpayment.put(KeyPayTerm.PAYMENTNOTE, paymentObj.getString(KeyPayTerm.PAYMENTNOTE));
 								oldPaymentFile.setEpaymentProfile(jsonEpayment.toJSONString());
 							}
 						}
@@ -1572,28 +1581,28 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		try {
 			JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
-			if (paymentObj.has("paymentNote")) {
-				paymentNote = paymentObj.getString("paymentNote");
+			if (paymentObj.has(KeyPayTerm.PAYMENTNOTE)) {
+				paymentNote = paymentObj.getString(KeyPayTerm.PAYMENTNOTE);
 			}
-			if (paymentObj.has("feeAmount")) {
-				feeAmount = (Long)fmt.parse(paymentObj.getString("feeAmount"));
+			if (paymentObj.has(KeyPayTerm.FEEAMOUNT)) {
+				feeAmount = (Long)fmt.parse(paymentObj.getString(KeyPayTerm.FEEAMOUNT));
 			}
-			if (paymentObj.has("serviceAmount")) {
-				serviceAmount = (Long)fmt.parse(paymentObj.getString("serviceAmount"));
+			if (paymentObj.has(KeyPayTerm.SERVICEAMOUNT)) {
+				serviceAmount = (Long)fmt.parse(paymentObj.getString(KeyPayTerm.SERVICEAMOUNT));
 			}
-			if (paymentObj.has("shipAmount")) {
-				shipAmount = (Long)fmt.parse(paymentObj.getString("shipAmount"));
+			if (paymentObj.has(KeyPayTerm.SHIPAMOUNT)) {
+				shipAmount = (Long)fmt.parse(paymentObj.getString(KeyPayTerm.SHIPAMOUNT));
 			}
-			if (paymentObj.has("requestPayment")) {
-				paymentStatus = paymentObj.getInt("requestPayment");
+			if (paymentObj.has(KeyPayTerm.REQUESTPAYMENT)) {
+				paymentStatus = paymentObj.getInt(KeyPayTerm.REQUESTPAYMENT);
 			}
-			if (paymentObj.has("advanceAmount")) {
-				advanceAmount = (Long)fmt.parse(paymentObj.getString("advanceAmount"));
+			if (paymentObj.has(KeyPayTerm.ADVANCEAMOUNT)) {
+				advanceAmount = (Long)fmt.parse(paymentObj.getString(KeyPayTerm.ADVANCEAMOUNT));
 			}
 			
 			JSONObject paymentObj2 = JSONFactoryUtil.createJSONObject(proAction.getPaymentFee());
-			if (paymentObj2.has("paymentFee")) {
-				paymentFee = paymentObj2.getString("paymentFee");
+			if (paymentObj2.has(KeyPayTerm.PAYMENTFEE)) {
+				paymentFee = paymentObj2.getString(KeyPayTerm.PAYMENTFEE);
 			}
 		}
 		catch (JSONException e) {
@@ -1613,7 +1622,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 						paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
 				JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-				epaymentProfileJsonNew.put("keypayUrl", generatorPayURL);
+				epaymentProfileJsonNew.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJsonNew.toJSONString(),
 						context);
 			} catch (IOException e) {
@@ -1658,10 +1667,10 @@ public class CPSDossierBusinessLocalServiceImpl
 				try {
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 							paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
-						epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+						epaymentProfileJSON.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
 
-						String pattern1 = "good_code=";
-						String pattern2 = "&";
+						String pattern1 = KeyPayTerm.GOOD_CODE_EQ;
+						String pattern2 = StringPool.AMPERSAND;
 
 						String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
 
@@ -1671,17 +1680,17 @@ public class CPSDossierBusinessLocalServiceImpl
 						if (m.find()) {
 							String goodCode = m.group(1);
 
-							epaymentProfileJSON.put("keypayGoodCode", goodCode);
+							epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, goodCode);
 						} else {
-							epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+							epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, StringPool.BLANK);
 						}
 
-						epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
-						epaymentProfileJSON.put("bank", "true");
-						epaymentProfileJSON.put("paygate", "true");
-						epaymentProfileJSON.put("serviceAmount", serviceAmount);
-						epaymentProfileJSON.put("paymentNote", paymentNote);
-						epaymentProfileJSON.put("paymentFee", paymentFee);
+						epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE, epaymentConfigJSON.get("paymentMerchantCode"));
+						epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
+						epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
+						epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
+						epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
+						epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
 						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 								context);
 
@@ -1703,30 +1712,31 @@ public class CPSDossierBusinessLocalServiceImpl
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         try {		
         	payloadObj.put(
-					"Dossier", JSONFactoryUtil.createJSONObject(
+					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 						JSONFactoryUtil.looseSerialize(dossier)));
         	
         	if (dossierAction != null) {
-        		payloadObj.put("actionCode", dossierAction.getActionCode());
-        		payloadObj.put("actionUser", dossierAction.getActionUser());
-        		payloadObj.put("actionName", dossierAction.getActionName());
-        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        		
+        		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
+        		payloadObj.put(DossierActionTerm.ACTION_USER, dossierAction.getActionUser());
+        		payloadObj.put(DossierActionTerm.ACTION_NAME, dossierAction.getActionName());
+        		payloadObj.put(DossierActionTerm.ACTION_NOTE, dossierAction.getActionNote());
         	}
         }
         catch (Exception e) {
         	_log.error(e);
         }
 
-		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, "EMPL-03");
+		Notificationtemplate emplTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, NotificationTemplateTerm.EMPL_03);
 		Date now = new Date();
         Calendar calEmpl = Calendar.getInstance();
         calEmpl.setTime(now);
         
         if (emplTemplate != null) {
-			if ("minutely".equals(emplTemplate.getInterval())) {
+			if (KeyPayTerm.MINUTELY.equals(emplTemplate.getInterval())) {
 				calEmpl.add(Calendar.MINUTE, emplTemplate.getExpireDuration());					
 			}
-			else if ("hourly".equals(emplTemplate.getInterval())) {
+			else if (KeyPayTerm.HOURLY.equals(emplTemplate.getInterval())) {
 				calEmpl.add(Calendar.HOUR, emplTemplate.getExpireDuration());										
 			}
 			else {
@@ -1759,7 +1769,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									String fullName = employee != null ? employee.getFullName() : StringPool.BLANK;
 									NotificationQueueLocalServiceUtil.addNotificationQueue(
 											userId, groupId, 
-											"EMPL-03", 
+											NotificationTemplateTerm.EMPL_03, 
 											Dossier.class.getName(), 
 											String.valueOf(dossier.getDossierId()), 
 											payloadObj.toJSONString(), 
@@ -1791,7 +1801,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			
 			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			if (notiTemplate != null) {
-				if (actionConfig.getDocumentType().startsWith("APLC")) {
+				if (actionConfig.getDocumentType().startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 					}
@@ -1938,53 +1948,53 @@ public class CPSDossierBusinessLocalServiceImpl
 				// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
 
 				StringBuffer param = new StringBuffer();
-				param.append("merchant_code=").append(URLEncoder.encode(keypay.getMerchant_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.MERCHANT_CODE_EQ).append(URLEncoder.encode(keypay.getMerchant_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("merchant_secure_key=").append(URLEncoder.encode(keypay.getMerchant_secure_key(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.MERCHANT_SECURE_KEY_EQ).append(URLEncoder.encode(keypay.getMerchant_secure_key(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("bank_code=").append(URLEncoder.encode(keypay.getBank_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.BANK_CODE_EQ).append(URLEncoder.encode(keypay.getBank_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("internal_bank=").append(URLEncoder.encode(keypay.getInternal_bank(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.INTERNAL_BANK_EQ).append(URLEncoder.encode(keypay.getInternal_bank(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("merchant_trans_id=").append(URLEncoder.encode(keypay.getMerchant_trans_id(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.MERCHANT_TRANS_ID_EQ).append(URLEncoder.encode(keypay.getMerchant_trans_id(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("good_code=").append(URLEncoder.encode(keypay.getGood_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.GOOD_CODE_EQ).append(URLEncoder.encode(keypay.getGood_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), StandardCharsets.UTF_8.name()) )
+				param.append(KeyPayTerm.NET_COST_EQ).append(URLEncoder.encode(keypay.getNet_cost(), StandardCharsets.UTF_8.name()) )
 						.append(StringPool.AMPERSAND);
-				param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.SHIP_FEE_EQ).append(URLEncoder.encode(keypay.getShip_fee(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("tax=").append(URLEncoder.encode(keypay.getTax(), StandardCharsets.UTF_8.name())).append(StringPool.AMPERSAND);
-				param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.TAX_EQ).append(URLEncoder.encode(keypay.getTax(), StandardCharsets.UTF_8.name())).append(StringPool.AMPERSAND);
+				param.append(KeyPayTerm.RETURN_URL_EQ).append(URLEncoder.encode(keypay.getReturn_url(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("version=").append(URLEncoder.encode(keypay.getVersion(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.VERSION_EQ).append(URLEncoder.encode(keypay.getVersion(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("command=").append(URLEncoder.encode(keypay.getCommand(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.COMMAND_EQ).append(URLEncoder.encode(keypay.getCommand(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("current_locale=").append(URLEncoder.encode(keypay.getCurrent_locale(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.CURRENT_LOCALE_EQ).append(URLEncoder.encode(keypay.getCurrent_locale(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("currency_code=").append(URLEncoder.encode(keypay.getCurrency_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.CURRENCY_CODE_EQ).append(URLEncoder.encode(keypay.getCurrency_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("service_code=").append(URLEncoder.encode(keypay.getService_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.SERVICE_CODE_EQ).append(URLEncoder.encode(keypay.getService_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.COUNTRY_CODE_EQ).append(URLEncoder.encode(keypay.getCountry_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
 
-				param.append("desc_1=").append(URLEncoder.encode(keypay.getDesc_1(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.DESC_1_EQ).append(URLEncoder.encode(keypay.getDesc_1(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("desc_2=").append(URLEncoder.encode(keypay.getDesc_2(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.DESC_2_EQ).append(URLEncoder.encode(keypay.getDesc_2(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("desc_3=").append(URLEncoder.encode(keypay.getDesc_3(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.DESC_3_EQ).append(URLEncoder.encode(keypay.getDesc_3(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("desc_4=").append(URLEncoder.encode(keypay.getDesc_4(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.DESC_4_EQ).append(URLEncoder.encode(keypay.getDesc_4(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("desc_5=").append(URLEncoder.encode(keypay.getDesc_5(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.DESC_5_EQ).append(URLEncoder.encode(keypay.getDesc_5(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), StandardCharsets.UTF_8.name()))
+				param.append(KeyPayTerm.XML_DESCRIPTION_EQ).append(URLEncoder.encode(keypay.getXml_description(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append("secure_hash=").append(keypay.getSecure_hash());
+				param.append(KeyPayTerm.SECURE_HASH_EQ).append(keypay.getSecure_hash());
 
-				result = epaymentConfigJSON.getString("paymentKeypayDomain") + StringPool.QUESTION + param.toString();
+				result = epaymentConfigJSON.getString(KeyPayTerm.PAYMENTKEYPAYDOMAIN) + StringPool.QUESTION + param.toString();
 
 			}
 
@@ -2010,52 +2020,52 @@ public class CPSDossierBusinessLocalServiceImpl
 		String dateformatted = sdf.format(new Date());
 		_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
 		
-		params.put(Field.USER_NAME, "HA");	
-		params.put("passWord", "1"); 	    	
-		params.put("soid", String.valueOf(0)); 
-		params.put("maHoadon", "01GTKT0/001"); 
-		params.put("ngayHd", dateformatted); //"01/08/2018"
-		params.put("seri", "12314"); 
-		params.put("maNthue", "01"); 
-		params.put("kieuSo", "G"); 
-		params.put("maKhackHang", Long.toString(dossier.getUserId()));
-		params.put("ten", dossier.getApplicantName()); 
-		params.put("phone", dossier.getContactTelNo());
+		params.put(Field.USER_NAME, StringPool.BLANK);	
+		params.put(CInvoiceTerm.passWord, String.valueOf(1)); 	    	
+		params.put(CInvoiceTerm.soid, String.valueOf(0)); 
+		params.put(CInvoiceTerm.maHoadon, StringPool.BLANK); 
+		params.put(CInvoiceTerm.ngayHd, dateformatted); //"01/08/2018"
+		params.put(CInvoiceTerm.seri, String.valueOf(12314)); 
+		params.put(CInvoiceTerm.maNthue, "01"); 
+		params.put(CInvoiceTerm.kieuSo, "G"); 
+		params.put(CInvoiceTerm.maKhackHang, Long.toString(dossier.getUserId()));
+		params.put(CInvoiceTerm.ten, dossier.getApplicantName()); 
+		params.put(CInvoiceTerm.phone, dossier.getContactTelNo());
 		if(dossier.getApplicantIdType().contentEquals("business")) {
-			params.put("tax", dossier.getApplicantIdNo()); 
+			params.put(CInvoiceTerm.tax, dossier.getApplicantIdNo()); 
 		} else {
-			params.put("tax", StringPool.BLANK);
+			params.put(CInvoiceTerm.tax, StringPool.BLANK);
 		}
-		params.put("dchi", address); 
-		params.put("maTk", StringPool.BLANK); 
-		params.put("tenNh", StringPool.BLANK); 
-		params.put("mailH", GetterUtil.getString(dossier.getContactEmail()));
-		params.put("phoneH", GetterUtil.getString(dossier.getContactTelNo()));
-		params.put("tenM", GetterUtil.getString(dossier.getDelegateName()));
-		params.put("maKhL", "K");
-		params.put("maNt", "VND");
-		params.put("tg", "1");
+		params.put(CInvoiceTerm.dchi, address); 
+		params.put(CInvoiceTerm.maTk, StringPool.BLANK); 
+		params.put(CInvoiceTerm.tenNh, StringPool.BLANK); 
+		params.put(CInvoiceTerm.mailH, GetterUtil.getString(dossier.getContactEmail()));
+		params.put(CInvoiceTerm.phoneH, GetterUtil.getString(dossier.getContactTelNo()));
+		params.put(CInvoiceTerm.tenM, GetterUtil.getString(dossier.getDelegateName()));
+		params.put(CInvoiceTerm.maKhL, "K");
+		params.put(CInvoiceTerm.maNt, "VND");
+		params.put(CInvoiceTerm.tg, String.valueOf(1));
 		if(intpaymentMethod == 3) {
-			params.put("hthuc", "M");
+			params.put(CInvoiceTerm.hthuc, CInvoiceTerm.hthuc_M);
 		}else {
-			params.put("hthuc", "C");
+			params.put(CInvoiceTerm.hthuc, CInvoiceTerm.hthuc_C);
 		}
-		params.put("han", StringPool.BLANK);
-		params.put("tlGgia", String.valueOf(0));
-		params.put("ggia", String.valueOf(0));
-		params.put("phi", String.valueOf(0));
-		params.put("noidung", dossier.getDossierNo());
-		params.put("tien", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("ttoan", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("maVtDetail", dossier.getDossierNo());
-		params.put("tenDetail", GetterUtil.getString(dossier.getServiceName()));
-		params.put("dvtDetail", "bo");
-		params.put("luongDetail", "1");
-		params.put("giaDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("tienDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
-		params.put("tsDetail", String.valueOf(0));
-		params.put("thueDetail", "0");
-		params.put("ttoanDetail", Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put(CInvoiceTerm.han, StringPool.BLANK);
+		params.put(CInvoiceTerm.tlGgia, String.valueOf(0));
+		params.put(CInvoiceTerm.ggia, String.valueOf(0));
+		params.put(CInvoiceTerm.phi, String.valueOf(0));
+		params.put(CInvoiceTerm.noidung, dossier.getDossierNo());
+		params.put(CInvoiceTerm.tien, Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put(CInvoiceTerm.ttoan, Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put(CInvoiceTerm.maVtDetail, dossier.getDossierNo());
+		params.put(CInvoiceTerm.tenDetail, GetterUtil.getString(dossier.getServiceName()));
+		params.put(CInvoiceTerm.dvtDetail, "bo");
+		params.put(CInvoiceTerm.luongDetail, String.valueOf(1));
+		params.put(CInvoiceTerm.giaDetail, Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put(CInvoiceTerm.tienDetail, Long.toString(oldPaymentFile.getPaymentAmount()));
+		params.put(CInvoiceTerm.tsDetail, String.valueOf(0));
+		params.put(CInvoiceTerm.thueDetail, String.valueOf(0));
+		params.put(CInvoiceTerm.ttoanDetail, Long.toString(oldPaymentFile.getPaymentAmount()));
 		
 		return params;
 	}
@@ -2065,8 +2075,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		String[] preConditions = StringUtil.split(preCondition);
 		for(String pre : preConditions) {
 			pre = pre.trim();
-			if (pre.toLowerCase().contains("paymentmethod=")) {
-				String[] splitPaymentMethod = pre.split("=");
+			if (pre.toLowerCase().contains(KeyPayTerm.PAYMENTMETHOD_EQ)) {
+				String[] splitPaymentMethod = pre.split(StringPool.EQUAL);
 				if (splitPaymentMethod.length == 2) {
 					paymentMethod = Integer.parseInt(splitPaymentMethod[1]);
 				}
@@ -2079,11 +2089,11 @@ public class CPSDossierBusinessLocalServiceImpl
 	private String checkPaymentMethod(int mt) {
 		String pmMethod = StringPool.BLANK;
 		if (mt == 1) {
-			pmMethod = "Chuyển khoản"; //KeyPay
+			pmMethod = KeyPayTerm.PM_METHOD_1; //KeyPay
 		} else if (mt == 2) {
-			pmMethod = "Chuyển khoản";
+			pmMethod = KeyPayTerm.PM_METHOD_2;
 		} else if (mt == 3) {
-			pmMethod = "Tiền mặt";
+			pmMethod = KeyPayTerm.PM_METHOD_3;
 		}
 		
 		return pmMethod;
@@ -2709,10 +2719,10 @@ public class CPSDossierBusinessLocalServiceImpl
 						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
 						//_log.info("jsonDueDate: " + jsonDueDate);
 						if (jsonDueDate != null) {
-							JSONObject hours = jsonDueDate.getJSONObject("hour");
-							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
+							JSONObject hours = jsonDueDate.getJSONObject(KeyPayTerm.HOUR);
+							JSONObject processHours = jsonDueDate.getJSONObject(KeyPayTerm.PROCESSHOUR);
 							//_log.info("hours: " + hours);
-							if (hours != null && hours.has("AM") && hours.has("PM")) {
+							if (hours != null && hours.has(KeyPayTerm.AM) && hours.has(KeyPayTerm.PM)) {
 								//_log.info("AM-PM: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
@@ -2722,7 +2732,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < 12) {
 									dueCalendar.setTime(dossier.getDueDate());
 
-									String hoursAfterNoon = hours.getString("AM");
+									String hoursAfterNoon = hours.getString(KeyPayTerm.AM);
 									//_log.info("hoursAfterNoon: " + hoursAfterNoon);
 
 									if (Validator.isNotNull(hoursAfterNoon)) {
@@ -2734,7 +2744,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									}
 								} else {
 									dueCalendar.setTime(dossier.getDueDate());
-									String hoursAfterNoon = hours.getString("PM");
+									String hoursAfterNoon = hours.getString(KeyPayTerm.PM);
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
@@ -2752,12 +2762,12 @@ public class CPSDossierBusinessLocalServiceImpl
 								}
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
-							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+							} else if (processHours != null && processHours.has(KeyPayTerm.STARTHOUR) && processHours.has(KeyPayTerm.DUEHOUR)) {
 								//_log.info("STRART check new: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
 								//
-								String receiveHour = processHours.getString("startHour");
+								String receiveHour = processHours.getString(KeyPayTerm.STARTHOUR);
 								//_log.info("receiveHour: " + receiveHour);
 
 								if (Validator.isNotNull(receiveHour)) {
@@ -2765,7 +2775,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									if (splitHour != null) {
 										int hourStart = GetterUtil.getInteger(splitHour[0]);
 										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
-											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+											String[] splitdueHour = StringUtil.split(processHours.getString(KeyPayTerm.DUEHOUR),
 													StringPool.COLON);
 											Calendar dueCalendar = Calendar.getInstance();
 											if (splitdueHour != null) {
@@ -2848,7 +2858,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		//Hot fix TP99
-		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, KeyPayTerm.TP99);
 		if (dossierMark != null) {
 			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
@@ -3027,7 +3037,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Process array sequence
 			JSONArray jsonSequenceArr = getProcessSequencesJSON(sequenceArr, sequenceList);
 			if (jsonSequenceArr != null) {
-				jsonData.put("processSequenceArr", jsonSequenceArr);
+				jsonData.put(KeyPayTerm.processSequenceArr, jsonSequenceArr);
 			}
 		}
 
@@ -3043,20 +3053,20 @@ public class CPSDossierBusinessLocalServiceImpl
 				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
 				for (ProcessSequence proSeq : sequenceList) {
 					if (sequenceNo.equals(proSeq.getSequenceNo())) {
-						sequenceObj.put("sequenceNo", proSeq.getSequenceNo());
-						sequenceObj.put("sequenceName", proSeq.getSequenceName());
-						sequenceObj.put("sequenceRole", proSeq.getSequenceRole());
-						sequenceObj.put("durationCount", proSeq.getDurationCount());
-						sequenceObj.put("createDate", proSeq.getCreateDate());
+						sequenceObj.put(DossierTerm.SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(DossierTerm.SEQUENCE_NAME, proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.SEQUENCE_ROLE, proSeq.getSequenceRole());
+						sequenceObj.put(DossierTerm.DURATION_COUNT, proSeq.getDurationCount());
+						sequenceObj.put(Field.CREATE_DATE, proSeq.getCreateDate());
 					}
 				}
 				String nextSequenceNo = sequenceArr[i + 1];
 				for (ProcessSequence proSeq : sequenceList) {
 					if (nextSequenceNo.equals(proSeq.getSequenceNo())) {
-						sequenceObj.put("nextSequenceNo", proSeq.getSequenceNo());
-						sequenceObj.put("nextSequenceName", proSeq.getSequenceName());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_NO, proSeq.getSequenceNo());
+						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_NAME, proSeq.getSequenceName());
 						sequenceObj.put(DossierTerm.NEXT_SEQUENCE_ROLE, proSeq.getSequenceRole());
-						sequenceObj.put("nextCreateDate", proSeq.getCreateDate());
+						sequenceObj.put(DossierTerm.NEXT_CREATE_DATE, proSeq.getCreateDate());
 					}
 				}
 				jsonSequenceArr.put(sequenceObj);
@@ -3073,7 +3083,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		message.put(ConstantUtils.MSG_ENG, msgData);
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		
-		MessageBusUtil.sendMessage("vnpost/dossier/in/destination", message);		
+		MessageBusUtil.sendMessage(DossierTerm.VNPOST_DOSSIER_DESTINATION, message);		
 	}
 	
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
@@ -3290,7 +3300,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		DossierAction dossierAction = null;
 
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		if (Validator.isNotNull(dossierStatus) && !"new".equals(dossierStatus)) {
+		if (Validator.isNotNull(dossierStatus) && !DossierStatusConstants.NEW.equals(dossierStatus)) {
 			dossier = dossierLocalService.updateDossier(dossier);
 		}
 
@@ -3358,7 +3368,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (ac != null && dossierAction != null) {
 			//Only create dossier document if 2 && 3
 			if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
+				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith(StringPool.AT)) {
 					//Generate document
 					DocumentType dt = documentTypeLocalService.getByTypeCode(groupId, ac.getDocumentType());
 					if (dt != null) {
@@ -3508,14 +3518,14 @@ public class CPSDossierBusinessLocalServiceImpl
         
         try {		
         	payloadObj.put(
-					"Dossier", JSONFactoryUtil.createJSONObject(
+					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 						JSONFactoryUtil.looseSerialize(dossier)));
         	
         	if (dossierAction != null) {
-        		payloadObj.put("actionCode", dossierAction.getActionCode());
-        		payloadObj.put("actionUser", dossierAction.getActionUser());
-        		payloadObj.put("actionName", dossierAction.getActionName());
-        		payloadObj.put("actionNote", dossierAction.getActionNote());
+        		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
+        		payloadObj.put(DossierActionTerm.ACTION_USER, dossierAction.getActionUser());
+        		payloadObj.put(DossierActionTerm.ACTION_NAME, dossierAction.getActionName());
+        		payloadObj.put(DossierActionTerm.ACTION_NOTE, dossierAction.getActionNote());
         	}
         }
         catch (Exception e) {
@@ -3529,10 +3539,10 @@ public class CPSDossierBusinessLocalServiceImpl
 	        cal.setTime(now);
 	        	  
 			if (notiTemplate != null) {
-				if ("minutely".equals(notiTemplate.getInterval())) {
+				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
 			        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
 				}
-				else if ("hourly".equals(notiTemplate.getInterval())) {
+				else if (KeyPayTerm.HOURLY.equals(notiTemplate.getInterval())) {
 			        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
 				}
 				else {
@@ -3540,7 +3550,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith("APLC")) {
+				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -3568,7 +3578,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith("USER")) {
+				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
 					
 				}				
 			}
@@ -3583,7 +3593,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	 */
 	private String _generatorUniqueString(int lenght) {
 
-		char[] chars = "0123456789".toCharArray();
+		char[] chars = KeyPayTerm.ZERO_TO_NINE.toCharArray();
 
 		StringBuilder sb = new StringBuilder();
 
@@ -3956,8 +3966,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
 		if (stepCodeArr.length > 0) {
 			for (String stepCode : stepCodeArr) {
-				if (stepCode.startsWith("!")) {
-					int index = stepCode.indexOf("!");
+				if (stepCode.startsWith(StringPool.EXCLAMATION)) {
+					int index = stepCode.indexOf(StringPool.EXCLAMATION);
 					String stepCodePunc = stepCode.substring(index + 1);
 					List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = dossierActionUserLocalService.getByDossierAndStepCode(dossier.getDossierId(), stepCodePunc);
 					List<DossierAction> lstDossierActions = dossierActionLocalService.findDossierActionByDID_STEP(dossier.getDossierId(), stepCodePunc);
@@ -4650,7 +4660,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					try {
 //							_log.info("START PAYLOAD: ");
 						payload.put(
-							"Dossier", JSONFactoryUtil.createJSONObject(
+							KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 								JSONFactoryUtil.looseSerialize(dossier)));
 					}
 					catch (JSONException parse) {
@@ -5038,7 +5048,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 ////							_log.info("START PAYLOAD: ");
 //					payload.put(
-//						"Dossier", JSONFactoryUtil.createJSONObject(
+//						KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 //							JSONFactoryUtil.looseSerialize(dossier)));
 //				}
 //				catch (JSONException parse) {
@@ -5540,7 +5550,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				try {
 ////							_log.info("START PAYLOAD: ");
 //					payload.put(
-//						"Dossier", JSONFactoryUtil.createJSONObject(
+//						KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 //							JSONFactoryUtil.looseSerialize(dossier)));
 //				}
 //				catch (JSONException parse) {
@@ -6101,7 +6111,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				defaultData = AutoFillFormData.sampleDataBinding(part.getSampleData(), dossier.getDossierId(), serviceContext);
 				dossierFile = dossierFileLocalService.getByReferenceUid(referenceUid).get(0);
 				JSONObject defaultDataObj = JSONFactoryUtil.createJSONObject(defaultData);
-				defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
+				defaultDataObj.put(KeyPayTerm.LicenceNo, dossierFile.getDeliverableCode());
 				defaultData = defaultDataObj.toJSONString();
 			}
 	
@@ -6826,7 +6836,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				try {
 //						_log.info("START PAYLOAD: ");
 					payload.put(
-						"Dossier", JSONFactoryUtil.createJSONObject(
+						KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
 							JSONFactoryUtil.looseSerialize(dossier)));
 				}
 				catch (JSONException parse) {
@@ -6852,10 +6862,10 @@ public class CPSDossierBusinessLocalServiceImpl
 
 	}
 
-	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	public static final String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 	public static final String ADMINISTRATIVE_REGION = ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION);
-	public static final String VNPOST_CITY_CODE = "VNPOST_CITY_CODE";
-	public static final String REGISTER_BOOK = "REGISTER_BOOK";
+	public static final String VNPOST_CITY_CODE = ReadFilePropertiesUtils.get(ConstantUtils.VNPOST_CITY_CODE);
+	public static final String REGISTER_BOOK = ReadFilePropertiesUtils.get(ConstantUtils.REGISTER_BOOK);
 	
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
