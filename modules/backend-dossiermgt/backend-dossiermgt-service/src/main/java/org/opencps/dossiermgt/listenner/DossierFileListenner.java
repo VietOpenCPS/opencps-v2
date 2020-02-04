@@ -39,6 +39,9 @@ import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
+import org.opencps.dossiermgt.constants.DeliverableLogTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
@@ -82,7 +85,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			JSONObject payload = JSONFactoryUtil.createJSONObject();
 
 			payload.put(
-				"dossierFileId", String.valueOf(model.getDossierFileId()));
+				DossierFileTerm.DOSSIER_FILE_ID, String.valueOf(model.getDossierFileId()));
 
 			DossierLogLocalServiceUtil.addDossierLog(
 				model.getGroupId(), model.getDossierId(), model.getUserName(),
@@ -148,10 +151,10 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				// String formData = StringPool.BLANK;
 
 				if (Validator.isNotNull(formDataContent)) {
-					// subject = formDataContent.getString("subject");
-					// issueDate = formDataContent.getString("issueDate");
-					// expireDate = formDataContent.getString("expireDate");
-					// revalidate = formDataContent.getString("revalidate");
+					// subject = formDataContent.getString(DossierFileTerm.SUBJECT);
+					// issueDate = formDataContent.getString(DossierFileTerm.ISSUE_DATE);
+					// expireDate = formDataContent.getString(DossierFileTerm.EXPIRE_DATE);
+					// revalidate = formDataContent.getString(DossierFileTerm.REVALIDATE);
 					//
 					// formData = formDataContent.toString();
 
@@ -277,12 +280,12 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		EnumMap<SpecialKey, String> map =
 			new EnumMap<SpecialKey, String>(SpecialKey.class);
 
-		map.put(SpecialKey.APPLICANTNAME, "_applicantName");
-		map.put(SpecialKey.APPLICANTIDNO, "_applicantIdNo");
-		map.put(SpecialKey.DOSSIERIDCNT, "_dossierIdCTN");
-		map.put(SpecialKey.DOSSIERNO, "_dossierNo");
-		map.put(SpecialKey.SUBMITDATE, "_submitDate");
-		map.put(SpecialKey.RECEIVEDATE, "_receiveDate");
+		map.put(SpecialKey.APPLICANTNAME, DossierFileTerm.UNDERLINE_APPLICANTNAME);
+		map.put(SpecialKey.APPLICANTIDNO, DossierFileTerm.UNDERLINE_APPLICANTIDNO);
+		map.put(SpecialKey.DOSSIERIDCNT, DossierFileTerm.UNDERLINE_DOSSIERIDCNT);
+		map.put(SpecialKey.DOSSIERNO, DossierFileTerm.UNDERLINE_DOSSIERNO);
+		map.put(SpecialKey.SUBMITDATE, DossierFileTerm.UNDERLINE_SUBMITDATE);
+		map.put(SpecialKey.RECEIVEDATE, DossierFileTerm.UNDERLINE_RECEIVEDATE);
 
 		isContain = map.containsValue(key);
 
@@ -299,7 +302,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			dossierFile =
 				DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_DPT_First(
 					dossierId, fileTemplateNo, 2, false,
-					new DossierFileComparator(false, "createDate", Date.class));
+					new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 			if (Validator.isNotNull(dossierFile)) {
 				formValue =
@@ -394,16 +397,16 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
-			if (key.contentEquals("_applicantName")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_APPLICANTNAME)) {
 				val = dossier.getApplicantName();
 			}
 
-			if (key.contentEquals("_applicantIdNo")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_APPLICANTIDNO)) {
 				val = dossier.getApplicantIdNo();
 
 			}
 
-			if (key.contentEquals("_dossierIdCTN")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_DOSSIERIDCNT)) {
 
 				Document dossierDoc = DossierLocalServiceUtil.getDossierById(
 					dossierId, dossier.getCompanyId());
@@ -414,19 +417,19 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				if (Validator.isNotNull(dossierDoc)) {
 					_log.info("DossierIsNotNull_" + dossierId);
-					dossierCTN = dossierDoc.get(DossierTerm.DOSSIER_ID + "CTN");
+					dossierCTN = dossierDoc.get(DossierTerm.DOSSIER_ID_CTN);
 				}
 
 				val = dossierCTN;
 
 			}
 
-			if (key.contentEquals("_dossierNo")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_DOSSIERNO)) {
 				val = dossier.getDossierNo();
 
 			}
 
-			if (key.contentEquals("_submitDate")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_SUBMITDATE)) {
 				if (Validator.isNotNull(dossier.getSubmitDate())) {
 					val = APIDateTimeUtils.convertDateToString(
 						dossier.getSubmitDate(),
@@ -435,7 +438,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				}
 
 			}
-			if (key.contentEquals("_receiveDate")) {
+			if (key.contentEquals(DossierFileTerm.UNDERLINE_RECEIVEDATE)) {
 				val = APIDateTimeUtils.convertDateToString(
 					dossier.getReceiveDate(),
 					APIDateTimeUtils._NORMAL_PARTTERN);
@@ -466,7 +469,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 		throws ModelListenerException {
 
 		String content = "On DossiserFile Delete";
-		String notificationType = "";
+		String notificationType = StringPool.BLANK;
 		String payload = DossierLogUtils.createPayload(model, null, null);
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -555,9 +558,9 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			_log.debug("jsFormData: " + jsFormData);
 
 			// All mappingData from deliverableType must format like:
-			// "deliverableCode": "#deliverableCode@KQGP"
+			// DossierFileTerm.DELIVERABLE_CODE: "#deliverableCode@KQGP"
 
-			if (jsMappingData.has("deliverables")) {
+			if (jsMappingData.has(DossierFileTerm.DELIVERABLES)) {
 
 				// map data with fileTemplateNo
 				JSONObject mapp = mappingContent(
@@ -566,37 +569,37 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				formDataContent =
 					mergeObject(mapp.toString(), jsFormData.toString());
 			}
-			// else if (jsMappingData.has("deliverables")) {
+			// else if (jsMappingData.has(DossierFileTerm.DELIVERABLES)) {
 			// formDataContent = mappingContent(jsMappingData, jsFormData);
 			// }
 
 			// them truong luu danh sach cac file quyet dinh
 			String fileAttachs = StringPool.BLANK;
-			if (jsMappingData.has("fileAttachs")) {
+			if (jsMappingData.has(DossierFileTerm.FILE_ATTACHS)) {
 
 				fileAttachs = getFileAttachsInDeliverable(
 					model.getDossierId(),
-					jsMappingData.getString("fileAttachs"));
+					jsMappingData.getString(DossierFileTerm.FILE_ATTACHS));
 			}
 
 			// them trang thai mong muon khi hoan thanh thu tuc
-			String expertState = "1";
-			if (jsMappingData.has("expertState") && Validator.isNotNull(dossier)) {
+			String expertState = DossierFileTerm.EXPECT_STATE_DEFAULT;
+			if (jsMappingData.has(DossierFileTerm.EXPECT_STATE) && Validator.isNotNull(dossier)) {
 
-				String expertStates = jsMappingData.getString("expertState");
+				String expertStates = jsMappingData.getString(DossierFileTerm.EXPECT_STATE);
 				if (expertStates.contains(dossier.getServiceCode())) {
 
 					expertState = StringUtil.split(expertStates, dossier.getServiceCode() + StringPool.AT)[1].substring(0, 1);
 				}
 			}
-			formDataContent.put("expertState", expertState);
+			formDataContent.put(DossierFileTerm.EXPECT_STATE, expertState);
 
 			String dDeliverableCode = model.getDeliverableCode();
 
 			if (model.getEForm()) {
 				// TODO: check ton tai
-				dDeliverableCode = formDataContent.has("deliverableCode")
-					? formDataContent.getString("deliverableCode")
+				dDeliverableCode = formDataContent.has(DossierFileTerm.DELIVERABLE_CODE)
+					? formDataContent.getString(DossierFileTerm.DELIVERABLE_CODE)
 					: dDeliverableCode;
 				model.setDeliverableCode(dDeliverableCode);
 				model.setIsNew(true);
@@ -604,11 +607,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			}
 
 			String applicantName =
-				formDataContent.getString("applicantName");
-			String subject = formDataContent.getString("subject");
-			String issueDate = formDataContent.getString("issueDate");
-			String expireDate = formDataContent.getString("expireDate");
-			String revalidate = formDataContent.getString("revalidate");
+				formDataContent.getString(DossierFileTerm.APPLICANT_NAME);
+			String subject = formDataContent.getString(DossierFileTerm.SUBJECT);
+			String issueDate = formDataContent.getString(DossierFileTerm.ISSUE_DATE);
+			String expireDate = formDataContent.getString(DossierFileTerm.EXPIRE_DATE);
+			String revalidate = formDataContent.getString(DossierFileTerm.REVALIDATE);
 
 			// check exits deliverable
 			Deliverable deliverable = Validator.isNotNull(dDeliverableCode)
@@ -633,7 +636,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						dossier.getGovAgencyCode(),
 						dossier.getGovAgencyName(),
 						dossier.getApplicantIdNo(), applicantName, subject,
-						issueDate, expireDate, revalidate, "0",
+						issueDate, expireDate, revalidate, String.valueOf(0),
 						dossier.getDossierId(),
 						dossierFileAttach != null
 							? dossierFileAttach.getFileEntryId() : 0l,
@@ -658,22 +661,22 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 							? deliverable.getRevalidate().getTime()
 							: new Date().getTime();
 
-				deliverableLog.put("groupId", model.getGroupId());
-				deliverableLog.put("companyId", model.getCompanyId());
+				deliverableLog.put(Field.GROUP_ID, model.getGroupId());
+				deliverableLog.put(Field.COMPANY_ID, model.getCompanyId());
 				deliverableLog.put(Field.USER_ID, model.getUserId());
-				deliverableLog.put("userName", model.getUserName());
+				deliverableLog.put(Field.USER_NAME, model.getUserName());
 				deliverableLog.put(
-					"deliverableId", deliverable.getDeliverableId());
-				deliverableLog.put("dossierUid", dossier.getReferenceUid());
-				deliverableLog.put("author", model.getUserName());
-				deliverableLog.put("content", "Backup a deliverable log");
+					DeliverableTerm.DELIVERABLE_ID, deliverable.getDeliverableId());
+				deliverableLog.put(DeliverableLogTerm.DOSSIERUID, dossier.getReferenceUid());
+				deliverableLog.put(DeliverableLogTerm.AUTHOR, model.getUserName());
+				deliverableLog.put(DeliverableLogTerm.CONTENT, DeliverableLogTerm.CONTENT_DEFAULT);
 				deliverableLog.put(
-					"deliverableAction",
+						DeliverableLogTerm.DELIVERABLEACTION,
 					dossierPart.getDeliverableAction());
-				deliverableLog.put("actionDate", actionDate);
-				deliverableLog.put("payload", deliverable.getFormData());
+				deliverableLog.put(DeliverableLogTerm.ACTIONDATE, actionDate);
+				deliverableLog.put(DeliverableLogTerm.PAYLOAD, deliverable.getFormData());
 				deliverableLog.put(
-					"fileEntryId", deliverable.getFileEntryId());
+						DeliverableLogTerm.FILEENTRYID, deliverable.getFileEntryId());
 				DeliverableLogLocalServiceUtil.adminProcessData(
 					deliverableLog);
 

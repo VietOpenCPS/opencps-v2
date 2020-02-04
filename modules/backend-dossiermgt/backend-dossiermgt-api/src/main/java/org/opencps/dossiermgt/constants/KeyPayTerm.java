@@ -107,4 +107,15 @@ public class KeyPayTerm {
 	public static final String PM_METHOD_3 = "Tiền mặt";
 	public static final String LicenceNo = "LicenceNo";
 	public static final String processSequenceArr = "processSequenceArr";
+
+	public static final String VNPOST_BASE_PATH = "postal/vnpost";
+	public static final String ORDERNUMBER = "orderNumber";
+	public static final String SENDERNAME = "senderName";
+	public static final String RECEIVERNAME = "receiverName";
+	public static final String RECEIVERADDRESS = " receiverAddress";
+	public static final String RECEIVERTEL = "receiverTel";
+	public static final String RECEIVERPROVINCE = "receiverProvince";
+	public static final String RECEIVERDISTRICT = "receiverDistrict";
+	public static final String RECEIVEREMAIL = "receiverEmail";
+	public static final String SENDERDESC = "senderDesc";
 }

@@ -256,6 +256,7 @@ public class DossierTerm {
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
 	
 	public static final String VNPOST_DOSSIER_DESTINATION = "vnpost/dossier/in/destination";
+	public static final String KYSO_ENGINE_OUT_DESTINATION = "kyso/engine/out/destination";
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
