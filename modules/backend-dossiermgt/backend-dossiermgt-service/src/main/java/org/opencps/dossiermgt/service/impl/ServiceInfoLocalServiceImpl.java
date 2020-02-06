@@ -53,6 +53,8 @@ import java.util.List;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
@@ -327,7 +329,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -416,14 +418,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		// if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
-		// MultiMatchQuery query = new MultiMatchQuery(level);
-		//
-		// query.addFields(ServiceInfoTerm.MAX_LEVEL);
-		//
-		// booleanQuery.add(query, BooleanClauseOccur.MUST);
-		// }
-		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+		if (!String.valueOf(0).equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			String[] lstStatus = StringUtil.split(level);
 
 			if (lstStatus != null && lstStatus.length > 0) {
@@ -464,7 +459,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -560,7 +555,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		// booleanQuery.add(query, BooleanClauseOccur.MUST);
 		// }
 
-		if (!"0".equalsIgnoreCase(level) && Validator.isNotNull(level)) {
+		if (!String.valueOf(0).equalsIgnoreCase(level) && Validator.isNotNull(level)) {
 			String[] lstStatus = StringUtil.split(level);
 
 			if (lstStatus != null && lstStatus.length > 0) {
@@ -715,18 +710,18 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 		ServiceInfo object = null;
 
-		if (objectData.getLong("serviceInfoId") > 0) {
+		if (objectData.getLong(ServiceInfoTerm.SERVICE_INFO_ID) > 0) {
 
-			object = serviceInfoPersistence.fetchByPrimaryKey(objectData.getLong("serviceInfoId"));
+			object = serviceInfoPersistence.fetchByPrimaryKey(objectData.getLong(ServiceInfoTerm.SERVICE_INFO_ID));
 
 			object.setModifiedDate(new Date());
 
 		} else {
 
 			try {
-				valdiate(objectData.getString("serviceCode"), objectData.getString("serviceName"),
-						objectData.getString("administrationCode"), objectData.getString("domainCode"),
-						objectData.getLong("groupId"));
+				valdiate(objectData.getString(ServiceInfoTerm.SERVICE_CODE), objectData.getString("serviceName"),
+						objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE), objectData.getString("domainCode"),
+						objectData.getLong(Field.GROUP_ID));
 			} catch (PortalException e) {
 				_log.error(e);
 				return null;
@@ -736,36 +731,36 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			object = serviceInfoPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setServiceCode(objectData.getString("serviceCode"));
-		object.setServiceName(objectData.getString("serviceName"));
-		object.setProcessText(objectData.getString("processText"));
-		object.setMethodText(objectData.getString("methodText"));
-		object.setDossierText(objectData.getString("dossierText"));
-		object.setConditionText(objectData.getString("conditionText"));
-		object.setDurationText(objectData.getString("durationText"));
-		object.setApplicantText(objectData.getString("applicantText"));
-		object.setResultText(objectData.getString("resultText"));
-		object.setRegularText(objectData.getString("regularText"));
-		object.setFeeText(objectData.getString("feeText"));
-		object.setMaxLevel(objectData.getInt("maxLevel"));
-		object.setPublic_(objectData.getBoolean("public_"));
+		object.setServiceCode(objectData.getString(ServiceInfoTerm.SERVICE_CODE));
+		object.setServiceName(objectData.getString(ServiceInfoTerm.SERVICE_NAME));
+		object.setProcessText(objectData.getString(ServiceInfoTerm.PROCESS_TEXT));
+		object.setMethodText(objectData.getString(ServiceInfoTerm.METHOD_TEXT));
+		object.setDossierText(objectData.getString(ServiceInfoTerm.DOSSIER_EXT));
+		object.setConditionText(objectData.getString(ServiceInfoTerm.CONDITION_TEXT));
+		object.setDurationText(objectData.getString(ServiceInfoTerm.DURATION_TEXT));
+		object.setApplicantText(objectData.getString(ServiceInfoTerm.APPLICANT_TEXT));
+		object.setResultText(objectData.getString(ServiceInfoTerm.RESULT_TEXT));
+		object.setRegularText(objectData.getString(ServiceInfoTerm.REGULAR_TEXT));
+		object.setFeeText(objectData.getString(ServiceInfoTerm.FEE_TEXT));
+		object.setMaxLevel(objectData.getInt(ServiceInfoTerm.MAX_LEVEL));
+		object.setPublic_(objectData.getBoolean(ServiceInfoTerm.PUBLIC_));
 
-		object.setAdministrationCode(objectData.getString("administrationCode"));
-		object.setDomainCode(objectData.getString("domainCode"));
+		object.setAdministrationCode(objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE));
+		object.setDomainCode(objectData.getString(ServiceInfoTerm.DOMAIN_CODE));
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
-				objectData.getString("administrationCode"), objectData.getLong("groupId"));
+				objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE), objectData.getLong(Field.GROUP_ID));
 		DictItem dom = DictCollectionUtils.getDictItemByCode(DataMGTConstants.SERVICE_DOMAIN,
-				objectData.getString("domainCode"), objectData.getLong("groupId"));
+				objectData.getString(ServiceInfoTerm.DOMAIN_CODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(adm)) {
 			object.setAdministrationName(adm.getItemName());

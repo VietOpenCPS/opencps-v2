@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -23,6 +24,7 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.constants.ConverterTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -111,15 +113,15 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 
 			try {
 				
-				md5 = MessageDigest.getInstance("SHA-256");
+				md5 = MessageDigest.getInstance(ConverterTerm.SHA_256);
 				
-				ba = md5.digest(dossier.getReferenceUid().getBytes("UTF-8"));
+				ba = md5.digest(dossier.getReferenceUid().getBytes(ConverterTerm.UTF_8));
 				
 			} catch (Exception e) {
 				_log.error(e);
 			} 
 
-			DateFormat df = new SimpleDateFormat("yy");
+			DateFormat df = new SimpleDateFormat(ConverterTerm.YY);
 			
 			String formattedDate = df.format(Calendar.getInstance().getTime());
 			
@@ -127,7 +129,7 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 			
 			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
 			
-			document.addTextSortable(DossierTerm.DOSSIER_ID+"CTN", dossierIDCTN);
+			document.addTextSortable(DossierTerm.DOSSIER_ID_CTN, dossierIDCTN);
 			
 		} catch (Exception e) {
 //			e.printStackTrace();

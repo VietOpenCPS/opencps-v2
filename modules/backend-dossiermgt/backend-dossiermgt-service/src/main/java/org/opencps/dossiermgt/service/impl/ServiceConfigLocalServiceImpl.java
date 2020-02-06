@@ -57,6 +57,7 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
@@ -100,6 +101,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	 */
 	private Log _log = LogFactoryUtil.getLog(ServiceConfigLocalServiceImpl.class);
 
+	public static final String SERVICE_CONFIG_CACHE_NAME = "ServiceConfig";
+
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfig removeServiceConfigById(long serviceConfigId) throws PortalException {
 
@@ -123,7 +126,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	public List<ServiceConfig> getByGroupId(long groupId) throws PortalException, SystemException {
 		Serializable lstServiceConfigs = null;
 		try {
-			lstServiceConfigs = cache.getFromCache("ServiceConfig", groupId + "");
+			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.BLANK);
 		} catch (PortalException e) {
 			_log.debug(e);
 		}
@@ -133,8 +136,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		else {
 			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByG_(groupId);
 			if (tempServiceConfigs != null) {
-				cache.addToCache("ServiceConfig",
-						groupId + "", (Serializable)tempServiceConfigs, ttl);
+				cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+						groupId + StringPool.BLANK, (Serializable)tempServiceConfigs, ttl);
 			}
 			return tempServiceConfigs;
 		}
@@ -183,7 +186,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			serviceConfig.setUserName(auditUser.getFullName());
 
 			serviceConfig.setGovAgencyCode(govAgencyCode);
-			serviceConfig.setGovAgencyName(objName.getString("agencyName"));
+			serviceConfig.setGovAgencyName(objName.getString(ServiceConfigTerm.AGENCY_NAME));
 			serviceConfig.setServiceInstruction(serviceInstruction);
 			serviceConfig.setServiceLevel(serviceLevel);
 			serviceConfig.setServiceUrl(serviceUrl);
@@ -203,7 +206,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 			if (Validator.isNotNull(govAgencyCode)) {
 				serviceConfig.setGovAgencyCode(govAgencyCode);
-				serviceConfig.setGovAgencyName(objName.getString("agencyName"));
+				serviceConfig.setGovAgencyName(objName.getString(ServiceConfigTerm.AGENCY_NAME));
 			}
 
 			if (Validator.isNotNull(serviceInstruction))
@@ -241,7 +244,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		if (Validator.isNull(agc)) {
 			throw new RequiredAgencyCodeException("RequiredAgencyCodeException");
 		} else {
-			objName.put("agencyName", agc.getItemName());
+			objName.put(ServiceConfigTerm.AGENCY_NAME, agc.getItemName());
 		}
 
 		if (serviceLevel <= 1 || serviceLevel > 4) {
@@ -286,7 +289,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -397,7 +400,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -536,7 +539,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId) {
 		Serializable lstServiceConfigs = null;
 		try {
-			lstServiceConfigs = cache.getFromCache("ServiceConfig", groupId + "_" + serviceInfoId);
+			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.UNDERLINE + serviceInfoId);
 		} catch (PortalException e) {
 			_log.debug(e);
 		}
@@ -547,8 +550,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByF_GID_SID(groupId, serviceInfoId);
 			if (tempServiceConfigs != null) {
 				try {
-					cache.addToCache("ServiceConfig",
-							groupId + "_" + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
+					cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+							groupId + StringPool.UNDERLINE + serviceInfoId, (Serializable)tempServiceConfigs, ttl);
 				} catch (PortalException e) {
 					_log.debug(e);
 				}
@@ -608,9 +611,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 		ServiceConfig object = null;
 
-		if (objectData.getLong("serviceConfigId") > 0) {
+		if (objectData.getLong(ServiceConfigTerm.SERVICECONFIG_ID) > 0) {
 
-			object = serviceConfigPersistence.fetchByPrimaryKey(objectData.getLong("serviceConfigId"));
+			object = serviceConfigPersistence.fetchByPrimaryKey(objectData.getLong(ServiceConfigTerm.SERVICECONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -620,26 +623,26 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 			object = serviceConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
-		object.setServiceInstruction(objectData.getString("serviceInstruction"));
-		object.setServiceLevel(objectData.getInt("serviceLevel"));
-		object.setServiceUrl(objectData.getString("serviceUrl"));
-		object.setForBusiness(objectData.getBoolean("forBusiness"));
-		object.setForCitizen(objectData.getBoolean("forCitizen"));
-		object.setPostService(objectData.getBoolean("postService"));
-		object.setRegistration(objectData.getBoolean("registration"));
-		object.setServiceInfoId(objectData.getLong("serviceInfoId"));
-		object.setServiceLevel(objectData.getInt("serviceLevel"));
+		object.setGovAgencyCode(objectData.getString(ServiceConfigTerm.GOVAGENCY_CODE));
+		object.setGovAgencyName(objectData.getString(ServiceConfigTerm.GOVAGENCY_NAME));
+		object.setServiceInstruction(objectData.getString(ServiceConfigTerm.SERVICE_INSTRUCTION));
+		object.setServiceLevel(objectData.getInt(ServiceConfigTerm.SERVICE_LEVEL));
+		object.setServiceUrl(objectData.getString(ServiceConfigTerm.SERVICE_URL));
+		object.setForBusiness(objectData.getBoolean(ServiceConfigTerm.FOR_BUSINESS));
+		object.setForCitizen(objectData.getBoolean(ServiceConfigTerm.FOR_CITIZEN));
+		object.setPostService(objectData.getBoolean(ServiceConfigTerm.POSTAL_SERVICE));
+		object.setRegistration(objectData.getBoolean(ServiceConfigTerm.REGISTRATION));
+		object.setServiceInfoId(objectData.getLong(ServiceConfigTerm.SERVICEINFO_ID));
+		object.setServiceLevel(objectData.getInt(ServiceConfigTerm.SERVICE_LEVEL));
 
 		serviceConfigPersistence.update(object);
 
