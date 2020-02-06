@@ -10,11 +10,11 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -29,8 +29,6 @@ import java.util.Locale;
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -38,8 +36,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.UserManagement;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.UserUtils;
 import org.opencps.api.jobpos.model.JobposPermissionResults;
 import org.opencps.api.user.model.UserAccountModel;
@@ -51,8 +51,6 @@ import org.opencps.api.user.model.UserSitesResults;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -80,9 +78,9 @@ public class UserManagementImpl implements UserManagement {
 			String type = actions.getType(id, serviceContext);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
 
 			return responseBuilder.build();
 
@@ -101,21 +99,21 @@ public class UserManagementImpl implements UserManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 			
 			
 
 			File file = actions.uploadPhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "USERPHOTO/", "USERPHOTO file upload", serviceContext);
+					fileName, fileType, fileSize, ConstantUtils.USER_PHOTO_FOLDER, ConstantUtils.USER_PHOTO_DESC, serviceContext);
 
 			String type = actions.getType(id, serviceContext);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-					.header("Content-Type", "image/" + type);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -138,13 +136,13 @@ public class UserManagementImpl implements UserManagement {
 		UserProfileModel result = new UserProfileModel();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Document document = actions.getUserProfile(id, groupId, serviceContext);
 
 			result = UserUtils.mapperUserProfileModel(document);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -159,14 +157,14 @@ public class UserManagementImpl implements UserManagement {
 		UserSitesResults result = new UserSitesResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getSites(id, groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserSitesModel().addAll(UserUtils.mapperUserSitesList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserSitesModel().addAll(UserUtils.mapperUserSitesList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -181,14 +179,14 @@ public class UserManagementImpl implements UserManagement {
 		UserRolesResults result = new UserRolesResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getRoles(id, groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserRolesModel().addAll(UserUtils.mapperUserRolesList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserRolesModel().addAll(UserUtils.mapperUserRolesList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -201,11 +199,11 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.getPreference(id, groupId, serviceContext);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -218,10 +216,10 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.getPreferenceByKey(id, groupId, key, serviceContext);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -234,11 +232,11 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.addPreferences(id, groupId, preferences, serviceContext);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -251,10 +249,10 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String result = actions.updatePreferences(id, groupId, key, value, serviceContext);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -272,16 +270,16 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER))) {
+				throw new PermissionDeniedDataAccessException(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION), null);
 			}
 			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
 			int flagNo = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword,
 					serviceContext);
 
-			return Response.status(200).entity(String.valueOf(flagNo)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flagNo)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -298,11 +296,11 @@ public class UserManagementImpl implements UserManagement {
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel()
-					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get("data"), id, serviceContext));
+					.addAll(UserUtils.mapperUsersPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), id, serviceContext));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -315,7 +313,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
@@ -325,18 +323,18 @@ public class UserManagementImpl implements UserManagement {
 	        	_log.info("Check captcha result: " + isResponseCorrect);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
 	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
+        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+    			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
@@ -345,7 +343,7 @@ public class UserManagementImpl implements UserManagement {
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
 
-			return Response.status(200).entity(userAccountModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(userAccountModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -358,7 +356,7 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
@@ -368,18 +366,18 @@ public class UserManagementImpl implements UserManagement {
 	        	_log.info("Check captcha result: " + isResponseCorrect);
 	        	if (!isResponseCorrect) {
 	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
+	        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+	    			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        	}
 	        } catch (CaptchaServiceException e) {
 	        	_log.debug(e);
         		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
+        		error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
     			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+    			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
@@ -388,7 +386,7 @@ public class UserManagementImpl implements UserManagement {
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
 
-			return Response.status(200).entity(userAccountModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(userAccountModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -404,14 +402,14 @@ public class UserManagementImpl implements UserManagement {
 		UserResults result = new UserResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonData = actions.getUsers(groupId, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getUserModel().addAll(UserUtils.mapperUserList((List<User>) jsonData.get("data"), groupId));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getUserModel().addAll(UserUtils.mapperUserList((List<User>) jsonData.get(ConstantUtils.DATA), groupId));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -425,13 +423,13 @@ public class UserManagementImpl implements UserManagement {
 		UserModel userModel = new UserModel();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			User userCustom = actions.getUserById(groupId, company.getCompanyId(), id, serviceContext);
 
 			userModel = UserUtils.mapperUserModel(userCustom, groupId);
 
-			return Response.status(200).entity(userModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(userModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -444,11 +442,11 @@ public class UserManagementImpl implements UserManagement {
 		UserInterface actions = new UserActions();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = actions.getCheckpass(groupId, company.getCompanyId(), id, password, serviceContext);
 
-			return Response.status(200).entity(String.valueOf(flag)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -477,17 +475,18 @@ public class UserManagementImpl implements UserManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
+			// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			
 			inputStream = dataHandler.getInputStream();
 			BufferedImage image = ImageIO.read(inputStream);
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+//			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			String buildFileName = String.format(MessageUtil.getMessage(ConstantUtils.DATACER_PATH), PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH, employee.getEmail());
 			File targetFile = new File(buildFileName);
 
-			ImageIO.write(image, "png", targetFile);
+			ImageIO.write(image, ConstantUtils.PNG_EXTENSION, targetFile);
 			
 			_log.info("Absolute Path buildFileName " + buildFileName);
 			
@@ -495,7 +494,7 @@ public class UserManagementImpl implements UserManagement {
 			
 			EmployeeLocalServiceUtil.updatePayload(id, groupId, 0, 0, StringPool.BLANK, buildFileName, serviceContext);
 
-			return Response.status(200).entity(buildFileName).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(buildFileName).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -525,7 +524,7 @@ public class UserManagementImpl implements UserManagement {
 
 			DataHandler dataHandler = attachment.getDataHandler();
 			// long groupId =
-			// GetterUtil.getLong(header.getHeaderString("groupId"));
+			// GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 			
@@ -545,7 +544,7 @@ public class UserManagementImpl implements UserManagement {
 				outStream.close();
 				inputStream.close();
 			}
-			return Response.status(200).entity(buildFileName).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(buildFileName).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -634,7 +633,7 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
 				throw new PermissionDeniedDataAccessException("Do not have permission", null);
 			}
@@ -644,7 +643,7 @@ public class UserManagementImpl implements UserManagement {
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
 
-			return Response.status(200).entity(String.valueOf(flag)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -664,7 +663,7 @@ public class UserManagementImpl implements UserManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
 				throw new PermissionDeniedDataAccessException("Do not have permission", null);
 			}
@@ -672,7 +671,7 @@ public class UserManagementImpl implements UserManagement {
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 1,
 					serviceContext);
 
-			return Response.status(200).entity(String.valueOf(flag)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flag)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -731,17 +730,17 @@ public class UserManagementImpl implements UserManagement {
 //	    
 //	    builder.cacheControl(cc);
 //	    return builder.build();
-	    return Response.status(200).entity(dataUser.toJSONString()).build();
+	    return Response.status(HttpURLConnection.HTTP_OK).entity(dataUser.toJSONString()).build();
 	    
 //	    if (OpenCPSConfigUtil.isHttpCacheEnable()) {
 //			CacheControl cc = new CacheControl();
 //		    cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 //		    cc.setPrivate(true);
 //		    
-//			return Response.status(200).cacheControl(cc).entity(dataUser.toJSONString()).build();	    	
+//			return Response.status(HttpURLConnection.HTTP_OK).cacheControl(cc).entity(dataUser.toJSONString()).build();	    	
 //	    }
 //	    else {
-//			return Response.status(200).entity(dataUser.toJSONString()).build();	    		    	
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(dataUser.toJSONString()).build();	    		    	
 //	    }
 	}
 

@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -8,20 +9,18 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +29,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ServerConfigManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServerConfigUtils;
 import org.opencps.api.serverconfig.model.ServerConfigDetailModel;
 import org.opencps.api.serverconfig.model.ServerConfigInputModel;
@@ -44,6 +45,7 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -56,7 +58,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -64,8 +66,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			}
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			List<ServerConfig> configs = ServerConfigLocalServiceUtil.getGroupId(groupId);
@@ -76,7 +78,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			results.setTotal(count);
 			results.getData().addAll(ServerConfigUtils.mappingTOData(configs));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -88,7 +90,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServerConfigInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -113,7 +115,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			
@@ -127,7 +129,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			boolean checkAuth = true;
@@ -135,7 +137,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			ServerConfig config = null;
 			if (serverId == 0) {
 				config = ServerConfigLocalServiceUtil.getByCode(groupId,  id);
-				if (config != null && "MULTIMEDIA".equalsIgnoreCase(config.getProtocol())) {
+				if (config != null && ConstantUtils.API_PROTOCOL_MULTIMEDIA.equalsIgnoreCase(config.getProtocol())) {
 					checkAuth = false;
 				}
 			}
@@ -155,7 +157,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -165,7 +167,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response updateServerConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -191,7 +193,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -218,7 +220,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -244,7 +246,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			result.setValue(configStr);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -255,7 +257,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response addConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -278,7 +280,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -290,7 +292,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	public Response updateConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServerConfigSingleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -312,7 +314,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 			ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -322,7 +324,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 	@Override
 	public Response getBasicServerConfigs(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServerConfigSearchModel query) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -336,27 +338,27 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			
-			result.put("total", count);
+			result.put(ConstantUtils.TOTAL, count);
 			JSONArray sLists = JSONFactoryUtil.createJSONArray();
 			for (ServerConfig sc : configs) {
 				JSONObject obj = JSONFactoryUtil.createJSONObject();
-				obj.put("serverNo", sc.getServerNo());
+				obj.put(ServerConfigTerm.SERVER_NO, sc.getServerNo());
 				if (Validator.isNotNull(sc.getConfigs())) {
 					JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
 							&& configObj.has(SyncServerTerm.SERVER_SECRET)
 							&& configObj.has(SyncServerTerm.SERVER_URL)
 							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-				        obj.put("groupId", configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
+				        obj.put(Field.GROUP_ID, configObj.getString(SyncServerTerm.SERVER_GROUP_ID));
 					}
 				}
 				
 				sLists.put(obj);
 			}
 
-			result.put("data", sLists);
+			result.put(ConstantUtils.DATA, sLists);
 			
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -368,7 +370,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, String protocolCode) {
 
 		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 //			if (!auth.isAuth(serviceContext)) {
@@ -382,10 +384,10 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 
 				ServerConfigDetailModel result = ServerConfigUtils.mappingToDetailModel(config);
 
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 
-			return Response.status(500).entity("Internal Server").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_INTERNAL_SERVER_ERROR)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -396,7 +398,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, String serverNo, String protocolCode,
 			ServerConfigSearchModel query) {
 		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 //			if (!auth.isAuth(serviceContext)) {
@@ -410,107 +412,109 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String employeeName = query.getEmployeeName();
 			String maNgKy = query.getMa_ng_ky();
 			String maCQQL = query.getMa_cqql();
-			System.out.println("eFormNo: "+eFormNo);
+//			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
-			if ("API_CONNECT".equals(protocolCode)) {
-				System.out.println("protocolCode: "+protocolCode);
+			if (ConstantUtils.API_PROTOCOL_API_CONNECT.equals(protocolCode)) {
+//				System.out.println("protocolCode: "+protocolCode);
 				ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, serverNo, protocolCode);
-				System.out.println("serverConfig: "+serverConfig);
+//				System.out.println("serverConfig: "+serverConfig);
 				if (serverConfig != null) {
 
 					String configs = serverConfig.getConfigs();
 					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(configs);
 					if (jsonConfig != null) {
-						String method = jsonConfig.getString("method");
-						System.out.println("method: "+method);
+						String method = jsonConfig.getString(ConstantUtils.SERVER_CONFIG_JSON_METHOD_KEY);
+//						System.out.println("method: "+method);
 						
 						if ("GET".equalsIgnoreCase(method)) {
-							System.out.println("methodEQUAL: "+method);
-							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
+//							System.out.println("methodEQUAL: "+method);
+//							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
 							String urlGet = "";
 							try {
-								urlGet = jsonConfig.getString("url");
-								if (urlGet.contains("{eFormNo}")) {
-									urlGet = urlGet.replace("{eFormNo}", URLEncoder.encode(String.valueOf(eFormNo), "UTF-8"));
+								urlGet = jsonConfig.getString(ConstantUtils.API_JSON_URL);
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_EFORM_NO_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_EFORM_NO_KEY, URLEncoder.encode(String.valueOf(eFormNo), "UTF-8"));
 								}
-								if (urlGet.contains("{maCha}")) {
-									urlGet = urlGet.replace("{maCha}", URLEncoder.encode(String.valueOf(maCha), "UTF-8"));
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_MACHA_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_MACHA_KEY, URLEncoder.encode(String.valueOf(maCha), "UTF-8"));
 								}
-								if (urlGet.contains("{nameDM}")) {
-									urlGet = urlGet.replace("{nameDM}", URLEncoder.encode(String.valueOf(nameDM), "UTF-8"));
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_NAMEDM_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_NAMEDM_KEY, URLEncoder.encode(String.valueOf(nameDM), "UTF-8"));
 								}
-								if (urlGet.contains("{parentId}")) {
-									urlGet = urlGet.replace("{parentId}", URLEncoder.encode(String.valueOf(parentId), "UTF-8"));
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_PARENTID_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_PARENTID_KEY, URLEncoder.encode(String.valueOf(parentId), "UTF-8"));
 								}
-								if (urlGet.contains("{govAgencyName}")) {
-									urlGet = urlGet.replace("{govAgencyName}", URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8"));
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_GOV_AGENCY_NAME_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_GOV_AGENCY_NAME_KEY, URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8"));
 								}
-								if (urlGet.contains("{employeeName}")) {
-									urlGet = urlGet.replace("{employeeName}", URLEncoder.encode(String.valueOf(employeeName), "UTF-8"));
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_EMPLOYEE_NAME_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_EMPLOYEE_NAME_KEY, URLEncoder.encode(String.valueOf(employeeName), "UTF-8"));
 								}
-								if (urlGet.contains("{ma_ng_ky}")) {
-									urlGet = urlGet.replace("{ma_ng_ky}", maNgKy);
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_MA_NG_KY_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_MA_NG_KY_KEY, maNgKy);
 								}
-								if (urlGet.contains("{ma_cqql}")) {
-									urlGet = urlGet.replace("{ma_cqql}", maCQQL);
+								if (urlGet.contains(ConstantUtils.SERVER_CONFIG_JSON_MA_CQQL_KEY)) {
+									urlGet = urlGet.replace(ConstantUtils.SERVER_CONFIG_JSON_MA_CQQL_KEY, maCQQL);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
 //										.replaceAll("{parentId}", parentId)
 //										.replaceAll("{govAgencyName}", govAgencyName)
 //										.replaceAll("{employeeName}", employeeName);
-								System.out.println("urlGet: "+urlGet);
+//								System.out.println("urlGet: "+urlGet);
 							} catch (Exception e) {
-								System.out.println("error: "+e);
+								_log.debug(e);
+//								System.out.println("error: "+e);
 							}
 							
 							//
 							long groupIdGet = 0;
 							String authStrEnc = "";
 							//
-							String params = jsonConfig.getString("params");
-							System.out.println("params: "+params);
+							String params = jsonConfig.getString(ConstantUtils.SERVER_CONFIG_JSON_PARAMS_KEY);
+//							System.out.println("params: "+params);
 							if (Validator.isNotNull(params)) {
 								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(params);
 								//
-								String strHeader = jsonParams.getString("header");
+								String strHeader = jsonParams.getString(ConstantUtils.SERVER_CONFIG_JSON_HEADER_KEY);
 								if (Validator.isNotNull(strHeader)) {
 									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(strHeader);
 									//
-									groupIdGet = jsonHeader.getLong("groupId");
-									System.out.println("groupIdGet: "+groupIdGet);
+									groupIdGet = jsonHeader.getLong(Field.GROUP_ID);
+//									System.out.println("groupIdGet: "+groupIdGet);
 									
 								}
 							}
 							
 							//AUTHEN
 							String authenticate = jsonConfig.getString("authenticate");
-							System.out.println("authenticate: "+authenticate);
+//							System.out.println("authenticate: "+authenticate);
 							if (Validator.isNotNull(authenticate)) {
 								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);
 								//
-								String type = jsonAuthen.getString("type");
-								System.out.println("type: "+type);
-								if ("base".equals(type)) {
-									String userName = jsonAuthen.getString("username");
-									String password = jsonAuthen.getString("password");
-									System.out.println("userName: "+userName);
-									System.out.println("password: "+password);
+								String type = jsonAuthen.getString(ConstantUtils.SERVER_CONFIG_JSON_TYPE_KEY);
+//								System.out.println("type: "+type);
+								if (ConstantUtils.SERVER_CONFIG_JSON_BASE_KEY.equals(type)) {
+									String userName = jsonAuthen.getString(ConstantUtils.SERVER_CONFIG_JSON_USERNAME_KEY);
+									String password = jsonAuthen.getString(ConstantUtils.SERVER_CONFIG_JSON_SECRET_KEY);
+//									System.out.println("userName: "+userName);
+//									System.out.println("password: "+password);
 									//
-									authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+									authStrEnc = Base64.getEncoder().encodeToString((userName + StringPool.COLON + password).getBytes());
 									
 								}
 							}
 							
 							URL urlVal = new URL(urlGet);
 
-							System.out.println("API URL: " + urlGet);
+//							System.out.println("API URL: " + urlGet);
 							java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-							conn.setRequestProperty("groupId", String.valueOf(groupIdGet));
+							conn.setRequestProperty(Field.GROUP_ID, String.valueOf(groupIdGet));
 							conn.setRequestMethod(method);
-							conn.setRequestProperty("Accept", "application/json");
-							conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
-							System.out.println("BASIC AUTHEN: " + authStrEnc);
+							conn.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+							String basicAuth = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStrEnc);
+							conn.setRequestProperty(HttpHeaders.AUTHORIZATION, basicAuth);
+//							System.out.println("BASIC AUTHEN: " + authStrEnc);
 
 							JSONFactoryUtil.looseSerialize(conn);
 							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -518,7 +522,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							while ((cp = brf.read()) != -1) {
 								sb.append((char) cp);
 							}
-							System.out.println("RESULT PROXY: " + sb.toString());
+//							System.out.println("RESULT PROXY: " + sb.toString());
 							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
 						}
 						
@@ -526,7 +530,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 				}
 			}
 
-			return Response.status(500).entity("Internal Server").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_INTERNAL_SERVER_ERROR)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

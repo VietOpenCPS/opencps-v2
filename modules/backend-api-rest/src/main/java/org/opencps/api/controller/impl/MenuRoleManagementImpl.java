@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.MenuRoleManagement;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
@@ -39,7 +41,7 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -58,7 +60,7 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 				MenuRoleLocalServiceUtil.updateMenuRole(mr);
 			}
 			
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -67,7 +69,7 @@ public class MenuRoleManagementImpl implements MenuRoleManagement {
 	@Override
 	public Response getMenuRoles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		return Response.status(200).entity(StringPool.BLANK).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 	}
 
 }

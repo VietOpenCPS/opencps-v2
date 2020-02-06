@@ -108,6 +108,7 @@ public class EmployeeTerm {
 	
 	public static final int WORKING_STATUS_RETIRED = 0;
 	public static final int WORKING_STATUS_WORKED = 1;
+	public static final String EMPLOYEE_NAME = "employeeName";
 	
 	private long employeeId;
 

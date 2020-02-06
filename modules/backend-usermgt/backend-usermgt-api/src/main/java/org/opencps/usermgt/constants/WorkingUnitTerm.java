@@ -84,6 +84,7 @@ public class WorkingUnitTerm {
 	public static final String EMAIL_SORTABLE = "email_sortable";
 	
 	public static final String WEBSITE_SORTABLE = "website_sortable";
+	public static final String GOV_ADDRESS = "govAddress";
 	
 	private long workingUnitId;
 

@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.RegistrationTemplatesManagement;
 import org.opencps.api.controller.util.RegistrationTemplatesUtils;
 import org.opencps.api.registrationtemplate.model.RegistrationTemplateDetailModel;
@@ -30,6 +32,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -45,7 +48,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -66,13 +69,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			}
 
 			List<RegistrationTemplates> lstRegistrationTemplate = (List<RegistrationTemplates>) registrationTemplateJsonObject
-					.get("lstRegistrationTemplate");
+					.get(ConstantUtils.REGISTRATION_LIST_REGISTRATION_TEMPLATE);
 
-			results.setTotal(registrationTemplateJsonObject.getInt("total"));
+			results.setTotal(registrationTemplateJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(
 					RegistrationTemplatesUtils.mappingToRegistrationTemplatesResultsModel(lstRegistrationTemplate));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -85,7 +88,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -102,7 +105,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -116,7 +119,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -134,7 +137,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -147,7 +150,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -163,7 +166,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -177,7 +180,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		BackendAuth auth = new BackendAuthImpl();
 
 		RegistrationTemplateFormScriptInputUpdateModel result = new RegistrationTemplateFormScriptInputUpdateModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -189,7 +192,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 			result.setFormScript(registrationTemplate.getFormScript());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -202,7 +205,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -218,7 +221,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -238,13 +241,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegTempbyRegId(groupId, registrationTemplateId);
 
 			result.setFormReport(registrationTemplate.getFormReport());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -257,7 +260,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		//  Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -273,7 +276,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -293,13 +296,13 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationTemplates registrationTemplate = RegistrationTemplatesLocalServiceUtil
 					.getRegTempbyRegId(groupId, registrationTemplateId);
 
 			result.setSampleData(registrationTemplate.getSampleData());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -312,7 +315,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 		// Update FormReport of RegistrationTemplates
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -328,7 +331,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -340,7 +343,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		// Get RegistrationTemplates by Id
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -353,7 +356,7 @@ public class RegistrationTemplatesManagementImpl implements RegistrationTemplate
 			RegistrationTemplateDetailModel result = RegistrationTemplatesUtils
 					.mappingToRegistrationTemplateModel(registrationTemplates);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

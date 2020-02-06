@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +37,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ServiceConfigManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceConfigUtils;
 import org.opencps.api.dictcollection.model.DictItemCompareModel;
 import org.opencps.api.serviceconfig.model.ProcessOptionInputModel;
@@ -63,6 +66,7 @@ import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -94,13 +98,13 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		try {
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -118,19 +122,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getServiceConfigs(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get("data")));
+					.addAll(ServiceConfigUtils.mappingToServiceConfigResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -142,7 +146,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			User user, ServiceContext serviceContext, ServiceConfigInputModel input) {
 
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
 		ServiceConfigDetailModel returnModel = new ServiceConfigDetailModel();
@@ -174,7 +178,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -195,7 +199,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -208,7 +212,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			User user, ServiceContext serviceContext, long id, ServiceConfigInputModel input) {
 
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
 		ServiceConfigDetailModel returnModel = new ServiceConfigDetailModel();
@@ -240,7 +244,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -270,7 +274,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mapptingToServiceConfig(serviceConfig);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -291,13 +295,13 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		try {
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -309,19 +313,19 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			params.put(ProcessOptionTerm.SERVICE_CONFIG_ID, configId);
 			params.put(ProcessOptionTerm.APPLICATION_TYPE, applicantType);
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			JSONObject jsonData = actions.getProcessOptions(userId, serviceContext.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(ServiceConfigUtils.mappingToProcessOptionResults((List<Document>) jsonData.get("data")));
+					.addAll(ServiceConfigUtils.mappingToProcessOptionResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -333,7 +337,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			User user, ServiceContext serviceContext, long id, ProcessOptionInputModel input) {
 
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		org.opencps.api.serviceconfig.model.ProcessOption returnModel = new org.opencps.api.serviceconfig.model.ProcessOption();
 
@@ -367,7 +371,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(serviceConfig);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -379,7 +383,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	public Response updateProcessOption(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, long optionId, ProcessOptionInputModel input) {
 		ServiceConfigActions actions = new ServiceConfigActionImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		org.opencps.api.serviceconfig.model.ProcessOption returnModel = new org.opencps.api.serviceconfig.model.ProcessOption();
 
@@ -404,7 +408,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(processOption);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -435,7 +439,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 			returnModel = ServiceConfigUtils.mappingToProcessOption(processOption);
 
-			return Response.status(200).entity(returnModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(returnModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -446,10 +450,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	public Response getServiceConfigsByGovAgency(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
-				.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
+				.fetchByF_dictCollectionCode(ConstantUtils.GOVERNMENT_AGENCY, groupId);
 
 		List<DictItem> govItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
@@ -466,7 +470,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			}
 		}
 
-		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConstantUtils.SERVICE_DOMAIN,
 				groupId);
 		List<DictItem> domainItems = DictItemLocalServiceUtil
 				.findByF_dictCollectionId(domainCollection.getDictCollectionId());
@@ -532,8 +536,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				
 				if (countGov != 0) {
 	
-					govElm.put("govAgencyCode", govItem.getItemCode());
-					govElm.put("govAgencyName", govItem.getItemName());
+					govElm.put(ServiceConfigTerm.GOVAGENCY_CODE, govItem.getItemCode());
+					govElm.put(ServiceConfigTerm.GOVAGENCY_NAME, govItem.getItemName());
 	
 					JSONArray arrDomain = JSONFactoryUtil.createJSONArray();
 	
@@ -565,25 +569,25 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						
 						if (countGovDomain != 0) {
 
-							domElm.put("domainCode", domainItem.getItemCode());
-							domElm.put("domainName", domainItem.getItemName());
+							domElm.put(ServiceConfigTerm.DOMAIN_CODE, domainItem.getItemCode());
+							domElm.put(ServiceConfigTerm.DOMAIN_NAME, domainItem.getItemName());
 							JSONArray arrService = JSONFactoryUtil.createJSONArray();
 							for (ServiceConfig sc : lstGovDomains) {
 								int level = sc.getServiceLevel();
 								if (level > 2) {
 									JSONObject srvElm = JSONFactoryUtil.createJSONObject();
 
-									srvElm.put("serviceInfoId", sc.getServiceInfoId());
-									srvElm.put("serviceConfigId", sc.getServiceConfigId());
-									srvElm.put("serviceInfoName", (mapServiceInfos.containsKey(sc.getServiceInfoId()) ? mapServiceInfos.get(sc.getServiceInfoId()).getServiceName() : StringPool.BLANK));
-									srvElm.put("level", sc.getServiceLevel());
+									srvElm.put(ServiceInfoTerm.SERVICE_INFO_ID, sc.getServiceInfoId());
+									srvElm.put(ServiceConfigTerm.SERVICECONFIG_ID, sc.getServiceConfigId());
+									srvElm.put(ServiceInfoTerm.SERVICE_INFO_NAME, (mapServiceInfos.containsKey(sc.getServiceInfoId()) ? mapServiceInfos.get(sc.getServiceInfoId()).getServiceName() : StringPool.BLANK));
+									srvElm.put(ServiceInfoTerm.LEVEL, sc.getServiceLevel());
 
 									arrService.put(srvElm);									
 								}								
 							}
 
 							if (arrService.length() > 0) {
-								domElm.put("serviceConfigs", arrService);								
+								domElm.put(ConstantUtils.SERVICE_CONFIGS, arrService);								
 								arrDomain.put(domElm);
 							}
 		
@@ -593,7 +597,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 					}
 	
 					if (arrDomain.length() > 0) {
-						govElm.put("domains", arrDomain);						
+						govElm.put(ConstantUtils.DOMAINS, arrDomain);						
 						arrGovAgency.put(govElm);						
 					}
 	
@@ -602,9 +606,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				}
 			}
 
-			results.put("govAgencies", arrGovAgency);
+			results.put(ConstantUtils.GOV_AGENCIES, arrGovAgency);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -618,7 +622,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 	public Response getServiceConfigsByDomain(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		//DictCollection govAgencyCollection = DictCollectionLocalServiceUtil
 		//		.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
@@ -670,10 +674,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 //					_log.info("domainId: "+domainItem.getPrimaryKey());
 //					_log.info("domainName: "+domainItem.getItemName());
-					domain.put("domainId", domainItem.getPrimaryKey());
-					domain.put("domainName", domainItem.getItemName());
-				
-					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable",
+					domain.put(ConstantUtils.SERVICE_CONFIG_JSON_DOMAIN_ID_KEY, domainItem.getPrimaryKey());
+					domain.put(ConstantUtils.SERVICE_CONFIG_JSON_DOMAIN_NAME_KEY, domainItem.getItemName());
+					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort,
 							Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
 					
 					//Get list service config by Domain code
@@ -717,27 +721,27 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 						for (Document serDoc : serviceConfigByInfo) {
 							JSONObject configElm = JSONFactoryUtil.createJSONObject();
 							
-							configElm.put("serviceCode", doc.get(ServiceConfigTerm.SERVICE_CODE));
-							configElm.put("serviceName", doc.get(ServiceConfigTerm.SERVICE_NAME));
-							configElm.put("level", serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
-							configElm.put("serviceConfigId", serDoc.get(Field.ENTRY_CLASS_PK));
+							configElm.put(ServiceInfoTerm.SERVICE_CODE, doc.get(ServiceConfigTerm.SERVICE_CODE));
+							configElm.put(ServiceInfoTerm.SERVICE_NAME, doc.get(ServiceConfigTerm.SERVICE_NAME));
+							configElm.put(ServiceInfoTerm.LEVEL, serDoc.get(ServiceConfigTerm.SERVICE_LEVEL));
+							configElm.put(ServiceConfigTerm.SERVICECONFIG_ID, serDoc.get(Field.ENTRY_CLASS_PK));
 							serviceConfigGroupByGov.put(configElm);
 						}
 						
-						govAgency.put("govAgencyCode", govAgencyCode);
-						govAgency.put("govAgencyName", govAgencyName);
-						govAgency.put("serviceConfigs", serviceConfigGroupByGov);
+						govAgency.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
+						govAgency.put(ServiceConfigTerm.GOVAGENCY_NAME, govAgencyName);
+						govAgency.put(ConstantUtils.SERVICE_CONFIGS, serviceConfigGroupByGov);
 						govAgencys.put(govAgency);
 					}
-					domain.put("govAgencys", govAgencys);
+					domain.put(ConstantUtils.GOV_AGENCYS, govAgencys);
 					
 					domains.put(domain);
 				}
 				
 			}
-			results.put("domains", domains);
+			results.put(ConstantUtils.DOMAINS, domains);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -809,7 +813,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 //				QueryUtil.ALL_POS, serviceContext);
 //
 //		List<ServiceInfoModel> serviceInfoList = ServiceInfoUtils
-//				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get("data"), serviceContext);
+//				.mappingToServiceInfoResultModel((List<Document>) serviceInfoJson.get(ConstantUtils.DATA), serviceContext);
 //
 //		if (Validator.isNotNull(serviceInfoList)) {
 //			for (ServiceInfoModel serviceInfo : serviceInfoList) {
@@ -848,7 +852,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			ServiceContext serviceContext, String id, ServiceConfigSearchModel search, String reportType) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long serviceConfigId = GetterUtil.getLong(id);
 
 		try {
@@ -872,7 +876,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			jsonGuide.put(ApplicantTerm.ADDRESS, search.getApplicantAddress());
 			jsonGuide.put(ApplicantTerm.CONTACTEMAIL, search.getApplicantEmail());
 			jsonGuide.put(ApplicantTerm.CONTACTTELNO, search.getApplicantTelNo());
-			jsonGuide.put("employeeName", search.getEmployeeName());
+			jsonGuide.put(ConstantUtils.SERVICE_CONFIG_EMPLOYEE_NAME, search.getEmployeeName());
 			jsonGuide.put(DossierTemplateTerm.TEMPLATE_NO, search.getTemplateNo());
 			jsonGuide.put(DossierTerm.APPLICANT_NOTE, search.getApplicantNote());
 			if (serviceConfig != null) {
@@ -938,8 +942,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 //			}
 			// Get dossierTemplate by dossierTemplateNo
 			String type = search.getType();
-			jsonGuide.put("type", type);
-			if (Validator.isNotNull(type) && "completed".equalsIgnoreCase(type)) {
+			jsonGuide.put(ConstantUtils.SERVICE_CONFIG_JSON_TYPE_KEY, type);
+			if (Validator.isNotNull(type) && ConstantUtils.SERVICE_CONFIG_COMPLETED.equalsIgnoreCase(type)) {
 				DossierTemplate template = DossierTemplateLocalServiceUtil.getByTemplateNo(groupId, search.getTemplateNo());
 				JSONArray partArr = JSONFactoryUtil.createJSONArray();
 				if (template != null) {
@@ -997,14 +1001,14 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			_log.info("documentScript: "+documentScript);
 
 			Message message = new Message();
-			message.put("formReport", documentScript);
-			message.put("formData", jsonGuide.toJSONString());
+			message.put(ConstantUtils.API_JSON_FORM_REPORT, documentScript);
+			message.put(ConstantUtils.API_JSON_FORM_DATA, jsonGuide.toJSONString());
 			if (Validator.isNotNull(reportType)) {
-				message.put("reportType", reportType);
+				message.put(ConstantUtils.API_JSON_REPORT_TYPE, reportType);
 			}
 			try {
 				String previewResponse = (String) MessageBusUtil
-						.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+						.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
 				if (Validator.isNotNull(previewResponse)) {
 				}
@@ -1012,20 +1016,20 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				File file = new File(previewResponse);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-				if ("word".equals(reportType)) {
-					responseBuilder.header("Content-Type", "application/msword");
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename);
+				if (ConstantUtils.WORD.equals(reportType)) {
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
 				}
 				else {
-					responseBuilder.header("Content-Type", "application/pdf");					
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);					
 				}
 
 				return responseBuilder.build();
 
 			} catch (MessageBusException e) {
 				_log.error(e);
-				throw new Exception("Preview rendering not avariable");
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1084,10 +1088,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 					}
 				}
 			}
-			results.put("total", total);
-			results.put("data", domains);
+			results.put(ConstantUtils.TOTAL, total);
+			results.put(ConstantUtils.DATA, domains);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1099,7 +1103,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query) {
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		int level = GetterUtil.getInteger(query.getLevel());
 
 		try {
@@ -1138,10 +1142,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 							}
 				}
 			}
-			results.put("total", total);
-			results.put("data", agencys);
+			results.put(ConstantUtils.TOTAL, total);
+			results.put(ConstantUtils.DATA, agencys);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

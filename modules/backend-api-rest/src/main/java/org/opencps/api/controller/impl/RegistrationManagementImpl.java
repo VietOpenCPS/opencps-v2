@@ -40,7 +40,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.RegistrationManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.RegistrationFormUtils;
 import org.opencps.api.controller.util.RegistrationUtils;
 import org.opencps.api.registration.model.RegistrationDetailModel;
@@ -97,7 +99,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -108,20 +110,20 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			params.put(RegistrationTerm.OWNER, owner);
 			params.put(RegistrationTerm.REGISTRATION_CLASS, registrationClass);
 			params.put(RegistrationTerm.SUBMITTING, submitting);
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE, true) };
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), sort);
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE, true) };
 
 			JSONObject jsonData = actions.getRegistrations(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, -1, -1, serviceContext);
 
 			RegistrationResultsModel results = new RegistrationResultsModel();
 			//
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getData()
-					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get("data")));
+					.addAll(RegistrationUtils.mappingToRegistrationResultModel((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -137,7 +139,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 		long companyId = company.getCompanyId();
 		_log.info("companyId: "+companyId);
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			_log.info("groupId: "+groupId);
 			String cityName = "";
 			String districtName = "";
@@ -169,7 +171,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getRepresentativeEnterprise(), serviceContext);
 
 			result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -189,7 +191,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			Registration detail = action.getDetail(id);
 
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(detail);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -200,7 +202,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			ServiceContext serviceContext, RegistrationInputModel input, long registrationId) {
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationActions action = new RegistrationActionsImpl();
 			String cityName = "";
 			String districtName = "";
@@ -228,7 +230,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			RegistrationDetailResultModel result = RegistrationUtils.mappingToRegistrationDetailResultModel(registration);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -237,7 +239,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	@Override
 	public Response delete(HttpHeaders header, long id) {
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationActions action = new RegistrationActionsImpl();
 
@@ -245,7 +247,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			RegistrationFormLocalServiceUtil.deleteRegistrationForms(groupId, id);
 			RegistrationDetailModel result = RegistrationUtils.mappingToRegistrationDetailModel(registration);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -256,7 +258,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 	public Response getFormsbyRegId(HttpHeaders header, long id) throws PortalException {
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
@@ -274,7 +276,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			result.setTotal(total);
 			result.getData().addAll(lstRegistrationFormModel);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -294,7 +296,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			// long fileEntryId = getfileEntryId(input.getFormData(),
 			// input.getFormScript(), input.getFormReport());
@@ -311,7 +313,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					registrationTemplate.getFormReport(), 0, true, false, serviceContext);
 
 			result = RegistrationFormUtils.mappingToRegistrationFormDetailModel(registrationForm);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -335,7 +337,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationLocalServiceUtil.registrationSync(groupId, uuid, input.getApplicantName(),
 					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
@@ -345,7 +347,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 					input.getGovAgencyName(), input.getRegistrationState(), input.getRegistrationClass(),
 					input.getRepresentativeEnterprise(), serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -361,7 +363,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
@@ -373,10 +375,10 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 						true);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+						attachmentFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
@@ -400,7 +402,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 
 			Registration registration = RegistrationLocalServiceUtil.updateSubmitting(registrationId, true);
 
-			return Response.status(200).entity(registration).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(registration).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -437,7 +439,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Registration regInfo = null;
 			long registrationId = 0;
@@ -465,9 +467,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 //			}
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 			
-			String pattern = String.valueOf(keyJson.get("query"));
-			String paramValues = String.valueOf(keyJson.get("values"));
-			String paramTypes = String.valueOf(keyJson.get("type"));
+			String pattern = String.valueOf(keyJson.get(ConstantUtils.REGISTRATION_DATAFORM_QUERY_KEY));
+			String paramValues = String.valueOf(keyJson.get(ConstantUtils.REGISTRATION_DATAFORM_VALUES_KEY));
+			String paramTypes = String.valueOf(keyJson.get(ConstantUtils.REGISTRATION_DATAFORM_TYPE_KEY));
 			_log.info("keyword "+keyword);
 			_log.info("pattern "+pattern);
 			_log.info("paramValues "+paramValues);
@@ -477,9 +479,9 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(RegistrationFormTerm.REGISTRATION_ID, registrationId);
 			params.put(RegistrationFormTerm.FORM_NO, formNo);
-			params.put("pattern", pattern);
-			params.put("paramValues", paramValues);
-			params.put("paramTypes", paramTypes);
+			params.put(ConstantUtils.REGISTRATION_DATAFORM_PATTERN_KEY, pattern);
+			params.put(ConstantUtils.REGISTRATION_DATAFORM_PARAMVALUES_KEY, paramValues);
+			params.put(ConstantUtils.REGISTRATION_DATAFORM_PARAMTYPES_KEY, paramTypes);
 			
 			RegistrationActions actions = new RegistrationActionsImpl();
 			
@@ -487,15 +489,15 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 //					formNo, splitProperties);
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			
+			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+					SortFactoryUtil.create(dateSort, Sort.STRING_TYPE, true) };
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByFormNo(serviceContext.getUserId(), serviceContext.getCompanyId(), params, sorts,
 					-1, -1, serviceContext);
 
-			results.put("total", jsonData.getInt("total"));
-			List<Document> docList =(List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList =(List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -504,15 +506,15 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				JSONObject formDataJson = null;
 				if (Validator.isNotNull(formData)) {
 					formDataJson = JSONFactoryUtil.createJSONObject(formData);
-					formDataJson.put("registrationFormId", registrationFormId);
+					formDataJson.put(RegistrationTerm.REGISTRATION_FORM_ID, registrationFormId);
 				}
 				if (formDataJson != null) {
 					formDataArr.put(formDataJson);
 				}
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -539,11 +541,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			}
 			
 			//
-			results.put("total", JsonArr != null ? JsonArr.length() : 0);
+			results.put(ConstantUtils.TOTAL, JsonArr != null ? JsonArr.length() : 0);
 
-			results.put("data", JsonArr);
+			results.put(ConstantUtils.DATA, JsonArr);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

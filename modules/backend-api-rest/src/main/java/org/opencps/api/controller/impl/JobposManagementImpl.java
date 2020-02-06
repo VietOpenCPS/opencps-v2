@@ -1,9 +1,11 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -11,6 +13,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,8 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.JobposManagement;
 import org.opencps.api.controller.util.JobposUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.jobpos.model.DataSearchModel;
 import org.opencps.api.jobpos.model.JobposInputModel;
@@ -50,29 +55,29 @@ public class JobposManagementImpl implements JobposManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getJobpos(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getJobposModel().addAll(JobposUtils.mapperJobposList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -89,17 +94,17 @@ public class JobposManagementImpl implements JobposManagement {
 
 			JobposModel jobposModel = JobposUtils.mapperJobposModel(jobPos);
 
-			return Response.status(200).entity(jobposModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jobposModel).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -112,7 +117,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -122,7 +127,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			jobposModel = JobposUtils.mapperJobposModel(jobPos);
 
-			return Response.status(200).entity(jobposModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jobposModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -137,7 +142,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String title = HtmlUtil.escape(input.getTitle());
 			String description = HtmlUtil.escape(input.getDescription());
@@ -147,7 +152,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			jobposModel = JobposUtils.mapperJobposModel(jobPos);
 
-			return Response.status(200).entity(jobposModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jobposModel).build();
 
 		} catch (Exception e) {
 
@@ -162,7 +167,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			JobPosLocalServiceUtil.deleteJobPos(id, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -178,11 +183,11 @@ public class JobposManagementImpl implements JobposManagement {
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -201,7 +206,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			result = JobposUtils.mapperJobposPermissionModel(actionId);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -216,7 +221,7 @@ public class JobposManagementImpl implements JobposManagement {
 
 			actions.deletePermissionByKey(company.getCompanyId(), id, actionId, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -231,18 +236,18 @@ public class JobposManagementImpl implements JobposManagement {
 		JobposPermissionResults result = new JobposPermissionResults();
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.createPermissionsPatch(user.getUserId(), company.getCompanyId(), groupId, id, permissions,
 					serviceContext);
 
 			JSONObject jsonData = actions.getJobposPermissions();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getJobposPermissionModel().addAll(JobposUtils
-					.mapperJobposPermissionsList((String[]) jsonData.get("data"), user.getUserId(), id, serviceContext));
+					.mapperJobposPermissionsList((String[]) jsonData.get(ConstantUtils.DATA), user.getUserId(), id, serviceContext));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

@@ -24,5 +24,6 @@ public class ServiceInfoTerm {
 	public static final String PUBLIC_ = "public";
 	public static final String SERVICE_CODE_SEARCH = "serviceCodeSearch";
 	public static final String GOV_AGENCY_TEXT  = "govAgencyText";
-
+	public static final String SERVICE_INFO_NAME = "serviceInfoName";
+	public static final String LEVEL = "level";
 }

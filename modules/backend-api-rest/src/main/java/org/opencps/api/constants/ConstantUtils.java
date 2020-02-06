@@ -10,6 +10,7 @@ public class ConstantUtils {
 	
 	public static final String ZIP = "zip";
 	public static final String XML = "xml";
+	public static final String WORD = "word";
 	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
@@ -81,6 +82,8 @@ public class ConstantUtils {
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	public static final String CONTENT_TYPE = "Content-Type";
 	public static final String CONTENT_LENGTH = "Content-Length";
+	public static final String CONTENT_TYPE_XXX_FORM_URLENCODED = "application/x-www-form-urlencoded";
+	
 	public static final String MAIL_AD = "email";
 	public static final String TOKEN = "token";
 	public static final String CONTENT_LANGUAGE = "content/Language";
@@ -92,6 +95,8 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_XML = "application/xml";
 	public static final String MEDIA_TYPE_ZIP = "application/zip";
 	public static final String MEDIA_TYPE_PDF = "application/pdf";
+	public static final String MEDIA_TYPE_MSWORD = "application/msword";
+	
 	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
 	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
 	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
@@ -100,8 +105,10 @@ public class ConstantUtils {
 	public static final String ATTACHMENT_FILENAME = "attachment.filename";
 	public static final String INLINE_FILENAME = "inline.filename";
 	public static final String HTTP_HEADER_BEARER = "http.header.bearer";
+	public static final String HTTP_HEADER_BASICAUTH = "http.header.basicauth";
 	public static final String QUERY_SORT = "query.sort";
 	public static final String QUERY_NUMBER_SORT = "query.number.sort";
+	public static final String QUERY_STRING_SORT = "query.string.sort";
 	public static final String TIMEZONE_ASIA_HOCHIMINH = "Asia/Ho_Chi_Minh";
 	
 	public static final String KEY = "key";
@@ -127,6 +134,7 @@ public class ConstantUtils {
 	public static final String API_JSON_NOCONTENT = "No Content";
 	public static final String API_JSON_MESSAGE_NONAUTHORATIVE = "api.json.message.nonauthorative";
 	public static final String API_JSON_MESSAGE_INTERNAL_SERVER_ERROR = "api.json.message.internalservererror";
+	public static final String API_JSON_MESSAGE_NOT_FOUND = "api.json.message.notfound";
 	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
 	public static final String API_MESSAGE_FILENOTFOUND = "api.message.filenotfound";
@@ -186,7 +194,23 @@ public class ConstantUtils {
 	public static final String API_JSON_DATA_ITEMLV = "itemLv";
 	public static final String API_JSON_SUCCESS = "success";
 	public static final String API_JSON_URL = "url";
+	public static final String API_JSON_FORM_REPORT = "formReport";
+	public static final String API_JSON_FORM_DATA = "formData";
+	public static final String API_JSON_REPORT_TYPE = "reportType";
+	public static final String API_JSON_COUNT = "count";
+	
+	public static final String METHOD_GET = "GET";
+	public static final String METHOD_POST = "POST";
+	public static final String METHOD_PUT = "PUT";
+	
 	public static final String API_MESSAGE_GROUPID_NOT_EXISTS = "api.message.groupidnotexists";
+	public static final String API_JSON_VALUE = "value";
+	public static final String API_JSON_DESCRIPTION = "description";
+	public static final String API_MESSAGE_REQUESTBODYINCORRECT = "api.json.message.requestbodyincorrect";
+	public static final String API_MESSAGE_CAPTCHA_INCORRECT = "api.json.message.captchaincorrect";
+	public static final String API_MESSAGE_ERROR_PROCESS_DATABASE = "api.json.message.errorprocessdatabase";
+	public static final String API_MESSAGE_DELETESUCCESS = "api.json.message.deletesuccess";
+	public static final String API_MESSAGE_DELETEFAILURE = "api.json.message.deletefailure";
 	
 	public static final String API_JSON_DEFAULTSIGNATURE_SIGNEDFILE = "signedFile";
 	public static final String API_JSON_DEFAULTSIGNATURE_SIGN = "sign";
@@ -194,10 +218,14 @@ public class ConstantUtils {
 	public static final String API_JSON_DEFAULTSIGNATURE_FILENAME = "fileName";
 	public static final String API_JSON_DEFAULTSIGNATURE_EXPERTSTATE = "expertState";
 	
+	public static final String API_PROTOCOL_MULTIMEDIA = "MULTIMEDIA";
+	public static final String API_PROTOCOL_API_CONNECT = "API_CONNECT";
+	
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG = "msg";
 	public static final String API_JSON_DEFAULTSIGNATURE_FILEENTRYID = "fileEntryId";
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS = "api.data.defaultsignature.success";
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID = "api.data.defaultsignature.fileEntryId";
+	public static final String API_JSON_MESSAGE_AUTHENTICATEDFAILURE = "api.json.message.authenticatedfailure";
 	
 	public static final String HASHCOMPUTED_MESSAGE_KEY = "message";
 	public static final String HASHCOMPUTED_HASHCOMPUTERS_KEY = "hashComputers";
@@ -249,6 +277,8 @@ public class ConstantUtils {
 	public static final String DOSSIERACTIONUSER_DOSSIERNOTEXISTS = "dossieractionuser.dossiernotexists";
 	
 	public static final String DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW = "jasper/engine/preview/destination";
+	public static final String DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW_CALLBACK = "jasper/engine/preview/callback";
+	
 	public static final String DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE = "dossierdocument.message.previewrenderingnotavailable";
 	public static final String DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS = "dossierdocument.message.dossierwasnotonprocess";
 	public static final String DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID = "dossierdocument.message.cannotgetdossierwithid";
@@ -256,4 +286,101 @@ public class ConstantUtils {
 	
 	public static final String DOSSIERFILE_MESSAGE_FILEFORMATERROR = "dossierfile.message.fileformaterror";
 	public static final String DOSSIERFILE_MESSAGE_FOLDERISNOTSTRUCTURE = "dossierfile.message.folderisnotstructure";
+	public static final String DOSSIERTEMPLATE_MESSAGE_NOTFOUND = "dossiertemplate.message.notfound";
+	
+	public static final String DVCQG_SSO_GROUP_ID_KEY = "_GROUP_ID";
+	public static final String DVCQG_SSO_CURRENT_URL_KEY = "_CURRENT_URL";
+	public static final String DVCQG_SSO_CANNOTGETUSERINFO = "api.json.message.cannotgetuserinfo";
+	
+	public static final String EFORM_MESSAGE_SECRETKEYNOTSUCCESS = "eform.message.secretkeynotsuccess";
+	public static final String EFORM_MESSAGE_NOEFORMEXISTS = "eform.message.noeformexists";
+	public static final String EMPLOYEE_OFFICESITE_FOLDER = "OfficeSite/";
+	public static final String EMPLOYEE_OFFICESITE_DESC = "OfficeSite file upload";
+	public static final String EMPLOYEE_WORKINGUNIT_FOLDER = "WorkingUnit/";
+	public static final String EMPLOYEE_WORKINGUNIT_DESC = "WorkingUnit file upload";
+
+	public static final String EMPLOYEE_JSON_USERIDLIST = "userIdList";
+
+	public static final String FILEATTACH_FOLDER = "FileAttach/";
+	public static final String FILEATTACH_DESC = "FileAttach file upload";
+	public static final String FILEATTACH_JSON_FILENAME = "fileName";
+	public static final String FILEATTACH_JSON_VERSIONS = "versions";
+	
+	public static final String EMPLOYEE_PROFILEPATH = "employee.profilepath";
+	public static final String DOSSIER_KEY = "Dossier";
+	public static final String VIEWROOT_URI_KEY = "viewRootURI";
+	public static final String VIEWROOT_URI_MESSAGE = "api.viewrooturi";
+	public static final String NOTIFICATION_TYPE_SORTABLE = "notificationType_sortable";
+	
+	public static final String ONEGATE_PAYMENTFEEREQUEST = "paymentFeeRequest";
+	public static final String ONEGATE_PAYMENTFEETOTAL = "paymentFeeTotal";
+	
+	public static final String PROXY_SERVER_DVC = "SERVER_DVC";
+	public static final String PROXY_STATISTICS_ENDPOINT = "/statistics";
+	public static final String PROXY_V2_ENDPOINT = "/v2";
+	
+	public static final String REGISTRATION_DATAFORM_QUERY_KEY = "query";
+	public static final String REGISTRATION_DATAFORM_VALUES_KEY = "values";
+	public static final String REGISTRATION_DATAFORM_TYPE_KEY = "type";
+	public static final String REGISTRATION_DATAFORM_PATTERN_KEY = "pattern";
+	public static final String REGISTRATION_DATAFORM_PARAMVALUES_KEY = "paramValues";
+	public static final String REGISTRATION_DATAFORM_PARAMTYPES_KEY = "paramTypes";
+	public static final String REGISTRATION_LIST_REGISTRATION_TEMPLATE = "lstRegistrationTemplate";
+	
+	public static final String PAYMENTFILE_JSON_GOV_ADDRESS_KEY = "govAddress";
+	public static final String SERVER_CONFIG_JSON_METHOD_KEY = "method";
+	public static final String SERVER_CONFIG_JSON_EFORM_NO_KEY = "{eFormNo}";
+	public static final String SERVER_CONFIG_JSON_MACHA_KEY = "{maCha}";
+	public static final String SERVER_CONFIG_JSON_NAMEDM_KEY = "{nameDM}";
+	public static final String SERVER_CONFIG_JSON_PARENTID_KEY = "{parentId}";
+	public static final String SERVER_CONFIG_JSON_GOV_AGENCY_NAME_KEY = "{govAgencyName}";
+	public static final String SERVER_CONFIG_JSON_EMPLOYEE_NAME_KEY = "{employeeName}";
+	public static final String SERVER_CONFIG_JSON_MA_NG_KY_KEY = "{ma_ng_ky}";
+	public static final String SERVER_CONFIG_JSON_MA_CQQL_KEY = "{ma_cqql}";
+	
+	public static final String SERVER_CONFIG_JSON_PARAMS_KEY = "params";
+	public static final String SERVER_CONFIG_JSON_HEADER_KEY = "header";
+	public static final String SERVER_CONFIG_JSON_TYPE_KEY = "type";
+	public static final String SERVER_CONFIG_JSON_BASE_KEY = "base";
+	public static final String SERVER_CONFIG_JSON_USERNAME_KEY = "username";
+	public static final String SERVER_CONFIG_JSON_SECRET_KEY = "password";
+	
+	public static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	public static final String SERVICE_DOMAIN = "SERVICE_DOMAIN";
+	
+	public static final String SERVICE_CONFIGS = "serviceConfigs";
+	public static final String DOMAINS = "domains";
+	public static final String GOV_AGENCIES = "govAgencies";
+	public static final String GOV_AGENCYS = "govAgencys";
+	public static final String SERVICE_CONFIG_JSON_DOMAIN_ID_KEY = "domainId";
+	public static final String SERVICE_CONFIG_JSON_DOMAIN_NAME_KEY = "domainName";
+	public static final String SERVICE_CONFIG_JSON_TYPE_KEY = "type";
+	public static final String SERVICE_CONFIG_COMPLETED = "completed";	
+	
+	public static final String ENCODING_UTF_8 = "UTF-8";
+	public static final String SERVICE_INFO_RECENTLY = "recently";
+	
+	public static final String SERVICE_PROCESS_DUPLICATE_STEPNO_EXCEPTION = "serviceprocess.message.duplicatestepnoexception";
+	public static final String SERVICE_PROCESS_INITDONE = "Init Done";
+	public static final String SERVICE_PROCESS_CLONEDONE = "Clone Done";
+	public static final String SERVICE_PROCESS_UPDATESUCCESS = "{Update sucess}";
+	public static final String SERVICE_PROCESS_UPDATEERROR = "{Update error}";
+	
+	public static final String SERVICE_CONFIG_EMPLOYEE_NAME = "employeeName";
+	public static final String API_TREEINDEX_SORTABLE = "treeIndex_sortable";
+	
+	public static final String VOTING_HASPERMISSION = "hasPermission";
+	
+	public static final String VGCA_FILENAME = "FileName";
+	public static final String VGCA_FILEENTRYID = "fileEntryId";
+	public static final String VGCA_URL = "url";
+	public static final String VGCA_FILESERVER = "FileServer";
+	public static final String VGCA_DOCUMENTNUMBER = "DocumentNumber";
+	public static final String VGCA_STATUS = "Status";
+	public static final String VGCA_URL_PATH = "vgca.urlpath";
+	
+	public static final String API_IMAGE_EXTENSION = "image/";
+	public static final String USER_PHOTO_FOLDER = "USERPHOTO/";
+	public static final String USER_PHOTO_DESC = "USERPHOTO file upload";
+	public static final String DATACER_PATH = "datacer.path";
 }

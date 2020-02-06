@@ -23,6 +23,7 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -60,11 +61,11 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
 
-			return Response.status(200).entity(registrationForm.getFormData()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(registrationForm.getFormData()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -80,7 +81,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationFormActions action = new RegistrationFormActionsImpl();
 
 			RegistrationForm registrationForm = action.updateRegFormFormData(groupId, registrationId, referenceUid,
@@ -89,7 +90,7 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			RegistrationFormDetailModel result = RegistrationFormUtils
 					.mappingToRegistrationFormDetailModel(registrationForm);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -105,11 +106,11 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			RegistrationForm registrationForm = RegistrationFormLocalServiceUtil.findFormbyRegidRefid(groupId,
 					registrationId, referenceUid);
 
-			return Response.status(200).entity(registrationForm.getFormScript()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(registrationForm.getFormScript()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -125,11 +126,11 @@ public class RegistrationFormManagementImpl implements RegistrationFormManagemen
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			RegistrationFormLocalServiceUtil.registrationFormSync(groupId, registrationUUID, referenceUid, formNo,
 					formName, formData, formScript, formReport, removed, serviceContext);
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

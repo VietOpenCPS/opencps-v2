@@ -51,4 +51,6 @@ public class PaymentFileTerm {
 	public static final int PAYMENT_STATUS_QUYET_TOAN_PHI = 2;
 	public static final int PAYMENT_STATUS_HOAN_THANH_PHI = 3;
 	
+	public static final String PAYMENT_PORTAL = "paymentPortal";
+	public static final String KEYPAY = "KEYPAY";
 }

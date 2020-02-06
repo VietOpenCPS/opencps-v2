@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -96,7 +97,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("START CREATE DOSSIER FILE: " + groupId);
 		try {
 
@@ -170,7 +171,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 
 				_log.info("__End bind to dossierFile" + new Date());
 
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
 				_log.info("__Start add file at:" + new Date());
@@ -206,7 +207,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 
 				_log.info("__End bind to dossierFile" + new Date());
 
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 		}
 		catch (Exception e) {
@@ -221,7 +222,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		DossierPublishImportModel input) {
 
 		_log.info("START PUPISH");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -439,7 +440,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					}
 				}
 
-				return Response.status(200).entity(
+				return Response.status(HttpURLConnection.HTTP_OK).entity(
 					JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 			}
 			else {
@@ -495,7 +496,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					}
 				}
 
-				return Response.status(200).entity(
+				return Response.status(HttpURLConnection.HTTP_OK).entity(
 					JSONFactoryUtil.looseSerializeDeep(oldDossier)).build();
 			}
 		}
@@ -514,7 +515,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		_log.info("uploadFileDossiers");
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		InputStream fileInputStream = null;
 		FileInputStream excelInputStream = null;
@@ -613,8 +614,8 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 							}
 						}
 						if (count > 0) {
-							result.put("total", count);
-							result.put("data", dataArr);
+							result.put(ConstantUtils.TOTAL, count);
+							result.put(ConstantUtils.DATA, dataArr);
 
 						}
 					}
@@ -622,7 +623,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 
 		}
@@ -660,7 +661,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		_log.info("uploadFileDossiers" + collectionCode);
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		InputStream fileInputStream = null;
 		Workbook workbook = null;
@@ -805,8 +806,8 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 							}
 						}
 						// if (count > 0) {
-						result.put("total", nOfRows);
-						// result.put("data", dataArr);
+						result.put(ConstantUtils.TOTAL, nOfRows);
+						// result.put(ConstantUtils.DATA, dataArr);
 						//
 						// }
 					}
@@ -814,7 +815,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 				_log.info("LamTV_IMPORT DONE_FILE");
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 
 		}
@@ -845,7 +846,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			DictItemModel dictItemModel = new DictItemModel();
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			DictCollection dictCollection =
@@ -903,9 +904,9 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 				}
 
 			}
-			result.put("total", importNum);
+			result.put(ConstantUtils.TOTAL, importNum);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {

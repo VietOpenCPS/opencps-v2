@@ -19,19 +19,19 @@ import javax.ws.rs.core.Response;
 
 @Path("/mail")
 public interface MailTestManagement {
-	@POST
-	@Path("/sendmail")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response sendMail(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@FormParam("subject") String subject, @FormParam("to") String to, @FormParam("body") String body, @FormParam("from") String from);
-
-	@POST
-	@Path("/javamail")
-	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response javaMail(@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@FormParam("subject") String subject, @FormParam("to") String to, @FormParam("body") String body, @FormParam("from") String from);
+//	@POST
+//	@Path("/sendmail")
+//	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	public Response sendMail(@Context HttpServletRequest request, @Context HttpHeaders header,
+//			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+//			@FormParam("subject") String subject, @FormParam("to") String to, @FormParam("body") String body, @FormParam("from") String from);
+//
+//	@POST
+//	@Path("/javamail")
+//	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+//	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//	public Response javaMail(@Context HttpServletRequest request, @Context HttpHeaders header,
+//			@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+//			@FormParam("subject") String subject, @FormParam("to") String to, @FormParam("body") String body, @FormParam("from") String from);
 }

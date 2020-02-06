@@ -9,11 +9,13 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
@@ -44,8 +47,11 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -70,7 +76,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String domain, String public_, Request requestCC) {
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -84,7 +90,7 @@ public class OneGateControllerImpl implements OneGateController {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -161,7 +167,7 @@ public class OneGateControllerImpl implements OneGateController {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
-					elmData.put("serviceConfigId", serviceConfig.getServiceConfigId());
+					elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
 	
 					//Hot fix
 					ServiceInfo serviceInfo = null;
@@ -174,10 +180,10 @@ public class OneGateControllerImpl implements OneGateController {
 		//						_log.debug(e1);
 		//						break;
 		//					}
-							elmData.put("serviceCode", serviceInfo.getServiceCode());
-							elmData.put("serviceName", serviceInfo.getServiceName());
-							elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
-							elmData.put("govAgencyName", serviceConfig.getGovAgencyName());
+							elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
+							elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
+							elmData.put(ServiceConfigTerm.GOVAGENCY_CODE, serviceConfig.getGovAgencyCode());
+							elmData.put(ServiceConfigTerm.GOVAGENCY_NAME, serviceConfig.getGovAgencyName());
 			
 	//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
 	//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
@@ -210,16 +216,16 @@ public class OneGateControllerImpl implements OneGateController {
 								if (hasPermission) {
 									JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 									
-									elmOption.put("processOptionId", processOption.getProcessOptionId());
-									elmOption.put("optionName", processOption.getOptionName());
-									elmOption.put("instructionNote", processOption.getInstructionNote());
+									elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID, processOption.getProcessOptionId());
+									elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
+									elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, processOption.getInstructionNote());
 									
 //									try {
 //										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
 										DossierTemplate dossierTemplate = mapTemplates.get(processOption.getDossierTemplateId());
 										if (dossierTemplate != null) {
-											elmOption.put("templateNo", dossierTemplate.getTemplateNo());
-											elmOption.put("templateName", dossierTemplate.getTemplateName());						
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NAME, dossierTemplate.getTemplateName());						
 										}
 //									}
 //									catch (NoSuchDossierTemplateException e) {
@@ -229,12 +235,12 @@ public class OneGateControllerImpl implements OneGateController {
 								}
 								
 								if (options.length() > 0) {
-									elmData.put("options", options);							
+									elmData.put(ProcessOptionTerm.OPTIONS, options);							
 								}
 			
 							}
 							
-							if (elmData.has("options")) {
+							if (elmData.has(ProcessOptionTerm.OPTIONS)) {
 								total++;
 								data.put(elmData);						
 							}
@@ -243,22 +249,22 @@ public class OneGateControllerImpl implements OneGateController {
 				}
 			}
 			
-			results.put("total", total);
-			results.put("data", data);
+			results.put(ConstantUtils.TOTAL, total);
+			results.put(ConstantUtils.DATA, data);
 			
 //			_log.info(results.toJSONString());
 			EntityTag etag = new EntityTag(Integer.toString((groupId + domain).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
 		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.status(200);
+				builder = Response.status(HttpURLConnection.HTTP_OK);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 				cc.setPrivate(true);	
 				builder.tag(etag);
-				return builder.status(200).entity(results.toJSONString()).build();
+				return builder.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 			}
 			else {
-				return Response.status(200).entity(results.toJSONString()).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 			}			
 
 		} catch (Exception e) {
@@ -272,7 +278,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		
 //		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
@@ -318,7 +324,7 @@ public class OneGateControllerImpl implements OneGateController {
 				result = OneGateUtils.mappingForGetDetail(dossier);
 			}
 			
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -331,7 +337,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response updateDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input, long dossierId) {
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		//DossierPermission dossierPermission = new DossierPermission();
 		long dActionId = GetterUtil.getLong(input.getDossierActionId());
@@ -365,7 +371,7 @@ public class OneGateControllerImpl implements OneGateController {
 				result = OneGateUtils.mappingForGetDetail(dossier);
 			}
 			
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -375,7 +381,7 @@ public class OneGateControllerImpl implements OneGateController {
 	@Override
 	public Response getDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId) {
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		//DossierPermission dossierPermission = new DossierPermission();
 
@@ -392,8 +398,8 @@ public class OneGateControllerImpl implements OneGateController {
 				result = OneGateUtils.mappingForGetDetail(dossier);
 			}
 			
-			return Response.status(200).entity(result).build();
-//			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(dossier)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -404,7 +410,7 @@ public class OneGateControllerImpl implements OneGateController {
 	public Response getServiceProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId, String serviceCode, String govAgencyCode,
 			String dossierTemplateNo, String dossierActionId) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		long dActionId = GetterUtil.getLong(dossierActionId);
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 	
@@ -420,17 +426,17 @@ public class OneGateControllerImpl implements OneGateController {
 			ServiceProcess serviceProcess = actions.getServiceProcessByCode(groupId, serviceCode, govAgencyCode,
 					dossierTemplateNo);
 			if (serviceProcess != null) {
-				results.put("paymentFeeRequest", serviceProcess.getPaymentFee());
+				results.put(ConstantUtils.ONEGATE_PAYMENTFEEREQUEST, serviceProcess.getPaymentFee());
 				ProcessAction process = ProcessActionLocalServiceUtil
 						.getByServiceProcess(serviceProcess.getServiceProcessId(), String.valueOf(10000));
 				if (process != null) {
-					results.put("paymentFeeTotal", process.getPaymentFee());
+					results.put(ConstantUtils.ONEGATE_PAYMENTFEETOTAL, process.getPaymentFee());
 				} else {
-					results.put("paymentFeeTotal", 0);
+					results.put(ConstantUtils.ONEGATE_PAYMENTFEETOTAL, 0);
 				}
 			} else {
-				results.put("paymentFeeRequest", 0);
-				results.put("paymentFeeTotal", 0);
+				results.put(ConstantUtils.ONEGATE_PAYMENTFEEREQUEST, 0);
+				results.put(ConstantUtils.ONEGATE_PAYMENTFEETOTAL, 0);
 			}
 //			if (dActionId > 0) {
 //				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dActionId);
@@ -449,7 +455,7 @@ public class OneGateControllerImpl implements OneGateController {
 //				results.put("paymentFeeTotal", 0);
 //			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -459,7 +465,7 @@ public class OneGateControllerImpl implements OneGateController {
 	@Override
 	public Response getGovAgencies(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 	
 		try {
 			List<ServiceConfig> lstConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
@@ -494,18 +500,18 @@ public class OneGateControllerImpl implements OneGateController {
 				govObj.put(ServiceConfigTerm.GOVAGENCY_NAME, mapConfigs.get(govAgencyCode));
 				govObj.put(ServiceConfigTerm.GOVAGENCY_CODE, govAgencyCode);
 				if (countConfigs.containsKey(govAgencyCode)) {
-					govObj.put("count", countConfigs.get(govAgencyCode));
+					govObj.put(ConstantUtils.API_JSON_COUNT, countConfigs.get(govAgencyCode));
 				}
 				else {
-					govObj.put("count", 0);
+					govObj.put(ConstantUtils.API_JSON_COUNT, 0);
 				}
-				total += govObj.getInt("count");
+				total += govObj.getInt(ConstantUtils.API_JSON_COUNT);
 				results.put(govObj);
 			}
-			result.put("total", total);
-			result.put("data", results);
+			result.put(ConstantUtils.TOTAL, total);
+			result.put(ConstantUtils.DATA, results);
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -529,7 +535,7 @@ public class OneGateControllerImpl implements OneGateController {
 //
 //				request.getSession().setAttribute(CSRF_TOKEN_FOR_SESSION_NAME, token);
 //			}
-//			return Response.status(200).entity(token).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(token).build();
 //		} catch (Exception e) {
 //			_log.info(e);
 //			return _processException(e);

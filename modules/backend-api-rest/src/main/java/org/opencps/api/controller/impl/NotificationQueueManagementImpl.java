@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -7,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.NotificationQueueManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
@@ -40,11 +43,11 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 
 			JSONObject jsonData = actions.getNotificationQueues(serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationQueueShortModel().addAll(NotificationTemplateUtils
-					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get("data")));
+					.mapperNotificationQueueList((List<NotificationQueue>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -65,17 +68,17 @@ public class NotificationQueueManagementImpl implements NotificationQueueManagem
 
 			notificationQueueModel = NotificationTemplateUtils.mapperNotificationQueueModel(notificationQueue);
 
-			return Response.status(200).entity(notificationQueueModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(notificationQueueModel).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
