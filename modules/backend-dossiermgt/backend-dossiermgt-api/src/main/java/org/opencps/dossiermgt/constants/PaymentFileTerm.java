@@ -29,6 +29,7 @@ public class PaymentFileTerm {
 	public static final String INVOICE_ISSUE_NO = "invoiceIssueNo";
 	public static final String INVOICE_NO = "invoiceNo";
 	public static final String INVOICE_FILE_ENTRY_ID = "invoiceFileEntryId";
+	public static final String INVOICE_PAYLOAD = "invoicePayload";
 	// Search payment file
 	public static final String SERVICE = "sevice";
 	public static final String AGENCY = "agency";
