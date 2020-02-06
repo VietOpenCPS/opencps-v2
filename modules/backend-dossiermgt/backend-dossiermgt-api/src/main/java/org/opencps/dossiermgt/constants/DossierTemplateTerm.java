@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierTemplateTerm {
+	public static final String DOSSIER_TEMPLATE_ID = "dossierTemplateId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
 	public static final String CREATE_DATE = "createDate";

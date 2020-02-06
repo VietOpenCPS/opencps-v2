@@ -26,4 +26,27 @@ public class DossierFileTerm {
 	public static final String COUNTER = "counter";
 	public static final String FILE_TYPE = "fileType";
 	public static final String IS_SYNC = "isSync";
+	public static final String FILE_NAME = "fileName";
+	public static final String URL_EFROM_PATH = "eforms";
+	public static final String KEY_FILE = "file";
+	public static final String FILE_ATTACH = "fileAttach";
+	
+	public static final String UNDERLINE_APPLICANTNAME = "_applicantName";
+	public static final String UNDERLINE_APPLICANTIDNO = "_applicantIdNo";
+	public static final String UNDERLINE_DOSSIERIDCNT = "_dossierIdCTN";
+	public static final String UNDERLINE_DOSSIERNO = "_dossierNo";
+	public static final String UNDERLINE_SUBMITDATE = "_submitDate";
+	public static final String UNDERLINE_RECEIVEDATE = "_receiveDate";
+	public static final String DELIVERABLES = "deliverables";
+	public static final String FILE_ATTACHS = "fileAttachs";
+	public static final String EXPECT_STATE = "expertState";
+	public static final String EXPECT_STATE_DEFAULT = "1";
+	public static final String DELIVERABLE_CODE = "deliverableCode";
+	public static final String APPLICANT_NAME = "applicantName";
+	public static final String SUBJECT = "subject";
+	public static final String ISSUE_DATE = "issueDate";
+	public static final String EXPIRE_DATE = "expireDate";
+	public static final String REVALIDATE = "revalidate";
+	
+	
 }

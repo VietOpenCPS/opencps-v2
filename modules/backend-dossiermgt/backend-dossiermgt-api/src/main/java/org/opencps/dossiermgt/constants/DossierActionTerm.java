@@ -25,7 +25,15 @@ public class DossierActionTerm {
 	public static final String STEP_INSTRUCTION = "stepInstruction";
 	public static final String AUTO = "auto";
 	public static final String DOSSIER_DOCUMENT_ID = "dossierDocumentId";
-	
+	public static final String JOB_POS_NAME = "jobPosName";
+	public static final String FILES = "files";
+	public static final String STATE = "state";
+	public static final String FROM_STEP_CODE = "fromStepCode";
+	public static final String FROM_STEP_NAME = "fromStepName";
+	public static final String LIST_CONTACT = "ListContacts";
+	public static final String FROM_SEQUENCE_NO = "fromSequenceNo";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String EVENT_STATUS = "eventStatus";
 	public static final int STATE_WAITING_PROCESSING = 0;
 	public static final int STATE_ALREADY_PROCESSED = 1;
 	public static final int STATE_ROLLBACK = 2;
@@ -37,4 +45,13 @@ public class DossierActionTerm {
 	
 	public static final String OUTSIDE_ACTION_9100 = "9100";
 	public static final String OUTSIDE_ACTION_ROLLBACK = "9000";
+	
+	public static final String publishImportDossier_fromStepCode = "300";
+	public static final String publishImportDossier_fromStepName = "Trả kết quả";
+	public static final String publishImportDossier_fromSequenceNo = "04";
+	public static final String publishImportDossier_actionCode = "4000";
+	public static final String publishImportDossier_actionUser = "Tiếp nhận";
+	public static final String publishImportDossier_actionName = "Trả hoàn thiện";
+	public static final String publishImportDossier_stepCode = "400";
+	public static final String publishImportDossier_stepName = "Hoàn thành";
 }

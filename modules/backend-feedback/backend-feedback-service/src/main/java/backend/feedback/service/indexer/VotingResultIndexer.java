@@ -40,6 +40,8 @@ import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;
 import backend.feedback.service.VotingResultLocalServiceUtil;
+import backend.feedback.service.util.ConfigConstants;
+import backend.feedback.service.util.ConfigProps;
 
 public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 
@@ -54,10 +56,11 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext
+				.getAttribute(VotingResultTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(VotingResultTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
@@ -80,7 +83,7 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 		document.addDateSortable(Field.MODIFIED_DATE, VotingResult.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(VotingResult.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(VotingResult.getUserName()));
-		document.addNumberSortable(VotingResultTerm.GROUP_ID, VotingResult.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, VotingResult.getGroupId());
 		
 		document.addNumberSortable(VotingResultTerm.VOTING_ID, VotingResult.getVotingId());
 //		document.addNumberSortable(VotingResultTerm.TOUSERID, VotingResult.getToUserId());
@@ -113,9 +116,9 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 				//Process index dossier
 				long classPK = GetterUtil.getLong(voting.getClassPK());
 				if (classPK > 0) {
-					//_log.info("classPK: "+classPK);
-					//_log.info("className: "+className);
-					if ("employee".equals(className)) {
+					// _log.info("classPK: "+classPK);
+					// _log.info("className: "+className);
+					if (ConfigProps.get(ConfigConstants.VOTING_CLASSNAME_EMPLOYEE).equals(className)) {
 						Employee employee = EmployeeLocalServiceUtil.fetchEmployee(classPK);
 						if (employee != null) {
 							List<Dossier> dossierList = DossierLocalServiceUtil.findByGID(employee.getGroupId(), 0, 2);
@@ -128,7 +131,7 @@ public class VotingResultIndexer extends BaseIndexer<VotingResult> {
 							}
 							
 						}
-					} else if ("dossier".equals(className)) {
+					} else if (ConfigProps.get(ConfigConstants.VOTING_CLASSNAME_DOSSIER).equals(className)) {
 						Dossier dossier = DossierLocalServiceUtil.fetchDossier(classPK);
 						if (dossier != null) {
 							document.addTextSortable(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
