@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.base.EFormLocalServiceBaseImpl;
@@ -82,7 +83,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -165,7 +166,7 @@ public class EFormLocalServiceImpl extends EFormLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
