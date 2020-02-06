@@ -71,7 +71,7 @@ public class JobPosWorkIndexer extends BaseIndexer<JobPosWork> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(jobPosWork.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(jobPosWork.getUserName()));
 		
-		document.addNumberSortable(JobPosWorkTerm.GROUP_ID, jobPosWork.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, jobPosWork.getGroupId());
 		document.addNumberSortable(JobPosWorkTerm.JOBPOS_ID, jobPosWork.getJobPostId());
 		document.addTextSortable(JobPosWorkTerm.CHECKLIST_CAT, jobPosWork.getChecklistCat());
 		

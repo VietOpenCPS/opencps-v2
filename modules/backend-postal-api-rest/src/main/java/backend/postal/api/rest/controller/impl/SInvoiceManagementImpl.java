@@ -1,6 +1,20 @@
 
 package backend.postal.api.rest.controller.impl;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,12 +28,16 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.service.util.ConfigConstants;
+import org.opencps.api.service.util.ConfigProps;
 import org.opencps.api.sinvoice.model.InvokeResultModel;
 import org.opencps.api.sinvoice.model.SearchInputModel;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -48,7 +66,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		Locale locale, User user, ServiceContext serviceContext, String code,
 		JSONObject requestBody, String cmd) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		InvokeResultModel invokeResultModel = new InvokeResultModel();
 
@@ -57,29 +75,26 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		if (serverConfig == null) {
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NULL_SERVECE_CONFIG");
-			invokeResultModel.setDescription(
-				"Not found server config with code = " + code);
+			invokeResultModel.setErrorCode(VnPostTerm.INVOKE_MESSAGE_ERROR_SERVER_CONFIG);
+			invokeResultModel.setDescription(VnPostTerm.INVOKE_MESSAGE_ERROR_SERVER_CONFIG_DESC + code);
 			return invokeResultModel;
 		}
 
 		try {
-			JSONObject config =
-				JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-			String userName = config.getString("userName");
-			String password = config.getString("password");
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			String userName = config.getString(SInvoiceTerm.USER_NAME);
+			String password = config.getString(SInvoiceTerm.PASSWORD);
 			JSONObject endpointConfig = config.getJSONObject(cmd);
-			String endpoint = endpointConfig.getString("endpoint");
-			String method = endpointConfig.getString("method");
-			String accept = endpointConfig.getString("accept");
-			String contentType = endpointConfig.getString("contentType");
+			String endpoint = endpointConfig.getString(SInvoiceTerm.ENDPOINT);
+			String method = endpointConfig.getString(SInvoiceTerm.METHOD);
+			String accept = endpointConfig.getString(SInvoiceTerm.ACCEPT);
+			String contentType = endpointConfig.getString(SInvoiceTerm.CONTENT_TYPE);
 
-			JSONObject inputSchema =
-				endpointConfig.getJSONObject("inputSchema");
+			JSONObject inputSchema = endpointConfig.getJSONObject(SInvoiceTerm.INPUT_SCHEMA);
 
 			System.out.println(inputSchema);
 
-			if ("createInvoice".equals(cmd)) {
+			if (VnPostTerm.S_INVOICE_CMD_CREATE_INVOICE.equals(cmd)) {
 				// fix tam, do chua mapping dc cac truong trong dossier voi
 				// sinvoice
 				// requestBody = inputSchema;
@@ -95,10 +110,9 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			_log.error(e);
 			invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode(
-				"NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR");
-			invokeResultModel.setDescription(
-				"Not accept ip address or connected error");
+			invokeResultModel.setErrorCode(VnPostTerm.INVOKE_MESSAGE_ERROR_NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR);
+			invokeResultModel
+					.setDescription(VnPostTerm.INVOKE_MESSAGE_ERROR_NOT_ACCEPT_IP_ADDRESS_OR_CONNECTED_ERROR_DESC);
 			return invokeResultModel;
 		}
 	}
@@ -120,9 +134,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 				JSONFactoryUtil.createJSONObject(paymentConfig);
 			// builder.generalInvoiceInfo(null).sellerInfo(null).buyerInfo(null).build().getData();
 
-			InvokeResultModel invokeResultModel = doInvoke(
-				request, header, company, locale, user, serviceContext, code,
-				requestBody, "createInvoice");
+			InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+					requestBody, VnPostTerm.S_INVOICE_CMD_CREATE_INVOICE);
 
 			if (invokeResultModel != null) {
 
@@ -131,8 +144,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			}
 			invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-			invokeResultModel.setDescription("Not get response data");
+			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+			invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 			return Response.status(
 				HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 					JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -142,8 +155,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			e.printStackTrace();
 			InvokeResultModel invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-			invokeResultModel.setDescription("Not get response data");
+			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+			invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 			return Response.status(
 				HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 					JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -159,16 +172,15 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
-		requestBody.put("transactionUuid", transactionUuid);
-		requestBody.put("fileType", fileType);
-		requestBody.put("templateCode", templateCode);
-		requestBody.put("paid", paid);
+		requestBody.put(SInvoiceTerm.SUPPLIER_TAXCODE, supplierTaxCode);
+		requestBody.put(SInvoiceTerm.INVOICE_NO, invoiceNo);
+		requestBody.put(SInvoiceTerm.TRANSACTION_UUID, transactionUuid);
+		requestBody.put(SInvoiceTerm.FILE_TYPE, fileType);
+		requestBody.put(SInvoiceTerm.TEMPLATE_CODE, templateCode);
+		requestBody.put(SInvoiceTerm.PAID, paid);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "getInvoiceFile");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_GET_INVOICE_FILE);
 
 		if (invokeResultModel != null) {
 
@@ -177,8 +189,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -200,15 +212,15 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				Object value = inputData.get(key);
-				params.append(key + "=");
-				params.append(URLEncoder.encode(value.toString(), "UTF-8"));
-				params.append("&");
+				params.append(key + StringPool.EQUAL);
+				params.append(URLEncoder.encode(value.toString(), VnPostTerm.S_INVOICE_CHARSET));
+				params.append(StringPool.AMPERSAND);
 			}
 
-			if ("GET".equals(method)) {
+			if (RequestMethod.GET.equals(method)) {
 				// endpoint = endpoint + "?" +
 				// URLEncoder.encode(params.toString(), "UTF-8");
-				endpoint = endpoint + "?" + params.toString();
+				endpoint = endpoint + StringPool.QUESTION + params.toString();
 			}
 
 			System.out.println("endpoint: " + endpoint);
@@ -216,28 +228,24 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			URL url = new URL(endpoint);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestProperty(
-				"Authorization", "Basic " +
-					Base64.encode((userName + ":" + password).getBytes()));
+			conn.setRequestProperty(HttpHeaders.AUTHORIZATION,
+					HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + Base64.encode((userName + StringPool.COLON + password).getBytes()));
 			conn.setRequestMethod(method);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("Accept", accept);
-			conn.setRequestProperty("Content-Type", contentType);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
 
-			if ("POST".equals(method)) {
-				if ("application/json".equals(contentType)) {
+			if (RequestMethod.POST.equals(method)) {
+				if (MediaType.APPLICATION_JSON.equals(contentType)) {
 					// body json
 					try (OutputStream os = conn.getOutputStream()) {
-						byte[] input =
-							inputData.toJSONString().getBytes("utf-8");
+						byte[] input = inputData.toJSONString().getBytes(VnPostTerm.S_INVOICE_CHARSET_LOWER);
 						os.write(input, 0, input.length);
 						os.flush();
 					}
 
-				}
-				else if ("application/x-www-form-urlencoded".equals(
-					contentType)) {
+				} else if (MediaType.APPLICATION_FORM_URLENCODED.equals(contentType)) {
 
 					try (OutputStream os = conn.getOutputStream()) {
 
@@ -274,52 +282,46 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 				JSONObject resultData =
 					JSONFactoryUtil.createJSONObject(sb.toString());
 
-				if (resultData.has("errorCode")) {
-					resultModel.setErrorCode(resultData.getString("errorCode"));
+				if (resultData.has(SInvoiceTerm.ERROR_CODE)) {
+					resultModel.setErrorCode(resultData.getString(SInvoiceTerm.ERROR_CODE));
 				}
 
-				if (resultData.has("description")) {
-					resultModel.setDescription(
-						resultData.getString("description"));
+				if (resultData.has(SInvoiceTerm.DESCRIPTION)) {
+					resultModel.setDescription(resultData.getString(SInvoiceTerm.DESCRIPTION));
 				}
 
-				if (resultData.has("result")) {
-					JSONObject result = resultData.getJSONObject("result");
+				if (resultData.has(SInvoiceTerm.RESULT)) {
+					JSONObject result = resultData.getJSONObject(SInvoiceTerm.RESULT);
 
 					if (result != null) {
-						if (result.has("supplierTaxCode")) {
-							resultModel.setSupplierTaxCode(
-								result.getString("supplierTaxCode"));
+						if (result.has(SInvoiceTerm.SUPPLIER_TAXCODE)) {
+							resultModel.setSupplierTaxCode(result.getString(SInvoiceTerm.SUPPLIER_TAXCODE));
 						}
 
-						if (result.has("invoiceNo")) {
-							resultModel.setInvoiceNo(
-								result.getString("invoiceNo"));
+						if (result.has(SInvoiceTerm.INVOICE_NO)) {
+							resultModel.setInvoiceNo(result.getString(SInvoiceTerm.INVOICE_NO));
 						}
 
-						if (result.has("transactionID")) {
-							resultModel.setTransactionID(
-								result.getString("transactionID"));
+						if (result.has(SInvoiceTerm.TRANSACTION_ID)) {
+							resultModel.setTransactionID(result.getString(SInvoiceTerm.TRANSACTION_ID));
 						}
 
-						if (result.has("reservationCode")) {
-							resultModel.setReservationCode(
-								result.getString("reservationCode"));
+						if (result.has(SInvoiceTerm.RESERVATION_CODE)) {
+							resultModel.setReservationCode(result.getString(SInvoiceTerm.RESERVATION_CODE));
 						}
 					}
 				}
 
-				if (resultData.has("fileName")) {
-					resultModel.setFileName(resultData.getString("fileName"));
+				if (resultData.has(SInvoiceTerm.FILE_NAME)) {
+					resultModel.setFileName(resultData.getString(SInvoiceTerm.FILE_NAME));
 				}
 
-				if (resultData.has("fileToBytes")) {
-					resultModel.setFileToBytes(
-						resultData.getString("fileToBytes"));
+				if (resultData.has(SInvoiceTerm.FILE_TO_BYTES)) {
+					resultModel.setFileToBytes(resultData.getString(SInvoiceTerm.FILE_TO_BYTES));
 				}
 
-				if (resultData.has("invoices")) {
-					JSONArray invoices = resultData.getJSONArray("invoices");
+				if (resultData.has(SInvoiceTerm.INVOICES)) {
+					JSONArray invoices = resultData.getJSONArray(SInvoiceTerm.INVOICES);
 					resultModel.setInvoices(invoices);
 				}
 
@@ -349,17 +351,16 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
-		requestBody.put("buyerIdNo", buyerIdNo);
-		requestBody.put("fileType", fileType);
-		requestBody.put("templateCode", templateCode);
-		requestBody.put("reservationCode", reservationCode);
-		requestBody.put("strIssueDate", strIssueDate);
+		requestBody.put(supplierTaxCode, supplierTaxCode);
+		requestBody.put(invoiceNo, invoiceNo);
+		requestBody.put(buyerIdNo, buyerIdNo);
+		requestBody.put(fileType, fileType);
+		requestBody.put(templateCode, templateCode);
+		requestBody.put(reservationCode, reservationCode);
+		requestBody.put(strIssueDate, strIssueDate);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "getInvoiceFilePortal");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_GET_INVOICE_FILE_PORTAL);
 
 		if (invokeResultModel != null) {
 
@@ -368,8 +369,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -384,15 +385,14 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
-		requestBody.put("exchangeUser", exchangeUser);
-		requestBody.put("templateCode", templateCode);
-		requestBody.put("strIssueDate", strIssueDate);
+		requestBody.put(supplierTaxCode, supplierTaxCode);
+		requestBody.put(invoiceNo, invoiceNo);
+		requestBody.put(exchangeUser, exchangeUser);
+		requestBody.put(templateCode, templateCode);
+		requestBody.put(strIssueDate, strIssueDate);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "createExchangeInvoiceFile");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_CREATE_EXCHANGE_INVOICE_FILE);
 
 		if (invokeResultModel != null) {
 
@@ -401,8 +401,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -418,16 +418,15 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
-		requestBody.put("additionalReferenceDesc", additionalReferenceDesc);
-		requestBody.put("additionalReferenceDate", additionalReferenceDate);
-		requestBody.put("templateCode", templateCode);
-		requestBody.put("strIssueDate", strIssueDate);
+		requestBody.put(supplierTaxCode, supplierTaxCode);
+		requestBody.put(invoiceNo, invoiceNo);
+		requestBody.put(additionalReferenceDesc, additionalReferenceDesc);
+		requestBody.put(additionalReferenceDate, additionalReferenceDate);
+		requestBody.put(templateCode, templateCode);
+		requestBody.put(strIssueDate, strIssueDate);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "cancelTransactionInvoice");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_CANCEL_TRANSACTION_INVOICE);
 
 		if (invokeResultModel != null) {
 
@@ -436,8 +435,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -453,18 +452,17 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
-		requestBody.put("templateCode", templateCode);
-		requestBody.put("buyerEmailAddress", buyerEmailAddress);
-		requestBody.put("paymentType", paymentType);
-		requestBody.put("paymentTypeName", paymentTypeName);
-		requestBody.put("strIssueDate", strIssueDate);
-		requestBody.put("cusGetInvoiceRight", cusGetInvoiceRight);
+		requestBody.put(SInvoiceTerm.SUPPLIER_TAXCODE, supplierTaxCode);
+		requestBody.put(SInvoiceTerm.INVOICE_NO, invoiceNo);
+		requestBody.put(SInvoiceTerm.TEMPLATE_CODE, templateCode);
+		requestBody.put(SInvoiceTerm.BUYER_EMAIL_ADDRESS, buyerEmailAddress);
+		requestBody.put(SInvoiceTerm.PAYMENT_TYPE, paymentType);
+		requestBody.put(SInvoiceTerm.PAYMENT_TYPE_NAME, paymentTypeName);
+		requestBody.put(SInvoiceTerm.STR_ISSUER_DATE, strIssueDate);
+		requestBody.put(SInvoiceTerm.CUS_GET_INVOICE_RIGHT, cusGetInvoiceRight);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "updatePaymentStatus");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_UPDATE_PAYMENT_STATUS);
 
 		if (invokeResultModel != null) {
 
@@ -473,8 +471,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -488,14 +486,13 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		JSONObject requestBody = JSONFactoryUtil.createJSONObject();
 
-		requestBody.put("supplierTaxCode", supplierTaxCode);
-		requestBody.put("invoiceNo", invoiceNo);
+		requestBody.put(supplierTaxCode, supplierTaxCode);
+		requestBody.put(invoiceNo, invoiceNo);
 
-		requestBody.put("strIssueDate", strIssueDate);
+		requestBody.put(strIssueDate, strIssueDate);
 
-		InvokeResultModel invokeResultModel = doInvoke(
-			request, header, company, locale, user, serviceContext, code,
-			requestBody, "cancelPaymentStatus");
+		InvokeResultModel invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+				requestBody, VnPostTerm.S_INVOICE_CMD_CANCEL_PAYMENT_STATUS);
 
 		if (invokeResultModel != null) {
 
@@ -504,8 +501,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		}
 		invokeResultModel = new InvokeResultModel();
 		invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-		invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-		invokeResultModel.setDescription("Not get response data");
+		invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+		invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
 			JSONFactoryUtil.looseSerialize(invokeResultModel)).build();
@@ -519,11 +516,9 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		InvokeResultModel invokeResultModel = null;
 		try {
-			invokeResultModel = doInvoke(
-				request, header, company, locale, user, serviceContext, code,
-				JSONFactoryUtil.createJSONObject(
-					JSONFactoryUtil.looseSerialize(body)),
-				"getInvoices");
+			invokeResultModel = doInvoke(request, header, company, locale, user, serviceContext, code,
+					JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(body)),
+					VnPostTerm.S_INVOICE_CMD_GET_INVOICES);
 
 			if (invokeResultModel != null) {
 
@@ -532,8 +527,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			}
 			invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-			invokeResultModel.setDescription("Not get response data");
+			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+			invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 			return Response.status(
 				HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
@@ -543,8 +538,8 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			_log.error(e);
 			invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-			invokeResultModel.setErrorCode("NOT_GET_RESPONSE_DATA");
-			invokeResultModel.setDescription("Not get response data");
+			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));
+			invokeResultModel.setDescription(ConfigProps.get(ConfigConstants.EINVOICE_ERR_MESS));
 
 			return Response.status(
 				HttpURLConnection.HTTP_INTERNAL_ERROR).entity(

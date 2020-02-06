@@ -14,6 +14,16 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.constants.JobPosWorkTerm;
+import org.opencps.usermgt.model.JobPosWork;
+import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;
+
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.model.User;
@@ -216,15 +226,15 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosWorkTerm.GROUP_ID);
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
 		Indexer<JobPosWork> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPosWork.class);
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -250,7 +260,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosWorkTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -263,15 +273,15 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosWorkTerm.GROUP_ID);
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String JobPosId = (String) params.get(JobPosWorkTerm.JOBPOS_ID);
 
 		Indexer<JobPosWork> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPosWork.class);
 
 		searchContext.addFullQueryEntryClassName(JobPosWork.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPosWork.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -294,7 +304,7 @@ public class JobPosWorkLocalServiceImpl extends JobPosWorkLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosWorkTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

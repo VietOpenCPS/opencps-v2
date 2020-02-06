@@ -75,12 +75,12 @@ public class ResourceUserIndexer extends BaseIndexer<ResourceUser> {
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(resourceUser.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(resourceUser.getUserName()));
 
-		document.addNumberSortable(ResourceUserTerm.GROUP_ID, resourceUser.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, resourceUser.getGroupId());
 		document.addNumberSortable(ResourceUserTerm.RESOURCEUSER_ID, resourceUser.getResourceUserId());
 		document.addTextSortable(ResourceUserTerm.CLASS_NAME, resourceUser.getClassName());
 		document.addTextSortable(ResourceUserTerm.CLASS_PK, resourceUser.getClassPK());
 		document.addNumberSortable(ResourceUserTerm.TO_USERID, resourceUser.getToUserId());
-		document.addTextSortable("selected", Boolean.TRUE.toString());
+		document.addTextSortable(ResourceUserTerm.SELECTED, Boolean.TRUE.toString());
 		
 		User user = UserLocalServiceUtil.fetchUser(resourceUser.getToUserId());
 		

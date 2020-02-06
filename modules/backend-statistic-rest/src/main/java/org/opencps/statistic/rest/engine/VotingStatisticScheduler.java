@@ -49,6 +49,7 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
+import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -194,7 +195,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
-		payload.setClassName("dossier");
+		payload.setClassName(DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 		payload.setStart(QueryUtil.ALL_POS);
 		payload.setEnd(QueryUtil.ALL_POS);
 		// Check calculate = true => month

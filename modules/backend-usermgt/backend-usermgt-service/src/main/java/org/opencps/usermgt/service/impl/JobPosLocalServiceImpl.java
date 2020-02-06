@@ -14,6 +14,20 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.constants.UserMGTConstants;
+import org.opencps.usermgt.exception.NoSuchJobPosException;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
+
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -199,7 +213,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		titleMap.put(Locale.getDefault(), title);
 
 		Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-				role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
+				role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
 
 		JobPos jobPos = jobPosPersistence.create(jobPosId);
 
@@ -324,14 +338,14 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	@SuppressWarnings("deprecation")
 	public Hits luceneSearchEngine(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
 			SearchContext searchContext) throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosTerm.GROUP_ID);
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<JobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPos.class);
 
 		searchContext.addFullQueryEntryClassName(JobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPos.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -364,7 +378,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -378,14 +392,14 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	@SuppressWarnings("deprecation")
 	public long countLuceneSearchEngine(LinkedHashMap<String, Object> params, SearchContext searchContext)
 			throws ParseException, SearchException {
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get(JobPosTerm.GROUP_ID);
+		String keywords = (String) params.get(JobPosTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
 
 		Indexer<JobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPos.class);
 
 		searchContext.addFullQueryEntryClassName(JobPos.class.getName());
 		searchContext.setEntryClassNames(new String[] { JobPos.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(JobPosTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -415,7 +429,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(JobPosTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -473,7 +487,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			titleMap.put(Locale.getDefault(), title);
 
 			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-					role_name, titleMap, null, RoleConstants.TYPE_SITE, "", serviceContext);
+					role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
 
 			// Audit fields
 			jobPos.setUserId(user.getUserId());
@@ -519,9 +533,9 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		JobPos object = null;
 
-		if (objectData.getLong("jobPosId") > 0) {
+		if (objectData.getLong(JobPosTerm.JOBPOS_ID) > 0) {
 
-			object = jobPosPersistence.fetchByPrimaryKey(objectData.getLong("jobPosId"));
+			object = jobPosPersistence.fetchByPrimaryKey(objectData.getLong(JobPosTerm.JOBPOS_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -531,24 +545,24 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 			object = jobPosPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(JobPosTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 			ServiceContext serviceContext = new ServiceContext();
-			serviceContext.setUserId(objectData.getLong("userId"));
+			serviceContext.setUserId(objectData.getLong(JobPosTerm.USER_ID));
 
-			String role_name = objectData.getString("jobPosCode") + StringPool.UNDERLINE + id;
+			String role_name = objectData.getString(JobPosTerm.JOBPOS_CODE) + StringPool.UNDERLINE + id;
 
 			Map<Locale, String> titleMap = new HashMap<>();
-			titleMap.put(Locale.getDefault(), objectData.getString("title"));
+			titleMap.put(Locale.getDefault(), objectData.getString(JobPosTerm.TITLE));
 
 			Role role;
 
 			try {
 
-				role = RoleLocalServiceUtil.addRole(objectData.getLong("userId"), Role.class.getName(),
-						counterLocalService.increment(), role_name, titleMap, null, RoleConstants.TYPE_SITE, "",
+				role = RoleLocalServiceUtil.addRole(objectData.getLong(JobPosTerm.USER_ID), Role.class.getName(),
+						counterLocalService.increment(), role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK,
 						serviceContext);
 
 				object.setMappingRoleId(role.getRoleId());
@@ -559,12 +573,12 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(JobPosTerm.USER_ID));
 
-		object.setJobPosCode(objectData.getString("jobPosCode"));
-		object.setTitle(objectData.getString("title"));
-		object.setDescription(objectData.getString("description"));
-		object.setLeader(objectData.getInt("leader"));
+		object.setJobPosCode(objectData.getString(JobPosTerm.JOBPOS_CODE));
+		object.setTitle(objectData.getString(JobPosTerm.TITLE));
+		object.setDescription(objectData.getString(JobPosTerm.DESCRIPTION));
+		object.setLeader(objectData.getInt(JobPosTerm.LEADER));
 
 		jobPosPersistence.update(object);
 

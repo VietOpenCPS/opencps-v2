@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -31,6 +32,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
@@ -38,6 +42,8 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -50,10 +56,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String applicantIdNo, String applicantIdDate, String contactEmail, String password)
 			throws PortalException, SystemException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context,groupId, 0, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactEmail,
-				StringPool.BLANK, password);
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK, contactEmail, StringPool.BLANK, password);
 
 		return applicant;
 	}
@@ -63,9 +69,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String password) throws PortalException, SystemException {
 
-		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-				wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
+		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName,
+				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode,
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
 
 		return applicant;
 	}
@@ -89,11 +95,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 			hits = ApplicantLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ApplicantTerm.DATA, hits.toList());
 
 			long total = ApplicantLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ApplicantTerm.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -231,19 +237,17 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				
 				JSONObject payload = JSONFactoryUtil.createJSONObject();
 				try {
-					payload.put(
-						"Applicant", JSONFactoryUtil.createJSONObject(
-							JSONFactoryUtil.looseSerialize(applicant)));
-				}
-				catch (JSONException parse) {
+					payload.put(ApplicantListenerMessageKeys.APPLICANT,
+							JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(applicant)));
+				} catch (JSONException parse) {
 					_log.error(parse);
 				}
 				queue.setPayload(payload.toJSONString());
 				queue.setExpireDate(cal.getTime());
 				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 			} else {
-				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
-				//String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+				Role roleDefault = RoleLocalServiceUtil.getRole(context.getCompanyId(),
+						ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 				boolean autoPassword = false;
 				boolean autoScreenName = true;
@@ -259,18 +263,33 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 
 				//
-				String secretKey1 = PwdGenerator.getPassword(2, new String[] { "0123456789" });
-				String secretKey2 = PwdGenerator.getPassword(2, new String[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" });
-				String secretKey3 = PwdGenerator.getPassword(2, new String[] { "abcdefghijklmnopqrstuvwxyz" });
-				String secretKey4 = PwdGenerator.getPassword(1 , new String[] { "@$" });
-				String secretKey5 = PwdGenerator.getPassword(4, new String[] { "0123456789", "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-						"abcdefghijklmnopqrstuvwxyz", "~!@#$%^&*" });
+
+				String secretKey1 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER) });
+				String secretKey2 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE) });
+				String secretKey3 = PwdGenerator.getPassword(2,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE) });
+				String secretKey4 = PwdGenerator.getPassword(1,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL) });
+				String secretKey5 = PwdGenerator.getPassword(4,
+						new String[] { ConfigProps.get(ConfigConstants.APPLICANT_NUMBER),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_UPCASE),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_LOWCASE),
+								ConfigProps.get(ConfigConstants.APPLICANT_TEXT_SPECIAL_ALL) });
 				String password = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 
-				//String password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-
-				String firstName = ("citizen".equals(applicant.getApplicantIdType()) ? "Ông/bà"
-						: ("business".equals(applicant.getApplicantIdType()) ? "Quý công ty" : "Tổ chức"));
+				String applicantTypeCitizen = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN);
+				String applicantTypeBussiness = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS);
+				String headerUser = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_USER);
+				String headerCompany = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_COMPANY);
+				String headerBussiness = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+						ConfigConstants.HEADER_BUSSINESS);
+				String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
+						: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
+								: headerBussiness));
 				String lastName = applicant.getApplicantName();
 
 				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -280,7 +299,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					roleIds = new long[] { roleDefault.getRoleId() };
 				}
 
-				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+				Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(),
+						ConfigProps.get(ConfigConstants.ROLE_ADMIN));
 
 				List<User> adminUsers = UserLocalServiceUtil.getRoleUsers(adminRole.getRoleId());
 
@@ -297,11 +317,13 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				int year = calendar.get(Calendar.YEAR);
 				int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
 				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-				//_log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName() + "," + spn.getMidName());
-				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
-							password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l, StringPool.BLANK,
-							LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
-							dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+				// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," + spn.getFirstName()
+				// + "," + spn.getMidName());
+				User mappingUser = UserLocalServiceUtil.addUserWithWorkflow(creatorUserId, context.getCompanyId(),
+						autoPassword, password, password, autoScreenName, screenName, applicant.getContactEmail(), 0l,
+						StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(),
+						spn.getLastName(), 0, 0, true, month, dayOfMonth, year,
+						ConfigProps.get(ConfigConstants.APPLICANT_JOB_TITLE), groupIds, organizationIds, roleIds,
 							userGroupIds, sendEmail, context);
 				//_log.info("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 				//mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
@@ -358,12 +380,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		//			_log.info("payloadTest1: "+payload1);
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put(
-							"Applicant", JSONFactoryUtil.createJSONObject(
-								JSONFactoryUtil.looseSerialize(applicant)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(applicant)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
 					//_log.info("payloadTest: "+payload.toJSONString());
@@ -437,14 +457,15 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 		if (flagUser != 2) {
-			DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("ADMINISTRATIVE_REGION", groupId);
+			DictCollection dc = DictCollectionLocalServiceUtil
+					.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
 			String cityName = getDictItemName(groupId, dc, cityCode);
 			String districtName = getDictItemName(groupId, dc, districtCode);
 			String wardName = getDictItemName(groupId, dc, wardCode);
 			//
 			Date appDate = null;
 			if (Validator.isNotNull(applicantIdDate)) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
 				try {
 					appDate = sdf.parse(applicantIdDate);
 				} catch (ParseException e) {
@@ -471,8 +492,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setModifiedDate(now);
 					queue.setGroupId(groupId);
 					queue.setCompanyId(serviceContext.getCompanyId());
-					
-					queue.setNotificationType("APPICANT_OLD_ACTIVE");
+
+					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(app.getApplicantId()));
 					queue.setToUsername(applicantName);
@@ -482,10 +503,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
 					//_log.info("payloadTest: "+payload.toJSONString());
@@ -517,8 +538,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					queue.setModifiedDate(now);
 					queue.setGroupId(groupId);
 					queue.setCompanyId(serviceContext.getCompanyId());
-					
-					queue.setNotificationType("APPICANT_OLD_ACTIVE");
+
+					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
 					queue.setClassName(Applicant.class.getName());
 					queue.setClassPK(String.valueOf(app.getApplicantId()));
 					queue.setToUsername(applicantName);
@@ -528,10 +549,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					
 					JSONObject payload = JSONFactoryUtil.createJSONObject();
 					try {
-						//_log.info("START PAYLOAD: ");
-						payload.put("Applicant", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					}
-					catch (JSONException parse) {
+						// _log.info("START PAYLOAD: ");
+						payload.put(ApplicantListenerMessageKeys.APPLICANT,
+								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+					} catch (JSONException parse) {
 						_log.error(parse);
 					}
 					//_log.info("payloadTest: "+payload.toJSONString());

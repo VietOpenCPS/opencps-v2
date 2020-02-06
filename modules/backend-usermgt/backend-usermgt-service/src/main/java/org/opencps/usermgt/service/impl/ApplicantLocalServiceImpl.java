@@ -14,11 +14,36 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.NoApplicantIdDateException;
+import org.opencps.usermgt.exception.NoApplicantIdNoException;
+import org.opencps.usermgt.exception.NoApplicantIdTypeException;
+import org.opencps.usermgt.exception.NoApplicantNameException;
+import org.opencps.usermgt.exception.NoSuchApplicantException;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -196,8 +221,17 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà"
-					: ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+			String applicantTypeCitizen = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN);
+			String applicantTypeBussiness = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS);
+			String headerUser = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_USER);
+			String headerCompany = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_COMPANY);
+			String headerBussiness = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+					ConfigConstants.HEADER_BUSSINESS);
+			String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
+					: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
+							: headerBussiness));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -207,7 +241,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				roleIds = new long[] { roleDefault.getRoleId() };
 			}
 
-			Role adminRole = RoleLocalServiceUtil.getRole(context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+			Role adminRole = RoleLocalServiceUtil.getRole(
+				context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
 
 			List<User> adminUsers = userLocalService.getRoleUsers(adminRole.getRoleId());
 
@@ -735,7 +770,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ApplicantTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -785,7 +820,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			throws ParseException, SearchException {
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(ApplicantTerm.GROUP_ID);
+		String groupId = (String) params.get(Field.GROUP_ID);
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
@@ -794,8 +829,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
-		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setEntryClassNames(new String[] {
+			Applicant.class.getName()
+		});
+		searchContext.setAttribute(ApplicantTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -1070,9 +1107,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		Applicant object = null;
 
-		if (objectData.getLong("applicantId") > 0) {
+		if (objectData.getLong(ApplicantTerm.APPLICANT_ID) > 0) {
 
-			object = applicantPersistence.fetchByPrimaryKey(objectData.getLong("applicantId"));
+			object = applicantPersistence.fetchByPrimaryKey(
+				objectData.getLong(ApplicantTerm.APPLICANT_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -1082,50 +1120,56 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			object = applicantPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(ApplicantTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(ApplicantTerm.USER_ID));
 
-		object.setApplicantName(objectData.getString("applicantName"));
-		object.setApplicantIdType(objectData.getString("applicantIdType"));
-		object.setApplicantIdNo(objectData.getString("applicantIdNo"));
-		if (objectData.getLong("applicantIdDate") > 0)
-			object.setApplicantIdDate(new Date(objectData.getLong("applicantIdDate")));
-		object.setAddress(objectData.getString("address"));
-		object.setContactName(objectData.getString("contactName"));
-		object.setContactTelNo(objectData.getString("contactTelNo"));
-		object.setContactEmail(objectData.getString("contactEmail"));
-		object.setMappingUserId(objectData.getLong("mappingUserId"));
-		object.setActivationCode(objectData.getString("activationCode"));
-		object.setLock_(objectData.getBoolean("lock_"));
-		object.setProfile(objectData.getString("profile"));
-		object.setTmpPass(objectData.getString("tmpPass"));
-		object.setRepresentativeEnterprise(objectData.getString("representativeEnterprise"));
+		object.setApplicantName(objectData.getString(ApplicantTerm.APPLICANTNAME));
+		object.setApplicantIdType(objectData.getString(ApplicantTerm.APPLICANTIDTYPE));
+		object.setApplicantIdNo(objectData.getString(ApplicantTerm.APPLICANTIDNO));
+		if (objectData.getLong(ApplicantTerm.APPLICANTIDDATE) > 0)
+			object.setApplicantIdDate(
+				new Date(objectData.getLong(ApplicantTerm.APPLICANTIDDATE)));
+		object.setAddress(objectData.getString(ApplicantTerm.ADDRESS));
+		object.setContactName(objectData.getString(ApplicantTerm.CONTACTNAME));
+		object.setContactTelNo(objectData.getString(ApplicantTerm.CONTACTTELNO));
+		object.setContactEmail(objectData.getString(ApplicantTerm.CONTACTEMAIL));
+		object.setMappingUserId(objectData.getLong(ApplicantTerm.MAPPINGUSERID));
+		object.setActivationCode(objectData.getString(ApplicantTerm.ACTIVATION_CODE));
+		object.setLock_(objectData.getBoolean(ApplicantTerm.LOCK_));
+		object.setProfile(objectData.getString(ApplicantTerm.PROFILE));
+		object.setTmpPass(objectData.getString(ApplicantTerm.TMP_PASS));
+		object.setRepresentativeEnterprise(
+			objectData.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE));
 
-		object.setCityCode(objectData.getString("cityCode"));
-		object.setDistrictCode(objectData.getString("districtCode"));
-		object.setWardCode(objectData.getString("wardCode"));
+		object.setCityCode(objectData.getString(ApplicantTerm.CITYCODE));
+		object.setDistrictCode(objectData.getString(ApplicantTerm.DISTRICTCODE));
+		object.setWardCode(objectData.getString(ApplicantTerm.WARDCODE));
 
-		DictItem dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("cityCode"), objectData.getLong("groupId"));
+		DictItem dictItem = DictCollectionUtils.getDictItemByCode(
+			DataMGTConstants.ADMINISTRATIVE_REGION,
+			objectData.getString(ApplicantTerm.CITYCODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setCityName(dictItem.getItemName());
 		}
 
-		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("districtCode"), objectData.getLong("groupId"));
+		dictItem = DictCollectionUtils.getDictItemByCode(
+			DataMGTConstants.ADMINISTRATIVE_REGION,
+			objectData.getString(ApplicantTerm.DISTRICTCODE),
+			objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setDistrictName(dictItem.getItemName());
 		}
 
-		dictItem = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINISTRATIVE_REGION,
-				objectData.getString("wardCode"), objectData.getLong("groupId"));
+		dictItem = DictCollectionUtils.getDictItemByCode(
+			DataMGTConstants.ADMINISTRATIVE_REGION,
+			objectData.getString(ApplicantTerm.WARDCODE), objectData.getLong(Field.GROUP_ID));
 
 		if (Validator.isNotNull(dictItem)) {
 			object.setWardName(dictItem.getItemName());

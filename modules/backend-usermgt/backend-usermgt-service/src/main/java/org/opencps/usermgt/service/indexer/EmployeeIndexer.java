@@ -86,7 +86,7 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 
 		document.addNumberSortable(EmployeeTerm.EMPLOYEE_ID, employee.getEmployeeId());
 
-		document.addNumberSortable(EmployeeTerm.GROUP_ID, employee.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, employee.getGroupId());
 		document.addTextSortable(EmployeeTerm.TITLE, employee.getTitle());
 		document.addTextSortable(EmployeeTerm.FULL_NAME, employee.getFullName());
 		document.addTextSortable(EmployeeTerm.EMPLOYEE_NO, employee.getEmployeeNo());

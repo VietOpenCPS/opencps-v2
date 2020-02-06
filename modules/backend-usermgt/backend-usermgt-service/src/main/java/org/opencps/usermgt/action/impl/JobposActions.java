@@ -29,6 +29,16 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.action.JobposInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.JobPosTerm;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
@@ -208,7 +218,7 @@ public class JobposActions implements JobposInterface {
 			for (int n = 0; n < jPermissions.length(); n++) {
 				JSONObject action = jPermissions.getJSONObject(n);
 
-				actionIds.add(action.getString("actionId"));
+				actionIds.add(action.getString(JobPosTerm.JOBPOS_ACTION_ID));
 
 			}
 

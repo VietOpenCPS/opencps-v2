@@ -27,6 +27,16 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.usermgt.action.ResourceRoleInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.ResourceRoleLocalServiceUtil;
+
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;
@@ -86,7 +96,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 
 					document.addTextSortable(ResourceRoleTerm.ROLE_ID, String.valueOf(role.getRoleId()));
 					document.addTextSortable(ResourceRoleTerm.ROLE_NAME, role.getName());
-					document.addTextSortable("selected", selected);
+					document.addTextSortable(ResourceRoleTerm.SELECTED, selected);
 
 					list.add(document);
 
@@ -147,7 +157,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				JSONObject role = jRoles.getJSONObject(n);
 				
 				resourceRole = ResourceRoleLocalServiceUtil.fetchByF_className_classPK_roleId(groupId, className,
-						classPK, role.getLong("roleId"));
+						classPK, role.getLong(ResourceRoleTerm.ROLE_ID));
 
 				if (Validator.isNotNull(resourceRole)) {
 
@@ -156,7 +166,7 @@ public class ResourceRoleActions implements ResourceRoleInterface {
 				} else {
 
 					ResourceRoleLocalServiceUtil.addResourceRole(userId, groupId, className, classPK,
-							role.getLong("roleId"), serviceContext);
+							role.getLong(ResourceRoleTerm.ROLE_ID), serviceContext);
 
 				}
 

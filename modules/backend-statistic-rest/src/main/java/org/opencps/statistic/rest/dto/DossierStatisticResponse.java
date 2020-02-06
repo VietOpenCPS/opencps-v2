@@ -7,12 +7,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class DossierStatisticResponse {
 	private int total;
 	private String agency;
-	@XmlElement(name = "data")
+	@XmlElement(name = ConstantUtils.DATA)
 	private List<DossierStatisticData> dossierStatisticData;
 
 	public int getTotal() {
