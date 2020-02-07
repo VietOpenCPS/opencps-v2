@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import backend.auth.api.keys.Constants;
+
 public class ObjectConverterUtil {
 
 	public static JSONObject objectToJSON(Class<?> clazz, Object object) {
@@ -32,7 +34,7 @@ public class ObjectConverterUtil {
 			if(propertyDescriptors != null && propertyDescriptors.length > 0){
 				for (PropertyDescriptor pd : propertyDescriptors) {
 
-				if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
+				if (pd.getReadMethod() != null && ! Constants.CONVERTER_PROPERTY_DESCRIPTOR_NAME_CLASS.equals(pd.getName())) {
 					try {
 						// if (pd.getPropertyType().getName().equals(
 						// Date.class.getName())) {

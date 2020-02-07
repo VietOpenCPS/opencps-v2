@@ -46,10 +46,10 @@ public class FileAttachIndexer extends BaseIndexer<FileAttach> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute(FileAttachTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(FileAttachTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
@@ -72,7 +72,7 @@ public class FileAttachIndexer extends BaseIndexer<FileAttach> {
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(fileAttach.getUserName()));
 
 		document.addNumberSortable(FileAttachTerm.FILEATTACH_ID, fileAttach.getFileAttachId());
-		document.addNumberSortable(FileAttachTerm.GROUP_ID, fileAttach.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, fileAttach.getGroupId());
 
 		document.addTextSortable(FileAttachTerm.CLASS_NAME, fileAttach.getClassName());
 

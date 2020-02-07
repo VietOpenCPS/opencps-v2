@@ -62,7 +62,7 @@ public class DictCollectionIndexer extends BaseIndexer<DictCollection> {
 		//document.addKeywordSortable(Field.USER_NAME, String.valueOf(dictCollection.getCollectionCode()));
 		
 
-		document.addNumberSortable(DictCollectionTerm.GROUP_ID, dictCollection.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, dictCollection.getGroupId());
 		document.addNumberSortable(DictCollectionTerm.DICT_COLLECTION_ID, dictCollection.getDictCollectionId());
 		document.addTextSortable(DictCollectionTerm.COLLECTION_CODE, dictCollection.getCollectionCode());
 		document.addTextSortable(DictCollectionTerm.COLLECTION_NAME, dictCollection.getCollectionName());

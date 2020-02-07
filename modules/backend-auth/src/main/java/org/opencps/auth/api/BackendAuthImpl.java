@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.List;
 
+import org.opencps.auth.api.keys.ActionKeys;
+
 public class BackendAuthImpl implements BackendAuth {
 
 	@Override
@@ -30,7 +32,7 @@ public class BackendAuthImpl implements BackendAuth {
 		try {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
-					if ("Administrator".equals(role.getName())) {
+					if (ActionKeys.AMINISTRATOR_ROLE_NAME.equals(role.getName())) {
 						hasPermission = true;
 						break;
 					}

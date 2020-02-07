@@ -15,6 +15,7 @@ import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.action.keypay.util.KPJsonRest;
 import org.opencps.dossiermgt.action.keypay.util.KPRest;
 import org.opencps.dossiermgt.action.keypay.util.MD5;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 
@@ -139,13 +140,13 @@ public class KeyPay {
 		String url_redirect = keypay_url;
 		try {
 			Iterator i = params.keySet().iterator();
-			String param = "";
+			String param = StringPool.BLANK;
 			while (i.hasNext()) {
 				String key = (String) i.next();
 				String value = ((String[]) params.get(key))[0];
-				param += key + "=" + URLEncoder.encode(value, "UTF-8") + "&";
+				param += key + StringPool.EQUAL + URLEncoder.encode(value, KeyPayTerm.VALUE_UTF_8) + StringPool.AMPERSAND;
 			}
-			url_redirect += param + "secure_hash=" + secure_hash;
+			url_redirect += param + KeyPayTerm.SECURE_HASH + StringPool.EQUAL + secure_hash;
 		} catch (Exception e) {
 			_log.debug(e);
 			//_log.error(e);
@@ -162,24 +163,24 @@ public class KeyPay {
 	public KeyPay(HttpServletRequest request) {
 
 		try {
-			this.command = request.getParameter("command");
-			this.merchant_trans_id = request.getParameter("merchant_trans_id");
-			this.merchant_code = request.getParameter("merchant_code");
-			this.response_code = request.getParameter("response_code");
-			this.trans_id = request.getParameter("trans_id");
-			this.good_code = request.getParameter("good_code");
-			this.net_cost = request.getParameter("net_cost");
-			this.ship_fee = request.getParameter("ship_fee");
-			this.tax = request.getParameter("tax");
-			this.service_code = request.getParameter("service_code");
-			this.currency_code = request.getParameter("currency_code");
-			this.bank_code = request.getParameter("bank_code");
-			this.secure_hash = request.getParameter("secure_hash");
-			this.desc_1 = new String(request.getParameter("desc_1").getBytes("ISO-8859-1"), "UTF-8");
-			this.desc_2 = new String(request.getParameter("desc_2").getBytes("ISO-8859-1"), "UTF-8");
-			this.desc_3 = new String(request.getParameter("desc_3").getBytes("ISO-8859-1"), "UTF-8");
-			this.desc_4 = new String(request.getParameter("desc_4").getBytes("ISO-8859-1"), "UTF-8");
-			this.desc_5 = request.getParameter("desc_5");
+			this.command = request.getParameter(KeyPayTerm.COMMAND);
+			this.merchant_trans_id = request.getParameter(KeyPayTerm.MERCHANT_TRANS_ID);
+			this.merchant_code = request.getParameter(KeyPayTerm.MERCHANT_CODE);
+			this.response_code = request.getParameter(KeyPayTerm.RESPONSE_CODE);
+			this.trans_id = request.getParameter(KeyPayTerm.TRANS_ID);
+			this.good_code = request.getParameter(KeyPayTerm.GOOD_CODE);
+			this.net_cost = request.getParameter(KeyPayTerm.NET_COST);
+			this.ship_fee = request.getParameter(KeyPayTerm.SHIP_FEE);
+			this.tax = request.getParameter(KeyPayTerm.TAX);
+			this.service_code = request.getParameter(KeyPayTerm.SERVICE_CODE);
+			this.currency_code = request.getParameter(KeyPayTerm.CURRENCY_CODE);
+			this.bank_code = request.getParameter(KeyPayTerm.BANK_CODE);
+			this.secure_hash = request.getParameter(KeyPayTerm.SECURE_HASH);
+			this.desc_1 = new String(request.getParameter(KeyPayTerm.DESC_1).getBytes(KeyPayTerm.ISO_8859_1), KeyPayTerm.VALUE_UTF_8);
+			this.desc_2 = new String(request.getParameter(KeyPayTerm.DESC_2).getBytes(KeyPayTerm.ISO_8859_1), KeyPayTerm.VALUE_UTF_8);
+			this.desc_3 = new String(request.getParameter(KeyPayTerm.DESC_3).getBytes(KeyPayTerm.ISO_8859_1), KeyPayTerm.VALUE_UTF_8);
+			this.desc_4 = new String(request.getParameter(KeyPayTerm.DESC_4).getBytes(KeyPayTerm.ISO_8859_1), KeyPayTerm.VALUE_UTF_8);
+			this.desc_5 = request.getParameter(KeyPayTerm.DESC_5);
 		} catch (Exception e) {
 			_log.debug(e);
 			//_log.error(e);
@@ -257,19 +258,19 @@ public class KeyPay {
 
 		Map<String, String> fields = new HashMap<String, String>();
 
-		fields.put("version", version);
-		fields.put("current_locale", current_locale);
-		fields.put("command", command);
-		fields.put("merchant_trans_id", merchant_trans_id);
-		fields.put("merchant_code", merchant_code);
-		fields.put("country_code", country_code);
-		fields.put("good_code", good_code);
-		fields.put("net_cost", net_cost);
-		fields.put("ship_fee", ship_fee);
-		fields.put("tax", tax);
-		fields.put("service_code", service_code);
-		fields.put("currency_code", currency_code);
-		fields.put("return_url", return_url);
+		fields.put(KeyPayTerm.VERSION, version);
+		fields.put(KeyPayTerm.CURRENT_LOCALE, current_locale);
+		fields.put(KeyPayTerm.COMMAND , command);
+		fields.put(KeyPayTerm.MERCHANT_TRANS_ID, merchant_trans_id);
+		fields.put(KeyPayTerm.MERCHANT_CODE, merchant_code);
+		fields.put(KeyPayTerm.COUNTRY_CODE, country_code);
+		fields.put(KeyPayTerm.GOOD_CODE, good_code);
+		fields.put(KeyPayTerm.NET_COST, net_cost);
+		fields.put(KeyPayTerm.SHIP_FEE, ship_fee);
+		fields.put(KeyPayTerm.TAX, tax);
+		fields.put(KeyPayTerm.SERVICE_CODE, service_code);
+		fields.put(KeyPayTerm.CURRENCY_CODE, currency_code);
+		fields.put(KeyPayTerm.RETURN_URL, return_url);
 
 		HashFunction hf = new HashFunction();
 		return hf.hashAllFields(fields, merchant_secure_key);
@@ -279,10 +280,10 @@ public class KeyPay {
 
 		Map<String, String> fields = new HashMap<String, String>();
 
-		fields.put("trans_id", keyPay.getTrans_id());
-		fields.put("merchant_trans_id", keyPay.getMerchant_trans_id());
-		fields.put("merchant_code", keyPay.getMerchant_code());
-		fields.put("good_code", keyPay.getGood_code());
+		fields.put(KeyPayTerm.TRANS_ID, keyPay.getTrans_id());
+		fields.put(KeyPayTerm.MERCHANT_TRANS_ID, keyPay.getMerchant_trans_id());
+		fields.put(KeyPayTerm.MERCHANT_CODE, keyPay.getMerchant_code());
+		fields.put(KeyPayTerm.GOOD_CODE, keyPay.getGood_code());
 
 		HashFunction hf = new HashFunction();
 		return hf.hashAllFields(fields, keyPay.getMerchant_secure_key());
@@ -316,7 +317,7 @@ public class KeyPay {
 	 */
 	public String queryBillStatusRESTful() {
 
-		String sc_querry = "";
+		String sc_querry = StringPool.BLANK;
 		try {
 			MD5 md5 = new MD5();
 			sc_querry = md5.getMD5Hash(merchant_trans_id + good_code + trans_id + merchant_code + merchant_secure_key);

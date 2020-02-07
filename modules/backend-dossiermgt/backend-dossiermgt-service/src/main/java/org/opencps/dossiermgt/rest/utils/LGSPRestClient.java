@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.rest.utils;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;

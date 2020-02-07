@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.ConverterTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
@@ -833,17 +836,17 @@ public class OpenCPSConverter {
 	
 	public static Mtoken convertMtoken(JSONObject jsonObj) {
 		Mtoken model = new Mtoken();
-		if (jsonObj.has("access_token")) {
-			model.setAccessToken(jsonObj.getString("access_token"));
+		if (jsonObj.has(ConstantUtils.KEY_ACCESS_TOKEN)) {
+			model.setAccessToken(jsonObj.getString(ConstantUtils.KEY_ACCESS_TOKEN));
 		}
-		if (jsonObj.has("scope")) {
-			model.setScope(jsonObj.getString("scope"));
+		if (jsonObj.has(ConstantUtils.KEY_SCOPE)) {
+			model.setScope(jsonObj.getString(ConstantUtils.KEY_SCOPE));
 		}
-		if (jsonObj.has("token_type")) {
-			model.setTokenType(jsonObj.getString("token_type"));
+		if (jsonObj.has(ConstantUtils.KEY_TOKEN_TYPE)) {
+			model.setTokenType(jsonObj.getString(ConstantUtils.KEY_TOKEN_TYPE));
 		}
-		if (jsonObj.has("expires_in")) {
-			model.setExpiresIn(jsonObj.getInt("expires_in"));
+		if (jsonObj.has(ConstantUtils.KEY_EXPIRED_IN)) {
+			model.setExpiresIn(jsonObj.getInt(ConstantUtils.KEY_EXPIRED_IN));
 		}
 		return model;
 	}
@@ -852,15 +855,15 @@ public class OpenCPSConverter {
 	public static DossierDetailModel convertDossierDetail(JSONObject jsonObj) {
 		DossierDetailModel model = new DossierDetailModel();
 	
-		if (jsonObj.has("status") && jsonObj.getInt("status") != 200) {
+		if (jsonObj.has(DossierTerm.STATUS) && jsonObj.getInt(DossierTerm.STATUS) != 200) {
 			return model;
 		}
 		
-		if (!jsonObj.has("message")) {
+		if (!jsonObj.has(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG))) {
 			return model;
 		}
 
-		String strMessage = jsonObj.getString("message");
+		String strMessage = jsonObj.getString(ReadFilePropertiesUtils.get(ConstantUtils.MESSAGE_MSG));
 //		_log.info("strMessage: "+strMessage);
 		if (Validator.isNotNull(strMessage)) {
 			try {
@@ -1074,7 +1077,7 @@ public class OpenCPSConverter {
 		params.put(DossierFileTerm.FILE_TEMPLATE_NO, model.getFileTemplateNo());
 		params.put(DossierFileTerm.FORM_DATA, model.getFormData());
 		params.put(DossierFileTerm.FILE_TYPE, model.getFileType());
-		params.put(DossierFileTerm.IS_SYNC, "true");
+		params.put(DossierFileTerm.IS_SYNC, String.valueOf(true));
 		if(Validator.isNotNull(model.isRemoved())) {
 			params.put(DossierFileTerm.REMOVED, Boolean.toString(model.isRemoved()));	
 		}
@@ -1236,82 +1239,82 @@ public class OpenCPSConverter {
 	
 	public static JSONObject convertDossierToLGSPJSON(DossierPublishModel model) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		result.put("DocTypeCode", model.getServiceCode());
-		result.put("DocTypeName", model.getServiceName());
-		result.put("DocCode", model.getDossierNo());
-		result.put("CitizenName", model.getApplicantName());
-		result.put("CitizenInfo", model.getApplicantNote());
-		result.put("ApplicantsId", model.getApplicantIdNo());
-		if ("citizen".equals(model.getApplicantIdType())) {
-			result.put("ApplicantsType", 1);			
+		result.put(ConverterTerm.DOCTYPECODE, model.getServiceCode());
+		result.put(ConverterTerm.DOCTYPENAME, model.getServiceName());
+		result.put(ConverterTerm.DOCCODE, model.getDossierNo());
+		result.put(ConverterTerm.CITIZENNAME, model.getApplicantName());
+		result.put(ConverterTerm.CITIZENINFO, model.getApplicantNote());
+		result.put(ConverterTerm.APPLICANTSID, model.getApplicantIdNo());
+		if (ConverterTerm.CITIZEN.equals(model.getApplicantIdType())) {
+			result.put(ConverterTerm.APPLICANTSTYPE, 1);			
 		}
-		else if ("business".equals(model.getApplicantIdType())) {
-			result.put("ApplicantsType", 2);
+		else if (ConverterTerm.BUSINESS.equals(model.getApplicantIdType())) {
+			result.put(ConverterTerm.APPLICANTSTYPE, 2);
 		}
-		else if ("organization".equals(model.getApplicantIdType())) {
-			result.put("ApplicantsType", 3);
+		else if (ConverterTerm.ORGANIZATION.equals(model.getApplicantIdType())) {
+			result.put(ConverterTerm.APPLICANTSTYPE, 3);
 		}
 		else {
-			result.put("ApplicantsType", 4);
+			result.put(ConverterTerm.APPLICANTSTYPE, 4);
 		}
-		result.put("Address", model.getAddress());
-		result.put("Email", model.getContactEmail());
-		result.put("Phone", model.getContactTelNo());
-		result.put("Compendium", model.getBriefNote());
+		result.put(ConverterTerm.ADDRESS, model.getAddress());
+		result.put(ConverterTerm.EMAIL, model.getContactEmail());
+		result.put(ConverterTerm.PHONE, model.getContactTelNo());
+		result.put(ConverterTerm.COMPENDIUM, model.getBriefNote());
 		if (model.getReceiveDate() != 0) {
-			result.put("DateReceived", convertToUTCDate(new Date(model.getReceiveDate())));
+			result.put(ConverterTerm.DATERECEIVED, convertToUTCDate(new Date(model.getReceiveDate())));
 		}
 		if (model.getDueDate() != 0) {
-			result.put("DateAppointed", convertToUTCDate(new Date(model.getDueDate())));
+			result.put(ConverterTerm.DATEAPPOINTED, convertToUTCDate(new Date(model.getDueDate())));
 		}		
-		result.put("IsSuccess", isSuccess(model));
+		result.put(ConverterTerm.ISSUCCESS, isSuccess(model));
 		if (Validator.isNotNull(model.getReleaseDate())) {
-			result.put("SuccessDate", convertToUTCDate(new Date(model.getReleaseDate())));
+			result.put(ConverterTerm.SUCCESSDATE, convertToUTCDate(new Date(model.getReleaseDate())));
 		}
 		else {
-			result.put("SuccessDate", "0000-00-00T00:00:00.000+0700");
+			result.put(ConverterTerm.SUCCESSDATE, ConverterTerm.SUCCESS_DATE_DEFAULT);
 		}
-		result.put("ApproverName", StringPool.BLANK);
-		result.put("ApproverPosition", StringPool.BLANK);
-		result.put("SuccessNote", StringPool.BLANK);
+		result.put(ConverterTerm.APPROVERNAME, StringPool.BLANK);
+		result.put(ConverterTerm.APPROVERPOSITION, StringPool.BLANK);
+		result.put(ConverterTerm.SUCCESSNOTE, StringPool.BLANK);
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())) {
-			result.put("IsReturned", true);
-			result.put("ReturnedDate", convertToUTCDate(new Date(model.getFinishDate())));
+			result.put(ConverterTerm.ISRETURNED, true);
+			result.put(ConverterTerm.RETURNEDDATE, convertToUTCDate(new Date(model.getFinishDate())));
 		}
 		else {
-			result.put("IsReturned", false);
-			result.put("ReturnedDate", convertToUTCDate(new Date(model.getDueDate())));
+			result.put(ConverterTerm.ISRETURNED, false);
+			result.put(ConverterTerm.RETURNEDDATE, convertToUTCDate(new Date(model.getDueDate())));
 		}
-		result.put("ReturnNote", StringPool.BLANK);
-		if ("0".equalsIgnoreCase(model.getViaPostal())) {
-			result.put("ReturnedType", 0);
+		result.put(ConverterTerm.RETURNNOTE, StringPool.BLANK);
+		if (String.valueOf(0).equalsIgnoreCase(model.getViaPostal())) {
+			result.put(ConverterTerm.RETURNEDTYPE, 0);
 		}
 		else {
-			result.put("ReturnedType", 1);
+			result.put(ConverterTerm.RETURNEDTYPE, 1);
 		}
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(model.getDossierStatus())
 				|| DossierTerm.DOSSIER_STATUS_CANCELLED.equals(model.getDossierStatus())
 				|| DossierTerm.DOSSIER_STATUS_DENIED.equals(model.getDossierStatus())) {
-			result.put("FinishedDate", convertToUTCDate(new Date(model.getFinishDate())));
+			result.put(ConverterTerm.FINISHEDDATE, convertToUTCDate(new Date(model.getFinishDate())));
 		}
 		if (DossierTerm.DOSSIER_STATUS_RELEASING.equals(model.getDossierStatus())) {
-			result.put("Status", 2);
+			result.put(ConverterTerm.STATUS, 2);
 		}
 		else {
-			result.put("Status", 1);			
+			result.put(ConverterTerm.STATUS, 1);			
 		}
-		result.put("ProcessingOrganName", model.getGovAgencyName());
-		result.put("HasSupplementary", false);
-		result.put("Note", StringPool.BLANK);
+		result.put(ConverterTerm.PROCESSINGORGANNAME, model.getGovAgencyName());
+		result.put(ConverterTerm.HASSUPPLEMENTARY, false);
+		result.put(ConverterTerm.NOTE, StringPool.BLANK);
 		List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(model.getDossierId());
 		JSONArray attachmentsArr = JSONFactoryUtil.createJSONArray();
 		
 		for (DossierFile df : lstFiles) {
 			JSONObject attachmentObj = JSONFactoryUtil.createJSONObject();
-			attachmentObj.put("AttachmentId", df.getDossierFileId());
-			attachmentObj.put("AttachmentName", df.getDisplayName());
-			attachmentObj.put("IsDeleted", df.getRemoved());
-			attachmentObj.put("IsVerified", true);
+			attachmentObj.put(ConverterTerm.ATTACHMENTID, df.getDossierFileId());
+			attachmentObj.put(ConverterTerm.ATTACHMENTNAME, df.getDisplayName());
+			attachmentObj.put(ConverterTerm.ISDELETED, df.getRemoved());
+			attachmentObj.put(ConverterTerm.ISVERIFIED, true);
 			if (df.getFileEntryId() > 0) {
 				FileEntry fileEntry;
 				try {
@@ -1319,7 +1322,7 @@ public class OpenCPSConverter {
 					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 							true);
 					byte[] bytes = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
-					attachmentObj.put("Base64", new String(bytes));
+					attachmentObj.put(ConverterTerm.BASE64, new String(bytes));
 				} catch (PortalException e) {
 					_log.error(e);
 				} catch (IOException e) {
@@ -1330,7 +1333,7 @@ public class OpenCPSConverter {
 			attachmentsArr.put(attachmentObj);
 		}
 		
-		result.put("Attachments", attachmentsArr);
+		result.put(ConverterTerm.ATTACHMENTS, attachmentsArr);
 		
 		JSONArray docFeesArr = JSONFactoryUtil.createJSONArray();
 		try {
@@ -1339,11 +1342,11 @@ public class OpenCPSConverter {
 			if (paymentFile != null) {
 				JSONObject docFeeObj = JSONFactoryUtil.createJSONObject();
 				if (Validator.isNotNull(paymentFile.getPaymentFee())) {
-					docFeeObj.put("FeeName", paymentFile.getPaymentFee());				
+					docFeeObj.put(ConverterTerm.FEENAME, paymentFile.getPaymentFee());				
 				}
-				docFeeObj.put("FeeType", 4);
+				docFeeObj.put(ConverterTerm.FEETYPE, 4);
 				if (Validator.isNotNull(paymentFile.getPaymentAmount())) {
-					docFeeObj.put("Price", paymentFile.getPaymentAmount());				
+					docFeeObj.put(ConverterTerm.PRICE, paymentFile.getPaymentAmount());				
 				}
 				
 				docFeesArr.put(docFeeObj);
@@ -1352,9 +1355,9 @@ public class OpenCPSConverter {
 		catch (Exception e) {
 			_log.debug(e);
 		}
-		result.put("DocFees", docFeesArr);
-		result.put("OrganInchargeIdLevel1", model.getGovAgencyCode());
-		result.put("OrganInchargeName", model.getGovAgencyName());
+		result.put(ConverterTerm.DOCFEES, docFeesArr);
+		result.put(ConverterTerm.ORGANINCHARGEIDLEVEL1, model.getGovAgencyCode());
+		result.put(ConverterTerm.ORGANINCHARGENAME, model.getGovAgencyName());
 		System.out.println("LGSP SYNC DOCUMENT");
 		return result;
 	}
@@ -1372,7 +1375,7 @@ public class OpenCPSConverter {
 	}
 	
 	public static String convertToUTCDate(Date d) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		SimpleDateFormat df = new SimpleDateFormat(org.opencps.auth.utils.APIDateTimeUtils._TIMESTAMP);
 		String s = df.format(d);
 		return s;
 	}
@@ -1452,17 +1455,17 @@ public class OpenCPSConverter {
 		
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		if (dossier != null) {
-			obj.put("DocumentId", dossier.getDossierId());
-			obj.put("DocCode", dossier.getDossierNo());
+			obj.put(ConverterTerm.DOCUMENTID, dossier.getDossierId());
+			obj.put(ConverterTerm.DOCCODE, dossier.getDossierNo());
 			DossierAction da = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 			if (da != null) {
-				obj.put("UserName", da.getUserName());
-				obj.put("UserPosition", StringPool.BLANK);
-				obj.put("DateCreated", convertToUTCDate(da.getCreateDate()));
-				obj.put("Comment", da.getActionNote());
-				obj.put("Status", 0);
-				obj.put("OrganizationInchargeIdLevel1", dossier.getGovAgencyCode());
-				obj.put("OrganizationInchargeName", dossier.getGovAgencyName());
+				obj.put(ConverterTerm.USERNAME, da.getUserName());
+				obj.put(ConverterTerm.USERPOSITION, StringPool.BLANK);
+				obj.put(ConverterTerm.DATECREATED, convertToUTCDate(da.getCreateDate()));
+				obj.put(ConverterTerm.COMMENT, da.getActionNote());
+				obj.put(ConverterTerm.STATUS, 0);
+				obj.put(ConverterTerm.ORGANIZATIONINCHARGEIDLEVEL1, dossier.getGovAgencyCode());
+				obj.put(ConverterTerm.ORGANIZATIONINCHARGENAME, dossier.getGovAgencyName());
 			}
 		}
 		

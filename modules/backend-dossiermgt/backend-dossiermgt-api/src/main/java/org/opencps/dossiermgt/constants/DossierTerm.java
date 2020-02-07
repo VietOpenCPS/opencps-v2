@@ -180,12 +180,21 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
+	public static final String REGISTER_BOOK_NAME = "registerBookName";
+	public static final String DOSSIER_REGISTER = "dossierRegister";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String SEQUENCE_NAME = "sequenceName";
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
+	public static final String NEXT_SEQUENCE_NO = "nextSequenceNo";
+	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
+	public static final String NEXT_CREATE_DATE = "nextCreateDate";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
+	public static final String PROCESS_SEQUENCE_ARR = "processSequenceArr";
 
+	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";

@@ -31,6 +31,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -58,11 +59,11 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 			hits = ServiceInfoLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -130,8 +131,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByServiceInfoId(serviceInfoId);
 
-		result.put("data", data);
-		result.put("total", total);
+		result.put(ConstantUtils.DATA, data);
+		result.put(ConstantUtils.TOTAL, total);
 
 		return result;
 	}
@@ -237,15 +238,15 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("administrationCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("administrationName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.ADMINISTRATION_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -291,15 +292,15 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -335,15 +336,15 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("level", i);
-				elm.put("levelName", i);
-				elm.put("count", levelCount);
+				elm.put(ServiceInfoTerm.LEVEL, i);
+				elm.put(ServiceInfoTerm.LEVEL_NAME, i);
+				elm.put(ConstantUtils.VALUE_COUNT, levelCount);
 
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 		}
 
 		return result;
@@ -481,15 +482,15 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-				elm.put("domainCode", doc.get(DictItemTerm.ITEM_CODE));
-				elm.put("domainName", doc.get(DictItemTerm.ITEM_NAME));
-				elm.put("count", admCount);
+				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+				elm.put(ConstantUtils.VALUE_COUNT, admCount);
 
 				data.put(elm);
 			}
 
-			result.put("total", count);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, count);
+			result.put(ConstantUtils.DATA, data);
 
 		}
 
@@ -507,8 +508,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService_EForm(serviceInfoId,
 						eForm, start, end);
 
-				result.put("data", data);
-				result.put("total", total);
+				result.put(ConstantUtils.DATA, data);
+				result.put(ConstantUtils.TOTAL, total);
 			} else {
 				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
 				if (service != null) {
@@ -517,8 +518,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
 							.getByService_EForm(service.getServiceInfoId(), eForm, start, end);
 
-					result.put("data", data);
-					result.put("total", total);
+					result.put(ConstantUtils.DATA, data);
+					result.put(ConstantUtils.TOTAL, total);
 				}
 			}
 		} catch (Exception e) {
@@ -539,8 +540,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil.getByService(serviceInfoId, start,
 						end);
 
-				result.put("data", data);
-				result.put("total", total);
+				result.put(ConstantUtils.DATA, data);
+				result.put(ConstantUtils.TOTAL, total);
 			} else {
 				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(groupId, id);
 				if (service != null) {
@@ -548,8 +549,8 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					List<ServiceFileTemplate> data = ServiceFileTemplateLocalServiceUtil
 							.getByService(service.getServiceInfoId(), start, end);
 
-					result.put("data", data);
-					result.put("total", total);
+					result.put(ConstantUtils.DATA, data);
+					result.put(ConstantUtils.TOTAL, total);
 				}
 			}
 		} catch (Exception e) {

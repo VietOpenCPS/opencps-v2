@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierActionTerm {
+        public static final String DOSSIER_ACTION_ID = "dossierActionId";
 	public static final String DOSSIERACTION_ID = "dossierActionId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";

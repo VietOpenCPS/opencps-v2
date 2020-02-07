@@ -68,8 +68,20 @@ public class RestAuthFilter implements Filter {
 	public final static String USER_ID = "USER_ID";
 	public final static String AUTHORIZATION = "Authorization";
 	protected final static String[] IGNORE_PATTERN = new String[] { "/o/rest/v2/serviceinfos/\\w+/filetemplates/\\w+", "/o/rest/v2/barcode", "/o/rest/v2/qrcode", "/o/rest/v2/postal/votings/statistic", "/o/rest/v2/postal/invoice", "/o/rest/v2/dictcollections/GOVERNMENT_AGENCY/dictitems", "/o/rest/v2/dictcollections/SERVICE_DOMAIN/dictitems", "/o/rest/v2/dossiers", "/o/rest/v2/serviceinfos", "/o/rest/statistics/reports" };
-	public final static String OPENCPS_GZIP_FILTER = "org.opencps.servlet.filters.GZipFilter";
-	public final static String LIFERAY_GZIP_FILTER = "com.liferay.portal.servlet.filters.gzip.GZipFilter";
+	public final static String OPENCPS_GZIP_FILTER =
+		"org.opencps.servlet.filters.GZipFilter";
+	public final static String LIFERAY_GZIP_FILTER =
+		"com.liferay.portal.servlet.filters.gzip.GZipFilter";
+	public final static String IP_LOCALHOST = "localhost";
+	public final static String IP_127_0_0_1 = "127.0.0.1";
+	public final static String HEADER_USER_ID_KEY = "userid";
+	public final static String HEADER_LOCAL_ACESS_KEY = "localaccess";
+	public final static String HTTP_ENCODING = "UTF-8";
+	public final static String HTTP_CONTENT_TYPE =
+		"application/json; charset=utf-8";
+	public final static String HTTP_ERR_MESS = "permission denied";
+	public final static String HTTP_HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+	public final static String HTTP_HEADER_ACCEPT_ENCODING_G_GIP = "gzip";
 	private static final Log _log = LogFactoryUtil.getLog(RestAuthFilter.class);
 	
 	@Override
@@ -89,13 +101,18 @@ public class RestAuthFilter implements Filter {
 				break;
 			}
 		}
-		if (Validator.isNotNull(httpRequest.getParameter("Token"))) {
-			pAuth = httpRequest.getParameter("Token");
+		if (Validator.isNotNull(httpRequest.getParameter(P_AUTH))) {
+			pAuth = httpRequest.getParameter(P_AUTH);
 		}
 		String ipAddress = HttpUtil.getIpAddress(httpRequest);
-		boolean checkLocal = ("localhost".equals(ipAddress) || "127.0.0.1".equals(ipAddress));
-		
-		if (checkLocal || exclude || AuthTokenUtil.getToken(httpRequest).equals(pAuth) || (Validator.isNotNull(httpRequest.getHeader("localaccess")) ? httpRequest.getHeader("localaccess").equals(pAuth) : false) ) {
+		boolean checkLocal =
+			(IP_LOCALHOST.equals(ipAddress) || IP_127_0_0_1.equals(ipAddress));
+
+		if (checkLocal || exclude ||
+			AuthTokenUtil.getToken(httpRequest).equals(pAuth) ||
+			(Validator.isNotNull(httpRequest.getHeader(HEADER_LOCAL_ACESS_KEY))
+				? httpRequest.getHeader(HEADER_LOCAL_ACESS_KEY).equals(pAuth)
+				: false)) {
 			Object userObj = httpRequest.getSession(true).getAttribute(USER_ID);
 			if (Validator.isNotNull(userObj) || exclude) {
 				httpRequest.setAttribute(USER_ID, userObj);
@@ -105,8 +122,13 @@ public class RestAuthFilter implements Filter {
 				else {
 					authOK(servletRequest, servletResponse, filterChain, 0);
 				}
-			} else {
-				long sockId = Validator.isNotNull(httpRequest.getHeader("userid")) ? Long.valueOf(httpRequest.getHeader("userid")) : 0;
+			}
+			else {
+				long sockId = Validator.isNotNull(
+					httpRequest.getHeader(HEADER_USER_ID_KEY))
+						? Long.valueOf(
+							httpRequest.getHeader(HEADER_USER_ID_KEY))
+						: 0;
 				httpRequest.setAttribute(USER_ID, sockId);
 				authOK(servletRequest, servletResponse, filterChain, sockId);
 			}
@@ -199,18 +221,21 @@ public class RestAuthFilter implements Filter {
 //	    }
 	}
 
-	private void authFailure(ServletResponse servletResponse) throws IOException {
-		servletResponse.setCharacterEncoding("UTF-8");
-		servletResponse.setContentType("application/json; charset=utf-8");
-		
+	private void authFailure(ServletResponse servletResponse)
+		throws IOException {
+
+		servletResponse.setCharacterEncoding(HTTP_ENCODING);
+		servletResponse.setContentType(HTTP_CONTENT_TYPE);
+
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setContentType("application/json; charset=utf-8");
-		
-		PrintWriter out = response.getWriter();												
-		
-		OpenCPSErrorDetails error = new OpenCPSErrorDetails(new Date(), "permission denied", "");
-		
+		response.setContentType(HTTP_CONTENT_TYPE);
+
+		PrintWriter out = response.getWriter();
+
+		OpenCPSErrorDetails error = new OpenCPSErrorDetails(
+			new Date(), HTTP_ERR_MESS, StringPool.BLANK);
+
 		out.println(error.toString());
 		out.flush();
 		out.close();
@@ -221,9 +246,10 @@ public class RestAuthFilter implements Filter {
 	}
 
 	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
-		String acceptEncoding = httpRequest.getHeader("Accept-Encoding");
+		String acceptEncoding =
+			httpRequest.getHeader(HTTP_HEADER_ACCEPT_ENCODING);
 
-	    return acceptEncoding != null && 
-	             acceptEncoding.indexOf("gzip") != -1;
-	}	
+		return acceptEncoding != null &&
+			acceptEncoding.indexOf(HTTP_HEADER_ACCEPT_ENCODING_G_GIP) != -1;
+	}
 }

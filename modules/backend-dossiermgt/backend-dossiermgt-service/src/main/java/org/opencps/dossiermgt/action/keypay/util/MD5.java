@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+
 public class MD5 {
     private Logger log = Logger.getLogger(MD5.class.getName());
 //    private Logger logError = Logger.getLogger("ErrorLog");
@@ -13,8 +15,8 @@ public class MD5 {
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         log.info("String input secure : " + value);
         final StringBuilder sbMd5Hash = new StringBuilder();
-        final MessageDigest m = MessageDigest.getInstance("SHA-256");
-        m.update(value.getBytes("UTF-8"));
+        final MessageDigest m = MessageDigest.getInstance(KeyPayTerm.SHA_256);
+        m.update(value.getBytes(KeyPayTerm.VALUE_UTF_8));
 
         final byte data[] = m.digest();
 

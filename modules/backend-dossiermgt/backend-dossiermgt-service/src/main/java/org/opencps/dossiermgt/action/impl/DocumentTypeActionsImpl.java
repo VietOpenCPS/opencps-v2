@@ -15,6 +15,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.dossiermgt.action.DocumentTypeActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.model.DocumentType;
+import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
+
 public class DocumentTypeActionsImpl implements DocumentTypeActions {
 
 	private static Log _log = LogFactoryUtil.getLog(DocumentTypeActionsImpl.class);
@@ -31,11 +39,11 @@ public class DocumentTypeActionsImpl implements DocumentTypeActions {
 			if (docList != null && docList.size() > 0) {
 				_log.info("docList:"+docList);
 			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DocumentTypeLocalServiceUtil.getDocumentTypesCount();
 			_log.info("total:"+total);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);

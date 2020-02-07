@@ -160,7 +160,7 @@ public class DossierPaymentUtils {
 //					dossier.getApplicantIdNo(), paymentFee, payment, paymentNote, null, paymentConfig.getBankInfo(),
 //					serviceContext);
 //			
-			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+"paymentFileNo");
+			long counterPaymentFile = CounterLocalServiceUtil.increment(PaymentFile.class.getName()+PAY_FILE_NO);
 			
 			Calendar cal = Calendar.getInstance();
 			
@@ -176,13 +176,13 @@ public class DossierPaymentUtils {
 			
 			JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
 
-			if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+			if (epaymentConfigJSON.has(PAY_KEYPAY_DOMAIN)) {
 
 				try {
 					String generatorPayURL = PaymentUrlGenerator.generatorPayURL(groupId,
 							paymentFile.getPaymentFileId(), pattern, dossierId);
 
-					epaymentProfileJSON.put("keypayUrl", generatorPayURL);
+					epaymentProfileJSON.put(PAY_KEYPAY_URL, generatorPayURL);
 
 					// fill good_code to keypayGoodCode
 					String pattern1 = "good_code=";
@@ -196,12 +196,12 @@ public class DossierPaymentUtils {
 					if (m.find()) {
 						String goodCode = m.group(1);
 
-						epaymentProfileJSON.put("keypayGoodCode", goodCode);
+						epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, goodCode);
 					} else {
-						epaymentProfileJSON.put("keypayGoodCode", StringPool.BLANK);
+						epaymentProfileJSON.put(PAY_KEYPAY_GOOD_CODE, StringPool.BLANK);
 					}
 
-					epaymentProfileJSON.put("keypayMerchantCode", epaymentConfigJSON.get("paymentMerchantCode"));
+					epaymentProfileJSON.put(PAY_KEYPAY_MERCHANT_CODE, epaymentConfigJSON.get(PAY_MERCHANT_CODE));
 
 					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 							serviceContext);
@@ -242,7 +242,7 @@ public class DossierPaymentUtils {
 
 			int net = 0;
 
-			Pattern patternName = Pattern.compile("net=\\[(.*?)\\]");
+			Pattern patternName = Pattern.compile(NET_PATTERN);
 
 			Matcher matcherName = patternName.matcher(pattern);
 
@@ -417,7 +417,7 @@ public class DossierPaymentUtils {
 
 		int net = 0;
 
-		patternName = Pattern.compile("#(.*?)@(.*?) ");
+		patternName = Pattern.compile(PATTERN_NAME);
 
 		matcherName = patternName.matcher(pattern);
 
@@ -454,7 +454,7 @@ public class DossierPaymentUtils {
 
 				} else {
 
-					valReplace = "'" + String.valueOf(entry.getValue()) + "'";
+					valReplace = StringPool.APOSTROPHE + String.valueOf(entry.getValue()) + StringPool.APOSTROPHE;
 
 				}
 				pattern = pattern.replaceAll(entry.getKey(), valReplace);
@@ -466,7 +466,7 @@ public class DossierPaymentUtils {
 
 		// ScriptEngine engine = manager.getEngineByExtension("js");
 
-		patternName = Pattern.compile("net=\\[(.*?)\\]");
+		patternName = Pattern.compile(NET_PATTERN);
 
 		matcherName = patternName.matcher(pattern);
 
@@ -474,7 +474,7 @@ public class DossierPaymentUtils {
 
 			ScriptEngineManager manager = new ScriptEngineManager(null);
 
-			ScriptEngine engine = manager.getEngineByExtension("js");
+			ScriptEngine engine = manager.getEngineByExtension(EngineByExtensionJS);
 
 			String netScript = matcherName.group(1);
 
@@ -500,7 +500,7 @@ public class DossierPaymentUtils {
 				engine.eval(netScript);
 				_log.info("engine_2" + engine);
 
-				net = GetterUtil.getInteger(engine.get("payment"));
+				net = GetterUtil.getInteger(engine.get(PAYMENT));
 
 				_log.info("net__________" + net);
 
@@ -522,4 +522,17 @@ public class DossierPaymentUtils {
 	public static final String PAY_AMOUNT_SHIP = "ship";
 	public static final String PAY_AMOUNT_TAX = "tax";
 	public static final String PAY_MESSAGE = "$";
+
+	public static final String PAYMENT = "payment";
+	public static final String EngineByExtensionJS = "js";
+
+	public static final String PAY_KEYPAY_DOMAIN = "paymentKeypayDomain";
+	public static final String PAY_KEYPAY_URL = "keypayUrl";
+	public static final String PAY_MERCHANT_CODE = "paymentMerchantCode";
+	public static final String PAY_KEYPAY_MERCHANT_CODE = "keypayMerchantCode";
+	public static final String PAY_KEYPAY_GOOD_CODE = "keypayGoodCode";
+	public static final String PAY_FILE_NO = "paymentFileNo";
+
+	public static final String NET_PATTERN = "net=\\[(.*?)\\]";
+	public static final String PATTERN_NAME = "#(.*?)@(.*?) ";
 }

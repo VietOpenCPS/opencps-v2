@@ -3,6 +3,8 @@ package org.opencps.dossiermgt.action.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.exception.DossierAccessException;
 import org.opencps.dossiermgt.exception.DossierPasswordException;
 import org.opencps.dossiermgt.model.Dossier;
@@ -105,7 +107,7 @@ public class DossierPermission {
 			}
 
 			if (!isAuthorityEmpoyee) {
-				throw new DossierAccessException("DossierAccessException");
+				throw new DossierAccessException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
 
 		}
@@ -115,11 +117,11 @@ public class DossierPermission {
 	public void checkPassword(Dossier dossier, String secretCode) throws PortalException {
 
 		if (Validator.isNull(dossier.getPassword())) {
-			throw new DossierPasswordException("DossierPasswordException");
+			throw new DossierPasswordException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 		}
 
 		if (!dossier.getPassword().equalsIgnoreCase(secretCode)) {
-			throw new DossierPasswordException("DossierPasswordException");
+			throw new DossierPasswordException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 		}
 	}
 
@@ -158,7 +160,7 @@ public class DossierPermission {
 			}
 
 			if (!isAuthorityEmpoyee) {
-				throw new DossierAccessException("DossierAccessException");
+				throw new DossierAccessException(ReadFilePropertiesUtils.get(ConstantUtils.ERROR_NOT_PERMISSION));
 			}
 
 		}

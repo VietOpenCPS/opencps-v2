@@ -4,6 +4,10 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+
 public class KPJsonRest {
 	private WebTarget webTarget;
 	private Client client;
@@ -12,13 +16,13 @@ public class KPJsonRest {
 
 	public KPJsonRest() {
 		client = javax.ws.rs.client.ClientBuilder.newClient();
-		webTarget = client.target(BASE_URI).path("generic");
+		webTarget = client.target(ReadFilePropertiesUtils.get(ConstantUtils.BASE_JSON_URI)).path(KeyPayTerm.GENERIC);
 	}
 
 	public KPJsonRest(String baseUri) {
 		BASE_URI = baseUri;
 		client = javax.ws.rs.client.ClientBuilder.newClient();
-		webTarget = client.target(BASE_URI).path("generic");
+		webTarget = client.target(ReadFilePropertiesUtils.get(ConstantUtils.BASE_JSON_URI)).path(KeyPayTerm.GENERIC);
 	}
 
 	public String sendOrder(String return_url, String version, String current_locale, String currency_code,
@@ -28,69 +32,69 @@ public class KPJsonRest {
 			throws ClientErrorException {
 		WebTarget resource = webTarget;
 		if (merchant_code != null) {
-			resource = resource.queryParam("merchant_code", merchant_code);
+			resource = resource.queryParam(KeyPayTerm.MERCHANT_CODE, merchant_code);
 		}
 		if (good_code != null) {
-			resource = resource.queryParam("good_code", good_code);
+			resource = resource.queryParam(KeyPayTerm.GOOD_CODE, good_code);
 		}
 		if (xml_description != null) {
-			resource = resource.queryParam("xml_description", xml_description);
+			resource = resource.queryParam(KeyPayTerm.XML_DESCRIPTION, xml_description);
 		}
 		if (internal_bank != null) {
-			resource = resource.queryParam("internal_bank", internal_bank);
+			resource = resource.queryParam(KeyPayTerm.INTERNAL_BANK, internal_bank);
 		}
 		if (merchant_trans_id != null) {
-			resource = resource.queryParam("merchant_trans_id", merchant_trans_id);
+			resource = resource.queryParam(KeyPayTerm.MERCHANT_TRANS_ID, merchant_trans_id);
 		}
 		if (current_locale != null) {
-			resource = resource.queryParam("current_locale", current_locale);
+			resource = resource.queryParam(KeyPayTerm.CURRENT_LOCALE, current_locale);
 		}
 		if (tax != null) {
-			resource = resource.queryParam("tax", tax);
+			resource = resource.queryParam(KeyPayTerm.TAX, tax);
 		}
 		if (desc_1 != null) {
-			resource = resource.queryParam("desc_1", desc_1);
+			resource = resource.queryParam(KeyPayTerm.DESC_1, desc_1);
 		}
 		if (desc_3 != null) {
-			resource = resource.queryParam("desc_3", desc_3);
+			resource = resource.queryParam(KeyPayTerm.DESC_3, desc_3);
 		}
 		if (version != null) {
-			resource = resource.queryParam("version", version);
+			resource = resource.queryParam(KeyPayTerm.VERSION, version);
 		}
 		if (desc_2 != null) {
-			resource = resource.queryParam("desc_2", desc_2);
+			resource = resource.queryParam(KeyPayTerm.DESC_2, desc_2);
 		}
 		if (currency_code != null) {
-			resource = resource.queryParam("currency_code", currency_code);
+			resource = resource.queryParam(KeyPayTerm.CURRENCY_CODE, currency_code);
 		}
 		if (command != null) {
-			resource = resource.queryParam("command", command);
+			resource = resource.queryParam(KeyPayTerm.COMMAND, command);
 		}
 		if (desc_5 != null) {
-			resource = resource.queryParam("desc_5", desc_5);
+			resource = resource.queryParam(KeyPayTerm.DESC_5, desc_5);
 		}
 		if (desc_4 != null) {
-			resource = resource.queryParam("desc_4", desc_4);
+			resource = resource.queryParam(KeyPayTerm.DESC_4, desc_4);
 		}
 		if (ship_fee != null) {
-			resource = resource.queryParam("ship_fee", ship_fee);
+			resource = resource.queryParam(KeyPayTerm.SHIP_FEE, ship_fee);
 		}
 		if (country_code != null) {
-			resource = resource.queryParam("country_code", country_code);
+			resource = resource.queryParam(KeyPayTerm.COUNTRY_CODE, country_code);
 		}
 		if (secure_hash != null) {
-			resource = resource.queryParam("secure_hash", secure_hash);
+			resource = resource.queryParam(KeyPayTerm.SECURE_HASH, secure_hash);
 		}
 		if (return_url != null) {
-			resource = resource.queryParam("return_url", return_url);
+			resource = resource.queryParam(KeyPayTerm.RETURN_URL, return_url);
 		}
 		if (service_code != null) {
-			resource = resource.queryParam("service_code", service_code);
+			resource = resource.queryParam(KeyPayTerm.SERVICE_CODE, service_code);
 		}
 		if (net_cost != null) {
-			resource = resource.queryParam("net_cost", net_cost);
+			resource = resource.queryParam(KeyPayTerm.NET_COST, net_cost);
 		}
-		resource = resource.path("sendOrder");
+		resource = resource.path(KeyPayTerm.SEND_ORDER);
 		return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
 	}
 
@@ -98,21 +102,21 @@ public class KPJsonRest {
 			String secure_hash) throws ClientErrorException {
 		WebTarget resource = webTarget;
 		if (merchant_code != null) {
-			resource = resource.queryParam("merchant_code", merchant_code);
+			resource = resource.queryParam(KeyPayTerm.MERCHANT_CODE, merchant_code);
 		}
 		if (good_code != null) {
-			resource = resource.queryParam("good_code", good_code);
+			resource = resource.queryParam(KeyPayTerm.GOOD_CODE, good_code);
 		}
 		if (merchant_trans_id != null) {
-			resource = resource.queryParam("merchant_trans_id", merchant_trans_id);
+			resource = resource.queryParam(KeyPayTerm.MERCHANT_TRANS_ID, merchant_trans_id);
 		}
 		if (secure_hash != null) {
-			resource = resource.queryParam("secure_hash", secure_hash);
+			resource = resource.queryParam(KeyPayTerm.SECURE_HASH, secure_hash);
 		}
 		if (trans_id != null) {
-			resource = resource.queryParam("trans_id", trans_id);
+			resource = resource.queryParam(KeyPayTerm.TRANS_ID, trans_id);
 		}
-		resource = resource.path("QuerryBillStatus");
+		resource = resource.path(KeyPayTerm.BILL_STATUS);
 		return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
 	}
 

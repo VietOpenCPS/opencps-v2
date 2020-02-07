@@ -18,6 +18,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.communication.constants.NotificationQueueTemplateTerm;
 import org.opencps.communication.exception.NoSuchNotificationQueueException;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.service.base.NotificationQueueLocalServiceBaseImpl;
@@ -154,9 +156,9 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 
 		NotificationQueue object = null;
 
-		if (objectData.getLong("notificationQueueId") > 0) {
+		if (objectData.getLong(NotificationQueueTemplateTerm.NOTIFICATION_QUEUE_ID) > 0) {
 
-			object = notificationQueuePersistence.fetchByPrimaryKey(objectData.getLong("notificationQueueId"));
+			object = notificationQueuePersistence.fetchByPrimaryKey(objectData.getLong(NotificationQueueTemplateTerm.NOTIFICATION_QUEUE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -166,25 +168,25 @@ public class NotificationQueueLocalServiceImpl extends NotificationQueueLocalSer
 
 			object = notificationQueuePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(NotificationQueueTemplateTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(NotificationQueueTemplateTerm.USER_ID));
 
-		object.setNotificationType(objectData.getString("notificationType"));
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setPayload(objectData.getString("payload"));
-		object.setFromUsername(objectData.getString("fromUsername"));
-		object.setToUsername(objectData.getString("toUsername"));
-		object.setToUserId(objectData.getLong("toUserId"));
-		object.setToEmail(objectData.getString("toEmail"));
-		object.setToTelNo(objectData.getString("toTelNo"));
-		object.setPublicationDate(new Date(objectData.getLong("publicationDate")));
-		object.setExpireDate(new Date(objectData.getLong("expireDate")));
+		object.setNotificationType(objectData.getString(NotificationQueueTemplateTerm.NOTIFICATTION_TYPE));
+		object.setClassName(objectData.getString(NotificationQueueTemplateTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(NotificationQueueTemplateTerm.CLASS_PK));
+		object.setPayload(objectData.getString(NotificationQueueTemplateTerm.PAYLOAD));
+		object.setFromUsername(objectData.getString(NotificationQueueTemplateTerm.FROM_USER_NAME));
+		object.setToUsername(objectData.getString(NotificationQueueTemplateTerm.TO_USER_NAME));
+		object.setToUserId(objectData.getLong(NotificationQueueTemplateTerm.TO_USER_ID));
+		object.setToEmail(objectData.getString(NotificationQueueTemplateTerm.TO_EMAIL));
+		object.setToTelNo(objectData.getString(NotificationQueueTemplateTerm.TO_TEL_NO));
+		object.setPublicationDate(new Date(objectData.getLong(NotificationQueueTemplateTerm.PUBLICATION_DATE)));
+		object.setExpireDate(new Date(objectData.getLong(NotificationQueueTemplateTerm.EXPIRE_DATE)));
 
 		notificationQueuePersistence.update(object);
 

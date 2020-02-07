@@ -3063,7 +3063,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 

@@ -389,7 +389,7 @@ public class DossierFileLocalServiceImpl
 		}
 
 		JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
-		formDataObj.put("LicenceNo", deliverableCode);
+		formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 		formData = formDataObj.toJSONString();
 		object.setFormData(formData);
 

@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import backend.admin.config.service.util.ConstantsAdmin;
+
 /**
  * @author binhth
  */
@@ -40,36 +42,36 @@ public class AdminBundlesInstalled {
 			int state = bundle.getState();
 			switch (state) {
 			case 0x00000001:
-				stateName = "UNINSTALLED";
+				stateName = ConstantsAdmin.UNINSTALLED;
 				break;
 
 			case 0x00000002:
-				stateName = "INSTALLED";
+				stateName = ConstantsAdmin.INSTALLED;
 				break;
 
 			case 0x00000004:
-				stateName = "RESOLVED";
+				stateName = ConstantsAdmin.RESOLVED;
 				break;
 
 			case 0x00000008:
-				stateName = "STARTING";
+				stateName = ConstantsAdmin.STARTING;
 				break;
 
 			case 0x00000010:
-				stateName = "STOPPING";
+				stateName = ConstantsAdmin.STOPPING;
 				break;
 
 			case 0x00000020:
-				stateName = "ACTIVE";
+				stateName = ConstantsAdmin.ACTIVE;
 				break;
 
 			default:
-				stateName = "UNINSTALLED";
+				stateName = ConstantsAdmin.UNINSTALLED;
 				break;
 			}
 		}
 		else {
-			stateName = "UNINSTALLED";
+			stateName = ConstantsAdmin.UNINSTALLED;
 		}
 		
 		return stateName;

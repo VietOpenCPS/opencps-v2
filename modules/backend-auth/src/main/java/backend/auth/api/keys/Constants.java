@@ -68,4 +68,8 @@ public class Constants {
 	
 	public static final String TIMESHEET_02 = "TIMESHEET-02";
 	
+	public static final String CONVERTER_PROPERTY_DESCRIPTOR_NAME_CLASS = "class";
+
+	public static final String SEND_MAIL_UTIL_FROM_NAME = "Mail System";
+	public static final Boolean SEND_MAIL_UTIL_HTML_FORMAT = true;
 }

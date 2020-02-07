@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.Validator;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.datamgt.constants.DataMGTConstants;
 
 public class WorkTimeActions implements WorkTimeInterface {
 
@@ -57,11 +58,11 @@ public class WorkTimeActions implements WorkTimeInterface {
 
 			hits = WorkTimeLocalServiceUtil.luceneSearchEngine(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = WorkTimeLocalServiceUtil.countLuceneSearchEngine(params, searchContext);
 
-			result.put("total", total);
+			result.put(DataMGTConstants.TOTAL, total);
 
 		} catch (ParseException e) {
 			_log.debug(e);

@@ -21,14 +21,19 @@ import org.opencps.kernel.prop.PropValues;
 import org.opencps.kernel.template.MessageDataModel;
 import org.opencps.kernel.template.freemarker.TemplateProcessor;
 
+import backend.communication.service.util.ConfigConstants;
+import backend.communication.service.util.ConfigProps;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -178,7 +183,7 @@ public class NotificationUtil {
 				String token = StringPool.BLANK;
 				if (Validator.isNotNull(security)) {
 					token = Base64.encode(
-						(queue.getToEmail() + ":" + security).getBytes());
+						(queue.getToEmail() + StringPool.COLON + security).getBytes());
 				}
 
 				dataModel.setToken(token);
@@ -349,11 +354,11 @@ public class NotificationUtil {
 				JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 					_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 
-				if (resultApi.has("data")) {
+				if (resultApi.has(SendSMSTerm.DATA)) {
 
 					Map<Long, String> mappingZaloUid = new HashMap<>();
 					String zOId =
-						resultApi.getJSONObject("data").getString("user_id");
+						resultApi.getJSONObject(SendSMSTerm.DATA).getString(ZALO_USER_ID);
 
 					mappingZaloUid.put(
 						toUserId > 0 ? toUserId : new Long(0), zOId);
@@ -376,16 +381,21 @@ public class NotificationUtil {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			JSONObject data = JSONFactoryUtil.createJSONObject();
 
-			data.put("user_id", toTelNo);
+			data.put(ZALO_USER_ID, toTelNo);
 
-			String endPoint = ZALO_ENDPOID_GET_USER_INFO + "?access_token=" +
-				token + "&data=" + data.toJSONString();
+			String endPoint =
+				ConfigProps.get(ConfigConstants.ZALO_ENDPOID_GET_USER_INFO) +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_TOKEN) + token +
+					ConfigProps.get(ConfigConstants.ZALO_PARAM_DATA) +
+					data.toJSONString();
 
 			JSONObject resPostDossier = _callAPI(
-				HttpMethods.GET, "application/json", ZALO_PATH_BASE, endPoint,
+				HttpMethods.GET,
+				ConfigProps.get(ConfigConstants.ZALO_MEDIA_TYPE),
+				ConfigProps.get(ConfigConstants.ZALO_PATH_BASE), endPoint,
 				StringPool.BLANK, StringPool.BLANK, properties);
 
-			String uid = resPostDossier.getString("message");
+			String uid = resPostDossier.getString(RESTFulConfiguration.MESSAGE);
 
 			if (Validator.isNotNull(uid)) {
 
@@ -425,16 +435,19 @@ public class NotificationUtil {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
-				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+				endPoint.startsWith(StringPool.FORWARD_SLASH)) ||
+				(pathBase.endsWith(StringPool.FORWARD_SLASH) &&
+					!endPoint.startsWith(StringPool.FORWARD_SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.FORWARD_SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -442,21 +455,23 @@ public class NotificationUtil {
 			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
 
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
 
-				String authString = username + ":" + password;
+				String authString = username + StringPool.COLON + password;
 
 				String authStringEnc = new String(
 					java.util.Base64.getEncoder().encodeToString(
 						authString.getBytes()));
 				conn.setRequestProperty(
-					"Authorization", "Basic " + authStringEnc);
+					HttpHeaders.AUTHORIZATION,
+					HttpAuthorizationHeader.SCHEME_BASIC +
+						StringPool.SPACE + authStringEnc);
 			}
 
 			if (!properties.isEmpty()) {
@@ -499,6 +514,7 @@ public class NotificationUtil {
 	private static final String ZALO_PATH_BASE = "https://openapi.zalo.me";
 	private static final String ZALO_ENDPOID_GET_USER_INFO = "/v2.0/oa/getprofile";
 	private static final String ZALO_UID = "zaloUid";
+	private static final String ZALO_USER_ID = "user_id";
 	private static final String ZALO_TOKEN = "zaloToken";
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationUtil.class);

@@ -71,6 +71,12 @@ public class WorkspaceTerm {
 	public static final String TREE_INDEX_SORTABLE = "treeIndex_sortable";
 	
 	public static final String LEVEL_SORTABLE = "level_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public WorkspaceTerm() {
 
