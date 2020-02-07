@@ -782,14 +782,15 @@ public class DossierUtils {
 		if (Validator.isNull(input)) {
 			return model;
 		}
-		try {
-			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
-		} catch (Exception e) {
-			//_log.error(e);
-			_log.debug(e);
-			model.setDossierIdCTN(StringPool.BLANK);
-		}
+//		try {
+//			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
+//			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
+//		} catch (Exception e) {
+//			//_log.error(e);
+//			_log.debug(e);
+		model.setDossierIdCTN(StringPool.BLANK);
+		model.setGroupId(input.getGroupId());
+//		}
 		
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
 		model.setDossierName(input.getDossierName());

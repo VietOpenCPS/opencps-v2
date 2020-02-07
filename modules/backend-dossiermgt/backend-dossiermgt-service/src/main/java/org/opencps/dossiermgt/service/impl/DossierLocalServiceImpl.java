@@ -82,8 +82,10 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -1052,7 +1054,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	// private final String POSTAL_ADMINISTRATIVE_REGION = "VNPOST_CODE";
-	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+	private final String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 	// private final int DUE_DATE_DEFAULT = 5;
 
 	private String getDictItemName(

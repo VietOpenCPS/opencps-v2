@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.opencps.dossiermgt.action.RegistrationFormActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.model.RegistrationTemplates;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
@@ -173,11 +174,11 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 
 			hits = RegistrationFormLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = RegistrationFormLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -205,12 +206,12 @@ public class RegistrationFormActionsImpl implements RegistrationFormActions {
 //			hits = RegistrationFormLocalServiceUtil.searchLucene(userId, params, sorts, start, end, searchContext);
 //
 //			List<Document> test = hits.toList();
-//			result.put("data", test);
+//			result.put(ConstantUtils.DATA, test);
 //			
 //
 //			long total = RegistrationFormLocalServiceUtil.countLucense(userId, params, sorts, start, end, searchContext);
 //
-//			result.put("total", total);
+//			result.put(ConstantUtils.TOTAL, total);
 //
 //		} catch (Exception e) {
 //			_log.error(e);

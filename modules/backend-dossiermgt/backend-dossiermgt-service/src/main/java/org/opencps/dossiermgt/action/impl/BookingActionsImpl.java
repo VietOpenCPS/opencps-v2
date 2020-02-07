@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import org.opencps.dossiermgt.action.BookingActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 
@@ -34,13 +35,13 @@ public class BookingActionsImpl implements BookingActions {
 
 			hits = BookingLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 			if (hits != null) {
-				result.put("data", hits.toList());
+				result.put(ConstantUtils.DATA, hits.toList());
 
 				long total = BookingLocalServiceUtil.countLucene(params, searchContext);
 
-				result.put("total", total);
+				result.put(ConstantUtils.TOTAL, total);
 			} else {
-				result.put("total", 0l);
+				result.put(ConstantUtils.TOTAL, 0l);
 			}
 
 		} catch (Exception e) {

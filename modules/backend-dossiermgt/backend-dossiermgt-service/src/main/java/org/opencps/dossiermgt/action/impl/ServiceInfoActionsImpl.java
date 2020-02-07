@@ -57,6 +57,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 		try {
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
+			
 			hits = ServiceInfoLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
 			result.put(ConstantUtils.DATA, hits.toList());

@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
@@ -30,8 +32,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 public class VnpostEvent implements MessageListener {
 	
-	private static final String VNPOST_BASE_PATH = "postal/vnpost";
-	
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
@@ -51,21 +51,21 @@ public class VnpostEvent implements MessageListener {
 		Map<String, Object> params = new HashMap<>();
 		String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
 		_log.info("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
-		params.put("orderNumber", dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
-		params.put("senderName", dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
-		params.put("receiverName", dossierObj.getString(DossierTerm.DELEGATE_NAME)); 
-		params.put("receiverAddress", dossierObj.get(DossierTerm.POSTAL_ADDRESS)); 
-		params.put("receiverTel", dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
-		params.put("receiverProvince", dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
-		params.put("receiverDistrict", dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
-		params.put("receiverEmail", dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
-		params.put("senderDesc", senderDesc + dossierObj.getString(DossierTerm.DELEGATE_NAME));
+		params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
+		params.put(KeyPayTerm.SENDERNAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
+		params.put(KeyPayTerm.RECEIVERNAME, dossierObj.getString(DossierTerm.DELEGATE_NAME)); 
+		params.put(KeyPayTerm.RECEIVERADDRESS, dossierObj.get(DossierTerm.POSTAL_ADDRESS)); 
+		params.put(KeyPayTerm.RECEIVERTEL, dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
+		params.put(KeyPayTerm.RECEIVERPROVINCE, dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
+		params.put(KeyPayTerm.RECEIVERDISTRICT, dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
+		params.put(KeyPayTerm.RECEIVEREMAIL, dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
+		params.put(KeyPayTerm.SENDERDESC, senderDesc + dossierObj.getString(DossierTerm.DELEGATE_NAME));
 		
 		ServiceContext context = null;
 		
-		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, "application/json", baseUrl,
-				VNPOST_BASE_PATH, "", "", properties, params, context);
-		System.out.println("===========" + baseUrl + "      " + VNPOST_BASE_PATH);
+		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
+				KeyPayTerm.VNPOST_BASE_PATH, "", "", properties, params, context);
+		System.out.println("===========" + baseUrl + "      " + KeyPayTerm.VNPOST_BASE_PATH);
 		_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
 		
 		if(resultObj != null) {

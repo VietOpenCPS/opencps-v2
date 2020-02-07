@@ -326,7 +326,7 @@ public class AutoFillFormData {
 									for (String string : variableMuti) {
 										myCHK += StringPool.COMMA_AND_SPACE + jsonOtherMap.get(string).toString();
 									}
-									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, "");
+									myCHK = myCHK.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK);
 								} else {
 									myCHK = jsonOtherMap.get(variable).toString();
 								}
@@ -337,12 +337,12 @@ public class AutoFillFormData {
 							}
 
 							if (myCHK.startsWith(StringPool.POUND)) {
-								jsonMap.put(entry.getKey(), "");
+								jsonMap.put(entry.getKey(), StringPool.BLANK);
 							} else {
 								jsonMap.put(entry.getKey(), myCHK.toString());
 							}
 						} else {
-							jsonMap.put(entry.getKey(), "");
+							jsonMap.put(entry.getKey(), StringPool.BLANK);
 						}
 					} catch (SystemException e) {
 //						e.printStackTrace();
@@ -386,7 +386,7 @@ public class AutoFillFormData {
 				} else if (entry.getValue().getClass().getName().contains("JSONObject")) {
 					result.put(entry.getKey(), (JSONObject) entry.getValue());
 				} else {
-					result.put(entry.getKey(), entry.getValue() + "");
+					result.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
 				}
 			}
 		} catch (JSONException e) {

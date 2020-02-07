@@ -33,4 +33,5 @@ public class RegistrationTerm {
 	public static final String REGISTRATION_TEMPLATES_ID = "registrationTemplatesId";
 	public static final String MULTIPLE = "multiple";
 	public static final String SAMPLE_DATA = "sampleData";
+	public static final String LST_REGISTRATION_TEMPLATE = "lstRegistrationTemplate";
 }
