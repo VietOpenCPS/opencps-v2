@@ -54,6 +54,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
@@ -122,7 +123,6 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
-	public static final String SPECIAL_STATUS_KEY = "specialStatus";
 	
 	CacheActions cache = new CacheActionsImpl();
 	long ttl = OpenCPSConfigUtil.getCacheTTL();
@@ -209,7 +209,7 @@ public class DossierActionsImpl implements DossierActions {
 //						_log.info("metaData: " + metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
+							specialStatus = metaJson.getString("specialStatus");
 //							_log.info("specialStatus: " + specialStatus);
 
 						} catch (Exception e) {
@@ -253,7 +253,7 @@ public class DossierActionsImpl implements DossierActions {
 //							_log.info("metaData: " + metaData);
 							try {
 								JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-								specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
+								specialStatus = metaJson.getString("specialStatus");
 //								_log.info("specialStatus: " + specialStatus);
 
 							} catch (Exception e) {
@@ -3000,7 +3000,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 						// _log.info("metaData: " +metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString(SPECIAL_STATUS_KEY);
+							specialStatus = metaJson.getString("specialStatus");
 							// _log.info("specialStatus: " +specialStatus);
 
 						} catch (Exception e) {
@@ -3618,6 +3618,33 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			return null;
 		}		
 	}	
+	
+	private void updateStatus(Dossier dossier, String status, String statusText, String subStatus,
+			String subStatusText, String lockState, String stepInstruction, ServiceContext context)
+			throws PortalException {
+
+		Date now = new Date();
+
+		dossier.setModifiedDate(now);
+
+		dossier.setDossierStatus(status);
+		dossier.setDossierStatusText(statusText);
+		dossier.setDossierSubStatus(subStatus);
+		dossier.setDossierSubStatusText(subStatusText);
+		dossier.setLockState(lockState);
+		dossier.setDossierNote(stepInstruction);
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.RELEASING)) {
+			dossier.setReleaseDate(now);
+		}
+
+		if (status.equalsIgnoreCase(DossierStatusConstants.DONE)) {
+			dossier.setFinishDate(now);
+			if (dossier.getReleaseDate() == null) {
+				dossier.setReleaseDate(now);
+			}
+		}
+	}
 
 	@Override
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
@@ -3754,14 +3781,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			// Create DossierAction
 			DossierAction dossierAction = null;
 			if (dossierId == 0) {
-				String fromStepCode = DossierActionTerm.publishImportDossier_fromStepCode;
-				String fromStepName = DossierActionTerm.publishImportDossier_fromStepName;
-				String fromSequenceNo = DossierActionTerm.publishImportDossier_fromSequenceNo;
-				String actionCode = DossierActionTerm.publishImportDossier_actionCode;
-				String actionUser = DossierActionTerm.publishImportDossier_actionUser;
-				String actionName = DossierActionTerm.publishImportDossier_actionName;
-				String stepCode = DossierActionTerm.publishImportDossier_stepCode;
-				String stepName = DossierActionTerm.publishImportDossier_stepName;
+				String fromStepCode = "300";
+				String fromStepName = "Trả kết quả";
+				String fromSequenceNo = "04";
+				String actionCode = "4000";
+				String actionUser = "Tiếp nhận";
+				String actionName = "Trả hoàn thiện";
+				String stepCode = "400";
+				String stepName = "Hoàn thành";
 				dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
 						option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName, fromSequenceNo,
 						actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1, serviceContext);
@@ -3770,14 +3797,14 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				if (dossierActionList != null && dossierActionList.size() > 0) {
 					dossierAction = dossierActionList.get(0);
 				} else {
-					String fromStepCode = DossierActionTerm.publishImportDossier_fromStepCode;
-					String fromStepName = DossierActionTerm.publishImportDossier_fromStepName;
-					String fromSequenceNo = DossierActionTerm.publishImportDossier_fromSequenceNo;
-					String actionCode = DossierActionTerm.publishImportDossier_actionCode;
-					String actionUser = DossierActionTerm.publishImportDossier_actionUser;
-					String actionName = DossierActionTerm.publishImportDossier_actionName;
-					String stepCode = DossierActionTerm.publishImportDossier_stepCode;
-					String stepName = DossierActionTerm.publishImportDossier_stepName;
+					String fromStepCode = "300";
+					String fromStepName = "Trả kết quả";
+					String fromSequenceNo = "04";
+					String actionCode = "4000";
+					String actionUser = "Tiếp nhận";
+					String actionName = "Trả hoàn thiện";
+					String stepCode = "400";
+					String stepName = "Hoàn thành";
 					dossierAction = DossierActionLocalServiceUtil.updateImportDossierAction(groupId, 0l,
 							option != null ? option.getServiceProcessId() : 0, fromStepCode, fromStepName,
 							fromSequenceNo, actionCode, actionUser, actionName, stepCode, stepName, null, 0l, 1,

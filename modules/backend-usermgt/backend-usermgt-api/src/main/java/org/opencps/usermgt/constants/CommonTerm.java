@@ -10,7 +10,7 @@ public class CommonTerm {
 	public static final String EMPLOYEE = "employee";
 	public static final String USER_NAME = "USERNAME";
 	public static final String USER_EMAIL = "USEREMAIL";
-	public static final String PASS_WORD = "PASSWORD";
+	public static final String SECRET_CODE = "PASSWORD";
 	public static final String USER_STATUS = "USERSTATUS";
 
 	public static final String EMAIL_DASH_ADDRESS = "email-address";

@@ -55,7 +55,7 @@ public class ViettelSMSUtils {
 				configObj.has(SendSMSTerm.COMMAND_CODE) &&
 				configObj.has(SendSMSTerm.CONTENT_TYPE) &&
 				configObj.has(SendSMSTerm.CP_CODE) &&
-				configObj.has(SendSMSTerm.PASSWORD) &&
+				configObj.has(SendSMSTerm.SECRET_CODE) &&
 				configObj.has(SendSMSTerm.REQUEST_ID) &&
 				configObj.has(SendSMSTerm.SERVICE_ID) &&
 				configObj.has(SendSMSTerm.USER) &&
@@ -72,7 +72,7 @@ public class ViettelSMSUtils {
 					: toTelNo;
 				result = portType.wsCpMt(
 					configObj.getString(SendSMSTerm.USER),
-					configObj.getString(SendSMSTerm.PASSWORD),
+					configObj.getString(SendSMSTerm.SECRET_CODE),
 					configObj.getString(SendSMSTerm.CP_CODE),
 					configObj.getString(SendSMSTerm.REQUEST_ID), toTelNoRpl,
 					toTelNoRpl, configObj.getString(SendSMSTerm.SERVICE_ID),

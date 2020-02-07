@@ -315,14 +315,14 @@ public class DossierNumberGenerator {
 		// Xử lý year
 		String year = listPattern[1].substring(1, listPattern[1].length() - 1);
 		Calendar calendar = Calendar.getInstance();
-		String y = StringPool.BLANK;
-		String processIdPattern = StringPool.BLANK;
+		//String y = StringPool.BLANK;
+		//String processIdPattern = StringPool.BLANK;
 		if (year.length() == 2) {
-			y = String.valueOf(calendar.get(Calendar.YEAR)).substring(2);
+			String y = String.valueOf(calendar.get(Calendar.YEAR)).substring(2);
 			// replace year
 			pattern = pattern.replace(listPattern[1], y);
 		} else {
-			y = String.valueOf(calendar.get(Calendar.YEAR));
+			String y = String.valueOf(calendar.get(Calendar.YEAR));
 			// replace year
 			pattern = pattern.replace(listPattern[1], y);
 		}
@@ -332,21 +332,23 @@ public class DossierNumberGenerator {
 		if ("{code}".equals(listPattern[0])) {
 			// replace code
 			pattern = pattern.replace(listPattern[0], code);
-			processP = listPattern[2];
+			processP += listPattern[2];
 		} else {
 			// replace code
 			pattern = pattern.replace(listPattern[2], code);
-			processP = listPattern[0];
+			processP += listPattern[0];
 		}
-		processIdPattern = processP.substring(1, processP.length() - 1);
-		// replace procsesId
-		if (processId.length() == processIdPattern.length()) {
-			pattern = pattern.replace(processP, processId);
-		} else if (processId.length() > processIdPattern.length()) {
-			pattern = pattern.replace(processP, processId.substring(processId.length() - processIdPattern.length()));
-		} else {
-			String p = "%0" + (processIdPattern.length() - processId.length()) + "d%s";
-			pattern = pattern.replace(processP, String.format(p, 0, processId));
+		if (Validator.isNotNull(processP)) {
+			String processIdPattern = processP.substring(1, processP.length() - 1);
+			// replace procsesId
+			if (processId.length() == processIdPattern.length()) {
+				pattern = pattern.replace(processP, processId);
+			} else if (processId.length() > processIdPattern.length()) {
+				pattern = pattern.replace(processP, processId.substring(processId.length() - processIdPattern.length()));
+			} else {
+				String p = "%0" + (processIdPattern.length() - processId.length()) + "d%s";
+				pattern = pattern.replace(processP, String.format(p, 0, processId));
+			}
 		}
 
 		return pattern;

@@ -102,7 +102,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		_log.debug("SOCKET WEB: " + groupId);
-		String portalURL = PortalUtil.getPortalURL(request);
+		//String portalURL = PortalUtil.getPortalURL(request);
 		
 		try {
 			JSONObject message = JSONFactoryUtil.createJSONObject(text);
@@ -388,13 +388,13 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 //
 //					messageData.put(STATUS, HttpStatus.OK);
 					
-				    String apiUrl = StringPool.BLANK;
+				    //String apiUrl = StringPool.BLANK;
 				    
 				    StringBuilder sb = new StringBuilder();
 				    try
 				    {
 				        URL urlVal = null;
-						apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString("api");
+				        String apiUrl = OpenCPSConfigUtil.getAdminProxyUrl() + message.getString("api");
 						urlVal = new URL(apiUrl);
 						
 						JSONObject headerObject = message.getJSONObject("headers");

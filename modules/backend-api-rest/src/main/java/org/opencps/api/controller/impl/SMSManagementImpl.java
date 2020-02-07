@@ -154,7 +154,7 @@ public class SMSManagementImpl implements SMSManagement {
 			if (epacifConfig.has(SendSMSTerm.EPACIFIC_GROUPID) &&
 				epacifConfig.has(SendSMSTerm.EPACIFIC_MINE) &&
 				epacifConfig.has(SendSMSTerm.EPACIFIC_USER) &&
-				epacifConfig.has(SendSMSTerm.EPACIFIC_PASSWORD)) {
+				epacifConfig.has(SendSMSTerm.EPACIFIC_SECRET)) {
 
 				String[] strArr = iPacific.getInfo().split(" ");
 				String dossierNo = strArr[1];
@@ -181,11 +181,11 @@ public class SMSManagementImpl implements SMSManagement {
 
 				}
 				else if (!epacifConfig.getString(
-					SendSMSTerm.EPACIFIC_PASSWORD).equalsIgnoreCase(
+					SendSMSTerm.EPACIFIC_SECRET).equalsIgnoreCase(
 						iPacific.getPassword())) {
 
 					result = epacifConfig.getString(
-						SendSMSTerm.EPACIFIC_PASSWORD_ERROR_MES);
+						SendSMSTerm.EPACIFIC_SECRET_ERROR_MES);
 
 				}
 				else if (Validator.isNull(dossier)) {
@@ -197,7 +197,7 @@ public class SMSManagementImpl implements SMSManagement {
 				else if (!dossier.getPassword().equalsIgnoreCase(secretCode)) {
 
 					result = epacifConfig.getString(
-						SendSMSTerm.EPACIFIC_D_PASSWORD_ERROR_MES);
+						SendSMSTerm.EPACIFIC_D_SECRET_ERROR_MES);
 
 				}
 				else {

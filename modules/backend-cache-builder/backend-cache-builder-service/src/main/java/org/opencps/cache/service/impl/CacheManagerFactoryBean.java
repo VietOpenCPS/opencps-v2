@@ -22,6 +22,7 @@ public class CacheManagerFactoryBean {
 					logger.debug("Using Redis cache manager");
 					return redisCacheManager;
 				} catch (PortalException ex) {
+					logger.debug(ex);
 					logger.error("RedisCacheManager not initialized... Falling back on liferay cache manager");
 				}
 			}

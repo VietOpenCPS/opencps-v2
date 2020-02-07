@@ -10,7 +10,7 @@ public class PropKeys {
 
 	public static final String SYSTEM_USER_ID = "org.mobilink.system.user.id";
 
-	public static final String SYSTEM_PASS = "org.mobilink.system.pass";
+	public static final String SYSTEM_SECRET_CODE = "org.mobilink.system.pass";
 
 	public static final String SERVER_BASE_PATH =
 		"org.mobilink.server.base.path";

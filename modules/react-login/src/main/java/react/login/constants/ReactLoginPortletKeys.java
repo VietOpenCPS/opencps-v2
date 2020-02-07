@@ -7,7 +7,7 @@ public class ReactLoginPortletKeys {
 
 	public static final String ReactLogin = "npmreactlogin";
 	public static final String LOGIN_PARAM_KEY_LOGIN = "login";
-	public static final String LOGIN_PARAM_KEY_PASSWORD = "password";
+	public static final String LOGIN_PARAM_KEY_SECRET_CODE = "password";
 	public static final String LOGIN_PARAM_KEY_ACTION = "action";
 	public static final String LOGIN_PARAM_KEY_REMEMBER_ME = "rememberMe";
 	public static final String ACTION_CONFIRM_ACCOUNT = "confirm_account";

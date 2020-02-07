@@ -104,7 +104,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put(DVCQGIntegrationActionTerm.CHUHOSO, dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals(DVCQGIntegrationActionTerm.BUSINESS)) {
+			if (DVCQGIntegrationActionTerm.BUSINESS.equalsIgnoreCase(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
@@ -213,7 +213,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put(DVCQGIntegrationActionTerm.CHUHOSO, dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals(DVCQGIntegrationActionTerm.BUSINESS)) {
+			if (DVCQGIntegrationActionTerm.BUSINESS.equalsIgnoreCase(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
@@ -377,7 +377,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private String getAccessToken(ServerConfig serverConfig) {
 
-		HttpURLConnection conn = null;
+		//HttpURLConnection conn = null;
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -386,11 +386,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return StringPool.BLANK;
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
 		}
+//		finally {
+//			if (conn != null) {
+//				conn.disconnect();
+//			}
+//		}
 	}
 
 	@Override
@@ -988,7 +989,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put(DVCQGIntegrationActionTerm.DATA, synsObjects);
 				body.put(DVCQGIntegrationActionTerm.SERVICE, DVCQGIntegrationActionTerm.DONGBOHOSOMC);
 				result = syncData(serverConfig, body);
-				if (result.has(DVCQGIntegrationActionTerm.ERROR_CODE) && result.getString(DVCQGIntegrationActionTerm.ERROR_CODE).equals(DVCQGIntegrationActionTerm.ERR_CODE_00_KEY)) {
+				if (result.has(DVCQGIntegrationActionTerm.ERROR_CODE) && DVCQGIntegrationActionTerm.ERR_CODE_00_KEY.equals(result.getString(DVCQGIntegrationActionTerm.ERROR_CODE))) {
 					body = JSONFactoryUtil.createJSONObject();
 					synsObjects = JSONFactoryUtil.createJSONArray();
 					JSONObject _tmp = createSyncDossierStatusBodyRequest(groupId, dossier);

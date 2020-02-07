@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -29,8 +28,6 @@ import java.util.Locale;
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -51,8 +48,6 @@ import org.opencps.api.user.model.UserSitesResults;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
@@ -689,7 +684,7 @@ public class UserManagementImpl implements UserManagement {
 			List<Role> roles = user.getRoles();
 
 			for (Role role : roles) {
-				String roleName = StringPool.BLANK;
+				//String roleName = StringPool.BLANK;
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -705,7 +700,7 @@ public class UserManagementImpl implements UserManagement {
 //					roleName = "Administrator_data";
 //				}
 				
-				roleName = role.getName();
+				String roleName = role.getName();
 
 				result.put("email", user.getEmailAddress());
 				result.put("role", roleName);

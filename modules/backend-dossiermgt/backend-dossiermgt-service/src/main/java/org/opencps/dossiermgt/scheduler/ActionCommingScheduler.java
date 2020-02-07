@@ -171,7 +171,7 @@ public class ActionCommingScheduler extends BaseMessageListener {
 							}
 						}
 						catch (Exception e) {
-							
+							_log.debug(e);
 						}
 					}
 				}

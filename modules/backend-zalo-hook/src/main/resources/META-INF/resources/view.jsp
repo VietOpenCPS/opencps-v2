@@ -1,5 +1,5 @@
 <%@ include file="/init.jsp" %>
 
 <p>
-	<b><liferay-ui:message key="backend-zalo-hook.caption"/></b>
+	<strong><liferay-ui:message key="backend-zalo-hook.caption"/></strong>
 </p>

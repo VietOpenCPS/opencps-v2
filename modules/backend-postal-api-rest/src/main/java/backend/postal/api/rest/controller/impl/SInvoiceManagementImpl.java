@@ -67,7 +67,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			String userName = config.getString(SInvoiceTerm.USER_NAME);
-			String password = config.getString(SInvoiceTerm.PASSWORD);
+			String password = config.getString(SInvoiceTerm.SECRET_CODE);
 			JSONObject endpointConfig = config.getJSONObject(cmd);
 			String endpoint = endpointConfig.getString(SInvoiceTerm.ENDPOINT);
 			String method = endpointConfig.getString(SInvoiceTerm.METHOD);
@@ -131,7 +131,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.error(e);
 			InvokeResultModel invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));

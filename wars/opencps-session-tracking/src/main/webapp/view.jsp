@@ -33,12 +33,6 @@
 		<span class="tracking-label"><liferay-ui:message key="number-of-user-onlile"/> </span>
 		<span class="tracking-value"><%=curVisitor %></span>
 	</div>
-	<!-- 
-		<div class="total-visitor">
-			<span class="tracking-label"><liferay-ui:message key="total-visitor"/> </span>
-			<span class="tracking-value">totalVisitor</span>
-		</div>
-	 -->
 </div>
 
 

@@ -31,6 +31,7 @@ public class RedisCacheManagerImpl implements CacheManager {
 	      try {
 	         jedis.hset(serialize(cacheName), serialize(key), serialize(value));
 	      } catch (Exception ex) {
+	    	  logger.debug(ex);
 	         logger.error("Redis Cache: Error adding object to cache. CacheName = " + cacheName + ", Key = " + key);
 	      }finally {
 	         jedis.close();

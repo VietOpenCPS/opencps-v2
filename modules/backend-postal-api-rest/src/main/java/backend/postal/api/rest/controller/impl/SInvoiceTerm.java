@@ -3,7 +3,7 @@ package backend.postal.api.rest.controller.impl;
 public class SInvoiceTerm {
 	
 	public static final String USER_NAME = "userName";
-	public static final String PASSWORD = "password";
+	public static final String SECRET_CODE = "password";
 	public static final String ENDPOINT = "endpoint";
 	public static final String METHOD = "method";
 	public static final String ACCEPT = "accept";

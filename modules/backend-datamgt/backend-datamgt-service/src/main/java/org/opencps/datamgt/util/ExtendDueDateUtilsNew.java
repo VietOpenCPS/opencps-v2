@@ -91,7 +91,7 @@ public class ExtendDueDateUtilsNew {
 //		_log.info("endDateCal: "+endDateCal.get(Calendar.DATE));
 		
 		//Get info day off and day work
-		String strDayOff = CommonDateUtils.getDayByGroupId(groupId);
+		//String strDayOff = CommonDateUtils.getDayByGroupId(groupId);
 //		_log.info("strDayOff: "+strDayOff);
 
 		//boolean flagCompareDate = false;
@@ -187,16 +187,20 @@ public class ExtendDueDateUtilsNew {
 							startDateCal.set(Calendar.MINUTE, startMinuteAM);
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDateCal.getTimeInMillis() - countTimeOffNoon();
+							break;
 						case 2:
 							extendHour = endDateCal.getTimeInMillis() - startDate - countTimeOffNoon();
+							break;
 						case 3:
 							startDateCal.set(Calendar.HOUR_OF_DAY, startHourPM);
 							startDateCal.set(Calendar.MINUTE, startMinutePM);
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDateCal.getTimeInMillis();
+							break;
 						case 4:
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDate;
+							break;
 						}
 						break;
 					default:

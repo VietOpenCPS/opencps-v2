@@ -2,7 +2,7 @@ package org.opencps.dossiermgt.constants;
 
 public class CInvoiceTerm {
 
-	public static final String passWord = "passWord";
+	public static final String secretCode = "passWord";
 	public static final String soid = "soid";
 	public static final String maHoadon = "maHoadon";
 	public static final String ngayHd = "ngayHd";

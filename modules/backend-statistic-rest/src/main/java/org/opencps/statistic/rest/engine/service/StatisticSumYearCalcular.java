@@ -168,8 +168,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -303,8 +303,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -440,8 +440,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -531,8 +531,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -734,8 +734,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest
@@ -869,8 +869,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest
@@ -1006,8 +1006,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest
@@ -1097,8 +1097,8 @@ public class StatisticSumYearCalcular {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							agencyRequest

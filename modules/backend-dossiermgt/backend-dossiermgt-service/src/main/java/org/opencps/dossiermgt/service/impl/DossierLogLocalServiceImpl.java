@@ -170,7 +170,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
-		String keywords = StringPool.BLANK;
+		String keywords = null;
 		if (notiType != StringPool.NULL) {
 			keywords = notiType;
 		} else {
@@ -258,7 +258,7 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 		notiType = StringUtil.replace(notiType, StringPool.DASH, StringPool.BLANK);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		String dosssierId = String.valueOf(params.get(DossierLogTerm.DOSSIER_ID));
-		String keywords = StringPool.BLANK;
+		String keywords = null;
 		if (notiType != StringPool.NULL) {
 			keywords = notiType;
 		} else {

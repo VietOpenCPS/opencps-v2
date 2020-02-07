@@ -17,6 +17,8 @@ package org.opencps.dossiermgt.service.impl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
@@ -56,6 +58,8 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 	 * the service info mapping local service.
 	 */
 
+	private static Log _log = LogFactoryUtil.getLog(ServiceInfoMappingLocalServiceImpl.class);
+
 	public ServiceInfoMapping addServiceInfoMapping(long groupId, long companyId, long userId, String serviceCode,
 			String serviceCodeDVCQG) throws PortalException {
 		long serviceInfoMappingId = counterLocalService.increment(ServiceInfoMappingLocalServiceImpl.class.getName());
@@ -81,6 +85,7 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 				serviceInfoMappingPersistence.remove(serviceInfoMapping.getServiceInfoMappingId());
 				return true;
 			} catch (NoSuchServiceInfoMappingException e) {
+				_log.debug(e);
 				return false;
 			}
 		}

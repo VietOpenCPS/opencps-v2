@@ -553,7 +553,7 @@ public class FaqManagementImpl implements FaqManagement {
 				String serverUrl = StringPool.BLANK;
 				String authStrEnc = StringPool.BLANK;
 
-				String apiUrl = StringPool.BLANK;
+				//String apiUrl = StringPool.BLANK;
 
 				StringBuilder sb = new StringBuilder();
 				try {
@@ -588,7 +588,7 @@ public class FaqManagementImpl implements FaqManagement {
 							configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
 					}
 
-					apiUrl = serverUrl + url;
+					String apiUrl = serverUrl + url;
 					if ("GET".equals(method)) {
 						urlVal = new URL(apiUrl + "?" + postData.toString());
 					}
@@ -633,6 +633,7 @@ public class FaqManagementImpl implements FaqManagement {
 						sb.toString()).build();
 				}
 				catch (IOException e) {
+					_log.debug(e);
 					_log.debug(
 						"Something went wrong while reading/writing in stream!!");
 				}
