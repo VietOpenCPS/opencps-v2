@@ -84,7 +84,7 @@ public class ZaloMapUtilsV2 {
 			else if (!dossier.getPassword().equalsIgnoreCase(password)) {
 
 				message = zaloConfig.getString(
-					SendSMSTerm.ZALO_DOSSIER_ERROR_PASSWORD_MES);
+					SendSMSTerm.ZALO_DOSSIER_ERROR_SECRET_MES);
 
 			}
 			else {

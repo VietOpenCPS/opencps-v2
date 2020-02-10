@@ -83,7 +83,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			String userName = config.getString(SInvoiceTerm.USER_NAME);
-			String password = config.getString(SInvoiceTerm.PASSWORD);
+			String password = config.getString(SInvoiceTerm.SECRET_CODE);
 			JSONObject endpointConfig = config.getJSONObject(cmd);
 			String endpoint = endpointConfig.getString(SInvoiceTerm.ENDPOINT);
 			String method = endpointConfig.getString(SInvoiceTerm.METHOD);

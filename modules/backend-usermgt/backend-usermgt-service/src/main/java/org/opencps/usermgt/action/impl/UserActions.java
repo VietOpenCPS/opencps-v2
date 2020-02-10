@@ -409,11 +409,11 @@ public class UserActions implements UserInterface {
 
 		List<User> users = UserLocalServiceUtil.getGroupUsers(groupId);
 
-		result.put("data", users);
+		result.put(ApplicantTerm.DATA, users);
 
 		long total = users.size();
 
-		result.put("total", total);
+		result.put(ApplicantTerm.TOTAL, total);
 
 		return result;
 	}
@@ -577,20 +577,20 @@ public class UserActions implements UserInterface {
 
 		// changePassWord
 		String secretKey1 = PwdGenerator.getPassword(2, new String[] {
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_1)
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_1)
 		});
 		String secretKey2 = PwdGenerator.getPassword(2, new String[] {
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_2)
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_2)
 		});
 		String secretKey3 = PwdGenerator.getPassword(2, new String[] {
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_3)
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_3)
 		});
 		String secretKey4 = PwdGenerator.getPassword(1, new String[] {
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_4)
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_4)
 		});
 		String secretKey5 = PwdGenerator.getPassword(4, new String[] {
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_2),
-			ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_4)
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_2),
+			ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_4)
 		});
 		String secretKey =
 			secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
@@ -1133,7 +1133,7 @@ public class UserActions implements UserInterface {
 						UserTerm.APPLICANT_ACTIVATION_CODE,
 						applicant.getActivationCode());
 					result.put(UserTerm.APPLICANT_LOCK, applicant.getLock_());
-					result.put(UserTerm.APPLICANT_TMP_PASS, applicant.getTmpPass());
+					result.put(UserTerm.APPLICANT_TMP_SECRET, applicant.getTmpPass());
 
 					result.put(UserTerm.USER_ID, applicant.getMappingUserId());
 					result.put(UserTerm.USER_NAME, applicant.getApplicantName());

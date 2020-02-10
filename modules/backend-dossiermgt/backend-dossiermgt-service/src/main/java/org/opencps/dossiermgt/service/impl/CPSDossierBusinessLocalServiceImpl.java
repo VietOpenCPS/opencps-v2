@@ -1629,7 +1629,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //				if (intpaymentMethod != 0) {
 //					paymentMethod = checkPaymentMethod(intpaymentMethod);
 //				}
-				if(Validator.isNotNull(resultObj)) {
+				if(resultObj != null) {
 					oldPaymentFile.setEinvoice(resultObj.toString());
 					oldPaymentFile.setInvoicePayload(params.toString());
 //					if (Validator.isNotNull(paymentMethod)) {
@@ -1657,9 +1657,10 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					
 				}
-
-				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
-				paymentFileLocalService.updatePaymentFile(oldPaymentFile);
+                                if (oldPaymentFile != null) {
+				    oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+				    paymentFileLocalService.updatePaymentFile(oldPaymentFile);
+}
 			}
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());

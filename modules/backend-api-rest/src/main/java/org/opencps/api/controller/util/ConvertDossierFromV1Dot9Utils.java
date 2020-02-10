@@ -111,7 +111,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static final String TEMP_DOSSIERACTIONID = "dossierActionId";
 	public static final String TEMP_VIAPOST = "viaPost";
 	public static final String TEMP_POSTADDRESS = "postAddress";
-	public static final String TEMP_PASSWORD_ = "password";
+	public static final String TEMP_SECRET_ = "password";
 	public static final String TEMP_NOTIFICATION = "notification";
 	public static final String TEMP_VIAPOSTAL = "viaPostal";
 	public static final String TEMP_POSTALADDRESS = "postalAddress";
@@ -283,15 +283,14 @@ public class ConvertDossierFromV1Dot9Utils {
 			e.printStackTrace();
 		}
 		finally {
-			if (br != null) {
-				try {
-					br.close();
-				}
-				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if (br != null) {
+//				try {
+//					br.close();
+//				}
+//				catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 		}
 		return result;
 	}
@@ -363,7 +362,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		objectData.put(TEMP_DOSSIERACTIONID, 0l);
 		objectData.put(TEMP_VIAPOST, 0);
 		objectData.put(TEMP_POSTADDRESS, "");
-		objectData.put(TEMP_PASSWORD_, "1111");
+		objectData.put(TEMP_SECRET_, "1111");
 		objectData.put(TEMP_NOTIFICATION, "0");
 		objectData.put(TEMP_VIAPOSTAL, 1);
 		objectData.put(TEMP_POSTALADDRESS, "");
@@ -772,7 +771,7 @@ public class ConvertDossierFromV1Dot9Utils {
 				TEMP_DOSSIERACTIONID, rs.getString(TEMP_DOSSIERACTIONID));
 			objectData.put(TEMP_VIAPOST, rs.getString(TEMP_VIAPOST));
 			objectData.put(TEMP_POSTADDRESS, rs.getString(TEMP_POSTADDRESS));
-			objectData.put(TEMP_PASSWORD_, rs.getString("password_"));
+			objectData.put(TEMP_SECRET_, rs.getString("password_"));
 			objectData.put(TEMP_NOTIFICATION, rs.getString(TEMP_NOTIFICATION));
 			objectData.put(TEMP_VIAPOSTAL, rs.getString(TEMP_VIAPOSTAL));
 			objectData.put(

@@ -217,19 +217,19 @@ public class DueDateUtils {
 				startDateDateStr + StringPool.SPACE + this.startDateTimeStr,
 				DATE_SPACE_TIME_FORMAT);
 		}
-		else if (this.startDateTimeNum > this.endPM) {
-
-			// set to startAM
-			Calendar calStartDate = Calendar.getInstance();
-			calStartDate.setTime(startDate);
-			calStartDate.add(Calendar.DATE, 1);
-			startDateDateStr =
-				SupportUtils._dateToString(calStartDate.getTime(), DATE_FORMAT);
-
-			this.startDate = SupportUtils._stringToDate(
-				startDateDateStr + StringPool.SPACE + DEFAULT_START_AM_STR,
-				DATE_SPACE_TIME_FORMAT);
-		}
+//		else if (this.startDateTimeNum > this.endPM) {
+//
+//			// set to startAM
+//			Calendar calStartDate = Calendar.getInstance();
+//			calStartDate.setTime(startDate);
+//			calStartDate.add(Calendar.DATE, 1);
+//			startDateDateStr =
+//				SupportUtils._dateToString(calStartDate.getTime(), DATE_FORMAT);
+//
+//			this.startDate = SupportUtils._stringToDate(
+//				startDateDateStr + StringPool.SPACE + DEFAULT_START_AM_STR,
+//				DATE_SPACE_TIME_FORMAT);
+//		}
 		else {
 
 			this.startDate = startDate;
@@ -585,7 +585,7 @@ public class DueDateUtils {
 			}
 		}
 
-		if (Validator.isNotNull(holiday)) {
+		if (holiday != null) {
 
 			this.isHolidayType0 = holiday.getHolidayType() == 0;
 			this.isHolidayType1 = holiday.getHolidayType() == 1;

@@ -62,7 +62,7 @@ public class UserTerm {
 	public static final String APPLICANT_CONTACT_TELNO = "applicantContactTelNo";
 	public static final String APPLICANT_CONTACT_EMAIL = "applicantContactEmail";
 	public static final String APPLICANT_ACTIVATION_CODE = "applicantActivationCode";
-	public static final String APPLICANT_TMP_PASS = "applicantTmpPass";
+	public static final String APPLICANT_TMP_SECRET = "applicantTmpPass";
 
 	public static final String TIME_MINUTELY = "minutely";
 	public static final String TIME_HOURLY = "hourly";

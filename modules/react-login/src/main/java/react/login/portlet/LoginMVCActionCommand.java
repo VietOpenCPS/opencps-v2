@@ -62,7 +62,7 @@ public class LoginMVCActionCommand extends BaseMVCActionCommand {
 		String login = ParamUtil.getString(
 			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_LOGIN);
 		String password = ParamUtil.getString(
-			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_PASSWORD);
+			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_SECRET_CODE);
 		String action = ParamUtil.getString(
 			actionRequest, ReactLoginPortletKeys.LOGIN_PARAM_KEY_ACTION);
 		boolean rememberMe = ParamUtil.getBoolean(

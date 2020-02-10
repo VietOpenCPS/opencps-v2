@@ -518,11 +518,11 @@ public class EmployeeActions implements EmployeeInterface {
 
 					//String passWord = PwdGenerator.getPassword();
 					// changePassWord
-					String secretKey1 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_1) });
-					String secretKey2 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_2) });
-					String secretKey3 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_3) });
-					String secretKey4 = PwdGenerator.getPassword(1 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_4) });
-					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_2), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_PWD_GEN_5_4) });
+					String secretKey1 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_1) });
+					String secretKey2 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_2) });
+					String secretKey3 = PwdGenerator.getPassword(2 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_3) });
+					String secretKey4 = PwdGenerator.getPassword(1 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_4) });
+					String secretKey5 = PwdGenerator.getPassword(4 , new String[] { ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_1), ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_2), ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_3), ConfigProps.get(ConfigConstants.EMP_ACTION_SECRET_GEN_5_4) });
 					String passWord = secretKey1 + secretKey2 + secretKey3 + secretKey4 + secretKey5;
 					
 					//_log.info("passWord:"+passWord);
@@ -590,7 +590,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 					payLoad.put(CommonTerm.USER_NAME, newUser.getScreenName());
 					payLoad.put(CommonTerm.USER_EMAIL, newUser.getEmailAddress());
-					payLoad.put(CommonTerm.PASS_WORD, passWord);
+					payLoad.put(CommonTerm.SECRET_CODE, passWord);
 
 					NotificationQueueLocalServiceUtil.addNotificationQueue(
 						userId, groupId, Constants.USER_01,
@@ -1305,7 +1305,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_USERNAME, newUser.getScreenName());
 					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_USEREMAIL, newUser.getEmailAddress());
-					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_PASSWORD, secret);
+					payLoad.put(EmployeeTerm.EMP_ACTION_CREATE_NEW_EMP_SECRET_CODE, secret);
 
 					NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, Constants.USER_01,
 							User.class.getName(), String.valueOf(newUser.getUserId()), payLoad.toJSONString(),

@@ -3077,9 +3077,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierAction dossierAction =
 				DossierActionLocalServiceUtil.fetchDossierAction(
 					dossier.getDossierActionId());
-			if (dossierAction != null) {
-				// if (dossierAction != null && dossierAction.isRollbackable())
-				// {
+			if (dossierAction != null && isAdmin) {
 				DossierActionLocalServiceUtil.updateState(
 					dossierAction.getDossierActionId(),
 					DossierActionTerm.STATE_ROLLBACK);
@@ -3113,40 +3111,40 @@ public class DossierManagementImpl implements DossierManagement {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);
 				}
 			}
-			else if (dossierAction != null && isAdmin) {
-				DossierActionLocalServiceUtil.updateState(
-					dossierAction.getDossierActionId(),
-					DossierActionTerm.STATE_ROLLBACK);
-
-				DossierAction previousAction =
-					DossierActionLocalServiceUtil.fetchDossierAction(
-						dossierAction.getPreviousActionId());
-				if (previousAction != null) {
-					DossierActionLocalServiceUtil.updateState(
-						previousAction.getDossierActionId(),
-						DossierActionTerm.STATE_WAITING_PROCESSING);
-					try {
-						DossierActionLocalServiceUtil.updateNextActionId(
-							previousAction.getDossierActionId(), 0);
-						DossierLocalServiceUtil.rollback(
-							dossier, previousAction);
-					}
-					catch (PortalException e) {
-						return BusinessExceptionImpl.processException(e);
-					}
-				}
-
-				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(
-					groupId, dossier.getDossierId(),
-					dossierAction.getDossierActionId());
-				if (ds != null &&
-					((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM &&
-						dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) ||
-						(ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST &&
-							dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT))) {
-					DossierMgtUtils.processSyncRollbackDossier(dossier);
-				}
-			}
+//			else if (dossierAction != null && isAdmin) {
+//				DossierActionLocalServiceUtil.updateState(
+//					dossierAction.getDossierActionId(),
+//					DossierActionTerm.STATE_ROLLBACK);
+//
+//				DossierAction previousAction =
+//					DossierActionLocalServiceUtil.fetchDossierAction(
+//						dossierAction.getPreviousActionId());
+//				if (previousAction != null) {
+//					DossierActionLocalServiceUtil.updateState(
+//						previousAction.getDossierActionId(),
+//						DossierActionTerm.STATE_WAITING_PROCESSING);
+//					try {
+//						DossierActionLocalServiceUtil.updateNextActionId(
+//							previousAction.getDossierActionId(), 0);
+//						DossierLocalServiceUtil.rollback(
+//							dossier, previousAction);
+//					}
+//					catch (PortalException e) {
+//						return BusinessExceptionImpl.processException(e);
+//					}
+//				}
+//
+//				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(
+//					groupId, dossier.getDossierId(),
+//					dossierAction.getDossierActionId());
+//				if (ds != null &&
+//					((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM &&
+//						dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) ||
+//						(ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST &&
+//							dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT))) {
+//					DossierMgtUtils.processSyncRollbackDossier(dossier);
+//				}
+//			}
 			return Response.status(200).entity(null).build();
 		}
 		else {
@@ -7025,9 +7023,10 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info(ex);
 		}
 		finally {
-			if (con != null) {
+			stmt.close();
+//			if (con != null) {
 				con.close();
-			}
+//			}
 			if (stmt != null) {
 				stmt.close();
 			}
@@ -7084,9 +7083,10 @@ public class DossierManagementImpl implements DossierManagement {
 			System.out.println(ex);
 		}
 		finally {
-			if (con != null) {
+			stmt.close();
+//			if (con != null) {
 				con.close();
-			}
+//			}
 			if (stmt != null) {
 				stmt.close();
 			}

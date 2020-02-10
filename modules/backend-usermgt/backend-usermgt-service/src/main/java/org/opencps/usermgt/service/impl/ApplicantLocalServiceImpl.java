@@ -1393,7 +1393,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
-		String password = "12345";
+		String secretCode = "12345";
 
 		if (applicantId == 0) {
 			// validateAdd(applicantName, applicantIdType, applicantIdNo,
@@ -1420,8 +1420,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			long[] userGroupIds = null;
 
 			String screenName = null;
-			if (Validator.isNull(password)) {
-				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+			if (Validator.isNull(secretCode)) {
+				secretCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			}
 
 			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà"
@@ -1450,7 +1450,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
 			// spn.getFirstName() + "," + spn.getMidName());
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, auditUser.getCompanyId(),
-					autoPassword, password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
+					autoPassword, secretCode, secretCode, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
 					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
 					userGroupIds, sendEmail, context);
@@ -1479,7 +1479,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setContactEmail(contactEmail);
 			applicant.setMappingUserId(mappingUserId);
 			applicant.setActivationCode(activationCode);
-			applicant.setTmpPass(password);
+			applicant.setTmpPass(secretCode);
 
 		} else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);

@@ -392,7 +392,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private String getAccessToken(ServerConfig serverConfig) {
 
-		HttpURLConnection conn = null;
+		//HttpURLConnection conn = null;
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -401,11 +401,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return StringPool.BLANK;
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
 		}
+//		finally {
+//			if (conn != null) {
+//				conn.disconnect();
+//			}
+//		}
 	}
 
 	@Override

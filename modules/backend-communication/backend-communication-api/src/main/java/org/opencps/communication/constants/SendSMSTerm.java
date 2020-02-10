@@ -27,7 +27,7 @@ public class SendSMSTerm {
 	 */
 	public static final String CC_API_PORT_ADDRESS = "CcApiPort_address";
 	public static final String USER = "user";
-	public static final String PASSWORD = "password";
+	public static final String SECRET_CODE = "password";
 	public static final String CP_CODE = "CPCode";
 	public static final String REQUEST_ID = "requestID";
 	public static final String SERVICE_ID = "serviceID";
@@ -63,7 +63,7 @@ public class SendSMSTerm {
 	// "registryTelNoSuccessMes";
 	public static final String ZALO_DOSSIER_NOT_FOUND_MES =
 		"dossierNotFoundMes";
-	public static final String ZALO_DOSSIER_ERROR_PASSWORD_MES =
+	public static final String ZALO_DOSSIER_ERROR_SECRET_MES =
 		"dossierErrorPasswordMes";
 	public static final String ZALO_DOSSIER_NO_REPLACE = "dossierNoReplace";
 	public static final String ZALO_DOSSIER_STATUS_REPLACE =
@@ -85,14 +85,14 @@ public class SendSMSTerm {
 	public static final String EPACIFIC_GROUPID = "groupId";
 	public static final String EPACIFIC_MINE = "mine";
 	public static final String EPACIFIC_USER = "user";
-	public static final String EPACIFIC_PASSWORD = "password";
+	public static final String EPACIFIC_SECRET = "password";
 	public static final String EPACIFIC_SYNTAX_ERROR_MES = "syntaxErrorMes";
-	public static final String EPACIFIC_D_PASSWORD_ERROR_MES =
+	public static final String EPACIFIC_D_SECRET_ERROR_MES =
 		"dPasswordErrorMes";
 	public static final String EPACIFIC_D_NOT_FOUND_MES = "dNotFoundMes";
 	public static final String EPACIFIC_MINE_ERROR_MES = "mineErrorMes";
 	public static final String EPACIFIC_USER_ERROR_MES = "userErrorMes";
-	public static final String EPACIFIC_PASSWORD_ERROR_MES = "passwordErrorMes";
+	public static final String EPACIFIC_SECRET_ERROR_MES = "passwordErrorMes";
 	public static final String EPACIFIC_SUCCESS_MES = "successMes";
 	public static final String EPACIFIC_DOSSIER_NO_REPLACE = "dossierNoReplace";
 	public static final String EPACIFIC_DOSSIER_STATUS_REPLACE =
