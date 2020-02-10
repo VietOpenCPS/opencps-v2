@@ -19,4 +19,18 @@ public class DeliverableTerm {
 	public static final String REVALIDATE = "revalidate";
 	public static final String DELIVERABLE_STATE = "deliverableState";
 	public static final String FILE_ATTACHS = "fileAttachs";
+	public static final String FILE_ATTACH = "fileAttach";
+	
+	public static final String DELIVERABLE_STATE_VALID = "1";
+	public static final String DELIVERABLE_STATE_INVALID = "2";
+	
+	public static final String TEN_CHUNG_CHI = "ten_chung_chi";
+	public static final String URL = "url";
+	public static final String LICENCE_NO = "LicenceNo";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String REGULAR = "regular";
+	public static final String DELIVERABLE_LOG_ID= "deliverableLogId";
+	public static final String FORM_SCHEMA= "formSchema";
+	public static final String REPORT_TYPE= "reportType";
+	public static final String LIST_DELIVERABLE_TYPE = "lstDeliverableType";
 }

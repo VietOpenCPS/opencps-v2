@@ -27,10 +27,18 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.usermgt.constants.PreferencesTerm;
+import org.opencps.usermgt.model.Preferences;
+import org.opencps.usermgt.service.base.PreferencesLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
 import backend.auth.api.exception.NotFoundException;
@@ -212,10 +220,10 @@ public class PreferencesLocalServiceImpl
 
 		Preferences object = null;
 
-		if (objectData.getLong("preferencesId") > 0) {
+		if (objectData.getLong(PreferencesTerm.PREFERENCES_ID) > 0) {
 
 			object = preferencesPersistence.fetchByPrimaryKey(
-				objectData.getLong("preferencesId"));
+				objectData.getLong(PreferencesTerm.PREFERENCES_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -227,15 +235,15 @@ public class PreferencesLocalServiceImpl
 
 			object = preferencesPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(PreferencesTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(PreferencesTerm.USER_ID));
 
-		object.setPreferences(objectData.getString("preferences"));
+		object.setPreferences(objectData.getString(PreferencesTerm.PREFERENCES));
 
 		preferencesPersistence.update(object);
 

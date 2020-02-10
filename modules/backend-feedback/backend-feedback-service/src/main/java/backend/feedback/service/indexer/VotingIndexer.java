@@ -45,10 +45,11 @@ public class VotingIndexer extends BaseIndexer<Voting> {
 	public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
 			SearchContext searchContext) throws Exception {
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext
+				.getAttribute(VotingTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(VotingTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
@@ -71,11 +72,12 @@ public class VotingIndexer extends BaseIndexer<Voting> {
 		document.addDateSortable(Field.MODIFIED_DATE, voting.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(voting.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(voting.getUserName()));
-		document.addNumberSortable(VotingTerm.GROUP_ID, voting.getGroupId());
-		
+		document.addNumberSortable(Field.GROUP_ID, voting.getGroupId());
+
 		User user = UserLocalServiceUtil.fetchUser(voting.getUserId());
-		
-		document.addTextSortable(VotingTerm.EMAIL, Validator.isNotNull(user)?user.getEmailAddress():StringPool.BLANK);
+
+		document.addTextSortable(VotingTerm.EMAIL,
+				Validator.isNotNull(user) ? user.getEmailAddress() : StringPool.BLANK);
 		document.addTextSortable(VotingTerm.CLASS_NAME, voting.getClassName());
 		document.addTextSortable(VotingTerm.CLASS_PK, voting.getClassPK());
 		document.addTextSortable(VotingTerm.SUBJECT, voting.getSubject());

@@ -44,6 +44,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessOptionTerm;
 import org.opencps.dossiermgt.exception.SeqOrderException;
 import org.opencps.dossiermgt.model.DossierTemplate;
@@ -171,7 +174,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -249,7 +252,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -288,7 +291,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		String configId = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_CONFIG_ID));
 		String applicantType = GetterUtil.getString(params.get(ProcessOptionTerm.APPLICATION_TYPE));
 
-		if (Validator.isNotNull(configId) && !configId.contentEquals("0")) {
+		if (Validator.isNotNull(configId) && !configId.contentEquals(String.valueOf(0))) {
 			MultiMatchQuery query = new MultiMatchQuery(configId);
 
 			query.addFields(ProcessOptionTerm.SERVICE_CONFIG_ID);
@@ -411,9 +414,9 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 		ProcessOption object = null;
 
-		if (objectData.getLong("processOptionId") > 0) {
+		if (objectData.getLong(ProcessOptionTerm.PROCESSOPTION_ID) > 0) {
 
-			object = processOptionPersistence.fetchByPrimaryKey(objectData.getLong("processOptionId"));
+			object = processOptionPersistence.fetchByPrimaryKey(objectData.getLong(ProcessOptionTerm.PROCESSOPTION_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -423,25 +426,25 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 
 			object = processOptionPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setServiceConfigId(objectData.getLong("serviceConfigId"));
-		object.setOptionOrder(objectData.getInt("optionOrder"));
-		object.setOptionName(objectData.getString("optionName"));
-		object.setAutoSelect(objectData.getString("autoSelect"));
-		object.setDossierTemplateId(objectData.getLong("dossierTemplateId"));
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setInstructionNote(objectData.getString("instructionNote"));
-		object.setSubmissionNote(objectData.getString("submissionNote"));
-		object.setSampleCount(objectData.getLong("sampleCount"));
-		object.setRegisterBookCode(objectData.getString("registerBookCode"));
+		object.setServiceConfigId(objectData.getLong(ProcessOptionTerm.SERVICE_CONFIG_ID));
+		object.setOptionOrder(objectData.getInt(ProcessOptionTerm.OPTION_ORDER));
+		object.setOptionName(objectData.getString(ProcessOptionTerm.OPTION_NAME));
+		object.setAutoSelect(objectData.getString(ProcessOptionTerm.AUTO_SELECT));
+		object.setDossierTemplateId(objectData.getLong(ProcessOptionTerm.DOSSIER_TEMPLATEID));
+		object.setServiceProcessId(objectData.getLong(ProcessOptionTerm.SERVICE_PROCESS_ID));
+		object.setInstructionNote(objectData.getString(ProcessOptionTerm.INSTRUCTION_NOTE));
+		object.setSubmissionNote(objectData.getString(ProcessOptionTerm.SUBMISSION_NOTE));
+		object.setSampleCount(objectData.getLong(DossierTerm.SAMPLE_COUNT));
+		object.setRegisterBookCode(objectData.getString(DossierTerm.REGISTER_BOOK_CODE));
 		
 		processOptionPersistence.update(object);
 

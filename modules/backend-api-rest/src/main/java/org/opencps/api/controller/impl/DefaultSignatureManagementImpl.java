@@ -1,26 +1,48 @@
 
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DefaultSignatureManagement;
 import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
@@ -35,25 +57,6 @@ import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-
-import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -77,7 +80,7 @@ public class DefaultSignatureManagementImpl
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -119,7 +122,7 @@ public class DefaultSignatureManagementImpl
 				// _log.info("jsonData: "+jsonData.toJSONString());
 				// String fullPath = String.valueOf(jsonData.get("fullPath"));
 				// _log.info("fullPath: "+fullPath);
-				String signedFilePath = jsonData.getString("signedFile");
+				String signedFilePath = jsonData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNEDFILE);
 				File fileSigned = new File(signedFilePath);
 				// _log.info("TEST long file: "+fileSigned.length());
 				// _log.info("TEST file sign: "+fileSigned.lastModified());
@@ -205,15 +208,15 @@ public class DefaultSignatureManagementImpl
 						}
 					}
 					// Process success
-					result.put("msg", "success");
+					result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 				}
 			}
 		}
 		else {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
 
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 
 	}
@@ -234,12 +237,12 @@ public class DefaultSignatureManagementImpl
 		String endPoint = "signature/completeSignature";
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("sign", sign);
-		params.put("signFieldName", signFieldName);
-		params.put("fileName", fileName);
+		params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGN, sign);
+		params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNFIELDNAME, signFieldName);
+		params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILENAME, fileName);
 
 		JSONObject resPostDossier = rest.callPostAPI(
-			groupId, httpMethod, "application/json",
+			groupId, httpMethod, ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILENAME,
 			RESTFulConfiguration.SERVER_PATH_BASE, endPoint,
 			RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
 			properties, params, serviceContext);
@@ -257,7 +260,7 @@ public class DefaultSignatureManagementImpl
 		_log.info("START*************");
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -308,7 +311,7 @@ public class DefaultSignatureManagementImpl
 									input.getPostStepCode(), serviceContext);
 							// _log.info("Obj: " + newHashComputedResult);
 							String newHashComputedStr =
-								newHashComputedResult.getString("message");
+								newHashComputedResult.getString(ConstantUtils.HASHCOMPUTED_MESSAGE_KEY);
 
 							JSONObject newHashComputed =
 								JSONFactoryUtil.createJSONObject(
@@ -317,17 +320,17 @@ public class DefaultSignatureManagementImpl
 							// _log.info("New hash computed: " +
 							// newHashComputed.toJSONString());
 							JSONArray hashComputedArr =
-								newHashComputed.getJSONArray("hashComputers");
+								newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_HASHCOMPUTERS_KEY);
 							JSONArray signFieldNamesArr =
-								newHashComputed.getJSONArray("signFieldNames");
+								newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_SIGNFIELDNAMES_KEY);
 							JSONArray fileNamesArr =
-								newHashComputed.getJSONArray("fileNames");
+								newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_FILENAMES_KEY);
 							JSONArray fullPathOfSignedFilesArr =
-								newHashComputed.getJSONArray("fullPathSigned");
+								newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_FULLPATHSIGNED_KEY);
 							JSONArray messagesArr =
-								newHashComputed.getJSONArray("msg");
+								newHashComputed.getJSONArray(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG);
 							long fileEntrySigned =
-								newHashComputed.getLong("fileEntryId");
+								newHashComputed.getLong(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID);
 							// _log.info("Hash computers: " +
 							// hashComputedArr.toJSONString());
 							for (int i = 0; i < hashComputedArr.length(); i++) {
@@ -381,16 +384,16 @@ public class DefaultSignatureManagementImpl
 
 			if (hashComputedArrResult.length() == 0) {
 				results = JSONFactoryUtil.createJSONObject();
-				results.put("msg", "fileEntryId");
+				results.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 			}
 			else {
-				hashComputed.put("hashComputers", hashComputedArrResult);
-				hashComputed.put("signFieldNames", signFieldNamesArrResult);
-				hashComputed.put("fileNames", fileNamesArrResult);
-				hashComputed.put("msg", messagesArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_HASHCOMPUTERS_KEY, hashComputedArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_SIGNFIELDNAMES_KEY, signFieldNamesArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_FILENAMES_KEY, fileNamesArrResult);
+				hashComputed.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, messagesArrResult);
 				hashComputed.put(
-					"fullPathSigned", fullPathOfSignedFilesArrResult);
-				hashComputed.put("fileEntryId", fileEntryArrResult);
+					ConstantUtils.HASHCOMPUTED_FULLPATHSIGNED_KEY, fullPathOfSignedFilesArrResult);
+				hashComputed.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID, fileEntryArrResult);
 
 				results = JSONFactoryUtil.createJSONObject(
 					hashComputed.toJSONString());
@@ -399,7 +402,7 @@ public class DefaultSignatureManagementImpl
 			// JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
 			// _log.info("results: "+results);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -423,13 +426,13 @@ public class DefaultSignatureManagementImpl
 		String endPoint = "signature/requestsToken";
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("fileEntryId", fileEntryId);
-		params.put("emailUser", user.getEmailAddress());
-		params.put("typeSignature", actionCode);
-		params.put("postStepCode", postStepCode);
+		params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID, fileEntryId);
+		params.put(ConstantUtils.HASHCOMPUTED_EMAILUSER_KEY, user.getEmailAddress());
+		params.put(ConstantUtils.HASHCOMPUTED_TYPESIGNATURE_KEY, actionCode);
+		params.put(ConstantUtils.HASHCOMPUTED_POSTSTEPCODE_KEY, postStepCode);
 
 		JSONObject resPostHashComputed = rest.callPostAPI(
-			groupId, httpMethod, "application/json",
+			groupId, httpMethod, ConstantUtils.CONTENT_TYPE_JSON,
 			RESTFulConfiguration.SERVER_PATH_BASE, endPoint,
 			RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
 			properties, params, serviceContext);
@@ -527,7 +530,7 @@ public class DefaultSignatureManagementImpl
 			"SONDT SIGNNATUREMGT_IMPL ==============  " +
 				JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -590,7 +593,7 @@ public class DefaultSignatureManagementImpl
 					// String fullPath =
 					// String.valueOf(jsonData.get("fullPath"));
 					// _log.info("fullPath: "+fullPath);
-					String signedFilePath = jsonData.getString("signedFile");
+					String signedFilePath = jsonData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNEDFILE);
 					File fileSigned = new File(signedFilePath);
 					// _log.info("TEST long file: "+fileSigned.length());
 					// _log.info("TEST file sign: "+fileSigned.lastModified());
@@ -625,12 +628,12 @@ public class DefaultSignatureManagementImpl
 								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 								String deliState = String.valueOf(
 									deliverable.getDeliverableState());
-								if (formData.has("expertState")){
+								if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 									
-									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
-								} else if (!"1".equals(deliState)) {
+								} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 									deliverable.setDeliverableState(1);
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
@@ -639,7 +642,7 @@ public class DefaultSignatureManagementImpl
 								
 								String deliState = String.valueOf(
 									deliverable.getDeliverableState());
-								if (!"1".equals(deliState)) {
+								if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 									deliverable.setDeliverableState(1);
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
@@ -732,13 +735,13 @@ public class DefaultSignatureManagementImpl
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -751,7 +754,7 @@ public class DefaultSignatureManagementImpl
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -792,12 +795,12 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState")){
+							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
-								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
-							} else if (!"1".equals(deliState)) {
+							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -806,7 +809,7 @@ public class DefaultSignatureManagementImpl
 							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (!"1".equals(deliState)) {
+							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -815,11 +818,11 @@ public class DefaultSignatureManagementImpl
 					}
 				}
 				// Process success
-				result.put("msg", "success");
+				result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 			}
 		}
 
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -836,7 +839,7 @@ public class DefaultSignatureManagementImpl
 			"SONDT SIGNNATUREMGT_IMPL ==============  " +
 				JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -877,12 +880,12 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState")){
+							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
-								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
-							} else if (!"1".equals(deliState)) {
+							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -891,7 +894,7 @@ public class DefaultSignatureManagementImpl
 							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (!"1".equals(deliState)) {
+							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -966,13 +969,13 @@ public class DefaultSignatureManagementImpl
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -985,7 +988,7 @@ public class DefaultSignatureManagementImpl
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -1026,12 +1029,12 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState")){
+							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
-								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
-							} else if (!"1".equals(deliState)) {
+							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -1040,7 +1043,7 @@ public class DefaultSignatureManagementImpl
 							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (!"1".equals(deliState)) {
+							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -1049,11 +1052,11 @@ public class DefaultSignatureManagementImpl
 					}
 				}
 				// Process success
-				result.put("msg", "success");
+				result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 			}
 		}
 
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -1070,7 +1073,7 @@ public class DefaultSignatureManagementImpl
 			"SONDT SIGNNATUREMGT_IMPL ==============  " +
 				JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -1116,12 +1119,12 @@ public class DefaultSignatureManagementImpl
 							JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (formData.has("expertState")){
+							if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 								
-								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+								deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
-							} else if (!"1".equals(deliState)) {
+							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -1130,7 +1133,7 @@ public class DefaultSignatureManagementImpl
 							
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
-							if (!"1".equals(deliState)) {
+							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 								deliverable.setDeliverableState(1);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
@@ -1205,13 +1208,13 @@ public class DefaultSignatureManagementImpl
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -1228,9 +1231,9 @@ public class DefaultSignatureManagementImpl
 			"SONDT SIGNNATUREMGT_IMPL ==============  " +
 				JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		long dossierId = Long.valueOf(id);
-		long userId = user.getUserId();
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//		long dossierId = Long.valueOf(id);
+//		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -1238,9 +1241,9 @@ public class DefaultSignatureManagementImpl
 
 		String fileEntryIds = input.getFileEntryId();
 		String[] fileEntryIdArr = StringUtil.split(fileEntryIds);
-		String actionCode = input.getActionCode();
+//		String actionCode = input.getActionCode();
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		boolean signOk = true;
+//		boolean signOk = true;
 
 		for (int i = 0; i < fileEntryIdArr.length; i++) {
 			long fileEntryId = Long.valueOf(fileEntryIdArr[i]);
@@ -1266,19 +1269,19 @@ public class DefaultSignatureManagementImpl
 								deliverable.getDeliverableState());
 							if (deliverable != null && Validator.isNotNull(deliverable.getFormData())) {
 								JSONObject formData = JSONFactoryUtil.createJSONObject(deliverable.getFormData());
-								if (formData.has("expertState")){
+								if (formData.has(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)){
 									
-									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString("expertState")));
+									deliverable.setDeliverableState(GetterUtil.getInteger(formData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_EXPERTSTATE)));
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
-								} else if (!"1".equals(deliState)) {
+								} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 									deliverable.setDeliverableState(1);
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
 								}
 							} else if (deliverable != null) {
 								
-								if (!"1".equals(deliState)) {
+								if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
 									deliverable.setDeliverableState(1);
 									DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
@@ -1289,7 +1292,7 @@ public class DefaultSignatureManagementImpl
 								FileEntry fileEntry =
 									DLAppLocalServiceUtil.getFileEntry(
 										deliverable.getFileEntryId());
-								DataHandler dataHandler = file.getDataHandler();
+//								DataHandler dataHandler = file.getDataHandler();
 								System.out.println(
 									"update======================fileEntry===========" +
 										fileEntry.getFileEntryId());
@@ -1310,7 +1313,7 @@ public class DefaultSignatureManagementImpl
 			}
 		}
 
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -1322,7 +1325,7 @@ public class DefaultSignatureManagementImpl
 			throws PortalException, Exception {
 		BackendAuth auth = new BackendAuthImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -1421,12 +1424,12 @@ public class DefaultSignatureManagementImpl
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 		
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();	
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();	
 	}	
 }

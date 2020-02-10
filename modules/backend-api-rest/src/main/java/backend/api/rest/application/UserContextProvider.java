@@ -5,6 +5,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
+import org.opencps.api.constants.ConstantUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -23,7 +24,7 @@ public class UserContextProvider implements ContextProvider<User> {
         try {
             return _portal.getUser(
                 (HttpServletRequest)message.getContextualProperty(
-                    "HTTP.REQUEST"));
+                    ConstantUtils.HTTP_REQUEST));
         }
         catch (PortalException pe) {
             if (_log.isWarnEnabled()) {

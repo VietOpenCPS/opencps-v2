@@ -4,12 +4,14 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,8 +42,10 @@ import org.opencps.api.comment.model.CommentListModel;
 import org.opencps.api.comment.model.CommentModel;
 import org.opencps.api.comment.model.CommentSearchModel;
 import org.opencps.api.comment.model.CommentTopList;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.CommentManagement;
 import org.opencps.api.controller.util.CommentUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.error.model.ErrorMsg;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -57,7 +62,7 @@ public class CommentManagementImpl implements CommentManagement {
 	public Response addComment(HttpServletRequest request, HttpHeaders header, ServiceContext serviceContext,
 			CommentInputModel commentInputModel) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -72,7 +77,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
-			return Response.status(200).entity(commentModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(commentModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -89,17 +94,17 @@ public class CommentManagementImpl implements CommentManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 			List<String> lstSecureFiles = new ArrayList<>();
-			lstSecureFiles.add("text/x-sh");
-			lstSecureFiles.add("application/macbinary");
-			lstSecureFiles.add("application/x-msdownload");
+			lstSecureFiles.add(MessageUtil.getMessage(ConstantUtils.MEDIA_TYPE_TEXT_X_SH));
+			lstSecureFiles.add(MessageUtil.getMessage(ConstantUtils.MEDIA_TYPE_APPLICATION_MAC_BINARY));
+			lstSecureFiles.add(MessageUtil.getMessage(ConstantUtils.MEDIA_TYPE_X_MSDOWNLOAD));
 
 			long userId = serviceContext.getUserId();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 			if (lstSecureFiles.contains(fileType)) {
-				return Response.status(405).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(StringPool.BLANK).build();
 			}
 			Comment comment = CommentLocalServiceUtil.addComment(userId, groupId, className, classPK, fullname, email,
 					parent, StringPool.BLANK, fileSize, inputStream, fileName, fileType, 0, pings, opinion, serviceContext);
@@ -108,7 +113,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
-			return Response.status(200).entity(commentModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(commentModel).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		} finally {
@@ -143,17 +148,18 @@ public class CommentManagementImpl implements CommentManagement {
 				String fileName = fileEntry.getFileName();
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				String returnFileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
+				
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, returnFileName)
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}else{
 				ErrorMsg error = new ErrorMsg();
-				error.setMessage("file not found!");
-				error.setCode(404);
-				error.setDescription("file not found!");
-				return Response.status(404).entity(error).build();
+				error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+				error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 			}
 
 		} catch (Exception e) {
@@ -178,25 +184,27 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-			params.put("className", className);
-			params.put("classPK", String.valueOf(classPK));
+			params.put(ConstantUtils.API_GROUPID_KEY, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
+			params.put(ConstantUtils.API_CLASSNAME_KEY, className);
+			params.put(ConstantUtils.API_CLASSPK_KEY, String.valueOf(classPK));
 			if (Validator.isNotNull(query.getOpinion())) {
 				params.put(CommentTerm.OPINION, query.getOpinion());				
 			}
 			
+			String commentSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, query.isOrder()) };
+					SortFactoryUtil.create(commentSort, Sort.STRING_TYPE, query.isOrder()) };
 
 			hits = CommentLocalServiceUtil.luceneSearchEngine(params, sorts, query.getStart(), query.getEnd(),
 					searchContext);
@@ -206,7 +214,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			CommentListModel results = CommentUtils.mappingCommentList(hits.toList(), serviceContext, header, query);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -226,9 +234,9 @@ public class CommentManagementImpl implements CommentManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-			result.put("message", "remove success");
+			result.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.API_MESSAGE_COMMENT_REMOVESUCCESS));
 
-			return Response.status(200).entity(result.toString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -243,7 +251,7 @@ public class CommentManagementImpl implements CommentManagement {
 			String email = commentInputModel.getEmail();
 			// Truong hop co userId thi lay email va fullname tu user
 
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
+			if (!ConstantUtils.API_DEFAULT_EMAIL.equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
@@ -254,7 +262,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
-			return Response.status(200).entity(commentModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(commentModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -270,7 +278,7 @@ public class CommentManagementImpl implements CommentManagement {
 			String fullname = commentInputModel.getFullname();
 			// Truong hop co userId thi lay email va fullname tu user
 
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
+			if (!ConstantUtils.API_DEFAULT_EMAIL.equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
@@ -283,7 +291,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
-			return Response.status(200).entity(commentModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(commentModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -298,7 +306,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			String email = commentInputModel.getEmail();
 
-			if (!"default@liferay.com".equals(user.getEmailAddress())) {
+			if (!ConstantUtils.API_DEFAULT_EMAIL.equals(user.getEmailAddress())) {
 				email = user.getEmailAddress();
 			}
 
@@ -309,7 +317,7 @@ public class CommentManagementImpl implements CommentManagement {
 
 			commentModel = CommentUtils.mappingComment(comment, serviceContext);
 
-			return Response.status(200).entity(commentModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(commentModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -329,13 +337,13 @@ public class CommentManagementImpl implements CommentManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			List<Comment> listComments = new ArrayList<>(CommentLocalServiceUtil.findByF_groupId(groupId, query.getStart(), query.getEnd()));
@@ -345,7 +353,7 @@ public class CommentManagementImpl implements CommentManagement {
 			
 			CommentTopList results = CommentUtils.mappingCommentTopList(listComments, serviceContext);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

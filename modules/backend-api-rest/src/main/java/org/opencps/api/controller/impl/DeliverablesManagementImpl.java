@@ -1,6 +1,7 @@
 
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -13,8 +14,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverablesManagement;
 import org.opencps.api.controller.util.DeliverableUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
@@ -41,6 +44,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -86,24 +90,28 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			if (search.getEnd() == 0) {
-				search.setStart(-1);
-				search.setEnd(-1);
+				search.setStart(QueryUtil.ALL_POS);
+				search.setEnd(QueryUtil.ALL_POS);
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			// Default sort by modifiedDate
+			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					dateSort, Sort.STRING_TYPE, true)
 			};
 
 			if (Validator.isNotNull(search.getSort()) &&
 				Validator.isNotNull(search.getOrder())) {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), search.getSort());
+				
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						search.getSort() + "_sortable", Sort.STRING_TYPE,
+						querySort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder()))
 				};
 			}
@@ -136,12 +144,12 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				search.getStart(), search.getEnd(), serviceContext);
 			// JSONObject result = action.getListDeliverable(state, agency,
 			// type, applicant);
-			// results.setTotal(jsonData.getInt("total"));
-			results.put("total", jsonData.getInt("total"));
+			// results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
 			// results.getData()
 			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			// jsonData.get(ConstantUtils.DATA)));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -149,18 +157,18 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
 				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+					DeliverableTerm.TEN_CHUNG_CHI, doc.get(DeliverableTerm.DELIVERABLE_NAME));
 				formJson.put(
-					"deliverableCode",
+					DeliverableTerm.DELIVERABLE_CODE,
 					doc.get(DeliverableTerm.DELIVERABLE_CODE));
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
-			// return Response.status(200).entity(results).build();
+			// return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -177,7 +185,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -206,7 +214,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableInputModel result =
 				DeliverableUtils.mappingToDeliverablesModel(deliverable);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -223,7 +231,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -243,7 +251,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new Exception();
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -260,7 +268,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -281,7 +289,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new Exception();
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -307,7 +315,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			//
 			LinkedHashMap<String, Object> params =
@@ -320,14 +328,14 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataById(
-				serviceContext.getCompanyId(), params, null, -1, -1,
+				serviceContext.getCompanyId(), params, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				serviceContext);
 
 			JSONObject results = JSONFactoryUtil.createJSONObject(
 				DeliverableUtils.mappingToDeliverableFormDataModel(
-					(List<Document>) jsonData.get("data")));
+					(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 		}
 		catch (Exception e) {
@@ -344,7 +352,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -360,7 +368,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			JSONObject result = JSONFactoryUtil.createJSONObject(formData);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -377,7 +385,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -396,7 +404,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new Exception();
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -415,7 +423,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -434,7 +442,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				throw new Exception();
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -452,7 +460,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -463,7 +471,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			DeliverableLog log = action.getDeliverableLog(id);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(log)).build();
 		}
 		catch (Exception e) {
@@ -480,7 +488,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -503,7 +511,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			DeliverableUpdateModel result =
 				DeliverableUtils.mappingToDeliverablesUpdateModel(deliverable);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -532,20 +540,20 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 			int startSearch = -1;
 			int endSearch = -1;
-			if (Validator.isNotNull(end) && !"0".equals(end)) {
+			if (Validator.isNotNull(end) && !ConstantUtils.QUERY_ZERO.equals(end)) {
 				startSearch = Integer.parseInt(start);
 				endSearch = Integer.parseInt(end);
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			_log.info("groupId: " + groupId + "*keyword*: " + keyword);
 			_log.info("agencyNo: " + agencyNo + "*typeCode*: " + typeCode);
 			JSONObject keyJson = JSONFactoryUtil.createJSONObject(keyword);
 
-			String pattern = String.valueOf(keyJson.get("query"));
-			String paramValues = String.valueOf(keyJson.get("values"));
-			String paramTypes = String.valueOf(keyJson.get("type"));
+			String pattern = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_QUERY_KEY));
+			String paramValues = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_VALUES_KEY));
+			String paramTypes = String.valueOf(keyJson.get(ConstantUtils.DELIVERABLE_DATAFORM_TYPE_KEY));
 
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
@@ -554,32 +562,33 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			params.put(DeliverableTerm.DELIVERABLE_TYPE, typeCode);
 			params.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
 			params.put(DeliverableTerm.DELIVERABLE_STATE, deliverableState);
-			params.put("pattern", pattern);
-			params.put("paramValues", paramValues);
-			params.put("paramTypes", paramTypes);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PATTERN_KEY, pattern);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PARAMVALUES_KEY, paramValues);
+			params.put(ConstantUtils.DELIVERABLE_DATAFORM_PARAMTYPES_KEY, paramTypes);
 
 			DeliverableActions actions = new DeliverableActionsImpl();
 			// DeliverableResultModel results = new DeliverableResultModel();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-
+			String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), Field.MODIFIED_DATE);
+			
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true)
+					dateSort, Sort.STRING_TYPE, true)
 			};
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getFormDataByTypecode(
 				serviceContext.getCompanyId(), params, sorts, startSearch,
 				endSearch, serviceContext);
 
-			// _log.info("total: "+jsonData.getInt("total"));
-			// results.setTotal(jsonData.getInt("total"));
+			// _log.info("total: "+jsonData.getInt(ConstantUtils.TOTAL));
+			// results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			// results.getData()
 			// .addAll(DeliverableUtils.mappingToDeliverableResultModel((List<Document>)
-			// jsonData.get("data")));
+			// jsonData.get(ConstantUtils.DATA)));
 
 			// TODO
-			results.put("total", jsonData.getInt("total"));
-			List<Document> docList = (List<Document>) jsonData.get("data");
+			results.put(ConstantUtils.TOTAL, jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> docList = (List<Document>) jsonData.get(ConstantUtils.DATA);
 
 			JSONArray formDataArr = JSONFactoryUtil.createJSONArray();
 			for (Document doc : docList) {
@@ -587,16 +596,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				JSONObject formJson =
 					JSONFactoryUtil.createJSONObject(formData);
 				formJson.put(
-					"ten_chung_chi", doc.get(DeliverableTerm.DELIVERABLE_NAME));
+					DeliverableTerm.TEN_CHUNG_CHI, doc.get(DeliverableTerm.DELIVERABLE_NAME));
 				formJson.put(
-					"deliverableCode",
+					DeliverableTerm.DELIVERABLE_CODE,
 					doc.get(DeliverableTerm.DELIVERABLE_CODE));
 				// _log.info("formData: "+formData);
 				formDataArr.put(formJson);
 			}
-			results.put("data", formDataArr);
+			results.put(ConstantUtils.DATA, formDataArr);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -623,7 +632,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		String deliverableCode) {
 
 		_log.info("START*********1");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("groupId: " + groupId);
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -647,7 +656,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				dossierInfo = OneGateUtils.mappingForGetDetail(dossier);
 			}
 
-			return Response.status(200).entity(dossierInfo).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(dossierInfo).build();
 
 		}
 		catch (Exception e) {
@@ -661,7 +670,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		DeliverableActions actions = new DeliverableActionsImpl();
 		Indexer<Deliverable> indexer =
@@ -677,14 +686,14 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		// get JSON data deliverable
 		JSONObject jsonData = actions.getListDeliverable(
-			user.getUserId(), serviceContext.getCompanyId(), params, null, -1,
-			-1, serviceContext);
+			user.getUserId(), serviceContext.getCompanyId(), params, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(ConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long deliverableId = GetterUtil.getLong(
 					document.get(DeliverableTerm.DELIVERABLE_ID));
@@ -704,7 +713,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 		}
 
-		return Response.status(200).entity("{}").build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_EMPTY).build();
 	}
 
 	@Override
@@ -726,22 +735,22 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
-			long userId = user.getUserId();
+//			long groupId =
+//				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//			long userId = user.getUserId();
 
 			// List<Deliverable> deliverables =
 			// DeliverableUtils.readWorkBooksDeliverabe(
 			// file, userId, groupId, serviceContext);
 			//
-			// result.put("total", deliverables.size());
+			// result.put(ConstantUtils.TOTAL, deliverables.size());
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -757,7 +766,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -765,8 +774,8 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			}
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			results.put("success", true);
-			return Response.status(200).entity(
+			results.put(ConstantUtils.API_JSON_SUCCESS, true);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -802,13 +811,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			long companyId = user.getCompanyId();
 			String userName = user.getFullName();
@@ -822,32 +831,31 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
 
-				if (Validator.isNotNull(deliverable.get("deliverableCode"))) {
+				if (Validator.isNotNull(deliverable.get(DeliverableTerm.DELIVERABLE_CODE))) {
 
 					Deliverable deliverableObj =
 						DeliverableLocalServiceUtil.getByF_GID_DCODE(
-							groupId, deliverable.getString("deliverableCode"));
+							groupId, deliverable.getString(DeliverableTerm.DELIVERABLE_CODE));
 
 					deliverable.put(
-						"deliverableId", Validator.isNotNull(deliverableObj)
+						DeliverableTerm.DELIVERABLE_ID, Validator.isNotNull(deliverableObj)
 							? deliverableObj.getDeliverableId() : 0);
-					deliverable.put("groupId", groupId);
-					deliverable.put("userId", userId);
-					deliverable.put("companyId", companyId);
-					deliverable.put("userName", userName);
-					deliverable.put("deliverableType", deliverableType);
-					deliverable.put("fileAttach", false);
-					deliverableObj =
-						DeliverableLocalServiceUtil.adminProcessData(
+					deliverable.put(Field.GROUP_ID, groupId);
+					deliverable.put(Field.USER_ID, userId);
+					deliverable.put(Field.COMPANY_ID, companyId);
+					deliverable.put(Field.USER_NAME, userName);
+					deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableType);
+					deliverable.put(DeliverableTerm.FILE_ATTACH, false);
+					DeliverableLocalServiceUtil.adminProcessData(
 							deliverable);
 					System.out.println("add================" + deliverable);
 					size += 1;
 				}
 			}
 
-			result.put("total", size);
+			result.put(ConstantUtils.TOTAL, size);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -864,13 +872,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		result.put("url", StringPool.BLANK);
+		result.put(DeliverableTerm.URL, StringPool.BLANK);
 		try {
 
 			_log.info(
 				"================GET===========================" +
 					deliverableCode + " " + deliverableCode + " " +
-					header.getHeaderString("groupId"));
+					header.getHeaderString(Field.GROUP_ID));
 
 			if (Validator.isNull(deliverableCode)) {
 				return Response.status(204).entity(
@@ -885,13 +893,13 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
 				// return Response.status(
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Deliverable deliverable =
 				DeliverableLocalServiceUtil.getByF_GID_DCODE(
@@ -903,17 +911,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
 					deliverable.getFileEntryId());
 
-				result.put("fileName", fileEntry.getFileName());
-				result.put("fileType", fileEntry.getMimeType());
+				result.put(ConstantUtils.DELIVERABLE_DL_FILENAME, fileEntry.getFileName());
+				result.put(ConstantUtils.DELIVERABLE_DL_FILETYPE, fileEntry.getMimeType());
 				result.put(
-					"url",
+					DeliverableTerm.URL,
 					DLUtil.getPreviewURL(
 						fileEntry, fileEntry.getFileVersion(),
 						serviceContext.getThemeDisplay(), StringPool.BLANK));
 
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {

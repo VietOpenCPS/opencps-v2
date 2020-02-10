@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -31,6 +32,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.backupdata.model.DataInputModel;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.BackupDataManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ReadXMLFileUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.Actions;
@@ -116,15 +118,15 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		//long userId = user.getUserId();
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 			}
 
 			String dataCode = input.getDataCode();
@@ -150,12 +152,12 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 								citizen.setHoVaTen(applicant.getApplicantName());
 								citizen.setThuDienTu(applicant.getContactEmail());
 								citizen.setGioiTinh(0);
-								citizen.setDanToc("Không rõ");
+								citizen.setDanToc(MessageUtil.getMessage(ConstantUtils.CITIZEN_DANTOC_DEFAULT));
 								citizen.setSoDienThoaiBan(StringPool.BLANK);
 								citizen.setSoDienThoai(applicant.getContactTelNo());
 								citizen.setTonGiao(StringPool.BLANK);
 								citizen.setTinhTrangHonNhan(0);
-								citizen.setNhomMau("00");
+								citizen.setNhomMau(MessageUtil.getMessage(ConstantUtils.CITIZEN_NHOMMAU_DEFAULT));
 								citizen.setNgayThangNamSinh(StringPool.BLANK);
 								citizen.setNoiDangKyKhaiSinh(StringPool.BLANK);
 								citizen.setQueQuan(applicant.getCityName());
@@ -163,7 +165,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 								String noiohientai = applicant.getAddress() + StringPool.DASH + applicant.getDistrictName() + StringPool.DASH +
 										applicant.getCityName();
 								citizen.setNoiOHienTai(noiohientai);
-								citizen.setQuocTich("Viet Nam");
+								citizen.setQuocTich(MessageUtil.getMessage(ConstantUtils.CITIZEN_QUOCTICH_DEFAULT));
 								citizen.setCha(StringPool.BLANK);
 								citizen.setMe(StringPool.BLANK);
 								citizen.setVoChong(StringPool.BLANK);
@@ -177,10 +179,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							File file = ReadXMLFileUtils.convertCitizenToXML(citizenList);
 							//
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + file.getName() + "\"");
-							responseBuilder.header("Content-Type", "application/xml");
+							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+							
+							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+									fileXmlName);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -220,9 +223,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							//
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + file.getName() + "\"");
-							responseBuilder.header("Content-Type", "application/xml");
+							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+							
+							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+									fileXmlName);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -279,9 +284,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 					//
 					_log.info("file: "+file.getAbsolutePath());
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/xml");
+					String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+					
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+							fileXmlName);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 					return responseBuilder.build();
 				}
@@ -291,7 +298,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 					_log.info("START EXPORT DICT====");
 					List<ServiceInfo> serviceList = ServiceInfoLocalServiceUtil.findByGroup(groupId);
 					if (serviceList != null && serviceList.size() > 0) {
-						String pathFolder = ConstantUtils.DEST_DIRECTORY_EXPORT + StringPool.FORWARD_SLASH + "services";
+						String pathFolder = ConstantUtils.DEST_DIRECTORY_EXPORT + StringPool.FORWARD_SLASH + ConstantUtils.SERVICES;
 						File fileOld = new File(pathFolder);
 						_log.info("fileOld: "+fileOld);
 						if (fileOld.exists()) {
@@ -448,16 +455,18 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 //						}
 						
 						//_log.info("pathZip: "+ pathZip);
-						action.zipDirectory(newFolder, pathFolder + ".zip");
-						File fi = new File(pathFolder + ".zip");
+						action.zipDirectory(newFolder, pathFolder + ConstantUtils.EXTENTION_ZIP);
+						File fi = new File(pathFolder + ConstantUtils.EXTENTION_ZIP);
 						//Method which uses JAXB to convert object to XML
 						//File file = ReadXMLFileUtils.convertDictCollectionToXML(dictCollection, dataType);
 						//
 						//_log.info("file: "+file.getAbsolutePath());
 						ResponseBuilder responseBuilder = Response.ok((Object) fi);
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + fi.getName() + "\"");
-						responseBuilder.header("Content-Type", "application/zip");
+						String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fi.getName());
+						
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								fileXmlName);
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
 
 						return responseBuilder.build();
 					}
@@ -496,9 +505,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							//
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + file.getName() + "\"");
-							responseBuilder.header("Content-Type", "application/xml");
+							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+							
+							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+									fileXmlName);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -531,9 +542,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							//
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + file.getName() + "\"");
-							responseBuilder.header("Content-Type", "application/xml");
+							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+							
+							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+									fileXmlName);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -591,9 +604,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							//
 							ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-							responseBuilder.header("Content-Disposition",
-									"attachment; filename=\"" + file.getName() + "\"");
-							responseBuilder.header("Content-Type", "application/xml");
+							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+							
+							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+									fileXmlName);
+							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -617,7 +632,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		BackendAuth auth = new BackendAuthImpl();
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		//long userId = user.getUserId();
 		ZipOutputStream zos = null;
 		try {
@@ -625,8 +640,8 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			if (!auth2.isAdmin(serviceContext, "admin")) {
-				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("User not permission process!").build();
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 			}
 
 			ByteArrayOutputStream actionConfigXMLStream = ReadXMLFileUtils.exportActionConfigToXMLStream(groupId);
@@ -640,13 +655,14 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			ByteArrayOutputStream userManagementXMLStream = ReadXMLFileUtils.exportUserManagementToXMLStream(groupId);
 			
 			byte[] input = actionConfigXMLStream.toByteArray();
+			String backupMasterFilename = String.format(ConstantUtils.BACKUPMASTER_FILENAME, System.currentTimeMillis());
 			
-			File file = new File("backupmaster" + System.currentTimeMillis() + ".zip");
+			File file = new File(backupMasterFilename);
 			
 			FileOutputStream fos = new FileOutputStream(file);
 		    zos = new ZipOutputStream(fos);
 		    
-		    ZipEntry entry = new ZipEntry("ActionConfig.xml");
+		    ZipEntry entry = new ZipEntry(ConstantUtils.XML_ACTION_CONFIG);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -654,7 +670,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    actionConfigXMLStream.close();
 		    
 		    input = stepConfigXMLStream.toByteArray();
-		    entry = new ZipEntry("StepConfig.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_STEP_CONFIG);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -662,7 +678,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    stepConfigXMLStream.close();
 
 		    input = menuConfigXMLStream.toByteArray();
-		    entry = new ZipEntry("MenuConfig.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_MENU_CONFIG);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -670,7 +686,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    menuConfigXMLStream.close();
 
 		    input = documentTypeXMLStream.toByteArray();
-		    entry = new ZipEntry("DocumentType.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_DOCUMENT_TYPE);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -678,7 +694,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    documentTypeXMLStream.close();
 		    
 		    input = deliverableTypeXMLStream.toByteArray();
-		    entry = new ZipEntry("DeliverableType.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_DELIVERABLE_TYPE);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -686,7 +702,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    deliverableTypeXMLStream.close();
 
 		    input = paymentConfigXMLStream.toByteArray();
-		    entry = new ZipEntry("PaymentConfig.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_PAYMENT_CONFIG);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -694,7 +710,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    paymentConfigXMLStream.close();
 
 		    input = serverConfigXMLStream.toByteArray();
-		    entry = new ZipEntry("ServerConfig.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_SERVER_CONFIG);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -702,7 +718,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    serverConfigXMLStream.close();
 
 		    input = notificationTemplateXMLStream.toByteArray();
-		    entry = new ZipEntry("NotificationTemplate.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_NOTIFICATION_TEMPLATE);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
@@ -710,14 +726,14 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    notificationTemplateXMLStream.close();
 
 		    input = userManagementXMLStream.toByteArray();
-		    entry = new ZipEntry("Users.xml");
+		    entry = new ZipEntry(ConstantUtils.XML_USERS);
 		    entry.setSize(input.length);
 		    zos.putNextEntry(entry);
 		    zos.write(input);
 		    zos.closeEntry();
 		    userManagementXMLStream.close();
 
-		    ZipEntry dicts = new ZipEntry("dicts/");
+		    ZipEntry dicts = new ZipEntry(ConstantUtils.SOURCE_DICTS);
 		    zos.putNextEntry(dicts);
 		    List<DictCollection> lstCollections = DictCollectionLocalServiceUtil.findByG(groupId);
 		    for (DictCollection collection : lstCollections) {
@@ -755,7 +771,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 				dictCollectionXMLStream = ReadXMLFileUtils.convertDictCollectionToXMLStream(dictCollection);
 	
 				input = dictCollectionXMLStream.toByteArray();
-			    entry = new ZipEntry("dicts/" + collection.getCollectionCode() + ".xml");
+				String dictXmlName = String.format(MessageUtil.getMessage(ConstantUtils.DICT_XML_FILENAME), collection.getCollectionCode());
+				
+			    entry = new ZipEntry(dictXmlName);
 			    entry.setSize(input.length);
 			    zos.putNextEntry(entry);
 			    zos.write(input);
@@ -763,15 +781,15 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			    zos.closeEntry();				
 		    }
 	
-		    ZipEntry forms = new ZipEntry("forms/");
+		    ZipEntry forms = new ZipEntry(ConstantUtils.SOURCE_FORMS);
 		    zos.putNextEntry(forms);
 		    zos.closeEntry();
 
-		    ZipEntry files = new ZipEntry("files/");
+		    ZipEntry files = new ZipEntry(ConstantUtils.SOURCE_FILES);
 		    zos.putNextEntry(files);
 		    zos.closeEntry();
 		    
-		    ZipEntry reports = new ZipEntry("reports/");
+		    ZipEntry reports = new ZipEntry(ConstantUtils.SOURCE_REPORTS);
 		    zos.putNextEntry(reports);
 		    zos.closeEntry();
 		    
@@ -779,7 +797,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    for (DocumentType dt : lstDocumentTypes) {
 		    	if (Validator.isNotNull(dt.getDocumentScript())) {
 					input = dt.getDocumentScript().getBytes();
-				    entry = new ZipEntry("reports/" + dt.getTypeCode() + ".xml");
+					String reportFilename = String.format(MessageUtil.getMessage(ConstantUtils.REPORT_XML_FILENAME), dt.getTypeCode());
+					
+				    entry = new ZipEntry(reportFilename);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);		    		
@@ -790,7 +810,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    for (org.opencps.dossiermgt.model.DossierPart dp : lstParts) {
 		    	if (Validator.isNotNull(dp.getFormReport())) {
 					input = dp.getFormReport().getBytes();
-				    entry = new ZipEntry("reports/" + dp.getTemplateNo() + "_" + dp.getPartNo() + ".xml");
+					String reportTemplatePartXmlName = String.format(MessageUtil.getMessage(ConstantUtils.REPORT_XML_TEMPLATE_PART_FILENAME), dp.getTemplateNo(), dp.getPartNo());
+					
+				    entry = new ZipEntry(reportTemplatePartXmlName);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);		    		
@@ -798,7 +820,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			    
 		    	if (Validator.isNotNull(dp.getFormScript())) {
 					input = dp.getFormScript().getBytes();
-				    entry = new ZipEntry("forms/" + dp.getTemplateNo() + "_" + dp.getPartNo() + ".json");
+					String formJsonTemplatePartName = String.format(MessageUtil.getMessage(ConstantUtils.FORM_JSON_TEMPLATE_PART_FILENAME), dp.getTemplateNo(), dp.getPartNo());
+					
+				    entry = new ZipEntry(formJsonTemplatePartName);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);		    		
@@ -809,7 +833,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    for (DeliverableType dt : lstDeliverableTypes) {
 		    	if (Validator.isNotNull(dt.getFormReport())) {
 					input = dt.getFormReport().getBytes();
-				    entry = new ZipEntry("reports/" + dt.getTypeCode() + ".xml");
+					String deliverableTypeFilename = String.format(MessageUtil.getMessage(ConstantUtils.REPORT_XML_FILENAME), dt.getTypeCode());
+					
+				    entry = new ZipEntry(deliverableTypeFilename);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);		    		
@@ -817,14 +843,16 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			    
 		    	if (Validator.isNotNull(dt.getFormScript())) {
 					input = dt.getFormScript().getBytes();
-				    entry = new ZipEntry("forms/" + dt.getTypeCode() + ".json");
+					String deliverableFormFilename = String.format(MessageUtil.getMessage(ConstantUtils.FORM_JSON_FILENAME), dt.getTypeCode());
+					
+				    entry = new ZipEntry(deliverableFormFilename);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);		    		
 		    	}
 		    }
 		    
-		    ZipEntry services = new ZipEntry("services/");
+		    ZipEntry services = new ZipEntry(ConstantUtils.SOURCE_SERVICES + StringPool.FORWARD_SLASH);
 		    zos.putNextEntry(services);
 			List<ServiceInfo> serviceList = ServiceInfoLocalServiceUtil.findByGroup(groupId);
 			ByteArrayOutputStream serviceInfoXMLStream;
@@ -943,7 +971,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 					}
 					serviceInfoXMLStream = ReadXMLFileUtils.convertServiceInfoToXMLStream(serviceInfoExport);
 					input = serviceInfoXMLStream.toByteArray();
-				    entry = new ZipEntry("services/" + serviceInfo.getServiceCode() + ".xml");
+					String serviceInfoFilename = String.format(MessageUtil.getMessage(ConstantUtils.SERVICEINFO_XML_FILENAME), serviceInfo.getServiceCode());
+					
+				    entry = new ZipEntry(serviceInfoFilename);
 				    entry.setSize(input.length);
 				    zos.putNextEntry(entry);
 				    zos.write(input);
@@ -965,7 +995,9 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 					    		}
 	
 								input = buffer.toByteArray();
-							    entry = new ZipEntry("files/" + fileEntry.getFileName());
+								String serviceFileTemplateName = String.format(MessageUtil.getMessage(ConstantUtils.SERVICEFILETEMPLATE_XML_FILENAME), fileEntry.getFileName());
+								
+							    entry = new ZipEntry(serviceFileTemplateName);
 							    entry.setSize(input.length);
 							    zos.putNextEntry(entry);
 							    zos.write(input);
@@ -980,7 +1012,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			}
 		    zos.closeEntry();
 		    
-		    ZipEntry templates = new ZipEntry("templates/");
+		    ZipEntry templates = new ZipEntry(ConstantUtils.SOURCE_TEMPLATES + StringPool.FORWARD_SLASH);
 		    zos.putNextEntry(templates);
 		    zos.closeEntry();
 		    
@@ -1019,14 +1051,15 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 	    		ByteArrayOutputStream buffer = ReadXMLFileUtils.convertDossierTemplateToXMLStream(dossierTemplate);
 	    		
 				input = buffer.toByteArray();
-			    entry = new ZipEntry("templates/" + dt.getTemplateNo() + ".xml");
+				String templateFilename = String.format(MessageUtil.getMessage(ConstantUtils.TEMPLATE_XML_FILENAME), dt.getTemplateNo());
+			    entry = new ZipEntry(templateFilename);
 			    entry.setSize(input.length);
 			    zos.putNextEntry(entry);
 			    zos.write(input);
 			    buffer.close();		
 		    	
 		    }
-		    ZipEntry processes = new ZipEntry("processes/");
+		    ZipEntry processes = new ZipEntry(ConstantUtils.SOURCE_PROCESSES + StringPool.FORWARD_SLASH);
 		    zos.putNextEntry(processes);
 		    zos.closeEntry();
 		    
@@ -1135,7 +1168,8 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 	    		ByteArrayOutputStream buffer = ReadXMLFileUtils.convertServiceProcessToXMLStream(serviceProcess);
 	    		
 				input = buffer.toByteArray();
-			    entry = new ZipEntry("processes/" + sp.getProcessNo() + ".xml");
+				String processFilename = String.format(MessageUtil.getMessage(ConstantUtils.PROCESS_XML_FILENAME), sp.getProcessNo());
+			    entry = new ZipEntry(processFilename);
 			    entry.setSize(input.length);
 			    zos.putNextEntry(entry);
 			    zos.write(input);
@@ -1145,10 +1179,11 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 		    zos.close();
 		    
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition",
-					"attachment; filename=\"" + "backupmaster.zip" + "\"");
-			responseBuilder.header("Content-Type", "application/xml");
+			String backupmasterfilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), ConstantUtils.BACKUPMASTER_ZIP_FILENAME);
+			
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+					backupmasterfilename);
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 			return responseBuilder.build();			
 		} catch (Exception e) {

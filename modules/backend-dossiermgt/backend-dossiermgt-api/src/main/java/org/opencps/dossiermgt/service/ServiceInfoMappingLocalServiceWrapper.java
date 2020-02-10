@@ -34,6 +34,15 @@ public class ServiceInfoMappingLocalServiceWrapper
 		_serviceInfoMappingLocalService = serviceInfoMappingLocalService;
 	}
 
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping addServiceInfoMapping(
+		long groupId, long companyId, long userId, String serviceCode,
+		String serviceCodeDVCQG)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _serviceInfoMappingLocalService.addServiceInfoMapping(groupId,
+			companyId, userId, serviceCode, serviceCodeDVCQG);
+	}
+
 	/**
 	* Adds the service info mapping to the database. Also notifies the appropriate model listeners.
 	*
@@ -44,6 +53,18 @@ public class ServiceInfoMappingLocalServiceWrapper
 	public org.opencps.dossiermgt.model.ServiceInfoMapping addServiceInfoMapping(
 		org.opencps.dossiermgt.model.ServiceInfoMapping serviceInfoMapping) {
 		return _serviceInfoMappingLocalService.addServiceInfoMapping(serviceInfoMapping);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _serviceInfoMappingLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping adminProcessDelete(
+		Long id) {
+		return _serviceInfoMappingLocalService.adminProcessDelete(id);
 	}
 
 	/**
@@ -80,6 +101,12 @@ public class ServiceInfoMappingLocalServiceWrapper
 		long serviceInfoMappingId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoMappingLocalService.deleteServiceInfoMapping(serviceInfoMappingId);
+	}
+
+	@Override
+	public boolean deleteServiceInfoMapping(long groupId, String serviceCode) {
+		return _serviceInfoMappingLocalService.deleteServiceInfoMapping(groupId,
+			serviceCode);
 	}
 
 	/**

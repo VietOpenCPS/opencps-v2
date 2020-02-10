@@ -2717,7 +2717,46 @@
 		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
 	</entity>
-	
+
+	<entity local-service="true" name="Notarization" remote-service="false" uuid="false" table="opencps_notarization">
+
+		<!-- PK fields -->
+
+		<column name="notarizationId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dossierId" type="long" />
+		<column name="fileName" type="String" />
+		<column name="totalRecord" type="int" />
+		<column name="totalPage" type="int" />
+		<column name="totalCopy" type="int" />
+		<column name="totalFee" type="long" />
+		<column name="notarizationNo" type="long" />
+		<column name="notarizationYear" type="int" />
+		<column name="notarizationDate" type="Date" />
+		<column name="signerName" type="String" />
+		<column name="signerPosition" type="String" />
+		<column name="statusCode" type="String" />
+        <finder name="F_G_DID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierId"></finder-column>
+        </finder>
+
+	</entity>
+		
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

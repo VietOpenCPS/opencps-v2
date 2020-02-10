@@ -61,6 +61,8 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
+import org.opencps.backend.datamgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.exception.NoSuchDictItemException;
 import org.opencps.datamgt.model.DictItem;
@@ -255,7 +257,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem dictItem = dictItemPersistence.fetchByF_parentItemId_level_Last(groupId, dictCollectionId,
 				parentItemId, level, null);
-		if ((Validator.isNotNull(dictItem) && "0".equals(sibling)) || "0".equals(sibling)) {
+		if ((Validator.isNotNull(dictItem) && ConfigProps.get(ConfigConstants.SIBLING_VALIDATOR).equals(sibling)) ||
+			ConfigProps.get(ConfigConstants.SIBLING_VALIDATOR).equals(sibling)) {
 			try {
 				sibling = GetterUtil.getInteger(dictItem.getSibling(), 1) + 1 + StringPool.BLANK;
 			} catch (Exception e) {
@@ -276,11 +279,11 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		if (dictParentItemId == 0) {
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
 
-				ext += "0";
+				ext += ConfigProps.get(ConfigConstants.SIBLING_TREE);
 
 			}
 
@@ -297,10 +300,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			// sibling
 			// }
 
-			String ext = "";
+			String ext = StringPool.BLANK;
 
 			for (int i = 0; i < 4 - sibling.length(); i++) {
-				ext += "0";
+				ext += ConfigProps.get(ConfigConstants.SIBLING_TREE);
 			}
 
 			return parentItem.getTreeIndex() + StringPool.PERIOD + ext + Integer.toHexString(Integer.valueOf(sibling));
@@ -492,7 +495,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictItemTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -502,7 +505,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
@@ -517,10 +520,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		*/
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf((params.get("groupId")));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String keywords = (String) params.get(DictItemTerm.KEYWORDS);
+		String groupId = String.valueOf((params.get(Field.GROUP_ID)));
+		String userId = (String) params.get(DictItemTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;
@@ -586,13 +589,14 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -627,14 +631,14 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(DictItem.class.getName());
 		searchContext.setEntryClassNames(new String[] { DictItem.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DictItemTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
 		// params.put(DictCollectionTerm.COLLECTION_CODE, keywords);
 		// params.put("expandoAttributes", keywords);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DictItemTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
 		String dictCollectionId = (String) params.get(DictItemTerm.DICT_COLLECTION_ID);
@@ -646,10 +650,10 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 //		}
 
 		String dictItemCode = (String) params.get(DictItemTerm.ITEM_CODE);
-		String keywords = (String) params.get("keywords");
-		String groupId = String.valueOf(params.get("groupId"));
-		String userId = (String) params.get("userId");
-		String itemLv = (String) params.get("itemLv");
+		String keywords = (String) params.get(DictItemTerm.KEYWORDS);
+		String groupId = String.valueOf(params.get(Field.GROUP_ID));
+		String userId = (String) params.get(DictItemTerm.USER_ID);
+		String itemLv = (String) params.get(DictItemTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
 
 		BooleanQuery booleanQuery = null;
@@ -715,13 +719,14 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(groupId) && !"0".equals(groupId)) {
+		if (Validator.isNotNull(groupId) &&
+			!ConfigProps.get(ConfigConstants.GROUP_ID_VALIDATOR).equals(groupId)) {
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
 					: indexer.getFullQuery(searchContext);
 
-			TermQuery catQuery1 = new TermQueryImpl(DictItemTerm.GROUP_ID, groupId);
-			TermQuery catQuery2 = new TermQueryImpl(DictItemTerm.GROUP_ID, String.valueOf(0));
+			TermQuery catQuery1 = new TermQueryImpl(Field.GROUP_ID, groupId);
+			TermQuery catQuery2 = new TermQueryImpl(Field.GROUP_ID, String.valueOf(0));
 
 			categoryQuery.add(catQuery1, BooleanClauseOccur.SHOULD);
 			categoryQuery.add(catQuery2, BooleanClauseOccur.SHOULD);
@@ -882,9 +887,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		DictItem object = null;
 
-		if (objectData.getLong("dictItemId") > 0) {
+		if (objectData.getLong(DictItemTerm.DICT_ITEM_ID) > 0) {
 
-			object = dictItemPersistence.fetchByPrimaryKey(objectData.getLong("dictItemId"));
+			object = dictItemPersistence.fetchByPrimaryKey(objectData.getLong(DictItemTerm.DICT_ITEM_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -894,27 +899,27 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 			object = dictItemPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(DictItemTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(DictItemTerm.USER_ID));
 
-		object.setDictCollectionId(objectData.getLong("dictCollectionId"));
-		object.setItemCode(objectData.getString("itemCode"));
-		object.setItemName(objectData.getString("itemName"));
-		object.setItemNameEN(objectData.getString("itemNameEN"));
-		object.setItemDescription(objectData.getString("itemDescription"));
-		object.setParentItemId(objectData.getLong("parentItemId"));
-		object.setSibling(objectData.getString("sibling"));
-		object.setMetaData(objectData.getString("metaData"));
+		object.setDictCollectionId(objectData.getLong(DictItemTerm.DICT_COLLECTION_ID));
+		object.setItemCode(objectData.getString(DictItemTerm.ITEM_CODE));
+		object.setItemName(objectData.getString(DictItemTerm.ITEM_NAME));
+		object.setItemNameEN(objectData.getString(DictItemTerm.ITEM_NAME_EN));
+		object.setItemDescription(objectData.getString(DictItemTerm.ITEM_DESCRIPTION));
+		object.setParentItemId(objectData.getLong(DictItemTerm.PARENT_ITEM_ID));
+		object.setSibling(objectData.getString(DictItemTerm.SIBLING));
+		object.setMetaData(objectData.getString(DictItemTerm.META_DATA));
 
 		String treeIndex;
 		try {
 			
-			treeIndex = getTreeIndex(objectData.getLong("dictItemId"), objectData.getLong("parentItemId"), objectData.getString("sibling"));
+			treeIndex = getTreeIndex(objectData.getLong(DictItemTerm.DICT_ITEM_ID), objectData.getLong(DictItemTerm.PARENT_ITEM_ID), objectData.getString(DictItemTerm.SIBLING));
 			object.setTreeIndex(treeIndex);
 			object.setLevel(StringUtil.count(treeIndex, StringPool.PERIOD));
 			

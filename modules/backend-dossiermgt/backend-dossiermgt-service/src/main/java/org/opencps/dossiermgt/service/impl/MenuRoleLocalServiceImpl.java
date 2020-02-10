@@ -18,12 +18,14 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.MenuConfigTerm;
 import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.service.base.MenuRoleLocalServiceBaseImpl;
 
@@ -109,9 +111,9 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 
 		MenuRole object = null;
 
-		if (objectData.getLong("menuRoleId") > 0) {
+		if (objectData.getLong(MenuConfigTerm.MENU_ROLE_ID) > 0) {
 
-			object = menuRolePersistence.fetchByPrimaryKey(objectData.getLong("menuRoleId"));
+			object = menuRolePersistence.fetchByPrimaryKey(objectData.getLong(MenuConfigTerm.MENU_ROLE_ID));
 
 		} else {
 
@@ -121,8 +123,8 @@ public class MenuRoleLocalServiceImpl extends MenuRoleLocalServiceBaseImpl {
 
 		}
 
-		object.setMenuConfigId(objectData.getLong("menuConfigId"));
-		object.setRoleId(objectData.getLong("roleId"));
+		object.setMenuConfigId(objectData.getLong(MenuConfigTerm.MENU_CONFIG_ID));
+		object.setRoleId(objectData.getLong(Field.ROLE_ID));
 
 		menuRolePersistence.update(object);
 

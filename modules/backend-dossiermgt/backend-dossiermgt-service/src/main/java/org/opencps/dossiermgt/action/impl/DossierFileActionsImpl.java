@@ -15,6 +15,9 @@ import java.util.zip.ZipOutputStream;
 
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -139,19 +142,19 @@ public class DossierFileActionsImpl implements DossierFileActions {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					sort + "_sortable", Sort.STRING_TYPE,
+					sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order))
 			};
 
 			Hits hits = DossierFileLocalServiceUtil.searchLucene(
 				params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total =
 				DossierFileLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		}
 		catch (Exception e) {
@@ -296,9 +299,7 @@ public class DossierFileActionsImpl implements DossierFileActions {
 					0);
 			JSONObject defaultDataObj =
 				JSONFactoryUtil.createJSONObject(defaultData);
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
-			defaultDataObj.put("LicenceNo", dossierFile.getDeliverableCode());
-			_log.info("Default data obj: " + defaultDataObj.toJSONString());
+			defaultDataObj.put(DeliverableTerm.LICENCE_NO, dossierFile.getDeliverableCode());
 			defaultData = defaultDataObj.toJSONString();
 		}
 

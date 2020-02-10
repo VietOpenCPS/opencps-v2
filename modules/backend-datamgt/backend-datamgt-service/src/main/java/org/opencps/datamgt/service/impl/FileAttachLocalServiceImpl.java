@@ -15,6 +15,7 @@
 package org.opencps.datamgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -52,6 +53,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.base.FileAttachLocalServiceBaseImpl;
@@ -174,7 +176,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		cloneFileAttach.setFullName(fileAttach.getFullName());
 		cloneFileAttach.setEmail(fileAttach.getEmail());
 		cloneFileAttach.setFileEntryId(fileEntryId);
-		cloneFileAttach.setSource("link");
+		cloneFileAttach.setSource(FileAttachTerm.LINK_CLONE);
 		cloneFileAttach.setSourceUrl(fileAttach.getSourceUrl());
 		cloneFileAttach.setDocFileId(docFileId);
 		cloneFileAttach.setFileName(fileAttach.getFileName());
@@ -345,19 +347,19 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(FileAttachTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(FileAttachTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(FileAttachTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(FileAttachTerm.USER_ID);
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
 		String docFileId = (String) params.get(FileAttachTerm.DOCFILE_ID);
@@ -373,7 +375,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(FileAttachTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -402,7 +404,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(docFileId)) {
-			String[] keyword = docFileId.split(",");
+			String[] keyword = docFileId.split(StringPool.COMMA);
 
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
@@ -434,16 +436,16 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(FileAttach.class.getName());
 		searchContext.setEntryClassNames(new String[] { FileAttach.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(FileAttachTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(FileAttachTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(FileAttachTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(FileAttachTerm.USER_ID);
 		String className = (String) params.get(FileAttachTerm.CLASS_NAME);
 		String classPK = (String) params.get(FileAttachTerm.CLASS_PK);
 		String docFileId = (String) params.get(FileAttachTerm.DOCFILE_ID);
@@ -459,7 +461,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(FileAttachTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -487,7 +489,7 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(docFileId)) {
-			String[] keyword = docFileId.split(",");
+			String[] keyword = docFileId.split(StringPool.COMMA);
 
 			BooleanQuery categoryQuery = Validator.isNotNull((String) keywords)
 					? BooleanQueryFactoryUtil.create((SearchContext) searchContext)
@@ -531,9 +533,9 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 		FileAttach object = null;
 
-		if (objectData.getLong("fileAttachId") > 0) {
+		if (objectData.getLong(FileAttachTerm.FILEATTACH_ID) > 0) {
 
-			object = fileAttachPersistence.fetchByPrimaryKey(objectData.getLong("fileAttachId"));
+			object = fileAttachPersistence.fetchByPrimaryKey(objectData.getLong(FileAttachTerm.FILEATTACH_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -543,23 +545,23 @@ public class FileAttachLocalServiceImpl extends FileAttachLocalServiceBaseImpl {
 
 			object = fileAttachPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(FileAttachTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(FileAttachTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setFullName(objectData.getString("fullName"));
-		object.setEmail(objectData.getString("email"));
+		object.setClassName(objectData.getString(FileAttachTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(FileAttachTerm.CLASS_PK));
+		object.setFullName(objectData.getString(FileAttachTerm.FULLNAME));
+		object.setEmail(objectData.getString(FileAttachTerm.EMAIL));
 		// object.setFileEntryId(objectData.getString("actionCode")fileEntryId);
-		object.setSource(objectData.getString("source"));
-		object.setSourceUrl(objectData.getString("sourceUrl"));
-		object.setDocFileId(objectData.getLong("docFileId"));
-		object.setFileName(objectData.getString("fileName"));
+		object.setSource(objectData.getString(FileAttachTerm.SOURCE));
+		object.setSourceUrl(objectData.getString(FileAttachTerm.SOURCE_URL));
+		object.setDocFileId(objectData.getLong(FileAttachTerm.DOCFILE_ID));
+		object.setFileName(objectData.getString(FileAttachTerm.FILE_NAME));
 
 		fileAttachPersistence.update(object);
 

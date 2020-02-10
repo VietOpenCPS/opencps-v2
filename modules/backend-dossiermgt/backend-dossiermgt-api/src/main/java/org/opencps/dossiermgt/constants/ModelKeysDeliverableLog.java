@@ -16,5 +16,7 @@ public class ModelKeysDeliverableLog {
 	public static final String DELIVERABLEACTION = "deliverableAction";
 	public static final String ACTIONDATE = "actionDate";
 	public static final String PAYLOAD = "payload";
-	
+	public static final String DOSSIER_UID = "dossierUid";	
+	public static final String DELIVERABLE_ACTION = "deliverableAction";
+	public static final String ACTION_DATE = "actionDate";
 }

@@ -495,13 +495,13 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		
 		_log.info("------------>>> accessToken: " + accessToken + "|state " + state);
 
-		if (applicant == null && state.equals("auth")) {
+		if (applicant == null && "auth".equalsIgnoreCase(state)) {
 			userInfoObject.put("userId", 0);
 			userInfoObject.put("status", 200);
 			return userInfoObject;
 		}
 
-		if (state.equalsIgnoreCase("auth")) {
+		if (applicant != null && "auth".equalsIgnoreCase(state)) {
 
 			mappingUserId = applicant.getMappingUserId();
 
@@ -670,7 +670,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			
 				AuthenticatedUserUUIDStoreUtil.register(userUUID);
 			}*/
-		} else if (state.equalsIgnoreCase("mapping")) {
+		} else if ("mapping".equalsIgnoreCase(state)) {
 			mappingUserId = user.getUserId();
 			applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 			if (applicant == null) {

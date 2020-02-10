@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.opencps.dossiermgt.action.DossierDocumentActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 
@@ -23,14 +24,11 @@ public class DossierDocumentActionsImpl implements DossierDocumentActions {
 
 		try {
 			List<DossierDocument> docList =DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.debug("docList:"+docList);
-			}
-			result.put("data", docList);
+			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierDocumentLocalServiceUtil.countDossierDocumentList(dossierId);
 			_log.debug("total:"+total);
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 //			
 		} catch (Exception e) {
 			_log.error(e);

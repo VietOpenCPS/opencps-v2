@@ -36,6 +36,11 @@ public class DateTimeUtil {
 
 	public static final String _VN_TIME_FORMAT_HOUR = "HH:mm";
 
+	public static final String _SYS_TIMEZONE = "Asia/Ho_Chi_Minh";
+	public static final String _STR_VN_NGAY = "Ng\u00E0y ";
+	public static final String _STR_VN_THANG = " th\u00E1ng ";
+	public static final String _STR_VN_NAM = " n\u0103m ";
+
 	public static String convertDateToString(Date date, String pattern) {
 
 		DateFormat dateFormat =
@@ -45,7 +50,7 @@ public class DateTimeUtil {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(_SYS_TIMEZONE));
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -421,8 +426,8 @@ public class DateTimeUtil {
 		cal.clear();
 		cal.setTime(new Date());
 
-		return "Ng\u00E0y " + cal.get(Calendar.DAY_OF_MONTH) + " th\u00E1ng " +
-			(cal.get(Calendar.MONTH) + 1) + " n\u0103m " +
+		return _STR_VN_NGAY + cal.get(Calendar.DAY_OF_MONTH) + _STR_VN_THANG +
+			(cal.get(Calendar.MONTH) + 1) + _STR_VN_NAM +
 			cal.get(Calendar.YEAR);
 
 	}

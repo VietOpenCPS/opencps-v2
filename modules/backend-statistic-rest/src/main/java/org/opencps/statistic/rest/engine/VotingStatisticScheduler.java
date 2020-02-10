@@ -49,6 +49,7 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
+import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -110,8 +111,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 								sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
@@ -140,8 +141,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 								payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
@@ -194,7 +195,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
-		payload.setClassName("dossier");
+		payload.setClassName(DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 		payload.setStart(QueryUtil.ALL_POS);
 		payload.setEnd(QueryUtil.ALL_POS);
 		// Check calculate = true => month

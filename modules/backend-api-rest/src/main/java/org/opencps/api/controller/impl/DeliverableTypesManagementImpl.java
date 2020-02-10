@@ -5,9 +5,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverableTypesManagement;
 import org.opencps.api.controller.util.DeliverableTypesUtils;
 import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
@@ -26,6 +29,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
@@ -41,7 +45,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Get All Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 		int start = 0, end = 0;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -56,12 +60,12 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			JSONObject deliverableTypeJsonObject = action.getDeliverableTypes(groupId, start, end);
 
 			List<DeliverableType> lstDeliverableType = (List<DeliverableType>) deliverableTypeJsonObject
-					.get("lstDeliverableType");
+					.get(ConstantUtils.DELIVERABLE_LIST_DELIVERABLE_TYPE);
 
-			results.setTotal(deliverableTypeJsonObject.getInt("total"));
+			results.setTotal(deliverableTypeJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(DeliverableTypesUtils.mappingToDeliverableTypesResultsModel(lstDeliverableType));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -74,7 +78,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Add Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String counter = String.valueOf(input.getCounter());
 
 		try {
@@ -90,7 +94,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -104,7 +108,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String counter = String.valueOf(model.getCounter());
 
 		try {
@@ -121,7 +125,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -134,7 +138,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Remove Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -148,7 +152,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -169,7 +173,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
 
-			return Response.status(200).entity(deliverableType.getFormScript()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableType.getFormScript()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -181,7 +185,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update FormScript of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -196,7 +200,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -217,7 +221,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
 
-			return Response.status(200).entity(deliverableType.getFormReport()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableType.getFormReport()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -229,7 +233,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -244,7 +248,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -265,7 +269,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getDeliverableType(deliverableTypeId);
 
-			return Response.status(200).entity(deliverableType.getMappingData()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(deliverableType.getMappingData()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -277,7 +281,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 		// TODO Update FormReport of Deliverable Type
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -292,7 +296,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -304,7 +308,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 		// TODO Get Deliverable Type by Id or typeCode
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -315,7 +319,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 
 			DeliverableTypeDetailModel result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -327,7 +331,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			User user, ServiceContext serviceContext, String id) {
 		// TODO Auto-generated method stub
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -342,9 +346,9 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			}
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("deliverableCode", deliverableNumber);
+			result.put(DeliverableTerm.DELIVERABLE_CODE, deliverableNumber);
 			
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

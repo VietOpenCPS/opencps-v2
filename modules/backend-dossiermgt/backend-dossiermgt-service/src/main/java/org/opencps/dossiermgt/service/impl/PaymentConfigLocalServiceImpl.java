@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.PaymentConfigTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.PaymentConfig;
@@ -211,7 +212,7 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -265,7 +266,7 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -400,9 +401,9 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 
 		PaymentConfig object = null;
 
-		if (objectData.getLong("paymentConfigId") > 0) {
+		if (objectData.getLong(PaymentConfigTerm.PAYMENT_CONFIG_ID) > 0) {
 
-			object = paymentConfigPersistence.fetchByPrimaryKey(objectData.getLong("paymentConfigId"));
+			object = paymentConfigPersistence.fetchByPrimaryKey(objectData.getLong(PaymentConfigTerm.PAYMENT_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -412,24 +413,24 @@ public class PaymentConfigLocalServiceImpl extends PaymentConfigLocalServiceBase
 
 			object = paymentConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setGovAgencyCode(objectData.getString("govAgencyCode"));
-		object.setGovAgencyName(objectData.getString("govAgencyName"));
-		object.setGovAgencyTaxNo(objectData.getString("govAgencyTaxNo"));
-		object.setInvoiceTemplateNo(objectData.getString("invoiceTemplateNo"));
-		object.setInvoiceIssueNo(objectData.getString("invoiceIssueNo"));
-		object.setInvoiceLastNo(objectData.getString("invoiceLastNo"));
-		object.setInvoiceForm(objectData.getString("invoiceForm"));
-		object.setBankInfo(objectData.getString("bankInfo"));
-		object.setEpaymentConfig(objectData.getString("epaymentConfig"));
+		object.setGovAgencyCode(objectData.getString(PaymentConfigTerm.GOV_AGENCY_CODE));
+		object.setGovAgencyName(objectData.getString(PaymentConfigTerm.GOV_AGENCY_NAME));
+		object.setGovAgencyTaxNo(objectData.getString(PaymentConfigTerm.GOV_AGENCY_TAX_NO));
+		object.setInvoiceTemplateNo(objectData.getString(PaymentConfigTerm.INVOICE_TEMPLATE_NO));
+		object.setInvoiceIssueNo(objectData.getString(PaymentConfigTerm.INVOICE_ISSUE_NO));
+		object.setInvoiceLastNo(objectData.getString(PaymentConfigTerm.INVOICE_LAST_NO));
+		object.setInvoiceForm(objectData.getString(PaymentConfigTerm.INVOICE_FORM));
+		object.setBankInfo(objectData.getString(PaymentConfigTerm.BANK_INFO));
+		object.setEpaymentConfig(objectData.getString(PaymentConfigTerm.EPAYMENT_CONFIG));
 
 		paymentConfigPersistence.update(object);
 

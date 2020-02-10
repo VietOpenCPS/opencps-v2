@@ -15,4 +15,5 @@ Export-Package: \
 	org.apache.commons.io.filefilter,\
 	org.apache.commons.io.output,\
 	org.apache.commons.io.input,\
-	org.opencps.dossiermgt.lgsp.model
+	org.opencps.dossiermgt.lgsp.model,\
+	org.apache.commons.text.*

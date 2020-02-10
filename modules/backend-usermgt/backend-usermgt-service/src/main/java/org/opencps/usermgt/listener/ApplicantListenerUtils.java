@@ -17,17 +17,17 @@ public class ApplicantListenerUtils {
 		try {
 			
 			//_log.info("notiType"+notiType);
-			//_log.info("groupId"+groupId);
+			//_log.info(Field.GROUP_ID+groupId);
 			
 			Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil
 					.fetchByF_NotificationtemplateByType(groupId, notiType);
 			String body = getEmailBody(notificationtemplate, object);
 			String subject = notificationtemplate.getEmailSubject();
 			
-			payload.put("toName", object.get("toName"));
-			payload.put("toAddress", object.get("toAddress"));
-			payload.put("subject", subject);
-			payload.put("body", body);
+			payload.put(ApplicantListenerMessageKeys.TO_NAME, object.get(ApplicantListenerMessageKeys.TO_NAME));
+			payload.put(ApplicantListenerMessageKeys.TO_ADDRESS, object.get(ApplicantListenerMessageKeys.TO_ADDRESS));
+			payload.put(ApplicantListenerMessageKeys.SUBJECT, subject);
+			payload.put(ApplicantListenerMessageKeys.BODY, body);
 			//_log.info("payload"+payload);
 		} catch (Exception e) {
 			_log.error(e);

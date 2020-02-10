@@ -26,6 +26,8 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -77,10 +79,10 @@ public class ProcessStepIndexer extends BaseIndexer<ProcessStep> {
 		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS, object.getDossierStatus());
 
 		document.addTextSortable(ProcessStepTerm.DOSSIER_STATUS_TEXT,
-				getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierStatus()));
+				getDictItemName(object.getGroupId(), ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), object.getDossierStatus()));
 		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS, object.getDossierSubStatus());
 		document.addTextSortable(ProcessStepTerm.DOSSIER_SUB_STATUS_TEXT,
-				getDictItemName(object.getGroupId(), DOSSIER_STATUS, object.getDossierSubStatus()));
+				getDictItemName(object.getGroupId(), ReadFilePropertiesUtils.get(ConstantUtils.DOSSIER_STATUS), object.getDossierSubStatus()));
 		document.addTextSortable(ProcessStepTerm.CUSTOM_PROCESS_URL, object.getCustomProcessUrl());
 		document.addTextSortable(ProcessStepTerm.STEP_INSTRUCTION, object.getStepInstruction());
 		document.addTextSortable(ProcessStepTerm.BRIEF_NOTE, object.getBriefNote());

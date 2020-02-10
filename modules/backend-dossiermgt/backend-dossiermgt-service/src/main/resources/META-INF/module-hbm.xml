@@ -27,6 +27,7 @@
 	<import class="org.opencps.dossiermgt.model.EForm" />
 	<import class="org.opencps.dossiermgt.model.MenuConfig" />
 	<import class="org.opencps.dossiermgt.model.MenuRole" />
+	<import class="org.opencps.dossiermgt.model.Notarization" />
 	<import class="org.opencps.dossiermgt.model.PaymentConfig" />
 	<import class="org.opencps.dossiermgt.model.PaymentFile" />
 	<import class="org.opencps.dossiermgt.model.ProcessAction" />
@@ -659,6 +660,29 @@
 		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="menuConfigId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.NotarizationImpl" table="opencps_notarization">
+		<id name="notarizationId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="dossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="fileName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="totalRecord" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="totalPage" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="totalCopy" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="totalFee" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="notarizationNo" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="notarizationYear" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="notarizationDate" type="org.hibernate.type.TimestampType" />
+		<property name="signerName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="signerPosition" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="statusCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.PaymentConfigImpl" table="opencps_paymentconfig">
 		<id name="paymentConfigId" type="long">

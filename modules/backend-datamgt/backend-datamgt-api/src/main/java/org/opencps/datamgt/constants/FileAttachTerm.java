@@ -47,8 +47,22 @@ public class FileAttachTerm {
 	public static final String SOURCE_URL = "sourceUrl";
 
 	public static final String DOCFILE_ID = "docFileId";
-	
+
 	public static final String FILE_NAME = "fileName";
+
+	public static final String VERSION = "version";
+
+	public static final String VERSIONS = "versions";
+
+	public static final String CREATED_DATE = "createdDate";
+	
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+	
+	public static final String LINK_CLONE = "link";
 
 	private long fileAttachId;
 	private long companyId;

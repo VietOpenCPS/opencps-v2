@@ -17,7 +17,7 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
-	private static final int NOT_USED_POSTAL = 1;
+//	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
 	
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
@@ -79,7 +79,7 @@ public class StatisticEngineFetchEntry {
 		}
 		//
 		statisticData.setTotalCount(statisticData.getTotalCount() + 1);
-		if (dossierData.getDossierStatus().contentEquals("denied")) {
+		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
 			// tiep nhan xu ly
@@ -101,14 +101,14 @@ public class StatisticEngineFetchEntry {
 			
 			if (releaseDate == null || releaseDate.after(toStatisticDate)) {
 				// hồ sơ đang xử lý 
-				if (dossierData.getDossierStatus().contentEquals("waiting") || 
-						dossierData.getDossierStatus().contentEquals("receiving")) {
+				if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.WAITING) || 
+						dossierData.getDossierStatus().contentEquals(DossierStatusTerm.RECEIVING)) {
 					// dang tạm dừng chờ bổ sung
 					statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
 				} else {
 					// đang xử lý
 					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
-					if (!"processing".equals(dossierData.getDossierStatus())) {
+					if (!DossierStatusTerm.PROCESSING.equals(dossierData.getDossierStatus())) {
 						// xử lý nội bộ
 						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
 					} else {
@@ -120,7 +120,7 @@ public class StatisticEngineFetchEntry {
 					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
-						if (!"processing".equals(dossierData.getDossierStatus())) {
+						if (!DossierStatusTerm.PROCESSING.equals(dossierData.getDossierStatus())) {
 							// đang quá hạn và xử lý bên ngoài 
 							statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
 						}
@@ -131,13 +131,13 @@ public class StatisticEngineFetchEntry {
 				}
 			} else {
 				// ho so da ket thuc trong thang	
-				if (dossierData.getDossierStatus().contentEquals("cancelled")) {
+				if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.CANCELLED)) {
 					// ho so da bi rut trong thang
 					statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 				} else {
 					// hồ sơ đã hoàn thành trong tháng	
 					statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);						
-					if (dossierData.getDossierStatus().contentEquals("unresolved")) {
+					if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.UNRESOLVED)) {
 						// từ chối giải quyết => không tính hạn xử lý
 						statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
 					} else { 
@@ -197,9 +197,9 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+//		Date extendDate = Validator.isNull(dossierData.getExtendDate())
+//				? null
+//				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
@@ -238,7 +238,7 @@ public class StatisticEngineFetchEntry {
 			statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
 		}
 
-		if (dossierData.getDossierStatus().contentEquals("denied")) {
+		if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.DENIED)) {
 			statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
 		} else {
 			// tiep nhan xu ly
@@ -260,14 +260,14 @@ public class StatisticEngineFetchEntry {
 			
 			if (releaseDate == null || releaseDate.after(toStatisticDate)) {
 				// hồ sơ đang xử lý 
-				if (dossierData.getDossierStatus().contentEquals("waiting") || 
-						dossierData.getDossierStatus().contentEquals("receiving")) {
+				if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.WAITING) || 
+						dossierData.getDossierStatus().contentEquals(DossierStatusTerm.RECEIVING)) {
 					// dang tạm dừng chờ bổ sung
 					statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
 				} else {
 					// đang xử lý
 					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
-					if (!"processing".equals(dossierData.getDossierStatus())) {
+					if (!DossierStatusTerm.PROCESSING.equals(dossierData.getDossierStatus())) {
 						// xử lý nội bộ
 						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
 					} else {
@@ -279,7 +279,7 @@ public class StatisticEngineFetchEntry {
 					if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
 						// đang quá hạn
 						statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
-						if (!"processing".equals(dossierData.getDossierStatus())) {
+						if (!DossierStatusTerm.PROCESSING.equals(dossierData.getDossierStatus())) {
 							// đang quá hạn và xử lý bên ngoài 
 							statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
 						}
@@ -290,14 +290,14 @@ public class StatisticEngineFetchEntry {
 				}
 			} else {
 				// ho so da ket thuc trong thang	
-				if (dossierData.getDossierStatus().contentEquals("cancelled")) {
+				if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.CANCELLED)) {
 					// ho so da bi rut trong thang
 					statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 				} else {
 					// hồ sơ đã hoàn thành trong tháng	
 					if (fromStatisticDate.before(releaseDate) && toStatisticDate.after(releaseDate))
 						statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);						
-					if (dossierData.getDossierStatus().contentEquals("unresolved")) {
+					if (dossierData.getDossierStatus().contentEquals(DossierStatusTerm.UNRESOLVED)) {
 						// từ chối giải quyết => không tính hạn xử lý
 						statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
 					} else { 
@@ -416,4 +416,15 @@ public class StatisticEngineFetchEntry {
 			statisticData.setBadCount(statisticData.getBadCount() + 1);
 		}
 	}
+}
+
+class DossierStatusTerm {
+	
+	public static final String DENIED = "denied";
+	public static final String WAITING = "waiting";
+	public static final String RECEIVING = "receiving";
+	public static final String PROCESSING = "processing";
+	public static final String CANCELLED = "cancelled";
+	public static final String UNRESOLVED = "unresolved";
+
 }

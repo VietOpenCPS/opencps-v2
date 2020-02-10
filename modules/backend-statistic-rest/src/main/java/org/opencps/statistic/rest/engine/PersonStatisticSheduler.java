@@ -47,6 +47,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
+import org.opencps.usermgt.constants.EmployeeTerm;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -101,8 +102,8 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
@@ -151,7 +152,7 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 		
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
-		payload.setClassName("employee");
+		payload.setClassName(EmployeeTerm.VALUE_EMPLOYEE);
 		// Check calculate = true => month
 		payload.setCalculate(true);
 		payload.setStart(QueryUtil.ALL_POS);

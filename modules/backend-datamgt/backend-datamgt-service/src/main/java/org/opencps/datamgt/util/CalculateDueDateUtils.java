@@ -265,7 +265,7 @@ public class CalculateDueDateUtils {
 								//_log.info("startMinuteAfterNoon: "+startMinuteAfterNoon);
 								//_log.info("endHourAfterNoon: "+endHourAfterNoon);
 								//_log.info("endMinuteAfterNoon: "+endMinuteAfterNoon);
-								// NgoÃ i giá»� lÃ m viá»‡c buá»•i tá»‘i
+								// Ngoài giờ làm việc buổi tối
 //								boolean flagOff = false;
 //								boolean flagOut = false;
 //								if (endHourAfterNoon < hours || hours < startHourMorning) {

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
+import com.liferay.portal.kernel.search.Field;
 
 public class LGSPEvent implements MessageListener {
 	@Override
@@ -32,7 +33,7 @@ public class LGSPEvent implements MessageListener {
 	private void _doReceiveRequest(Message message) {		
 		_log.info("LGSP dossier event");
 		JSONObject dossierObj = (JSONObject) message.get("dossier");
-		long groupId = dossierObj.getLong(DossierTerm.GROUP_ID);
+		long groupId = dossierObj.getLong(Field.GROUP_ID);
 		List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.LGSP_PROTOCOL);
 		for (ServerConfig sc : lstServers) {
 			try {

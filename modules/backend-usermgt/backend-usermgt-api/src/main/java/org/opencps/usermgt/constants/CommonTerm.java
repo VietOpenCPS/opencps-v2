@@ -9,7 +9,7 @@ public class CommonTerm {
 	public static final String EMPLOYEE = "employee";
 	public static final String USER_NAME = "USERNAME";
 	public static final String USER_EMAIL = "USEREMAIL";
-	public static final String PASS_WORD = "PASSWORD";
+	public static final String SECRET_CODE = "PASSWORD";
 	public static final String USER_STATUS = "USERSTATUS";
 
 	public static final String EMAIL_DASH_ADDRESS = "email-address";
@@ -22,4 +22,9 @@ public class CommonTerm {
 	public static final String LAST_NAME = "lastName";
 
 	public static final String STR_ZERO = "0";
+	
+	public static final String ROLE_NAME = "roleName";
+	public static final String LOGIN_ACTION_USER_ID = "USER_ID";
+	public static final String LOGIN_ACTION_X_FORWARDED_FOR = "X-FORWARDED-FOR";
+	public static final String LOGIN_ACTION_CURRENT_COMPLETE_URL = "CURRENT_COMPLETE_URL";
 }

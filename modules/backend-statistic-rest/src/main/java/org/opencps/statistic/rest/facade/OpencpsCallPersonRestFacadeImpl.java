@@ -1,5 +1,9 @@
 package org.opencps.statistic.rest.facade;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
+
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -75,7 +79,7 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 		
 		//DossierStatisticUtils.logAsFormattedJson(LOG, httpHeaders);
 		
-		httpHeaders.add("groupId", Long.toString(payload.getGroupId()));
+		httpHeaders.add(Field.GROUP_ID, Long.toString(payload.getGroupId()));
 //		if (Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY))
 //				&& Validator.isNotNull(PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET))) {
 //			setHttpHeadersAuthorization(httpHeaders, PropsUtil.get(ServerConfigContants.SERVER_SYNC_KEY), PropsUtil.get(ServerConfigContants.SERVER_SYNC_SECRET));
@@ -84,7 +88,7 @@ public class OpencpsCallPersonRestFacadeImpl extends OpencpsRestFacade<GetPerson
 //			httpHeaders.add("Authorization", "Basic " + DossierStatisticConfig.get(DossierStatisticConstants.OPENCPS_AUTHENCATION));
 //		}
 		if (Validator.isNotNull(payload.getUsername()) && Validator.isNotNull(payload.getPassword())) {
-			httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString((payload.getUsername() + ":" + payload.getPassword()).getBytes()));			
+			httpHeaders.add(httpHeaders.AUTHORIZATION, HttpAuthorizationHeader.SCHEME_BASIC + StringPool.SPACE + Base64.getEncoder().encodeToString((payload.getUsername() + StringPool.COLON + payload.getPassword()).getBytes()));			
 		}
 		
 		return (GetPersonResponse) this

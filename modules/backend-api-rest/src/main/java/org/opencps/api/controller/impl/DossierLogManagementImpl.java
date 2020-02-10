@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +54,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 			DossierLogModel result = DossierLogUtils.mappingToDossierLogModel(dossierLog);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -77,12 +78,12 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 					query.isOwner(), query.getStart(), query.getEnd(), query.getSort(), query.getOrder(),
 					serviceContext);
 
-			List<Document> documents = (List<Document>) dossierLogJsonObject.get("data");
+			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
 			//
-			results.setTotal(dossierLogJsonObject.getInt("total"));
+			results.setTotal(dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
 			results.getData().addAll(DossierLogUtils.mappingToDossierLogResultsModel(documents));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -106,7 +107,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 					query.getEnd(), query.getSort(), query.getOrder(), serviceContext);
 
-			List<Document> documents = (List<Document>) dossierLogJsonObject.get("data");
+			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
 
 			JSONArray models = JSONFactoryUtil.createJSONArray();
 
@@ -133,24 +134,24 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 //				model.put("createDate", date != null
 //						? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP) : strDate);
 
-				model.put("createDate", date != null
+				model.put(DossierLogTerm.CREATE_DATE, date != null
 				? date.getTime() : 0l);
 
-				model.put("notificationType", document.get(DossierLogTerm.NOTIFICATION_TYPE));
+				model.put(DossierLogTerm.NOTIFICATION_TYPE, document.get(DossierLogTerm.NOTIFICATION_TYPE));
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject(document.get(DossierLogTerm.PAYLOAD));
 
-				model.put("payload", payload);
+				model.put(DossierLogTerm.PAYLOAD, payload);
 
 				models.put(model);
 
 			}
 
-			results.put("total", dossierLogJsonObject.getInt("total"));
+			results.put(ConstantUtils.TOTAL, dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
 
-			results.put("data", models);
+			results.put(ConstantUtils.DATA, models);
 
-			return Response.status(200).entity(results.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

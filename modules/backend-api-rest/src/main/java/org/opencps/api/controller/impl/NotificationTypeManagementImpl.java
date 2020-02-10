@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.NotificationTypeManagement;
 import org.opencps.api.controller.util.NotificationTemplateUtils;
 import org.opencps.api.notificationtemplate.model.DataSearchModel;
@@ -36,11 +38,11 @@ public class NotificationTypeManagementImpl implements NotificationTypeManagemen
 
 			JSONObject jsonData = actions.getNotificationTypes();
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getNotificationTypeModel().addAll(
-					NotificationTemplateUtils.mapperNotificationTypeList((Map<String, String>) jsonData.get("data")));
+					NotificationTemplateUtils.mapperNotificationTypeList((Map<String, String>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

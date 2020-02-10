@@ -1,5 +1,7 @@
 package opencps.statistic.common.webservice.facade;
 
+import com.liferay.petra.string.StringPool;
+
 import java.net.Proxy;
 import java.net.URI;
 import java.util.ArrayList;
@@ -182,17 +184,17 @@ public abstract class OpencpsRestFacade<T, R> {
 	 */
 	protected HttpHeaders setHttpHeadersAuthorization(HttpHeaders httpHeaders, String authorizationField) {
 
-		httpHeaders.add("Authorization", "Basic " + authorizationField);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, authorizationField);
 
 		return httpHeaders;
 	}
 	
 	protected HttpHeaders setHttpHeadersAuthorization(HttpHeaders httpHeaders, String userName, String password) {
-		String authString = userName + ":" + password;
+		String authString = userName + StringPool.COLON + password;
 		
 		String authStringEnc = new String(Base64.getEncoder().encodeToString(authString.getBytes()));
 
-		httpHeaders.add("Authorization", "Basic " + authStringEnc);
+		httpHeaders.add(HttpHeaders.AUTHORIZATION, authStringEnc);
 
 		return httpHeaders;
 	}

@@ -1,11 +1,13 @@
 package org.opencps.dossiermgt.action.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -282,26 +284,16 @@ public class DossierActionUserImpl implements DossierActionUser {
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
 	//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				DossierActionUserPK pk = new DossierActionUserPK();
-				long userIdAssigned = subUser.getLong("userId");
-				int assigned = subUser.has("assigned") ? subUser.getInt("assigned") : 0;
-				
+				long userIdAssigned = subUser.getLong(Field.USER_ID);
+				int assigned = subUser.has(DossierActionUserTerm.ASSIGNED) ? subUser.getInt(DossierActionUserTerm.ASSIGNED) : 0;
+
 				pk.setDossierActionId(dossierAction.getDossierActionId());
-				
-				pk.setUserId(subUser.getLong("userId"));
-	
-//				DossierUserPK duPk = new DossierUserPK();
-	//			if (dossierActionId > 0) {
-	//				DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-	//				if (dAction != null) {
-	//					model.setStepCode(dAction.getStepCode());
-	//				}
-	//			}
-//				duPk.setDossierId(dossier.getDossierId());
-//				duPk.setUserId(subUser.getLong("userId"));
-//				DossierUser dossierUser = DossierUserLocalServiceUtil.fetchDossierUser(duPk);
+
+				pk.setUserId(subUser.getLong(Field.USER_ID));
+
 				DossierUser dossierUser = null;
-				dossierUser = mapDus.get(subUser.getLong("userId"));
-				
+				dossierUser = mapDus.get(subUser.getLong(Field.USER_ID));
+
 				if (dossierUser != null) {
 					//Update dossier user if assigned
 					if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
@@ -350,13 +342,14 @@ public class DossierActionUserImpl implements DossierActionUser {
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.NOT_ASSIGNED) {
 				//			model = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 				DossierActionUserPK pk = new DossierActionUserPK();
-				int assigned = subUser.has("assigned") ? subUser.getInt("assigned") : 0;
-				long userIdAssigned = subUser.getLong("userId");
-				
+				int assigned = subUser.has(DossierActionUserTerm.ASSIGNED) ? subUser.getInt(DossierActionUserTerm.ASSIGNED) : 0;
+				long userIdAssigned = subUser.getLong(Field.USER_ID);
+
 				pk.setDossierActionId(dossierAction.getDossierActionId());
-				pk.setUserId(subUser.getLong("userId"));
-	
-				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil.fetchDossierActionUser(pk);
+				pk.setUserId(subUser.getLong(Field.USER_ID));
+
+				org.opencps.dossiermgt.model.DossierActionUser dau = DossierActionUserLocalServiceUtil
+						.fetchDossierActionUser(pk);
 				if (Validator.isNull(dau)) {
 					dau = new org.opencps.dossiermgt.model.impl.DossierActionUserImpl();
 					dau.setModerator(0);
@@ -503,8 +496,8 @@ public class DossierActionUserImpl implements DossierActionUser {
 		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
 		if (stepCodeArr.length > 0) {
 			for (String stepCode : stepCodeArr) {
-				if (stepCode.startsWith("!")) {
-					int index = stepCode.indexOf("!");
+				if (stepCode.startsWith(StringPool.EXCLAMATION)) {
+					int index = stepCode.indexOf(StringPool.EXCLAMATION);
 					String stepCodePunc = stepCode.substring(index + 1);
 					List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), stepCodePunc);
 					List<DossierAction> lstDossierActions = DossierActionLocalServiceUtil.findDossierActionByDID_STEP(dossier.getDossierId(), stepCodePunc);

@@ -48,6 +48,9 @@ public class WorkingUnitTerm {
 	public static final String LOGO_FILE_ENTRY_ID = "logoFileEntryId";
 	
 	public static final String SITE_TEMPLATE_ID = "siteTemplateId";
+	
+	public static final String CEREMONYDATE = "ceremonyDate";
+	
 	// sortable
 	public static final String WORKINGUNIT_ID_SORTABLE = "workingUnitId_sortable";
 
@@ -84,6 +87,14 @@ public class WorkingUnitTerm {
 	public static final String EMAIL_SORTABLE = "email_sortable";
 	
 	public static final String WEBSITE_SORTABLE = "website_sortable";
+	
+	public static final String GOV_AGENCY_CODE_TREE = "govAgencyCodeTree";
+	
+	public static final String KEYWORDS = "keywords";
+	
+	public static final String PARAMS = "params";
+	
+	public static final String PAGINATION_TYPE = "paginationType";
 	
 	private long workingUnitId;
 
@@ -293,6 +304,10 @@ public class WorkingUnitTerm {
 
 	public void setLogoFileEntryId(long logoFileEntryId) {
 		this.logoFileEntryId = logoFileEntryId;
+	}
+	
+	public static String getSibLingPre() {
+		return "0";
 	}
 
 }

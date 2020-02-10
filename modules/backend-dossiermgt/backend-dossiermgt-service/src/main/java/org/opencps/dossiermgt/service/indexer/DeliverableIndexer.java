@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -146,11 +147,11 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 				? object.getRevalidate().getTime() : null);
 
 		document.addDateSortable(
-			ModelKeysDeliverable.ISSUEDATE + "_date", object.getIssueDate());
+			ModelKeysDeliverable.ISSUEDATE + ModelKeysDeliverable.STR_DATE, object.getIssueDate());
 		document.addDateSortable(
-			ModelKeysDeliverable.EXPIREDATE + "_date", object.getExpireDate());
+			ModelKeysDeliverable.EXPIREDATE + ModelKeysDeliverable.STR_DATE, object.getExpireDate());
 		document.addDateSortable(
-			ModelKeysDeliverable.REVALIDATE + "_date", object.getRevalidate());
+			ModelKeysDeliverable.REVALIDATE + ModelKeysDeliverable.STR_DATE, object.getRevalidate());
 
 		document.addNumberSortable(
 			ModelKeysDeliverable.DELIVERABLESTATE,
@@ -180,7 +181,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					// keyValue[0].toString() + "_data",
 					// keyValue[1].toString());
 					document.addKeyword(
-						keyValue[0].toString().toLowerCase() + "_data",
+						keyValue[0].toString().toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA,
 						keyValue[1].toString().toLowerCase());
 				}
 			}
@@ -195,7 +196,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				document.addTextSortable(
-					key + "_data", jsonObject.getString(key));
+					key + StringPool.UNDERLINE + ConstantUtils.DATA, jsonObject.getString(key));
 			}
 		}
 		catch (Exception e) {
@@ -400,7 +401,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 						// keyValue[1] =
 						// strObject.toString().replaceAll(Pattern.quote("/"),

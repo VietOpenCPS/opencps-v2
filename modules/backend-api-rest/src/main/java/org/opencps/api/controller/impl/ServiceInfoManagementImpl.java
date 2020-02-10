@@ -31,11 +31,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +49,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ServiceInfoManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceInfoUtils;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
@@ -68,21 +70,15 @@ import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
-import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
-import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
@@ -105,13 +101,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		try {
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -134,13 +130,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //			_log.info("sorts: "+query.getSort());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
+				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 			} else if (Validator.isNotNull(query.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+				sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable", Sort.STRING_TYPE,
+				String stringSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				sorts = new Sort[] { SortFactoryUtil.create(stringSort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			}
 
@@ -148,11 +147,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext) : actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 						groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			//_log.info("jsonData.hit: "+jsonData.get("data"));
+			//_log.info("jsonData.hit: "+jsonData.get(ConstantUtils.DATA));
 			List<Document> lstDocs = new ArrayList<Document>();
 			if (Validator.isNotNull(query.getAgency())) {
 				int total = 0;
-				for (Document doc : (List<Document>) jsonData.get("data")) {
+				for (Document doc : (List<Document>) jsonData.get(ConstantUtils.DATA)) {
 					long serviceInfoId = (GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 					int countService = ServiceConfigLocalServiceUtil.countBySIAndGAC(groupId, serviceInfoId, query.getAgency());
 					if (countService > 0) {
@@ -160,32 +159,32 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 						lstDocs.add(doc);
 					}
 				}		
-				jsonData.put("total", total);
+				jsonData.put(ConstantUtils.TOTAL, total);
 				if (query.getEnd() < lstDocs.size()) {
-					jsonData.put("data", lstDocs.subList(query.getStart(), query.getEnd()));					
+					jsonData.put(ConstantUtils.DATA, lstDocs.subList(query.getStart(), query.getEnd()));					
 				}
 				else {
-					jsonData.put("data", lstDocs.subList(query.getStart(), lstDocs.size()));					
+					jsonData.put(ConstantUtils.DATA, lstDocs.subList(query.getStart(), lstDocs.size()));					
 				}
 			}
 			
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			results.getData()
-				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
+				.addAll(ServiceInfoUtils.mappingToServiceInfoResultModel((List<Document>) jsonData.get(ConstantUtils.DATA), groupId, serviceContext));
 			
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //		    
 //			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
+//				builder = Response.status(HttpURLConnection.HTTP_OK);
 //				CacheControl cc = new CacheControl();
 //				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 //				cc.setPrivate(true);	
 //				builder.tag(etag);
-//				return builder.status(200).entity(results).cacheControl(cc).build();
+//				return builder.status(HttpURLConnection.HTTP_OK).entity(results).cacheControl(cc).build();
 //			}
 //			else {
-//				return Response.status(200).entity(results).build();				
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();				
 //			}
 
 //			EntityTag etag = new EntityTag(Integer.toString((groupId + keySearch + query.getAdministration() + query.getDomain() + query.getLevel() + query.getActive()).hashCode()));
@@ -200,7 +199,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //		    builder.cacheControl(cc);
 //		    
 //		    return builder.build();
-		    return Response.status(200).entity(results).build();
+		    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -211,7 +210,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response addServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -253,7 +252,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-			return Response.status(200).entity(serviceInfoInput).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 
 		} catch (Exception e) {
 
@@ -270,7 +269,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ServiceInfo serviceInfo = null;
 
@@ -286,7 +285,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
 		
-			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
+			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
@@ -309,7 +308,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response updateServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -350,7 +349,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-			return Response.status(200).entity(serviceInfoInput).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 
 		} catch (Exception e) {
 
@@ -383,7 +382,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNotNull(serviceInfo)) {
 				serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-				return Response.status(200).entity(serviceInfoInput).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 			} else {
 				throw new Exception();
 			}
@@ -398,15 +397,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getFileTemplatesOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, FileTemplateSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		FileTemplateResultsModel results = new FileTemplateResultsModel();
 
 		try {
 
 			if (Validator.isNotNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			if (Validator.isNotNull(query.geteForm())) {
@@ -414,22 +413,22 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, eformFlag, query.getStart(),
 						query.getEnd());
 				
-				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get(ConstantUtils.DATA);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(),
 						query.getEnd());
 				
-				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get("data");
+				List<ServiceFileTemplate> fileTemplates = (List<ServiceFileTemplate>) jsonData.get(ConstantUtils.DATA);
 
-				results.setTotal(jsonData.getInt("total"));
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 
 		} catch (Exception e) {
@@ -443,7 +442,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String fileTemplateNo,
 			String templateName, String fileType, int fileSize, String fileName) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -476,7 +475,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 
@@ -521,9 +520,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileEntry.getFileName() + "\"");
-			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename);
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 
@@ -558,7 +557,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 
@@ -574,7 +573,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -586,18 +585,18 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //		    
 //			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
+//				builder = Response.status(HttpURLConnection.HTTP_OK);
 //				CacheControl cc = new CacheControl();
 //				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 //				cc.setPrivate(true);	
 //				builder.tag(etag);
-//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+//				return builder.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 //			}
 //			else {
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();				
 //			}
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -608,7 +607,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -616,10 +615,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//Sort agency
 			Sort[] sorts = null;
 			if (Validator.isNull(search.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[] { SortFactoryUtil.create(dateSort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), search.getSort());
+				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			}
 			results = actions.getStatisticByAdministration(groupId, sorts, serviceContext);
@@ -628,13 +629,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
+//				builder = Response.status(HttpURLConnection.HTTP_OK);
 //				CacheControl cc = new CacheControl();
 //				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 //				cc.setPrivate(true);	
 //				builder.tag(etag);
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -646,7 +647,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		
@@ -654,10 +655,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//Sort agency
 			Sort[] sorts = null;
 			if (Validator.isNull(search.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[] { SortFactoryUtil.create(dateSort, Sort.STRING_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			} else {
-				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_Number_sortable", Sort.INT_TYPE,
+				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), search.getSort());
+				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
 						GetterUtil.getBoolean(search.getOrder())) };
 			}
 			if (Validator.isNotNull(agency)) {
@@ -670,18 +673,18 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 //			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(200);
+//				builder = Response.status(HttpURLConnection.HTTP_OK);
 //				CacheControl cc = new CacheControl();
 //				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 //				cc.setPrivate(true);	
 //				builder.tag(etag);
-//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+//				return builder.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 //			}
 //			else {
-//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+//				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 //			}
 			
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -702,7 +705,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileAttach.getFileEntryId());
 
 				is = dlFileEntry.getContentStream();
-				result = IOUtils.toString(is, "UTF-8");
+				result = IOUtils.toString(is, ConstantUtils.ENCODING_UTF_8);
 			}
 
 		} catch (Exception e) {
@@ -717,7 +720,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 		}
 
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -736,7 +739,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormReportFileId());
 
 					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+					result = IOUtils.toString(is, ConstantUtils.ENCODING_UTF_8);
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -749,7 +752,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 		}
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -767,7 +770,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(fileTemplate.getFormScriptFileId());
 
 					is = dlFileEntry.getContentStream();
-					result = IOUtils.toString(is, "UTF-8");
+					result = IOUtils.toString(is, ConstantUtils.ENCODING_UTF_8);
 			}
 		} catch (Exception e) {
 			_log.error(e);
@@ -780,14 +783,14 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 		}
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
 	public Response getServiceInfoRecently(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel search) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		//String emailLogin = user.getEmailAddress();
 		//DossierActions actions = new DossierActionsImpl();
@@ -797,16 +800,16 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			// LamTV_Process search LIKE
 			String owner = StringPool.BLANK;
-			if (Validator.isNotNull(search.getTop()) && "recently".equalsIgnoreCase(search.getTop())) {
+			if (Validator.isNotNull(search.getTop()) && ConstantUtils.SERVICE_INFO_RECENTLY.equalsIgnoreCase(search.getTop())) {
 				owner = "true";
 			}
 
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.USER_ID, userId);
 			_log.info("USER_ID: "+userId);
-
+			String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.SUBMIT_DATE);
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(DossierTerm.SUBMIT_DATE + "_Number_sortable", Sort.LONG_TYPE, true) };
+					SortFactoryUtil.create(numberSort, Sort.LONG_TYPE, true) };
 
 			ServiceInfoRecentResultModel results = new ServiceInfoRecentResultModel();
 
@@ -875,7 +878,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -889,7 +892,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		Indexer<ServiceInfo> indexer =
@@ -903,11 +906,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject jsonData = actions.getServiceInfos(user.getUserId(), serviceContext.getCompanyId(), groupId, params,
 				null, -1, -1, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(ConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			for (Document document : lstDocuments) {
 				long serviceInfoId = GetterUtil.getLong(
 					document.get(Field.ENTRY_CLASS_PK));
@@ -927,7 +930,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 		}
 
-		return Response.status(200).entity("{}").build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_EMPTY).build();
 	}
 
 	@Override
@@ -936,7 +939,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			Attachment fileScript, Attachment fileReport, String templateName, String strFileEntryId, String eForm, String strFormScriptFileId,
 			String strFormReportFileId, String eFormNoPattern, String eFormNamePattern) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -964,7 +967,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 								userId, groupId, 0, handlerScript.getInputStream(), 
 								FilenameUtils.getExtension(handlerScript.getName()), 
 								handlerScript.getName()
-								.substring(handlerScript.getName().lastIndexOf(".") + 1),
+								.substring(handlerScript.getName().lastIndexOf(StringPool.PERIOD) + 1),
 								handlerScript.getInputStream().available(), serviceContext);
 						if (fileEntry != null) {
 							formScriptId = fileEntry.getFileEntryId();
@@ -981,7 +984,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 								userId, groupId, 0, handlerReport.getInputStream(), 
 								FilenameUtils.getExtension(handlerReport.getName()), 
 								handlerReport.getName()
-								.substring(handlerReport.getName().lastIndexOf(".") + 1),
+								.substring(handlerReport.getName().lastIndexOf(StringPool.PERIOD) + 1),
 								handlerReport.getInputStream().available(), serviceContext);
 						if (fileEntry != null) {
 							formReportId = fileEntry.getFileEntryId();
@@ -1019,9 +1022,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(serviceFileTemplate);
 				//
 				FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			} else {
-				return Response.status(500).entity("Internal Server!!!").build();
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_INTERNAL_SERVER_ERROR)).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -60,6 +61,9 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link ServiceInfoMappingLocalServiceUtil} to access the service info mapping local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.ServiceInfoMappingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public ServiceInfoMapping addServiceInfoMapping(long groupId,
+		long companyId, long userId, String serviceCode, String serviceCodeDVCQG)
+		throws PortalException;
 
 	/**
 	* Adds the service info mapping to the database. Also notifies the appropriate model listeners.
@@ -70,6 +74,10 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public ServiceInfoMapping addServiceInfoMapping(
 		ServiceInfoMapping serviceInfoMapping);
+
+	public ServiceInfoMapping adminProcessData(JSONObject objectData);
+
+	public ServiceInfoMapping adminProcessDelete(Long id);
 
 	/**
 	* Creates a new service info mapping with the primary key. Does not add the service info mapping to the database.
@@ -98,6 +106,8 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ServiceInfoMapping deleteServiceInfoMapping(
 		long serviceInfoMappingId) throws PortalException;
+
+	public boolean deleteServiceInfoMapping(long groupId, String serviceCode);
 
 	/**
 	* Deletes the service info mapping from the database. Also notifies the appropriate model listeners.

@@ -29,6 +29,15 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+
+import org.opencps.usermgt.action.OfficeSiteInterface;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.model.OfficeSite;
+import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
+
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
 import backend.auth.api.exception.UnauthorizationException;

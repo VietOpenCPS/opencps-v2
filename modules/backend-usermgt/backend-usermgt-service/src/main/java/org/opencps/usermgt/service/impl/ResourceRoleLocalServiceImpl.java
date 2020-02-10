@@ -14,6 +14,16 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.ResourceRoleTerm;
+import org.opencps.usermgt.exception.NoSuchResourceRoleException;
+import org.opencps.usermgt.model.ResourceRole;
+import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -262,12 +272,12 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(ResourceRoleTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(ResourceRoleTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(ResourceRoleTerm.USER_ID);
 		String className = (String) params.get(ResourceRoleTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceRoleTerm.CLASS_PK);
 		String roleId = (String) params.get(ResourceRoleTerm.ROLE_ID);
@@ -283,7 +293,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceRoleTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -334,16 +344,16 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceRole.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceRole.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ResourceRoleTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(ResourceRoleTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(ResourceRoleTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(ResourceRoleTerm.USER_ID);
 		String className = (String) params.get(ResourceRoleTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceRoleTerm.CLASS_PK);
 		String roleId = (String) params.get(ResourceRoleTerm.ROLE_ID);
@@ -359,7 +369,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceRoleTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -422,9 +432,9 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		ResourceRole object = null;
 
-		if (objectData.getLong("resourceRoleId") > 0) {
+		if (objectData.getLong(ResourceRoleTerm.RESOURCEROLE_ID) > 0) {
 
-			object = resourceRolePersistence.fetchByPrimaryKey(objectData.getLong("resourceRoleId"));
+			object = resourceRolePersistence.fetchByPrimaryKey(objectData.getLong(ResourceRoleTerm.RESOURCEROLE_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -434,18 +444,18 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 			object = resourceRolePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(ResourceRoleTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(ResourceRoleTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setRoleId(objectData.getLong("roleId"));
-		object.setReadonly(objectData.getInt("readonly"));
+		object.setClassName(objectData.getString(ResourceRoleTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(ResourceRoleTerm.CLASS_PK));
+		object.setRoleId(objectData.getLong(ResourceRoleTerm.ROLE_ID));
+		object.setReadonly(objectData.getInt(ResourceRoleTerm.READONLY));
 
 		resourceRolePersistence.update(object);
 

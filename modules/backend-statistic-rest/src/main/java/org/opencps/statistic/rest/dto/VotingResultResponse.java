@@ -7,12 +7,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "VotingResultResponse")
 public class VotingResultResponse {
 	private int total;
 	private String agency;
-	@XmlElement(name = "data")
+	@XmlElement(name = ConstantUtils.DATA)
 	private List<VotingResultStatisticData> data;
 
 	public int getTotal() {

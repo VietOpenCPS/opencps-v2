@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.controller.util.PostalConstantUtils;
 import org.opencps.api.controller.util.VotingUtils;
 import org.opencps.api.voting.model.VotingInputModel;
 import org.opencps.api.voting.model.VotingModel;
@@ -52,6 +53,39 @@ import backend.postal.api.rest.controller.VotingManagement;
 public class VotingManagementImpl implements VotingManagement {
 
 	Log _log = LogFactoryUtil.getLog(VotingManagementImpl.class);
+	public static final String VOTING_ID = "votingId";
+	public static final String USER_ID = "userId";
+	public static final String USER_NAME = "userName";
+	public static final String COMPANY_ID = "companyId";
+	public static final String CREATE_DATE = "createDate";
+	public static final String GROUP_ID = "groupId";
+	
+	public static final String EMAIL = "email";
+	public static final String CLASS_NAME = "className";
+	public static final String CLASS_PK = "classPK";
+	public static final String SUBJECT = "subject";
+	public static final String CHOICES = "choices";
+	public static final String TEMPLATE_NO = "templateNo";
+	public static final String COMMENTABLE = "commentable";
+	public static final String VOTING_CODE = "votingCode";
+	public static final String VOTING_SUBJECT = "votingSubject";
+	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_NAME = "domainName";
+	public static final String GOV_AGENCY_CODE = "govAgencyCode";
+	public static final String GOV_AGENCY_NAME = "govAgencyName";
+	
+	public static final String CREATE_DATE_SORTABLE = "createDate_sortable";
+	public static final String TREE_INDEX_SORTABLE = "treeIndex_sortable";
+
+	public static final String MONTH = "month";
+	public static final String YEAR = "year";
+	public static final String FROM_VOTING_DATE = "fromVotingDate";
+	public static final String TO_VOTING_DATE = "toVotingDate";
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
 	@SuppressWarnings({ "unchecked"})
 	@Override
@@ -68,18 +102,18 @@ public class VotingManagementImpl implements VotingManagement {
 				query.setStart(-1);
 				query.setEnd(-1);
 			}
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			//_log.info("groupId: "+groupId);
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
-			params.put(VotingTerm.CLASS_NAME, className);
-			params.put(VotingTerm.CLASS_PK, classPK);
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(KEYWORDS, query.getKeywords());
+			params.put(CLASS_NAME, className);
+			params.put(CLASS_PK, classPK);
 
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(VotingTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE, false) };
+					SortFactoryUtil.create(CREATE_DATE_SORTABLE, Sort.STRING_TYPE, false) };
 //			Sort[] sorts = new Sort[] {};
 
 //			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
@@ -87,16 +121,16 @@ public class VotingManagementImpl implements VotingManagement {
 			String fromVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromVotingDate());
 			String toVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToVotingDate());
 			//
-//			params.put("fromVotingDate", fromVotingDate);
-//			params.put("toVotingDate", toVotingDate);
+			params.put(FROM_VOTING_DATE, fromVotingDate);
+			params.put(TO_VOTING_DATE, toVotingDate);
 
 			JSONObject jsonData = action.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, className, classPK,
 						params, query.getStart(), query.getEnd(), serviceContext);
 
 			if (jsonData != null) {
-				result.setTotal(jsonData.getLong("total"));
+				result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 				result.getData()
-						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get("data"), query.getFromVotingDate(), query.getToVotingDate(), serviceContext));
+						.addAll(VotingUtils.mappingVotingDocList((List<Document>) jsonData.get(PostalConstantUtils.DATA), query.getFromVotingDate(), query.getToVotingDate(), serviceContext));
 			} else {
 				result.setTotal(0l);
 			}
@@ -118,7 +152,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String className = HtmlUtil.escape(input.getClassName());
 			String classPK = HtmlUtil.escape(input.getClassPK());
@@ -155,7 +189,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String className = HtmlUtil.escape(input.getClassName());
 			String classPK = HtmlUtil.escape(input.getClassPK());
 			String subject = HtmlUtil.escape(input.getSubject());
@@ -208,21 +242,21 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("votingId", String.valueOf(votingId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(VOTING_ID, String.valueOf(votingId));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(TREE_INDEX_SORTABLE, Sort.STRING_TYPE, false) };
 
 			JSONObject jsonData = actions.getVotingResults(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get("data"), serviceContext));
+					VotingUtils.mappingVotingResultDataList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -241,7 +275,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String comment = HtmlUtil.escape(input.getComment());
 			String selected = HtmlUtil.escape(input.getSelected());
@@ -282,18 +316,18 @@ public class VotingManagementImpl implements VotingManagement {
 	public Response getVotingResultStatistic(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, VotingResultSearchModel search) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		VotingActions actions = new VotingActionsImpl();
 		VotingStatisticsResults result = new VotingStatisticsResults();
 
 		try {
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put("groupId", String.valueOf(groupId));
-			params.put("month", String.valueOf(search.getMonth()));
-			params.put("year", String.valueOf(search.getYear()));
-			params.put(VotingTerm.CLASS_NAME, search.getClassName());
-			params.put(VotingTerm.GOV_AGENCY_CODE, search.getAgency());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(MONTH, String.valueOf(search.getMonth()));
+			params.put(YEAR, String.valueOf(search.getYear()));
+			params.put(CLASS_NAME, search.getClassName());
+			params.put(GOV_AGENCY_CODE, search.getAgency());
 			String fromVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getFromVotingDate());
 			String toVotingDate = APIDateTimeUtils.convertNormalDateToLuceneDate(search.getToVotingDate());
 			params.put(VotingResultTerm.FROM_VOTING_DATE, fromVotingDate);
@@ -301,14 +335,14 @@ public class VotingManagementImpl implements VotingManagement {
 			
 			//params.put("votingId", String.valueOf(votingId));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(TREE_INDEX_SORTABLE, Sort.STRING_TYPE, false) };
 
 			JSONObject jsonData = actions.getVotingResultStatistic(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(PostalConstantUtils.TOTAL));
 			result.getData().addAll(
-					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get("data"), serviceContext));
+					VotingUtils.mappingVotingStatisticsModelList((List<Document>) jsonData.get(PostalConstantUtils.DATA), serviceContext));
 
 			return Response.status(200).entity(result).build();
 
@@ -322,7 +356,7 @@ public class VotingManagementImpl implements VotingManagement {
 	public Response resolveConflictVotings(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		VotingActions actions = new VotingActionsImpl();
 		Indexer<Voting> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Voting.class);
@@ -332,17 +366,17 @@ public class VotingManagementImpl implements VotingManagement {
 
 		// get JSON data deliverable
 		Sort[] sorts = new Sort[] {
-				SortFactoryUtil.create(VotingTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE, false) };
-		JSONObject jsonData = actions.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, "", "",
-				params, -1, -1, serviceContext);
+				SortFactoryUtil.create(CREATE_DATE_SORTABLE, Sort.STRING_TYPE, false) };
+		JSONObject jsonData = actions.getVotingList(user.getUserId(), company.getCompanyId(), groupId, sorts, StringPool.BLANK, StringPool.BLANK,
+				params, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
-		long total = jsonData.getLong("total");
+		long total = jsonData.getLong(PostalConstantUtils.TOTAL);
 		// JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 
 		if (total > 0) {
-			List<Document> lstDocuments = (List<Document>) jsonData.get("data");
+			List<Document> lstDocuments = (List<Document>) jsonData.get(PostalConstantUtils.DATA);
 			for (Document document : lstDocuments) {
-				long votingId = GetterUtil.getLong(document.get(VotingTerm.VOTING_ID));
+				long votingId = GetterUtil.getLong(document.get(VOTING_ID));
 				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
 				String uid = document.get(Field.UID);
 				Voting oldVoting = VotingLocalServiceUtil.fetchVoting(votingId);

@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
@@ -21,7 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.PaymentConfigManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentConfigUtils;
 import org.opencps.api.paymentconfig.model.PaymentConfigInputModel;
 import org.opencps.api.paymentconfig.model.PaymentConfigResultsModel;
@@ -43,7 +47,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 	public Response getPaymentConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, PaymentConfigSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -53,8 +57,8 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			}
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			SearchContext searchContext = new SearchContext();
@@ -64,8 +68,8 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
-
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
 
 			Hits hits = PaymentConfigLocalServiceUtil.searchLucene(params, sorts, query.getStart(), query.getEnd(),
@@ -79,7 +83,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 			results.getData().addAll(PaymentConfigUtils.mappingDataModel(hits.toList()));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -90,7 +94,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 	public Response addPaymentConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, PaymentConfigInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -118,7 +122,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -141,7 +145,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -152,7 +156,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 	@Override
 	public Response updatePaymentConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, PaymentConfigInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -180,7 +184,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -207,7 +211,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			PaymentConfigInputModel result = PaymentConfigUtils.mappingToModel(paymentConfig);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -232,7 +236,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getInvoiceForm());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -260,7 +264,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getInvoiceForm());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -288,7 +292,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getInvoiceForm());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -313,7 +317,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getEpaymentConfig());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -344,7 +348,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getEpaymentConfig());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -377,7 +381,7 @@ public class PaymentConfigManagementImpl implements PaymentConfigManagement {
 			
 			result.setValue(paymentConfig.getEpaymentConfig());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

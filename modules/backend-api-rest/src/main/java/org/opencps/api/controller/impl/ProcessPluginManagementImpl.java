@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.messaging.MessageBusException;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -29,7 +30,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ProcessPluginManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -37,6 +40,9 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.ProcessPluginTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -59,7 +65,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	public Response getPlugins(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -89,29 +95,29 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					int total = plugins.size();
 
-					results.put("total", total);
+					results.put(ConstantUtils.TOTAL, total);
 
 					JSONArray dataArr = JSONFactoryUtil.createJSONArray();
 
 					for (ProcessPlugin plugin : plugins) {
 						JSONObject elm = JSONFactoryUtil.createJSONObject();
 
-						elm.put("processPluginId", plugin.getPrimaryKey());
-						elm.put("pluginName", plugin.getPluginName());
+						elm.put(ProcessPluginTerm.PROCESS_PLUGIN_ID, plugin.getPrimaryKey());
+						elm.put(ProcessPluginTerm.PLUGIN_NAME, plugin.getPluginName());
 
 						dataArr.put(elm);
 					}
 
-					results.put("data", dataArr);
+					results.put(ConstantUtils.DATA, dataArr);
 
-					return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+					return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {
@@ -124,7 +130,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	public Response getFormData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, long pluginid) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -146,22 +152,22 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					String formData = plugin.getSampleData();
 
-					if (formData.startsWith("#")) {
-						return Response.status(200).entity(formData).build();
+					if (formData.startsWith(StringPool.POUND)) {
+						return Response.status(HttpURLConnection.HTTP_OK).entity(formData).build();
 
 					} else {
 
 						JSONObject result = JSONFactoryUtil.createJSONObject(plugin.getSampleData());
 
-						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+						return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 					}
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {
@@ -173,7 +179,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	@Override
 	public Response getFormScript(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, long pluginid) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -196,21 +202,21 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					String formData = plugin.getPluginForm();
 
 					if (formData.startsWith("#")) {
-						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(formData)).build();
+						return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(formData)).build();
 
 					} else {
 
 						JSONObject result = JSONFactoryUtil.createJSONObject(plugin.getPluginForm());
 
-						return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+						return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 					}
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {
@@ -244,7 +250,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -272,7 +278,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					boolean original = false;
 
-					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals("original")) {
+					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals(ProcessPluginTerm.ORIGINAL)) {
 						original = true;
 					}
 
@@ -281,7 +287,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					String formData = StringPool.BLANK;
 					String formReport = StringPool.BLANK;
 
-					if (formCode.startsWith("#")) {
+					if (formCode.startsWith(StringPool.POUND)) {
 						formData = _getFormData(groupId, formCode, dossier.getDossierId(), autoRun,
 								dossier.getDossierTemplateNo(), original, serviceContext);
 
@@ -291,16 +297,16 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 					//_log.info("Form data to preview: " + formData);
 					Message message = new Message();
 
-					message.put("formReport", formReport);
+					message.put(ConstantUtils.API_JSON_FORM_REPORT, formReport);
 
-					message.put("formData", formData);
+					message.put(ConstantUtils.API_JSON_FORM_DATA, formData);
 
 					message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
-					message.setResponseDestinationName("jasper/engine/preview/callback");
+					message.setResponseDestinationName(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW_CALLBACK);
 
 					try {
 						String previewResponse = (String) MessageBusUtil
-								.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+								.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
 						// JSONObject jsonObject =
 						// JSONFactoryUtil.createJSONObject();
@@ -315,24 +321,24 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						File file = new File(previewResponse);
 
 						ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-						responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-						responseBuilder.header("Content-Type", "application/pdf");
+						String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								attachmentFilename);
+						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 						return responseBuilder.build();
 
 					} catch (MessageBusException e) {
 						_log.error(e);
-						throw new Exception("Preview rendering not avariable");
+						throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
 					}
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {
@@ -348,14 +354,14 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 		String formData = StringPool.BLANK;
 
-		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, StringPool.POUND, StringPool.BLANK);
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		
 		try {
 			// Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
 
 			DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-					fileTemplateNo, false, new DossierFileComparator(false, "createDate", Date.class));
+					fileTemplateNo, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 //			DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 			DossierPart dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier != null ? dossier.getDossierTemplateNo() : StringPool.BLANK,  fileTemplateNo);
@@ -478,7 +484,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	private String _getFormScript(String fileTemplateNo, long dossierId) {
 		String formData = StringPool.BLANK;
 
-		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, StringPool.POUND, StringPool.BLANK);
 
 		try {
 
@@ -500,7 +506,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 	private String _getFormHtml(String fileTemplateNo, long dossierId) {
 		String formData = StringPool.BLANK;
 
-		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, "#", StringPool.BLANK);
+		fileTemplateNo = StringUtil.replaceFirst(fileTemplateNo, StringPool.POUND, StringPool.BLANK);
 
 		  try {
 
@@ -528,7 +534,7 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 			User user, ServiceContext serviceContext, String id, long pluginid) {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -558,14 +564,14 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					boolean original = false;
 
-					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals("original")) {
+					if (splipPluginForms.length == 3 && splipPluginForms[2].contentEquals(ProcessPluginTerm.ORIGINAL)) {
 						original = true;
 					}
 
 					String formData = StringPool.BLANK;
 					String formReport = StringPool.BLANK;
 
-					if (formCode.startsWith("#")) {
+					if (formCode.startsWith(StringPool.POUND)) {
 						formData = _getFormData(groupId, formCode, dossier.getDossierId(), autoRun,
 								dossier.getDossierTemplateNo(), original, serviceContext);
 
@@ -574,11 +580,11 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 
 					JSONObject result = JSONFactoryUtil.createJSONObject();
 
-					String fileTemplateNo = StringUtil.replaceFirst(formCode, "#", StringPool.BLANK);
+					String fileTemplateNo = StringUtil.replaceFirst(formCode, StringPool.POUND, StringPool.BLANK);
 
 					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(
 							dossier.getDossierId(), fileTemplateNo, false,
-							new DossierFileComparator(false, "createDate", Date.class));
+							new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
 					DossierPart dossierPart = DossierPartLocalServiceUtil.getByFileTemplateNo(groupId, fileTemplateNo);
 
@@ -593,20 +599,20 @@ public class ProcessPluginManagementImpl implements ProcessPluginManagement {
 						partNo = dossierPart.getPartNo();
 					}
 					
-					result.put("partNo", partNo);
-					result.put("dossierFileId", dossierFileId);
-					result.put("formReport", formReport);
-					result.put("formData", formData);
+					result.put(DossierPartTerm.PART_NO, partNo);
+					result.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
+					result.put(ConstantUtils.API_JSON_FORM_REPORT, formReport);
+					result.put(ConstantUtils.API_JSON_FORM_DATA, formData);
 
 					return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result))
 							.build();
 
 				} else {
-					throw new Exception("The dossier wasn't on process");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_DOSSIERWASNOTONPROCESS));
 				}
 
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {

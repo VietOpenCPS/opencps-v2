@@ -16,12 +16,15 @@ package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.UserLogTerm;
 import org.opencps.dossiermgt.model.UserInfoLog;
 import org.opencps.dossiermgt.service.base.UserInfoLogLocalServiceBaseImpl;
 
@@ -95,9 +98,9 @@ public class UserInfoLogLocalServiceImpl extends UserInfoLogLocalServiceBaseImpl
 
 		UserInfoLog object = null;
 
-		if (objectData.getLong("UserInfoLogId") > 0) {
+		if (objectData.getLong(UserLogTerm.USER_LOG_ID) > 0) {
 
-			object = userInfoLogPersistence.fetchByPrimaryKey(objectData.getLong("userLogId"));
+			object = userInfoLogPersistence.fetchByPrimaryKey(objectData.getLong(UserLogTerm.USER_LOG_ID));
 
 		} else {
 
@@ -108,8 +111,8 @@ public class UserInfoLogLocalServiceImpl extends UserInfoLogLocalServiceBaseImpl
 			object.setCreateDate(new Date());
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setPayload(objectData.getString("payload"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setPayload(objectData.getString(UserLogTerm.PAYLOAD));
 
 		userInfoLogPersistence.update(object);
 

@@ -1,7 +1,17 @@
 
 package org.opencps.api.controller.util;
 
-import java.io.BufferedReader;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -38,17 +48,6 @@ import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 public class ConvertDossierFromV1Dot9Utils {
 
@@ -111,7 +110,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static final String TEMP_DOSSIERACTIONID = "dossierActionId";
 	public static final String TEMP_VIAPOST = "viaPost";
 	public static final String TEMP_POSTADDRESS = "postAddress";
-	public static final String TEMP_PASSWORD_ = "password";
+	public static final String TEMP_SECRET_ = "password";
 	public static final String TEMP_NOTIFICATION = "notification";
 	public static final String TEMP_VIAPOSTAL = "viaPostal";
 	public static final String TEMP_POSTALADDRESS = "postalAddress";
@@ -183,7 +182,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			String fileTemplateNo =
 				dossier.getDossierTemplateNo() + "-" + dossierPartNo;
 			String displayName = j.getString("partName");
-			String fileName = j.getString("fileName");
+//			String fileName = j.getString("fileName");
 
 			DossierFile oldDossierFile =
 				DossierFileLocalServiceUtil.getByG_DID_PART_NAME(
@@ -242,7 +241,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		}
 		catch (Exception e) {
 
-			System.out.println(j.getString("fileUrl"));
+//			System.out.println(j.getString("fileUrl"));
 			_log.info(e);
 		}
 	}
@@ -257,7 +256,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static InputStream getFileFromDVCOld(String url) {
 
 		URL oracle;
-		BufferedReader br = null;
+//		BufferedReader br = null;
 		InputStream result = null;
 		try {
 			oracle = new URL(url);
@@ -280,18 +279,18 @@ public class ConvertDossierFromV1Dot9Utils {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
-			if (br != null) {
-				try {
-					br.close();
-				}
-				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if (br != null) {
+//				try {
+//					br.close();
+//				}
+//				catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 		}
 		return result;
 	}
@@ -363,7 +362,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		objectData.put(TEMP_DOSSIERACTIONID, 0l);
 		objectData.put(TEMP_VIAPOST, 0);
 		objectData.put(TEMP_POSTADDRESS, "");
-		objectData.put(TEMP_PASSWORD_, "1111");
+		objectData.put(TEMP_SECRET_, "1111");
 		objectData.put(TEMP_NOTIFICATION, "0");
 		objectData.put(TEMP_VIAPOSTAL, 1);
 		objectData.put(TEMP_POSTALADDRESS, "");
@@ -416,9 +415,8 @@ public class ConvertDossierFromV1Dot9Utils {
 
 	public static JSONObject setDossierObject(JSONObject j) {
 
-		JSONObject objectData = JSONFactoryUtil.createJSONObject();
-
-		objectData = j;
+//		JSONObject objectData = JSONFactoryUtil.createJSONObject();
+		JSONObject objectData = j;
 
 		objectData.put(TEMP_DOSSIERNAME, objectData.get(TEMP_SERVICENAME));
 		objectData.put(
@@ -593,7 +591,8 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (workbook != null) {
@@ -601,8 +600,9 @@ public class ConvertDossierFromV1Dot9Utils {
 					workbook.close();
 				}
 				catch (IOException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 					// _log.debug(e);
+					_log.debug(e);
 				}
 			}
 		}
@@ -623,8 +623,9 @@ public class ConvertDossierFromV1Dot9Utils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			// _log.error(e);
+			_log.debug(e);
 			return null;
 		}
 
@@ -772,7 +773,7 @@ public class ConvertDossierFromV1Dot9Utils {
 				TEMP_DOSSIERACTIONID, rs.getString(TEMP_DOSSIERACTIONID));
 			objectData.put(TEMP_VIAPOST, rs.getString(TEMP_VIAPOST));
 			objectData.put(TEMP_POSTADDRESS, rs.getString(TEMP_POSTADDRESS));
-			objectData.put(TEMP_PASSWORD_, rs.getString("password_"));
+			objectData.put(TEMP_SECRET_, rs.getString("password_"));
 			objectData.put(TEMP_NOTIFICATION, rs.getString(TEMP_NOTIFICATION));
 			objectData.put(TEMP_VIAPOSTAL, rs.getString(TEMP_VIAPOSTAL));
 			objectData.put(
@@ -854,8 +855,8 @@ public class ConvertDossierFromV1Dot9Utils {
 			objectData.put(TEMP_DOCUMENTDATE, rs.getString(TEMP_DOCUMENTDATE));
 		}
 		catch (SQLException e) {
-
-			e.printStackTrace();
+			_log.debug(e);
+//			e.printStackTrace();
 		}
 
 		return objectData;
@@ -882,8 +883,8 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		}
 		catch (SQLException e) {
-
-			e.printStackTrace();
+			_log.debug(e);
+//			e.printStackTrace();
 		}
 
 		return objectData;

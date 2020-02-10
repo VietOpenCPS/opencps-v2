@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.opencps.api.constants.ConstantUtils;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -38,10 +40,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "total",
-    "data"
+    ConstantUtils.TOTAL,
+    ConstantUtils.DATA
 })
-@XmlRootElement(name = "data")
+@XmlRootElement(name = ConstantUtils.DATA)
 public class BookingResultsModel {
 
     protected Integer total;

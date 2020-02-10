@@ -47,8 +47,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.DuplicateProcessNameException;
@@ -686,71 +689,71 @@ public class ServiceProcessLocalServiceImpl
 		String dossierStatus;
 
 		switch (key) {
-		case "110":
+		case DossierStatusConstants.DOSSIERSTATUS110:
 			dossierStatus = DossierStatusConstants.NEW;
 			break;
 
-		case "120":
+		case DossierStatusConstants.DOSSIERSTATUS120:
 			dossierStatus = DossierStatusConstants.COLLECTING;
 
 			break;
 
-		case "130":
+		case DossierStatusConstants.DOSSIERSTATUS130:
 			dossierStatus = DossierStatusConstants.RECEIVING;
 
 			break;
 
-		case "131":
+		case DossierStatusConstants.DOSSIERSTATUS131:
 			dossierStatus = DossierStatusConstants.WAITING;
 
 			break;
 
-		case "132":
+		case DossierStatusConstants.DOSSIERSTATUS132:
 			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
-		case "200":
+		case DossierStatusConstants.DOSSIERSTATUS200:
 			dossierStatus = DossierStatusConstants.PROCESSING;
 
 			break;
 
-		case "201":
+		case DossierStatusConstants.DOSSIERSTATUS201:
 			dossierStatus = DossierStatusConstants.WAITING;
 
 			break;
 
-		case "202":
+		case DossierStatusConstants.DOSSIERSTATUS202:
 			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
-		case "210":
+		case DossierStatusConstants.DOSSIERSTATUS210:
 			dossierStatus = DossierStatusConstants.HANDOVER;
 
 			break;
 
-		case "300":
+		case DossierStatusConstants.DOSSIERSTATUS300:
 			dossierStatus = DossierStatusConstants.RELEASING;
 
 			break;
 
-		case "302":
+		case DossierStatusConstants.DOSSIERSTATUS302:
 			dossierStatus = DossierStatusConstants.PAYING;
 
 			break;
 
-		case "310":
+		case DossierStatusConstants.DOSSIERSTATUS310:
 			dossierStatus = DossierStatusConstants.POSTING;
 
 			break;
 
-		case "400":
+		case DossierStatusConstants.DOSSIERSTATUS400:
 			dossierStatus = DossierStatusConstants.DONE;
 
 			break;
 
-		case "410":
+		case DossierStatusConstants.DOSSIERSTATUS410:
 			dossierStatus = DossierStatusConstants.CANCELLED;
 
 			break;
@@ -897,7 +900,7 @@ public class ServiceProcessLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -958,7 +961,7 @@ public class ServiceProcessLocalServiceImpl
 		searchContext.setEntryClassNames(new String[] {
 			CLASS_NAME
 		});
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -1281,10 +1284,10 @@ public class ServiceProcessLocalServiceImpl
 
 		ServiceProcess object = null;
 
-		if (objectData.getLong("serviceProcessId") > 0) {
+		if (objectData.getLong(ServiceProcessTerm.SERVICEPROCESS_ID) > 0) {
 
 			object = serviceProcessPersistence.fetchByPrimaryKey(
-				objectData.getLong("serviceProcessId"));
+				objectData.getLong(ServiceProcessTerm.SERVICEPROCESS_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -1296,32 +1299,32 @@ public class ServiceProcessLocalServiceImpl
 
 			object = serviceProcessPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setProcessNo(objectData.getString("processNo"));
-		object.setProcessName(objectData.getString("processName"));
-		object.setDescription(objectData.getString("description"));
-		object.setDurationCount(objectData.getDouble("durationCount"));
-		object.setDurationUnit(objectData.getInt("durationUnit"));
-		object.setCounter(objectData.getLong("counter"));
-		object.setGenerateDossierNo(objectData.getBoolean("generateDossierNo"));
-		object.setDossierNoPattern(objectData.getString("dossierNoPattern"));
-		object.setGenerateDueDate(objectData.getBoolean("generateDueDate"));
-		object.setDueDatePattern(objectData.getString("dueDatePattern"));
-		object.setGeneratePassword(objectData.getBoolean("generatePassword"));
+		object.setProcessNo(objectData.getString(ServiceProcessTerm.PROCESS_NO));
+		object.setProcessName(objectData.getString(ServiceProcessTerm.PROCESS_NAME));
+		object.setDescription(objectData.getString(ServiceProcessTerm.DESCRIPTION));
+		object.setDurationCount(objectData.getDouble(ServiceProcessTerm.DURATION_COUNT));
+		object.setDurationUnit(objectData.getInt(ServiceProcessTerm.DURATION_UNIT));
+		object.setCounter(objectData.getLong(ServiceProcessTerm.COUNTER));
+		object.setGenerateDossierNo(objectData.getBoolean(ServiceProcessTerm.GENERATE_DOSSIER_NO));
+		object.setDossierNoPattern(objectData.getString(ServiceProcessTerm.DOSSIER_NO_PATTERN));
+		object.setGenerateDueDate(objectData.getBoolean(ServiceProcessTerm.GENERATE_DUE_DATE));
+		object.setDueDatePattern(objectData.getString(ServiceProcessTerm.DUEDATE_PATTERN));
+		object.setGeneratePassword(objectData.getBoolean(ServiceProcessTerm.GENERATE_SECRET));
 		object.setDirectNotification(
-			objectData.getBoolean("directNotification"));
-		object.setServerNo(objectData.getString("serverNo"));
-		object.setServerName(objectData.getString("serverName"));
-		object.setRequestPayment(objectData.getBoolean("requestPayment"));
-		object.setPaymentFee(objectData.getString("paymentFee"));
+			objectData.getBoolean(ServiceProcessTerm.DIRECT_NOTIFICATION));
+		object.setServerNo(objectData.getString(ServiceProcessTerm.SERVER_NO));
+		object.setServerName(objectData.getString(ServiceProcessTerm.SERVER_NAME));
+		object.setRequestPayment(objectData.getBoolean(ProcessActionTerm.REQUEST_PAYMENT));
+		object.setPaymentFee(objectData.getString(ProcessActionTerm.PAYMENT_FEE));
 		object.setDossierGroupPattern(objectData.getString(ServiceProcessTerm.DOSSIER_GROUP_PATTERN));
 
 		serviceProcessPersistence.update(object);

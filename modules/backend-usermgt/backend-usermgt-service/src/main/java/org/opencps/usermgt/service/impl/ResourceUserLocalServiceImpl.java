@@ -14,6 +14,16 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.ResourceUserTerm;
+import org.opencps.usermgt.exception.NoSuchResourceUserException;
+import org.opencps.usermgt.model.ResourceUser;
+import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -261,19 +271,19 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceUser.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceUser.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ResourceUserTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(ResourceUserTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(ResourceUserTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(ResourceUserTerm.USER_ID);
 		String className = (String) params.get(ResourceUserTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceUserTerm.CLASS_PK);
 		String toUserId = (String) params.get(ResourceUserTerm.TO_USERID);
@@ -289,7 +299,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceUserTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -340,16 +350,16 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceUser.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceUser.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ResourceUserTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(ResourceUserTerm.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(ResourceUserTerm.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(ResourceUserTerm.USER_ID);
 		String className = (String) params.get(ResourceUserTerm.CLASS_NAME);
 		String classPK = (String) params.get(ResourceUserTerm.CLASS_PK);
 		String toUserId = (String) params.get(ResourceUserTerm.TO_USERID);
@@ -365,7 +375,7 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
 
-			query.addFields(ResourceUserTerm.GROUP_ID);
+			query.addFields(Field.GROUP_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -441,20 +451,20 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 			object = resourceUserPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(ResourceUserTerm.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(ResourceUserTerm.USER_ID));
 
-		object.setClassName(objectData.getString("className"));
-		object.setClassPK(objectData.getString("classPK"));
-		object.setToUserId(objectData.getLong("toUserId"));
-		object.setFullname(objectData.getString("fullname"));
-		object.setEmail(objectData.getString("email"));
-		object.setReadonly(objectData.getBoolean("readonly"));
+		object.setClassName(objectData.getString(ResourceUserTerm.CLASS_NAME));
+		object.setClassPK(objectData.getString(ResourceUserTerm.CLASS_PK));
+		object.setToUserId(objectData.getLong(ResourceUserTerm.TO_USERID));
+		object.setFullname(objectData.getString(ResourceUserTerm.FULLNAME));
+		object.setEmail(objectData.getString(ResourceUserTerm.EMAIL));
+		object.setReadonly(objectData.getBoolean(ResourceUserTerm.READONLY));
 
 		resourceUserPersistence.update(object);
 

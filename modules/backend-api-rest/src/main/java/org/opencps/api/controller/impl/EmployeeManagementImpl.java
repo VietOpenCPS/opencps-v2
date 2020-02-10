@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -9,6 +10,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -34,8 +37,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.EmployeeManagement;
 import org.opencps.api.controller.util.EmployeeUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.employee.model.DataSearchModel;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
@@ -77,16 +82,16 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 			params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
 			params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
@@ -109,16 +114,17 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			_log.info("EmployeeManagementImpl.getEmployees()"+params);
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 					query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
-			result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -134,17 +140,17 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			EmployeeModel employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
 
-			return Response.status(200).entity(employeeModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeModel).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -157,7 +163,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
@@ -177,7 +183,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
 
-			return Response.status(200).entity(employeeModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -192,7 +198,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
@@ -212,7 +218,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
 
-			return Response.status(200).entity(employeeModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -226,7 +232,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			EmployeeLocalServiceUtil.deleteEmployee(id, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -248,17 +254,17 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				String fileName = fileEntry.getFileName();
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}else{
 //				ErrorMsg error = new ErrorMsg();
 //				error.setMessage("file not found!");
-//				error.setCode(404);
+//				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 //				error.setDescription("file not found!");
-				return Response.status(404).entity("").build();
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(StringPool.BLANK).build();
 			}
 
 		} catch (Exception e) {
@@ -276,21 +282,21 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
 			File file = actions.uploadEmployeePhoto(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "OfficeSite/", "OfficeSite file upload", serviceContext);
+					fileName, fileType, fileSize, ConstantUtils.EMPLOYEE_OFFICESITE_FOLDER, ConstantUtils.EMPLOYEE_OFFICESITE_DESC, serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
 			String fileNameRespone = Validator.isNotNull(fileEntry) ? fileEntry.getFileName() : StringPool.BLANK;
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileNameRespone);
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -315,29 +321,30 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(EmployeeJobPosTerm.EMPLOYEE_ID, String.valueOf(id));
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getEmployeeJobpos(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getEmployeeJobposModel()
-					.addAll(EmployeeUtils.mapperEmployeeJobposList((List<Document>) jsonData.get("data"), id));
+					.addAll(EmployeeUtils.mapperEmployeeJobposList((List<Document>) jsonData.get(ConstantUtils.DATA), id));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -352,7 +359,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			EmployeeJobPos employeeJobPos = actions.createEmployeeJobpos(user.getUserId(), company.getCompanyId(),
 					groupId, id, input.getWorkingUnitId(), input.getJobPosId(), Boolean.valueOf(input.getMainJobPos()),
@@ -360,7 +367,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeJobposModel = EmployeeUtils.mapperEmployeeJobposModel(employeeJobPos);
 
-			return Response.status(200).entity(employeeJobposModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeJobposModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -375,7 +382,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			EmployeeJobPos employeeJobPos = actions.updateEmployeeJobpos(user.getUserId(), company.getCompanyId(),
 					groupId, id, employeeJobPosId, input.getWorkingUnitId(), input.getJobPosId(),
@@ -383,7 +390,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeJobposModel = EmployeeUtils.mapperEmployeeJobposModel(employeeJobPos);
 
-			return Response.status(200).entity(employeeJobposModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeJobposModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -398,7 +405,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 		try {
 			actions.deleteEmployeeJobPos(id, employeeJobPosId, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -424,21 +431,21 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonObject = actions.createEmployeeAccount(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getScreenName(), input.getEmail(), input.isExist(), serviceContext);
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			if (Validator.isNotNull(jsonObject.getString("duplicate"))
-					&& jsonObject.getString("duplicate").equals(Boolean.TRUE.toString())) {
+			if (Validator.isNotNull(jsonObject.getString(ConstantUtils.EMPLOYEE_VALID_JSON_DUPLICATE))
+					&& jsonObject.getString(ConstantUtils.EMPLOYEE_VALID_JSON_DUPLICATE).equals(Boolean.TRUE.toString())) {
 
-				return Response.status(409).entity(employeeAccountModel).build();
+				return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(employeeAccountModel).build();
 
 			} else {
 
-				return Response.status(200).entity(employeeAccountModel).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(employeeAccountModel).build();
 
 			}
 
@@ -455,14 +462,14 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			JSONObject jsonObject = actions.lockEmployeeAccount(user.getUserId(), company.getCompanyId(), groupId, id,
 					locked, serviceContext);
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			return Response.status(200).entity(employeeAccountModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeAccountModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -476,11 +483,11 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			actions.validateExits(user.getUserId(), company.getCompanyId(), groupId, employeeNo, email, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -495,7 +502,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			EmployeeResults result = new EmployeeResults();
 			try {
 
-				long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+				long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 				
 				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 				StringBuilder strUserIdList = new StringBuilder();
@@ -517,28 +524,29 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 				if (query.getEnd() == 0) {
 
-					query.setStart(-1);
+					query.setStart(QueryUtil.ALL_POS);
 
-					query.setEnd(-1);
+					query.setEnd(QueryUtil.ALL_POS);
 
 				}
 
 				LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-				params.put("groupId", String.valueOf(groupId));
-				params.put("keywords", query.getKeywords());
-				params.put("userIdList", strUserIdList.toString());
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
+				params.put(ConstantUtils.EMPLOYEE_JSON_USERIDLIST, strUserIdList.toString());
 
-				Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 						Boolean.valueOf(query.getOrder())) };
 
 				JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 						query.getStart(), query.getEnd(), serviceContext);
 
-				result.setTotal(jsonData.getLong("total"));
-				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+				result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -551,7 +559,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			Locale locale, User user, ServiceContext serviceContext, String itemCode, DataSearchModel query) {
 		EmployeeInterface actions = new EmployeeActions();
 		EmployeeResults result = new EmployeeResults();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			String serverNo = SERVER + itemCode;
@@ -564,7 +572,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				if (Validator.isNotNull(config)) {
 					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(config);
 					if (jsonConfig != null) {
-						groupIdEmp = GetterUtil.getLong(jsonConfig.getString("groupId"));
+						groupIdEmp = GetterUtil.getLong(jsonConfig.getString(Field.GROUP_ID));
 					}
 				}
 			}
@@ -593,31 +601,32 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 					
 				} else {
 					if (query.getEnd() == 0) {
-						query.setStart(-1);
-						query.setEnd(-1);
+						query.setStart(QueryUtil.ALL_POS);
+						query.setEnd(QueryUtil.ALL_POS);
 					}
 
 					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-					params.put("groupId", String.valueOf(groupIdEmp));
-					params.put("keywords", query.getKeywords());
+					params.put(Field.GROUP_ID, String.valueOf(groupIdEmp));
+					params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 					params.put(EmployeeTerm.WORKING_UNIT_ID, query.getWorkingunit());
 					params.put(EmployeeTerm.JOB_POS_ID, query.getJobpos());
 					params.put(EmployeeTerm.WORKING_STATUS, query.getStatus());
 					params.put(EmployeeTerm.FULL_NAME, query.getEmployeeName());
 
-					Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+					Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 							Boolean.valueOf(query.getOrder())) };
 
 					JSONObject jsonData = actions.getEmployees(user.getUserId(), company.getCompanyId(), groupId, params, sorts,
 							query.getStart(), query.getEnd(), serviceContext);
 
-					result.setTotal(jsonData.getLong("total"));
+					result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 					result.getEmployeeModel()
-							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get("data")));
+							.addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 				}
 			}
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

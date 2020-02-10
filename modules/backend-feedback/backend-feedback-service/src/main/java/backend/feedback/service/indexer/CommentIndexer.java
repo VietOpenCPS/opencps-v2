@@ -65,10 +65,11 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		// addSearchTerm(searchQuery, searchContext,
 		// CommentTerm.CREATED_BY_CURRENT_USER, false);
 
-		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+		LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext
+				.getAttribute(CommentTerm.PARAMS);
 
 		if (params != null) {
-			String expandoAttributes = (String) params.get("expandoAttributes");
+			String expandoAttributes = (String) params.get(CommentTerm.EXPANDO_ATTRIBUTES);
 
 			if (Validator.isNotNull(expandoAttributes)) {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
@@ -92,7 +93,7 @@ public class CommentIndexer extends BaseIndexer<Comment> {
 		document.addDateSortable(Field.MODIFIED_DATE, comment.getModifiedDate());
 		document.addKeywordSortable(Field.USER_ID, String.valueOf(comment.getUserId()));
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(comment.getUserName()));
-		document.addNumberSortable(CommentTerm.GROUP_ID, comment.getGroupId());
+		document.addNumberSortable(Field.GROUP_ID, comment.getGroupId());
 
 		document.addTextSortable(CommentTerm.CLASS_NAME, comment.getClassName());
 		document.addTextSortable(CommentTerm.PINGS, comment.getPings());

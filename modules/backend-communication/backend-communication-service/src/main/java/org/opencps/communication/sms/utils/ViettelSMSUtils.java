@@ -55,7 +55,7 @@ public class ViettelSMSUtils {
 				configObj.has(SendSMSTerm.COMMAND_CODE) &&
 				configObj.has(SendSMSTerm.CONTENT_TYPE) &&
 				configObj.has(SendSMSTerm.CP_CODE) &&
-				configObj.has(SendSMSTerm.PASSWORD) &&
+				configObj.has(SendSMSTerm.SECRET_CODE) &&
 				configObj.has(SendSMSTerm.REQUEST_ID) &&
 				configObj.has(SendSMSTerm.SERVICE_ID) &&
 				configObj.has(SendSMSTerm.USER) &&
@@ -66,13 +66,13 @@ public class ViettelSMSUtils {
 					configObj.getString(SendSMSTerm.CC_API_PORT_ADDRESS));
 				portType = locator.getCcApiPort();
 
-				String toTelNoRpl = "0".equals(toTelNo.substring(0, 1))
+				String toTelNoRpl = String.valueOf(0).equals(toTelNo.substring(0, 1))
 					? configObj.getString(SendSMSTerm.COUNTRY_CODE) +
 						toTelNo.substring(1)
 					: toTelNo;
 				result = portType.wsCpMt(
 					configObj.getString(SendSMSTerm.USER),
-					configObj.getString(SendSMSTerm.PASSWORD),
+					configObj.getString(SendSMSTerm.SECRET_CODE),
 					configObj.getString(SendSMSTerm.CP_CODE),
 					configObj.getString(SendSMSTerm.REQUEST_ID), toTelNoRpl,
 					toTelNoRpl, configObj.getString(SendSMSTerm.SERVICE_ID),

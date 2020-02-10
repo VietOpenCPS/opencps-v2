@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -9,6 +10,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -16,6 +18,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,9 +30,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.FileAttachManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.FileAttachUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.fileattach.model.DataSearchModel;
 import org.opencps.api.fileattach.model.FileAttachInputModel;
 import org.opencps.api.fileattach.model.FileAttachModel;
@@ -59,32 +64,34 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(FileAttachTerm.CLASS_NAME, className);
 			params.put(FileAttachTerm.CLASS_PK, classPK);
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getFileAttachs(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getFileAttachModel()
-					.addAll(FileAttachUtils.mapperFileAttachList((List<Document>) jsonData.get("data")));
+					.addAll(FileAttachUtils.mapperFileAttachList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -107,17 +114,18 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				String attachmentFilename = String.format(ConstantUtils.ATTACHMENT_FILENAME, fileName);
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("file not found!");
-				error.setCode(404);
-				error.setDescription("file not found!");
-				return Response.status(404).entity(error).build();
+				error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+				error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 			}
 
 		} catch (Exception e) {
@@ -134,7 +142,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			FileAttach fileAttach = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					input.getClassName(), input.getClassPK(), StringPool.BLANK, StringPool.BLANK, 0, input.getSource(),
@@ -142,7 +150,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			fileAttachModel = FileAttachUtils.mapperFileAttachModel(fileAttach);
 
-			return Response.status(200).entity(fileAttachModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -158,7 +166,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			actions.delete(id, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -180,15 +188,15 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			inputStream = dataHandler.getInputStream();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			FileAttach fileAttach = actions.upload(user.getUserId(), company.getCompanyId(), groupId, className,
-					classPK, inputStream, fileName, fileType, fileSize, "FileAttach/", "FileAttach file upload",
+					classPK, inputStream, fileName, fileType, fileSize, ConstantUtils.FILEATTACH_FOLDER, ConstantUtils.FILEATTACH_DESC,
 					serviceContext);
 
 			fileAttachModel = FileAttachUtils.mapperFileAttachModel(fileAttach);
 
-			return Response.status(200).entity(fileAttachModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -215,18 +223,18 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			DataHandler dataHandler = attachment.getDataHandler();
 
 			inputStream = dataHandler.getInputStream();
 
 			FileAttach fileAttach = actions.update(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "FileAttach/", "FileAttach file upload", serviceContext);
+					fileName, fileType, fileSize, ConstantUtils.FILEATTACH_FOLDER, ConstantUtils.FILEATTACH_DESC, serviceContext);
 
 			fileAttachModel = FileAttachUtils.mapperFileAttachModel(fileAttach);
 
-			return Response.status(200).entity(fileAttachModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(fileAttachModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -253,9 +261,9 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 			JSONObject jsonData = actions.getFileAttachVersions(fileAttachId, serviceContext);
 
-			long total = jsonData.getLong("total");
-			String fileName = jsonData.getString("fileName");
-			JSONArray versions = jsonData.getJSONArray("versions");
+			long total = jsonData.getLong(ConstantUtils.TOTAL);
+			String fileName = jsonData.getString(ConstantUtils.FILEATTACH_JSON_FILENAME);
+			JSONArray versions = jsonData.getJSONArray(ConstantUtils.FILEATTACH_JSON_VERSIONS);
 
 			result.setTotal(total);
 
@@ -263,7 +271,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 					FileAttachUtils.mapperFileAttachVersionList(fileName, versions));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -285,18 +293,18 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 				String fileName = fileEntry.getFileName();
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-						.header("Content-Type", fileEntry.getMimeType());
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), fileName);
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
 				ErrorMsg error = new ErrorMsg();
 
-				error.setMessage("file not found!");
-				error.setCode(404);
-				error.setDescription("file not found!");
-				return Response.status(404).entity(error).build();
+				error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+				error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

@@ -237,7 +237,8 @@ public class Engine implements MessageListener {
 						break;
 					}
 				}
-
+				
+				if (dossierDocument != null) {
 				ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export dossier document: " + classPK + ", " + dossierDocument + ", service context: " + serviceContext );
     			_log.info("jasper export dossier document: " + dossierDocument );
@@ -258,6 +259,8 @@ public class Engine implements MessageListener {
     			Indexer<DossierDocument> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierDocument.class);
     
     			indexer.reindex(dossierDocument);
+				}
+    			
 				
 			}
 //			else if (engineClass.isAssignableFrom(Deliverable.class)) {

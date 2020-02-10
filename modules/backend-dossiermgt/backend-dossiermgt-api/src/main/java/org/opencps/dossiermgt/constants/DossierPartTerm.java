@@ -7,6 +7,7 @@ public class DossierPartTerm {
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String TEMPLATE_NO = "templateNo";
+	public static final String TEMPLATE_NAME = "templateName";
 	public static final String PART_NO = "partNo";
 	public static final String PART_NAME = "partName";
 	public static final String PART_TIP = "partTip";
@@ -30,6 +31,8 @@ public class DossierPartTerm {
 	public static final String FILE_CHECK = "fileCheck";
 	public static final String FILE_COMMENT = "fileComment";
 	public static final String RECORD_COUNT = "recordCount";
+	public static final String RETURNED = "returned";
+	public static final String TP_DIFFERENT = "TP99";
 
 	public static final int DOSSIER_PART_TYPE_INPUT = 1;
 	public static final int DOSSIER_PART_TYPE_OUTPUT = 2;

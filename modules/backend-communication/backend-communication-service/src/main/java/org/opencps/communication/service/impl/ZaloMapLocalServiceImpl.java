@@ -26,12 +26,19 @@ import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Date;
+import java.util.List;
+
+import org.opencps.communication.model.ZaloMap;
+import org.opencps.communication.service.base.ZaloMapLocalServiceBaseImpl;
 
 public class ZaloMapLocalServiceImpl extends ZaloMapLocalServiceBaseImpl {
 	/*

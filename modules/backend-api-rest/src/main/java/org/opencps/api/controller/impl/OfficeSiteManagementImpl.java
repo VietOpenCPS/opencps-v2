@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -10,6 +11,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -19,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +33,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.OfficeSiteManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OfficeSiteUtils;
 import org.opencps.api.error.model.ErrorMsg;
 import org.opencps.api.officesite.model.DataSearchModel;
@@ -56,30 +61,31 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getOfficeSites(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getOfficeSiteModel()
-					.addAll(OfficeSiteUtils.mapperOfficeSiteList((List<Document>) jsonData.get("data")));
+					.addAll(OfficeSiteUtils.mapperOfficeSiteList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -94,7 +100,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.create(user.getUserId(), company.getCompanyId(), groupId,
 					input.getAddress(), input.getAdminEmail(), input.getEmail(), input.getEnName(), input.getFaxNo(),
@@ -103,7 +109,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			officeSiteModel = OfficeSiteUtils.mapperOfficeSiteModel(officeSite);
 
-			return Response.status(200).entity(officeSiteModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSiteModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -120,17 +126,17 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			OfficeSiteModel officeSiteModel = OfficeSiteUtils.mapperOfficeSiteModel(officeSite);
 
-			return Response.status(200).entity(officeSiteModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSiteModel).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -143,7 +149,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getAddress(), input.getAdminEmail(), input.getEmail(), input.getEnName(), input.getFaxNo(),
@@ -152,7 +158,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			officeSiteModel = OfficeSiteUtils.mapperOfficeSiteModel(officeSite);
 
-			return Response.status(200).entity(officeSiteModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSiteModel).build();
 
 		} catch (Exception e) {
 
@@ -167,7 +173,7 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			OfficeSiteLocalServiceUtil.deleteOfficeSite(id, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -188,9 +194,9 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			String fileName = Validator.isNotNull(fileEntry) ? fileEntry.getFileName() : StringPool.BLANK;
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 
@@ -198,10 +204,10 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 			_log.error(e);
 
 			ErrorMsg error = new ErrorMsg();
-			error.setMessage("file not found!");
-			error.setCode(404);
-			error.setDescription("file not found!");
-			return Response.status(404).entity(error).build();
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_FILENOTFOUND));
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 		}
 	}
 
@@ -215,12 +221,12 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
 			File file = actions.uploadOfficeSiteLogo(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "OfficeSite/", "OfficeSite file upload", serviceContext);
+					fileName, fileType, fileSize, ConstantUtils.EMPLOYEE_OFFICESITE_FOLDER, ConstantUtils.EMPLOYEE_OFFICESITE_DESC, serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
@@ -228,8 +234,10 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileNameRespone);
+
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -251,17 +259,17 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		if (Validator.isNotNull(officeSite)) {
 
-			return Response.status(200).entity(officeSite.getPreferences()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSite.getPreferences()).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -287,17 +295,17 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 				_log.error(e);
 			}
 
-			return Response.status(200).entity(data).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(data).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -311,12 +319,12 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.updateOfficeSitePreferences(user.getUserId(), company.getCompanyId(), groupId, id,
 					input.getPreferences(), serviceContext);
 
-			return Response.status(200).entity(officeSite.getPreferences()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSite.getPreferences()).build();
 
 		} catch (Exception e) {
 
@@ -331,12 +339,12 @@ public class OfficeSiteManagementImpl implements OfficeSiteManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			OfficeSite officeSite = actions.updateOfficeSitePreferencesByKey(user.getUserId(), company.getCompanyId(), groupId, id,
 					key, value, serviceContext);
 
-			return Response.status(200).entity(officeSite.getPreferences()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(officeSite.getPreferences()).build();
 
 		} catch (Exception e) {
 

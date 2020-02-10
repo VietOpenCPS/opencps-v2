@@ -14,8 +14,8 @@ public class PropValues {
 	public static final String SYSTEM_USER_ID =
 		PropsUtil.get(PropKeys.SYSTEM_USER_ID);
 
-	public static final String SYSTEM_PASS =
-		PropsUtil.get(PropKeys.SYSTEM_PASS);
+	public static final String SYSTEM_SECRET =
+		PropsUtil.get(PropKeys.SYSTEM_SECRET);
 
 	public static final String SERVER_BASE_PATH =
 		PropsUtil.get(PropKeys.SERVER_BASE_PATH);

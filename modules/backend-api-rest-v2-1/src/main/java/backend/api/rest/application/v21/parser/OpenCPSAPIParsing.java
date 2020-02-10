@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.MenuRole;
@@ -158,11 +160,11 @@ public class OpenCPSAPIParsing {
 				List<Role> userRoles = user.getRoles();
 				boolean isAdmin = false;
 				for (Role r : userRoles) {
-					if ("Administrator".equalsIgnoreCase(r.getName())) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN).equalsIgnoreCase(r.getName())) {
 						isAdmin = true;
 						break;
 					}
-					if ("Administrator_data".equalsIgnoreCase(r.getName())) {
+					if (ReadFilePropertiesUtils.get(ConstantUtils.ROLE_ADMIN_DATA).equalsIgnoreCase(r.getName())) {
 						isAdmin = true;
 						break;
 					}
@@ -194,7 +196,7 @@ public class OpenCPSAPIParsing {
 			}
 		}
 		else {
-			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
+			JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, ReadFilePropertiesUtils.get(ConstantUtils.ROLE_APPLICANT));
 			long[] arrMenuConfigIds = null;
 			if (job != null) {
 				List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());

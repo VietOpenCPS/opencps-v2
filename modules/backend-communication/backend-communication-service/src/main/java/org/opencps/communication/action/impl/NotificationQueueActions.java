@@ -13,6 +13,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.util.List;
+
+import org.opencps.communication.action.NotificationQueueInterface;
+import org.opencps.communication.constants.SendSMSTerm;
+import org.opencps.communication.model.NotificationQueue;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+
 public class NotificationQueueActions implements NotificationQueueInterface {
 
 	public Log _log = LogFactoryUtil.getLog(NotificationQueueActions.class);
@@ -24,9 +31,9 @@ public class NotificationQueueActions implements NotificationQueueInterface {
 		List<NotificationQueue> listQueue = NotificationQueueLocalServiceUtil.getNotificationQueues(QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
-		result.put("data", listQueue);
+		result.put(SendSMSTerm.DATA, listQueue);
 
-		result.put("total", listQueue.size());
+		result.put(SendSMSTerm.TOTAL, listQueue.size());
 
 		return result;
 	}

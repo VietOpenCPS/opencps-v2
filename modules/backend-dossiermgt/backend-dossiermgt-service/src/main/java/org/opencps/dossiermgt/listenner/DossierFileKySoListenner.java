@@ -15,7 +15,17 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierPartTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 //@Component(immediate = true, service = ModelListener.class)
 public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
@@ -38,12 +48,12 @@ public class DossierFileKySoListenner extends BaseModelListener<DossierFile> {
 					model.getDossierTemplateNo(), model.getDossierPartNo());
 			
 			JSONObject msgDataESign = JSONFactoryUtil.createJSONObject();
-			msgDataESign.put("userId", model.getUserId());
-			msgDataESign.put("eSign", dossierPart.getESign());
-			msgDataESign.put("fileEntryId", model.getFileEntryId());
+			msgDataESign.put(Field.USER_ID, model.getUserId());
+			msgDataESign.put(DossierPartTerm.ESIGN, dossierPart.getESign());
+			msgDataESign.put(DossierFileTerm.FILE_ENTRY_ID, model.getFileEntryId());
 
-			message.put("msgToEngine", msgDataESign);
-			MessageBusUtil.sendMessage("kyso/engine/out/destination", message);
+			message.put(ConstantUtils.MSG_ENG, msgDataESign);
+			MessageBusUtil.sendMessage(DossierTerm.KYSO_ENGINE_OUT_DESTINATION, message);
 		} catch (SystemException | PortalException e) {
 //			e.printStackTrace();
 			_log.error(e);

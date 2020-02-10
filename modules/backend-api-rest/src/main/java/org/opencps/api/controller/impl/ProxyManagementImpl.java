@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -25,7 +26,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ProxyManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
@@ -39,9 +42,9 @@ public class ProxyManagementImpl implements ProxyManagement {
 	@Override
 	public Response proxy(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : "SERVER_DVC";
+			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : ConstantUtils.PROXY_SERVER_DVC;
 			
 			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
 			_log.debug("SERVER PROXY: " + sc.getConfigs());
@@ -51,7 +54,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 		        String authStrEnc = StringPool.BLANK;
 				
 	
-			    String apiUrl = StringPool.BLANK;
+			    String apiUrl;
 			    
 			    StringBuilder sb = new StringBuilder();
 			    try
@@ -82,27 +85,28 @@ public class ProxyManagementImpl implements ProxyManagement {
 					}
 			        
 					
-					if ("/statistics".equalsIgnoreCase(url) && serverUrl.contains("/v2")) {
-						apiUrl = serverUrl.replace("/v2", url);
+					if (ConstantUtils.PROXY_STATISTICS_ENDPOINT.equalsIgnoreCase(url) && serverUrl.contains(ConstantUtils.PROXY_V2_ENDPOINT)) {
+						apiUrl = serverUrl.replace(ConstantUtils.PROXY_V2_ENDPOINT, url);
 					} else {
 						apiUrl = serverUrl + url;
 					}
-			        if ("GET".equals(method)) {
-						urlVal = new URL(apiUrl + "?" + postData.toString());			        	
+			        if (ConstantUtils.METHOD_GET.equals(method)) {
+						urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());			        	
 			        }
 			        else {
 			        	urlVal = new URL(apiUrl);
 			        }
 			        _log.debug("API URL: " + apiUrl);
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-			        conn.setRequestProperty("groupId", groupIdRequest);
+			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 			        conn.setRequestMethod(method);
-			        conn.setRequestProperty("Accept", "application/json");
-			        conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+			        conn.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+			        String authorization = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStrEnc);
+			        conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
 			        _log.debug("BASIC AUTHEN: " + authStrEnc);
-			        if ("POST".equals(method) || "PUT".equals(method)) {
-				        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-						conn.setRequestProperty("Content-Length", "" + Integer.toString(postData.toString().getBytes().length));
+			        if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
+				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
+						conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
 
 						conn.setUseCaches(false);
 						conn.setDoInput(true);
@@ -129,7 +133,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 				}
 			    //return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
 			}
-				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

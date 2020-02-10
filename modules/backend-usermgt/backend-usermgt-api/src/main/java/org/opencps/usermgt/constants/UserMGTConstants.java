@@ -41,4 +41,15 @@ public class UserMGTConstants implements Constants, WebKeys {
 	public static final String[] getListPermission() {
 		return LIST_PERMISSION.clone();
 	}
+
+	public static final String USERNAME = "USERNAME";
+	public static final String USEREMAIL = "USEREMAIL";
+	public static final String SCRECT_CODE = "PASSWORD";
+	public static final String SYSTEM = "SYSTEM";
+	public static final String MINUTELY = "minutely";
+	public static final String HOURLY = "hourly";
+	//
+	public static final String SITE_NAME = "siteName";
+	public static final String SITE_GROUP_ID = "siteGroupId";
+	
 }

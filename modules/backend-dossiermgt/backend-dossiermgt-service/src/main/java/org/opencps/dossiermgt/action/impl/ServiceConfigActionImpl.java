@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.exception.NoSuchServiceConfigException;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -36,11 +37,11 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 
 			hits = ServiceConfigLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = ServiceConfigLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -89,11 +90,11 @@ public class ServiceConfigActionImpl implements ServiceConfigActions {
 
 			hits = ProcessOptionLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 			long total = ProcessOptionLocalServiceUtil.countLucene(params, searchContext);
 
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 
 		} catch (Exception e) {
 			_log.error(e);

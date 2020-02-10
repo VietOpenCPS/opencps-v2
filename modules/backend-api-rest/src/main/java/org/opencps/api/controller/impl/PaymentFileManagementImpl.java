@@ -15,12 +15,12 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 
@@ -32,18 +32,21 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentConfigTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -51,32 +54,10 @@ import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
-import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusException;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
 
@@ -103,7 +84,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //				search.setEnd(-1);
 //			}
 //
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //			long dossierId = GetterUtil.getLong(id);
 //
 //			// Default sort by modifiedDate
@@ -126,16 +107,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			results.setTotal(jsonData.getInt("total"));
 //			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileModel((List<Document>) jsonData.get("data")));
 //
-//			return Response.status(200).entity(results).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 //
 //		} catch (Exception e) {
 //			ErrorMsg error = new ErrorMsg();
 //
 //			error.setMessage("not found!");
-//			error.setCode(404);
+//			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 //			error.setDescription("not found!");
 //
-//			return Response.status(404).entity(error).build();
+//			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 //		}
 //	}
 
@@ -150,7 +131,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //	public Response createPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 //			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
 //
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		
 //		_log.info("groupId_"+groupId);
 //		_log.info("groupId_"+id);
@@ -192,7 +173,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 ////
 ////			PaymentFileInput = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
 //
-//			return Response.status(200).entity(PaymentFileInput).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(PaymentFileInput).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -210,7 +191,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //	public Response getPaymentFileByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
 //			Locale locale, User user, ServiceContext serviceContext, Long id, String referenceUid) {
 //
-//		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		long dossierId = GetterUtil.getLong(id);
 //
 //		// TODO get Dossier by referenceUid if dossierId = 0
@@ -258,7 +239,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 //
-//			return Response.status(200).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -295,17 +276,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			//_log.info("ePaymentProfile ============ " + ePaymentProfile);
 			JSONObject result = JSONFactoryUtil.createJSONObject(ePaymentProfile);
 
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
 			_log.debug(e);
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("Content not found!");
-			error.setCode(404);
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 			error.setDescription(e.getMessage());
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 		}
 	}
 
@@ -344,7 +325,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //			String result = paymentFile.getEpaymentProfile();
 //
-//			return Response.status(200).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -365,7 +346,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long dossierId = GetterUtil.getLong(id);
 
@@ -392,7 +373,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -406,7 +387,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //		BackendAuth auth = new BackendAuthImpl();
 //
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -426,7 +407,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 //
-//			return Response.status(200).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 //
 //		} catch (Exception e) {
 //			e.printStackTrace();
@@ -448,7 +429,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			String approveDatetime, String accountUserName, String govAgencyTaxNo, String invoiceTemplateNo,
 //			String invoiceIssueNo, String invoiceNo) {
 //		BackendAuth auth = new BackendAuthImpl();
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -476,7 +457,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 //
-//			return Response.status(200).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -488,7 +469,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			Company company, Locale locale, User user, ServiceContext serviceContext, String id, String referenceUid,
 //			PaymentFileInputModel input) {
 //		BackendAuth auth = new BackendAuthImpl();
-//		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //		long dossierId = GetterUtil.getLong(id);
 //
@@ -534,7 +515,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //			
 //			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 //
-//			return Response.status(200).entity(result).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -575,10 +556,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 						true);
 
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-				responseBuilder.header("Content-Disposition",
-						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+						attachmentFilename);
+				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 
@@ -625,10 +606,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					true);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 //			} else {
@@ -664,7 +645,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //				search.setEnd(-1);
 //			}
 //			/* Search full Query -END */
-//			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //
 //			PaymentFileSearchResultModel results = new PaymentFileSearchResultModel();
 //			PaymentFileActions action = new PaymentFileActionsImpl();
@@ -698,7 +679,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 //
 //			results.getData().addAll(PaymentFileUtils.mappingToPaymentFileSearchResultModel(documents));
 //
-//			return Response.status(200).entity(results).build();
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 //
 //		} catch (Exception e) {
 //			return processException(e);
@@ -712,7 +693,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		//URI uri = null;
 		try {
 			
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, dossierUUid);
 			_log.info("SONDT PROCESS KEYPAY  ======== " + JSONFactoryUtil.looseSerialize(dossier));
 			
@@ -724,14 +705,14 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(), paymentFile.getReferenceUid(), StringPool.BLANK, "Keypay", JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 			
 			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put("dossierNo", dossier.getDossierNo());
-			result.put("serviceName", dossier.getServiceName());
-			result.put("govAgencyName", dossier.getGovAgencyName());
-			result.put("paymentFee", paymentFile.getPaymentFee());
-			result.put("paymentAmount", paymentFile.getFeeAmount());
-			result.put("paymentPortal", "KEYPAY");
+			result.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			result.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+			result.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			result.put(PaymentFileTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
+			result.put(PaymentFileTerm.PAYMENT_AMOUNT, paymentFile.getFeeAmount());
+			result.put(PaymentFileTerm.PAYMENT_PORTAL, PaymentFileTerm.KEYPAY);
 			
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			_log.debug(e);
@@ -764,7 +745,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -786,7 +767,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -796,14 +777,14 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	@Override
 	public Response createPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			PaymentFile paymentFile = CPSDossierBusinessLocalServiceUtil.createPaymentFileByDossierId(groupId, serviceContext, id, PaymentFileUtils.convertFormModelToInputModel(input));		
 
 			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -815,7 +796,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
 		
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -836,7 +817,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				ObjectMapper mapper = new ObjectMapper();
 		        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
 
-		        map.put("applicantName", dossier.getApplicantName());
+		        map.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
 		        
 		        StringBuilder address = new StringBuilder();
 				address.append(dossier.getAddress());address.append(", ");
@@ -844,19 +825,19 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				address.append(dossier.getDistrictName());address.append(", ");
 				address.append(dossier.getCityName());
 		        
-		        map.put("address", address.toString());
+		        map.put(DossierTerm.ADDRESS, address.toString());
 		        
 		        String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
-		        map.put("numToWord", num);
-		        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
-		        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
-		        map.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
+		        map.put(PaymentConfigTerm.NUM_TO_WORD, num);
+		        map.put(PaymentConfigTerm.INVOICE_TEMPLATE_NO, paymentConfig.getInvoiceTemplateNo());
+		        map.put(PaymentConfigTerm.INVOICE_ISSUE_NO, paymentConfig.getInvoiceIssueNo());
+		        map.put(PaymentConfigTerm.GOV_AGENCY_TAX_NO, paymentConfig.getGovAgencyTaxNo());
 		        
 		        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
 		        if(Validator.isNotNull(workingUnit)) {
-		        	map.put("govAddress", workingUnit.getAddress());
+		        	map.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, workingUnit.getAddress());
 		        }else {
-		        	map.put("govAddress", "");
+		        	map.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, StringPool.BLANK);
 		        }
 		        
 		        formData = mapper.writeValueAsString(map);
@@ -864,16 +845,16 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				
 				Message message = new Message();
 
-				message.put("formReport", formReport);
+				message.put(ConstantUtils.API_JSON_FORM_REPORT, formReport);
 
-				message.put("formData", formData);
+				message.put(ConstantUtils.API_JSON_FORM_DATA, formData);
 
 				message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
-				message.setResponseDestinationName("jasper/engine/preview/callback");
+				message.setResponseDestinationName(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW_CALLBACK);
 
 				try {
 					String previewResponse = (String) MessageBusUtil
-							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+							.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
 					if (Validator.isNotNull(previewResponse)) {
 						// jsonObject =
@@ -885,19 +866,19 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					File file = new File(previewResponse);
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header("Content-Disposition",
-								"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/pdf");
+					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								attachmentFilename);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception("Preview rendering not available");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
 				}
 			} else {
-				throw new Exception("Cant get dossier with id_" + id);
+				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
 			}
 
 		} catch (Exception e) {

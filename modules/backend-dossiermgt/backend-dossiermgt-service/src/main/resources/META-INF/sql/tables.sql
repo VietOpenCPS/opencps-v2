@@ -587,6 +587,28 @@ create table opencps_menurole (
 	roleId LONG
 );
 
+create table opencps_notarization (
+	notarizationId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	fileName VARCHAR(75) null,
+	totalRecord INTEGER,
+	totalPage INTEGER,
+	totalCopy INTEGER,
+	totalFee LONG,
+	notarizationNo LONG,
+	notarizationYear INTEGER,
+	notarizationDate DATE null,
+	signerName VARCHAR(75) null,
+	signerPosition VARCHAR(75) null,
+	statusCode VARCHAR(75) null
+);
+
 create table opencps_paymentconfig (
 	uuid_ VARCHAR(75) null,
 	paymentConfigId LONG not null primary key,

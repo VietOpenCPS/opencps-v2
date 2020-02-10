@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 public class DeliverableActionsImpl implements DeliverableActions {
 
@@ -28,8 +29,8 @@ public class DeliverableActionsImpl implements DeliverableActions {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<Deliverable> listDeliverable = DeliverableLocalServiceUtil.getListDeliverable(state, agency, type,
 				applicant);
-		result.put("data", listDeliverable);
-		result.put("total", listDeliverable.size());
+		result.put(ConstantUtils.DATA, listDeliverable);
+		result.put(ConstantUtils.TOTAL, listDeliverable.size());
 		return result;
 	}
 
@@ -49,11 +50,11 @@ public class DeliverableActionsImpl implements DeliverableActions {
 			
 			hits = DeliverableLocalServiceUtil.searchLucene(params, object, start, end, searchContext);
 			
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 			
 			long total = DeliverableLocalServiceUtil.countLucene(params, searchContext);
 			
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);
@@ -86,11 +87,11 @@ public class DeliverableActionsImpl implements DeliverableActions {
 			
 			hits = DeliverableLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 			
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 			
 			long total = DeliverableLocalServiceUtil.countLucene(params, searchContext);
 			
-			result.put("total", total);
+			result.put(ConstantUtils.TOTAL, total);
 			
 		} catch (Exception e) {
 			_log.error(e);
@@ -130,7 +131,7 @@ public class DeliverableActionsImpl implements DeliverableActions {
 			
 			hits = DeliverableLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
 
-			result.put("data", hits.toList());
+			result.put(ConstantUtils.DATA, hits.toList());
 
 		} catch (Exception e) {
 			_log.error(e);

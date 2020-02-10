@@ -76,10 +76,11 @@ public class CacheLocalServiceImpl extends CacheLocalServiceBaseImpl {
 				PortalCache<Serializable, Serializable> cache = MultiVMPoolUtil.getPortalCache(cacheName);
 				cache.removeAll();
 			} catch (Exception ex) {
-				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
+				_log.debug(ex);
+//				System.out.println("CacheName = " + cacheName + " : Error clearing the cache. Error = " + ex.getMessage());
 			}
 		} else {
-			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
+//			System.out.println("CacheName = " + cacheName + " : Error clearing the cache. = ");
 		}
 	}
 

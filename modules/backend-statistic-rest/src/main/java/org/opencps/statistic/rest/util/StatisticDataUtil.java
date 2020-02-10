@@ -27,6 +27,9 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
@@ -49,6 +52,13 @@ import backend.feedback.constants.VotingResultTerm;
 import backend.feedback.constants.VotingTerm;
 
 public class StatisticDataUtil {
+	public static final String NUMBER_SORT_ABLE = "Number_sortable";
+	public static final String TREE_INDEX_SORT_ABLE = "treeIndex_sortable";
+	public static final String REPORT_TYPE = "reportType";
+	public static final String YEAR = "year";
+	public static final String MONTH = "month";
+	public static final String DAY = "day";
+	
 	public static ServiceDomainResponse getLocalServiceDomain(ServiceDomainRequest payload) {
 		ServiceDomainResponse response = new ServiceDomainResponse();
 
@@ -62,25 +72,25 @@ public class StatisticDataUtil {
 			long groupId = GetterUtil.getLong(payload.getGroupId());
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(DossierStatisticConstants.SERVICE_DOMAIN_CODE))
+			if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ADMINISTRATIVE_REGION).equalsIgnoreCase(DossierStatisticConstants.SERVICE_DOMAIN_CODE))
 				groupId = 0;
 
-			params.put("groupId", groupId);
-			params.put("keywords", StringPool.BLANK);
-			params.put("itemLv", StringPool.BLANK);
+			params.put(Field.GROUP_ID, groupId);
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			params.put(ConstantUtils.ITEM_LEVEL, StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.SERVICE_DOMAIN_CODE);
 
 			Sort[] sorts = null;
 			
 			sorts = new Sort[] {
-				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + NUMBER_SORT_ABLE, Sort.INT_TYPE, false) };
 			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<ServiceDomainData> lstSDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
 				ServiceDomainData sd = new ServiceDomainData();
@@ -104,22 +114,22 @@ public class StatisticDataUtil {
 
 		long groupId = payload.getGroupId();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put("groupId", String.valueOf(groupId));
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			} else {
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
@@ -134,15 +144,15 @@ public class StatisticDataUtil {
 				params.put(VotingTerm.GOV_AGENCY_CODE, payload.getGovAgencyCode());
 			}
 	
-			params.put(VotingTerm.CLASS_NAME, "employee");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_EMPLOYEE));
 						
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(TREE_INDEX_SORT_ABLE, Sort.STRING_TYPE, false) };
 	
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 	
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetPersonData> lstDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
 				GetPersonData data = new GetPersonData();
@@ -189,22 +199,22 @@ public class StatisticDataUtil {
 
 		long groupId = payload.getGroupId();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put("groupId", String.valueOf(groupId));
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 	
 			if (payload.isCalculate()) {
 				if (payload.getMonth() != null) {
-					params.put("month", payload.getMonth());
+					params.put(MONTH, payload.getMonth());
 				}
 				else {
-					params.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+					params.put(MONTH, Integer.toString(LocalDate.now().getMonthValue()));
 				}
 				if (payload.getYear() != null) {
-					params.put("year", payload.getYear());
+					params.put(YEAR, payload.getYear());
 				}
 				else {
-					params.put("year", Integer.toString(LocalDate.now().getYear()));
+					params.put(YEAR, Integer.toString(LocalDate.now().getYear()));
 				}
 			} 
 			else {
@@ -215,15 +225,15 @@ public class StatisticDataUtil {
 					params.put(VotingResultTerm.TO_VOTING_DATE, payload.getToVotingDate());
 				}
 			}
-			params.put(VotingTerm.CLASS_NAME, "dossier");
+			params.put(VotingTerm.CLASS_NAME, DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 						
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, false) };
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(TREE_INDEX_SORT_ABLE, Sort.STRING_TYPE, false) };
 	
 			JSONObject jsonData = actions.getVotingResultStatistic(-1, company.getCompanyId(), groupId, params,
 					sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 	
-			response.setTotal(jsonData.getInt("total"));
-			List<Document> lstDocs = (List<Document>) jsonData.get("data");
+			response.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			List<Document> lstDocs = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetVotingResultData> lstDatas = new ArrayList<>();
 			
 			for (Document doc : lstDocs) {
@@ -272,16 +282,16 @@ public class StatisticDataUtil {
 			long groupId = GetterUtil.getLong(payload.getGroupId());
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", groupId);
-			params.put("keywords", StringPool.BLANK);
-			params.put("itemLv", StringPool.BLANK);
+			params.put(Field.GROUP_ID, groupId);
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			params.put(ConstantUtils.ITEM_LEVEL, StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.GOV_AGENCY_CODE);
 
 			Sort[] sorts = null;
 			
 			sorts = new Sort[] {
-				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+				SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + ReadFilePropertiesUtils.get(ConstantUtils.NUMBER_SORT_PATTERN), Sort.INT_TYPE, false) };
 			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,

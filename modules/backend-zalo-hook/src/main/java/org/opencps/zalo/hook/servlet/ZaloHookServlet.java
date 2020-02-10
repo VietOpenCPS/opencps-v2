@@ -5,9 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -16,12 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.zalo.hook.constants.ZaloHookConstantKeys;
-import org.opencps.zalo.hook.utils.ZaloMapUtils;
 import org.opencps.zalo.hook.utils.ZaloMapUtilsV2;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -48,68 +43,68 @@ public class ZaloHookServlet extends HttpServlet {
 		super.init();
 	}
 
-	@Override
-	protected void doGet(
-		HttpServletRequest request, HttpServletResponse response)
-		throws IOException, ServletException {
-
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		_log.debug("ZaloHookServlet doGet opencps");
-
-		try {
-
-			Enumeration<String> enumeration = request.getParameterNames();
-			Map<String, Object> zaloInfo = new HashMap<>();
-			while (enumeration.hasMoreElements()) {
-				String parameterName = enumeration.nextElement();
-				zaloInfo.put(
-					parameterName, request.getParameter(parameterName));
-				_log.debug(
-					parameterName + "=" + request.getParameter(parameterName));
-			}
-
-			ZaloMapUtils zaloMapUtils = new ZaloMapUtils(zaloInfo);
-			if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_UNFOLLOW)) {
-
-				result = zaloMapUtils.unfollow();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_FOLLOW)) {
-
-				result = zaloMapUtils.follow();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_SEND_MSG)) {
-
-				result = zaloMapUtils.sendmsg();
-			}
-			else if (Validator.isNotNull(
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
-				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
-					ZaloHookConstantKeys.ZALO_ACTION_ADD_PHONE)) {
-
-				result = zaloMapUtils.addPhone();
-			}
-			else {
-
-				_log.debug("======action invalid======");
-			}
-
-		}
-		catch (Exception e) {
-			_log.error(e);
-		}
-
-		_writeSampleHTML(response, result);
-	}
+//	@Override
+//	protected void doGet(
+//		HttpServletRequest request, HttpServletResponse response)
+//		throws IOException, ServletException {
+//
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
+//
+//		_log.debug("ZaloHookServlet doGet opencps");
+//
+//		try {
+//
+//			Enumeration<String> enumeration = request.getParameterNames();
+//			Map<String, Object> zaloInfo = new HashMap<>();
+//			while (enumeration.hasMoreElements()) {
+//				String parameterName = enumeration.nextElement();
+//				zaloInfo.put(
+//					parameterName, request.getParameter(parameterName));
+//				_log.debug(
+//					parameterName + "=" + request.getParameter(parameterName));
+//			}
+//
+//			ZaloMapUtils zaloMapUtils = new ZaloMapUtils(zaloInfo);
+//			if (Validator.isNotNull(
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+//					ZaloHookConstantKeys.ZALO_ACTION_UNFOLLOW)) {
+//
+//				result = zaloMapUtils.unfollow();
+//			}
+//			else if (Validator.isNotNull(
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+//					ZaloHookConstantKeys.ZALO_ACTION_FOLLOW)) {
+//
+//				result = zaloMapUtils.follow();
+//			}
+//			else if (Validator.isNotNull(
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+//					ZaloHookConstantKeys.ZALO_ACTION_SEND_MSG)) {
+//
+//				result = zaloMapUtils.sendmsg();
+//			}
+//			else if (Validator.isNotNull(
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT)) &&
+//				zaloInfo.get(ZaloHookConstantKeys.ZALO_PARAM_EVENT).equals(
+//					ZaloHookConstantKeys.ZALO_ACTION_ADD_PHONE)) {
+//
+//				result = zaloMapUtils.addPhone();
+//			}
+//			else {
+//
+//				_log.debug("======action invalid======");
+//			}
+//
+//		}
+//		catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		_writeSampleHTML(response, result);
+//	}
 
 	@Override
 	protected void doPost(

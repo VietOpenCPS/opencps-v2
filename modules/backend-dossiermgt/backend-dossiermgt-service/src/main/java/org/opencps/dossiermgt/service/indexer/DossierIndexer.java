@@ -30,7 +30,9 @@ import javax.portlet.PortletResponse;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -197,7 +199,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
 			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
 			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
-			long hourMiliseconds = 60 * 60 * 1000;
+//			long hourMiliseconds = 60 * 60 * 1000;
 			
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
@@ -285,7 +287,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 							String dueDatePattern = sp.getDueDatePattern();
 							try {
@@ -375,7 +377,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 						}
 					}
@@ -531,7 +533,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
 						if (dauList != null && dauList.size() > 0) {
 							for (DossierActionUser dau : dauList) {
-								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+								userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
 							}
 						}
 					}
@@ -674,11 +676,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_WRITE));
 							} else {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 							}
 						} else {
 							sb.append(StringPool.SPACE);
@@ -687,11 +689,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 							if (dau.getModerator() == 1) {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("write");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_WRITE));
 							} else {
 								sbPermission.append(userId);
 								sbPermission.append(StringPool.UNDERLINE);
-								sbPermission.append("read");
+								sbPermission.append(ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PERMISSON_READ));
 							}
 
 						}

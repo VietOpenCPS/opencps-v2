@@ -43,7 +43,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTemplateTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.InvalidPostStepCodeException;
 import org.opencps.dossiermgt.exception.InvalidPreStepCodeException;
 import org.opencps.dossiermgt.exception.RequiredPaymentFeeException;
@@ -367,7 +372,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -449,7 +454,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
 		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -666,9 +671,9 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 		ProcessAction object = null;
 
-		if (objectData.getLong("processActionId") > 0) {
+		if (objectData.getLong(ProcessActionTerm.PROCESS_ACTION_ID) > 0) {
 
-			object = processActionPersistence.fetchByPrimaryKey(objectData.getLong("processActionId"));
+			object = processActionPersistence.fetchByPrimaryKey(objectData.getLong(ProcessActionTerm.PROCESS_ACTION_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -678,38 +683,38 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 
 			object = processActionPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
-		object.setUserName(objectData.getString("userName"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		object.setServiceProcessId(objectData.getLong("serviceProcessId"));
-		object.setPreStepCode(objectData.getString("preStepCode"));
-		object.setPostStepCode(objectData.getString("postStepCode"));
-		object.setAutoEvent(objectData.getString("autoEvent"));
-		object.setPreCondition(objectData.getString("preCondition"));
-		object.setActionCode(objectData.getString("actionCode"));
-		object.setActionName(objectData.getString("actionName"));
-		object.setAllowAssignUser(objectData.getInt("allowAssignUser"));
-		object.setAssignUserId(objectData.getLong("assignUserId"));
-		object.setRequestPayment(objectData.getInt("requestPayment"));
-		object.setPaymentFee(objectData.getString("paymentFee"));
-		object.setCreateDossierFiles(objectData.getString("createDossierFiles"));
-		object.setReturnDossierFiles(objectData.getString("returnDossierFiles"));
-		object.setMakeBriefNote(objectData.getString("makeBriefNote"));
-		object.setSyncActionCode(objectData.getString("syncActionCode"));
-		object.setRollbackable(objectData.getBoolean("rollbackable"));
-		object.setCreateDossierNo(objectData.getBoolean("createDossierNo"));
-		object.setESignature(objectData.getBoolean("eSignature"));
-		object.setConfigNote(objectData.getString("configNote"));
-		object.setDossierTemplateNo(objectData.getString("dossierTemplateNo"));
-		object.setSignatureType(objectData.getString("signatureType"));
-		object.setCreateDossiers(objectData.getString("createDossiers"));
-		object.setCheckInput(objectData.getInt("checkInput"));
+		object.setServiceProcessId(objectData.getLong(ProcessActionTerm.SERVICE_PROCESS_ID));
+		object.setPreStepCode(objectData.getString(ProcessActionTerm.PRESTEP_CODE));
+		object.setPostStepCode(objectData.getString(ProcessActionTerm.POSTSTEP_CODE));
+		object.setAutoEvent(objectData.getString(ProcessActionTerm.AUTO_EVENT));
+		object.setPreCondition(objectData.getString(ProcessActionTerm.PRE_CONDITION));
+		object.setActionCode(objectData.getString(ProcessActionTerm.ACTION_CODE));
+		object.setActionName(objectData.getString(ProcessActionTerm.ACTION_NAME));
+		object.setAllowAssignUser(objectData.getInt(ProcessActionTerm.ALLOW_ASSIGN_USER));
+		object.setAssignUserId(objectData.getLong(ProcessActionTerm.ASSIGN_USER_ID));
+		object.setRequestPayment(objectData.getInt(ProcessActionTerm.REQUEST_PAYMENT));
+		object.setPaymentFee(objectData.getString(ProcessActionTerm.PAYMENT_FEE));
+		object.setCreateDossierFiles(objectData.getString(ProcessActionTerm.CREATE_DOSSIER_FILES));
+		object.setReturnDossierFiles(objectData.getString(ProcessActionTerm.RETURN_DOSSIER_FILES));
+		object.setMakeBriefNote(objectData.getString(ProcessActionTerm.MAKE_BRIEF_NOTE));
+		object.setSyncActionCode(objectData.getString(ProcessActionTerm.SYNC_ACTION_CODE));
+		object.setRollbackable(objectData.getBoolean(ProcessActionTerm.ROLLBACKABLE));
+		object.setCreateDossierNo(objectData.getBoolean(ProcessActionTerm.CREATE_DOSSIER_NO));
+		object.setESignature(objectData.getBoolean(ProcessActionTerm.ESIGNATURE));
+		object.setConfigNote(objectData.getString(ProcessActionTerm.CONFIG_NOTE));
+		object.setDossierTemplateNo(objectData.getString(DossierTerm.DOSSIER_TEMPLATE_NO));
+		object.setSignatureType(objectData.getString(ProcessActionTerm.SIGNATURE_TYPE));
+		object.setCreateDossiers(objectData.getString(ProcessActionTerm.CREATE_DOSSIERS));
+		object.setCheckInput(objectData.getInt(ProcessStepTerm.CHECK_INPUT));
 
 		processActionPersistence.update(object);
 

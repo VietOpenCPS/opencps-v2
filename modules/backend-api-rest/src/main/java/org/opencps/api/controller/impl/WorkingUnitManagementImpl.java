@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -8,6 +9,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -18,6 +20,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +32,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.WorkingUnitUtils;
 import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
@@ -60,31 +65,31 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put("groupId", String.valueOf(groupId));
-			params.put("keywords", query.getKeywords());
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(WorkingUnitTerm.PARENT_WORKING_UNIT_ID, query.getParent());
 			
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create("treeIndex_sortable", Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };
+					SortFactoryUtil.create(ConstantUtils.API_TREEINDEX_SORTABLE, Sort.STRING_TYPE, Boolean.valueOf(query.getOrder())) };
 
 			JSONObject jsonData = actions.getWorkingUnits(user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			result.setTotal(jsonData.getLong("total"));
+			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getWorkingUnitModel()
-					.addAll(WorkingUnitUtils.mapperWorkingUnitList((List<Document>) jsonData.get("data")));
+					.addAll(WorkingUnitUtils.mapperWorkingUnitList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -100,17 +105,17 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			WorkingUnitModel workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
 
-			return Response.status(200).entity(workingUnitModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(workingUnitModel).build();
 
 		} else {
 
 			ErrorMsg error = new ErrorMsg();
 
-			error.setMessage("not found!");
-			error.setCode(404);
-			error.setDescription("not found!");
+			error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
+			error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
+			error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 
-			return Response.status(404).entity(error).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 		}
 	}
@@ -123,7 +128,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String name = HtmlUtil.escape(input.getName());
 			String enName = HtmlUtil.escape(input.getEnName());
@@ -141,7 +146,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
 
-			return Response.status(200).entity(workingUnitModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(workingUnitModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -156,7 +161,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			String name = HtmlUtil.escape(input.getName());
 			String enName = HtmlUtil.escape(input.getEnName());
@@ -174,7 +179,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			workingUnitModel = WorkingUnitUtils.mapperWorkingUnitModel(workingUnit);
 
-			return Response.status(200).entity(workingUnitModel).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(workingUnitModel).build();
 
 		} catch (Exception e) {
 
@@ -189,7 +194,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 
 			WorkingUnitLocalServiceUtil.deleteWorkingUnit(id, serviceContext);
 
-			return Response.status(200).build();
+			return Response.status(HttpURLConnection.HTTP_OK).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -206,21 +211,21 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			inputStream = dataHandler.getInputStream();
 
 			File file = actions.updateLogo(user.getUserId(), company.getCompanyId(), groupId, id, inputStream,
-					fileName, fileType, fileSize, "WorkingUnit/", "WorkingUnit file upload", serviceContext);
+					fileName, fileType, fileSize, ConstantUtils.EMPLOYEE_WORKINGUNIT_FOLDER, ConstantUtils.EMPLOYEE_WORKINGUNIT_DESC, serviceContext);
 
 			FileEntry fileEntry = actions.getFileEntry(id, serviceContext);
 
 			String fileNameRespone = Validator.isNotNull(fileEntry) ? fileEntry.getFileName() : StringPool.BLANK;
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileNameRespone + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileNameRespone);
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -250,9 +255,10 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			String fileName = Validator.isNotNull(fileEntry) ? fileEntry.getFileName() : StringPool.BLANK;
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-					.header("Content-Type", fileEntry.getMimeType());
+			
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 

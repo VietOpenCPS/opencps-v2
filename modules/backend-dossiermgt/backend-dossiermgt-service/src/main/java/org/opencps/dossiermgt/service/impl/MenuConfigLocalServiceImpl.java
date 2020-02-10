@@ -18,6 +18,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.Validator;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.dossiermgt.exception.DuplicateActionCodeException;
+import org.opencps.dossiermgt.constants.MenuConfigTerm;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.service.base.MenuConfigLocalServiceBaseImpl;
 
@@ -248,9 +250,9 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 
 		MenuConfig object = null;
 
-		if (objectData.getLong("menuConfigId") > 0) {
+		if (objectData.getLong(MenuConfigTerm.MENU_CONFIG_ID) > 0) {
 
-			object = menuConfigPersistence.fetchByPrimaryKey(objectData.getLong("menuConfigId"));
+			object = menuConfigPersistence.fetchByPrimaryKey(objectData.getLong(MenuConfigTerm.MENU_CONFIG_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -260,23 +262,23 @@ public class MenuConfigLocalServiceImpl extends MenuConfigLocalServiceBaseImpl {
 
 			object = menuConfigPersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setMenuGroup(objectData.getString("menuGroup"));
-		object.setMenuName(objectData.getString("menuName"));
-		object.setOrder(objectData.getInt("order"));
-		object.setMenuType(objectData.getInt("menuType"));
-		object.setQueryParams(objectData.getString("queryParams"));
-		object.setTableConfig(objectData.getString("tableConfig"));
-		object.setButtonConfig(objectData.getString("buttonConfig"));
-		object.setIcon(objectData.getString("icon"));
-		object.setViewScript(objectData.getString("viewScript"));
+		object.setMenuGroup(objectData.getString(MenuConfigTerm.MENU_GROUP));
+		object.setMenuName(objectData.getString(MenuConfigTerm.MENU_NAME));
+		object.setOrder(objectData.getInt(MenuConfigTerm.ORDER));
+		object.setMenuType(objectData.getInt(MenuConfigTerm.MENU_TYPE));
+		object.setQueryParams(objectData.getString(MenuConfigTerm.QUERY_PARAMS));
+		object.setTableConfig(objectData.getString(MenuConfigTerm.TABLE_CONFIG));
+		object.setButtonConfig(objectData.getString(MenuConfigTerm.BUTTON_CONFIG));
+		object.setIcon(objectData.getString(MenuConfigTerm.ICON));
+		object.setViewScript(objectData.getString(MenuConfigTerm.VIEW_SCRIPT));
 
 		menuConfigPersistence.update(object);
 

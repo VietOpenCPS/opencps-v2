@@ -80,6 +80,7 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.EFormPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
+import org.opencps.dossiermgt.service.persistence.NotarizationPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
@@ -1520,6 +1521,44 @@ public abstract class DossierMarkLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the notarization local service.
+	 *
+	 * @return the notarization local service
+	 */
+	public org.opencps.dossiermgt.service.NotarizationLocalService getNotarizationLocalService() {
+		return notarizationLocalService;
+	}
+
+	/**
+	 * Sets the notarization local service.
+	 *
+	 * @param notarizationLocalService the notarization local service
+	 */
+	public void setNotarizationLocalService(
+		org.opencps.dossiermgt.service.NotarizationLocalService notarizationLocalService) {
+		this.notarizationLocalService = notarizationLocalService;
+	}
+
+	/**
+	 * Returns the notarization persistence.
+	 *
+	 * @return the notarization persistence
+	 */
+	public NotarizationPersistence getNotarizationPersistence() {
+		return notarizationPersistence;
+	}
+
+	/**
+	 * Sets the notarization persistence.
+	 *
+	 * @param notarizationPersistence the notarization persistence
+	 */
+	public void setNotarizationPersistence(
+		NotarizationPersistence notarizationPersistence) {
+		this.notarizationPersistence = notarizationPersistence;
+	}
+
+	/**
 	 * Returns the payment config local service.
 	 *
 	 * @return the payment config local service
@@ -2610,6 +2649,10 @@ public abstract class DossierMarkLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.MenuRoleLocalService menuRoleLocalService;
 	@BeanReference(type = MenuRolePersistence.class)
 	protected MenuRolePersistence menuRolePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.NotarizationLocalService.class)
+	protected org.opencps.dossiermgt.service.NotarizationLocalService notarizationLocalService;
+	@BeanReference(type = NotarizationPersistence.class)
+	protected NotarizationPersistence notarizationPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.PaymentConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.PaymentConfigLocalService paymentConfigLocalService;
 	@BeanReference(type = PaymentConfigPersistence.class)

@@ -29,6 +29,7 @@ import org.opencps.rest.application.model.DocumentTypeInputModel;
 import org.opencps.rest.application.model.DocumentTypeModel;
 import org.opencps.rest.application.model.DocumentTypeResultModel;
 
+import backend.api.rest.application.utils.ConstantTerm;
 import backend.api.rest.application.v21.parser.DocumentTypeParser;
 
 public class DocumentTypeApiImpl implements DocumentTypesApi{
@@ -47,7 +48,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeResultModel getAllDocumentTypes(String keyword, Integer start, Integer end) {
 		_log.info("==== START GET DOCUMENT TYPE==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DocumentTypeResultModel results = null;
 		try {
 			
@@ -61,7 +62,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			}
 			// Default sort by modifiedDate
 			Sort[] sorts = new Sort[] {
-					SortFactoryUtil.create(Field.MODIFIED_DATE + "_sortable", Sort.STRING_TYPE, true) };
+					SortFactoryUtil.create(ConstantTerm.MODIFIED_DATE_SORTABLE, Sort.STRING_TYPE, true) };
 			
 //			if (Validator.isNotNull(search.getSort()) && Validator.isNotNull(search.getOrder())) {
 //				sorts = new Sort[] { SortFactoryUtil.create(search.getSort() + "_sortable", Sort.STRING_TYPE,
@@ -78,10 +79,10 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 			// get JSON data deliverable
 			JSONObject jsonData = actions.getDocumentTypeList(user.getUserId(), params, sorts, start, end,
 					serviceContext);
-			int total = jsonData.getInt("total");
+			int total = jsonData.getInt(ConstantTerm.JSON_TOTAL);
 			results.setTotal(total);
 			if (jsonData != null && total > 0) {
-				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get("data")));
+				results.setData(DocumentTypeParser.mappingDocumentResultModel((List<DocumentType>) jsonData.get(ConstantTerm.JSON_DATA)));
 			}
 			_log.info("==== END GET DOCUMENT TYPE==== ");
 
@@ -96,7 +97,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel createDocumentType(DocumentTypeInputModel input) {
 		_log.info("==== START CREATE DOCUMENT TYPE==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		DocumentTypeModel result = null;
 
@@ -143,7 +144,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel getDocById(String id) {
 		_log.info("==== START GET DOCUMENT TYPE BY ID==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Long docId = GetterUtil.getLong(id);
 		DocumentTypeModel result = null;
 		try {
@@ -208,7 +209,7 @@ public class DocumentTypeApiImpl implements DocumentTypesApi{
 	@Override
 	public DocumentTypeModel updateDocById(String id, DocumentTypeInputModel input) {
 		_log.info("==== START UPDATE DOCUMENT BY ID==== ");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		Long docId = GetterUtil.getLong(id);
 //		BackendAuth auth = new BackendAuthImpl();

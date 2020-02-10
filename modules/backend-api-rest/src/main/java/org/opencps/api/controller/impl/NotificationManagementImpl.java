@@ -11,8 +11,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.NotificationManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.notification.model.NotificationSearchModel;
+import org.opencps.communication.constants.NotificationTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -38,14 +41,17 @@ import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 public class NotificationManagementImpl implements NotificationManagement{
 
 	private static Log _log = LogFactoryUtil.getLog(NotificationManagementImpl.class);
-
+	private static final String DEFAULT_DATE_FORMAT = "MM-dd-yyyy HH:mm:ss";
+	private static final String FEMALE = "female";
+	private static final String MALE = "male";
+	
 	@Override
 	public Response getNotificationList(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, NotificationSearchModel query, Boolean archived) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 		//JSONObject record = JSONFactoryUtil.createJSONObject();
-		DateFormat dateFormatDateTime = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+		DateFormat dateFormatDateTime = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
 //		ThemeDisplay themeDisplay =
 //			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -78,31 +84,34 @@ public class NotificationManagementImpl implements NotificationManagement{
 			for (UserNotificationEvent event : events) {
 
 				JSONObject record = JSONFactoryUtil.createJSONObject(event.getPayload());
-				record.put("notificationDate",
+				record.put(NotificationTerm.NOTIFICATION_DATE,
 					dateFormatDateTime.format(event.getTimestamp()));
 //				record.put(
 //					"notificationDate_show",
 //					Time.getRelativeTimeDescription(
 //						event.getTimestamp(), locale, timeZone,
 //						dateFormatDateTime));
-				record.put("eventId", event.getUserNotificationEventId());
-				record.put("payload", event.getPayload());
-				record.put("userId", event.getUserId());
+				record.put(NotificationTerm.EVENT_ID, event.getUserNotificationEventId());
+				record.put(NotificationTerm.PAYLOAD, event.getPayload());
+				record.put(NotificationTerm.USER_ID, event.getUserId());
 				long portraitId = user.getPortraitId();
 				User finduser = UserLocalServiceUtil.fetchUser(event.getUserId());
 				
 				String tokenId = WebServerServletTokenUtil.getToken(finduser.getPortraitId());
-				String profilePath = "/image/user_" + ((finduser != null) && finduser.isFemale() ? "female" : "male") + "_portrait?img_id=" + portraitId + "&t=" + tokenId;
-				record.put("avatar", profilePath);
-				record.put("userName", finduser.getFullName());
+				String employeeSex = ((finduser != null) && finduser.isFemale() ? FEMALE : MALE);
+				String employeeProfilePath = String.format(MessageUtil.getMessage(ConstantUtils.EMPLOYEE_PROFILEPATH), employeeSex, portraitId, tokenId);
+//				String profilePath = "/image/user_" + ((finduser != null) && finduser.isFemale() ? "female" : "male") + "_portrait?img_id=" + portraitId + "&t=" + tokenId;
+				record.put(NotificationTerm.AVATAR, employeeProfilePath);
+				record.put(NotificationTerm.USERNAME, finduser.getFullName());
 				
 				try {
-					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString("data")).getJSONObject("Dossier");
+					JSONObject dataObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.createJSONObject(event.getPayload()).getString(ConstantUtils.DATA)).getJSONObject(ConstantUtils.DOSSIER_KEY);
 					if (dataObj.has(DossierTerm.GROUP_ID) && dataObj.has(DossierTerm.DOSSIER_ID)) {
 						long groupId = dataObj.getLong(DossierTerm.GROUP_ID);
 						Group site = GroupLocalServiceUtil.fetchGroup(groupId);
 						if (site.isActive() && site.isSite()) {
-							record.put("viewRootURI", "/web" + site.getFriendlyURL());
+							String viewRootUri = String.format(MessageUtil.getMessage(ConstantUtils.VIEWROOT_URI_MESSAGE), site.getFriendlyURL());
+							record.put(ConstantUtils.VIEWROOT_URI_KEY, viewRootUri);
 						}
 					}
 				}
@@ -116,8 +125,8 @@ public class NotificationManagementImpl implements NotificationManagement{
 			int userNotificationEventsCount = UserNotificationEventLocalServiceUtil.
 					getArchivedUserNotificationEventsCount(userId, false, archivedParam);
 
-			result.put("total", userNotificationEventsCount);
-			result.put("data", data);
+			result.put(ConstantUtils.TOTAL, userNotificationEventsCount);
+			result.put(ConstantUtils.DATA, data);
 //			writeJSON(actionRequest, actionResponse, result);
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -150,11 +159,11 @@ public class NotificationManagementImpl implements NotificationManagement{
 			try {
 
 				updateArchived(userNotificationEventId);
-				result.put("success", true);
+				result.put(ConstantUtils.API_JSON_SUCCESS, true);
 			}
 			catch (Exception e) {
 				_log.error(e);
-				result.put("success", false);
+				result.put(ConstantUtils.API_JSON_SUCCESS, false);
 			}
 
 		}
@@ -188,10 +197,10 @@ public class NotificationManagementImpl implements NotificationManagement{
 			int userNotificationEventsCount = UserNotificationEventLocalServiceUtil
 					.getArchivedUserNotificationEventsCount(userId, false, archivedParam);
 
-			result.put("total", userNotificationEventsCount);
+			result.put(ConstantUtils.TOTAL, userNotificationEventsCount);
 		} catch (Exception e) {
 			_log.debug(e);
-			result.put("total", 0);
+			result.put(ConstantUtils.TOTAL, 0);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result.toJSONString()).build();
 		}
 
@@ -209,10 +218,10 @@ public class NotificationManagementImpl implements NotificationManagement{
 		try {
 
 			UserNotificationEventLocalServiceUtil.deleteUserNotificationEvent(userNotificationEventId);
-			result.put("success", true);
+			result.put(ConstantUtils.API_JSON_SUCCESS, true);
 		} catch (Exception e) {
 			_log.debug(e);
-			result.put("success", false);
+			result.put(ConstantUtils.API_JSON_SUCCESS, false);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
@@ -223,31 +232,34 @@ public class NotificationManagementImpl implements NotificationManagement{
 			User user, ServiceContext serviceContext, long eventId) {
 		UserNotificationEvent nevent = UserNotificationEventLocalServiceUtil.fetchUserNotificationEvent(eventId);
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		DateFormat dateFormatDateTime = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+		DateFormat dateFormatDateTime = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 		
 		if (nevent != null) {
 			nevent.setArchived(true);
 			nevent = UserNotificationEventLocalServiceUtil.updateUserNotificationEvent(nevent);
-			result.put("notificationDate",
+			result.put(NotificationTerm.NOTIFICATION_DATE,
 					dateFormatDateTime.format(nevent.getTimestamp()));
 
-			result.put("eventId", nevent.getUserNotificationEventId());
-			result.put("payload", nevent.getPayload());
-			result.put("userId", nevent.getUserId());
+			result.put(NotificationTerm.EVENT_ID, nevent.getUserNotificationEventId());
+			result.put(NotificationTerm.PAYLOAD, nevent.getPayload());
+			result.put(NotificationTerm.USER_ID, nevent.getUserId());
 			try {
 				User findUser = UserLocalServiceUtil.getUser(nevent.getUserId());
 				long portraitId = findUser.getPortraitId();
 				String tokenId = WebServerServletTokenUtil.getToken(findUser.getPortraitId());
-				String profilePath = "/image/user_" + ((findUser != null) && findUser.isFemale() ? "female" : "male") + "_portrait?img_id=" + portraitId + "&t=" + tokenId;
-				result.put("avatar", profilePath);
-				result.put("userName", findUser.getFullName());			
+				String employeeSex = ((findUser != null) && findUser.isFemale() ? FEMALE : MALE);
+				String employeeProfilePath = String.format(MessageUtil.getMessage(ConstantUtils.EMPLOYEE_PROFILEPATH), employeeSex, portraitId, tokenId);
+				
+//				String profilePath = "/image/user_" + ((findUser != null) && findUser.isFemale() ? "female" : "male") + "_portrait?img_id=" + portraitId + "&t=" + tokenId;
+				result.put(NotificationTerm.AVATAR, employeeProfilePath);
+				result.put(NotificationTerm.USERNAME, findUser.getFullName());			
 			} catch (PortalException e) {
 				_log.debug(e);
 			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();	
 		}
 		else {
-			result.put("success", false);
+			result.put(ConstantUtils.API_JSON_SUCCESS, false);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();			
 		}
 	}

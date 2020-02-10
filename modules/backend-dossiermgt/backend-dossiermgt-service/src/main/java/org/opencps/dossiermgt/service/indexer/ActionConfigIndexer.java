@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.liferay.petra.string.StringPool;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -210,7 +211,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 				try {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
 //						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
@@ -223,7 +224,7 @@ public class ActionConfigIndexer extends BaseIndexer<ActionConfig> {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 //						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());
