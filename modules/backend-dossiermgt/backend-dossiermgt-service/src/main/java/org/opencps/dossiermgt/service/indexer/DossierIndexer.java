@@ -199,7 +199,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long dueDateTime = Validator.isNotNull(object.getDueDate()) ? object.getDueDate().getTime() : 0;
 			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
 			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
-			long hourMiliseconds = 60 * 60 * 1000;
+//			long hourMiliseconds = 60 * 60 * 1000;
 			
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
@@ -287,7 +287,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 							String dueDatePattern = sp.getDueDatePattern();
 							try {
@@ -377,7 +377,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 						}
 					}

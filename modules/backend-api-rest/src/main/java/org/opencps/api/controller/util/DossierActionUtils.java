@@ -697,7 +697,7 @@ public class DossierActionUtils {
 
 			String createDossiers = proAction.getCreateDossiers();
 			String govAgencyCode = StringPool.BLANK;
-			String serviceCode = dossier.getServiceCode();
+//			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
 			if (createDossiers.contains(StringPool.POUND)) {
 				String[] splitCDs = createDossiers.split(StringPool.POUND);
@@ -712,7 +712,7 @@ public class DossierActionUtils {
 						else {
 							dossierTemplateNo =
 								splitCDs[1].split(StringPool.AT)[0];
-							serviceCode = splitCDs[1].split(StringPool.AT)[1];
+//							serviceCode = splitCDs[1].split(StringPool.AT)[1];
 						}
 					}
 					else {
@@ -728,7 +728,7 @@ public class DossierActionUtils {
 					}
 					else {
 						govAgencyCode = createDossiers.split(StringPool.AT)[0];
-						serviceCode = createDossiers.split(StringPool.AT)[1];
+//						serviceCode = createDossiers.split(StringPool.AT)[1];
 					}
 				}
 				else {

@@ -131,7 +131,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String DEPENDENCY_LINK = "dependency_link";
 	private static final String DYNAMIC_COUNT = "dynamicQueryCount";
 	private static final String PROCESS_DELETE = "adminProcessDelete";
-	private static final String PROCESS_DATA = "adminProcessData";
+//	private static final String PROCESS_DATA = "adminProcessData";
 	private static final String HEADERS = "headers";
 	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
 	private static final String ACCEPT = "Accept";
@@ -363,8 +363,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 						} else {
 	
-							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
-									JSONObject.class);
+//							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
+//									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
 							
@@ -421,7 +421,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 //
 //					messageData.put(STATUS, HttpStatus.OK);
 					
-				    String apiUrl = StringPool.BLANK;
+//				    String apiUrl = StringPool.BLANK;
+				    String apiUrl;
 				    
 				    StringBuilder sb = new StringBuilder();
 				    try

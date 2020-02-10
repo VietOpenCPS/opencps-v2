@@ -137,6 +137,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -503,7 +504,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			lstTempConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		Map<String, List<ServiceConfig>> mapGovs = new HashMap<String, List<ServiceConfig>>();
 		for (ServiceConfig sc : lstTempConfigs) {

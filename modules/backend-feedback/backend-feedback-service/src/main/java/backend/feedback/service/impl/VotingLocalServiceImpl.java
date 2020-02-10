@@ -194,7 +194,7 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		String keywords = (String) params.get(VotingTerm.KEYWORDS);
 		String groupId = (String) params.get(Field.GROUP_ID);
 		_log.info("groupId: " + groupId);
-		String userId = (String) params.get(VotingTerm.USER_ID);
+//		String userId = (String) params.get(VotingTerm.USER_ID);
 		String className = (String) params.get(VotingTerm.CLASS_NAME);
 		String classPK = (String) params.get(VotingTerm.CLASS_PK);
 		String fromVotingDate = GetterUtil.getString(params.get(VotingTerm.FROM_VOTING_DATE));

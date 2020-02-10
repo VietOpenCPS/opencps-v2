@@ -6,7 +6,7 @@ public class ApplicantTerm {
 	public static final String USER_ID = "userId";
 	public static final String ACTIVATION_CODE = "activationCode";
 	public static final String LOCK_ = "lock_";
-	public static final String TMP_PASS = "tmpPass";
+	public static final String TMP_SECRET = "tmpPass";
 	public static final String REPRESENTATIVE_ENTERPRISE =
 		"representativeEnterprise";
 	public static final String APPLICANT_ID = "applicantId";

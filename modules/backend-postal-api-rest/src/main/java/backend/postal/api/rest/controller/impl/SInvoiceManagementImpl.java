@@ -39,18 +39,6 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 import backend.postal.api.rest.controller.SInvoiceManagement;
 
 /**
@@ -128,7 +116,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 			// TODO maping requestBody with dossier, paymentConfig
 			
-			System.out.println("===============paymentConfig=================="+paymentConfig);
+//			System.out.println("===============paymentConfig=================="+paymentConfig);
 
 			JSONObject requestBody =
 				JSONFactoryUtil.createJSONObject(paymentConfig);
@@ -152,7 +140,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			InvokeResultModel invokeResultModel = new InvokeResultModel();
 			invokeResultModel.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
 			invokeResultModel.setErrorCode(ConfigProps.get(ConfigConstants.EINVOICE_ERR_CODE));

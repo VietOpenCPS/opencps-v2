@@ -241,7 +241,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 	public Response updateSertNumbers(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String certid, String pattern, int initNumber) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsObj = JSONFactoryUtil.createJSONObject();
 
 //		BackendAuth auth = new BackendAuthImpl();

@@ -815,7 +815,7 @@ public class DueDateUtils {
 		long days = hours / 8;
 		hours = (hours - days * 8) % 24;
 		minutes = minutes % 60;
-		seconds = seconds % 60;
+//		seconds = seconds % 60;
 		String time = days > 0 ? days + " ngày " : StringPool.BLANK;
 		time += hours > 0 ? hours + " giờ " : StringPool.BLANK;
 		time += minutes > 0 ? minutes + " phút " : StringPool.BLANK;

@@ -670,7 +670,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			
 				AuthenticatedUserUUIDStoreUtil.register(userUUID);
 			}*/
-		} else if (state.equalsIgnoreCase("mapping")) {
+		} else if ("mapping".equalsIgnoreCase(state)) {
 			mappingUserId = user.getUserId();
 			applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 			if (applicant == null) {

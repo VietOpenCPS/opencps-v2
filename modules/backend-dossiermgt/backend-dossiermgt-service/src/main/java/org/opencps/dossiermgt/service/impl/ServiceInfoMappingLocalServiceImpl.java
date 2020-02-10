@@ -17,12 +17,15 @@ package org.opencps.dossiermgt.service.impl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
 import org.opencps.dossiermgt.exception.NoSuchServiceInfoMappingException;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
@@ -75,12 +78,15 @@ public class ServiceInfoMappingLocalServiceImpl
 				serviceInfoMappingPersistence.remove(serviceInfoMapping.getServiceInfoMappingId());
 				return true;
 			} catch (NoSuchServiceInfoMappingException e) {
+				_log.debug(e);
 				return false;
 			}
 		}
 		return false;
 	}
-
+	
+	private static final Log _log = LogFactoryUtil.getLog(ServiceInfoMappingLocalServiceImpl.class);
+	
 	public ServiceInfoMapping fetchDVCQGServiceCode(long groupId, String serviceCode) {
 		return serviceInfoMappingPersistence.fetchByF_GID_SC(groupId, serviceCode);
 	}

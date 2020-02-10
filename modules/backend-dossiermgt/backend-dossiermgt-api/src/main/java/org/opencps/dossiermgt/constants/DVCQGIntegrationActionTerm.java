@@ -71,7 +71,7 @@ public class DVCQGIntegrationActionTerm {
 	public static final String USERNAME = "username";
 	public static final String ADAPTER_URL = "adapter_url";
 	public static final String AUTH_ENDPOINT = "auth_endpoint";
-	public static final String PASSWORD = "password";
+	public static final String SECRET = "password";
 	public static final String DSTCODE = "dstcode";
 
 	public static final String DANHSACHTEPDINHKEMKHAC = "DanhSachTepDinhKemKhac";

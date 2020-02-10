@@ -35,11 +35,14 @@ public class CheckFileUtils {
 				return false;
 			}
 		} catch (IOException e1) {
+			_log.debug(e1);
 			return false;
 		}
 		return true;
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(CheckFileUtils.class);
+	
 	private static boolean checkExtentionFile(DataHandler handle) {
 		//return false;
 		String[] extentionArr = { ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_PNG),

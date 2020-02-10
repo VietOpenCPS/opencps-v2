@@ -6872,8 +6872,8 @@ public class DossierManagementImpl implements DossierManagement {
 				ConvertDossierFromV1Dot9Utils.readExcelFileWithHeaderConfig(
 					dataHandle.getInputStream());
 
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId =
+//				GetterUtil.getLong(header.getHeaderString("groupId"));
 			for (int i = 0; i < dataApplicant.length(); i++) {
 
 				try {
@@ -6951,72 +6951,76 @@ public class DossierManagementImpl implements DossierManagement {
 		ServiceContext serviceContext)
 		throws SQLException {
 
-		Connection con = null;
+//		Connection con = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		int result = 0;
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
-			con = DriverManager.getConnection(
+			try (Connection con = DriverManager.getConnection(
 				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
-			// here sonoo is database name, root is username and password
-			String query = "select * from thanhnv_dossier_mapped_done";
-			if (groupId > 0) {
-
-				query += " where groupId=" + groupId;
+				"dvc@2019")) {
+				// here sonoo is database name, root is username and password
+	//			String query = "select * from thanhnv_dossier_mapped_done";
+	//			if (groupId > 0) {
+	//
+	//				query += " where groupId=" + groupId;
+	//			}
+				stmt = con.createStatement();
+				rs = stmt.executeQuery("select * from thanhnv_view_dossier_import");
+	
+				while (rs.next()) {
+					System.out.println(
+						rs.getString(1) + "  " + rs.getString(2) + "  " +
+							rs.getString(3) + "   " + rs.getString("dossierNo"));
+					result++;
+	
+					JSONObject dossierJson =
+						ConvertDossierFromV1Dot9Utils.buildDossierJSONObject(rs);
+					dossierJson.put(
+						ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
+					dossierJson.put("online", true);
+					dossierJson.put(
+						ConvertDossierFromV1Dot9Utils.TEMP_ORIGINALITY, 1);
+					dossierJson.put(
+						ConvertDossierFromV1Dot9Utils.TEMP_ORIGINAL, false);
+					// them ho so vao dvc set groupId = dvcGroupId
+					if (dvcGroupId > 0) {
+	
+						dossierJson.put(
+							ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
+	
+						dossierJson.put(
+							ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERSUBSTATUS,
+							StringPool.BLANK);
+					}
+					JSONObject dossier =
+						ConvertDossierFromV1Dot9Utils.setDossierObject(dossierJson);
+					if (dvcGroupId <= 0) {
+						ConvertDossierFromV1Dot9Utils.insertUserDossier(
+							dossier.getLong(
+								ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
+							dossier.getLong(
+								ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID));
+					}
+					else {
+						ConvertDossierFromV1Dot9Utils.insertUserDossierDvc(
+							dossier.getLong(
+								ConvertDossierFromV1Dot9Utils.TEMP_USERID),
+							dossier.getLong(
+								ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID));
+					}
+	
+					ConvertDossierFromV1Dot9Utils.callActionDoneDossier(
+						pathBase,
+						dossier.getLong(ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
+						dossier.getLong(
+							ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID),
+						actionCode, serviceContext);
+				}
 			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery("select * from thanhnv_view_dossier_import");
-
-			while (rs.next()) {
-				System.out.println(
-					rs.getString(1) + "  " + rs.getString(2) + "  " +
-						rs.getString(3) + "   " + rs.getString("dossierNo"));
-				result++;
-
-				JSONObject dossierJson =
-					ConvertDossierFromV1Dot9Utils.buildDossierJSONObject(rs);
-				dossierJson.put(
-					ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
-				dossierJson.put("online", true);
-				dossierJson.put(
-					ConvertDossierFromV1Dot9Utils.TEMP_ORIGINALITY, 1);
-				dossierJson.put(
-					ConvertDossierFromV1Dot9Utils.TEMP_ORIGINAL, false);
-				// them ho so vao dvc set groupId = dvcGroupId
-				if (dvcGroupId > 0) {
-
-					dossierJson.put(
-						ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
-
-					dossierJson.put(
-						ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERSUBSTATUS,
-						StringPool.BLANK);
-				}
-				JSONObject dossier =
-					ConvertDossierFromV1Dot9Utils.setDossierObject(dossierJson);
-				if (dvcGroupId <= 0) {
-					ConvertDossierFromV1Dot9Utils.insertUserDossier(
-						dossier.getLong(
-							ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
-						dossier.getLong(
-							ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID));
-				}
-				else {
-					ConvertDossierFromV1Dot9Utils.insertUserDossierDvc(
-						dossier.getLong(
-							ConvertDossierFromV1Dot9Utils.TEMP_USERID),
-						dossier.getLong(
-							ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID));
-				}
-
-				ConvertDossierFromV1Dot9Utils.callActionDoneDossier(
-					pathBase,
-					dossier.getLong(ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
-					dossier.getLong(
-						ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID),
-					actionCode, serviceContext);
+			catch (Exception e) {
+				_log.debug(e);
 			}
 		}
 		catch (Exception ex) {
@@ -7025,7 +7029,7 @@ public class DossierManagementImpl implements DossierManagement {
 		finally {
 			stmt.close();
 //			if (con != null) {
-				con.close();
+//				con.close();
 //			}
 			if (stmt != null) {
 				stmt.close();
@@ -7041,58 +7045,75 @@ public class DossierManagementImpl implements DossierManagement {
 	public int doImportDossierFile19(
 		String actionCode, String pathBase, long dvcGroupId, long groupId,
 		ServiceContext serviceContext)
-		throws SQLException {
+		{
 
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+//		Connection con = null;
+//		Statement stmt = null;
+//		ResultSet rs = null;
 		int result = 0;
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
-			con = DriverManager.getConnection(
+			try (Connection con = DriverManager.getConnection(
 				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
-			// here sonoo is database name, root is username and password
-			stmt = con.createStatement();
-			String query = "select * from thanhnv_dossierPart_mapped_done2";
-			if (groupId > 0) {
-
-				query += " where groupId=" + groupId;
-			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(
-				"select * from thanhnv_view_dossierFile_import");
-			while (rs.next()) {
-				System.out.println(
-					rs.getString(1) + "  " + rs.getString(2) + "  " +
-						rs.getString(3) + "   " + rs.getString("fileUrl"));
-				result++;
-
-				JSONObject dossierFile =
-					ConvertDossierFromV1Dot9Utils.buildDossierFileJSONObject(
-						rs);
-				if (dvcGroupId > 0) {
-					dossierFile.put(
-						ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
+				"dvc@2019")) {
+				// here sonoo is database name, root is username and password
+				try (Statement stmt = con.createStatement()) {
+		//			String query = "select * from thanhnv_dossierPart_mapped_done2";
+		//			if (groupId > 0) {
+		//
+		//				query += " where groupId=" + groupId;
+		//			}
+	//				stmt = con.createStatement();
+					try (ResultSet rs = stmt.executeQuery(
+						"select * from thanhnv_view_dossierFile_import")) {
+						while (rs.next()) {
+							System.out.println(
+								rs.getString(1) + "  " + rs.getString(2) + "  " +
+									rs.getString(3) + "   " + rs.getString("fileUrl"));
+							result++;
+			
+							JSONObject dossierFile =
+								ConvertDossierFromV1Dot9Utils.buildDossierFileJSONObject(
+									rs);
+							if (dvcGroupId > 0) {
+								dossierFile.put(
+									ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
+							}
+							ConvertDossierFromV1Dot9Utils.setDossierFileObject(
+								dossierFile, serviceContext);
+						}
+					}
+					catch (Exception e) {
+						_log.debug(e);
+					}
 				}
-				ConvertDossierFromV1Dot9Utils.setDossierFileObject(
-					dossierFile, serviceContext);
+				catch (SQLException e) {
+					_log.debug(e);
+				}
+			}
+			catch (Exception e) {
+				_log.debug(e);
 			}
 		}
 		catch (Exception ex) {
-			System.out.println(ex);
+			_log.debug(ex);
+//			System.out.println(ex);
 		}
 		finally {
-			stmt.close();
-//			if (con != null) {
-				con.close();
+//			try {
+//				if (con != null) {
+//					con.close();
+//				}
+//				if (stmt != null) {
+//					stmt.close();
+//				}
+//				if (rs != null) {
+//					rs.close();
+//				}
 //			}
-			if (stmt != null) {
-				stmt.close();
-			}
-			if (rs != null) {
-				rs.close();
-			}
+//			catch (SQLException e) {
+//				_log.debug(e);
+//			}
 		}
 
 		return result;

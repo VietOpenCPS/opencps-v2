@@ -1,28 +1,5 @@
 package org.opencps.usermgt.scheduler;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.opencps.auth.api.keys.NotificationType;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-import org.opencps.communication.service.NotificationtemplateLocalService;
-import org.opencps.kernel.prop.PropValues;
-import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
-import org.opencps.usermgt.listener.ApplicantListenerUtils;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,6 +20,25 @@ import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.opencps.auth.api.keys.NotificationType;
+import org.opencps.communication.service.NotificationtemplateLocalService;
+import org.opencps.kernel.prop.PropValues;
+import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
+import org.opencps.usermgt.listener.ApplicantListenerUtils;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = OneDay.class)
 public class OneDay extends BaseMessageListener {
@@ -102,7 +98,7 @@ public class OneDay extends BaseMessageListener {
 //			NotificationQueueLocalServiceUtil.createNotificationQueue(
 //				notificationQueueId);
 
-		Date now = new Date();
+//		Date now = new Date();
 
 		Calendar cal = Calendar.getInstance();
 
@@ -186,7 +182,7 @@ public class OneDay extends BaseMessageListener {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.add(Calendar.DATE, 1);
-		startDate = cal.getTime();
+//		startDate = cal.getTime();
 
 		String listenerClass = getClass().getName();
 		Trigger jobTrigger = _triggerFactory.createTrigger(

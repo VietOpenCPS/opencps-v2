@@ -961,7 +961,7 @@ public class EmployeeActions implements EmployeeInterface {
 			}
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 	}
 

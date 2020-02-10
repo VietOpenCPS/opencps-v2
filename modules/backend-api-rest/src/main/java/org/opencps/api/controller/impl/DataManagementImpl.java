@@ -476,38 +476,38 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-			DictCollection collection = null;
-			try {
-				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictGroup group = null;
-			try {
-				if (collection != null) {
-					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictItem item = null;
-
-			try {
-				if (collection != null)
-					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
-							groupId);
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictItemGroup dictItemGroup = null;
-
-			try {
-				if (collection != null && group != null && item != null)
-					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
-							group.getDictGroupId(), item.getDictItemId());
-			} catch (Exception e) {
-				_log.error(e);
-			}
+//			DictCollection collection = null;
+//			try {
+//				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictGroup group = null;
+//			try {
+//				if (collection != null) {
+//					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
+//				}
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictItem item = null;
+//
+//			try {
+//				if (collection != null)
+//					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
+//							groupId);
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictItemGroup dictItemGroup = null;
+//
+//			try {
+//				if (collection != null && group != null && item != null)
+//					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
+//							group.getDictGroupId(), item.getDictItemId());
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
 			boolean flag = dictItemDataUtil.deleteDictgroupsDictItems(groupId, code, groupCode, itemCode,
 					serviceContext);
 			
@@ -682,7 +682,7 @@ public class DataManagementImpl implements DataManagement {
 			String itemDescription = HtmlUtil.escape(input.getItemDescription());
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-			String metaData = HtmlUtil.escape(input.getMetaData());
+//			String metaData = HtmlUtil.escape(input.getMetaData());
 
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, newItemCode, itemName, itemNameEN,

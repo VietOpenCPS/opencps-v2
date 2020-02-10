@@ -59,7 +59,7 @@ public class DossierLookUpFacadeImpl extends OpencpsRestFacade<DossierRequest, D
 		else {
 	        httpHeaders = setHttpHeadersAuthorization(
 	            httpHeaders, DossierServiceProps.get(Constants.OPENCPS_BACKEND_USERNAME),
-	            DossierServiceProps.get(Constants.OPENCPS_BACKEND_PASSWORD));
+	            DossierServiceProps.get(Constants.OPENCPS_BACKEND_SECRET));
 		}
         httpHeaders.add(Field.GROUP_ID, DossierServiceProps.get(Constants.OPENCPS_GROUP_ID_CONFIG));
         

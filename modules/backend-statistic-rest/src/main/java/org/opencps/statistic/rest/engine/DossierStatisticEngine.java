@@ -207,8 +207,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							sdPayload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 							sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
@@ -236,8 +236,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 							payload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -372,7 +372,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
 						}
 						catch (Exception e) {
-							
+							_log.debug(e);
 						}
 						if (calculateDatas.get(yearCurrent) != null &&
 								calculateDatas.get(yearCurrent).get(month) != null) {
@@ -423,7 +423,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //					engineUpdateAction.removeDossierStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, LocalDate.now().getYear());
 //				}
 //				catch (Exception e) {
-//					
+//					_log.debug(e);
 //				}
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
@@ -494,7 +494,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										try {
 											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 										} catch (NoSuchOpencpsDossierStatisticException e) {
-											
+											_log.debug(e);
 										}
 									}
 								}
@@ -513,7 +513,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										try {
 											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
 										} catch (NoSuchOpencpsDossierStatisticException e) {
-											
+											_log.debug(e);
 										}
 									}
 								}
@@ -524,7 +524,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 							}
 							catch (NoSuchOpencpsDossierStatisticException e) {
-								
+								_log.debug(e);
 							}
 						}
 						
@@ -547,7 +547,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								try {
 									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 								} catch (NoSuchOpencpsDossierStatisticException e) {
-										
+									_log.debug(e);
 								}
 							}
 						}	
@@ -555,7 +555,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 						}
 						catch (NoSuchOpencpsDossierStatisticException e) {
-							
+							_log.debug(e);
 						}
 					}
 				}
@@ -566,7 +566,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							try {
 								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 							} catch (NoSuchOpencpsDossierStatisticException e) {
-									
+								_log.debug(e);	
 							}
 						}
 					}
@@ -574,7 +574,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 					}
 					catch (Exception e) {
-						
+						_log.debug(e);
 					}
 				}
 			}
@@ -583,7 +583,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 				}
 				catch (Exception e) {
-					
+					_log.debug(e);
 				}
 			}
 			
@@ -687,7 +687,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
 					}
 					catch (Exception e) {
-						
+						_log.debug(e);
 					}
 				}
 				
@@ -720,7 +720,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 									try {
 										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 									} catch (NoSuchOpencpsDossierStatisticException e) {
-										
+										_log.debug(e);
 									}
 								}
 							}
@@ -739,7 +739,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 									try {
 										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
 									} catch (NoSuchOpencpsDossierStatisticException e) {
-										
+										_log.debug(e);
 									}
 								}
 							}
@@ -750,7 +750,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 						}
 						catch (NoSuchOpencpsDossierStatisticException e) {
-							
+							_log.debug(e);
 						}
 					}
 						
@@ -774,7 +774,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //								try {
 //									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 //								} catch (NoSuchOpencpsDossierStatisticException e) {
-//										
+//									_log.debug(e);	
 //								}
 //							}
 //						}	
@@ -782,7 +782,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 //						}
 //						catch (NoSuchOpencpsDossierStatisticException e) {
-//							
+//							_log.debug(e);
 //						}
 //					}
 				}
@@ -793,7 +793,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							try {
 								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
 							} catch (NoSuchOpencpsDossierStatisticException e) {
-									
+								_log.debug(e);	
 							}
 						}
 					}
@@ -801,7 +801,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 					}
 					catch (Exception e) {
-						
+						_log.debug(e);
 					}
 				}
 			}
@@ -811,7 +811,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 				}
 				catch (Exception e) {
-					
+					_log.debug(e);
 				}
 			}
 			*/

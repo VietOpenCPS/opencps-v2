@@ -95,7 +95,7 @@ public class OneGateControllerImpl implements OneGateController {
 					break;
 				}
 			}
-			long startTime = System.currentTimeMillis();
+//			long startTime = System.currentTimeMillis();
 			
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
 			
@@ -112,14 +112,14 @@ public class OneGateControllerImpl implements OneGateController {
 					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
 				}
 			}
-			long endTime = System.currentTimeMillis();
-			startTime = System.currentTimeMillis();
+//			long endTime = System.currentTimeMillis();
+//			startTime = System.currentTimeMillis();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			Map<Long, List<ProcessOption>> mapProcessOptions = new HashMap<>();
-			startTime = System.currentTimeMillis();
+//			startTime = System.currentTimeMillis();
 			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findByGroup(groupId);
-			endTime = System.currentTimeMillis();
-			startTime = System.currentTimeMillis();
+//			endTime = System.currentTimeMillis();
+//			startTime = System.currentTimeMillis();
 			long[] spArr = new long[lstOptions.size()];
 			int count = 0;
 			
@@ -136,8 +136,8 @@ public class OneGateControllerImpl implements OneGateController {
 				spArr[count++] = po.getServiceProcessId();
 			}
 			
-			endTime = System.currentTimeMillis();
-			startTime = System.currentTimeMillis();
+//			endTime = System.currentTimeMillis();
+//			startTime = System.currentTimeMillis();
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
@@ -155,14 +155,14 @@ public class OneGateControllerImpl implements OneGateController {
 				
 				lstTempSprs.add(spr);
 			}
-			endTime = System.currentTimeMillis();
-			startTime = System.currentTimeMillis();
+//			endTime = System.currentTimeMillis();
+//			startTime = System.currentTimeMillis();
 			List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
 			Map<Long, DossierTemplate> mapTemplates = new HashMap<Long, DossierTemplate>();
 			for (DossierTemplate dt : lstTemplates) {
 				mapTemplates.put(dt.getDossierTemplateId(), dt);
 			}
-			endTime = System.currentTimeMillis();
+//			endTime = System.currentTimeMillis();
 			for (ServiceConfig serviceConfig : serviceConfigs) {
 				if (serviceConfig.getServiceLevel() >= 2) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();

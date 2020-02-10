@@ -688,7 +688,8 @@ public class UserManagementImpl implements UserManagement {
 			List<Role> roles = user.getRoles();
 
 			for (Role role : roles) {
-				String roleName = StringPool.BLANK;
+//				String roleName = StringPool.BLANK;
+				String roleName;
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 

@@ -1142,7 +1142,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		object.setActivationCode(objectData.getString(ApplicantTerm.ACTIVATION_CODE));
 		object.setLock_(objectData.getBoolean(ApplicantTerm.LOCK_));
 		object.setProfile(objectData.getString(ApplicantTerm.PROFILE));
-		object.setTmpPass(objectData.getString(ApplicantTerm.TMP_PASS));
+		object.setTmpPass(objectData.getString(ApplicantTerm.TMP_SECRET));
 		object.setRepresentativeEnterprise(
 			objectData.getString(ApplicantTerm.REPRESENTATIVE_ENTERPRISE));
 

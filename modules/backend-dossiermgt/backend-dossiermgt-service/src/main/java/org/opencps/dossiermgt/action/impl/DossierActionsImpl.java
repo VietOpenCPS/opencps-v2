@@ -55,6 +55,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
@@ -3604,8 +3605,8 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
 		
 		params.put("userName", "HA");	
-		params.put("passWord", "1"); 	    	
-		params.put("soid", "0"); 
+		params.put(CInvoiceTerm.secret, "1"); 	    	
+		params.put(CInvoiceTerm.soid, "0"); 
 		params.put("maHoadon", "01GTKT0/001"); 
 		params.put("ngayHd", dateformatted); //"01/08/2018"
 		params.put("seri", "12314"); 

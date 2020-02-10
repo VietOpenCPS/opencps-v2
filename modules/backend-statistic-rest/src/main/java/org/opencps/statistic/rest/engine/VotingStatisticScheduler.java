@@ -111,8 +111,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 								sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
@@ -141,8 +141,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 								payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));

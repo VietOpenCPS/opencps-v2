@@ -91,7 +91,8 @@ public class RegistrationActionsImpl implements RegistrationActions {
 		}
 
 		// add registrationLog
-		String content =  StringPool.BLANK;
+//		String content =  StringPool.BLANK;
+		String content;
 		RegistrationLogActions registrationLogActions = new RegistrationLogActionsImpl();
 		List<RegistrationLog> lstRegistrationLog = registrationLogActions.getRegistrationLogbyId(groupId,
 				registrationId);

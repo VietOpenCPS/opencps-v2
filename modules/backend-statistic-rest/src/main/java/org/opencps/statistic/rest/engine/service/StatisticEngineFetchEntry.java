@@ -17,7 +17,7 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 
 public class StatisticEngineFetchEntry {
 	private static final int USED_POSTAL = 2;
-	private static final int NOT_USED_POSTAL = 1;
+//	private static final int NOT_USED_POSTAL = 1;
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
 	
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
@@ -197,9 +197,9 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-				? null
-				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+//		Date extendDate = Validator.isNull(dossierData.getExtendDate())
+//				? null
+//				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());

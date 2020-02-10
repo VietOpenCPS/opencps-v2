@@ -3611,7 +3611,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(top)) {
-			if (DossierTerm.PASSED.equals(top.toLowerCase())) {
+			if (DossierTerm.QUA_HAN.equals(top.toLowerCase())) {
 				// _log.debug("top: "+top);
 				MultiMatchQuery queryAction =
 					new MultiMatchQuery(String.valueOf(userId));

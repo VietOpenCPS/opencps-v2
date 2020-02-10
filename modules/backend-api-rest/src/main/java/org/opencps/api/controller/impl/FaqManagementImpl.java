@@ -534,7 +534,7 @@ public class FaqManagementImpl implements FaqManagement {
 				String serverUrl = StringPool.BLANK;
 				String authStrEnc = StringPool.BLANK;
 
-				String apiUrl = StringPool.BLANK;
+				String apiUrl;
 
 				StringBuilder sb = new StringBuilder();
 				try {
@@ -616,6 +616,7 @@ public class FaqManagementImpl implements FaqManagement {
 						sb.toString()).build();
 				}
 				catch (IOException e) {
+					_log.debug(e);
 					_log.debug(
 						"Something went wrong while reading/writing in stream!!");
 				}
@@ -628,6 +629,7 @@ public class FaqManagementImpl implements FaqManagement {
 			}
 		}
 		catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

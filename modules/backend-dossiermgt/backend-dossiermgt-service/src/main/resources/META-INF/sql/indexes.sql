@@ -174,6 +174,8 @@ create index IX_864BDC33 on opencps_menurole (menuConfigId, roleId);
 create index IX_FCA73F43 on opencps_menurole (roleId);
 create index IX_DA361616 on opencps_menurole (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_636A0EF5 on opencps_notarization (groupId, dossierId);
+
 create index IX_DEC2C7F1 on opencps_paymentconfig (groupId, govAgencyCode[$COLUMN_LENGTH:75$]);
 create index IX_1C8F6A99 on opencps_paymentconfig (groupId, invoiceTemplateNo[$COLUMN_LENGTH:32767$]);
 create index IX_50A3049F on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:75$], companyId);

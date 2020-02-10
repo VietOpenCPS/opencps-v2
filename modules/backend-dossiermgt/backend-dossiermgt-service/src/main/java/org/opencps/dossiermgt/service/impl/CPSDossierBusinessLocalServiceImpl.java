@@ -115,8 +115,8 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
@@ -133,7 +133,6 @@ import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
@@ -633,7 +632,7 @@ public class CPSDossierBusinessLocalServiceImpl
 										}
 									}
 									catch (Exception e) {
-										
+										_log.debug(e);
 									}
 								}
 								
@@ -665,7 +664,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			
-			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST |
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST ||
 				actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 				
 			payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
@@ -1099,7 +1098,8 @@ public class CPSDossierBusinessLocalServiceImpl
 										}
 										_log.debug("RESULT PROXY: " + sb.toString());
 									} catch (IOException e) {
-										_log.debug("Something went wrong while reading/writing in stream!!");
+										_log.debug(e);
+//										_log.debug("Something went wrong while reading/writing in stream!!");
 									}
 								}
 							}
@@ -1579,7 +1579,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		}
 		catch (Exception e) {
-			
+			_log.debug(e);
 		}
 		//Yêu cầu nộp tạm ứng
 		if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
@@ -1644,12 +1644,14 @@ public class CPSDossierBusinessLocalServiceImpl
 					try {
 						JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
 						if (paymentObj.has(KeyPayTerm.PAYMENTNOTE)) {
-							oldPaymentFile.setPaymentNote(paymentObj.getString(KeyPayTerm.PAYMENTNOTE));
-							String epaymentProfile = oldPaymentFile.getEpaymentProfile();
+							if (oldPaymentFile != null) 
+								oldPaymentFile.setPaymentNote(paymentObj.getString(KeyPayTerm.PAYMENTNOTE));
+							String epaymentProfile = oldPaymentFile != null ? oldPaymentFile.getEpaymentProfile() : StringPool.BLANK;
 							if (Validator.isNotNull(epaymentProfile)) {
 								JSONObject jsonEpayment = JSONFactoryUtil.createJSONObject(epaymentProfile);
 								jsonEpayment.put(KeyPayTerm.PAYMENTNOTE, paymentObj.getString(KeyPayTerm.PAYMENTNOTE));
-								oldPaymentFile.setEpaymentProfile(jsonEpayment.toJSONString());
+								if (oldPaymentFile != null) 
+									oldPaymentFile.setEpaymentProfile(jsonEpayment.toJSONString());
 							}
 						}
 					} catch (JSONException e) {
@@ -2147,7 +2149,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		_log.info("SONDT CINVOICE DATEFORMATED ============= " + dateformatted);
 		
 		params.put(Field.USER_NAME, StringPool.BLANK);	
-		params.put(CInvoiceTerm.passWord, String.valueOf(1)); 	    	
+		params.put(CInvoiceTerm.secret, String.valueOf(1)); 	    	
 		params.put(CInvoiceTerm.soid, String.valueOf(0)); 
 		params.put(CInvoiceTerm.maHoadon, StringPool.BLANK); 
 		params.put(CInvoiceTerm.ngayHd, dateformatted); //"01/08/2018"
@@ -2610,10 +2612,10 @@ public class CPSDossierBusinessLocalServiceImpl
 							double hoursCount = extendDateTimeStamp * 1.0 / (1000 * 60 * 60);
 							_log.debug("hoursCount: "+hoursCount);
 							//_log.info("dossier.getExtendDate(): "+dossier.getExtendDate());
-							List<Holiday> holidayList = HolidayLocalServiceUtil
-									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
-							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
-									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
+//							List<Holiday> holidayList = HolidayLocalServiceUtil
+//									.getHolidayByGroupIdAndType(dossier.getGroupId(), 0);
+//							List<Holiday> extendWorkDayList = HolidayLocalServiceUtil
+//									.getHolidayByGroupIdAndType(dossier.getGroupId(), 1);
 
 							//Date dueDateExtend = HolidayUtils.getEndDate(dossier.getGroupId(),
 							//		dossier.getDueDate(), hoursCount, holidayList,
@@ -3095,7 +3097,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}			
 

@@ -23,20 +23,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
-import org.apache.commons.text.similarity.CosineSimilarity;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
@@ -325,12 +316,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			String adapter_url = config.getString(DVCQGIntegrationActionTerm.ADAPTER_URL);
 			String auth_endpoint = config.getString(DVCQGIntegrationActionTerm.AUTH_ENDPOINT);
 			String username = config.getString(DVCQGIntegrationActionTerm.USERNAME);
-			String password = config.getString(DVCQGIntegrationActionTerm.PASSWORD);
+			String password = config.getString(DVCQGIntegrationActionTerm.SECRET);
 			String dstcode = config.getString(DVCQGIntegrationActionTerm.DSTCODE);
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put(DVCQGIntegrationActionTerm.USERNAME, username);
-			body.put(DVCQGIntegrationActionTerm.PASSWORD, password);
+			body.put(DVCQGIntegrationActionTerm.SECRET, password);
 
 			String endpoint = adapter_url + auth_endpoint;
 
@@ -1214,22 +1205,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQGIntegrationActionTerm.DVCQG_INTEGRATION);
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs +  StringPool.PIPE + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
-			try {
-				ServerConfig serverConfig = serverConfigs.get(0);
+//			try {
+//				ServerConfig serverConfig = serverConfigs.get(0);
 				//JSONObject result = getSharingData(serverConfig, data);
-			} catch (Exception e) {
-				_log.error(e);
-			}
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
 		}
 		
 		return null;
 	}
 
-	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
-	private static HashMap<String, JSONObject> _mapItems = null;
+//	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
+//	private static HashMap<String, JSONObject> _mapItems = null;
 
 	
 }

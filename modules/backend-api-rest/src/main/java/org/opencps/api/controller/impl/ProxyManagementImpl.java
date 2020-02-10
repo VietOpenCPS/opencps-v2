@@ -54,7 +54,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 		        String authStrEnc = StringPool.BLANK;
 				
 	
-			    String apiUrl = StringPool.BLANK;
+			    String apiUrl;
 			    
 			    StringBuilder sb = new StringBuilder();
 			    try

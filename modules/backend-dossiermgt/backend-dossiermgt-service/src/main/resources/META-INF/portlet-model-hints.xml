@@ -805,6 +805,27 @@
 		<field name="menuConfigId" type="long" />
 		<field name="roleId" type="long" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.Notarization">
+		<field name="notarizationId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="fileName" type="String" />
+		<field name="totalRecord" type="int" />
+		<field name="totalPage" type="int" />
+		<field name="totalCopy" type="int" />
+		<field name="totalFee" type="long" />
+		<field name="notarizationNo" type="long" />
+		<field name="notarizationYear" type="int" />
+		<field name="notarizationDate" type="Date" />
+		<field name="signerName" type="String" />
+		<field name="signerPosition" type="String" />
+		<field name="statusCode" type="String" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.PaymentConfig">
 		<field name="uuid" type="String" />
 		<field name="paymentConfigId" type="long" />

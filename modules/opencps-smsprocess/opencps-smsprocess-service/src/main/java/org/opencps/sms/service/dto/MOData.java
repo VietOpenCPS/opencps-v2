@@ -249,7 +249,7 @@ public class MOData {
         this.reqtime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         this.procresult = "0";
         this.userName = DossierServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_USER);
-        this.password = DossierServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_PASSWORD);
+        this.password = DossierServiceProps.get(Constants.OPENCPS_BACKEND_SMSGATEWAY_SECRET);
         System.out.println("MO **" + this.src + "," + this.userName + "," + this.password);
     }
 

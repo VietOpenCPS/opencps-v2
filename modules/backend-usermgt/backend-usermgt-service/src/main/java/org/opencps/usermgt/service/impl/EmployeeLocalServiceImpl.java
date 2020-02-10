@@ -14,18 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.EmployeeTerm;
-import org.opencps.usermgt.exception.DuplicateEmployeeEmailException;
-import org.opencps.usermgt.exception.DuplicateEmployeeNoException;
-import org.opencps.usermgt.exception.NoSuchEmployeeException;
-import org.opencps.usermgt.model.Employee;
-import org.opencps.usermgt.service.base.EmployeeLocalServiceBaseImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
@@ -53,11 +41,7 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
-import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyFactoryUtil;
-import com.liferay.portal.kernel.security.membershippolicy.SiteMembershipPolicyUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -66,6 +50,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.usermgt.constants.EmployeeTerm;
@@ -837,7 +822,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String month = (String) params.get(EmployeeTerm.MONTH);
 		String strUserIdList = (String) params.get(EmployeeTerm.USER_ID_LIST);
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
-		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+//		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 		String jobposCodeSearch =
 			(String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
 

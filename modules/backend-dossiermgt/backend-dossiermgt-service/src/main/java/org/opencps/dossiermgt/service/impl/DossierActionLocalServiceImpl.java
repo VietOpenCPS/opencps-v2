@@ -603,7 +603,8 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			
 		}
 		Calendar c = Calendar.getInstance();
-		List<DossierAction> lstActions = new ArrayList<DossierAction>();
+//		List<DossierAction> lstActions = new ArrayList<DossierAction>();
+		List<DossierAction> lstActions;
 		
 		if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
 			c.setTime(now);

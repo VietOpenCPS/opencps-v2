@@ -740,9 +740,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			long userId = user.getUserId();
+//			long groupId =
+//				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//			long userId = user.getUserId();
 
 			// List<Deliverable> deliverables =
 			// DeliverableUtils.readWorkBooksDeliverabe(
@@ -846,8 +846,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					deliverable.put(Field.USER_NAME, userName);
 					deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableType);
 					deliverable.put(DeliverableTerm.FILE_ATTACH, false);
-					deliverableObj =
-						DeliverableLocalServiceUtil.adminProcessData(
+					DeliverableLocalServiceUtil.adminProcessData(
 							deliverable);
 					System.out.println("add================" + deliverable);
 					size += 1;

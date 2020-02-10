@@ -48,20 +48,20 @@ public class DossierNumberGenerator {
 	private static final String SCOPE_GOV_AGENCY_CODE_PATTERN = "scopeGovAgencyCode";
 	private static final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
 	private static final String DOSSIER_NO_PATTERN_KEY = "dossierNoPattern";
-	private static final String codePatternGov = "\\{(a+|A+)\\}";
-	private static final String codePatternDate = "\\{(n+|N+)\\}";
-	private static final String codePatternMonth = "\\{(p+|P+)\\}";
-	private static final String codePatternYear = "\\{(q+|Q+)\\}";
-	private static final String codePatternService = "\\{(r+|R+)\\}";
-	private static final String dayPattern = "\\{(d{2}|D{2})\\}";
-	private static final String monthPattern = "\\{(m{2}|M{2})\\}";
-	private static final String yearPattern = "\\{(y+|Y+)\\}";
-	private static final String dynamicVariablePattern = "\\{\\$(.*?)\\}";
-	private static final String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
-	private static final String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
-			codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
-	private static final String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
-	private static final String extractValuePattern = "\\[\\$(.*?)\\$\\]";
+//	private static final String codePatternGov = "\\{(a+|A+)\\}";
+//	private static final String codePatternDate = "\\{(n+|N+)\\}";
+//	private static final String codePatternMonth = "\\{(p+|P+)\\}";
+//	private static final String codePatternYear = "\\{(q+|Q+)\\}";
+//	private static final String codePatternService = "\\{(r+|R+)\\}";
+//	private static final String dayPattern = "\\{(d{2}|D{2})\\}";
+//	private static final String monthPattern = "\\{(m{2}|M{2})\\}";
+//	private static final String yearPattern = "\\{(y+|Y+)\\}";
+//	private static final String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+//	private static final String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+//	private static final String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
+//			codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
+//	private static final String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
+//	private static final String extractValuePattern = "\\[\\$(.*?)\\$\\]";
 	
 	public static String generateReferenceUID(long groupId) {
 
@@ -92,7 +92,7 @@ public class DossierNumberGenerator {
 						}
 					}
 					catch (JSONException e) {
-						
+						_log.debug(e);
 					}
 				}
 			}
@@ -364,8 +364,10 @@ public class DossierNumberGenerator {
 		// Xử lý year
 		String year = listPattern[1].substring(1, listPattern[1].length() - 1);
 		Calendar calendar = Calendar.getInstance();
-		String y = StringPool.BLANK;
-		String processIdPattern = StringPool.BLANK;
+//		String y = StringPool.BLANK;
+		String y;
+//		String processIdPattern = StringPool.BLANK;
+		String processIdPattern;
 		if (year.length() == 2) {
 			y = String.valueOf(calendar.get(Calendar.YEAR)).substring(2);
 			// replace year
@@ -377,7 +379,8 @@ public class DossierNumberGenerator {
 		}
 		String processId = String.valueOf(DossierLocalServiceUtil.countLucene(param, sc) + 1);
 		// String processId = "100";
-		String processP = StringPool.BLANK;
+//		String processP = StringPool.BLANK;
+		String processP;
 		if ("{code}".equals(listPattern[0])) {
 			// replace code
 			pattern = pattern.replace(listPattern[0], code);

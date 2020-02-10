@@ -80,7 +80,6 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
@@ -111,7 +110,6 @@ import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.statistic.rest.dto.VotingSearchModel;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
 import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
@@ -192,7 +190,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (Validator.isNull(system)) {
 			system = String.valueOf(0);
 		}
-		String groupAgencyCode = query.getGroupAgencyCode();
+//		String groupAgencyCode = query.getGroupAgencyCode();
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
 		//boolean reporting = query.getReporting();
@@ -624,8 +622,8 @@ public class OpencpsStatisticRestApplication extends Application {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
@@ -787,8 +785,8 @@ public class OpencpsStatisticRestApplication extends Application {
 						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 							payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 						}
-						if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-							payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 						}
 						if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 							payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
@@ -946,8 +944,8 @@ public class OpencpsStatisticRestApplication extends Application {
 				if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 					sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 				}
-				if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-					sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+				if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+					sdPayload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 				}
 				if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 					sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
@@ -976,8 +974,8 @@ public class OpencpsStatisticRestApplication extends Application {
 				if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 					payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 				}
-				if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-					payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+				if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+					payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 				}
 				if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
 					payload.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
@@ -1365,6 +1363,7 @@ public class OpencpsStatisticRestApplication extends Application {
     		return Response.status(200).entity("{ 'success': true }").build();
 		}
 		catch (Exception e) {
+			LOG.error("error", e);
 			return Response.status(200).entity("{ 'success': false }").build();
 		}
 	}

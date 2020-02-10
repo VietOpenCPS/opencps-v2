@@ -1,29 +1,22 @@
 package org.opencps.datamgt.util;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.opencps.datamgt.model.Holiday;
-import org.opencps.datamgt.model.WorkTime;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
-import org.opencps.datamgt.service.WorkTimeLocalServiceUtil;
-
 public class ExtendDueDateUtilsNew {
 
-	private static Log _log = LogFactoryUtil.getLog(ExtendDueDateUtils.class);
+//	private static Log _log = LogFactoryUtil.getLog(ExtendDueDateUtils.class);
 
 	public static final int VALUE_HOUR = 60;
 	public static final int VALUE_TIME_ZONE = 7;
-	private static final long VALUE_CONVERT_DATE_WORKING_TIMESTAMP = 1000 * 60 * 60 * 8;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+//	private static final long VALUE_CONVERT_DATE_WORKING_TIMESTAMP = 1000 * 60 * 60 * 8;
+//	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 	private static final long VALUE_CONVERT_MINUTE_TIMESTAMP = 1000 * 60;
 	// get value day off
 	//private static volatile String strDayOff = StringPool.BLANK;
@@ -31,17 +24,17 @@ public class ExtendDueDateUtilsNew {
 	private static volatile Integer startAM = 0;
 	private static volatile Integer startHourAM = 0;
 	private static volatile Integer startMinuteAM = 0;
-	private static volatile Integer strStartAM = 0;
+//	private static volatile Integer strStartAM = 0;
 	private static volatile Integer endAM = 0;
 	private static volatile Integer endHourAM = 0;
 	private static volatile Integer endMinuteAM = 0;
-	private static volatile Integer strEndAM = 0;
+//	private static volatile Integer strEndAM = 0;
 	private static volatile Integer startPM = 0;
 	private static volatile Integer startHourPM = 0;
 	private static volatile Integer startMinutePM = 0;
 	private static volatile Integer endPM = 0;
 	private static volatile Integer endHourPM = 0;
-	private static volatile Integer endMinutePM = 0;
+//	private static volatile Integer endMinutePM = 0;
 
 	private static void processTimeWorking(String[] hourArr1, String[] hourArr2) {
 		if (Validator.isNotNull(hourArr1[0])) {
@@ -91,7 +84,7 @@ public class ExtendDueDateUtilsNew {
 //		_log.info("endDateCal: "+endDateCal.get(Calendar.DATE));
 		
 		//Get info day off and day work
-		String strDayOff = CommonDateUtils.getDayByGroupId(groupId);
+//		String strDayOff = CommonDateUtils.getDayByGroupId(groupId);
 //		_log.info("strDayOff: "+strDayOff);
 
 		//boolean flagCompareDate = false;
@@ -187,16 +180,20 @@ public class ExtendDueDateUtilsNew {
 							startDateCal.set(Calendar.MINUTE, startMinuteAM);
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDateCal.getTimeInMillis() - countTimeOffNoon();
+							break;
 						case 2:
 							extendHour = endDateCal.getTimeInMillis() - startDate - countTimeOffNoon();
+							break;
 						case 3:
 							startDateCal.set(Calendar.HOUR_OF_DAY, startHourPM);
 							startDateCal.set(Calendar.MINUTE, startMinutePM);
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDateCal.getTimeInMillis();
+							break;
 						case 4:
 							//
 							extendHour = endDateCal.getTimeInMillis() - startDate;
+							break;
 						}
 						break;
 					default:

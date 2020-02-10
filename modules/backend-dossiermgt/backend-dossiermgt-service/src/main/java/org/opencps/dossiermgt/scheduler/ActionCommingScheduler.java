@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +56,6 @@ import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -160,7 +158,7 @@ public class ActionCommingScheduler extends BaseMessageListener {
 													oldQueue = NotificationQueueLocalServiceUtil.findByF_NT_CN_CPK_EMAIL(action.getGroupId(), NotificationTemplateTerm.EMPL_04, Dossier.class.getName(), String.valueOf(action.getDossierId()), u != null ? u.getEmailAddress() : StringPool.BLANK);
 												}
 												catch (NoSuchNotificationQueueException e) {
-													
+													_log.debug(e);
 												}
 												if (oldQueue == null) {
 													NotificationQueueLocalServiceUtil.addNotificationQueue(
@@ -185,7 +183,7 @@ public class ActionCommingScheduler extends BaseMessageListener {
 							}
 						}
 						catch (Exception e) {
-							
+							_log.debug(e);
 						}
 					}
 				}

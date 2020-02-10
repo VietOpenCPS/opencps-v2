@@ -6,6 +6,8 @@ import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -21,7 +23,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,9 +111,9 @@ public class VGCAManagementImpl implements VGCAManagement {
 				
 				
 			} catch (IOException e) {
-				e.printStackTrace();
+				_log.debug(e);
 			} catch (Exception e) {
-				e.printStackTrace();
+				_log.debug(e);
 			}
 			
 			result.put(ConstantUtils.VGCA_DOCUMENTNUMBER, StringPool.BLANK);	
@@ -124,4 +125,5 @@ public class VGCAManagementImpl implements VGCAManagement {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(VGCAManagementImpl.class);
 }

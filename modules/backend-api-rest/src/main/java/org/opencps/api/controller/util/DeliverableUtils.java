@@ -311,7 +311,7 @@ public class DeliverableUtils {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (workbook != null) {
@@ -319,8 +319,8 @@ public class DeliverableUtils {
 					workbook.close();
 				}
 				catch (IOException e) {
-					e.printStackTrace();
-					// _log.debug(e);
+//					e.printStackTrace();
+					 _log.debug(e);
 				}
 			}
 		}
@@ -347,8 +347,8 @@ public class DeliverableUtils {
 			deliverableObj.put("formData", formData);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+//			e.printStackTrace();
+			 _log.debug(e);
 		}
 
 		return deliverableObj;
@@ -404,16 +404,18 @@ public class DeliverableUtils {
 				in.close();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 			if (out != null || in != null) {
 				try {
-					out.close();
-					in.close();
+					if (out != null) out.close();
+					if (in != null) in.close();
 				}
 				catch (IOException e) {
-					e.printStackTrace();
+					_log.debug(e);
+//					e.printStackTrace();
 				}
 			}
 		}
