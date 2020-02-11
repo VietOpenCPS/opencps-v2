@@ -2750,6 +2750,8 @@
 		<column name="signerName" type="String" />
 		<column name="signerPosition" type="String" />
 		<column name="statusCode" type="String" />
+		
+		
         <finder name="F_G_DID" return-type="Collection">
             <finder-column name="groupId"></finder-column>
             <finder-column name="dossierId"></finder-column>

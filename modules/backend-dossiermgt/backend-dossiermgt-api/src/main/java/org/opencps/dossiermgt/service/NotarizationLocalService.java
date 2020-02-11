@@ -79,6 +79,8 @@ public interface NotarizationLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Notarization addNotarization(Notarization notarization);
 
+	public int countByG_DID(long groupId, long dossierId);
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -178,6 +180,9 @@ public interface NotarizationLocalService extends BaseLocalService,
 	public Notarization fetchNotarization(long notarizationId);
 
 	public List<Notarization> findByG_DID(long groupId, long dossierId);
+
+	public List<Notarization> findByG_DID(long groupId, long dossierId,
+		int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

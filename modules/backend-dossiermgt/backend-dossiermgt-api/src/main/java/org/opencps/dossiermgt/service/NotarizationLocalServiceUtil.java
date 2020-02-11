@@ -66,6 +66,10 @@ public class NotarizationLocalServiceUtil {
 		return getService().addNotarization(notarization);
 	}
 
+	public static int countByG_DID(long groupId, long dossierId) {
+		return getService().countByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -196,6 +200,11 @@ public class NotarizationLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
 		long groupId, long dossierId) {
 		return getService().findByG_DID(groupId, dossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
+		long groupId, long dossierId, int start, int end) {
+		return getService().findByG_DID(groupId, dossierId, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

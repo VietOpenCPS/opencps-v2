@@ -810,11 +810,15 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
-		<field name="fileName" type="String" />
+		<field name="fileName" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
 		<field name="totalRecord" type="int" />
 		<field name="totalPage" type="int" />
 		<field name="totalCopy" type="int" />
@@ -822,8 +826,12 @@
 		<field name="notarizationNo" type="long" />
 		<field name="notarizationYear" type="int" />
 		<field name="notarizationDate" type="Date" />
-		<field name="signerName" type="String" />
-		<field name="signerPosition" type="String" />
+		<field name="signerName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="signerPosition" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="statusCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.PaymentConfig">

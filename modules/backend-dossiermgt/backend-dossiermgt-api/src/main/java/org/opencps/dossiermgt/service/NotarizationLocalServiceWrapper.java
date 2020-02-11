@@ -58,6 +58,11 @@ public class NotarizationLocalServiceWrapper implements NotarizationLocalService
 		return _notarizationLocalService.addNotarization(notarization);
 	}
 
+	@Override
+	public int countByG_DID(long groupId, long dossierId) {
+		return _notarizationLocalService.countByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -201,6 +206,13 @@ public class NotarizationLocalServiceWrapper implements NotarizationLocalService
 	public java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
 		long groupId, long dossierId) {
 		return _notarizationLocalService.findByG_DID(groupId, dossierId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
+		long groupId, long dossierId, int start, int end) {
+		return _notarizationLocalService.findByG_DID(groupId, dossierId, start,
+			end);
 	}
 
 	@Override

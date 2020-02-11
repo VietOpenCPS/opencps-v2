@@ -128,4 +128,12 @@ public class NotarizationLocalServiceImpl
 	public List<Notarization> findByG_DID(long groupId, long dossierId) {
 		return notarizationPersistence.findByF_G_DID(groupId, dossierId);
 	}
+	
+	public List<Notarization> findByG_DID(long groupId, long dossierId, int start, int end) {
+		return notarizationPersistence.findByF_G_DID(groupId, dossierId, start, end);
+	}
+	
+	public int countByG_DID(long groupId, long dossierId) {
+		return notarizationPersistence.countByF_G_DID(groupId, dossierId);
+	}
 }
