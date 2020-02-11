@@ -106,6 +106,9 @@ public class DossierTerm {
 
 	public static final String FROM_RECEIVEDATE = "fromReceiveDate";
 	public static final String TO_RECEIVEDATE = "toReceiveDate";
+	public static final String FROM_DUEDATE = "fromDueDate";
+	public static final String TO_DUEDATE = "toDueDate";
+
 	public static final String CERT_NO = "so_chung_chi";
 	public static final String FROM_CERT_DATE = "tu_ngay_ky_cc";
 	public static final String TO_CERT_DATE = "den_ngay_ky_cc";

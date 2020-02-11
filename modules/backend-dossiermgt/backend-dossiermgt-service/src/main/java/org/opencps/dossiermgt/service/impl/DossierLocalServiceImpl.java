@@ -23,8 +23,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BaseBooleanQueryImpl;
-import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -37,21 +35,12 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
-import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.search.filter.FilterTranslator;
-import com.liferay.portal.kernel.search.filter.RangeTermFilter;
-import com.liferay.portal.kernel.search.filter.TermFilter;
-import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
-import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -60,20 +49,14 @@ import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-import com.sun.xml.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.opencps.adminconfig.model.DynamicReport;
-import org.opencps.adminconfig.service.DynamicReportLocalService;
 import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
@@ -111,9 +94,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DossierLocalServiceBaseImpl;
-import org.osgi.service.component.annotations.Reference;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -2836,6 +2817,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_STATUS));
 		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
 
+		String fromDueDate =
+				GetterUtil.getString(params.get(DossierTerm.FROM_DUEDATE));
+		String toDueDate =
+				GetterUtil.getString(params.get(DossierTerm.TO_DUEDATE));
+		
 		String backlogDate =
 			GetterUtil.getString(params.get(DossierTerm.TO_BACKLOGDATE));
 		Integer backlog =
@@ -2911,7 +2897,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			statusReg, notStatusReg, follow, originality, assigned, statusStep,
 			subStatusStep, permission, domain, domainName, applicantName,
 			applicantIdNo, serviceName, fromReleaseDate, toReleaseDate,
-			fromFinishDate, toFinishDate, fromReceiveNotDoneDate,
+			fromFinishDate, toFinishDate, fromDueDate, toDueDate, fromReceiveNotDoneDate,
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
@@ -3021,6 +3007,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			GetterUtil.getString(params.get(DossierTerm.TO_STATISTIC_DATE));
 		String origin = GetterUtil.getString(params.get(DossierTerm.ORIGIN));
 
+		String fromDueDate =
+			GetterUtil.getString(params.get(DossierTerm.FROM_DUEDATE));
+		String toDueDate =
+			GetterUtil.getString(params.get(DossierTerm.TO_DUEDATE));
+
 		String backlogDate =
 			GetterUtil.getString(params.get(DossierTerm.TO_BACKLOGDATE));
 		Integer backlog =
@@ -3089,7 +3080,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			statusReg, notStatusReg, follow, originality, assigned, statusStep,
 			subStatusStep, permission, domain, domainName, applicantName,
 			applicantIdNo, serviceName, fromReleaseDate, toReleaseDate,
-			fromFinishDate, toFinishDate, fromReceiveNotDoneDate,
+			fromFinishDate, toFinishDate, fromDueDate, toDueDate, fromReceiveNotDoneDate,
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
@@ -3216,7 +3207,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String permission, String domain, String domainName,
 		String applicantName, String applicantIdNo, String serviceName,
 		String fromReleaseDate, String toReleaseDate, String fromFinishDate,
-		String toFinishDate, String fromReceiveNotDoneDate,
+		String toFinishDate, String fromDueDate, String toDueDate, String fromReceiveNotDoneDate,
 		String toReceiveNotDoneDate, String paymentStatus, String origin,
 		String fromStatisticDate, String toStatisticDate,
 		Integer originDossierId, String time, String register, int day,
@@ -4317,6 +4308,40 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		
+		if (Validator.isNotNull(fromDueDate) ||
+				Validator.isNotNull(toDueDate)) {
+				String fromDueDateFilter =
+					fromDueDate + ConstantsTerm.HOUR_START;
+				String toDueDateFilter = toDueDate + ConstantsTerm.HOUR_END;
+
+				if (Validator.isNotNull(fromDueDate)) {
+					if (Validator.isNotNull(toDueDate)) {
+						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							DossierTerm.DUE_DATE_LUCENE, fromDueDateFilter,
+							toDueDateFilter, true, true);
+
+						booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					}
+					else {
+						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							DossierTerm.DUE_DATE_LUCENE, fromDueDateFilter,
+							toDueDateFilter, true, false);
+
+						booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					}
+				}
+				else {
+					if (Validator.isNotNull(toDueDate)) {
+						TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							DossierTerm.DUE_DATE_LUCENE, fromDueDateFilter,
+							toDueDateFilter, false, true);
+
+						booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+					}
+				}
+			}
+		
 		if (Validator.isNotNull(fromReceiveNotDoneDate) ||
 			Validator.isNotNull(toReceiveNotDoneDate)) {
 			// Check Release is null

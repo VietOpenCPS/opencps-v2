@@ -873,6 +873,14 @@ public class DossierManagementImpl implements DossierManagement {
 			String toSubmitDate =
 				APIDateTimeUtils.convertNormalDateToLuceneDate(
 					query.getToSubmitDate());
+			
+			String fromDueDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+						query.getFromDueDate());
+				String toDueDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+						query.getToDueDate());
+			
 			String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
 			String domainName = query.getDomainName();
@@ -937,6 +945,9 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.CERT_NO, certNo);
 			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
 			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
+			params.put(DossierTerm.FROM_DUEDATE, fromDueDate);
+			params.put(DossierTerm.TO_DUEDATE, toDueDate);
+			
 			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
 			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
