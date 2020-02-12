@@ -43,7 +43,6 @@ import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -102,6 +101,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String DETAIL = "detail";
 	private static final String TITLE = "title";
 	private static final String COLUMN = "column";
+	private static final String COLUMNS = "columns";
 	private static final String LIST_TABLE_MENU = "listTableMenu";
 	private static final String PUBLIC_MANAGER = "publicManager";
 	private static final String MENU = "menu";
@@ -301,7 +301,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							config.put(CODE, adminConfig.getCode());
 							config.put(NAME, adminConfig.getName());
 							config.put(HEARDER_NAME, headersObj.getJSONArray(HEADERS));
-							config.put(COLUMN, adminConfig.getColumns());
+							config.put(COLUMNS, adminConfig.getColumns());
 							config.put(DETAIL_COLUMN, adminConfig.getDetailColumns());
 							config.put(EXT_FORM, adminConfig.getExtForm());
 							config.put(DEPENDENCY_TITLE, headersObj.get(DEPENDENCY_TITLE));
