@@ -1,5 +1,12 @@
 package org.opencps.dossiermgt.service.persistence.impl;
 
+import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.List;
 
 import org.opencps.dossiermgt.model.Deliverable;
@@ -7,14 +14,6 @@ import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.impl.DeliverableImpl;
 import org.opencps.dossiermgt.model.impl.DossierFileImpl;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
-
-import com.liferay.portal.kernel.dao.orm.Query;
-import com.liferay.portal.kernel.dao.orm.SQLQuery;
-import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 
 import aQute.bnd.annotation.ProviderType;
 
