@@ -449,9 +449,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						conn.setRequestProperty(USER_REQUEST_ID, headerObject.getString(USER_ID));
 
 				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
-						conn.setRequestProperty(ACCEPT, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
-						conn.setRequestProperty(ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE),
-								ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
+						conn.setRequestProperty(ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+						conn.setRequestProperty(ConstantUtils.CONTENT_TYPE,
+								ConstantUtils.CONTENT_TYPE_JSON);
 
 				        conn.setDoInput(true);
 						conn.setDoOutput(true);
