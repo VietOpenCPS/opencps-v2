@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -21,7 +22,6 @@ import org.opencps.api.controller.NotarizationManagement;
 import org.opencps.api.controller.util.NotarizationUtils;
 import org.opencps.api.notarization.model.NotarizationDetailModel;
 import org.opencps.api.notarization.model.NotarizationInputModel;
-import org.opencps.api.notarization.model.NotarizationModel;
 import org.opencps.api.notarization.model.NotarizationResultsModel;
 import org.opencps.api.notarization.model.NotarizationSearchModel;
 import org.opencps.auth.api.BackendAuth;
@@ -137,8 +137,23 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = query.getDossierId();
-			results.setTotal(NotarizationLocalServiceUtil.countByG_DID(groupId, query.getDossierId()));
-			List<Notarization> lstNotarizations = NotarizationLocalServiceUtil.findByG_DID(groupId, dossierId);
+			String fileName = query.getFileName();
+			int totalRecord = query.getTotalRecord();
+			int totalPage = query.getTotalPage() != null ? query.getTotalPage() : 0;
+			int totalCopy = query.getTotalCopy() != null ? query.getTotalCopy() : 0;
+			long totalFee = query.getTotalFee() != null ? query.getTotalFee() : 0;
+			String notarizationNo = query.getNotarizationNo();
+			int notarizationYear = query.getNotarizationYear() != null ? query.getNotarizationYear() : 0;
+			String notarizationDate = query.getNotarizationDate();
+			String signerName = query.getSignerName();
+			String signerPosition = query.getSignerPosition();
+			String statusCode = query.getStatusCode();
+			int start = query.getStart() != 0 ? query.getStart() : QueryUtil.ALL_POS;
+			int end = query.getEnd() != 0 ? query.getEnd() : QueryUtil.ALL_POS;
+			
+			results.setTotal(NotarizationLocalServiceUtil.countByAdvancedSearch(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDate, signerName, signerPosition, statusCode));
+			
+			List<Notarization> lstNotarizations = NotarizationLocalServiceUtil.findByAdvancedSearch(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDate, signerName, signerPosition, statusCode, start, end);
 			
 			results.getData().addAll(NotarizationUtils.mappingToNotarizationResults(lstNotarizations));
 

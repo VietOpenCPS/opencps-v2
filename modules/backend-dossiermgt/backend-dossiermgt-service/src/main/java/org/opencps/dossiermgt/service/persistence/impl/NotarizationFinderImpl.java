@@ -24,7 +24,14 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 	private CustomSQL _customSQL;
 	private static final String NOTARIZATION_ENTITY = "Notarization";
 	
-	public List<Notarization> findAdvancedSearch(long groupId, int start, int end) {
+	public List<Notarization> findAdvancedSearch(long groupId, long dossierId, String fileName, int totalRecord, int totalPage, int totalCopy, long totalFee, 
+			String notarizationNo,
+			int notarizationYear,
+			String notarizationDate,
+			String signerName,
+			String signerPosition,
+			String statusCode,
+			int start, int end) {
 		Session session = null;
 		try {
 			session = openSession();
@@ -36,6 +43,19 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
+			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_COPY, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_FEE, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_NO, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_YEAR, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_DATE, StringPool.BLANK);
+			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
+			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
+			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
+			
 			SQLQuery q = session.createSQLQuery(sql);
 			q.setCacheable(false);
 			q.addEntity(NOTARIZATION_ENTITY, NotarizationImpl.class);
@@ -59,7 +79,13 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 		return null;
 	}
 	
-	public int countAdvancedSearch(long groupId) {
+	public int countAdvancedSearch(long groupId, long dossierId, String fileName, int totalRecord, int totalPage, int totalCopy, long totalFee, 
+			String notarizationNo,
+			int notarizationYear,
+			String notarizationDate,
+			String signerName,
+			String signerPosition,
+			String statusCode) {
 
 		Session session = null;
 
@@ -74,6 +100,19 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
+
+			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_COPY, StringPool.BLANK);
+			sql = sql.replace(FILTER_TOTAL_FEE, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_NO, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_YEAR, StringPool.BLANK);
+			sql = sql.replace(FILTER_NOTARIZATION_DATE, StringPool.BLANK);
+			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
+			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
+			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
 
 			SQLQuery q = session.createSQLQuery(sql);
 

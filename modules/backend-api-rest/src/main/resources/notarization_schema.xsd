@@ -35,7 +35,21 @@
 	<xsd:element name="NotarizationSearchModel">
 		<xsd:complexType>
 			<xsd:sequence>
+				<xsd:element name="groupId" type="xsd:long" minOccurs="0" />
 				<xsd:element name="dossierId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="fileName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="totalRecord" type="xsd:int" minOccurs="0" />
+				<xsd:element name="totalPage" type="xsd:int" minOccurs="0" />
+				<xsd:element name="totalCopy" type="xsd:int" minOccurs="0" />
+				<xsd:element name="totalFee" type="xsd:long" minOccurs="0" />
+				<xsd:element name="notarizationNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="notarizationYear" type="xsd:int" minOccurs="0" />
+				<xsd:element name="notarizationDate" type="xsd:string" minOccurs="0" />
+				<xsd:element name="signerName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="signerPosition" type="xsd:string" minOccurs="0" />
+				<xsd:element name="statusCode" type="xsd:string" minOccurs="0" />	
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />		
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />	
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

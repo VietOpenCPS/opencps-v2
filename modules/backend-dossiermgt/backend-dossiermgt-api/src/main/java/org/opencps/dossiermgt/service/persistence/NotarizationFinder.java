@@ -23,7 +23,14 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public interface NotarizationFinder {
 	public java.util.List<org.opencps.dossiermgt.model.Notarization> findAdvancedSearch(
-		long groupId, int start, int end);
+		long groupId, long dossierId, String fileName, int totalRecord,
+		int totalPage, int totalCopy, long totalFee, String notarizationNo,
+		int notarizationYear, String notarizationDate, String signerName,
+		String signerPosition, String statusCode, int start, int end);
 
-	public int countAdvancedSearch(long groupId);
+	public int countAdvancedSearch(long groupId, long dossierId,
+		String fileName, int totalRecord, int totalPage, int totalCopy,
+		long totalFee, String notarizationNo, int notarizationYear,
+		String notarizationDate, String signerName, String signerPosition,
+		String statusCode);
 }
