@@ -380,7 +380,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 				}
 
 
-				certNumber = String.format("%05d", _counterNumber) + StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
+				certNumber = String.format(ConstantUtils.CERT_NUMBER_FORMAT, _counterNumber) + StringPool.FORWARD_SLASH + pattern + StringPool.FORWARD_SLASH + shortCurYear ; 
 				
 			} else {
 				throw new Exception("Don't have counter config");

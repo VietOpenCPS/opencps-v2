@@ -21,4 +21,5 @@ public class DossierLogTerm {
 	public static final String DOSSIER_PART_TYPE = "dossierPartType";
 	public static final String ORIGINAL = "original";
 	public static final String FILE_TEMPLATE_NO = "dossierPartType";
+	public static final String PROCESS_TYPE = "PROCESS_TYPE";
 }

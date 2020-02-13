@@ -33,4 +33,8 @@ public class DeliverableTerm {
 	public static final String FORM_SCHEMA= "formSchema";
 	public static final String REPORT_TYPE= "reportType";
 	public static final String LIST_DELIVERABLE_TYPE = "lstDeliverableType";
+	
+	public static final int DELIVERABLE_STATE_VALID_INT = 1;
+	public static final int DELIVERABLE_STATE_INVALID_INT = 2;
+
 }

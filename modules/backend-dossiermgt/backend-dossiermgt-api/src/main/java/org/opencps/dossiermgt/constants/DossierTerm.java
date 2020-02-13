@@ -225,6 +225,7 @@ public class DossierTerm {
 	public static final String TO_RELEASE_DATE = "toReleaseDate";
 	public static final String RELEASE_DATE_LUCENE = "releaseDateLucene";
 	public static final String SECRET_KEY = "secretKey";
+	public static final String SECRET_CODE = "secretCode";
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
@@ -345,4 +346,15 @@ public class DossierTerm {
 	public static final String NUMBER_SORT_ABLE = "Number_sortable";
 	public static final String TREE_INDEX_SORT_ABLE = "treeIndex_sortable";
 	public static final String REPORT_TYPE = "reportType";
+	
+	public static final String STEP_X = "x";
+	public static final String RECEIVE = "receive";
+	public static final String OVERDUE = "overdue";
+	public static final String RELEASE = "release";
+	public static final String CANCELLING = "cancelling";
+	public static final String CORRECTING = "corecting";
+	public static final String EMPTY = "empty";
+	public static final String DOSSIER_CTN = "CTN";
+	public static final String OPENCPSV2 = "OPENCPSV2";
+	public static final String PENDING = "pendding";
 }

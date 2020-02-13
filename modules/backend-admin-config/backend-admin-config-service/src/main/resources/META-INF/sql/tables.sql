@@ -29,3 +29,9 @@ create table opencps_dynamicreport (
 	userConfig VARCHAR(1000) null,
 	reportType VARCHAR(75) null
 );
+
+create table opencps_reportrole (
+	reportRoleId LONG not null primary key,
+	dynamicReportId LONG,
+	roleId LONG
+);

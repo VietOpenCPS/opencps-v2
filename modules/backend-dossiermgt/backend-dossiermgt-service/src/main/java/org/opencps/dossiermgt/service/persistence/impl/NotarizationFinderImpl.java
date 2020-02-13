@@ -17,7 +17,6 @@ import java.util.List;
 import org.opencps.dossiermgt.model.Notarization;
 import org.opencps.dossiermgt.model.impl.NotarizationImpl;
 import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
-import org.opencps.usermgt.model.impl.QuestionImpl;
 
 public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implements NotarizationFinder {
 	@ServiceReference(type = CustomSQL.class)
@@ -38,11 +37,12 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 
 			String sql = _customSQL.get(getClass(), FIND_ADVANCED_SEARCH);
 			if (groupId > 0) {
-				sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
+				sql = sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
 			}
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
+
 			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
 			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
@@ -55,7 +55,7 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
 			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
-			
+			_log.debug("Search notarization: " + sql);
 			SQLQuery q = session.createSQLQuery(sql);
 			q.setCacheable(false);
 			q.addEntity(NOTARIZATION_ENTITY, NotarizationImpl.class);
@@ -95,7 +95,7 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			String sql = _customSQL.get(getClass(), COUNT_ADVANCED_SEARCH);
 
 			if (groupId > 0) {
-				sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
+				sql = sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
 			}
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
@@ -113,6 +113,8 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
 			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
+
+			_log.debug("Search notarization: " + sql);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -152,7 +154,7 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 	public static final String COUNT_ADVANCED_SEARCH = NotarizationFinder.class.getName() + ".countAdvancedSearch";	
 	
 	public static final String FILTER_GROUP_ID = "[$FILTER_GROUP_ID$]";
-	public static final String FILTER_DOSSIER_ID = "FILTER_DOSSIER_ID";
+	public static final String FILTER_DOSSIER_ID = "[$FILTER_DOSSIER_ID$]";
 	public static final String FILTER_FILENAME = "[$FILTER_FILENAME$]";
 	public static final String FILTER_TOTAL_RECORD = "[$FILTER_TOTAL_RECORD$]";
 	public static final String FILTER_TOTAL_PAGE = "[$FILTER_TOTAL_PAGE$]";

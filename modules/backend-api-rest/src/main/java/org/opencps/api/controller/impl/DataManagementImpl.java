@@ -793,7 +793,7 @@ public class DataManagementImpl implements DataManagement {
 
 			JSONObject jsonMetaData;
 
-			String value = "Not Found!";
+			String value = MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND);
 
 			try {
 
