@@ -128,4 +128,32 @@ public class NotarizationLocalServiceImpl
 	public List<Notarization> findByG_DID(long groupId, long dossierId) {
 		return notarizationPersistence.findByF_G_DID(groupId, dossierId);
 	}
+	
+	public List<Notarization> findByG_DID(long groupId, long dossierId, int start, int end) {
+		return notarizationPersistence.findByF_G_DID(groupId, dossierId, start, end);
+	}
+	
+	public int countByG_DID(long groupId, long dossierId) {
+		return notarizationPersistence.countByF_G_DID(groupId, dossierId);
+	}
+	
+	public int countByAdvancedSearch(long groupId, long dossierId, String fileName, int totalRecord, int totalPage, int totalCopy, long totalFee, 
+			String notarizationNo,
+			int notarizationYear,
+			String notarizationDate,
+			String signerName,
+			String signerPosition,
+			String statusCode) {
+		return notarizationFinder.countAdvancedSearch(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDate, signerName, signerPosition, statusCode);
+	}
+
+	public List<Notarization> findByAdvancedSearch(long groupId, long dossierId, String fileName, int totalRecord, int totalPage, int totalCopy, long totalFee, 
+			String notarizationNo,
+			int notarizationYear,
+			String notarizationDate,
+			String signerName,
+			String signerPosition,
+			String statusCode, int start, int end) {
+		return notarizationFinder.findAdvancedSearch(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDate, signerName, signerPosition, statusCode, start, end);
+	}
 }

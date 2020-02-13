@@ -79,6 +79,14 @@ public interface NotarizationLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Notarization addNotarization(Notarization notarization);
 
+	public int countByAdvancedSearch(long groupId, long dossierId,
+		String fileName, int totalRecord, int totalPage, int totalCopy,
+		long totalFee, String notarizationNo, int notarizationYear,
+		String notarizationDate, String signerName, String signerPosition,
+		String statusCode);
+
+	public int countByG_DID(long groupId, long dossierId);
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -177,7 +185,16 @@ public interface NotarizationLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Notarization fetchNotarization(long notarizationId);
 
+	public List<Notarization> findByAdvancedSearch(long groupId,
+		long dossierId, String fileName, int totalRecord, int totalPage,
+		int totalCopy, long totalFee, String notarizationNo,
+		int notarizationYear, String notarizationDate, String signerName,
+		String signerPosition, String statusCode, int start, int end);
+
 	public List<Notarization> findByG_DID(long groupId, long dossierId);
+
+	public List<Notarization> findByG_DID(long groupId, long dossierId,
+		int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

@@ -83,4 +83,27 @@
 		
 	</entity>
 	
+	<entity name="ReportRole" uuid="false" local-service="true"
+		remote-service="false" table="opencps_reportrole">
+
+		<column name="reportRoleId" type="long" primary="true" />
+
+		<!-- PK fields -->
+		<column name="dynamicReportId" type="long" />
+		<column name="roleId" type="long" />
+		
+        <finder name="F_DRID" return-type="Collection">
+            <finder-column name="dynamicReportId"></finder-column>
+        </finder>
+
+        <finder name="F_RIDS" return-type="Collection">
+            <finder-column name="roleId" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        
+        <finder name="F_DRID_RID" return-type="ReportRole">
+            <finder-column name="dynamicReportId"></finder-column>
+            <finder-column name="roleId"></finder-column>
+        </finder>
+				
+	</entity>	
 </service-builder>

@@ -37,4 +37,9 @@
 		</field>
 		<field name="reportType" type="String" />
 	</model>
+	<model name="org.opencps.adminconfig.model.ReportRole">
+		<field name="reportRoleId" type="long" />
+		<field name="dynamicReportId" type="long" />
+		<field name="roleId" type="long" />
+	</model>
 </model-hints>

@@ -43,7 +43,6 @@ import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -102,6 +101,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String DETAIL = "detail";
 	private static final String TITLE = "title";
 	private static final String COLUMN = "column";
+	private static final String COLUMNS = "columns";
 	private static final String LIST_TABLE_MENU = "listTableMenu";
 	private static final String PUBLIC_MANAGER = "publicManager";
 	private static final String MENU = "menu";
@@ -131,7 +131,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String DEPENDENCY_LINK = "dependency_link";
 	private static final String DYNAMIC_COUNT = "dynamicQueryCount";
 	private static final String PROCESS_DELETE = "adminProcessDelete";
-//	private static final String PROCESS_DATA = "adminProcessData";
+	private static final String PROCESS_DATA = "adminProcessData";
 	private static final String HEADERS = "headers";
 	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
 	private static final String ACCEPT = "Accept";
@@ -301,7 +301,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							config.put(CODE, adminConfig.getCode());
 							config.put(NAME, adminConfig.getName());
 							config.put(HEARDER_NAME, headersObj.getJSONArray(HEADERS));
-							config.put(COLUMN, adminConfig.getColumns());
+							config.put(COLUMNS, adminConfig.getColumns());
 							config.put(DETAIL_COLUMN, adminConfig.getDetailColumns());
 							config.put(EXT_FORM, adminConfig.getExtForm());
 							config.put(DEPENDENCY_TITLE, headersObj.get(DEPENDENCY_TITLE));
@@ -362,9 +362,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						} else {
-	
-//							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
-//									JSONObject.class);
+//							_log.debug("SERVICE CLASS: " + serviceUtilStr);
+							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
+									JSONObject.class);
 	
 							JSONObject postData = message.getJSONObject(DATA);
 							
@@ -373,6 +373,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 							postData.put(Field.USER_ID, u.getUserId());
 							postData.put(Field.USER_NAME, u.getFullName());
 	
+							messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
+							
 							messageData.put(STATUS, HttpStatus.OK);
 	
 						}
@@ -449,9 +451,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 						conn.setRequestProperty(USER_REQUEST_ID, headerObject.getString(USER_ID));
 
 				        conn.setRequestMethod(message.getString(CMD).toUpperCase());
-						conn.setRequestProperty(ACCEPT, ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
-						conn.setRequestProperty(ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE),
-								ReadFilePropertiesUtils.get(ConstantUtils.CONTENT_TYPE_JSON));
+						conn.setRequestProperty(ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+						conn.setRequestProperty(ConstantUtils.CONTENT_TYPE,
+								ConstantUtils.CONTENT_TYPE_JSON);
 
 				        conn.setDoInput(true);
 						conn.setDoOutput(true);

@@ -1,7 +1,7 @@
 package org.opencps.dossiermgt.constants;
 
 public class ServiceInfoTerm {
-	public static final String SERVICE_INFO_ID = "serviceinfoId ";
+	public static final String SERVICE_INFO_ID = "serviceInfoId";
 	public static final String SERVICE_CODE = "serviceCode";
 	public static final String SERVICE_NAME = "serviceName";
 	public static final String SERVICE_NAME_SEARCH = "serviceNameSearch";

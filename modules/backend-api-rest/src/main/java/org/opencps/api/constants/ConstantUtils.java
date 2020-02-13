@@ -115,6 +115,7 @@ public class ConstantUtils {
 	public static final String VALUE = "value";
 	public static final String ROLE_ADMIN = "Administrator";
 	public static final String ROLE_ADMIN_LOWER = "admin";
+	public static final String ROLE_ADMIN_DATA = "Administrator_data";
 	
 	public static final String NGSP_TOKEN_URL_KEY = "org.opencps.ngsp.token.url";
 	public static final String NGSP_SECRET_KEY = "org.opencps.ngsp.secret.key";
@@ -217,6 +218,7 @@ public class ConstantUtils {
 	public static final String API_JSON_DEFAULTSIGNATURE_SIGNFIELDNAME = "signFieldName";
 	public static final String API_JSON_DEFAULTSIGNATURE_FILENAME = "fileName";
 	public static final String API_JSON_DEFAULTSIGNATURE_EXPERTSTATE = "expertState";
+	public static final String DEFAULTSIGNATURE_HASHCOMPUTED_END_POINT = "signature/requestsToken";
 	
 	public static final String API_PROTOCOL_MULTIMEDIA = "MULTIMEDIA";
 	public static final String API_PROTOCOL_API_CONNECT = "API_CONNECT";
@@ -383,4 +385,21 @@ public class ConstantUtils {
 	public static final String USER_PHOTO_FOLDER = "USERPHOTO/";
 	public static final String USER_PHOTO_DESC = "USERPHOTO file upload";
 	public static final String DATACER_PATH = "datacer.path";
+	
+	public static final String SPACE_PATTERN = "\\s+";
+	public static final String CERT_NUMBER_FORMAT = "%05d";
+	public static final String PERMISSION_WRITE = "write";
+	public static final String DOSSIER_MESSAGE_SECRETKEYNOTSUCCESS = "dossier.message.secretkeynotsuccess";
+	public static final String DOSSIER_MESSAGE_NOTFOUND = "dossier.message.notfound";
+	public static final String DOSSIER_MESSAGE_KHONGTIMTHAY = "dossier.message.khongtimthay";
+	public static final String API_DOSSIER_JSON_ERROR_KEY = "error";
+	public static final String API_DOSSIER_JSON_DOSSIERARR = "dossierArr";
+	public static final String DOSSIER_MESSAGE_CANNOT_DO_ACTION = "dossieraction.message.cannotdoaction";
+	public static final String DOSSIER_OK = "OK";
+	
+	public static final String API_PROCESSSEQUENCE_JSON_STATUS_TEXT = "statusText";
+	public static final String API_PROCESSSEQUENCE_JSON_OVERDUE_TEXT = "overdueText";
+	public static final String PROCESSSEQUENCE_MESSAGE_PROCESSING = "processsequence.message.processing";
+	public static final String PROCESSSEQUENCE_MESSAGE_OVERDUE = "processsequence.message.overdue";	
+	public static final String PROCESSSEQUENCE_MESSAGE_UNDUE = "processsequence.message.undue";	
 }

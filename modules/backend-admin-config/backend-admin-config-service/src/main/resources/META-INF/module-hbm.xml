@@ -4,6 +4,7 @@
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.adminconfig.model.AdminConfig" />
 	<import class="org.opencps.adminconfig.model.DynamicReport" />
+	<import class="org.opencps.adminconfig.model.ReportRole" />
 	<class name="org.opencps.adminconfig.model.impl.AdminConfigImpl" table="opencps_adminconfig">
 		<id column="id_" name="id" type="long">
 			<generator class="assigned" />
@@ -37,5 +38,12 @@
 		<property name="tableConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="userConfig" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="reportType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.adminconfig.model.impl.ReportRoleImpl" table="opencps_reportrole">
+		<id name="reportRoleId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="dynamicReportId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="roleId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 </hibernate-mapping>

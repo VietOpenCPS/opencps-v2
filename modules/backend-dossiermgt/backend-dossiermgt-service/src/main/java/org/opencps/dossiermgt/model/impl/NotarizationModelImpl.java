@@ -109,7 +109,7 @@ public class NotarizationModelImpl extends BaseModelImpl<Notarization>
 		TABLE_COLUMNS_MAP.put("statusCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notarization (notarizationId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,fileName VARCHAR(75) null,totalRecord INTEGER,totalPage INTEGER,totalCopy INTEGER,totalFee LONG,notarizationNo LONG,notarizationYear INTEGER,notarizationDate DATE null,signerName VARCHAR(75) null,signerPosition VARCHAR(75) null,statusCode VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notarization (notarizationId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,fileName VARCHAR(1024) null,totalRecord INTEGER,totalPage INTEGER,totalCopy INTEGER,totalFee LONG,notarizationNo LONG,notarizationYear INTEGER,notarizationDate DATE null,signerName VARCHAR(512) null,signerPosition VARCHAR(512) null,statusCode VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notarization";
 	public static final String ORDER_BY_JPQL = " ORDER BY notarization.notarizationId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_notarization.notarizationId ASC";

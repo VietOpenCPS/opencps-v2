@@ -8,7 +8,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -31,7 +30,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 
@@ -86,6 +84,7 @@ import org.opencps.api.controller.impl.JobposManagementImpl;
 import org.opencps.api.controller.impl.MailTestManagementImpl;
 import org.opencps.api.controller.impl.MenuConfigManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
+import org.opencps.api.controller.impl.NotarizationManagementImpl;
 import org.opencps.api.controller.impl.NotificationManagementImpl;
 import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
 import org.opencps.api.controller.impl.NotificationTemplateImpl;
@@ -230,6 +229,7 @@ public class BackendAPIRestApplication extends Application {
 		
 		//Test send mail
 		singletons.add(new MailTestManagementImpl());
+		singletons.add(new NotarizationManagementImpl());
 		
 		singletons.add(this);
 

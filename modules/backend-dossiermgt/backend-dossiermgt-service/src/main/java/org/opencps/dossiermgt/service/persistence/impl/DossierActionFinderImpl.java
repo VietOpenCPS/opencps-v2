@@ -1,7 +1,7 @@
 package org.opencps.dossiermgt.service.persistence.impl;
 
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
@@ -11,12 +11,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.service.persistence.DossierActionFinder;
-import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 
 public class DossierActionFinderImpl extends DossierActionFinderBaseImpl implements DossierActionFinder {
 	@ServiceReference(type = CustomSQL.class)

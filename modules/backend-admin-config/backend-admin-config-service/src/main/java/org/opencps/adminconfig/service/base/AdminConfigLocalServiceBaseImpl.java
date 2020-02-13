@@ -46,6 +46,7 @@ import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalService;
 import org.opencps.adminconfig.service.persistence.AdminConfigPersistence;
 import org.opencps.adminconfig.service.persistence.DynamicReportPersistence;
+import org.opencps.adminconfig.service.persistence.ReportRolePersistence;
 
 import java.io.Serializable;
 
@@ -391,6 +392,44 @@ public abstract class AdminConfigLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the report role local service.
+	 *
+	 * @return the report role local service
+	 */
+	public org.opencps.adminconfig.service.ReportRoleLocalService getReportRoleLocalService() {
+		return reportRoleLocalService;
+	}
+
+	/**
+	 * Sets the report role local service.
+	 *
+	 * @param reportRoleLocalService the report role local service
+	 */
+	public void setReportRoleLocalService(
+		org.opencps.adminconfig.service.ReportRoleLocalService reportRoleLocalService) {
+		this.reportRoleLocalService = reportRoleLocalService;
+	}
+
+	/**
+	 * Returns the report role persistence.
+	 *
+	 * @return the report role persistence
+	 */
+	public ReportRolePersistence getReportRolePersistence() {
+		return reportRolePersistence;
+	}
+
+	/**
+	 * Sets the report role persistence.
+	 *
+	 * @param reportRolePersistence the report role persistence
+	 */
+	public void setReportRolePersistence(
+		ReportRolePersistence reportRolePersistence) {
+		this.reportRolePersistence = reportRolePersistence;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -563,6 +602,10 @@ public abstract class AdminConfigLocalServiceBaseImpl
 	protected org.opencps.adminconfig.service.DynamicReportLocalService dynamicReportLocalService;
 	@BeanReference(type = DynamicReportPersistence.class)
 	protected DynamicReportPersistence dynamicReportPersistence;
+	@BeanReference(type = org.opencps.adminconfig.service.ReportRoleLocalService.class)
+	protected org.opencps.adminconfig.service.ReportRoleLocalService reportRoleLocalService;
+	@BeanReference(type = ReportRolePersistence.class)
+	protected ReportRolePersistence reportRolePersistence;
 	@ServiceReference(type = com.liferay.counter.kernel.service.CounterLocalService.class)
 	protected com.liferay.counter.kernel.service.CounterLocalService counterLocalService;
 	@ServiceReference(type = com.liferay.portal.kernel.service.ClassNameLocalService.class)

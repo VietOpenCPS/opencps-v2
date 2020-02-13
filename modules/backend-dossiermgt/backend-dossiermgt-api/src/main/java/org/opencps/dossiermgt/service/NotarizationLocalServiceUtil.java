@@ -66,6 +66,22 @@ public class NotarizationLocalServiceUtil {
 		return getService().addNotarization(notarization);
 	}
 
+	public static int countByAdvancedSearch(long groupId, long dossierId,
+		String fileName, int totalRecord, int totalPage, int totalCopy,
+		long totalFee, String notarizationNo, int notarizationYear,
+		String notarizationDate, String signerName, String signerPosition,
+		String statusCode) {
+		return getService()
+				   .countByAdvancedSearch(groupId, dossierId, fileName,
+			totalRecord, totalPage, totalCopy, totalFee, notarizationNo,
+			notarizationYear, notarizationDate, signerName, signerPosition,
+			statusCode);
+	}
+
+	public static int countByG_DID(long groupId, long dossierId) {
+		return getService().countByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -193,9 +209,26 @@ public class NotarizationLocalServiceUtil {
 		return getService().fetchNotarization(notarizationId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Notarization> findByAdvancedSearch(
+		long groupId, long dossierId, String fileName, int totalRecord,
+		int totalPage, int totalCopy, long totalFee, String notarizationNo,
+		int notarizationYear, String notarizationDate, String signerName,
+		String signerPosition, String statusCode, int start, int end) {
+		return getService()
+				   .findByAdvancedSearch(groupId, dossierId, fileName,
+			totalRecord, totalPage, totalCopy, totalFee, notarizationNo,
+			notarizationYear, notarizationDate, signerName, signerPosition,
+			statusCode, start, end);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
 		long groupId, long dossierId) {
 		return getService().findByG_DID(groupId, dossierId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
+		long groupId, long dossierId, int start, int end) {
+		return getService().findByG_DID(groupId, dossierId, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

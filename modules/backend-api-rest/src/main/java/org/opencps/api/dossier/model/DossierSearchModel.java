@@ -259,7 +259,27 @@ public class DossierSearchModel {
     protected Integer viapostal;
     @QueryParam(value = "undueTime")
     protected String undueTime;
+    @QueryParam(value = "fromDueDate")
+    protected String fromDueDate;
+    @QueryParam(value = "toDueDate")
+    protected String toDueDate;
     
+	public String getFromDueDate() {
+		return fromDueDate;
+	}
+
+	public void setFromDueDate(String fromDueDate) {
+		this.fromDueDate = fromDueDate;
+	}
+
+	public String getToDueDate() {
+		return toDueDate;
+	}
+
+	public void setToDueDate(String toDueDate) {
+		this.toDueDate = toDueDate;
+	}
+
 	public String getUndueTime() {
 		return undueTime;
 	}

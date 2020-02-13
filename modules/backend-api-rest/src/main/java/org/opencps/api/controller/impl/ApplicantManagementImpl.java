@@ -737,7 +737,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				if (Validator.isNotNull(mainInfoObj.getString(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME))) {
 					if (Validator.isNotNull(applicantName)) {
 						if (mainInfoObj.has(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME)) {
-							int countChar = applicantName.replaceAll("\\s+", "").length();
+							int countChar = applicantName.replaceAll(ConstantUtils.SPACE_PATTERN, StringPool.BLANK).length();
 							
 							int distance = levensh.apply(applicantName, mainInfoObj.getString(ConstantUtils.NGSP_JSON_MAIN_INFORMATION_NAME));
 							if (distance > (1.0 * countChar / 2)) {
@@ -751,7 +751,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				if (representativesObj != null) {
 					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME))) {
 						if (representativesObj.has(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME)) {
-							int countChar = contactName.replaceAll("\\s+", "").length();
+							int countChar = contactName.replaceAll(ConstantUtils.SPACE_PATTERN, StringPool.BLANK).length();
 							
 							int distance = levensh.apply(contactName, mainInfoObj.getString(ConstantUtils.NGSP_JSON__REPRESENTATIVES_FULLNAME));
 							if (distance > (1.0 * countChar / 2)) {
@@ -1005,5 +1005,4 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
 }

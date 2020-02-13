@@ -9,4 +9,5 @@ public class ProcessSequenceTerm {
 	public static final String NEXT_SEQUENCE_NO = "nextSequenceNo";
 	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
 	public static final String NEXT_CREATE_DATE = "nextCreateDate";
+	public static final String START_DATE = "startDate";
 }

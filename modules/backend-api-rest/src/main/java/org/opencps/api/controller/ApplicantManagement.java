@@ -247,5 +247,5 @@ public interface ApplicantManagement {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response resolveConflict(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("reindex") Boolean reindex);
+			@Context ServiceContext serviceContext, @PathParam("reindex") Boolean reindex);		
 }

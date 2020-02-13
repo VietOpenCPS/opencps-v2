@@ -23,6 +23,8 @@ import io.jsonwebtoken.Jwts;
 @PreMatching
 @Priority(Priorities.AUTHENTICATION)
 public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
+	private static final String BEARER_START = "Bearer ";
+	
 	private KeyGenerator keyGenerator = new OpenCPSKeyGenerator();
 	static Log _log = LogFactoryUtil.getLog(JWSOpenCPSTokenFilter.class);
     @Override
@@ -30,11 +32,11 @@ public class JWSOpenCPSTokenFilter implements ContainerRequestFilter  {
 
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         // Check if the HTTP Authorization header is present and formatted correctly
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_START)) {
             throw new NotAuthorizedException("Authorization header must be provided");
         }
 
-        String token = authorizationHeader.substring("Bearer".length()).trim();
+        String token = authorizationHeader.substring(BEARER_START.length()).trim();
 
         try {
 

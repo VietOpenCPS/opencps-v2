@@ -58,6 +58,23 @@ public class NotarizationLocalServiceWrapper implements NotarizationLocalService
 		return _notarizationLocalService.addNotarization(notarization);
 	}
 
+	@Override
+	public int countByAdvancedSearch(long groupId, long dossierId,
+		String fileName, int totalRecord, int totalPage, int totalCopy,
+		long totalFee, String notarizationNo, int notarizationYear,
+		String notarizationDate, String signerName, String signerPosition,
+		String statusCode) {
+		return _notarizationLocalService.countByAdvancedSearch(groupId,
+			dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee,
+			notarizationNo, notarizationYear, notarizationDate, signerName,
+			signerPosition, statusCode);
+	}
+
+	@Override
+	public int countByG_DID(long groupId, long dossierId) {
+		return _notarizationLocalService.countByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Creates a new notarization with the primary key. Does not add the notarization to the database.
 	*
@@ -198,9 +215,28 @@ public class NotarizationLocalServiceWrapper implements NotarizationLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Notarization> findByAdvancedSearch(
+		long groupId, long dossierId, String fileName, int totalRecord,
+		int totalPage, int totalCopy, long totalFee, String notarizationNo,
+		int notarizationYear, String notarizationDate, String signerName,
+		String signerPosition, String statusCode, int start, int end) {
+		return _notarizationLocalService.findByAdvancedSearch(groupId,
+			dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee,
+			notarizationNo, notarizationYear, notarizationDate, signerName,
+			signerPosition, statusCode, start, end);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
 		long groupId, long dossierId) {
 		return _notarizationLocalService.findByG_DID(groupId, dossierId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Notarization> findByG_DID(
+		long groupId, long dossierId, int start, int end) {
+		return _notarizationLocalService.findByG_DID(groupId, dossierId, start,
+			end);
 	}
 
 	@Override

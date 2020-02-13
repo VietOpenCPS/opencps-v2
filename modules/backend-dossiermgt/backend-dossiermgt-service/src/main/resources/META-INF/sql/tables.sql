@@ -592,11 +592,11 @@ create table opencps_notarization (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	dossierId LONG,
-	fileName VARCHAR(75) null,
+	fileName VARCHAR(1024) null,
 	totalRecord INTEGER,
 	totalPage INTEGER,
 	totalCopy INTEGER,
@@ -604,8 +604,8 @@ create table opencps_notarization (
 	notarizationNo LONG,
 	notarizationYear INTEGER,
 	notarizationDate DATE null,
-	signerName VARCHAR(75) null,
-	signerPosition VARCHAR(75) null,
+	signerName VARCHAR(512) null,
+	signerPosition VARCHAR(512) null,
 	statusCode VARCHAR(75) null
 );
 

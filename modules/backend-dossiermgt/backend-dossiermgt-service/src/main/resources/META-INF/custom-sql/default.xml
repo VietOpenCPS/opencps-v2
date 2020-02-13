@@ -26,4 +26,40 @@
 			group by dau.userId;
         ]]>
     </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.NotarizationFinder.findAdvancedSearch">
+        <![CDATA[
+            select * from opencps_notarization where 1=1
+            [$FILTER_GROUP_ID$]
+            [$FILTER_DOSSIER_ID$]
+            [$FILTER_FILENAME$]
+            [$FILTER_TOTAL_RECORD$]
+            [$FILTER_TOTAL_PAGE$]
+            [$FILTER_TOTAL_COPY$]
+            [$FILTER_TOTAL_FEE$]
+            [$FILTER_NOTARIZATION_NO$]
+            [$FILTER_NOTARIZATION_YEAR$]
+            [$FILTER_NOTARIZATION_DATE$]
+            [$FILTER_SIGNER_NAME$]
+            [$FILTER_SIGNER_POSITION$]
+            [$FILTER_STATUS_CODE$]
+        ]]>
+    </sql>    
+    <sql id="org.opencps.dossiermgt.service.persistence.NotarizationFinder.countAdvancedSearch">
+        <![CDATA[
+            select count(*) as countnotarization from opencps_notarization where 1=1
+            [$FILTER_GROUP_ID$]
+            [$FILTER_DOSSIER_ID$]
+            [$FILTER_FILENAME$]
+            [$FILTER_TOTAL_RECORD$]
+            [$FILTER_TOTAL_PAGE$]
+            [$FILTER_TOTAL_COPY$]
+            [$FILTER_TOTAL_FEE$]
+            [$FILTER_NOTARIZATION_NO$]
+            [$FILTER_NOTARIZATION_YEAR$]
+            [$FILTER_NOTARIZATION_DATE$]
+            [$FILTER_SIGNER_NAME$]
+            [$FILTER_SIGNER_POSITION$]
+            [$FILTER_STATUS_CODE$]
+        ]]>
+    </sql>    
 </custom-sql>

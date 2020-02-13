@@ -73,6 +73,7 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.EFormPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
+import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
 import org.opencps.dossiermgt.service.persistence.NotarizationPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
@@ -1470,6 +1471,24 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the notarization finder.
+	 *
+	 * @return the notarization finder
+	 */
+	public NotarizationFinder getNotarizationFinder() {
+		return notarizationFinder;
+	}
+
+	/**
+	 * Sets the notarization finder.
+	 *
+	 * @param notarizationFinder the notarization finder
+	 */
+	public void setNotarizationFinder(NotarizationFinder notarizationFinder) {
+		this.notarizationFinder = notarizationFinder;
+	}
+
+	/**
 	 * Returns the payment config local service.
 	 *
 	 * @return the payment config local service
@@ -2564,6 +2583,8 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.NotarizationLocalService notarizationLocalService;
 	@BeanReference(type = NotarizationPersistence.class)
 	protected NotarizationPersistence notarizationPersistence;
+	@BeanReference(type = NotarizationFinder.class)
+	protected NotarizationFinder notarizationFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.PaymentConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.PaymentConfigLocalService paymentConfigLocalService;
 	@BeanReference(type = PaymentConfigPersistence.class)

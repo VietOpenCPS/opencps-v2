@@ -722,7 +722,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
-		System.out.println("================POST===========================");
+//		System.out.println("================POST===========================");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -793,9 +793,9 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 
 		try {
 
-			System.out.println(
-				"================POST===========================" +
-					deliverableType + " " + file);
+//			System.out.println(
+//				"================POST===========================" +
+//					deliverableType + " " + file);
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 
 			if (Validator.isNull(deliverableType) || Validator.isNull(file)) {
@@ -848,7 +848,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					deliverable.put(DeliverableTerm.FILE_ATTACH, false);
 					DeliverableLocalServiceUtil.adminProcessData(
 							deliverable);
-					System.out.println("add================" + deliverable);
+//					System.out.println("add================" + deliverable);
 					size += 1;
 				}
 			}

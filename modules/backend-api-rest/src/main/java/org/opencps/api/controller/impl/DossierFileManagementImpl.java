@@ -499,8 +499,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		String password) {
 
-		String pathName = "";
-		String realPath = "";
+		String pathName = StringPool.BLANK;
+		String realPath = StringPool.BLANK;
 		BackendAuth auth = new BackendAuthImpl();
 		DossierFileActions action = new DossierFileActionsImpl();
 
@@ -525,7 +525,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 							fileEntry.getFileEntryId(), fileEntry.getVersion(),
 							true);
 						realPath = file.getPath();
-						pathName = file.getPath() + "_" + String.valueOf(id);
+						pathName = file.getPath() + StringPool.UNDERLINE + String.valueOf(id);
 					}
 				}
 				// int index = realPath.lastIndexOf("\\");
