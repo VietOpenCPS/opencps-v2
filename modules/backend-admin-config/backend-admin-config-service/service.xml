@@ -95,6 +95,10 @@
         <finder name="F_DRID" return-type="Collection">
             <finder-column name="dynamicReportId"></finder-column>
         </finder>
+
+        <finder name="F_RIDS" return-type="Collection">
+            <finder-column name="roleId" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
         
         <finder name="F_DRID_RID" return-type="ReportRole">
             <finder-column name="dynamicReportId"></finder-column>

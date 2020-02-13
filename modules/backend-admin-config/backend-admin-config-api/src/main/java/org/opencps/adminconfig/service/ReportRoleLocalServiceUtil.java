@@ -64,6 +64,10 @@ public class ReportRoleLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static int countAll() {
+		return getService().countAll();
+	}
+
 	/**
 	* Creates a new report role with the primary key. Does not add the report role to the database.
 	*
@@ -199,6 +203,11 @@ public class ReportRoleLocalServiceUtil {
 	public static java.util.List<org.opencps.adminconfig.model.ReportRole> findByDRID(
 		long dynamicReportId) {
 		return getService().findByDRID(dynamicReportId);
+	}
+
+	public static java.util.List<org.opencps.adminconfig.model.ReportRole> findByRIDS(
+		long[] roleIds) {
+		return getService().findByRIDS(roleIds);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

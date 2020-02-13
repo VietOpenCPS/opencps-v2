@@ -89,4 +89,12 @@ public class ReportRoleLocalServiceImpl extends ReportRoleLocalServiceBaseImpl {
 	public ReportRole fetchByDRID_RID(long dynamicReportId, long roleId) {
 		return reportRolePersistence.fetchByF_DRID_RID(dynamicReportId, roleId);
 	}
+
+	public List<ReportRole> findByRIDS(long[] roleIds) {
+		return reportRolePersistence.findByF_RIDS(roleIds);
+	}
+	
+	public int countAll() {
+		return reportRolePersistence.countAll();
+	}
 }

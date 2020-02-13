@@ -56,6 +56,11 @@ public class ReportRoleLocalServiceWrapper implements ReportRoleLocalService,
 		return _reportRoleLocalService.adminProcessDelete(id);
 	}
 
+	@Override
+	public int countAll() {
+		return _reportRoleLocalService.countAll();
+	}
+
 	/**
 	* Creates a new report role with the primary key. Does not add the report role to the database.
 	*
@@ -205,6 +210,12 @@ public class ReportRoleLocalServiceWrapper implements ReportRoleLocalService,
 	public java.util.List<org.opencps.adminconfig.model.ReportRole> findByDRID(
 		long dynamicReportId) {
 		return _reportRoleLocalService.findByDRID(dynamicReportId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.adminconfig.model.ReportRole> findByRIDS(
+		long[] roleIds) {
+		return _reportRoleLocalService.findByRIDS(roleIds);
 	}
 
 	@Override

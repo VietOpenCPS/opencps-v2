@@ -16,5 +16,7 @@ public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 	public final static String AUTHORIZATION = "Authorization";
 	
 	public final static String REPORTCODE = "reportCode";
+	public static final String GET_DYNAMIC_REPORTS = "getDynamicReports";
+	public static final String DYNAMIC_REPORT_ID = "dynamicReportId";
 	
 }

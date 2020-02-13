@@ -273,6 +273,243 @@ public class ReportRoleUtil {
 	}
 
 	/**
+	* Returns all the report roles where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @return the matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long roleId) {
+		return getPersistence().findByF_RIDS(roleId);
+	}
+
+	/**
+	* Returns a range of all the report roles where roleId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleId the role ID
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @return the range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long roleId, int start, int end) {
+		return getPersistence().findByF_RIDS(roleId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the report roles where roleId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleId the role ID
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long roleId, int start,
+		int end, OrderByComparator<ReportRole> orderByComparator) {
+		return getPersistence()
+				   .findByF_RIDS(roleId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the report roles where roleId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleId the role ID
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long roleId, int start,
+		int end, OrderByComparator<ReportRole> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_RIDS(roleId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first report role in the ordered set where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching report role
+	* @throws NoSuchReportRoleException if a matching report role could not be found
+	*/
+	public static ReportRole findByF_RIDS_First(long roleId,
+		OrderByComparator<ReportRole> orderByComparator)
+		throws org.opencps.adminconfig.exception.NoSuchReportRoleException {
+		return getPersistence().findByF_RIDS_First(roleId, orderByComparator);
+	}
+
+	/**
+	* Returns the first report role in the ordered set where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching report role, or <code>null</code> if a matching report role could not be found
+	*/
+	public static ReportRole fetchByF_RIDS_First(long roleId,
+		OrderByComparator<ReportRole> orderByComparator) {
+		return getPersistence().fetchByF_RIDS_First(roleId, orderByComparator);
+	}
+
+	/**
+	* Returns the last report role in the ordered set where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching report role
+	* @throws NoSuchReportRoleException if a matching report role could not be found
+	*/
+	public static ReportRole findByF_RIDS_Last(long roleId,
+		OrderByComparator<ReportRole> orderByComparator)
+		throws org.opencps.adminconfig.exception.NoSuchReportRoleException {
+		return getPersistence().findByF_RIDS_Last(roleId, orderByComparator);
+	}
+
+	/**
+	* Returns the last report role in the ordered set where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching report role, or <code>null</code> if a matching report role could not be found
+	*/
+	public static ReportRole fetchByF_RIDS_Last(long roleId,
+		OrderByComparator<ReportRole> orderByComparator) {
+		return getPersistence().fetchByF_RIDS_Last(roleId, orderByComparator);
+	}
+
+	/**
+	* Returns the report roles before and after the current report role in the ordered set where roleId = &#63;.
+	*
+	* @param reportRoleId the primary key of the current report role
+	* @param roleId the role ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next report role
+	* @throws NoSuchReportRoleException if a report role with the primary key could not be found
+	*/
+	public static ReportRole[] findByF_RIDS_PrevAndNext(long reportRoleId,
+		long roleId, OrderByComparator<ReportRole> orderByComparator)
+		throws org.opencps.adminconfig.exception.NoSuchReportRoleException {
+		return getPersistence()
+				   .findByF_RIDS_PrevAndNext(reportRoleId, roleId,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the report roles where roleId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleIds the role IDs
+	* @return the matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long[] roleIds) {
+		return getPersistence().findByF_RIDS(roleIds);
+	}
+
+	/**
+	* Returns a range of all the report roles where roleId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleIds the role IDs
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @return the range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long[] roleIds, int start,
+		int end) {
+		return getPersistence().findByF_RIDS(roleIds, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the report roles where roleId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleIds the role IDs
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long[] roleIds, int start,
+		int end, OrderByComparator<ReportRole> orderByComparator) {
+		return getPersistence()
+				   .findByF_RIDS(roleIds, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the report roles where roleId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportRoleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param roleId the role ID
+	* @param start the lower bound of the range of report roles
+	* @param end the upper bound of the range of report roles (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching report roles
+	*/
+	public static List<ReportRole> findByF_RIDS(long[] roleIds, int start,
+		int end, OrderByComparator<ReportRole> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_RIDS(roleIds, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the report roles where roleId = &#63; from the database.
+	*
+	* @param roleId the role ID
+	*/
+	public static void removeByF_RIDS(long roleId) {
+		getPersistence().removeByF_RIDS(roleId);
+	}
+
+	/**
+	* Returns the number of report roles where roleId = &#63;.
+	*
+	* @param roleId the role ID
+	* @return the number of matching report roles
+	*/
+	public static int countByF_RIDS(long roleId) {
+		return getPersistence().countByF_RIDS(roleId);
+	}
+
+	/**
+	* Returns the number of report roles where roleId = any &#63;.
+	*
+	* @param roleIds the role IDs
+	* @return the number of matching report roles
+	*/
+	public static int countByF_RIDS(long[] roleIds) {
+		return getPersistence().countByF_RIDS(roleIds);
+	}
+
+	/**
 	* Returns the report role where dynamicReportId = &#63; and roleId = &#63; or throws a {@link NoSuchReportRoleException} if it could not be found.
 	*
 	* @param dynamicReportId the dynamic report ID

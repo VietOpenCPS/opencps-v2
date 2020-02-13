@@ -77,6 +77,8 @@ public interface ReportRoleLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ReportRole adminProcessDelete(Long id);
 
+	public int countAll();
+
 	/**
 	* Creates a new report role with the primary key. Does not add the report role to the database.
 	*
@@ -179,6 +181,8 @@ public interface ReportRoleLocalService extends BaseLocalService,
 	public ReportRole fetchReportRole(long reportRoleId);
 
 	public List<ReportRole> findByDRID(long dynamicReportId);
+
+	public List<ReportRole> findByRIDS(long[] roleIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
