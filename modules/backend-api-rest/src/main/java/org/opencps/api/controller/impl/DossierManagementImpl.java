@@ -6861,13 +6861,18 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response doConvertDossierWithSql(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		String actionCode, String pathBase, long dvcGroupId, long groupId) {
+		String actionCode, String pathBase, String classForName,
+		String driverManagerUrl, String driverManagerUser, String driverManagerPazz,
+		String mainQuery, long dvcGroupId, long groupId) {
 
 		try {
 			JSONObject result = JSONFactoryUtil.createJSONObject();
+			System.out.println("======mainQuery2222============"+mainQuery);
 			result.put(
 				"total", doImportDossier19(
-					actionCode, pathBase, dvcGroupId, groupId, serviceContext));
+					actionCode, pathBase, classForName, driverManagerUrl,
+					driverManagerUser, driverManagerPazz, mainQuery,
+					dvcGroupId, groupId, serviceContext));
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
@@ -6880,13 +6885,17 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response doConvertDossierFileWithSql(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		String actionCode, String pathBase, long dvcGroupId, long groupId) {
+		String actionCode, String pathBase, String classForName,
+		String driverManagerUrl, String driverManagerUser, String driverManagerPazz,
+		String mainQuery, long dvcGroupId, long groupId) {
 
 		try {
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			result.put(
 				"total", doImportDossierFile19(
-					actionCode, pathBase, dvcGroupId, groupId, serviceContext));
+					actionCode, pathBase, classForName, driverManagerUrl,
+					driverManagerUser, driverManagerPazz, mainQuery,
+					dvcGroupId, groupId, serviceContext));
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
@@ -6896,7 +6905,9 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	public int doImportDossier19(
-		String actionCode, String pathBase, long dvcGroupId, long groupId,
+		String actionCode, String pathBase, String classForName,
+		String driverManagerUrl, String driverManagerUser, String driverManagerPazz,
+		String mainQuery, long dvcGroupId, long groupId,
 		ServiceContext serviceContext)
 		throws SQLException {
 
@@ -6905,19 +6916,20 @@ public class DossierManagementImpl implements DossierManagement {
 		ResultSet rs = null;
 		int result = 0;
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(classForName);
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
+					driverManagerUrl, driverManagerUser,
+					driverManagerPazz);
 			// here sonoo is database name, root is username and password
-			String query = "select * from thanhnv_dossier_mapped_done";
+			String query = mainQuery;
 			if (groupId > 0) {
 
 				query += " where groupId=" + groupId;
 			}
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("select * from thanhnv_view_dossier_import");
+			rs = stmt.executeQuery(query);
 
+			System.out.println("======mainQuery============"+mainQuery);
 			while (rs.next()) {
 				System.out.println(
 					rs.getString(1) + "  " + rs.getString(2) + "  " +
@@ -6987,7 +6999,9 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	public int doImportDossierFile19(
-		String actionCode, String pathBase, long dvcGroupId, long groupId,
+		String actionCode, String pathBase, String classForName,
+		String driverManagerUrl, String driverManagerUser, String driverManagerPazz,
+		String mainQuery, long dvcGroupId, long groupId,
 		ServiceContext serviceContext)
 		throws SQLException {
 
@@ -6996,20 +7010,19 @@ public class DossierManagementImpl implements DossierManagement {
 		ResultSet rs = null;
 		int result = 0;
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(classForName);
 			con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019");
+					driverManagerUrl, driverManagerUser,
+					driverManagerPazz);
 			// here sonoo is database name, root is username and password
-			stmt = con.createStatement();
-			String query = "select * from thanhnv_dossierPart_mapped_done2";
+			String query = mainQuery;
 			if (groupId > 0) {
 
 				query += " where groupId=" + groupId;
 			}
 			stmt = con.createStatement();
-			rs = stmt.executeQuery(
-				"select * from thanhnv_view_dossierFile_import");
+			rs = stmt.executeQuery(query);
+
 			while (rs.next()) {
 				System.out.println(
 					rs.getString(1) + "  " + rs.getString(2) + "  " +
