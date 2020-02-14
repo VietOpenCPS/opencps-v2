@@ -188,9 +188,19 @@ public class QuestionLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.usermgt.model.Question fetchByG_CN_CPK(
+		long groupId, String className, String classPK) {
+		return getService().fetchByG_CN_CPK(groupId, className, classPK);
+	}
+
 	public static org.opencps.usermgt.model.Question fetchQuestion(
 		long questionId) {
 		return getService().fetchQuestion(questionId);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.Question> findByG_P_SYNC(
+		long groupId, int publish, int synced) {
+		return getService().findByG_P_SYNC(groupId, publish, synced);
 	}
 
 	public static java.util.List<org.opencps.usermgt.model.Question> findByG_PL(
@@ -278,6 +288,19 @@ public class QuestionLocalServiceUtil {
 				   .updateQuestion(companyId, groupId, questionId, fullname,
 			email, content, publish, domainCode, domainName, govAgencyCode,
 			govAgencyName, questionType, subDomainCode, subDomainName);
+	}
+
+	public static org.opencps.usermgt.model.Question updateQuestion(
+		long companyId, long groupId, long questionId, String fullname,
+		String email, String content, int publish, String domainCode,
+		String domainName, String govAgencyCode, String govAgencyName,
+		String questionType, String subDomainCode, String subDomainName,
+		String className, String classPK, int synced) {
+		return getService()
+				   .updateQuestion(companyId, groupId, questionId, fullname,
+			email, content, publish, domainCode, domainName, govAgencyCode,
+			govAgencyName, questionType, subDomainCode, subDomainName,
+			className, classPK, synced);
 	}
 
 	/**

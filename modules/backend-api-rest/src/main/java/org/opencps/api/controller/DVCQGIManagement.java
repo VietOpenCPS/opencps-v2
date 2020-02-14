@@ -97,5 +97,39 @@ public interface DVCQGIManagement {
 	public Response getSharingQA(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, String body);
+	
+	
+	@POST
+	@Path("/syncsharingqa")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncSharingQA(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body);
+	
+	
+	@POST
+	@Path("/syncservicedomain")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncServiceDomain(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body);
+	
+	@POST
+	@Path("/syncgovernmentagency")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncGovernmentAgency(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body);
+	
+	@POST
+	@Path("/syncserviceadministration")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncServiceAdministration(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String body);
 
 }

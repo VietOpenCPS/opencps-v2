@@ -17,15 +17,20 @@ package org.opencps.dossiermgt.service.impl;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 
 import org.opencps.dossiermgt.constants.ServiceInfoMappingTerm;
-import org.opencps.dossiermgt.exception.NoSuchServiceInfoMappingException;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.ServiceInfoMappingLocalServiceBaseImpl;
 
 /**
@@ -71,6 +76,16 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 		serviceInfoMapping.setModifiedDate(now);
 		serviceInfoMapping.setServiceCode(serviceCode);
 		serviceInfoMapping.setServiceCodeDVCQG(serviceCodeDVCQG);
+
+		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
+
+		ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+
+		if (indexer != null && serviceInfo != null) {
+
+			indexer.reindex(ServiceInfo.class.getName(), serviceInfo.getServiceInfoId());
+		}
+
 		return serviceInfoMappingPersistence.update(serviceInfoMapping);
 	}
 
@@ -79,8 +94,18 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 		if (serviceInfoMapping != null) {
 			try {
 				serviceInfoMappingPersistence.remove(serviceInfoMapping.getServiceInfoMappingId());
+
+				Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
+
+				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+
+				if (indexer != null && serviceInfo != null) {
+
+					indexer.reindex(ServiceInfo.class.getName(), serviceInfo.getServiceInfoId());
+				}
+
 				return true;
-			} catch (NoSuchServiceInfoMappingException e) {
+			} catch (Exception e) {
 				return false;
 			}
 		}
@@ -100,7 +125,24 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 		if (Validator.isNull(object)) {
 			return null;
 		} else {
-			serviceInfoMappingPersistence.remove(object);
+
+			try {
+
+				Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
+
+				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(),
+						object.getServiceCode());
+
+				if (indexer != null && serviceInfo != null) {
+
+					indexer.reindex(ServiceInfo.class.getName(), serviceInfo.getServiceInfoId());
+				}
+
+				serviceInfoMappingPersistence.remove(object);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+
 		}
 
 		return object;
@@ -136,6 +178,24 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 
 		object = serviceInfoMappingPersistence.update(object);
 
+		try {
+
+			Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
+
+			ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(),
+					object.getServiceCode());
+
+			if (indexer != null && serviceInfo != null) {
+
+				indexer.reindex(ServiceInfo.class.getName(), serviceInfo.getServiceInfoId());
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
 		return object;
 	}
+
+	private Log _log = LogFactoryUtil.getLog(ServiceInfoMappingLocalServiceImpl.class.getName());
 }

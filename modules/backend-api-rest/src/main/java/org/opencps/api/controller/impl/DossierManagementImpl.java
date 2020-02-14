@@ -96,6 +96,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -107,6 +109,7 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
@@ -130,6 +133,7 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -1824,7 +1828,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(405).entity(
-					"{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
+					"{ \"error\": \"Lá»—i xáº£y ra khÃ´ng thá»ƒ thá»±c hiá»‡n hÃ nh Ä‘á»™ng!\" }").build();
 			}
 			// ProcessOption option = getProcessOption(dossier.getServiceCode(),
 			// dossier.getGovAgencyCode(),
@@ -3126,7 +3130,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			if (dossier == null) {
-				throw new Exception("Không tìm thấy hồ sơ");
+				throw new Exception("KhÃ´ng tÃ¬m tháº¥y há»“ sÆ¡");
 			}
 			//
 			List<DossierAction> dActionList =
@@ -3150,7 +3154,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (serviceProcess == null) {
-				throw new Exception("Không tìm thấy hồ sơ");
+				throw new Exception("KhÃ´ng tÃ¬m tháº¥y há»“ sÆ¡");
 			}
 
 			JSONObject result = getDossierProcessSequencesJSON(
@@ -3231,7 +3235,7 @@ public class DossierManagementImpl implements DossierManagement {
 					lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 					sequenceObj.put(
 						"statusText",
-						"Đang thực hiện: " + lastDA.getStepName());
+						"Ä�ang thá»±c hiá»‡n: " + lastDA.getStepName());
 				}
 				List<DossierAction> lstDossierActions =
 					DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(
@@ -3254,10 +3258,10 @@ public class DossierManagementImpl implements DossierManagement {
 						lstDossierActions.get(lstDossierActions.size() - 1);
 					if (lastDASequence.getActionOverdue() != 0) {
 						String preText = (lastDASequence.getActionOverdue() > 0
-							? "Còn " : "Quá ");
+							? "CÃ²n " : "QuÃ¡ ");
 						sequenceObj.put(
 							"overdueText", preText +
-								lastDASequence.getActionOverdue() + " ngày");
+								lastDASequence.getActionOverdue() + " ngÃ y");
 					}
 				}
 				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
@@ -3791,7 +3795,24 @@ public class DossierManagementImpl implements DossierManagement {
 				CPSDossierBusinessLocalServiceUtil.addDossierPublish(
 					groupId, company, user, serviceContext,
 					DossierUtils.convertFormModelToPublishModel(input));
+			//add by TrungNT
+			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+			String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
+			if(Validator.isNotNull(mappingDossierStatus)) {
+				List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
+				
+				for (ServerConfig sc : lstScs) {
+					try {
+						List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+						if (lstQueues == null || lstQueues.isEmpty()) {
+							PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);					
+						}
 
+					} catch (PortalException e) {
+						_log.debug(e);
+					}
+				}
+			}
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 		}
@@ -5152,7 +5173,7 @@ public class DossierManagementImpl implements DossierManagement {
 									dossier.getDossierActionId(),
 									lastda.getStepCode(), lastda.getStepName(),
 									lastda.getSequenceNo(), "9999",
-									user.getFullName(), "Chuyển dịch đặc biệt",
+									user.getFullName(), "Chuyá»ƒn dá»‹ch Ä‘áº·c biá»‡t",
 									StringPool.BLANK, 0, stepCode,
 									step.getStepName(), step.getSequenceNo(),
 									null, 0l, StringPool.BLANK,
@@ -5647,7 +5668,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(500).entity(
-					"Không update được dueDate của hồ sơ").build();
+					"KhÃ´ng update Ä‘Æ°á»£c dueDate cá»§a há»“ sÆ¡").build();
 			}
 
 		}
@@ -5754,7 +5775,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(200).entity(
 					JSONFactoryUtil.looseSerialize(
-						"Phân Quyền thành công!!!")).build();
+						"PhÃ¢n Quyá»�n thÃ nh cÃ´ng!!!")).build();
 			}
 			else {
 				return Response.status(200).entity(StringPool.BLANK).build();
@@ -5833,7 +5854,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				}
 				_log.info("START=====");
-				// Undo hồ sơ liên thông
+				// Undo há»“ sÆ¡ liÃªn thÃ´ng
 				DossierAction dossierAction =
 					DossierActionLocalServiceUtil.fetchDossierAction(
 						dossier.getDossierActionId());
@@ -5915,7 +5936,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				_log.info("START=====");
-				// Process liên thông hồ sơ
+				// Process liÃªn thÃ´ng há»“ sÆ¡
 				String dossierStatus = dossier.getDossierStatus();
 				String dossierSubStatus = dossier.getDossierSubStatus();
 				long serviceProcessId = dossierAction.getServiceProcessId();

@@ -31,6 +31,9 @@
 		<property name="questionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="content" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="publish" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="classPK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="synced" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ApplicantImpl" table="opencps_applicant">
 		<id name="applicantId" type="long">
@@ -212,6 +215,9 @@
 		<property name="questionType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="subDomainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="classPK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="synced" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.ResourceRoleImpl" table="opencps_resourcerole">
 		<id name="resourceRoleId" type="long">

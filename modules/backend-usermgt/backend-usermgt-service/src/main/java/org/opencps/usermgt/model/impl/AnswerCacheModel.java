@@ -64,7 +64,7 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{answerId=");
 		sb.append(answerId);
@@ -86,6 +86,12 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 		sb.append(content);
 		sb.append(", publish=");
 		sb.append(publish);
+		sb.append(", className=");
+		sb.append(className);
+		sb.append(", classPK=");
+		sb.append(classPK);
+		sb.append(", synced=");
+		sb.append(synced);
 		sb.append("}");
 
 		return sb.toString();
@@ -132,6 +138,22 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 
 		answerImpl.setPublish(publish);
 
+		if (className == null) {
+			answerImpl.setClassName("");
+		}
+		else {
+			answerImpl.setClassName(className);
+		}
+
+		if (classPK == null) {
+			answerImpl.setClassPK("");
+		}
+		else {
+			answerImpl.setClassPK(classPK);
+		}
+
+		answerImpl.setSynced(synced);
+
 		answerImpl.resetOriginalValues();
 
 		return answerImpl;
@@ -154,6 +176,10 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 		content = objectInput.readUTF();
 
 		publish = objectInput.readInt();
+		className = objectInput.readUTF();
+		classPK = objectInput.readUTF();
+
+		synced = objectInput.readInt();
 	}
 
 	@Override
@@ -187,6 +213,22 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 		}
 
 		objectOutput.writeInt(publish);
+
+		if (className == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(className);
+		}
+
+		if (classPK == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(classPK);
+		}
+
+		objectOutput.writeInt(synced);
 	}
 
 	public long answerId;
@@ -199,4 +241,7 @@ public class AnswerCacheModel implements CacheModel<Answer>, Externalizable {
 	public long questionId;
 	public String content;
 	public int publish;
+	public String className;
+	public String classPK;
+	public int synced;
 }

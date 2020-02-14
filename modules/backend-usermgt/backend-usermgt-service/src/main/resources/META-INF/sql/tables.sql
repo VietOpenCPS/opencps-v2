@@ -21,7 +21,10 @@ create table opencps_answer (
 	modifiedDate DATE null,
 	questionId LONG,
 	content TEXT null,
-	publish INTEGER
+	publish INTEGER,
+	className VARCHAR(75) null,
+	classPK VARCHAR(75) null,
+	synced INTEGER
 );
 
 create table opencps_applicant (
@@ -180,7 +183,10 @@ create table opencps_question (
 	govAgencyName VARCHAR(75) null,
 	questionType VARCHAR(75) null,
 	subDomainCode VARCHAR(75) null,
-	subDomainName VARCHAR(75) null
+	subDomainName VARCHAR(75) null,
+	className VARCHAR(75) null,
+	classPK VARCHAR(75) null,
+	synced INTEGER
 );
 
 create table opencps_resourcerole (
