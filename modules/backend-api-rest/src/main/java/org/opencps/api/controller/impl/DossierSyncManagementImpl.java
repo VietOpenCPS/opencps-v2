@@ -22,6 +22,8 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.model.DossierSync;
+
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -716,8 +718,8 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				throw new UnauthenticationException();
 			}
 			if (start == null || start == 0) {
-				start = -1;
-				end = -1;
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
 			}
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -750,7 +752,7 @@ public class DossierSyncManagementImpl implements DossierSyncManagement {
 				results.getData().addAll(lstDatas);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			_log.error(e);

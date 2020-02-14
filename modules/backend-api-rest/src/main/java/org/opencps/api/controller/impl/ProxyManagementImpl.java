@@ -66,11 +66,11 @@ public class ProxyManagementImpl implements ProxyManagement {
 					Iterator<?> keys = dataObj.keys();
 					while(keys.hasNext() ) {
 					    String key = (String)keys.next();
-					    if (!"".equals(postData.toString())) {
-					    	postData.append("&");
+					    if (!StringPool.BLANK.equals(postData.toString())) {
+					    	postData.append(StringPool.AMPERSAND);
 					    }
 					    postData.append(key);
-					    postData.append("=");
+					    postData.append(StringPool.EQUAL);
 					    postData.append(dataObj.get(key));
 					}
 			        

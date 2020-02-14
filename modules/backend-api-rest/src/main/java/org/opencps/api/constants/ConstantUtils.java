@@ -11,6 +11,8 @@ public class ConstantUtils {
 	public static final String ZIP = "zip";
 	public static final String XML = "xml";
 	public static final String WORD = "word";
+	public static final String XLS = "xls";
+	public static final String XLSX = "xlsx";
 	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
@@ -234,6 +236,7 @@ public class ConstantUtils {
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS = "api.data.defaultsignature.success";
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID = "api.data.defaultsignature.fileEntryId";
 	public static final String API_JSON_MESSAGE_AUTHENTICATEDFAILURE = "api.json.message.authenticatedfailure";
+	public static final String API_JSON_MESSAGE_PROCESSDBERROR = "api.message.processdberror";
 	
 	public static final String HASHCOMPUTED_MESSAGE_KEY = "message";
 	public static final String HASHCOMPUTED_HASHCOMPUTERS_KEY = "hashComputers";
@@ -414,4 +417,19 @@ public class ConstantUtils {
 	public static final String DOSSIER_MESSAGE_CANNOTUPDATEDUEDATE = "dossier.message.cannotupdateduedate";
 	
 	public static final String EXTENSION_SPLIT = "\\.";
+	public static final String IMPORT_MESSAGE_COLLECTIONISNOTINGROUP = "import.message.collectionnotingroup";
+	public static final String SERVERCONFIG_AUTHENTICATE = "authenticate";
+	
+	public static final String START_GRAPH = "graph TD\n";
+	public static final String START_NAME = "0((Bắt đầu))\n";
+	public static final String START_NODE = "(\"[";
+	public static final String END_NOTE_TITLE = "] ";
+	public static final String END_NODE = "\")\n";
+	public static final String START_ARROW = "-.->|\"[";
+	public static final String END_ARROW = "\"|";
+	public static final String CR = "\n";
+	public static final String GRAPH_STYLE = "style %s fill:#f9f,stroke:#333,stroke-width:4px";	
+	public static final String START_ZERO = "0";
+	public static final String RETURN_GRAPH = "1{Quay lại}";
+	public static final String USER_ID = "user_id";
 }

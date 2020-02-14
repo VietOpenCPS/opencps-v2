@@ -631,7 +631,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		//List<DictItem> govItems = DictItemLocalServiceUtil
 		//		.findByF_dictCollectionId(govAgencyCollection.getDictCollectionId());
 
-		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("SERVICE_DOMAIN",
+		DictCollection domainCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConstantUtils.SERVICE_DOMAIN,
 				groupId);
 
 		List<DictItem> domainItems = DictItemLocalServiceUtil
@@ -643,9 +643,9 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 
 		if (query.getEnd() == 0) {
 
-			query.setStart(-1);
+			query.setStart(QueryUtil.ALL_POS);
 
-			query.setEnd(-1);
+			query.setEnd(QueryUtil.ALL_POS);
 
 		}
 

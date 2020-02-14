@@ -53,6 +53,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.ServiceProcessActions;
 import org.opencps.dossiermgt.action.impl.ServiceProcessActionsImpl;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepTerm;
 import org.opencps.dossiermgt.exception.DuplicateStepNoException;
@@ -1265,7 +1266,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessStep foundStep = ProcessStepLocalServiceUtil.fetchBySC_GID(code, groupId, id);
 
 			if (Validator.isNull(foundStep)) {
-				throw new NotFoundException("InvalidStepCode");
+				throw new NotFoundException(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 			}
 			
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
@@ -1339,45 +1340,45 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (serviceProcess != null) {
 				List<ProcessStep> lstSteps = ProcessStepLocalServiceUtil.getProcessStepbyServiceProcessId(serviceProcess.getServiceProcessId());
 				StringBuilder result = new StringBuilder();
-				result.append("graph TD\n");
-				result.append("0((Bắt đầu))\n");
+				result.append(ConstantUtils.START_GRAPH);
+				result.append(ConstantUtils.START_NAME);
 				for (ProcessStep ps : lstSteps) {
 					result.append(ps.getStepCode());
-					result.append("(\"[");
+					result.append(ConstantUtils.START_NODE);
 					result.append(ps.getStepCode());
-					result.append("] ");
+					result.append(ConstantUtils.END_NOTE_TITLE);
 					result.append(ps.getStepName());
-					result.append("\")\n");
+					result.append(ConstantUtils.END_NODE);
 				}
 				List<ProcessAction> lstActions = ProcessActionLocalServiceUtil.getProcessActionbyServiceProcessId(serviceProcess.getServiceProcessId());
 				for (ProcessAction pa : lstActions) {
-					if ("".equals(pa.getPreStepCode())) {
-						result.append("0");
+					if (StringPool.BLANK.equals(pa.getPreStepCode())) {
+						result.append(ConstantUtils.START_ZERO);
 					}
 					else {
 						result.append(pa.getPreStepCode());
 					}
-					if ("listener".equals(pa.getAutoEvent()) || "timmer".equals(pa.getAutoEvent())) {
-						result.append("-.->|\"[");
+					if (DossierTerm.PRECONDITION_LISTENER.equals(pa.getAutoEvent()) || DossierTerm.KEY_TIMMER.equals(pa.getAutoEvent())) {
+						result.append(ConstantUtils.START_ARROW);
 						result.append(pa.getActionCode());
-						result.append("] ");
+						result.append(ConstantUtils.END_NOTE_TITLE);
 						result.append(pa.getActionName());
-						result.append("\"|");
+						result.append(ConstantUtils.END_ARROW);
 					}
 					else {
-						result.append("-->|\"[");
+						result.append(ConstantUtils.START_ARROW);
 						result.append(pa.getActionCode());
-						result.append("] ");
+						result.append(ConstantUtils.END_NOTE_TITLE);
 						result.append(pa.getActionName());
-						result.append("\"|");						
+						result.append(ConstantUtils.END_ARROW);						
 					}
-					if ("".equals(pa.getPostStepCode())) {
-						result.append("1{Quay lại}");
+					if (StringPool.BLANK.equals(pa.getPostStepCode())) {
+						result.append(ConstantUtils.RETURN_GRAPH);
 					}
 					else {
 						result.append(pa.getPostStepCode());
 					}
-					result.append("\n");
+					result.append(ConstantUtils.CR);
 				}
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();				
 			}

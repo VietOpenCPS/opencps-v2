@@ -269,7 +269,7 @@ public class FaqManagementImpl implements FaqManagement {
 				return builder.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_PROCESSDBERROR));
 			}
 		}
 		catch (Exception e) {
@@ -382,7 +382,7 @@ public class FaqManagementImpl implements FaqManagement {
 				return builder.build();
 			}
 			else {
-				throw new Exception("Error process database");
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_PROCESSDBERROR));
 			}
 		}
 		catch (Exception e) {

@@ -21,6 +21,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.SMSManagement;
 import org.opencps.api.sms.model.IPacificSearchSMS;
 import org.opencps.communication.constants.SendSMSTerm;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -64,7 +66,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Result result = ViettelSMSUtils.sendSMS(
 				groupId, body, StringPool.BLANK, toTelNo);
 
@@ -94,8 +96,8 @@ public class SMSManagementImpl implements SMSManagement {
 		_log.info("===============" + input.getUser());
 		
 		JSONObject formDataKey = JSONFactoryUtil.createJSONObject();
-		formDataKey.put("bac", 1);
-		formDataKey.put("baB", "shkdshd");
+//		formDataKey.put("bac", 1);
+//		formDataKey.put("baB", "shkdshd");
 		buildDeliverableSearchDataForm(formDataKey.toJSONString());
 
 		return Response.status(200).entity(_buiderResponseSMS(input)).build();
@@ -114,15 +116,15 @@ public class SMSManagementImpl implements SMSManagement {
 			JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 				_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 			String uid = "not found";
-			if (resultApi.has("data")) {
+			if (resultApi.has(ConstantUtils.DATA)) {
 
-				uid = resultApi.getJSONObject("data").getString("user_id");
+				uid = resultApi.getJSONObject(ConstantUtils.DATA).getString(ConstantUtils.USER_ID);
 			}
-			return Response.status(200).entity(uid).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(uid).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			return Response.status(500).entity("").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(StringPool.BLANK).build();
 		}
 
 	}
@@ -345,7 +347,7 @@ public class SMSManagementImpl implements SMSManagement {
 			conn.setRequestProperty("Accept", accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
@@ -401,7 +403,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			System.out.println(
 				"================groupId====================" + groupId +
 					" ===" + dossierId);

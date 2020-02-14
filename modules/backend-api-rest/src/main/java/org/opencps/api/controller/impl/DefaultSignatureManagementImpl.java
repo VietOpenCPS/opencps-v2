@@ -886,7 +886,7 @@ public class DefaultSignatureManagementImpl
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							} else if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
-								deliverable.setDeliverableState(1);
+								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							}
@@ -895,7 +895,7 @@ public class DefaultSignatureManagementImpl
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
-								deliverable.setDeliverableState(1);
+								deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_VALID_INT);
 								DeliverableLocalServiceUtil.updateDeliverable(
 									deliverable);
 							}

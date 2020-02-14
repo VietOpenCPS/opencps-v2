@@ -49,6 +49,7 @@ public class DictItemTerm {
 	public static final String ITEM_NAME_EN = "itemNameEN";
 	
 	public static final String ITEM_DESCRIPTION = "itemDescription";
+	public static final String DESCRIPTION = "description";
 	
 	public static final String PARENT_ITEM_ID = "parentItemId";
 	
