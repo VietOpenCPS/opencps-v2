@@ -136,6 +136,12 @@ public class ConstantUtils {
 	public static final String API_JSON_MESSAGE_NONAUTHORATIVE = "api.json.message.nonauthorative";
 	public static final String API_JSON_MESSAGE_INTERNAL_SERVER_ERROR = "api.json.message.internalservererror";
 	public static final String API_JSON_MESSAGE_NOT_FOUND = "api.json.message.notfound";
+	public static final String API_JSON_EMPTY_ERROR = "{error}";
+	public static final String API_JSON_EMPTY_CONFLICT = "{CONFLICT}";
+	public static final String API_JSON_EMPTY_NOCONTENT = "No Content";
+	public static final String API_JSON_MESSAGE_DONOTHAVESERVICE = "Do not have service";
+	public static final String API_JSON_TRUE_EMPTY = "{ 'ok': true }";
+	public static final String API_JSON_FALSE_EMPTY = "{ 'ok': false }";
 	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
 	public static final String API_MESSAGE_FILENOTFOUND = "api.message.filenotfound";
@@ -402,4 +408,10 @@ public class ConstantUtils {
 	public static final String PROCESSSEQUENCE_MESSAGE_PROCESSING = "processsequence.message.processing";
 	public static final String PROCESSSEQUENCE_MESSAGE_OVERDUE = "processsequence.message.overdue";	
 	public static final String PROCESSSEQUENCE_MESSAGE_UNDUE = "processsequence.message.undue";	
+	
+	public static final String DOSSIER_MESSAGE_STEPNOTFOUND = "dossier.message.stepnotfound";
+	public static final String DOSSIER_MESSAGE_DOSSIERNOTINPROCESS = "dossier.message.dossiernotinprocess";
+	public static final String DOSSIER_MESSAGE_CANNOTUPDATEDUEDATE = "dossier.message.cannotupdateduedate";
+	
+	public static final String EXTENSION_SPLIT = "\\.";
 }

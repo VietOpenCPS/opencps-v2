@@ -405,7 +405,7 @@
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>
-							<xsd:element name="roles" >
+							<xsd:element name="roles" minOccurs="0" maxOccurs="1">
 								<xsd:complexType>
 									<xsd:sequence >
 										<xsd:element name="ReportRole" minOccurs="1" maxOccurs="unbounded">
