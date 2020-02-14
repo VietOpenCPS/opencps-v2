@@ -61,6 +61,8 @@ public interface ReportRoleLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link ReportRoleLocalServiceUtil} to access the report role local service. Add custom service methods to {@link org.opencps.adminconfig.service.impl.ReportRoleLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public ReportRole addReportRole(long dynamicReportId, long roleId);
 
 	/**
 	* Adds the report role to the database. Also notifies the appropriate model listeners.
@@ -234,6 +236,10 @@ public interface ReportRoleLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getReportRolesCount();
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ReportRole updateReportRole(long reportRoleId, long dynamicReportId,
+		long roleId);
 
 	/**
 	* Updates the report role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

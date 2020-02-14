@@ -33,6 +33,12 @@ public class ReportRoleLocalServiceWrapper implements ReportRoleLocalService,
 		_reportRoleLocalService = reportRoleLocalService;
 	}
 
+	@Override
+	public org.opencps.adminconfig.model.ReportRole addReportRole(
+		long dynamicReportId, long roleId) {
+		return _reportRoleLocalService.addReportRole(dynamicReportId, roleId);
+	}
+
 	/**
 	* Adds the report role to the database. Also notifies the appropriate model listeners.
 	*
@@ -284,6 +290,13 @@ public class ReportRoleLocalServiceWrapper implements ReportRoleLocalService,
 	@Override
 	public int getReportRolesCount() {
 		return _reportRoleLocalService.getReportRolesCount();
+	}
+
+	@Override
+	public org.opencps.adminconfig.model.ReportRole updateReportRole(
+		long reportRoleId, long dynamicReportId, long roleId) {
+		return _reportRoleLocalService.updateReportRole(reportRoleId,
+			dynamicReportId, roleId);
 	}
 
 	/**
