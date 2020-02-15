@@ -1828,7 +1828,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(405).entity(
-					"{ \"error\": \"Lá»—i xáº£y ra khÃ´ng thá»ƒ thá»±c hiá»‡n hÃ nh Ä‘á»™ng!\" }").build();
+					"{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
 			}
 			// ProcessOption option = getProcessOption(dossier.getServiceCode(),
 			// dossier.getGovAgencyCode(),
@@ -3130,7 +3130,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			if (dossier == null) {
-				throw new Exception("KhÃ´ng tÃ¬m tháº¥y há»“ sÆ¡");
+				throw new Exception("Không tìm thấy hồ sơ");
 			}
 			//
 			List<DossierAction> dActionList =
@@ -3154,7 +3154,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (serviceProcess == null) {
-				throw new Exception("KhÃ´ng tÃ¬m tháº¥y há»“ sÆ¡");
+				throw new Exception("Không tìm thấy hồ sơ");
 			}
 
 			JSONObject result = getDossierProcessSequencesJSON(
@@ -3235,7 +3235,7 @@ public class DossierManagementImpl implements DossierManagement {
 					lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
 					sequenceObj.put(
 						"statusText",
-						"Ä�ang thá»±c hiá»‡n: " + lastDA.getStepName());
+						"Đang thực hiện: " + lastDA.getStepName());
 				}
 				List<DossierAction> lstDossierActions =
 					DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(
@@ -3258,10 +3258,10 @@ public class DossierManagementImpl implements DossierManagement {
 						lstDossierActions.get(lstDossierActions.size() - 1);
 					if (lastDASequence.getActionOverdue() != 0) {
 						String preText = (lastDASequence.getActionOverdue() > 0
-							? "CÃ²n " : "QuÃ¡ ");
+							? "Còn " : "Quá ");
 						sequenceObj.put(
 							"overdueText", preText +
-								lastDASequence.getActionOverdue() + " ngÃ y");
+								lastDASequence.getActionOverdue() + " ngày");
 					}
 				}
 				JSONArray assignUserArr = JSONFactoryUtil.createJSONArray();
@@ -5173,7 +5173,7 @@ public class DossierManagementImpl implements DossierManagement {
 									dossier.getDossierActionId(),
 									lastda.getStepCode(), lastda.getStepName(),
 									lastda.getSequenceNo(), "9999",
-									user.getFullName(), "Chuyá»ƒn dá»‹ch Ä‘áº·c biá»‡t",
+									user.getFullName(), "Chuyển dịch đặc biệt",
 									StringPool.BLANK, 0, stepCode,
 									step.getStepName(), step.getSequenceNo(),
 									null, 0l, StringPool.BLANK,
@@ -5668,7 +5668,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(500).entity(
-					"KhÃ´ng update Ä‘Æ°á»£c dueDate cá»§a há»“ sÆ¡").build();
+					"Không update được dueDate của hồ sơ").build();
 			}
 
 		}
@@ -5775,7 +5775,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(200).entity(
 					JSONFactoryUtil.looseSerialize(
-						"PhÃ¢n Quyá»�n thÃ nh cÃ´ng!!!")).build();
+						"Phân Quyền thành công!!!")).build();
 			}
 			else {
 				return Response.status(200).entity(StringPool.BLANK).build();
@@ -5854,7 +5854,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				}
 				_log.info("START=====");
-				// Undo há»“ sÆ¡ liÃªn thÃ´ng
+				// Undo hồ sơ liên thông
 				DossierAction dossierAction =
 					DossierActionLocalServiceUtil.fetchDossierAction(
 						dossier.getDossierActionId());
@@ -5936,7 +5936,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				_log.info("START=====");
-				// Process liÃªn thÃ´ng há»“ sÆ¡
+				// Process liên thông hồ sơ
 				String dossierStatus = dossier.getDossierStatus();
 				String dossierSubStatus = dossier.getDossierSubStatus();
 				long serviceProcessId = dossierAction.getServiceProcessId();
