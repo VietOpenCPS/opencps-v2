@@ -43,6 +43,9 @@ public class AnswerSoap implements Serializable {
 		soapModel.setQuestionId(model.getQuestionId());
 		soapModel.setContent(model.getContent());
 		soapModel.setPublish(model.getPublish());
+		soapModel.setClassName(model.getClassName());
+		soapModel.setClassPK(model.getClassPK());
+		soapModel.setSynced(model.getSynced());
 
 		return soapModel;
 	}
@@ -175,6 +178,30 @@ public class AnswerSoap implements Serializable {
 		_publish = publish;
 	}
 
+	public String getClassName() {
+		return _className;
+	}
+
+	public void setClassName(String className) {
+		_className = className;
+	}
+
+	public String getClassPK() {
+		return _classPK;
+	}
+
+	public void setClassPK(String classPK) {
+		_classPK = classPK;
+	}
+
+	public int getSynced() {
+		return _synced;
+	}
+
+	public void setSynced(int synced) {
+		_synced = synced;
+	}
+
 	private long _answerId;
 	private long _companyId;
 	private long _groupId;
@@ -185,4 +212,7 @@ public class AnswerSoap implements Serializable {
 	private long _questionId;
 	private String _content;
 	private int _publish;
+	private String _className;
+	private String _classPK;
+	private int _synced;
 }

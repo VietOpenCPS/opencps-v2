@@ -185,6 +185,24 @@ public class AnswerLocalServiceWrapper implements AnswerLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.Answer fetchByG_CN_CPK(long groupId,
+		String className, String classPK) {
+		return _answerLocalService.fetchByG_CN_CPK(groupId, className, classPK);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Answer> findByG_P_SYNC(
+		long groupId, int publish, int synced) {
+		return _answerLocalService.findByG_P_SYNC(groupId, publish, synced);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.Answer> findByG_Q(
+		long groupId, long questionId) {
+		return _answerLocalService.findByG_Q(groupId, questionId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.usermgt.model.Answer> findByG_Q_PL(
 		long groupId, long questionId, int[] publishs, int start, int end) {
 		return _answerLocalService.findByG_Q_PL(groupId, questionId, publishs,
@@ -276,6 +294,14 @@ public class AnswerLocalServiceWrapper implements AnswerLocalService,
 		int publish) {
 		return _answerLocalService.updateAnswer(userId, groupId, answerId,
 			questionId, content, publish);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.Answer updateAnswer(long userId,
+		long groupId, long answerId, long questionId, String content,
+		int publish, String className, String classPK, int synced) {
+		return _answerLocalService.updateAnswer(userId, groupId, answerId,
+			questionId, content, publish, className, classPK, synced);
 	}
 
 	@Override

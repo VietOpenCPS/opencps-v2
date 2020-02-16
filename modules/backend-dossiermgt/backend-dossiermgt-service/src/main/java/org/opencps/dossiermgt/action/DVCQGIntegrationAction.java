@@ -19,6 +19,11 @@ public interface DVCQGIntegrationAction {
 	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext, long id);
 	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes);
 	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data);
+	public JSONObject doSyncSharingQA(User user, ServiceContext serviceContext, JSONObject data);
+	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data);
+	public JSONObject doSyncGovernmentAgency(User user, ServiceContext serviceContext, JSONObject data);
+	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data);
+	//public JSONObject doSyncAnsewer(User user, ServiceContext serviceContext, JSONObject data);
 	//public JSONObject searchDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 	//public boolean checkExistDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 }

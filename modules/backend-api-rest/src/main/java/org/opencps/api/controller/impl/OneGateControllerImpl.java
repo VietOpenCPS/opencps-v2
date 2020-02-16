@@ -51,6 +51,7 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -59,6 +60,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -148,6 +150,7 @@ public class OneGateControllerImpl implements OneGateController {
 	
 					//Hot fix
 					ServiceInfo serviceInfo = null;
+					ServiceInfoMapping serviceInfoMapping = null;
 					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
 						serviceInfo = mapServiceInfos.get(serviceConfig.getServiceInfoId());
 						if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
@@ -157,7 +160,11 @@ public class OneGateControllerImpl implements OneGateController {
 		//						_log.debug(e1);
 		//						break;
 		//					}
+							
+							serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceInfo.getServiceCode());
+							
 							elmData.put("serviceCode", serviceInfo.getServiceCode());
+							elmData.put("serviceCodeDVCQG", serviceInfoMapping != null ? serviceInfoMapping : StringPool.BLANK);
 							elmData.put("serviceName", serviceInfo.getServiceName());
 							elmData.put("govAgencyCode", serviceConfig.getGovAgencyCode());
 							elmData.put("govAgencyName", serviceConfig.getGovAgencyName());

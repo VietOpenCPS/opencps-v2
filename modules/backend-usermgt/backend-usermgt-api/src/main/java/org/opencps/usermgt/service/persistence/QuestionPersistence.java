@@ -1031,6 +1031,218 @@ public interface QuestionPersistence extends BasePersistence<Question> {
 		String questionType, String subDomainCode);
 
 	/**
+	* Returns the question where groupId = &#63; and className = &#63; and classPK = &#63; or throws a {@link NoSuchQuestionException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the matching question
+	* @throws NoSuchQuestionException if a matching question could not be found
+	*/
+	public Question findByG_CN_CPK(long groupId, String className,
+		String classPK) throws NoSuchQuestionException;
+
+	/**
+	* Returns the question where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the matching question, or <code>null</code> if a matching question could not be found
+	*/
+	public Question fetchByG_CN_CPK(long groupId, String className,
+		String classPK);
+
+	/**
+	* Returns the question where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching question, or <code>null</code> if a matching question could not be found
+	*/
+	public Question fetchByG_CN_CPK(long groupId, String className,
+		String classPK, boolean retrieveFromCache);
+
+	/**
+	* Removes the question where groupId = &#63; and className = &#63; and classPK = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the question that was removed
+	*/
+	public Question removeByG_CN_CPK(long groupId, String className,
+		String classPK) throws NoSuchQuestionException;
+
+	/**
+	* Returns the number of questions where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the number of matching questions
+	*/
+	public int countByG_CN_CPK(long groupId, String className, String classPK);
+
+	/**
+	* Returns all the questions where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @return the matching questions
+	*/
+	public java.util.List<Question> findByG_P_SYNC(long groupId, int publish,
+		int synced);
+
+	/**
+	* Returns a range of all the questions where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of questions
+	* @param end the upper bound of the range of questions (not inclusive)
+	* @return the range of matching questions
+	*/
+	public java.util.List<Question> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end);
+
+	/**
+	* Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of questions
+	* @param end the upper bound of the range of questions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching questions
+	*/
+	public java.util.List<Question> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the questions where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link QuestionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of questions
+	* @param end the upper bound of the range of questions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching questions
+	*/
+	public java.util.List<Question> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching question
+	* @throws NoSuchQuestionException if a matching question could not be found
+	*/
+	public Question findByG_P_SYNC_First(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException;
+
+	/**
+	* Returns the first question in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching question, or <code>null</code> if a matching question could not be found
+	*/
+	public Question fetchByG_P_SYNC_First(long groupId, int publish,
+		int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator);
+
+	/**
+	* Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching question
+	* @throws NoSuchQuestionException if a matching question could not be found
+	*/
+	public Question findByG_P_SYNC_Last(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException;
+
+	/**
+	* Returns the last question in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching question, or <code>null</code> if a matching question could not be found
+	*/
+	public Question fetchByG_P_SYNC_Last(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator);
+
+	/**
+	* Returns the questions before and after the current question in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param questionId the primary key of the current question
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next question
+	* @throws NoSuchQuestionException if a question with the primary key could not be found
+	*/
+	public Question[] findByG_P_SYNC_PrevAndNext(long questionId, long groupId,
+		int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Question> orderByComparator)
+		throws NoSuchQuestionException;
+
+	/**
+	* Removes all the questions where groupId = &#63; and publish = &#63; and synced = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	*/
+	public void removeByG_P_SYNC(long groupId, int publish, int synced);
+
+	/**
+	* Returns the number of questions where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @return the number of matching questions
+	*/
+	public int countByG_P_SYNC(long groupId, int publish, int synced);
+
+	/**
 	* Caches the question in the entity cache if it is enabled.
 	*
 	* @param question the question

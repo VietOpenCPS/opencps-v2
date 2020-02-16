@@ -235,6 +235,50 @@ public interface AnswerModel extends BaseModel<Answer>, GroupedModel,
 	 */
 	public void setPublish(int publish);
 
+	/**
+	 * Returns the class name of this answer.
+	 *
+	 * @return the class name of this answer
+	 */
+	@AutoEscape
+	public String getClassName();
+
+	/**
+	 * Sets the class name of this answer.
+	 *
+	 * @param className the class name of this answer
+	 */
+	public void setClassName(String className);
+
+	/**
+	 * Returns the class pk of this answer.
+	 *
+	 * @return the class pk of this answer
+	 */
+	@AutoEscape
+	public String getClassPK();
+
+	/**
+	 * Sets the class pk of this answer.
+	 *
+	 * @param classPK the class pk of this answer
+	 */
+	public void setClassPK(String classPK);
+
+	/**
+	 * Returns the synced of this answer.
+	 *
+	 * @return the synced of this answer
+	 */
+	public int getSynced();
+
+	/**
+	 * Sets the synced of this answer.
+	 *
+	 * @param synced the synced of this answer
+	 */
+	public void setSynced(int synced);
+
 	@Override
 	public boolean isNew();
 
