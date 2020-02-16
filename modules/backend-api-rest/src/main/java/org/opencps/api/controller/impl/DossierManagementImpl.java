@@ -7155,4 +7155,54 @@ public class DossierManagementImpl implements DossierManagement {
 				"Do not have permission").build();
 		}
 	}
+
+	@Override
+	public Response updateInformDossier(
+		HttpServletRequest request, HttpHeaders header, Company company,
+		Locale locale, User user, ServiceContext serviceContext, String id,
+		DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+
+		DossierPermission dossierPermission = new DossierPermission();
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			dossierPermission.hasCreateDossier(
+				groupId, user.getUserId(), input.getServiceCode(),
+				input.getGovAgencyCode(), input.getDossierTemplateNo());
+
+			Dossier oldDossier = DossierUtils.getDossier(id, groupId);
+			if (oldDossier != null) {
+				if (Validator.isNotNull(input.getDossierNo())) {
+					oldDossier.setDossierNo(input.getDossierNo());
+				}
+				if (Validator.isNotNull(input.getReceiveDate())) {
+					oldDossier.setReceiveDate(new Date(GetterUtil.getLong(input.getReceiveDate())));
+				}
+				if (Validator.isNotNull(input.getDueDate())) {
+					oldDossier.setDueDate(new Date(GetterUtil.getLong(input.getDueDate())));
+				}
+				
+				oldDossier = DossierLocalServiceUtil.updateDossier(oldDossier);
+				DossierDetailModel result =
+						DossierUtils.mappingForGetDetail(oldDossier, user.getUserId());
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			}
+			else {
+				DossierDetailModel result =
+						new DossierDetailModel();
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();				
+			}
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

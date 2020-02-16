@@ -223,7 +223,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="applicantName" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">5000</hint>
 		</field>
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
