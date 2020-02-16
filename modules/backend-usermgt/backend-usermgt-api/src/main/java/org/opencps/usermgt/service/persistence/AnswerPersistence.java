@@ -282,6 +282,359 @@ public interface AnswerPersistence extends BasePersistence<Answer> {
 	public int countByG_Q_PL(long groupId, long questionId, int[] publishs);
 
 	/**
+	* Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or throws a {@link NoSuchAnswerException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the matching answer
+	* @throws NoSuchAnswerException if a matching answer could not be found
+	*/
+	public Answer findByG_CN_CPK(long groupId, String className, String classPK)
+		throws NoSuchAnswerException;
+
+	/**
+	* Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_CN_CPK(long groupId, String className, String classPK);
+
+	/**
+	* Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_CN_CPK(long groupId, String className,
+		String classPK, boolean retrieveFromCache);
+
+	/**
+	* Removes the answer where groupId = &#63; and className = &#63; and classPK = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the answer that was removed
+	*/
+	public Answer removeByG_CN_CPK(long groupId, String className,
+		String classPK) throws NoSuchAnswerException;
+
+	/**
+	* Returns the number of answers where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the number of matching answers
+	*/
+	public int countByG_CN_CPK(long groupId, String className, String classPK);
+
+	/**
+	* Returns all the answers where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @return the matching answers
+	*/
+	public java.util.List<Answer> findByG_Q(long groupId, long questionId);
+
+	/**
+	* Returns a range of all the answers where groupId = &#63; and questionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @return the range of matching answers
+	*/
+	public java.util.List<Answer> findByG_Q(long groupId, long questionId,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the answers where groupId = &#63; and questionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching answers
+	*/
+	public java.util.List<Answer> findByG_Q(long groupId, long questionId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the answers where groupId = &#63; and questionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching answers
+	*/
+	public java.util.List<Answer> findByG_Q(long groupId, long questionId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching answer
+	* @throws NoSuchAnswerException if a matching answer could not be found
+	*/
+	public Answer findByG_Q_First(long groupId, long questionId,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Returns the first answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_Q_First(long groupId, long questionId,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns the last answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching answer
+	* @throws NoSuchAnswerException if a matching answer could not be found
+	*/
+	public Answer findByG_Q_Last(long groupId, long questionId,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Returns the last answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_Q_Last(long groupId, long questionId,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns the answers before and after the current answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	*
+	* @param answerId the primary key of the current answer
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next answer
+	* @throws NoSuchAnswerException if a answer with the primary key could not be found
+	*/
+	public Answer[] findByG_Q_PrevAndNext(long answerId, long groupId,
+		long questionId,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Removes all the answers where groupId = &#63; and questionId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	*/
+	public void removeByG_Q(long groupId, long questionId);
+
+	/**
+	* Returns the number of answers where groupId = &#63; and questionId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param questionId the question ID
+	* @return the number of matching answers
+	*/
+	public int countByG_Q(long groupId, long questionId);
+
+	/**
+	* Returns all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @return the matching answers
+	*/
+	public java.util.List<Answer> findByG_P_SYNC(long groupId, int publish,
+		int synced);
+
+	/**
+	* Returns a range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @return the range of matching answers
+	*/
+	public java.util.List<Answer> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end);
+
+	/**
+	* Returns an ordered range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching answers
+	*/
+	public java.util.List<Answer> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param start the lower bound of the range of answers
+	* @param end the upper bound of the range of answers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching answers
+	*/
+	public java.util.List<Answer> findByG_P_SYNC(long groupId, int publish,
+		int synced, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching answer
+	* @throws NoSuchAnswerException if a matching answer could not be found
+	*/
+	public Answer findByG_P_SYNC_First(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Returns the first answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_P_SYNC_First(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns the last answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching answer
+	* @throws NoSuchAnswerException if a matching answer could not be found
+	*/
+	public Answer findByG_P_SYNC_Last(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Returns the last answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching answer, or <code>null</code> if a matching answer could not be found
+	*/
+	public Answer fetchByG_P_SYNC_Last(long groupId, int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator);
+
+	/**
+	* Returns the answers before and after the current answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param answerId the primary key of the current answer
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next answer
+	* @throws NoSuchAnswerException if a answer with the primary key could not be found
+	*/
+	public Answer[] findByG_P_SYNC_PrevAndNext(long answerId, long groupId,
+		int publish, int synced,
+		com.liferay.portal.kernel.util.OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException;
+
+	/**
+	* Removes all the answers where groupId = &#63; and publish = &#63; and synced = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	*/
+	public void removeByG_P_SYNC(long groupId, int publish, int synced);
+
+	/**
+	* Returns the number of answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	*
+	* @param groupId the group ID
+	* @param publish the publish
+	* @param synced the synced
+	* @return the number of matching answers
+	*/
+	public int countByG_P_SYNC(long groupId, int publish, int synced);
+
+	/**
 	* Caches the answer in the entity cache if it is enabled.
 	*
 	* @param answer the answer
