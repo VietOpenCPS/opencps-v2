@@ -1,5 +1,7 @@
 package org.opencps.sample;
 
+import com.liferay.petra.string.StringPool;
+
 public class FullNameUtil {
 
 	public FullNameUtil(String firstName, String middleName, String lastName) {
@@ -13,12 +15,12 @@ public class FullNameUtil {
 	}
 
 	public String getMiddleInitial() {
-		return _middleName.charAt(0) + ".";
+		return _middleName.charAt(0) + StringPool.PERIOD;
 	}
 
 	@Override
 	public String toString() {
-		return _firstName + " " + getMiddleInitial() + " " + _lastName;
+		return _firstName + StringPool.SPACE + getMiddleInitial() + StringPool.SPACE + _lastName;
 	}
 
 	private String _firstName;

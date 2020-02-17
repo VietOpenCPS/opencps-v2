@@ -13,6 +13,8 @@ public class ConstantUtils {
 	public static final String WORD = "word";
 	public static final String XLS = "xls";
 	public static final String XLSX = "xlsx";
+	public static final String DOT_XLSX = ".xlsx";
+	public static final String DOT_XLS = ".xls";
 	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
@@ -102,6 +104,7 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
 	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
 	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
+	public static final String MEDIA_TYPE_EXCEL = "application/vnd.ms-excel";
 	
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String ATTACHMENT_FILENAME = "attachment.filename";

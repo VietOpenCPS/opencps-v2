@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -39,7 +40,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.StatisticManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.StatisticUtils;
 import org.opencps.api.statistic.model.StatisticCountResultModel;
 import org.opencps.api.statistic.model.StatisticDossierResults;
@@ -56,7 +60,9 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.MenuConfig;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -78,7 +84,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 	public Response getDossierTodo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, StatisticDossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -101,10 +107,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			StatisticDossierResults results = new StatisticDossierResults();
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getStatisticDossierModel()
-					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray("data")));
+					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -127,7 +133,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 
 			// Get info input
@@ -148,10 +154,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 			StatisticDossierResults results = new StatisticDossierResults();
 
-			results.setTotal(jsonData.getInt("total"));
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 			results.getStatisticDossierModel()
-					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray("data")));
+					.addAll(StatisticUtils.mapperStatisticDossierList(jsonData.getJSONArray(ConstantUtils.DATA)));
 
 			return Response.status(200).entity(results).build();
 
@@ -160,6 +166,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 		}
 	}
 
+	private static final String STEP_EQUAL = "step=";
+	
 	@Override
 	public Response getDossierTodoTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, StatisticDossierSearchModel query, String owner) {
@@ -174,7 +182,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 //			int stepType = 0;
 
@@ -188,11 +196,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (roles != null && roles.size() > 0) {
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
-					if ("Administrator".equals(role.getName())) {
+					if (ConstantUtils.ROLE_ADMIN.equals(role.getName())) {
 						isAdmin = true;
 						break;
 					}
-					if ("Administrator_data".equals(role.getName())) {
+					if (ConstantUtils.ROLE_ADMIN_DATA.equals(role.getName())) {
 						isAdmin = true;
 						break;
 					}
@@ -216,7 +224,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			else {
 				//???
 				if (!ownerBoolean) {
-					String permission = user.getUserId() + StringPool.UNDERLINE + "write";
+					String permission = user.getUserId() + StringPool.UNDERLINE + ConstantUtils.PERMISSION_WRITE;
 					params.put(DossierTerm.MAPPING_PERMISSION, permission);					
 				}
 			}
@@ -257,11 +265,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 									params, null, serviceContext);
 //							_log.info("START");
 							JSONObject statistic = JSONFactoryUtil.createJSONObject();
-							statistic.put("stepCode", stepConfig.getStepCode());
-							statistic.put("stepName", stepConfig.getStepName());
-							statistic.put("dossierStatus", stepConfig.getDossierStatus());
-							statistic.put("dossierSubStatus", stepConfig.getDossierSubStatus());
-							statistic.put("totalCount", count);
+							statistic.put(StepConfigTerm.STEP_CODE, stepConfig.getStepCode());
+							statistic.put(StepConfigTerm.STEP_NAME, stepConfig.getStepName());
+							statistic.put(StepConfigTerm.DOSSIER_STATUS, stepConfig.getDossierStatus());
+							statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, stepConfig.getDossierSubStatus());
+							statistic.put(StepConfigTerm.TOTAL_COUNT, count);
 							total += count;
 							statistics.put(statistic);
 						}
@@ -308,13 +316,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 						
 						String queryParams = menuConfig.getQueryParams();
 						if (Validator.isNotNull(queryParams)) {
-							int length = queryParams.lastIndexOf("?");
+							int length = queryParams.lastIndexOf(StringPool.QUESTION);
 							if (length > 0) {
 								String subQuery = queryParams.substring(length + 1);
-								String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split("&") : null;
+								String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split(StringPool.AMPERSAND) : null;
 								for (String param : elementParams) {
-									if (Validator.isNotNull(param) && param.contains("step=")) {
-										String[] paramSplit = param.split("=");
+									if (Validator.isNotNull(param) && param.contains(STEP_EQUAL)) {
+										String[] paramSplit = param.split(StringPool.EQUAL);
 										if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
 											long totalGroup = 0;
 											String[] splitStep = paramSplit[1].split(StringPool.COMMA);
@@ -332,12 +340,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 //													_log.info("count: "+count);
 													if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
 														JSONObject statistic = JSONFactoryUtil.createJSONObject();
-														statistic.put("stepCode", step.getStepCode());
-														statistic.put("stepName", step.getStepName());
-														statistic.put("dossierStatus", step.getDossierStatus());
-														statistic.put("dossierSubStatus", step.getDossierSubStatus());
-														statistic.put("menuGroup", menuConfig.getMenuGroup());
-														statistic.put("totalCount", count);
+														statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+														statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+														statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+														statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+														statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+														statistic.put(StepConfigTerm.TOTAL_COUNT, count);
 														statistics.put(statistic);
 													}
 													
@@ -347,12 +355,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 											}
 											//
 											JSONObject statistic = JSONFactoryUtil.createJSONObject();
-											statistic.put("stepCode", paramSplit[1]);
-											statistic.put("stepName", "");
-											statistic.put("dossierStatus", "");
-											statistic.put("dossierSubStatus", "");
-											statistic.put("menuGroup", menuConfig.getMenuGroup());
-											statistic.put("totalCount", totalGroup);
+											statistic.put(StepConfigTerm.STEP_CODE, paramSplit[1]);
+											statistic.put(StepConfigTerm.STEP_NAME, StringPool.BLANK);
+											statistic.put(StepConfigTerm.DOSSIER_STATUS, StringPool.BLANK);
+											statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, StringPool.BLANK);
+											statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+											statistic.put(StepConfigTerm.TOTAL_COUNT, totalGroup);
 											statistics.put(statistic);
 										} else {
 											StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
@@ -367,12 +375,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 														null, serviceContext);
 //												_log.info("count: "+count);
 												JSONObject statistic = JSONFactoryUtil.createJSONObject();
-												statistic.put("stepCode", step.getStepCode());
-												statistic.put("stepName", step.getStepName());
-												statistic.put("dossierStatus", step.getDossierStatus());
-												statistic.put("dossierSubStatus", step.getDossierSubStatus());
-												statistic.put("menuGroup", menuConfig.getMenuGroup());
-												statistic.put("totalCount", count);
+												statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+												statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+												statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+												statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+												statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+												statistic.put(StepConfigTerm.TOTAL_COUNT, count);
 												total += count;
 												statistics.put(statistic);
 											}
@@ -392,7 +400,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			results.getStatisticDossierModel()
 					.addAll(StatisticUtils.mapperStatisticDossierList(statistics));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -403,30 +411,30 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 		params.put(DossierTerm.ASSIGNED_USER_ID, StringPool.BLANK);
 		if (Validator.isNotNull(subQuery)) {
-			String[] elementParams = subQuery.split("&");
+			String[] elementParams = subQuery.split(StringPool.AMPERSAND);
 			for (String param : elementParams) {
-				if (Validator.isNotNull(param) && param.contains("=")) {
-					String[] paramSplit = param.split("=");
+				if (Validator.isNotNull(param) && param.contains(StringPool.EQUAL)) {
+					String[] paramSplit = param.split(StringPool.EQUAL);
 					if (Validator.isNotNull(paramSplit[1])) {
-						if ("assigned".equalsIgnoreCase(paramSplit[0])) {
-							if (stepCode.contains("x")) {
+						if (DossierActionUserTerm.ASSIGNED.equalsIgnoreCase(paramSplit[0])) {
+							if (stepCode.contains(StepConfigTerm.X)) {
 								StringBuilder sbParams = new StringBuilder();
 								for (int i = 0; i < 9; i++) {
 									if (i == 0) {
-										sbParams.append(userId + "_" + stepCode.replace("x", String.valueOf(i)) + "_" + paramSplit[1]);
+										sbParams.append(userId + StringPool.UNDERLINE + stepCode.replace(StepConfigTerm.X, String.valueOf(i)) + StringPool.UNDERLINE + paramSplit[1]);
 									} else {
 										sbParams.append(StringPool.COMMA);
-										sbParams.append(userId + "_" + stepCode.replace("x", String.valueOf(i)) + "_" + paramSplit[1]);
+										sbParams.append(userId + StringPool.UNDERLINE + stepCode.replace(StepConfigTerm.X, String.valueOf(i)) + StringPool.UNDERLINE + paramSplit[1]);
 									}
 								}
 								params.put(DossierTerm.ASSIGNED_USER_ID,
 										sbParams.toString());
 							} else {
 								params.put(DossierTerm.ASSIGNED_USER_ID,
-										userId + "_" + stepCode + "_" + paramSplit[1]);
+										userId + StringPool.UNDERLINE + stepCode + StringPool.UNDERLINE + paramSplit[1]);
 							}
-						} else if (!"step".equalsIgnoreCase(paramSplit[0])
-								&& !"order".equalsIgnoreCase(paramSplit[0])) {
+						} else if (!StatisticManagementConstants.STEP_KEY.equalsIgnoreCase(paramSplit[0])
+								&& !StatisticManagementConstants.ORDER_KEY.equalsIgnoreCase(paramSplit[0])) {
 							params.put(paramSplit[0], paramSplit[1]);
 						}
 					}
@@ -451,7 +459,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				throw new UnauthenticationException();
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			_log.debug("userId: " + userId);
 			
@@ -474,7 +482,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			long total = 0;
 			//
 			JSONArray statisticArr = JSONFactoryUtil.createJSONArray();
-			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(StatisticManagementConstants.DOSSIER_STATUS,
 					groupId);
 			if (dictCollection != null) {
 				List<DictItem> dictItemList = DictItemLocalServiceUtil.
@@ -492,9 +500,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 							long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 							total += count;
 
-							statistic.put("key", statusCode);
-							statistic.put("title", dictItem.getItemName());
-							statistic.put("count", count);
+							statistic.put(StatisticManagementConstants.KEY, statusCode);
+							statistic.put(StatisticManagementConstants.TITLE, dictItem.getItemName());
+							statistic.put(StatisticManagementConstants.COUNT, count);
 
 							_log.debug("statistic: " + statistic.toJSONString());
 							statisticArr.put(statistic);
@@ -510,15 +518,15 @@ public class StatisticManagementImpl implements StatisticManagement {
 				switch (i) {
 				case 0:
 					top = DossierTerm.DELAY;
-					topName = "Chậm hạn";
+					topName = MessageUtil.getMessage(StatisticManagementConstants.DELAY);
 					break;
 				case 1:
 					top = DossierTerm.OVER_DUE;
-					topName = "Quá hạn";
+					topName = MessageUtil.getMessage(StatisticManagementConstants.OVERDUE);
 					break;
 				case 2:
 					top = DossierTerm.COMING;
-					topName = "Sắp đến hạn";
+					topName = MessageUtil.getMessage(StatisticManagementConstants.COMING);
 					break;
 
 				default:
@@ -527,9 +535,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 				params.put(DossierTerm.TOP, top);
 				long count = DossierLocalServiceUtil.countLucene(params, searchContext);
 				JSONObject jsonTop = JSONFactoryUtil.createJSONObject();
-				jsonTop.put("key", top);
-				jsonTop.put("title", topName);
-				jsonTop.put("count", count);
+				jsonTop.put(StatisticManagementConstants.KEY, top);
+				jsonTop.put(StatisticManagementConstants.TITLE, topName);
+				jsonTop.put(StatisticManagementConstants.COUNT, count);
 				statisticArr.put(jsonTop);
 				_log.debug("top: " + top);
 				_log.debug("title: " + topName);
@@ -547,7 +555,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				results.setTotal(0);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -567,17 +575,17 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 			
 			JSONObject docDefinition = JSONFactoryUtil.createJSONObject(data);
-			JSONArray contentArr = docDefinition.getJSONArray("content");
+			JSONArray contentArr = docDefinition.getJSONArray(StatisticManagementConstants.CONTENT);
 			JSONArray bodyArr = null;
 			int headerRows = 0;
 			workbook = new HSSFWorkbook();
-			HSSFSheet mainSheet = workbook.createSheet("report");
+			HSSFSheet mainSheet = workbook.createSheet(StatisticManagementConstants.REPORT);
 			int maxCol = 0;
 	
 			for (int i = 0; i < contentArr.length(); i++) {
-				if (contentArr.getJSONObject(i).has("table")) {
-					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
-					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
+				if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TABLE)) {
+					bodyArr = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getJSONArray(StatisticManagementConstants.BODY);
+					headerRows = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getInt(StatisticManagementConstants.HEADER_ROWS);
 					
 					for (int tempi = headerRows + 1; tempi < bodyArr.length(); tempi++) {
 						JSONArray tempObj = bodyArr.getJSONArray(tempi);
@@ -591,10 +599,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 			
 			int startRow = 0;
 			for (int i = 0; i < contentArr.length(); i++) {
-				if (contentArr.getJSONObject(i).has("table")) {
+				if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TABLE)) {
 					//int startBorderRow = startRow;
-					bodyArr = contentArr.getJSONObject(i).getJSONObject("table").getJSONArray("body");
-					headerRows = contentArr.getJSONObject(i).getJSONObject("table").getInt("headerRows");
+					bodyArr = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getJSONArray(StatisticManagementConstants.BODY);
+					headerRows = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getInt(StatisticManagementConstants.HEADER_ROWS);
 					for (int tempi = 0; tempi <= headerRows; tempi++) {
 						JSONArray tempObj = bodyArr.getJSONArray(tempi);
 						int startCol = 0;
@@ -609,19 +617,19 @@ public class StatisticManagementImpl implements StatisticManagement {
 							int spanRow = 1;
 							if (columnObj == null) {
 							}
-							if (columnObj != null && columnObj.has("rowSpan")) {
-								spanRow = columnObj.getInt("rowSpan");
+							if (columnObj != null && columnObj.has(StatisticManagementConstants.ROW_SPAN)) {
+								spanRow = columnObj.getInt(StatisticManagementConstants.ROW_SPAN);
 							}
 							if (columnObj != null) {
-								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
+								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
-								if (columnObj.has("alignment")) {
-									String alignment = columnObj.getString("alignment");
-									if ("left".equals(alignment)) {
+								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
+									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
+									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
 										cellStyle.setAlignment(HorizontalAlignment.LEFT);
 									}
-									else if ("right".equals(alignment)) {
+									else if (StatisticManagementConstants.ALIGNMENT_RIGHT.equals(alignment)) {
 										cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 									}
 									else {
@@ -629,14 +637,14 @@ public class StatisticManagementImpl implements StatisticManagement {
 									}
 									row.getCell(startCol).setCellStyle(cellStyle);
 								}
-								if (columnObj != null && columnObj.has("colSpan")) {
-									spanCol = columnObj.getInt("colSpan");
+								if (columnObj != null && columnObj.has(StatisticManagementConstants.COL_SPAN)) {
+									spanCol = columnObj.getInt(StatisticManagementConstants.COL_SPAN);
 								}
 								else {
 								}
 								if (spanRow > 1 || spanCol > 1) {
 									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
-									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
+//									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
 								}
 							}
 							startCol++;
@@ -661,19 +669,19 @@ public class StatisticManagementImpl implements StatisticManagement {
 							int spanRow = 1;
 							if (columnObj == null) {
 							}
-							if (columnObj != null && columnObj.has("rowSpan")) {
-								spanRow = columnObj.getInt("rowSpan");
+							if (columnObj != null && columnObj.has(StatisticManagementConstants.ROW_SPAN)) {
+								spanRow = columnObj.getInt(StatisticManagementConstants.ROW_SPAN);
 							}
 							if (columnObj != null) {
-								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString("text") : StringPool.BLANK);						
+								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
-								if (columnObj.has("alignment")) {
-									String alignment = columnObj.getString("alignment");
-									if ("left".equals(alignment)) {
+								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
+									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
+									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
 										cellStyle.setAlignment(HorizontalAlignment.LEFT);
 									}
-									else if ("right".equals(alignment)) {
+									else if (StatisticManagementConstants.ALIGNMENT_RIGHT.equals(alignment)) {
 										cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 									}
 									else {
@@ -681,14 +689,14 @@ public class StatisticManagementImpl implements StatisticManagement {
 									}
 									row.getCell(startCol).setCellStyle(cellStyle);
 								}
-								if (columnObj != null && columnObj.has("colSpan")) {
-									spanCol = columnObj.getInt("colSpan");
+								if (columnObj != null && columnObj.has(StatisticManagementConstants.COL_SPAN)) {
+									spanCol = columnObj.getInt(StatisticManagementConstants.COL_SPAN);
 								}
 								else {
 								}
 								if (spanRow > 1 || spanCol > 1) {
 									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
-									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
+//									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
 								}
 							}
 							startCol++;
@@ -696,29 +704,29 @@ public class StatisticManagementImpl implements StatisticManagement {
 						startRow++;
 					}	
 					
-				} else if (contentArr.getJSONObject(i).has("text")) {
+				} else if (contentArr.getJSONObject(i).has(StatisticManagementConstants.TEXT)) {
 					HSSFRow row = mainSheet.createRow(startRow);
-					JSONArray textArr = contentArr.getJSONObject(i).getJSONArray("text");
+					JSONArray textArr = contentArr.getJSONObject(i).getJSONArray(StatisticManagementConstants.TEXT);
 					String text = null;
 					if (textArr == null) {
-						text = contentArr.getJSONObject(i).getString("text");
+						text = contentArr.getJSONObject(i).getString(StatisticManagementConstants.TEXT);
 					}
 					else {
 						StringBuilder textBd = new StringBuilder();
 						for (int tempi = 0; tempi < textArr.length(); tempi++) {
-							textBd.append(textArr.getJSONObject(tempi).getString("text"));
+							textBd.append(textArr.getJSONObject(tempi).getString(StatisticManagementConstants.TEXT));
 						}
 						text = textBd.toString();
 					}
 					row.createCell(0).setCellValue(text != null ? text : StringPool.BLANK);	
 					CellStyle cellStyle = row.getCell(0).getCellStyle();
 					cellStyle.setWrapText(true);
-					if (contentArr.getJSONObject(i).has("alignment")) {
-						String alignment = contentArr.getJSONObject(i).getString("alignment");
-						if ("left".equals(alignment)) {
+					if (contentArr.getJSONObject(i).has(StatisticManagementConstants.ALIGNMENT)) {
+						String alignment = contentArr.getJSONObject(i).getString(StatisticManagementConstants.ALIGNMENT);
+						if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
 							cellStyle.setAlignment(HorizontalAlignment.LEFT);
 						}
-						else if ("right".equals(alignment)) {
+						else if (StatisticManagementConstants.ALIGNMENT_RIGHT.equals(alignment)) {
 							cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 						}
 						else {
@@ -729,33 +737,33 @@ public class StatisticManagementImpl implements StatisticManagement {
 					mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, 0, maxCol - 1));		
 					startRow++;
 				}
-				else if (contentArr.getJSONObject(i).has("columns")) {
+				else if (contentArr.getJSONObject(i).has(StatisticManagementConstants.COLUMNS)) {
 					HSSFRow row = mainSheet.createRow(startRow);
-					JSONArray columnArr = contentArr.getJSONObject(i).getJSONArray("columns");
+					JSONArray columnArr = contentArr.getJSONObject(i).getJSONArray(StatisticManagementConstants.COLUMNS);
 					int mergeColumn = maxCol / columnArr.length();
 					String text = null;
 					
 					for (int tempi = 0; tempi < columnArr.length(); tempi++) {
-						JSONArray textArr = columnArr.getJSONObject(tempi).getJSONArray("text");
+						JSONArray textArr = columnArr.getJSONObject(tempi).getJSONArray(StatisticManagementConstants.TEXT);
 						if (textArr == null) {
-							text = columnArr.getJSONObject(tempi).getString("text");
+							text = columnArr.getJSONObject(tempi).getString(StatisticManagementConstants.TEXT);
 						}
 						else {
 							StringBuilder textBd = new StringBuilder();
 							for (int tempj = 0; tempj < textArr.length(); tempj++) {
-								textBd.append(textArr.getJSONObject(tempj).getString("text"));
+								textBd.append(textArr.getJSONObject(tempj).getString(StatisticManagementConstants.TEXT));
 							}
 							text = textBd.toString();							
 						}						
 						row.createCell(tempi * mergeColumn).setCellValue(text != null ? text : StringPool.BLANK);	
 						CellStyle cellStyle = row.getCell(tempi * mergeColumn).getCellStyle();
 						cellStyle.setWrapText(true);
-						if (contentArr.getJSONObject(i).has("alignment")) {
-							String alignment = contentArr.getJSONObject(i).getString("alignment");
-							if ("left".equals(alignment)) {
+						if (contentArr.getJSONObject(i).has(StatisticManagementConstants.ALIGNMENT)) {
+							String alignment = contentArr.getJSONObject(i).getString(StatisticManagementConstants.ALIGNMENT);
+							if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
 								cellStyle.setAlignment(HorizontalAlignment.LEFT);
 							}
-							else if ("right".equals(alignment)) {
+							else if (StatisticManagementConstants.ALIGNMENT_RIGHT.equals(alignment)) {
 								cellStyle.setAlignment(HorizontalAlignment.RIGHT);
 							}
 							else {
@@ -770,15 +778,15 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 			
 						
-			File exportDir = new File("exported");
+			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
 			}
-			File xlsFile = new File(exportDir.getAbsolutePath() + "/" + (new Date()).getTime() + ".xls");
-			String fileName = (new Date()).getTime() + ".xls";
+			File xlsFile = new File(exportDir.getAbsolutePath() + StringPool.SLASH + (new Date()).getTime() + ConstantUtils.DOT_XLS);
+			String fileName = (new Date()).getTime() + ConstantUtils.DOT_XLS;
 			
 			try { 
-				FileOutputStream out = new FileOutputStream(new File(exportDir.getAbsolutePath() + "/" + (new Date()).getTime() + ".xls")); 
+				FileOutputStream out = new FileOutputStream(new File(exportDir.getAbsolutePath() + StringPool.SLASH + (new Date()).getTime() + ConstantUtils.DOT_XLS)); 
 				workbook.write(out); 
 				out.close();
 				workbook.close();
@@ -788,9 +796,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 			
 			ResponseBuilder responseBuilder = Response.ok((Object) xlsFile);
-			responseBuilder.header("Content-Disposition",
-					"attachment; filename=\"" + fileName + "\"");
-			responseBuilder.header("Content-Type", "application/vnd.ms-excel");
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+			responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_EXCEL);
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -811,7 +820,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 	@Override
 	public Response getDossierPerson(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String from, String to) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 //		String query = "{\r\n" + 
 //				"  \"size\": 0,\r\n" + 
 //				"  \"query\": {\r\n" + 
@@ -904,11 +913,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
 					JSONObject obj = JSONFactoryUtil.createJSONObject();
-					obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
-					obj.put("overdue", actionOverdueDataJsonArray.getLong(1));
-					obj.put("userId", actionOverdueDataJsonArray.getLong(0));
-					obj.put("undue", 0);
-					obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
+					obj.put(StatisticManagementConstants.FULLNAME_KEY, mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
+					obj.put(StatisticManagementConstants.OVERDUE_KEY, actionOverdueDataJsonArray.getLong(1));
+					obj.put(Field.USER_ID, actionOverdueDataJsonArray.getLong(0));
+					obj.put(StatisticManagementConstants.UNDUE_KEY, 0);
+					obj.put(StatisticManagementConstants.JOBPOS_NAME, mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
 					result.put(obj);					
 				}
 			} catch (JSONException e) {
@@ -955,10 +964,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 				actionOverdueDataJsonArray = JSONFactoryUtil.createJSONArray(serilizeString);
 				for (int i = 0; i < result.length(); i++) {
 					JSONObject obj = result.getJSONObject(i);
-					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
-						long overdue = obj.getLong("overdue");
+					if (obj.has(Field.USER_ID) && obj.getLong(Field.USER_ID) == actionOverdueDataJsonArray.getLong(0)) {
+						long overdue = obj.getLong(StatisticManagementConstants.OVERDUE_KEY);
 						overdue += actionOverdueDataJsonArray.getLong(1);
-						obj.put("overdue", overdue);
+						obj.put(StatisticManagementConstants.OVERDUE_KEY, overdue);
 					}
 				}
 			} catch (JSONException e1) {
@@ -1006,20 +1015,20 @@ public class StatisticManagementImpl implements StatisticManagement {
 				boolean foundStatistic = false;
 				for (int i = 0; i < result.length(); i++) {
 					JSONObject obj = result.getJSONObject(i);
-					if (obj.has("userId") && obj.getLong("userId") == actionOverdueDataJsonArray.getLong(0)) {
+					if (obj.has(Field.USER_ID) && obj.getLong(Field.USER_ID) == actionOverdueDataJsonArray.getLong(0)) {
 						foundStatistic = true;
-						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
+						obj.put(StatisticManagementConstants.UNDUE_KEY, actionOverdueDataJsonArray.getLong(1));
 						break;
 					}
 				}
 				if (!foundStatistic) {
 					if (mapEmps.containsKey(actionOverdueDataJsonArray.getLong(0))) {
 						JSONObject obj = JSONFactoryUtil.createJSONObject();
-						obj.put("fullName", mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
-						obj.put("undue", actionOverdueDataJsonArray.getLong(1));
-						obj.put("userId", actionOverdueDataJsonArray.getLong(0));
-						obj.put("overdue", 0);
-						obj.put("jobPosName", mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
+						obj.put(StatisticManagementConstants.FULLNAME_KEY, mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getFullName());
+						obj.put(StatisticManagementConstants.OVERDUE_KEY, actionOverdueDataJsonArray.getLong(1));
+						obj.put(Field.USER_ID, actionOverdueDataJsonArray.getLong(0));
+						obj.put(StatisticManagementConstants.UNDUE_KEY, 0);
+						obj.put(StatisticManagementConstants.JOBPOS_NAME, mapJobs.get(mapEmps.get(actionOverdueDataJsonArray.getLong(0)).getMainJobPostId()).getTitle());
 						
 						result.put(obj);										
 					}
