@@ -109,14 +109,14 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 					catch (Exception e) {
 						_log.debug(e);
 					}
-					if ("excel".equals(reportType)) {
+					if (ConstantTerm.EXCEL_TYPE.equals(reportType)) {
 						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
 								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.EXTENSION_XLS));
 //						responseBuilder.header(ConstantUtils.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");			
 						responseBuilder.header(ConstantUtils.CONTENT_TYPE, backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_EXCEL_CONTENT_TYPE));	
 //						responseBuilder.header("Content-Transfer-Encoding", "binary");	
 					}
-					else if ("word".equals(reportType)) {
+					else if (ConstantTerm.WORD_TYPE.equals(reportType)) {
 						responseBuilder.header(ReadFilePropertiesUtils.get(ConstantUtils.TYPE_DISPOSITON),
 								ReadFilePropertiesUtils.get(ConstantUtils.VALUE_PATTERN_FILENAME) + rootFileName + backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.EXTENSION_DOC));
 						responseBuilder.header(ConstantUtils.CONTENT_TYPE, backend.api.rest.application.utils.ReadFilePropertiesUtils.get(ConstantTerm.APPLICATION_WORD_CONTENT_TYPE));	
@@ -284,7 +284,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 
 			}
 			_log.info("====END GET DATA REPORT DETAIL==== ");
-			result.put("domains", domains);
+			result.put(ConstantTerm.DOMAINS, domains);
 		} catch (JSONException e) {
 			_log.error(e);
 		}
@@ -410,7 +410,7 @@ public class StatisticReportApiImpl implements StatisticReportApi {
 				}
 			}
 			_log.info("====END GET DATA REPORT 01==== ");
-			result.put("statistics", statisticsData);
+			result.put(ConstantTerm.STATISTICS, statisticsData);
 
 		} catch (JSONException e) {
 			_log.error("JSONException: "+e);

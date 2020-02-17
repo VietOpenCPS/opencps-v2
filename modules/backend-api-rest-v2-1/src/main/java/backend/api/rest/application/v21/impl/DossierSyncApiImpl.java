@@ -1,5 +1,6 @@
 package backend.api.rest.application.v21.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -86,8 +87,8 @@ public class DossierSyncApiImpl implements DossierSyncApi{
 		try {
 			
 			if (end == null || end == 0) {
-				start = -1;
-				end = -1;
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
 			}
 			
 			DossierSyncActions actions = new DossierSyncActionsImpl();

@@ -90,6 +90,8 @@ public class ConstantTerm {
 	public static final String JASPER_ENGINE_PREVIEW_DESTINATION = "jasper/engine/preview/destination";
 	public static final String TEST_JSON = "test.json";
 	public static final String PDF_TYPE = "pdf";
+	public static final String EXCEL_TYPE = "excel";
+	public static final String WORD_TYPE = "word";
 
 	public static final String EXTENSION_DOC = "org.opencps.v21.extension.doc";
 	public static final String EXTENSION_XLS = "org.opencps.v21.extension.xls";
@@ -105,4 +107,9 @@ public class ConstantTerm {
 	public static final String REPORT_08 = "REPORT_08";
 	public static final String REPORT_09 = "REPORT_09";
 	public static final String REPORT_10 = "REPORT_10";	
+	
+	public static final String FROM = "from";
+	public static final String SIZE = "size";
+	public static final String DOMAINS = "domains";
+	public static final String STATISTICS = "statistics";
 }

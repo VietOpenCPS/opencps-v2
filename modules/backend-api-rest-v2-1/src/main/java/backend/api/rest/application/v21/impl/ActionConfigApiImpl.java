@@ -139,7 +139,7 @@ public class ActionConfigApiImpl implements ActionConfigApi {
 	@Override
 	public ActionConfigItemResult getActionConfigsElasticsearch(String q) {
 		// TODO Auto-generated method stub
-		System.out.println("ActionConfigApiImpl.getActionConfigsElasticsearch()");
+//		System.out.println("ActionConfigApiImpl.getActionConfigsElasticsearch()");
 		return null;
 	}
 
