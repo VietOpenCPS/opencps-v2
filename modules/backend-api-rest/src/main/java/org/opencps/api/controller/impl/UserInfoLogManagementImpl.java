@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +61,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 				}
 			}
 
-			return Response.status(200).entity(payLoad).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(payLoad).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -87,7 +88,7 @@ public class UserInfoLogManagementImpl implements UserInfoLogManagement{
 			UserInfoLog userInfo = uilAction.addUserInfoLog(userId, serviceInfo, applicant, 
 					dossierNo, serviceContext);
 
-			return Response.status(200).entity(userInfo.getPayload()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(userInfo.getPayload()).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

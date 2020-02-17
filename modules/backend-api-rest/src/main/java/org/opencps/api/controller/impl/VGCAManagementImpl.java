@@ -46,7 +46,7 @@ public class VGCAManagementImpl implements VGCAManagement {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		if (file.getDataHandler() != null) {
-			result.put("Status", true);		
+			result.put(ConstantUtils.VGCA_STATUS, true);		
 //			System.out.println("User: " + user.getUserId());
 			try {
 				FileEntry fileEntry = null;

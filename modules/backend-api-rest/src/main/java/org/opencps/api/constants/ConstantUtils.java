@@ -98,7 +98,7 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_ZIP = "application/zip";
 	public static final String MEDIA_TYPE_PDF = "application/pdf";
 	public static final String MEDIA_TYPE_MSWORD = "application/msword";
-	
+	public static final String MEDIA_TYPE_X509 = "application/x-x509-user-cert";
 	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
 	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
 	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
@@ -432,4 +432,7 @@ public class ConstantUtils {
 	public static final String START_ZERO = "0";
 	public static final String RETURN_GRAPH = "1{Quay lại}";
 	public static final String USER_ID = "user_id";
+	
+	public static final String DATA_CER = "data/cer/";
+	public static final String CER = "cer";
 }
