@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Date;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.soap.MessageFactory;
@@ -76,9 +77,9 @@ public class SendMTConverterUtils {
 			if (message != null) {
 				//
 				MimeHeaders mimeHeader = message.getMimeHeaders();
-				mimeHeader.setHeader("SOAPACTION", "http://tempuri.org/SendMT");
-				mimeHeader.setHeader("Content-Type", "text/xml; charset=utf-8");
-				mimeHeader.setHeader("Proxy-Connection", "keep-alive");
+				mimeHeader.setHeader(Constants.SOAPACTION, Constants.SENDMT_NAMESPACE);
+				mimeHeader.setHeader(HttpHeaders.CONTENT_TYPE, Constants.XML_UTF8_HEADER);
+				mimeHeader.setHeader(Constants.PROXY_CONNECTION, Constants.KEEP_ALIVE);
 	
 //				ByteArrayOutputStream stream = null;
 				try {
@@ -92,8 +93,8 @@ public class SendMTConverterUtils {
 							URL clone = new URL(url.toString());
 							HttpURLConnection connection = (HttpURLConnection) clone.openConnection();
 	
-							connection.setRequestProperty("Content-Type", "text/xml");
-							connection.setRequestProperty("Accept", "application/soap+xml, text/*");
+							connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, Constants.MEDIA_TYPE_XML);
+							connection.setRequestProperty(HttpHeaders.ACCEPT, Constants.MEDIA_TYPE_SOAP);
 	
 							connection.setDoOutput(true);
 							connection.setConnectTimeout(3 * 1000);

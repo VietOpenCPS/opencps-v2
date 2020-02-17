@@ -15,7 +15,6 @@ import java.util.Map;
 import org.opencps.auth.api.keys.ModelNameKeys;
 import org.opencps.kernel.template.MessageDataModel;
 
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 /**
