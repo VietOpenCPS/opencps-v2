@@ -195,7 +195,7 @@ public class ConvertDossierFromV1Dot9Utils {
 						groupId, dossier.getDossierId(), dossierPartNo, 2,
 						displayName);
 			}
-			if (oldDossierFile != null) {
+			if (oldDossierFile != null && !displayName.equals(oldDossierFile.getDisplayName())) {
 				_log.info("__Start update file at:" + new Date());
 
 				// DossierFile dossierFile = null;
@@ -216,15 +216,14 @@ public class ConvertDossierFromV1Dot9Utils {
 			else {
 				_log.info("__Start add file at:" + new Date());
 				DossierFile dossierFile = null;
+				InputStream inputStream = null;
 				// _log.info(
 				// groupId + "===" + dossier.getDossierId() + "===" +
 				// dossierPartNo + "===" + displayName);
 
-				InputStream inputStream =
-					getFileFromDVCOld(j.getString("fileUrl"));
-
-				if (dossier == null || inputStream == null) {
-					return;
+				if (Validator.isNotNull(j.getString("fileUrl"))) {
+					inputStream =
+							getFileFromDVCOld(j.getString("fileUrl"));
 				}
 
 				dossierFile = action.addDossierFile(

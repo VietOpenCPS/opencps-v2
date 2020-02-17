@@ -1462,6 +1462,11 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
+		@FormParam("classForName") String classForName,
+		@FormParam("driverManagerUrl") String driverManagerUrl,
+		@FormParam("driverManagerUser") String driverManagerUser,
+		@FormParam("driverManagerPazz") String driverManagerPazz,
+		@FormParam("mainQuery") String mainQuery,
 		@FormParam("dvcGroupId") long dvcGroupId,
 		@FormParam("groupId") long groupId);
 
@@ -1486,6 +1491,11 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
+		@FormParam("classForName") String classForName,
+		@FormParam("driverManagerUrl") String driverManagerUrl,
+		@FormParam("driverManagerUser") String driverManagerUser,
+		@FormParam("driverManagerPazz") String driverManagerPazz,
+		@FormParam("mainQuery") String mainQuery,
 		@FormParam("dvcGroupId") long dvcGroupId,
 		@FormParam("groupId") long groupId);
 	
