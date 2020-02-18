@@ -124,6 +124,7 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -3001,32 +3002,45 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		Dossier dossier = null;
-		try {
-			long dossierId = Integer.parseInt(id);
-			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		}
-		catch (NumberFormatException nfe) {
 
-		}
-		if (dossier == null) {
+		if (Validator.isNumber(id)) {
+
+			dossier = DossierLocalServiceUtil.fetchDossier(Integer.parseInt(id));
+		} else {
+
 			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 		}
-		List<Role> userRoles = user.getRoles();
-		boolean isAdmin = false;
-		for (Role r : userRoles) {
-			if (r.getName().startsWith("Administrator")) {
-				isAdmin = true;
-				break;
-			}
-		}
+		if (dossier == null) {
 
-		if (dossier != null) {
+			return Response.status(HttpStatus.SC_NOT_FOUND).entity(null).build();
+		} else {
+			
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
 			DossierAction dossierAction =
 				DossierActionLocalServiceUtil.fetchDossierAction(
 					dossier.getDossierActionId());
-			if (dossierAction != null) {
-				// if (dossierAction != null && dossierAction.isRollbackable())
-				// {
+
+			if (dossierAction == null) {
+
+				return Response.status(HttpStatus.SC_NOT_FOUND).entity("DossierAction 404").build();
+
+			} else if (dossierAction.getPending()){
+
+				return Response.status(HttpStatus.SC_FORBIDDEN).entity("Dossier Action is syncing safe").build();
+
+			} else if (!isAdmin && dossierAction.getGroupId() == groupId &&
+					dossierAction.getUserId() != serviceContext.getUserId()) {
+
+				return Response.status(HttpStatus.SC_FORBIDDEN).entity("User 403").build();
+			} else {
+
 				DossierActionLocalServiceUtil.updateState(
 					dossierAction.getDossierActionId(),
 					DossierActionTerm.STATE_ROLLBACK);
@@ -3059,46 +3073,10 @@ public class DossierManagementImpl implements DossierManagement {
 							dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT))) {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);
 				}
+				return Response.status(200).entity(null).build();
 			}
-			else if (dossierAction != null && isAdmin) {
-				DossierActionLocalServiceUtil.updateState(
-					dossierAction.getDossierActionId(),
-					DossierActionTerm.STATE_ROLLBACK);
-
-				DossierAction previousAction =
-					DossierActionLocalServiceUtil.fetchDossierAction(
-						dossierAction.getPreviousActionId());
-				if (previousAction != null) {
-					DossierActionLocalServiceUtil.updateState(
-						previousAction.getDossierActionId(),
-						DossierActionTerm.STATE_WAITING_PROCESSING);
-					try {
-						DossierActionLocalServiceUtil.updateNextActionId(
-							previousAction.getDossierActionId(), 0);
-						DossierLocalServiceUtil.rollback(
-							dossier, previousAction);
-					}
-					catch (PortalException e) {
-						return BusinessExceptionImpl.processException(e);
-					}
-				}
-
-				DossierSync ds = DossierSyncLocalServiceUtil.getByDID_DAD(
-					groupId, dossier.getDossierId(),
-					dossierAction.getDossierActionId());
-				if (ds != null &&
-					((ds.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM &&
-						dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) ||
-						(ds.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST &&
-							dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT))) {
-					DossierMgtUtils.processSyncRollbackDossier(dossier);
-				}
-			}
-			return Response.status(200).entity(null).build();
 		}
-		else {
-			return Response.status(404).entity(null).build();
-		}
+		
 	}
 
 	@Override
