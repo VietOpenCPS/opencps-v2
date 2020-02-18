@@ -1,11 +1,5 @@
 package org.opencps.communication.action.impl;
 
-import java.util.List;
-
-import org.opencps.communication.action.NotificationQueueInterface;
-import org.opencps.communication.model.NotificationQueue;
-import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
-
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;

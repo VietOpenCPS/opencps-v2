@@ -84,14 +84,22 @@ public class ViettelSMSUtils {
 				// handle with hashCode
 				portType = locator.getCcApiPort();
 				result = portType.wsCpMt(
-					"viettelmcdt", "789456a@#123", "VIETTELMCDT", "1", toTelNo,
-					toTelNo, "ViettelMCDT", "bulksms", body, "F");
+					DEFAULT_USER, DEFAULT_SECRET, DEFAULT_CP_CODE, DEFAULT_REQUEST_ID, toTelNo,
+					toTelNo, DEFAULT_SERVICE_ID, DEFAULT_COMMAND_CODE, body, DEFAULT_CONTENT_TYPE);
 			}
 		}
 
 		return result;
 	}
 
+	private static final String DEFAULT_USER = "viettelmcdt";
+	private static final String DEFAULT_SECRET = "789456a@#123";
+	private static final String DEFAULT_CP_CODE = "VIETTELMCDT";
+	private static final String DEFAULT_REQUEST_ID = "1";
+	private static final String DEFAULT_SERVICE_ID = "ViettelMCDT";
+	private static final String DEFAULT_COMMAND_CODE = "bulksms";
+	private static final String DEFAULT_CONTENT_TYPE = "F";
+	
 	private static final Log _log =
 		LogFactoryUtil.getLog(ViettelSMSUtils.class);
 }

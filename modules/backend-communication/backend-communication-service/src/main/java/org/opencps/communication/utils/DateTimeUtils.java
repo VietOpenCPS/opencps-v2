@@ -349,12 +349,13 @@ public class DateTimeUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.setTime(new Date());
+		String dateFormat = String.format(MessageUtil.getMessage(SENDDATE_MESSAGE), cal.get(Calendar.DAY_OF_MONTH), ( cal.get(Calendar.MONTH) + 1 ), cal.get(Calendar.YEAR));
 		
-		return "Ng\u00E0y "+ cal.get(Calendar.DAY_OF_MONTH) + " th\u00E1ng " + ( cal.get(Calendar.MONTH) + 1 ) + " n\u0103m " + cal.get(Calendar.YEAR) ;
-		
-		
+//		return "Ng\u00E0y "+ cal.get(Calendar.DAY_OF_MONTH) + " th\u00E1ng " + ( cal.get(Calendar.MONTH) + 1 ) + " n\u0103m " + cal.get(Calendar.YEAR) ;
+		return dateFormat;		
 	}
 	
+	private static final String SENDDATE_MESSAGE = "sendmail.date.message";
 	private static Log _log = LogFactoryUtil.getLog(DateTimeUtils.class);
 
 }
