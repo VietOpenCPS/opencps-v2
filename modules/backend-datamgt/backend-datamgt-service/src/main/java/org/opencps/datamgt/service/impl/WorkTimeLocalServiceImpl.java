@@ -48,9 +48,9 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.ModelNameKeys;
+import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.constants.WorkTimeTerm;
 import org.opencps.datamgt.exception.NoSuchWorkTimeException;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.model.WorkTime;
 import org.opencps.datamgt.service.base.WorkTimeLocalServiceBaseImpl;
 
@@ -227,19 +227,19 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(WorkTime.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkTime.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DataMGTConstants.PAGINATION_TYPE, DataMGTConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
 		searchContext.setAndSearch(true);
 		searchContext.setSorts(sorts);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DataMGTConstants.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(DataMGTConstants.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(Field.USER_ID);
 
 		BooleanQuery booleanQuery = null;
 
@@ -279,16 +279,16 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(WorkTime.class.getName());
 		searchContext.setEntryClassNames(new String[] { WorkTime.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(DataMGTConstants.PAGINATION_TYPE, DataMGTConstants.PAGINATION_TYPE_REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
-		searchContext.setAttribute("params", params);
+		searchContext.setAttribute(DataMGTConstants.PARAMS, params);
 
 		// LAY CAC THAM SO TRONG PARAMS.
-		String keywords = (String) params.get("keywords");
-		String groupId = (String) params.get("groupId");
-		String userId = (String) params.get("userId");
+		String keywords = (String) params.get(DataMGTConstants.KEYWORDS);
+		String groupId = (String) params.get(Field.GROUP_ID);
+		String userId = (String) params.get(Field.USER_ID);
 
 		BooleanQuery booleanQuery = null;
 
@@ -346,9 +346,9 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		WorkTime object = null;
 
-		if (objectData.getLong("workTimeId") > 0) {
+		if (objectData.getLong(WorkTimeTerm.WORKTIME_ID) > 0) {
 
-			object = workTimePersistence.fetchByPrimaryKey(objectData.getLong("workTimeId"));
+			object = workTimePersistence.fetchByPrimaryKey(objectData.getLong(WorkTimeTerm.WORKTIME_ID));
 
 			object.setModifiedDate(new Date());
 
@@ -358,16 +358,16 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 			object = workTimePersistence.create(id);
 
-			object.setGroupId(objectData.getLong("groupId"));
-			object.setCompanyId(objectData.getLong("companyId"));
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
 			object.setCreateDate(new Date());
 
 		}
 
-		object.setUserId(objectData.getLong("userId"));
+		object.setUserId(objectData.getLong(Field.USER_ID));
 
-		object.setDay(objectData.getInt("day"));
-		object.setHours(objectData.getString("hours"));
+		object.setDay(objectData.getInt(WorkTimeTerm.DAY));
+		object.setHours(objectData.getString(WorkTimeTerm.HOURS));
 		
 		workTimePersistence.update(object);
 

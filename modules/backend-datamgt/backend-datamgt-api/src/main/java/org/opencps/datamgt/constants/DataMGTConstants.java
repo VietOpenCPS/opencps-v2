@@ -1,8 +1,5 @@
 package org.opencps.datamgt.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.liferay.portal.kernel.util.WebKeys;
 
 import aQute.bnd.osgi.Constants;
@@ -43,4 +40,9 @@ public class DataMGTConstants implements Constants, WebKeys {
 //	}
 	public static final String TOTAL = "total";
 	public static final String DATA = "data";
+	
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String PAGINATION_TYPE_REGULAR = "regular";
+	public static final String PARAMS = "params";
+	public static final String KEYWORDS = "keywords";
 }
