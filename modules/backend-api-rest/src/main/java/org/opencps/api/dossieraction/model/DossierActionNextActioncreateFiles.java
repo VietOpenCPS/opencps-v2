@@ -55,7 +55,8 @@ import javax.xml.bind.annotation.XmlType;
     "counter",
     "returned",
     "dossierFileId",
-    "partType"
+    "partType",
+    "deliverableType"
 })
 public class DossierActionNextActioncreateFiles {
 
@@ -73,8 +74,17 @@ public class DossierActionNextActioncreateFiles {
     protected Boolean returned;
     protected Long dossierFileId;
     protected Integer partType;
+    protected String deliverableType;
     
-    /**
+    public String getDeliverableType() {
+		return deliverableType;
+	}
+
+	public void setDeliverableType(String deliverableType) {
+		this.deliverableType = deliverableType;
+	}
+
+	/**
      * Gets the value of the dossierFileId property.
      * 
      * @return

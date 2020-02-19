@@ -27,6 +27,13 @@ public class DeliverableNumberGenerator {
 		return UUID.randomUUID().toString();
 	}
 	
+	private static final String CODE_PATTERN = "\\{(n+|N+)\\}";
+	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
+	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
+	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
+	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
+	private static final String DATETIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	
 	public static String generateDeliverableNumber(long groupId, long companyId, long deliverableTypeId)
 			throws ParseException {
 		DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchDeliverableType(deliverableTypeId);
@@ -36,12 +43,13 @@ public class DeliverableNumberGenerator {
 
 		if (deliverableType != null) {
 			seriNumberPattern = deliverableType.getCodePattern();
-			String codePattern = "\\{(n+|N+)\\}";
-			String dayPattern = "\\{(d{2}|D{2})\\}";
-			String monthPattern = "\\{(m{2}|M{2})\\}";
-			String yearPattern = "\\{(y+|Y+)\\}";
-			String dynamicVariablePattern = "\\{\\$(.*?)\\}";
-			String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+			String codePattern = CODE_PATTERN;
+			String dayPattern = DAY_PATTERN;
+			String monthPattern = MONTH_PATTERN;
+			String yearPattern = YEAR_PATTERN;
+			String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
+			String datetimePattern = DATETIME_PATTERN;
+			
 			String[] patterns = new String[] { codePattern, dayPattern, monthPattern, yearPattern,
 					dynamicVariablePattern, datetimePattern };
 
@@ -118,6 +126,9 @@ public class DeliverableNumberGenerator {
 		return deliverableNumber;
 	}	
 	
+	private static final String YEAR_DATEFORMAT = "yyyy";
+	private static final String COUNTER_NUMBER_FORMAT = "%07d";
+	
 	private static String countByInit(String pattern, long count) {
 		
 		String certNumber;
@@ -130,7 +141,7 @@ public class DeliverableNumberGenerator {
 
 			cal.setTime(new Date());
 			
-			DateFormat df = new SimpleDateFormat("yyyy");
+			DateFormat df = new SimpleDateFormat(YEAR_DATEFORMAT);
 			
 			String curYear = df.format(cal.getTime());
 
@@ -144,7 +155,7 @@ public class DeliverableNumberGenerator {
 				
 				_counterNumber = counterConfig.getCurrentId();
 				
-				certNumber = String.format("%07d", _counterNumber); 
+				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
 				
 			} else {
 				counterConfig = CounterLocalServiceUtil.createCounter(certConfigId);
@@ -153,7 +164,7 @@ public class DeliverableNumberGenerator {
 				CounterLocalServiceUtil.updateCounter(counterConfig);
 				
 				_counterNumber = counterConfig.getCurrentId();
-				certNumber = String.format("%07d", _counterNumber); 
+				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
 			}
 
 

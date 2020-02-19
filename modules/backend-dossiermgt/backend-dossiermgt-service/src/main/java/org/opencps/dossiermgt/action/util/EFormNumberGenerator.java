@@ -23,24 +23,35 @@ public class EFormNumberGenerator {
 	private static final String CONSTANT_ICREMENT = "opencps.eform#";
 	private static Log _log = LogFactoryUtil.getLog(EFormNumberGenerator.class);
 
+	private static final String CODE_PATTERN_GOV = "\\{(a+|A+)\\}";
+	private static final String CODE_PATTERN_DATE = "\\{(n+|N+)\\}";
+	private static final String CODE_PATTERN_MONTH = "\\{(p+|P+)\\}";
+	private static final String CODE_PATTERN_YEAR = "\\{(q+|Q+)\\}";
+	private static final String CODE_PATTERN_SERVICE = "\\{(r+|R+)\\}";
+	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
+	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
+	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
+	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
+	private static final String DATETIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	
 	public static String generateServiceFileNumber(long groupId, long companyId, String serviceCode,
 			String govAgencyCode, String seriNumberPattern, SearchContext... searchContext)
 			throws ParseException, SearchException {
 
 		//String eFormNo = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
-		String codePatternGov = "\\{(a+|A+)\\}";
-		String codePatternDate = "\\{(n+|N+)\\}";
-		String codePatternMonth = "\\{(p+|P+)\\}";
-		String codePatternYear = "\\{(q+|Q+)\\}";
-		String codePatternService = "\\{(r+|R+)\\}";
-		String dayPattern = "\\{(d{2}|D{2})\\}";
-		String monthPattern = "\\{(m{2}|M{2})\\}";
-		String yearPattern = "\\{(y+|Y+)\\}";
-		String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+		String codePatternGov = CODE_PATTERN_GOV;
+		String codePatternDate = CODE_PATTERN_DATE;
+		String codePatternMonth = CODE_PATTERN_MONTH;
+		String codePatternYear = CODE_PATTERN_YEAR;
+		String codePatternService = CODE_PATTERN_SERVICE;
+		String dayPattern = DAY_PATTERN;
+		String monthPattern = MONTH_PATTERN;
+		String yearPattern = YEAR_PATTERN;
+		String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
 		//String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
 		//String extractValuePattern = "\\[\\$(.*?)\\$\\]";
-		String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+		String datetimePattern = DATETIME_PATTERN;
 		String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
 				codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
 
@@ -226,11 +237,13 @@ public class EFormNumberGenerator {
 		return seriNumberPattern;
 	}
 
+	private static final String COUNTER_NUMBER_FORMAT = "%0%dd";
+	
 	private static String countByNumber(String pattern, String tmp) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = "%0" + lengthPatern + "d";
+		String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
 
 		long _counterNumber = 0;
 		_log.info("pattern" + pattern);
@@ -341,7 +354,7 @@ public class EFormNumberGenerator {
 				}
 
 				int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-				String format = "%0" + lengthPatern + "d";
+				String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
 				certNumber = String.format(format, _counterNumber); 
 				
 			}

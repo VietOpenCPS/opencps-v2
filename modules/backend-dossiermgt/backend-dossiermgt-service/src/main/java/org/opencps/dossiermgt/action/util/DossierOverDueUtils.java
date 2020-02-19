@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
@@ -36,7 +37,7 @@ public class DossierOverDueUtils {
 	
 	public static String getEstimateDate(int processingDay) {
 		Date now = new Date();
-		int start = -1, end = -1;
+		int start = QueryUtil.ALL_POS, end = QueryUtil.ALL_POS;
 
 		Calendar c = Calendar.getInstance();
 		c.setTime(now);
@@ -55,7 +56,7 @@ public class DossierOverDueUtils {
 		c.setTime(now);
 		c.add(Calendar.DATE, processingDay);
 		Date estimateDate = c.getTime();
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat dateFormat = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
 		
 		return dateFormat.format(estimateDate);
 	}

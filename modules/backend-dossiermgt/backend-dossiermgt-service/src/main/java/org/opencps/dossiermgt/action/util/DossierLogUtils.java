@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.Validator;
 
+import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -19,6 +20,13 @@ import org.opencps.dossiermgt.model.PaymentFile;
 
 public class DossierLogUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierLogUtils.class);
+	private static final String DOSSIER_FILE_CREATE = ": DossierFile Create";
+	private static final String PAYMENT_FILE_CREATE = ": PaymentFile Create";
+	private static final String DOSSIER_CREATE = ": Create Dossier";
+	private static final String REQUEST_ADDITION_DOSSIER = ": Request Addition Dossier";
+	private static final String REQUEST_DELETE_DOSSIER = ": Request Delete Dossier";
+	private static final String REQUEST_CORRECTING_DOSSIER = ": Request Correctting Dossier";
+	
 	public static String createPayload(DossierFile dossierFile, PaymentFile paymentFile, Dossier dossier) {
 		String fileType = StringPool.BLANK;
 		String fileUrl = StringPool.BLANK;
@@ -42,54 +50,54 @@ public class DossierLogUtils {
 			}
 			
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", dossierFile.getUserId() + ": DossierFile Create");
-			obj.put("briefNote", "");
+			obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, dossierFile.getUserId(), DOSSIER_FILE_CREATE));
+			obj.put(DossierLogTerm.BRIEF_NOTE, StringPool.BLANK);
 
-			item.put("referenceUid", dossierFile.getReferenceUid());
-			item.put("fileType", fileType);
-			item.put("fileUrl", fileUrl);
-			item.put("displayName", dossierFile.getDisplayName());
-			item.put("status", "");
+			item.put(DossierLogTerm.REFERENCEUID, dossierFile.getReferenceUid());
+			item.put(DossierLogTerm.FILE_TYPE, fileType);
+			item.put(DossierLogTerm.FILE_URL, fileUrl);
+			item.put(DossierLogTerm.DISPLAY_NAME, dossierFile.getDisplayName());
+			item.put(DossierLogTerm.STATUS, StringPool.BLANK);
 			arr.put(item);
 
-			obj.put("dossierFiles", arr);
+			obj.put(DossierLogTerm.DOSSIER_FILES, arr);
 		}
 
 		if (Validator.isNotNull(paymentFile)) {
 			JSONObject item = JSONFactoryUtil.createJSONObject();
-			obj.put("jobposTitle", paymentFile.getUserId()+ ": PaymentFile Create" );
-			obj.put("briefNote", "");
+			obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, paymentFile.getUserId(), PAYMENT_FILE_CREATE));
+			obj.put(DossierLogTerm.BRIEF_NOTE, StringPool.BLANK);
 
-			item.put("referenceUid", paymentFile.getReferenceUid());
-			item.put("fileType", fileType);
-			item.put("fileUrl", fileUrl);
-			item.put("displayName", "");
-			item.put("paymentRequestDate", paymentFile.getCreateDate());
-			item.put("paymentStatus", paymentFile.getPaymentStatus());
+			item.put(DossierLogTerm.REFERENCEUID, paymentFile.getReferenceUid());
+			item.put(DossierLogTerm.FILE_TYPE, fileType);
+			item.put(DossierLogTerm.FILE_URL, fileUrl);
+			item.put(DossierLogTerm.DISPLAY_NAME, StringPool.BLANK);
+			item.put(DossierLogTerm.PAYMENT_REQUEST_DATE, paymentFile.getCreateDate());
+			item.put(DossierLogTerm.PAYMENT_STATUS, paymentFile.getPaymentStatus());
 			arr.put(item);
 
-			obj.put("paymentFile", arr);
+			obj.put(DossierLogTerm.PAYMENT_FILE, arr);
 		}
 
 		if (Validator.isNotNull(dossier)) {
 			if (dossier.getDossierStatus().contentEquals(DossierStatusConstants.WAITING)) {
-				obj.put("jobposTitle", dossier.getUserId() + ": Request Addition Dossier");
+				obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, dossier.getUserId(), REQUEST_ADDITION_DOSSIER));
 			} else if (dossier.getCancellingDate() != null && dossier.getSubmitting() == true) {
-				obj.put("jobposTitle", dossier.getUserId() + ": Request Delete Dossier");
+				obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, dossier.getUserId(), REQUEST_DELETE_DOSSIER));
 			} else if (dossier.getCorrecttingDate() != null && dossier.getSubmitting() == true) {
-				obj.put("jobposTitle", dossier.getUserId() + ": Request Correctting Dossier");
+				obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, dossier.getUserId(), REQUEST_CORRECTING_DOSSIER));
 			} else {
-				obj.put("jobposTitle", dossier.getUserId() + ": Create Dossier");
+				obj.put(DossierLogTerm.JOBPOS_TITLE, String.format(DossierLogTerm.LOG_FORMAT, dossier.getUserId(), DOSSIER_CREATE));
 			}
 			
-			obj.put("briefNote", dossier.getBriefNote());
+			obj.put(DossierLogTerm.BRIEF_NOTE, dossier.getBriefNote());
 
 			JSONObject item = JSONFactoryUtil.createJSONObject();
 
-			item.put("referenceUid", dossier.getReferenceUid());
+			item.put(DossierLogTerm.REFERENCEUID, dossier.getReferenceUid());
 			arr.put(item);
 
-			obj.put("dossier", arr);
+			obj.put(DossierLogTerm.DOSSIER, arr);
 		}
 		return obj.toString();
 	}

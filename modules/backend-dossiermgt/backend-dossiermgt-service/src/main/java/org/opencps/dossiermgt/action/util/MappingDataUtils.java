@@ -15,7 +15,13 @@ import java.util.List;
 public class MappingDataUtils {
 
 	private static Log _log = LogFactoryUtil.getLog(MappingDataUtils.class);
-
+	private static final String DELIVERABLES = "deliverables";
+	private static final String DELIVERABLE_CODE = "deliverablecode";
+	private static final String SUBJECT = "subject";
+	private static final String ISSUEDATE = "issuedate";
+	private static final String REVALIDATE = "revalidate";
+	private static final String EXPIREDATE = "expiredate";
+	
 	public static JSONObject getFormData (String formDataDossier, String mappingData) {
 		//
 		JSONObject formDataMapping = JSONFactoryUtil.createJSONObject();
@@ -35,9 +41,9 @@ public class MappingDataUtils {
 		  "expireDate": "ngày hết hạn",
 		  "revalidate": "ngày gian hạn"
 		*/
-		String strKeyMapping = "deliverables" + StringPool.COMMA + "deliverablecode" + StringPool.COMMA
-				+ "subject"+ StringPool.COMMA + "issuedate" + StringPool.COMMA + "expiredate"
-				+ StringPool.COMMA + "revalidate";
+		String strKeyMapping = DELIVERABLES + StringPool.COMMA + DELIVERABLE_CODE + StringPool.COMMA
+				+ SUBJECT + StringPool.COMMA + ISSUEDATE + StringPool.COMMA + EXPIREDATE
+				+ StringPool.COMMA + REVALIDATE;
 
 		//Get key mappingData
 		Iterator<String> keyMapping = mappingDataJSON.keys();

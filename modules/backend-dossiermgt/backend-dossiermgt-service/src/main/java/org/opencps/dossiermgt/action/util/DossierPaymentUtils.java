@@ -42,7 +42,7 @@ import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 public class DossierPaymentUtils {
 
 	public static void main(String[] args) {
-		String pattern = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
+		String pattern = BANK_CASH_PATTERN;
 
 		Pattern patternName = null;
 		Matcher matcherName = null;
@@ -51,7 +51,7 @@ public class DossierPaymentUtils {
 
 		ScriptEngine engine;
 
-		patternName = Pattern.compile("net=\\[(.*?)\\]");
+		patternName = Pattern.compile(NET_PATTERN);
 
 		matcherName = patternName.matcher(pattern);
 
@@ -59,7 +59,7 @@ public class DossierPaymentUtils {
 
 			manager = new ScriptEngineManager();
 
-			engine = manager.getEngineByExtension("js");
+			engine = manager.getEngineByExtension(EngineByExtensionJS);
 
 			List<ScriptEngineFactory> factories = manager.getEngineFactories();
 
@@ -95,6 +95,10 @@ public class DossierPaymentUtils {
 
 	}
 
+	private static final String GOODCODE_EQUAL = "good_code=";
+	private static final String ALL_CHARACTER_PATTERN = "(.*?)";
+	private static final String NUMBER_FORMAT = "%010d";
+	
 	// call processPaymentFile create paymentFile
 	public static void processPaymentFile(ProcessAction processAction, String pattern, long groupId, long dossierId, long userId,
 			ServiceContext serviceContext, String serverNo) throws JSONException {
@@ -168,7 +172,7 @@ public class DossierPaymentUtils {
 			
 			int prefix = cal.get(Calendar.YEAR);
 			
-			String invoiceTemplateNo = Integer.toString(prefix) + String.format("%010d", counterPaymentFile);
+			String invoiceTemplateNo = Integer.toString(prefix) + String.format(NUMBER_FORMAT, counterPaymentFile);
 			
 			paymentFile.setInvoiceTemplateNo(invoiceTemplateNo);
 			
@@ -185,10 +189,10 @@ public class DossierPaymentUtils {
 					epaymentProfileJSON.put(PAY_KEYPAY_URL, generatorPayURL);
 
 					// fill good_code to keypayGoodCode
-					String pattern1 = "good_code=";
-					String pattern2 = "&";
+					String pattern1 = GOODCODE_EQUAL;
+					String pattern2 = StringPool.AMPERSAND;
 
-					String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+					String regexString = Pattern.quote(pattern1) + ALL_CHARACTER_PATTERN + Pattern.quote(pattern2);
 
 					Pattern p = Pattern.compile(regexString);
 					Matcher m = p.matcher(generatorPayURL);
@@ -535,4 +539,5 @@ public class DossierPaymentUtils {
 
 	public static final String NET_PATTERN = "net=\\[(.*?)\\]";
 	public static final String PATTERN_NAME = "#(.*?)@(.*?) ";
+	public static final String BANK_CASH_PATTERN = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
 }

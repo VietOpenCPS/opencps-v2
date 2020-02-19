@@ -357,4 +357,5 @@ public class DossierTerm {
 	public static final String DOSSIER_CTN = "CTN";
 	public static final String OPENCPSV2 = "OPENCPSV2";
 	public static final String PENDING = "pendding";
+	public static final String WAITING = "waiting";
 }

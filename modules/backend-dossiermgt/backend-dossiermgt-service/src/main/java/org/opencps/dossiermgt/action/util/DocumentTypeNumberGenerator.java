@@ -31,6 +31,14 @@ public class DocumentTypeNumberGenerator {
 	public static String generateReferenceUID(long groupId) {
 		return UUID.randomUUID().toString();
 	}
+
+	private static final String CODE_PATTERN = "\\{(n+|N+)\\}";
+	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
+	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
+	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
+	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
+	private static final String DATETIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	private static final String OK = "OK";
 	
 	public static String generateDocumentTypeNumber(long groupId, long companyId, long documentTypeId)
 			throws ParseException {
@@ -41,12 +49,12 @@ public class DocumentTypeNumberGenerator {
 
 		if (documentType != null) {
 			seriNumberPattern = documentType.getCodePattern();
-			String codePattern = "\\{(n+|N+)\\}";
-			String dayPattern = "\\{(d{2}|D{2})\\}";
-			String monthPattern = "\\{(m{2}|M{2})\\}";
-			String yearPattern = "\\{(y+|Y+)\\}";
-			String dynamicVariablePattern = "\\{\\$(.*?)\\}";
-			String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+			String codePattern = CODE_PATTERN;
+			String dayPattern = DAY_PATTERN;
+			String monthPattern = MONTH_PATTERN;
+			String yearPattern = YEAR_PATTERN;
+			String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
+			String datetimePattern = DATETIME_PATTERN;
 			String[] patterns = new String[] { codePattern, dayPattern, monthPattern, yearPattern,
 					dynamicVariablePattern, datetimePattern };
 
@@ -75,7 +83,7 @@ public class DocumentTypeNumberGenerator {
 					} else if (r.toString().equals(datetimePattern)) {
 //						System.out.println(tmp);
 
-						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), OK);
 
 					} else if (r.toString().equals(dayPattern)) {
 
@@ -123,24 +131,30 @@ public class DocumentTypeNumberGenerator {
 		return documentTypeNumber;
 	}	
 
+	private static final String CODE_PATTERN_GOV = "\\{(a+|A+)\\}";
+	private static final String CODE_PATTERN_DATE = "\\{(n+|N+)\\}";
+	private static final String CODE_PATTERN_MONTH = "\\{(p+|P+)\\}";
+	private static final String CODE_PATTERN_YEAR = "\\{(q+|Q+)\\}";
+	private static final String CODE_PATTERN_SERVICE = "\\{(r+|R+)\\}";
+	
 	public static String generateDossierDocumentNumber(long groupId, long companyId, String serviceCode,
 			String govAgencyCode, String seriNumberPattern, SearchContext... searchContext)
 			throws ParseException, SearchException {
 
 		//String eFormNo = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
-		String codePatternGov = "\\{(a+|A+)\\}";
-		String codePatternDate = "\\{(n+|N+)\\}";
-		String codePatternMonth = "\\{(p+|P+)\\}";
-		String codePatternYear = "\\{(q+|Q+)\\}";
-		String codePatternService = "\\{(r+|R+)\\}";
-		String dayPattern = "\\{(d{2}|D{2})\\}";
-		String monthPattern = "\\{(m{2}|M{2})\\}";
-		String yearPattern = "\\{(y+|Y+)\\}";
-		String dynamicVariablePattern = "\\{\\$(.*?)\\}";
+		String codePatternGov = CODE_PATTERN_GOV;
+		String codePatternDate = CODE_PATTERN_DATE;
+		String codePatternMonth = CODE_PATTERN_MONTH;
+		String codePatternYear = CODE_PATTERN_YEAR;
+		String codePatternService = CODE_PATTERN_SERVICE;
+		String dayPattern = DAY_PATTERN;
+		String monthPattern = MONTH_PATTERN;
+		String yearPattern = YEAR_PATTERN;
+		String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
 		//String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
 		//String extractValuePattern = "\\[\\$(.*?)\\$\\]";
-		String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+		String datetimePattern = DATETIME_PATTERN;
 		String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
 				codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
 
@@ -280,7 +294,7 @@ public class DocumentTypeNumberGenerator {
 				} else if (r.toString().equals(datetimePattern)) {
 //						System.out.println(tmp);
 
-					seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
+					seriNumberPattern = seriNumberPattern.replace(m.group(0), OK);
 
 				} else if (r.toString().equals(dayPattern)) {
 
@@ -325,12 +339,13 @@ public class DocumentTypeNumberGenerator {
 
 		return seriNumberPattern;
 	}
-
+	private static final String COUNTER_NUMBER_FORMAT_STRING = "%0%dd";
+	
 	private static String countByNumber(String pattern, String tmp) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = "%0" + lengthPatern + "d";
+		String format = String.format(COUNTER_NUMBER_FORMAT_STRING, lengthPatern);
 
 		long _counterNumber = 0;
 		_log.info("pattern" + pattern);
@@ -355,6 +370,9 @@ public class DocumentTypeNumberGenerator {
 		return String.format(format, _counterNumber); 
 	}
 
+	private static final String YEAR_DATEFORMAT = "yyyy";
+	private static final String COUNTER_NUMBER_FORMAT = "%07d";
+	
 	private static String countByInit(String pattern, long count) {
 		
 		String certNumber;
@@ -367,7 +385,7 @@ public class DocumentTypeNumberGenerator {
 
 			cal.setTime(new Date());
 			
-			DateFormat df = new SimpleDateFormat("yyyy");
+			DateFormat df = new SimpleDateFormat(YEAR_DATEFORMAT);
 			
 			String curYear = df.format(cal.getTime());
 
@@ -381,7 +399,7 @@ public class DocumentTypeNumberGenerator {
 				
 				_counterNumber = counterConfig.getCurrentId();
 				
-				certNumber = String.format("%07d", _counterNumber); 
+				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
 				
 			} else {
 				counterConfig = CounterLocalServiceUtil.createCounter(certConfigId);
@@ -390,7 +408,7 @@ public class DocumentTypeNumberGenerator {
 				CounterLocalServiceUtil.updateCounter(counterConfig);
 				
 				_counterNumber = counterConfig.getCurrentId();
-				certNumber = String.format("%07d", _counterNumber); 
+				certNumber = String.format(COUNTER_NUMBER_FORMAT, _counterNumber); 
 			}
 
 

@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ParseException;
@@ -143,7 +144,7 @@ public class LuceneQueryUtil {
 			}
 
 			TermQuery entryClassNameTerm = TermQueryFactoryUtil.create(
-					searchContext, "entryClassName", Dossier.class.getName());
+					searchContext, Field.ENTRY_CLASS_NAME, Dossier.class.getName());
 
 			query.add(entryClassNameTerm, BooleanClauseOccur.MUST);
 
@@ -313,13 +314,21 @@ public class LuceneQueryUtil {
 		}
 		return booleanQueries;
 	}
-
+	
+	private static final String OPEN_PARENTHESIS_PATTERN = "\\(";
+	private static final String CLOSE_PARENTHESIS_PATTERN = "\\)";
+	private static final String OPEN_BRACKET_PATTERN = "\\[";
+	private static final String CLOSE_BRACKET_PATTERN = "\\]";
+	private static final String OPEN_CLOSE_BRACKET_PATTERN = "\\]\\[";
+	private static final String AND = "and";
+	private static final String OR = "or";
+	private static final String NOT = "not";
+	
 	public static List<BooleanClauseOccur> getBooleanClauseOccurs(
 			String pattern, List<String> subQueries) {
 		List<BooleanClauseOccur> booleanClauseOccurs = new ArrayList<BooleanClauseOccur>();
-		pattern = pattern.replaceAll("\\(", StringPool.BLANK);
-
-		pattern = pattern.replaceAll("\\)", StringPool.BLANK);
+		pattern = pattern.replaceAll(OPEN_PARENTHESIS_PATTERN, StringPool.BLANK);
+		pattern = pattern.replaceAll(CLOSE_PARENTHESIS_PATTERN, StringPool.BLANK);
 
 		pattern = pattern.replaceAll(StringPool.SPACE, StringPool.BLANK);
 		for (String subQuery : subQueries) {
@@ -327,21 +336,21 @@ public class LuceneQueryUtil {
 			pattern = pattern.replace(subQuery, StringPool.BLANK);
 		}
 
-		pattern = pattern.replaceAll("\\]\\[", StringPool.COMMA);
+		pattern = pattern.replaceAll(OPEN_CLOSE_BRACKET_PATTERN, StringPool.COMMA);
 
-		pattern = pattern.replaceAll("\\[", StringPool.BLANK);
+		pattern = pattern.replaceAll(OPEN_BRACKET_PATTERN, StringPool.BLANK);
 
-		pattern = pattern.replaceAll("\\]", StringPool.BLANK);
+		pattern = pattern.replaceAll(CLOSE_BRACKET_PATTERN, StringPool.BLANK);
 
 		String[] conditions = StringUtil.split(pattern);
 
 		if (conditions != null && conditions.length > 0) {
 			for (int c = 0; c < conditions.length; c++) {
-				if ("and".equalsIgnoreCase(conditions[c])) {
+				if (AND.equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST);
-				} else if ("or".equalsIgnoreCase(conditions[c])) {
+				} else if (OR.equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.SHOULD);
-				} else if ("not".equalsIgnoreCase(conditions[c])) {
+				} else if (NOT.equalsIgnoreCase(conditions[c])) {
 					booleanClauseOccurs.add(BooleanClauseOccur.MUST_NOT);
 				}
 			}
@@ -421,6 +430,10 @@ public class LuceneQueryUtil {
 		return splitIndexs;
 	}
 
+	private static final String AND_BRACKET = "[and]";
+	private static final String OR_BRACKET = "[or]";
+	private static final String NOT_BRACKET = "[not]";
+	
 	/**
 	 * @param pattern
 	 * @param subQueries
@@ -448,13 +461,13 @@ public class LuceneQueryUtil {
 							StringPool.DASH, 0);
 					String subQuery = pattern.substring(splitIndexsTemp[0],
 							splitIndexsTemp[1] + 1);
-					if (subQuery.contains("[and]") || subQuery.contains("[or]")
-							|| subQuery.contains("[not]")) {
+					if (subQuery.contains(AND_BRACKET) || subQuery.contains(OR_BRACKET)
+							|| subQuery.contains(NOT_BRACKET)) {
 						getSubQueries(subQuery, subQueries);
 					} else {
-						subQuery = subQuery.replaceAll("\\(", StringPool.BLANK);
+						subQuery = subQuery.replaceAll(OPEN_PARENTHESIS_PATTERN, StringPool.BLANK);
 
-						subQuery = subQuery.replaceAll("\\)", StringPool.BLANK);
+						subQuery = subQuery.replaceAll(CLOSE_PARENTHESIS_PATTERN, StringPool.BLANK);
 
 						subQueries.add(subQuery);
 

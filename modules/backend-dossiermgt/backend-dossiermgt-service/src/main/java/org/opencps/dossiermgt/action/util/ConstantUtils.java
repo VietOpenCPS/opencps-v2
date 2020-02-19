@@ -339,4 +339,5 @@ public class ConstantUtils {
 	public static final String DEFAULT_PROXY_URL = "org.opencps.value.default.url.proxy";
 	
 	public static final String ADMINISTRATOR = "Administrator";
+	public static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
 }

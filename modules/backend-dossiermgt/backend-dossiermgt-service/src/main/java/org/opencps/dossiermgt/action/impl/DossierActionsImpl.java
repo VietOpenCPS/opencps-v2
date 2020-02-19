@@ -890,6 +890,8 @@ public class DossierActionsImpl implements DossierActions {
 									counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 											? dossierFilesResult.size() : 0;
 									createFile.put(DossierFileTerm.COUNTER, counter);
+									createFile.put(DeliverableTerm.DELIVERABLE_TYPE, StringPool.BLANK);
+									
 									createFiles.put(createFile);
 								} else {
 									DeliverableType deliverableTypeObject = DeliverableTypeLocalServiceUtil
@@ -987,7 +989,7 @@ public class DossierActionsImpl implements DossierActions {
 																				formScript);
 																		createFile.put(DossierFileTerm.COUNTER,
 																				counter);
-
+																		createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 																		createFiles.put(createFile);
 																	}
 																}
@@ -1003,6 +1005,7 @@ public class DossierActionsImpl implements DossierActions {
 														? dossierFilesResult.size() : 0;
 												createFile.put(DossierFileTerm.COUNTER, counter);
 												createFile.put(ConstantUtils.FILE_ENTRY_ID, fileEntryId);
+												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
 											} else {
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
@@ -1024,6 +1027,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierPartTerm.MULTIPLE, dossierPart.getMultiple());
 													createFile.put(DossierPartTerm.FILE_TEMPLATE_NO, fileTemplateNo);
 													createFile.put(DossierFileTerm.COUNTER, 1);
+													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 													createFiles.put(createFile);
 												} else {
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
@@ -1178,6 +1182,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierFileTerm.REFERENCE_UID, docFileReferenceUid);
 													createFile.put(DossierFileTerm.COUNTER, counter);
 													createFile.put(DossierFileTerm.FILE_ENTRY_ID, fileEntryId);
+													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												}
 											}
 										}

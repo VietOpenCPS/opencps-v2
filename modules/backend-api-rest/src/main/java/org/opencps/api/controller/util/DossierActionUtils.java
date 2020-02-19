@@ -19,6 +19,7 @@ import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.api.dossieraction.model.ReceivingModel;
 import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
@@ -624,6 +625,7 @@ public class DossierActionUtils {
 								DossierPartTerm.DOSSIER_FILE_ID));
 						outputCreeateFiles.add(
 							dossierActionNextActioncreateFile);
+						dossierActionNextActioncreateFile.setDeliverableType(createFile.getString(DeliverableTerm.DELIVERABLE_TYPE));
 					}
 					model.getCreateFiles().addAll(outputCreeateFiles);
 				}
