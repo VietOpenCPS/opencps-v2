@@ -3327,10 +3327,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					break;
 				}
 			}
-			
 			if (dossierAction != null && !dossierAction.getPending() &&
 					(dossierAction.isRollbackable() || hslt.getOriginality() < 0)
-					&& (isAdmin || dossierAction.getUserId() != userId)) {
+					&& (isAdmin || dossierAction.getUserId() == userId)) {
 
 				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
