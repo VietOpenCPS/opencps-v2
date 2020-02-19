@@ -337,17 +337,17 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty(HttpHeaders.ACCEPT, "application/json");
-			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
-			conn.setRequestProperty("Charset", "utf-8");
-			conn.setRequestProperty("dstcode", dstcode);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.CHARSET, DVCQGIntegrationActionTerm.UTF_8_LOWER);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.DSTCODE, dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
 
-			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			byte[] postData = body.toJSONString().getBytes(DVCQGIntegrationActionTerm.UTF_8);
 			int postDataLength = postData.length;
-			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
 				wr.write(postData);
 			}
@@ -469,21 +469,21 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			URL url = new URL(endpoint);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod(HttpMethod.POST);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty(HttpHeaders.ACCEPT, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.CHARSET, DVCQGIntegrationActionTerm.UTF_8_LOWER);
 			conn.setRequestProperty(DVCQGIntegrationActionTerm.DSTCODE, dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
 
-			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			byte[] postData = body.toJSONString().getBytes(DVCQGIntegrationActionTerm.UTF_8);
 			int postDataLength = postData.length;
-			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
 				wr.write(postData);
 			}
@@ -550,21 +550,21 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			URL url = new URL(endpoint);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod(HttpMethod.POST);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty(HttpHeaders.ACCEPT, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.CHARSET, DVCQGIntegrationActionTerm.UTF_8_LOWER);
 			conn.setRequestProperty(DVCQGIntegrationActionTerm.DSTCODE, dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
 
-			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			byte[] postData = body.toJSONString().getBytes(DVCQGIntegrationActionTerm.UTF_8);
 			int postDataLength = postData.length;
-			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
 				wr.write(postData);
 			}
@@ -642,21 +642,21 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			URL url = new URL(endpoint);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod(HttpMethod.POST);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty(HttpHeaders.ACCEPT, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.CHARSET, DVCQGIntegrationActionTerm.UTF_8_LOWER);
 			conn.setRequestProperty(DVCQGIntegrationActionTerm.DSTCODE, dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
 
-			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			byte[] postData = body.toJSONString().getBytes(DVCQGIntegrationActionTerm.UTF_8);
 			int postDataLength = postData.length;
-			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
 				wr.write(postData);
 			}
@@ -757,21 +757,21 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			URL url = new URL(endpoint);
 
 			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
+			conn.setRequestMethod(HttpMethod.POST);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 
-			conn.setRequestProperty("Accept", "application/json");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Charset", "utf-8");
+			conn.setRequestProperty(HttpHeaders.ACCEPT, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, DVCQGIntegrationActionTerm.APPLICATION_JSON);
+			conn.setRequestProperty(DVCQGIntegrationActionTerm.CHARSET, DVCQGIntegrationActionTerm.UTF_8_LOWER);
 			conn.setRequestProperty(DVCQGIntegrationActionTerm.DSTCODE, dstcode);
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
 
-			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			byte[] postData = body.toJSONString().getBytes(DVCQGIntegrationActionTerm.UTF_8);
 			int postDataLength = postData.length;
-			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
 				wr.write(postData);
 			}
