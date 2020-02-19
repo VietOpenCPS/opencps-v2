@@ -79,5 +79,7 @@ public interface ServiceInfoActions {
 	public JSONObject getServiceFileTemplate(long groupId, String id, boolean eformFlag, int start, int end);
 	
 	public JSONObject getServiceFileTemplate(long groupId, String id, int start, int end);
+	
+	public JSONObject doSynServiceInfoFromDVC(long userId, long groupId, ServiceContext serviceContext, String method, String url, String data);
 
 }

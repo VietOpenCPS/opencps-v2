@@ -16,6 +16,9 @@
 			<hint name="max-length">32767</hint>
 		</field>
 		<field name="publish" type="int" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.Applicant">
 		<field name="uuid" type="String" />
@@ -253,6 +256,9 @@
 		<field name="questionType" type="String" />
 		<field name="subDomainCode" type="String" />
 		<field name="subDomainName" type="String" />
+		<field name="className" type="String" />
+		<field name="classPK" type="String" />
+		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
 		<field name="uuid" type="String" />

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.opencps.usermgt.model.Answer;
+import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.base.AnswerLocalServiceBaseImpl;
 
 /**
@@ -47,14 +48,26 @@ public class AnswerLocalServiceImpl extends AnswerLocalServiceBaseImpl {
 		Answer answer = null;
 		Date now = new Date();
 		User user = UserLocalServiceUtil.fetchUser(userId);
-		
+
 		if (answerId == 0) {
 			answerId = counterLocalService.increment(Answer.class.getName());
-			
+
 			answer = answerPersistence.create(answerId);
 			answer.setCreateDate(now);
 			answer.setModifiedDate(now);
-			
+
+			answer.setCompanyId(user.getCompanyId());
+			answer.setGroupId(groupId);
+			answer.setUserName(user.getFullName());
+			answer.setUserId(userId);
+			answer.setContent(content);
+			answer.setQuestionId(questionId);
+			answer.setPublish(publish);
+		} else {
+			answer = answerPersistence.fetchByPrimaryKey(answerId);
+
+			answer.setModifiedDate(now);
+
 			answer.setCompanyId(user.getCompanyId());
 			answer.setGroupId(groupId);
 			answer.setUserName(user.getFullName());
@@ -63,29 +76,69 @@ public class AnswerLocalServiceImpl extends AnswerLocalServiceBaseImpl {
 			answer.setQuestionId(questionId);
 			answer.setPublish(publish);
 		}
-		else {
-			answer = answerPersistence.fetchByPrimaryKey(answerId);
-			
+
+		return answerPersistence.update(answer);
+	}
+
+	public Answer updateAnswer(long userId, long groupId, long answerId, long questionId, String content, int publish,
+			String className, String classPK, int synced) {
+		Answer answer = null;
+		Date now = new Date();
+		User user = UserLocalServiceUtil.fetchUser(userId);
+
+		if (answerId == 0) {
+			answerId = counterLocalService.increment(Answer.class.getName());
+
+			answer = answerPersistence.create(answerId);
+			answer.setCreateDate(now);
 			answer.setModifiedDate(now);
-			
+
 			answer.setCompanyId(user.getCompanyId());
 			answer.setGroupId(groupId);
 			answer.setUserName(user.getFullName());
 			answer.setUserId(userId);
 			answer.setContent(content);
 			answer.setQuestionId(questionId);
-			answer.setPublish(publish);			
+			answer.setPublish(publish);
+			answer.setClassName(className);
+			answer.setClassPK(classPK);
+			answer.setSynced(synced);
+		} else {
+			answer = answerPersistence.fetchByPrimaryKey(answerId);
+
+			answer.setModifiedDate(now);
+
+			answer.setCompanyId(user.getCompanyId());
+			answer.setGroupId(groupId);
+			answer.setUserName(user.getFullName());
+			answer.setUserId(userId);
+			answer.setContent(content);
+			answer.setQuestionId(questionId);
+			answer.setPublish(publish);
+			answer.setClassName(className);
+			answer.setSynced(synced);
 		}
-		
+
 		return answerPersistence.update(answer);
 	}
-	
+
+	public List<Answer> findByG_Q(long groupId, long questionId) {
+		return answerPersistence.findByG_Q(groupId, questionId);
+	}
+
 	public List<Answer> findByG_Q_PL(long groupId, long questionId, int[] publishs, int start, int end) {
 		return answerPersistence.findByG_Q_PL(groupId, questionId, publishs, start, end);
 	}
-	
+
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced) {
+		return answerPersistence.findByG_P_SYNC(groupId, publish, synced);
+	}
+
 	public int countByG_Q_PL(long groupId, long questionId, int[] publishs) {
 		return answerPersistence.countByG_Q_PL(groupId, questionId, publishs);
 	}
-	
+
+	public Answer fetchByG_CN_CPK(long groupId, String className, String classPK) {
+		return answerPersistence.fetchByG_CN_CPK(groupId, className, classPK);
+	}
 }

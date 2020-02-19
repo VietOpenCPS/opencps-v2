@@ -49,6 +49,9 @@ public class QuestionSoap implements Serializable {
 		soapModel.setQuestionType(model.getQuestionType());
 		soapModel.setSubDomainCode(model.getSubDomainCode());
 		soapModel.setSubDomainName(model.getSubDomainName());
+		soapModel.setClassName(model.getClassName());
+		soapModel.setClassPK(model.getClassPK());
+		soapModel.setSynced(model.getSynced());
 
 		return soapModel;
 	}
@@ -229,6 +232,30 @@ public class QuestionSoap implements Serializable {
 		_subDomainName = subDomainName;
 	}
 
+	public String getClassName() {
+		return _className;
+	}
+
+	public void setClassName(String className) {
+		_className = className;
+	}
+
+	public String getClassPK() {
+		return _classPK;
+	}
+
+	public void setClassPK(String classPK) {
+		_classPK = classPK;
+	}
+
+	public int getSynced() {
+		return _synced;
+	}
+
+	public void setSynced(int synced) {
+		_synced = synced;
+	}
+
 	private long _questionId;
 	private long _companyId;
 	private long _groupId;
@@ -245,4 +272,7 @@ public class QuestionSoap implements Serializable {
 	private String _questionType;
 	private String _subDomainCode;
 	private String _subDomainName;
+	private String _className;
+	private String _classPK;
+	private int _synced;
 }
