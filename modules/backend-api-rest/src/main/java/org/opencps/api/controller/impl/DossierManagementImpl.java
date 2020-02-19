@@ -6735,7 +6735,7 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.getLong(ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
 					dossier.getLong(
 						ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID),
-					actionCode, serviceContext);
+					actionCode, importD.getString(ConvertDossierFromV1Dot9Utils.ACTION_DONE_PAYMENT), serviceContext);
 			}
 
 			result.put("total", dataFile.length());
@@ -6955,7 +6955,7 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.getLong(ConvertDossierFromV1Dot9Utils.TEMP_GROUPID),
 					dossier.getLong(
 						ConvertDossierFromV1Dot9Utils.TEMP_DOSSIERID),
-					actionCode, serviceContext);
+					actionCode, dossierJson.getString(ConvertDossierFromV1Dot9Utils.ACTION_DONE_PAYMENT), serviceContext);
 			}
 		}
 		catch (Exception ex) {
