@@ -1,16 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.LinkedHashMap;
-
-import org.opencps.dossiermgt.action.DossierLogActions;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.DossierLogTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.DossierLog;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -24,7 +13,17 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
+
+import java.util.LinkedHashMap;
+
+import org.opencps.dossiermgt.action.DossierLogActions;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 
 public class DossierLogActionsImpl implements DossierLogActions {
 	
