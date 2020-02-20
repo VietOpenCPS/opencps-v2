@@ -1,5 +1,7 @@
 package backend.admin.config.whiteboard;
 
+import com.liferay.petra.string.StringPool;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -87,7 +89,7 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 //			this.printWriter = new PrintWriter(
 //					new OutputStreamWriter(this.gzipOutputStream, getResponse().getCharacterEncoding()));
 			this.printWriter = new PrintWriter(
-					new OutputStreamWriter(this.gzipOutputStream, "UTF-8"));
+					new OutputStreamWriter(this.gzipOutputStream, StringPool.UTF8));
 		}
 		return this.printWriter;
 	}

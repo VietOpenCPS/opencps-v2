@@ -49,6 +49,7 @@ import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.ImportDataUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.datamgt.model.DictItemInputModel;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
@@ -57,6 +58,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -73,6 +75,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.usermgt.constants.QuestionTerm;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
@@ -213,6 +216,18 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		}
 	}
 
+	private static final String TT12_15_2012_TT_BVHTTDL_HS12 = "TT12_15_2012_TT_BVHTTDL_HS12";
+	private static final String TP99 = "TP99";
+	private static final String TP99_DESC = "Thành phần khác";
+	private static final String TT130_BVHTTDL = "TT130_BVHTTDL";
+	private static final String TT130_BVHTTDL_NAME = "Cấp phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh thuộc thẩm quyền của Bộ Văn hóa, Thể thao và Du lịch";
+	private static final String TP1 = "TP1";
+	private static final String TP1_DESC = "Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm";
+	private static final String TP2 = "TP2";
+	private static final String TP2_DESC = "Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.";
+	private static final String TP3 = "TP3";
+	private static final String TP3_DESC = "Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)";
+	
 	@Override
 	public Response addDossierImportData(
 		HttpServletRequest request, HttpHeaders header, Company company,
@@ -280,63 +295,63 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			}
 
 			if (Validator.isNotNull(dossierTemplateNo)) {
-				if ("TT12_15_2012_TT_BVHTTDL_HS12".equals(dossierTemplateNo)) {
+				if (TT12_15_2012_TT_BVHTTDL_HS12.equals(dossierTemplateNo)) {
 					DossierPart part =
 						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-							groupId, dossierTemplateNo, "TP99");
+							groupId, dossierTemplateNo, TP99);
 					_log.info("part: " + part);
 					if (part == null) {
 						DossierPartLocalServiceUtil.updateDossierPartDB(
 							user.getUserId(), groupId, dossierTemplateNo,
-							"TP99", "Thành phần khác", "Thành phần khác", 1,
-							false, null, null, true, false, "TP99", null, 0,
+							TP99, TP99_DESC, TP99_DESC, 1,
+							false, null, null, true, false, TP99, null, 0,
 							false, null, 0, serviceContext);
 					}
 				}
-				if ("TT130_BVHTTDL".equals(dossierTemplateNo)) {
+				if (TT130_BVHTTDL.equals(dossierTemplateNo)) {
 					DossierTemplate template =
 						DossierTemplateLocalServiceUtil.getByTemplateNo(
 							groupId, dossierTemplateNo);
 					if (template == null) {
 						DossierTemplateLocalServiceUtil.updateDossierTemplateDB(
-							user.getUserId(), groupId, "TT130_BVHTTDL",
-							"Cấp phép nhập khẩu văn hóa phẩm không nhằm mục đích kinh doanh thuộc thẩm quyền của Bộ Văn hóa, Thể thao và Du lịch",
-							"", StringPool.BLANK, serviceContext);
+							user.getUserId(), groupId, TT130_BVHTTDL,
+							TT130_BVHTTDL_NAME,
+							StringPool.BLANK, StringPool.BLANK, serviceContext);
 					}
 
 					DossierPart part1 =
 						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-							groupId, dossierTemplateNo, "TP1");
+							groupId, dossierTemplateNo, TP1);
 					if (part1 == null) {
 						DossierPartLocalServiceUtil.updateDossierPartDB(
-							user.getUserId(), groupId, dossierTemplateNo, "TP1",
-							"Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm",
-							"Đơn đề nghị cấp giấy phép nhập khẩu văn hóa phẩm",
-							1, false, null, null, true, false, "TP99", null, 0,
+							user.getUserId(), groupId, dossierTemplateNo, TP1,
+							TP1_DESC,
+							TP1_DESC,
+							1, false, null, null, true, false, TP99, null, 0,
 							false, null, 0, serviceContext);
 					}
 					//
 					DossierPart part2 =
 						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-							groupId, dossierTemplateNo, "TP2");
+							groupId, dossierTemplateNo, TP2);
 					if (part2 == null) {
 						DossierPartLocalServiceUtil.updateDossierPartDB(
-							user.getUserId(), groupId, dossierTemplateNo, "TP2",
-							"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
-							"Giấy chứng nhận bản quyền tác giả, bản dịch tóm tắt nội dung phim; giấy ủy quyền; chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật, cụ thể: + Cá nhân, tổ chức nhập khẩu phim để phổ biến theo quy định của pháp luật phải cung cấp giấy chứng nhận bản quyền tác giả; hợp đồng; bản dịch tóm tắt nội dung phim. + Cá nhân, tổ chức nhập khẩu di vật, cổ vật phải cung cấp giấy chứng nhận hoặc cam kết sở hữu hợp pháp đối với di vật, cổ vật. + Cá nhân, tổ chức làm dịch vụ giao nhận vận chuyển văn hóa phẩm nhập khẩu cho khách hàng phải cung cấp giấy ủy quyền.",
-							1, false, null, null, true, false, "TP2", null, 0,
+							user.getUserId(), groupId, dossierTemplateNo, TP2,
+							TP2_DESC,
+							TP2_DESC,
+							1, false, null, null, true, false, TP2, null, 0,
 							false, null, 0, serviceContext);
 					}
 					//
 					DossierPart part3 =
 						DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-							groupId, dossierTemplateNo, "TP3");
+							groupId, dossierTemplateNo, TP3);
 					if (part3 == null) {
 						DossierPartLocalServiceUtil.updateDossierPartDB(
-							user.getUserId(), groupId, dossierTemplateNo, "TP3",
-							"Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)",
-							"Bản sao vận đơn hoặc giấy báo nhận hàng (nếu có)",
-							1, false, null, null, true, false, "TP3", null, 0,
+							user.getUserId(), groupId, dossierTemplateNo, TP3,
+							TP3_DESC,
+							TP3_DESC,
+							1, false, null, null, true, false, TP3, null, 0,
 							false, null, 0, serviceContext);
 					}
 				}
@@ -550,7 +565,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			if (!strGroupId.contains(String.valueOf(groupId))) {
 				return Response.status(
 					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-						"GroupId not exits!").build();
+						MessageUtil.getMessage(ConstantUtils.API_MESSAGE_GROUPID_NOT_EXISTS)).build();
 			}
 
 			// Process FILE
@@ -559,8 +574,8 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: " + extFile);
 			if (Validator.isNotNull(extFile) &&
-				("xlsx".equalsIgnoreCase(extFile) ||
-					"xls".equalsIgnoreCase(extFile))) {
+				(ConstantUtils.XLSX.equalsIgnoreCase(extFile) ||
+					ConstantUtils.XLS.equalsIgnoreCase(extFile))) {
 				String pathFile =
 					ConstantUtils.DEST_DIRECTORY + StringPool.SLASH + fileName;
 				// //delete folder if exits
@@ -591,7 +606,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					// HashMap<Long, List<NameValuePair>>();
 
 					int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
-					System.out.println("nOfRows: " + nOfRows);
+//					System.out.println("nOfRows: " + nOfRows);
 
 					if (nOfRows > 1) {
 						int count = 0;
@@ -649,6 +664,9 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		}
 	}
 
+	private static final String SYSTEM_NAME = "Hệ thống";
+	private static final String SYSTEM_EMAIL = "test@liferay.com";
+	
 	@SuppressWarnings("resource")
 	@Override
 	public Response uploadFileQuestion(
@@ -695,7 +713,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 			if (!strGroupId.contains(String.valueOf(groupId))) {
 				return Response.status(
 					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-						"GroupId not exits!").build();
+						MessageUtil.getMessage(ConstantUtils.API_MESSAGE_GROUPID_NOT_EXISTS)).build();
 			}
 
 			// Process FILE
@@ -737,7 +755,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					// HashMap<Long, List<NameValuePair>>();
 
 					int nOfRows = datatypeSheetOne.getPhysicalNumberOfRows();
-					System.out.println("nOfRows: " + nOfRows);
+//					System.out.println("nOfRows: " + nOfRows);
 
 					if (nOfRows > 1) {
 						// int count = 0;
@@ -753,40 +771,40 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 								if (questionData != null) {
 									// count ++;
 									String content =
-										questionData.getString("question");
+										questionData.getString(QuestionTerm.QUESTION);
 									String govAgencyCode =
-										questionData.getString("govAgencyCode");
+										questionData.getString(QuestionTerm.GOVAGENCY_CODE);
 									if (Validator.isNotNull(content) &&
 										Validator.isNotNull(govAgencyCode)) {
 										String phone = StringPool.BLANK;
 										String address = StringPool.BLANK;
-										if (questionData.has("phone")) {
-											phone = questionData.getString("phone");
+										if (questionData.has(QuestionTerm.PHONE)) {
+											phone = questionData.getString(QuestionTerm.PHONE);
 										}
-										if (questionData.has("address")) {
-											address = questionData.getString("address");
+										if (questionData.has(QuestionTerm.ADDRESS)) {
+											address = questionData.getString(QuestionTerm.ADDRESS);
 										}
 										Question question =
 											QuestionLocalServiceUtil.updateQuestion(
 												serviceContext.getCompanyId(),
-												groupId, 0l, "Hệ thống",
-												"test@liferay.com",
+												groupId, 0l, SYSTEM_NAME,
+												SYSTEM_EMAIL,
 												questionData.getString(
-													"question"),
+													QuestionTerm.QUESTION),
 												1,
 												questionData.getString(
-													"domainCode"),
+													QuestionTerm.DOMAIN_CODE),
 												questionData.getString(
-													"domainName"),
+													QuestionTerm.DOMAIN_NAME),
 												questionData.getString(
-													"govAgencyCode"),
+													QuestionTerm.GOVAGENCY_CODE),
 												questionData.getString(
-													"govAgencyName"),
+													QuestionTerm.GOVAGENCY_NAME),
 												StringPool.BLANK,
 												questionData.getString(
-													"subDomainCode"),
+													QuestionTerm.SUB_DOMAIN_CODE),
 												questionData.getString(
-													"subDomainName"),
+													QuestionTerm.SUB_DOMAIN_NAME),
 												phone,
 												address);
 										if (question != null) {
@@ -794,7 +812,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 												userId, groupId, 0l,
 												question.getQuestionId(),
 												questionData.getString(
-													"answer"),
+													QuestionTerm.ANSWER),
 												1);
 										}
 									}
@@ -852,11 +870,10 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					collectionCode, groupId);
 
 			if (Validator.isNull(dictCollection)) {
-
+				String message = String.format(MessageUtil.getMessage(ConstantUtils.IMPORT_MESSAGE_COLLECTIONISNOTINGROUP), collectionCode, groupId);
 				return Response.status(
 					HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-						collectionCode + " is not exits in group " +
-							groupId).build();
+						message).build();
 			}
 			DataHandler dataHandle = file.getDataHandler();
 			JSONArray dataDictItem =
@@ -870,15 +887,15 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 
 					JSONObject dictItem = dataDictItem.getJSONObject(i);
 					DictItemInputModel input = new DictItemInputModel();
-					input.setItemCode(dictItem.getString("itemCode"));
-					input.setItemName(dictItem.getString("itemName"));
-					input.setItemNameEN(dictItem.getString("itemNameEN"));
-					input.setItemDescription(dictItem.getString("description"));
+					input.setItemCode(dictItem.getString(DictItemTerm.ITEM_CODE));
+					input.setItemName(dictItem.getString(DictItemTerm.ITEM_NAME));
+					input.setItemNameEN(dictItem.getString(DictItemTerm.ITEM_NAME_EN));
+					input.setItemDescription(dictItem.getString(DictItemTerm.DESCRIPTION));
 					input.setParentItemCode(
-						dictItem.getString("parentItemCode"));
-					input.setSibling(dictItem.getString("sibling"));
-					input.setMetaData(dictItem.getString("metaData"));
-					input.setLevel(dictItem.getInt("level"));
+						dictItem.getString(DictItemTerm.PARENT_ITEM_CODE));
+					input.setSibling(dictItem.getString(DictItemTerm.SIBLING));
+					input.setMetaData(dictItem.getString(DictItemTerm.META_DATA));
+					input.setLevel(dictItem.getInt(DictItemTerm.LEVEL));
 					String itemCode = HtmlUtil.escape(input.getItemCode());
 					String itemName = HtmlUtil.escape(input.getItemName());
 					String itemNameEN = HtmlUtil.escape(input.getItemNameEN());

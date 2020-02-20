@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<xsd:complexType name="ReportRoleModel">
+		<xsd:sequence>
+			<xsd:element name="reportRoleId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dynamicReportId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="roleId" type="xsd:long" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ReportRoleResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ReportRoleModel"  minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="ReportRoleSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="reportCode" type="xsd:string" minOccurs="0" />
+				<xsd:element name="roleCode" type="xsd:string" minOccurs="0" />	
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />		
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />	
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="ReportRoleInputModel">
+		<xsd:sequence>
+			<xsd:element name="dynamicReportId" type="xsd:long" minOccurs="0" />
+			<xsd:element name="roleId" type="xsd:long" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReportRoleInputCodeModel">
+		<xsd:sequence>
+			<xsd:element name="reportCode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="roleCode" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ReportRoleDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="reportRoleId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="dynamicReportId" type="xsd:long" minOccurs="0" />
+				<xsd:element name="roleId" type="xsd:long" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

@@ -93,7 +93,7 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 			String serverName, String protocol, String configs, Date lastSync, ServiceContext context)
 			throws PortalException {
 
-		System.out.println("ServerConfigLocalServiceImpl.updateServerConfig()" + context);
+//		System.out.println("ServerConfigLocalServiceImpl.updateServerConfig()" + context);
 		validateAdd(groupId, serverConfigId, serverNo, serverName, protocol, configs, lastSync);
 		Date now = new Date();
 		long userId = context.getUserId();

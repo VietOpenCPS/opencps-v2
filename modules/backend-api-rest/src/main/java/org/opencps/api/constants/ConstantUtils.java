@@ -11,6 +11,10 @@ public class ConstantUtils {
 	public static final String ZIP = "zip";
 	public static final String XML = "xml";
 	public static final String WORD = "word";
+	public static final String XLS = "xls";
+	public static final String XLSX = "xlsx";
+	public static final String DOT_XLSX = ".xlsx";
+	public static final String DOT_XLS = ".xls";
 	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
@@ -96,10 +100,11 @@ public class ConstantUtils {
 	public static final String MEDIA_TYPE_ZIP = "application/zip";
 	public static final String MEDIA_TYPE_PDF = "application/pdf";
 	public static final String MEDIA_TYPE_MSWORD = "application/msword";
-	
+	public static final String MEDIA_TYPE_X509 = "application/x-x509-user-cert";
 	public static final String MEDIA_TYPE_TEXT_X_SH = "attachment.file.xsh.extension";
 	public static final String MEDIA_TYPE_APPLICATION_MAC_BINARY = "attachment.file.macbinary.extension";
 	public static final String MEDIA_TYPE_X_MSDOWNLOAD = "attachment.file.msdownload.extension";
+	public static final String MEDIA_TYPE_EXCEL = "application/vnd.ms-excel";
 	
 	public static final String CONTENT_DISPOSITION = "Content-Disposition";
 	public static final String ATTACHMENT_FILENAME = "attachment.filename";
@@ -136,6 +141,12 @@ public class ConstantUtils {
 	public static final String API_JSON_MESSAGE_NONAUTHORATIVE = "api.json.message.nonauthorative";
 	public static final String API_JSON_MESSAGE_INTERNAL_SERVER_ERROR = "api.json.message.internalservererror";
 	public static final String API_JSON_MESSAGE_NOT_FOUND = "api.json.message.notfound";
+	public static final String API_JSON_EMPTY_ERROR = "{error}";
+	public static final String API_JSON_EMPTY_CONFLICT = "{CONFLICT}";
+	public static final String API_JSON_EMPTY_NOCONTENT = "No Content";
+	public static final String API_JSON_MESSAGE_DONOTHAVESERVICE = "Do not have service";
+	public static final String API_JSON_TRUE_EMPTY = "{ 'ok': true }";
+	public static final String API_JSON_FALSE_EMPTY = "{ 'ok': false }";
 	
 	public static final String API_USER_NOTHAVEPERMISSION = "api.permission.message.nothavepermission";
 	public static final String API_MESSAGE_FILENOTFOUND = "api.message.filenotfound";
@@ -228,6 +239,7 @@ public class ConstantUtils {
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS = "api.data.defaultsignature.success";
 	public static final String API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID = "api.data.defaultsignature.fileEntryId";
 	public static final String API_JSON_MESSAGE_AUTHENTICATEDFAILURE = "api.json.message.authenticatedfailure";
+	public static final String API_JSON_MESSAGE_PROCESSDBERROR = "api.message.processdberror";
 	
 	public static final String HASHCOMPUTED_MESSAGE_KEY = "message";
 	public static final String HASHCOMPUTED_HASHCOMPUTERS_KEY = "hashComputers";
@@ -402,4 +414,46 @@ public class ConstantUtils {
 	public static final String PROCESSSEQUENCE_MESSAGE_PROCESSING = "processsequence.message.processing";
 	public static final String PROCESSSEQUENCE_MESSAGE_OVERDUE = "processsequence.message.overdue";	
 	public static final String PROCESSSEQUENCE_MESSAGE_UNDUE = "processsequence.message.undue";	
+	
+	public static final String DOSSIER_MESSAGE_STEPNOTFOUND = "dossier.message.stepnotfound";
+	public static final String DOSSIER_MESSAGE_DOSSIERNOTINPROCESS = "dossier.message.dossiernotinprocess";
+	public static final String DOSSIER_MESSAGE_CANNOTUPDATEDUEDATE = "dossier.message.cannotupdateduedate";
+	
+	public static final String EXTENSION_SPLIT = "\\.";
+	public static final String IMPORT_MESSAGE_COLLECTIONISNOTINGROUP = "import.message.collectionnotingroup";
+	public static final String SERVERCONFIG_AUTHENTICATE = "authenticate";
+	
+	public static final String START_GRAPH = "graph TD\n";
+	public static final String START_NAME = "0((Bắt đầu))\n";
+	public static final String START_NODE = "(\"[";
+	public static final String END_NOTE_TITLE = "] ";
+	public static final String END_NODE = "\")\n";
+	public static final String START_ARROW = "-.->|\"[";
+	public static final String END_ARROW = "\"|";
+	public static final String CR = "\n";
+	public static final String GRAPH_STYLE = "style %s fill:#f9f,stroke:#333,stroke-width:4px";	
+	public static final String START_ZERO = "0";
+	public static final String RETURN_GRAPH = "1{Quay lại}";
+	public static final String USER_ID = "user_id";
+	
+	public static final String DATA_CER = "data/cer/";
+	public static final String CER = "cer";
+	public static final String MODERATOR = "moderator";
+	public static final String RECEIVING = "receiving";
+	public static final String EDITABLE = "editable";
+	public static final String REQUIRED = "required";
+	public static final String TP99 = "TP99";
+	public static final String SPLIT_SPACE = " : ";
+	public static final String DOSSIER_PAUSE_MESSAGE = "dossier.message.pause";
+	public static final String DOSSIER_UNDUE_MESSAGE = "dossier.message.undue";
+	public static final String DOSSIER_UNDUE_WITHVARIABLE_MESSAGE = "dossier.message.undue.withvariable";
+	public static final String DOSSIER_ONTIME_MESSAGE = "dossier.message.ontime";
+	public static final String DOSSIER_OVERDUE_MESSAGE = "dossier.message.overdue";
+	public static final String DOSSIER_OVERDUE_WITHVARIABLE_MESSAGE = "dossier.message.overdue.withvariable";
+	public static final String PERMISSION_READ = "read";
+	public static final String UNDERLINE_PERMISSION_READ = "_read";
+	public static final String DOSSIER_LOCKOVER3_MESSAGE = "dossier.message.lockover3";
+	public static final String DOSSIER_LOCKUNDER3_MESSAGE = "dossier.message.lockunder3";
+	public static final String CTN = "CTN";
+	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 }

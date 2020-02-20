@@ -72,4 +72,7 @@ public class Constants {
 
 	public static final String SEND_MAIL_UTIL_FROM_NAME = "Mail System";
 	public static final Boolean SEND_MAIL_UTIL_HTML_FORMAT = true;
+	
+	public static final String SOAPACTION = "SOAPACTION";
+	public static final String SENDMT_NAMESPACE = "http://tempuri.org/SendMT";
 }

@@ -12,6 +12,7 @@ import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -58,7 +59,7 @@ public class DossierLogUtils {
 
 			DossierLogModel model = new DossierLogModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
+			long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 			long dossierId = GetterUtil.getLong(document.get(DossierLogTerm.DOSSIER_ID));
 			// String notificationType =
 			// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
@@ -71,7 +72,7 @@ public class DossierLogUtils {
 			Date date = null;
 			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, APIDateTimeUtils._LUCENE_PATTERN);
 			}
 			
 			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);
@@ -101,7 +102,7 @@ public class DossierLogUtils {
 
 			DossierLogSearchIdModel model = new DossierLogSearchIdModel();
 
-			long dossierLogId = GetterUtil.getLong(document.get("entryClassPK"));
+			long dossierLogId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 			// int notificationType =
 			// GetterUtil.getInteger(document.get(DossierLogTerm.NOTIFICATION_TYPE));
 
@@ -114,7 +115,7 @@ public class DossierLogUtils {
 			Date date = null;
 			
 			if (Validator.isNotNull(strDate)) {
-				date = APIDateTimeUtils.convertStringToDate(strDate, "yyyyMMddHHmmss");
+				date = APIDateTimeUtils.convertStringToDate(strDate, APIDateTimeUtils._LUCENE_PATTERN);
 			}
 			
 			model.setCreateDate(date != null ? APIDateTimeUtils.convertDateToString(date, APIDateTimeUtils._TIMESTAMP): strDate);	

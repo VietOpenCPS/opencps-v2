@@ -117,7 +117,7 @@ public class AdminEndpoind extends Endpoint {
 	private static final String DEPENDENCY_TITLE = "dependency_title";
 	private static final String DEPENDENCY_LINK = "dependency_link";
 	private static final String DYNAMIC_COUNT = "dynamicQueryCount";
-	private static final String ENCODING = "UTF-8";
+//	private static final String ENCODING = "UTF-8";
 	private static final String TIMEZONE_HCM = "Asia/Ho_Chi_Minh";
 	private static final String PROCESS_DELETE = "adminProcessDelete";
 	private static final String PROCESS_DATA = "adminProcessData";

@@ -34,7 +34,7 @@ public class Engine implements MessageListener {
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
 		_log.info("Jasper processing .............................");
-		JSONObject msgData = (JSONObject) message.get("msgToEngine");
+		JSONObject msgData = (JSONObject) message.get(ConfigConstants.JASPER_TERM_MSG_TO_ENGINE);
 
 		File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
 

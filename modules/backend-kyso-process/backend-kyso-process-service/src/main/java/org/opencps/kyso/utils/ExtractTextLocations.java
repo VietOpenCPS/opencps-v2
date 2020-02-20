@@ -149,13 +149,13 @@ public class ExtractTextLocations extends PDFTextStripper {
 		if (text.getCharacter().equals(StringPool.POUND) && Float.compare(text.getFontSize(), 1f) == 0) {
 			setFound(true);
 			
-			System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSize()
-					+ " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space="
-					+ text.getWidthOfSpace() + " width=" + text.getWidthDirAdj() + "]" + text.getCharacter());
-
-			System.out.println("String[" + text.getX() + "," + text.getY() + " fs=" + text.getFontSize() + " xscale="
-					+ text.getXScale() + " height=" + text.getHeight() + " space=" + text.getWidthOfSpace() + " width="
-					+ text.getWidth() + "]" + text.getCharacter());
+//			System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSize()
+//					+ " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space="
+//					+ text.getWidthOfSpace() + " width=" + text.getWidthDirAdj() + "]" + text.getCharacter());
+//
+//			System.out.println("String[" + text.getX() + "," + text.getY() + " fs=" + text.getFontSize() + " xscale="
+//					+ text.getXScale() + " height=" + text.getHeight() + " space=" + text.getWidthOfSpace() + " width="
+//					+ text.getWidth() + "]" + text.getCharacter());
 			setAnchorX(text.getX());
 			setAnchorY(text.getY());
 			setSignatureHeight(text.getHeight());

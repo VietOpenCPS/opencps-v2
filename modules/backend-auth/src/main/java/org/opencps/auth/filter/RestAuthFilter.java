@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -245,11 +244,11 @@ public class RestAuthFilter implements Filter {
 	public void init(FilterConfig filterConfig) {
 	}
 
-	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
-		String acceptEncoding =
-			httpRequest.getHeader(HTTP_HEADER_ACCEPT_ENCODING);
-
-		return acceptEncoding != null &&
-			acceptEncoding.indexOf(HTTP_HEADER_ACCEPT_ENCODING_G_GIP) != -1;
-	}
+//	private boolean acceptsGZipEncoding(HttpServletRequest httpRequest) {
+//		String acceptEncoding =
+//			httpRequest.getHeader(HTTP_HEADER_ACCEPT_ENCODING);
+//
+//		return acceptEncoding != null &&
+//			acceptEncoding.indexOf(HTTP_HEADER_ACCEPT_ENCODING_G_GIP) != -1;
+//	}
 }

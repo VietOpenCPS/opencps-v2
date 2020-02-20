@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
@@ -19,10 +20,12 @@ import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.api.dossieraction.model.ReceivingModel;
 import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -186,7 +189,7 @@ public class DossierActionUtils {
 						for (User user : users) {
 							HashMap<String, Object> moderator = new HashMap<>();
 							moderator.put(
-								"moderator", serviceProcessRole.getModerator());
+								ConstantUtils.MODERATOR, serviceProcessRole.getModerator());
 							user.setModelAttributes(moderator);
 						}
 						lstUser.addAll(users);
@@ -242,13 +245,13 @@ public class DossierActionUtils {
 				JSONObject jsonObject = jsonData.getJSONObject(i);
 
 				ProcessAction processAction =
-					(ProcessAction) jsonObject.get("processAction");
+					(ProcessAction) jsonObject.get(ProcessActionTerm.PROCESS_ACTION);
 
-				List<User> lstUser = (List<User>) jsonObject.get("lstUser");
+				List<User> lstUser = (List<User>) jsonObject.get(DossierActionTerm.LST_USER);
 
-				JSONArray createFiles = jsonObject.getJSONArray("createFiles");
+				JSONArray createFiles = jsonObject.getJSONArray(DossierActionTerm.CREATE_FILES);
 
-				boolean pending = jsonObject.getBoolean("pending");
+				boolean pending = jsonObject.getBoolean(DossierActionTerm.PENDING);
 
 				DossierActionNextActionModel model =
 					new DossierActionNextActionModel();
@@ -284,9 +287,9 @@ public class DossierActionUtils {
 
 					boolean moderator = false;
 
-					if (attr != null && attr.containsKey("moderator")) {
+					if (attr != null && attr.containsKey(ConstantUtils.MODERATOR)) {
 						moderator =
-							GetterUtil.getBoolean(attr.get("moderator"));
+							GetterUtil.getBoolean(attr.get(ConstantUtils.MODERATOR));
 					}
 
 					modelUser.setUserId(userId);
@@ -309,31 +312,31 @@ public class DossierActionUtils {
 						DossierActionNextActioncreateFiles dossierActionNextActioncreateFile =
 							new DossierActionNextActioncreateFiles();
 						dossierActionNextActioncreateFile.setDossierPartId(
-							createFile.getLong("dossierPartId"));
+							createFile.getLong(DossierPartTerm.DOSSIERPART_ID));
 						dossierActionNextActioncreateFile.setEForm(
-							createFile.getBoolean("eform"));
+							createFile.getBoolean(DossierPartTerm.EFORM));
 						dossierActionNextActioncreateFile.setFormData(
-							createFile.getString("formData"));
+							createFile.getString(DossierPartTerm.FORM_DATA));
 						dossierActionNextActioncreateFile.setFormScript(
-							createFile.getString("formScript"));
+							createFile.getString(DossierPartTerm.FORM_SCRIPT));
 						dossierActionNextActioncreateFile.setMultiple(
-							createFile.getBoolean("multiple"));
+							createFile.getBoolean(DossierPartTerm.MULTIPLE));
 						dossierActionNextActioncreateFile.setPartName(
-							createFile.getString("partName"));
+							createFile.getString(DossierPartTerm.PART_NAME));
 						dossierActionNextActioncreateFile.setPartNo(
-							createFile.getString("partNo"));
+							createFile.getString(DossierPartTerm.PART_NO));
 						dossierActionNextActioncreateFile.setPartTip(
-							createFile.getString("partTip"));
+							createFile.getString(DossierPartTerm.PART_TIP));
 						dossierActionNextActioncreateFile.setTemplateFileNo(
-							createFile.getString("templateFileNo"));
+							createFile.getString(DossierPartTerm.TEMPLATE_FILE_NO));
 						dossierActionNextActioncreateFile.setReferenceUid(
-							createFile.getString("referenceUid"));
+							createFile.getString(DossierFileTerm.REFERENCE_UID));
 						dossierActionNextActioncreateFile.setCounter(
-							createFile.getInt("counter"));
+							createFile.getInt(DossierFileTerm.COUNTER));
 						dossierActionNextActioncreateFile.setReturned(
-							createFile.getBoolean("returned"));
+							createFile.getBoolean(DossierFileTerm.RETURNED));
 						dossierActionNextActioncreateFile.setDossierFileId(
-							createFile.getLong("dossierFileId"));
+							createFile.getLong(DossierFileTerm.DOSSIER_FILE_ID));
 						outputCreeateFiles.add(
 							dossierActionNextActioncreateFile);
 
@@ -405,12 +408,12 @@ public class DossierActionUtils {
 				model = new DossierDetailNextActionModel();
 
 				ProcessAction processAction =
-					(ProcessAction) jsonData.get("processAction");
-				List<User> lstUser = (List<User>) jsonData.get("lstUser");
+					(ProcessAction) jsonData.get(ProcessActionTerm.PROCESS_ACTION);
+				List<User> lstUser = (List<User>) jsonData.get(DossierActionTerm.LST_USER);
 				// _log.info("LAmTV_List user: "+lstUser);
-				JSONArray createFiles = jsonData.getJSONArray("createFiles");
+				JSONArray createFiles = jsonData.getJSONArray(DossierActionTerm.CREATE_FILES);
 				List<DossierFile> returnFiles =
-					(List<DossierFile>) jsonData.get("returnFiles");
+					(List<DossierFile>) jsonData.get(DossierActionTerm.RETURN_FILES);
 
 				DossierActionPaymentModel payment =
 					new DossierActionPaymentModel();
@@ -444,39 +447,39 @@ public class DossierActionUtils {
 					// _log.info("Payment object: " +
 					// jsonData.getJSONObject("payment").toJSONString());
 					JSONObject paymentObject =
-						jsonData.getJSONObject("payment");
+						jsonData.getJSONObject(PaymentFileTerm.PAYMENT);
 					if (paymentObject != null) {
-						if (paymentObject.has("paymentFee")) {
+						if (paymentObject.has(PaymentFileTerm.PAYMENT_FEE)) {
 							payment.setPaymentFee(
-								paymentObject.getString("paymentFee"));
+								paymentObject.getString(PaymentFileTerm.PAYMENT_FEE));
 						}
-						if (paymentObject.has("paymentNote")) {
+						if (paymentObject.has(PaymentFileTerm.PAYMENT_NOTE)) {
 							payment.setPaymentNote(
-								paymentObject.getString("paymentNote"));
+								paymentObject.getString(PaymentFileTerm.PAYMENT_NOTE));
 						}
-						if (paymentObject.has("requestPayment")) {
+						if (paymentObject.has(PaymentFileTerm.PAYMENT_REQUEST)) {
 							payment.setRequestPayment(
-								paymentObject.getInt("requestPayment"));
+								paymentObject.getInt(PaymentFileTerm.PAYMENT_REQUEST));
 						}
-						if (paymentObject.has("advanceAmount")) {
+						if (paymentObject.has(PaymentFileTerm.ADVANCE_AMOUNT)) {
 							payment.setAdvanceAmount(
-								paymentObject.getLong("advanceAmount"));
+								paymentObject.getLong(PaymentFileTerm.ADVANCE_AMOUNT));
 						}
-						if (paymentObject.has("feeAmount")) {
+						if (paymentObject.has(PaymentFileTerm.FEE_AMOUNT)) {
 							payment.setFeeAmount(
-								paymentObject.getLong("feeAmount"));
+								paymentObject.getLong(PaymentFileTerm.FEE_AMOUNT));
 						}
-						if (paymentObject.has("serviceAmount")) {
+						if (paymentObject.has(PaymentFileTerm.SERVICE_AMOUNT)) {
 							payment.setServiceAmount(
-								paymentObject.getLong("serviceAmount"));
+								paymentObject.getLong(PaymentFileTerm.SERVICE_AMOUNT));
 						}
-						if (paymentObject.has("shipAmount")) {
+						if (paymentObject.has(PaymentFileTerm.SHIP_AMOUNT)) {
 							payment.setShipAmount(
-								paymentObject.getLong("shipAmount"));
+								paymentObject.getLong(PaymentFileTerm.SHIP_AMOUNT));
 						}
-						if (paymentObject.has("editable")) {
+						if (paymentObject.has(PaymentFileTerm.EDITABLE)) {
 							payment.setEditable(
-								paymentObject.getInt("editable"));
+								paymentObject.getInt(PaymentFileTerm.EDITABLE));
 						}
 					}
 
@@ -506,7 +509,7 @@ public class DossierActionUtils {
 					model.setPayment(payment);
 				}
 
-				JSONObject receivingObj = jsonData.getJSONObject("receiving");
+				JSONObject receivingObj = jsonData.getJSONObject(ConstantUtils.RECEIVING);
 				// _log.info("Receiving object: " +
 				// receivingObj.toJSONString());
 				if (receivingObj != null) {
@@ -515,7 +518,7 @@ public class DossierActionUtils {
 						receivingObj.getLong(DossierTerm.DUE_DATE));
 					receiving.setReceiveDate(
 						receivingObj.getLong(DossierTerm.RECEIVE_DATE));
-					receiving.setEditable(receivingObj.getBoolean("editable"));
+					receiving.setEditable(receivingObj.getBoolean(ConstantUtils.EDITABLE));
 
 					model.setReceiving(receiving);
 				}
@@ -624,6 +627,7 @@ public class DossierActionUtils {
 								DossierPartTerm.DOSSIER_FILE_ID));
 						outputCreeateFiles.add(
 							dossierActionNextActioncreateFile);
+						dossierActionNextActioncreateFile.setDeliverableType(createFile.getString(DeliverableTerm.DELIVERABLE_TYPE));
 					}
 					model.getCreateFiles().addAll(outputCreeateFiles);
 				}
@@ -915,8 +919,8 @@ public class DossierActionUtils {
 				model.setFieldType(
 					jsonObject.getString(ProcessActionTerm.FIELD_TYPE));
 				model.setValue(jsonObject.getString(ProcessActionTerm.VALUE));
-				if (jsonObject.has("required")) {
-					model.setRequired(jsonObject.getBoolean("required"));
+				if (jsonObject.has(ConstantUtils.REQUIRED)) {
+					model.setRequired(jsonObject.getBoolean(ConstantUtils.REQUIRED));
 				}
 				outputs.add(model);
 			}

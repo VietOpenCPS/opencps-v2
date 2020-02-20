@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -82,7 +83,7 @@ public class AutoFillFormData {
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
 
-			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
 			_curDate = sfd.format(new Date());
 
@@ -381,9 +382,9 @@ public class AutoFillFormData {
 			}
 
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-				if (entry.getValue().getClass().getName().contains("JSONArray")) {
+				if (entry.getValue().getClass().getName().contains(ConstantUtils.KEY_JSON_ARRAY)) {
 					result.put(entry.getKey(), (JSONArray) entry.getValue());
-				} else if (entry.getValue().getClass().getName().contains("JSONObject")) {
+				} else if (entry.getValue().getClass().getName().contains(ConstantUtils.KEY_JSON_OBJECT)) {
 					result.put(entry.getKey(), (JSONObject) entry.getValue());
 				} else {
 					result.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
@@ -488,7 +489,7 @@ public class AutoFillFormData {
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
 
-			SimpleDateFormat sfd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
 			_curDate = sfd.format(new Date());
 

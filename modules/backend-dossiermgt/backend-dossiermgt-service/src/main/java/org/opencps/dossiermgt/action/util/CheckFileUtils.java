@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.activation.DataHandler;
-import javax.activation.MimeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;

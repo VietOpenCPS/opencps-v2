@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.opencps.dossiermgt.action.RegistrationLogActions;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.RegistrationTerm;
 import org.opencps.dossiermgt.model.RegistrationLog;
 import org.opencps.dossiermgt.service.RegistrationLogLocalServiceUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -49,8 +51,8 @@ public class RegistrationLogActionsImpl implements RegistrationLogActions {
 		try {
 			
 			if (start == 0) {
-				start = -1;
-				end = -1;
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
 			} 
 			
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -59,7 +61,7 @@ public class RegistrationLogActionsImpl implements RegistrationLogActions {
 			params.put(RegistrationTerm.REGISTRATION_ID, String.valueOf(registrationId));
 			
 			
-			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + "_sortable", Sort.STRING_TYPE,
+			Sort[] sorts = new Sort[] { SortFactoryUtil.create(sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 					GetterUtil.getBoolean(order)) };
 
 			Hits hits = RegistrationLogLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);

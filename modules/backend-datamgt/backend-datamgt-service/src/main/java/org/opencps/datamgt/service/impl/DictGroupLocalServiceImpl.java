@@ -151,7 +151,7 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(groupCode)) {
 
-			groupCode = groupCode;
+//			groupCode = groupCode;
 
 		}
 

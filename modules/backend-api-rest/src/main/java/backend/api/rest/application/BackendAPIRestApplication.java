@@ -99,6 +99,7 @@ import org.opencps.api.controller.impl.RegistrationFormManagementImpl;
 import org.opencps.api.controller.impl.RegistrationLogManagementImpl;
 import org.opencps.api.controller.impl.RegistrationManagementImpl;
 import org.opencps.api.controller.impl.RegistrationTemplatesManagementImpl;
+import org.opencps.api.controller.impl.ReportRoleManagementImpl;
 import org.opencps.api.controller.impl.SMSManagementImpl;
 import org.opencps.api.controller.impl.ServerConfigManagementImpl;
 import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
@@ -230,6 +231,7 @@ public class BackendAPIRestApplication extends Application {
 		//Test send mail
 		singletons.add(new MailTestManagementImpl());
 		singletons.add(new NotarizationManagementImpl());
+		singletons.add(new ReportRoleManagementImpl());
 		
 		singletons.add(this);
 

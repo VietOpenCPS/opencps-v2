@@ -93,6 +93,9 @@ public class DossierContentGenerator {
 
 	}
 
+	private static final String BRIEFNOTE_PATTERN = "\\[\\$(.*?)\\$\\]";
+	private static final String VARIABLE = "$variable";
+	
 	public static String getBriefNote(long groupId, long dossierId, String briefNotePattern) {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -103,7 +106,7 @@ public class DossierContentGenerator {
 
 		if (Validator.isNotNull(dossier) && Validator.isNotNull(briefNotePattern)) {
 
-			String pattern = "\\[\\$(.*?)\\$\\]";
+			String pattern = BRIEFNOTE_PATTERN;
 
 			Pattern r = Pattern.compile(pattern);
 
@@ -112,8 +115,8 @@ public class DossierContentGenerator {
 			int count = 0;
 
 			while (m.find()) {
-				briefNotePattern = briefNotePattern.replace(m.group(0), "$variable" + count + StringPool.DOLLAR);
-				patternContentMaps.put("$variable" + count + StringPool.DOLLAR, m.group(1));
+				briefNotePattern = briefNotePattern.replace(m.group(0), VARIABLE + count + StringPool.DOLLAR);
+				patternContentMaps.put(VARIABLE + count + StringPool.DOLLAR, m.group(1));
 				m = r.matcher(briefNotePattern);
 				count++;
 			}

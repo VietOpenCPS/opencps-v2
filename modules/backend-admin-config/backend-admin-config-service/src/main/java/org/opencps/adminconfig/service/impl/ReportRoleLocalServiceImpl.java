@@ -47,6 +47,27 @@ public class ReportRoleLocalServiceImpl extends ReportRoleLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.adminconfig.service.ReportRoleLocalServiceUtil} to access the report role local service.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public ReportRole addReportRole(long dynamicReportId, long roleId) {
+		long reportRoleId = counterLocalService.increment(ReportRole.class.getName());
+		ReportRole rr = reportRolePersistence.create(reportRoleId);
+		
+		rr.setDynamicReportId(dynamicReportId);
+		rr.setRoleId(roleId);
+		
+		return reportRolePersistence.update(rr);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ReportRole updateReportRole(long reportRoleId, long dynamicReportId, long roleId) {
+		ReportRole rr = reportRolePersistence.fetchByPrimaryKey(reportRoleId);
+		
+		rr.setDynamicReportId(dynamicReportId);
+		rr.setRoleId(roleId);
+		
+		return reportRolePersistence.update(rr);
+	}
+	
 	@Indexable(type = IndexableType.DELETE)
 	public ReportRole adminProcessDelete(Long id) {
 

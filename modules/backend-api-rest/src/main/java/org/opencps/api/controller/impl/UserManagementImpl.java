@@ -55,6 +55,7 @@ import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -530,7 +531,7 @@ public class UserManagementImpl implements UserManagement {
 			
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "cer";
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.CER;
 			File targetFile = new File(buildFileName);
 
 			try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
@@ -574,13 +575,14 @@ public class UserManagementImpl implements UserManagement {
 
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG_EXTENSION;
 			File targetFile = new File(buildFileName);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
-					.header("Content-Type", "image/png");
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), targetFile.getName());
+			
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 			return responseBuilder.build();
 			
@@ -604,13 +606,14 @@ public class UserManagementImpl implements UserManagement {
 
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + "data/cer/" + employee.getEmail() + StringPool.PERIOD + "png";
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG_EXTENSION;
 			File targetFile = new File(buildFileName);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
-
-			responseBuilder.header("Content-Disposition", "attachment; filename=\"" + targetFile.getName() + "\"")
-					.header("Content-Type", "application/x-x509-user-cert");
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), targetFile.getName());
+			
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
+					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_X509);
 
 			return responseBuilder.build();
 
@@ -634,8 +637,8 @@ public class UserManagementImpl implements UserManagement {
 				throw new UnauthenticationException();
 			}
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER))) {
+				throw new PermissionDeniedDataAccessException(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION), null);
 			}
 
 			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
@@ -664,8 +667,8 @@ public class UserManagementImpl implements UserManagement {
 				throw new UnauthenticationException();
 			}
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, "admin"))) {
-				throw new PermissionDeniedDataAccessException("Do not have permission", null);
+			if (user == null || (user.getUserId() != id && !auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER))) {
+				throw new PermissionDeniedDataAccessException(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION), null);
 			}
 
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 1,
@@ -693,9 +696,9 @@ public class UserManagementImpl implements UserManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
-				result.put("email", StringPool.BLANK);
-				result.put("role", StringPool.BLANK);
-				result.put("deactiveAccountFlag", 0);
+				result.put(UserTerm.EMAIL, StringPool.BLANK);
+				result.put(UserTerm.ROLE, StringPool.BLANK);
+				result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, 0);
 
 //				if ("Administrator".equalsIgnoreCase(role.getName())) {
 //					roleName = "Administrator";
@@ -707,9 +710,9 @@ public class UserManagementImpl implements UserManagement {
 				
 				roleName = role.getName();
 
-				result.put("email", user.getEmailAddress());
-				result.put("role", roleName);
-				result.put("deactiveAccountFlag", user.getStatus());
+				result.put(UserTerm.EMAIL, user.getEmailAddress());
+				result.put(UserTerm.ROLE, roleName);
+				result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, user.getStatus());
 
 				dataUser.put(result);
 			}

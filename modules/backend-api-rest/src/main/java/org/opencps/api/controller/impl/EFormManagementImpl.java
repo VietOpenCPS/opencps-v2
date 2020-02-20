@@ -196,7 +196,7 @@ public class EFormManagementImpl implements EFormManagement{
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				} catch (Exception e) {
 					_log.debug(e);
-					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(MessageUtil.getMessage(ConstantUtils.EFORM_MESSAGE_SECRETKEYNOTSUCCESS))
 							.build();
 				}
 
@@ -260,7 +260,7 @@ public class EFormManagementImpl implements EFormManagement{
 					_log.debug(e);
 				}
 
-				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity("secretKey not sucess")
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(MessageUtil.getMessage(ConstantUtils.EFORM_MESSAGE_SECRETKEYNOTSUCCESS))
 						.build();
 			}
 			else {
@@ -281,7 +281,7 @@ public class EFormManagementImpl implements EFormManagement{
 			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
-		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("secretKey not sucess")
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.EFORM_MESSAGE_SECRETKEYNOTSUCCESS))
 				.build();
 	}
 
@@ -402,7 +402,7 @@ public class EFormManagementImpl implements EFormManagement{
 						DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(formReportFileId);
 
 						is = dlFileEntry.getContentStream();
-						formReport = IOUtils.toString(is, "UTF-8");
+						formReport = IOUtils.toString(is, ConstantUtils.ENCODING_UTF_8);
 					} catch (Exception e) {
 						_log.error(e);
 					} finally {
@@ -418,41 +418,41 @@ public class EFormManagementImpl implements EFormManagement{
 				// Get formData
 				String formData = eform.getEFormData();
 				JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
-				jsonData.put("userName", user.getFullName());
-				jsonData.put("url", serviceContext.getPortalURL());
-				jsonData.put("eFormNo", eform.getEFormNo());
-				jsonData.put("serviceCode", eform.getServiceCode());
-				jsonData.put("fileTemplateNo", eform.getFileTemplateNo());
-				jsonData.put("eFormName", eform.getEFormName());
-				jsonData.put("formScriptFileId", eform.getFormScriptFileId());
-				jsonData.put("formReportFileId", eform.getFormReportFileId());
-				jsonData.put("email", eform.getEmail());
-				jsonData.put("secret", eform.getSecret());
-				jsonData.put("eFormId", eform.getEFormId());
+				jsonData.put(Field.USER_NAME, user.getFullName());
+				jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
+				jsonData.put(EFormTerm.EFORM_NO, eform.getEFormNo());
+				jsonData.put(EFormTerm.SERVICE_CODE, eform.getServiceCode());
+				jsonData.put(EFormTerm.FILE_TEMPLATE_NO, eform.getFileTemplateNo());
+				jsonData.put(EFormTerm.EFORM_NAME, eform.getEFormName());
+				jsonData.put(EFormTerm.FORM_SCRIPT_FILE_ID, eform.getFormScriptFileId());
+				jsonData.put(EFormTerm.FORM_REPORT_FILE_ID, eform.getFormReportFileId());
+				jsonData.put(EFormTerm.EMAIL, eform.getEmail());
+				jsonData.put(EFormTerm.SECRET, eform.getSecret());
+				jsonData.put(EFormTerm.EFORM_ID, eform.getEFormId());
 //				jsonData.put("gateNumber", eform.getGateNumber());
 //				jsonData.put("state", eform.getState());
 				//Send message bus
 				Message message = new Message();
-				message.put("formReport", formReport);
-				message.put("formData", jsonData.toJSONString());
+				message.put(ConstantUtils.API_JSON_FORM_REPORT, formReport);
+				message.put(ConstantUtils.API_JSON_FORM_DATA, jsonData.toJSONString());
 
 				try {
 					String previewResponse = (String) MessageBusUtil
-							.sendSynchronousMessage("jasper/engine/preview/destination", message, 10000);
+							.sendSynchronousMessage(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW, message, 10000);
 
 					File file = new File(previewResponse);
 
 					ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "application/pdf");
+					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+							attachmentFilename);
+					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 					return responseBuilder.build();
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception("Preview rendering not avariable");
+					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
 				}
 			}
 

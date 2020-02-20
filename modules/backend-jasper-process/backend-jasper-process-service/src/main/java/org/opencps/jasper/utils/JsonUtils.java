@@ -1,10 +1,12 @@
 package org.opencps.jasper.utils;
 
+import backend.jasper.process.service.util.ConfigConstants;
+
 public class JsonUtils {
 
 	public static String quote(String string) {
 		if (string == null || string.length() == 0) {
-			return "{}";
+			return ConfigConstants.JASPER_EMPTY_JSON;
 		}
 
 		char c = 0;
@@ -16,14 +18,14 @@ public class JsonUtils {
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
 			switch (c) {
-			case '\\':
-				sb.append("\\");
-				sb.append("\\");
+			case ConfigConstants.JASPER_BACK_SLASH:
+				sb.append(ConfigConstants.JASPER_BACK_SLASH_QUOTE);
+				sb.append(ConfigConstants.JASPER_BACK_SLASH_QUOTE);
 				break;
 			default:
 				if (c < ' ') {
-					t = "000" + Integer.toHexString(c);
-					sb.append("\\u" + t.substring(t.length() - 4));
+					t = ConfigConstants.ZERO + Integer.toHexString(c);
+					sb.append(ConfigConstants.UNICODE_PREFIX + t.substring(t.length() - 4));
 				} else {
 					sb.append(c);
 				}
@@ -35,7 +37,7 @@ public class JsonUtils {
 	public static String quoteHTML(String string) {
 
 		if (string == null || string.length() == 0) {
-			return "{}";
+			return ConfigConstants.JASPER_EMPTY_JSON;
 		}
 
 		char c = 0;
@@ -48,18 +50,18 @@ public class JsonUtils {
 			c = string.charAt(i);
 			switch (c) {
 			case '\\':
-				sb.append("REPLACEKEY");
+				sb.append(ConfigConstants.REPLACE_KEY);
 				break;
 			default:
 				if (c < ' ') {
-					t = "000" + Integer.toHexString(c);
-					sb.append("\\u" + t.substring(t.length() - 4));
+					t = ConfigConstants.ZERO + Integer.toHexString(c);
+					sb.append(ConfigConstants.UNICODE_PREFIX + t.substring(t.length() - 4));
 				} else {
 					sb.append(c);
 				}
 			}
 		}
-		String result = sb.toString().replaceAll("REPLACEKEYn", "<br />");
+		String result = sb.toString().replaceAll(ConfigConstants.REPLACE_KEYN, ConfigConstants.HTML_NEW_LINE);
 		return result;
 	}
 

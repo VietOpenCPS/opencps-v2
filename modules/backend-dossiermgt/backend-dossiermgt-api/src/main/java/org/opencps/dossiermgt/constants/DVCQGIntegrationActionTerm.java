@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DVCQGIntegrationActionTerm {
+	public static final String APPLICATION_JSON = "application/json";
+	public static final String CHARSET = "Charset";
+	public static final String UTF_8_LOWER = "utf-8";
+	public static final String UTF_8 = "UTF-8";
 	
 	public static final String MAHOSO = "MaHoSo";
 	public static final String MATTHC = "MaTTHC";

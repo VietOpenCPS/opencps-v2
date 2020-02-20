@@ -533,7 +533,7 @@ public class DossierMgtUtils {
 					result = result && checkSubmitting(dossier);
 					break;
 	
-				case "reject_submitting":
+				case DossierActionTerm.REJECT_SUBMITTING:
 					result = result && checkSubmitting(dossier);
 					break;
 
@@ -879,7 +879,7 @@ public class DossierMgtUtils {
 		}
 		String condition = waitingArr[0];
 //		String nBlock = waitingArr[1];
-		if ("waiting".equals(condition)) {
+		if (DossierTerm.WAITING.equals(condition)) {
 			
 		}
 		else {

@@ -5,6 +5,7 @@ public class MailVariables {
 	public static final String USEREMAIL = "[$USEREMAIL$]";
 	public static final String FROMUSER = "[$FROMUSER$]";
 	public static final String OBJECT = "[$OBJECT$]";
+	public static final String SECRET = "[$PASSWORD$]";
 	
 	public static final String DOCFILE_CLASS_NAME = "org.mobilink.docmgt.model.DocFile";
 	public static final String DOCARCHIVE_CLASS_NAME = "org.mobilink.docmgt.model.DocArchive";
@@ -26,4 +27,12 @@ public class MailVariables {
 	public static final String SUBJECT = "[$SUBJECT$]";
 	//
 	public static final String SUB_URL_ACTIVE = "register#/xac-thuc-tai-khoan?active_user_id=";
+	public static final String ACTION_COMMENT = "[$ACTIONCOMMENT$]";
+	
+	public static final String JSON_USERNAME = "USERNAME";
+	public static final String JSON_USEREMAIL = "USEREMAIL";
+	public static final String JSON_FROMUSER = "FROMUSER";
+	public static final String JSON_OBJECT = "OBJECT";
+	public static final String JSON_ACTION_COMMENT = "ACTIONCOMMENT";
+	public static final String JSON_SECRET = "PASSWORD";
 }

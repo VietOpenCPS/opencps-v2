@@ -66,7 +66,11 @@ public class UserTerm {
 
 	public static final String TIME_MINUTELY = "minutely";
 	public static final String TIME_HOURLY = "hourly";
-
+	public static final String MODERATOR = "moderator";
+	public static final String ASSIGNED = "assigned";
+	public static final String TO_USERS = "toUsers";
+	public static final String ROLE = "role";
+	public static final String DEACTIVE_ACCOUNT_FLAG = "deactiveAccountFlag";
 	public static int getUserByIdDefault() {
 
 		return 0;

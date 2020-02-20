@@ -1,12 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.dossiermgt.action.DossierStatisticAction;
-import org.opencps.dossiermgt.model.DossierStatistic;
-import org.opencps.dossiermgt.service.DossierStatisticLocalServiceUtil;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;

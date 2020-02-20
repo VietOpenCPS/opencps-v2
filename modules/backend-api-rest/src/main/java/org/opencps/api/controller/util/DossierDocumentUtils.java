@@ -23,16 +23,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -182,10 +187,10 @@ public class DossierDocumentUtils {
 						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
 						//_log.info("jsonDueDate: " + jsonDueDate);
 						if (jsonDueDate != null) {
-							JSONObject hours = jsonDueDate.getJSONObject("hour");
-							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
+							JSONObject hours = jsonDueDate.getJSONObject(DossierDocumentTerm.HOUR);
+							JSONObject processHours = jsonDueDate.getJSONObject(DossierDocumentTerm.PROCESS_HOUR);
 							//_log.info("hours: " + hours);
-							if (hours != null && hours.has("AM") && hours.has("PM")) {
+							if (hours != null && hours.has(DossierDocumentTerm.AM) && hours.has(DossierDocumentTerm.PM)) {
 								//_log.info("AM-PM: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
@@ -207,7 +212,7 @@ public class DossierDocumentUtils {
 									}
 								} else {
 									dueCalendar.setTime(dossier.getDueDate());
-									String hoursAfterNoon = hours.getString("PM");
+									String hoursAfterNoon = hours.getString(DossierDocumentTerm.PM);
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
@@ -225,12 +230,12 @@ public class DossierDocumentUtils {
 								}
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
-							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+							} else if (processHours != null && processHours.has(DossierDocumentTerm.START_HOUR) && processHours.has(DossierDocumentTerm.DUE_HOUR)) {
 								//_log.info("STRART check new: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
 								//
-								String receiveHour = processHours.getString("startHour");
+								String receiveHour = processHours.getString(DossierDocumentTerm.START_HOUR);
 								//_log.info("receiveHour: " + receiveHour);
 
 								if (Validator.isNotNull(receiveHour)) {
@@ -238,7 +243,7 @@ public class DossierDocumentUtils {
 									if (splitHour != null) {
 										int hourStart = GetterUtil.getInteger(splitHour[0]);
 										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
-											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+											String[] splitdueHour = StringUtil.split(processHours.getString(DossierDocumentTerm.DUE_HOUR),
 													StringPool.COLON);
 											Calendar dueCalendar = Calendar.getInstance();
 											if (splitdueHour != null) {
@@ -321,7 +326,7 @@ public class DossierDocumentUtils {
 		}
 		
 		//Hot fix TP99
-		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, ConstantUtils.TP99);
 		if (dossierMark != null) {
 			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
@@ -509,10 +514,10 @@ public class DossierDocumentUtils {
 						JSONObject jsonDueDate = JSONFactoryUtil.createJSONObject(dueDatePattern);
 						//_log.info("jsonDueDate: " + jsonDueDate);
 						if (jsonDueDate != null) {
-							JSONObject hours = jsonDueDate.getJSONObject("hour");
-							JSONObject processHours = jsonDueDate.getJSONObject("processHour");
+							JSONObject hours = jsonDueDate.getJSONObject(DossierDocumentTerm.HOUR);
+							JSONObject processHours = jsonDueDate.getJSONObject(DossierDocumentTerm.PROCESS_HOUR);
 							//_log.info("hours: " + hours);
-							if (hours != null && hours.has("AM") && hours.has("PM")) {
+							if (hours != null && hours.has(DossierDocumentTerm.AM) && hours.has(DossierDocumentTerm.PM)) {
 								//_log.info("AM-PM: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
@@ -534,7 +539,7 @@ public class DossierDocumentUtils {
 									}
 								} else {
 									dueCalendar.setTime(dossier.getDueDate());
-									String hoursAfterNoon = hours.getString("PM");
+									String hoursAfterNoon = hours.getString(DossierDocumentTerm.PM);
 									if (Validator.isNotNull(hoursAfterNoon)) {
 										String[] splitAfter = StringUtil.split(hoursAfterNoon, StringPool.COLON);
 										if (splitAfter != null) {
@@ -552,12 +557,12 @@ public class DossierDocumentUtils {
 								}
 								jsonData.put(DossierTerm.DUE_DATE, APIDateTimeUtils
 										.convertDateToString(dueCalendar.getTime(), APIDateTimeUtils._NORMAL_PARTTERN));
-							} else if (processHours != null && processHours.has("startHour") && processHours.has("dueHour")) {
+							} else if (processHours != null && processHours.has(DossierDocumentTerm.START_HOUR) && processHours.has(DossierDocumentTerm.DUE_HOUR)) {
 								//_log.info("STRART check new: ");
 								Calendar receiveCalendar = Calendar.getInstance();
 								receiveCalendar.setTime(dossier.getReceiveDate());
 								//
-								String receiveHour = processHours.getString("startHour");
+								String receiveHour = processHours.getString(DossierDocumentTerm.START_HOUR);
 								//_log.info("receiveHour: " + receiveHour);
 
 								if (Validator.isNotNull(receiveHour)) {
@@ -565,7 +570,7 @@ public class DossierDocumentUtils {
 									if (splitHour != null) {
 										int hourStart = GetterUtil.getInteger(splitHour[0]);
 										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) < hourStart) {
-											String[] splitdueHour = StringUtil.split(processHours.getString("dueHour"),
+											String[] splitdueHour = StringUtil.split(processHours.getString(DossierDocumentTerm.DUE_HOUR),
 													StringPool.COLON);
 											Calendar dueCalendar = Calendar.getInstance();
 											if (splitdueHour != null) {
@@ -648,7 +653,7 @@ public class DossierDocumentUtils {
 		}
 		
 		//Hot fix TP99
-		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, "TP99");
+		DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(groupId, dossierId, ConstantUtils.TP99);
 		if (dossierMark != null) {
 			JSONObject jsonMark = null;
 			String partNo = dossierMark.getDossierPartNo();
@@ -738,7 +743,7 @@ public class DossierDocumentUtils {
 
 			try {
 				lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(
-					dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS,
+					dossier.getDossierId(), DossierLogTerm.PROCESS_TYPE, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 			}
 			catch (PortalException e) {
@@ -750,10 +755,10 @@ public class DossierDocumentUtils {
 				JSONObject payload;
 				try {
 					payload = JSONFactoryUtil.createJSONObject(log.getPayload());
-					if (payload.has("dossierActionId")) {
+					if (payload.has(DossierActionTerm.DOSSIER_ACTION_ID)) {
 						mapFiles.put(
-							payload.getLong("dossierActionId"),
-							payload.getJSONArray("files"));
+							payload.getLong(DossierActionTerm.DOSSIER_ACTION_ID),
+							payload.getJSONArray(DossierActionTerm.FILES));
 					}
 				}
 				catch (JSONException e) {
@@ -766,21 +771,22 @@ public class DossierDocumentUtils {
 					groupId, dossier.getDossierId());
 			if (dossierActionListCheck != null &&
 				dossierActionListCheck.size() == 1 &&
-				"400".equals(dossierActionListCheck.get(0).getStepCode())) {
+				DossierTerm.STEP_DONE_CODE.equals(dossierActionListCheck.get(0).getStepCode())) {
 			}
 			else {
 				for (ProcessSequence ps : lstSequences) {
 					JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-					sequenceObj.put("sequenceNo", ps.getSequenceNo());
-					sequenceObj.put("sequenceName", ps.getSequenceName());
-					sequenceObj.put("sequenceRole", ps.getSequenceRole());
-					sequenceObj.put("durationCount", ps.getDurationCount());
+					sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, ps.getSequenceNo());
+					sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, ps.getSequenceName());
+					sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, ps.getSequenceRole());
+					sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, ps.getDurationCount());
 
 					if (lastDA != null &&
 						lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+						String statusText = String.format(MessageUtil.getMessage(ConstantUtils.PROCESSSEQUENCE_MESSAGE_PROCESSING), lastDA.getStepName());
 						sequenceObj.put(
-							"statusText",
-							"Đang thực hiện: " + lastDA.getStepName());
+							ProcessSequenceTerm.STATUS_TEXT,
+							statusText);
 					}
 					List<DossierAction> lstDossierActions =
 						DossierActionLocalServiceUtil.findDossierActionByG_DID_FSN(
@@ -795,11 +801,11 @@ public class DossierDocumentUtils {
 						: null;
 					if (lastAction != null) {
 						sequenceObj.put(
-							"startDate", APIDateTimeUtils.convertDateToString(lastAction.getCreateDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
+							ProcessSequenceTerm.START_DATE, APIDateTimeUtils.convertDateToString(lastAction.getCreateDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
 					}
 					else {
 						sequenceObj.put(
-							"startDate", StringPool.BLANK);
+							ProcessSequenceTerm.START_DATE, StringPool.BLANK);
 					}
 
 					if (lstDossierActions.size() > 0) {
@@ -807,10 +813,9 @@ public class DossierDocumentUtils {
 							lstDossierActions.get(lstDossierActions.size() - 1);
 						if (lastDASequence.getActionOverdue() != 0) {
 							String preText = (lastDASequence.getActionOverdue() > 0
-								? "Còn " : "Quá ");
+								? MessageUtil.getMessage(ConstantUtils.PROCESSSEQUENCE_MESSAGE_UNDUE) : ConstantUtils.PROCESSSEQUENCE_MESSAGE_OVERDUE);
 							sequenceObj.put(
-								"overdueText", preText +
-									lastDASequence.getActionOverdue() + " ngày");
+								ProcessSequenceTerm.OVERDUE_TEXT, String.format(preText, lastDASequence.getActionOverdue()));
 						}
 					}
 					StringBuilder assignUserArr = new StringBuilder();
@@ -829,14 +834,14 @@ public class DossierDocumentUtils {
 										EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 											groupId, u.getUserId());
 									if (emp != null) {
-										if (!"".contentEquals(assignUserArr.toString())) {
-											assignUserArr.append("<br/>");
+										if (!StringPool.BLANK.contentEquals(assignUserArr.toString())) {
+											assignUserArr.append(ConstantUtils.HTML_NEW_LINE);
 										}
 										assignUserArr.append(emp.getFullName());
 									}
 									else {
-										if (!"".contentEquals(assignUserArr.toString())) {
-											assignUserArr.append("<br/>");
+										if (!StringPool.BLANK.contentEquals(assignUserArr.toString())) {
+											assignUserArr.append(ConstantUtils.HTML_NEW_LINE);
 										}
 										assignUserArr.append(u.getFullName());
 									}
@@ -856,13 +861,13 @@ public class DossierDocumentUtils {
 										groupId, u.getUserId());
 									if (emp != null) {
 										if (!"".contentEquals(assignUserArr.toString())) {
-											assignUserArr.append("<br/>");
+											assignUserArr.append(ConstantUtils.HTML_NEW_LINE);
 										}
 										assignUserArr.append(emp.getFullName());
 									}
 									else {
 										if (!"".contentEquals(assignUserArr.toString())) {
-											assignUserArr.append("<br/>");
+											assignUserArr.append(ConstantUtils.HTML_NEW_LINE);
 										}
 										assignUserArr.append(u.getFullName());
 									}
@@ -870,22 +875,22 @@ public class DossierDocumentUtils {
 						}
 					}
 
-					sequenceObj.put("assignUsers", assignUserArr.toString());
+					sequenceObj.put(DossierActionTerm.ASSIGN_USERS, assignUserArr.toString());
 
 					StringBuilder actionsArr = new StringBuilder();
 					for (DossierAction da : lstDossierActions) {
-						if (!"".contentEquals(actionsArr.toString())) {
-							actionsArr.append("<br/>");
+						if (!StringPool.BLANK.contentEquals(actionsArr.toString())) {
+							actionsArr.append(ConstantUtils.HTML_NEW_LINE);
 						}
 						if (da.getCreateDate() != null) {
 							actionsArr.append(APIDateTimeUtils.convertDateToString(da.getCreateDate(), APIDateTimeUtils._NORMAL_DATE_TIME));							
 						}
-						actionsArr.append(" : ");
+						actionsArr.append(ConstantUtils.SPLIT_SPACE);
 						
 						actionsArr.append(da.getActionName());
 					}
 
-					sequenceObj.put("actions", actionsArr.toString());
+					sequenceObj.put(DossierActionTerm.ACTIONS, actionsArr.toString());
 
 					sequenceArr.put(sequenceObj);
 				}
@@ -945,7 +950,7 @@ public class DossierDocumentUtils {
 				try {
 					JSONObject valueObject = JSONFactoryUtil.createJSONObject(strObject);
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(valueObject.toString())) {
 //						keyValue[1] = valueObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(valueObject.toString());
@@ -958,7 +963,7 @@ public class DossierDocumentUtils {
 					_log.error(e);
 					// string
 					Object[] keyValue = new Object[2];
-					keyValue[0] = keyJson + "@" + key;
+					keyValue[0] = keyJson + StringPool.AT + key;
 					if (Validator.isNotNull(strObject.toString())) {
 //						keyValue[1] = strObject.toString().replaceAll(Pattern.quote("/"), "_").replaceAll(Pattern.quote("-"), "_");
 						keyValue[1] = SpecialCharacterUtils.splitSpecial(strObject.toString());

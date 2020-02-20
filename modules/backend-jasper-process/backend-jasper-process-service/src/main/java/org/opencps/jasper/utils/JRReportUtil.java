@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import backend.jasper.process.service.util.ConfigConstants;
+
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -210,7 +212,7 @@ public class JRReportUtil {
 	public static String quoteHTML(String string) {
 
 		if (string == null || string.length() == 0) {
-			return "{}";
+			return ConfigConstants.JASPER_EMPTY_JSON;
 		}
 
 		char c = 0;
@@ -222,19 +224,19 @@ public class JRReportUtil {
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
 			switch (c) {
-			case '\\':
-				sb.append("REPLACEKEY");
+			case ConfigConstants.JASPER_BACK_SLASH:
+				sb.append(ConfigConstants.REPLACE_KEY);
 				break;
 			default:
 				if (c < ' ') {
-					t = "000" + Integer.toHexString(c);
-					sb.append("\\u" + t.substring(t.length() - 4));
+					t = ConfigConstants.ZERO + Integer.toHexString(c);
+					sb.append(ConfigConstants.UNICODE_PREFIX + t.substring(t.length() - 4));
 				} else {
 					sb.append(c);
 				}
 			}
 		}
-		String result = sb.toString().replaceAll("REPLACEKEYn", "<br />");
+		String result = sb.toString().replaceAll(ConfigConstants.REPLACE_KEYN, ConfigConstants.HTML_NEW_LINE);
 		return result;
 	}
 
@@ -402,10 +404,10 @@ public class JRReportUtil {
 	
 				JasperPrint jasperPrint = getJasperPrint(reportTemplate, parameters, dataSource);
 
-				if ("excel".equals(reportType)) {
+				if (ConfigConstants.JASPER_DOCTYPE_EXCEL.equals(reportType)) {
 					return exportReport(jasperPrint, destFileName, DocType.XLS);						
 				}
-				else if ("word".equals(reportType)) {
+				else if (ConfigConstants.JASPER_DOCTYPE_WORD.equals(reportType)) {
 					return exportReport(jasperPrint, destFileName, DocType.DOC);	
 				}
 				else {

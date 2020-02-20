@@ -68,6 +68,20 @@ public class DossierNumberGenerator {
 		return UUID.randomUUID().toString();
 	}
 
+	private static final String CODE_PATTERN_GOV = "\\{(a+|A+)\\}";
+	private static final String CODE_PATTERN_DATE = "\\{(n+|N+)\\}";
+	private static final String CODE_PATTERN_MONTH = "\\{(p+|P+)\\}";
+	private static final String CODE_PATTERN_YEAR = "\\{(q+|Q+)\\}";
+	private static final String CODE_PATTERN_SERVICE = "\\{(r+|R+)\\}";
+	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
+	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
+	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
+	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
+	private static final String DEFAULT_VALUE_PATTERN = "^([A-Z]|[a-z])+\\d*\\s";
+	private static final String EXTRACT_VALUE_PATTERN = "\\[\\$(.*?)\\$\\]";
+	private static final String DATETIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	private static final String OK = "OK";
+	
 	public static String generateDossierNumber(long groupId, long companyId, long dossierId, long processOtionId,
 			String seriNumberPattern, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
@@ -101,18 +115,18 @@ public class DossierNumberGenerator {
 		_log.debug("seriNumberPattern: "+seriNumberPattern);
 		
 		if (dossier != null) {
-			String codePatternGov = "\\{(a+|A+)\\}";
-			String codePatternDate = "\\{(n+|N+)\\}";
-			String codePatternMonth = "\\{(p+|P+)\\}";
-			String codePatternYear = "\\{(q+|Q+)\\}";
-			String codePatternService = "\\{(r+|R+)\\}";
-			String dayPattern = "\\{(d{2}|D{2})\\}";
-			String monthPattern = "\\{(m{2}|M{2})\\}";
-			String yearPattern = "\\{(y+|Y+)\\}";
-			String dynamicVariablePattern = "\\{\\$(.*?)\\}";
-			String defaultValuePattern = "^([A-Z]|[a-z])+\\d*\\s";
-			String extractValuePattern = "\\[\\$(.*?)\\$\\]";
-			String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+			String codePatternGov = CODE_PATTERN_GOV;
+			String codePatternDate = CODE_PATTERN_DATE;
+			String codePatternMonth = CODE_PATTERN_MONTH;
+			String codePatternYear = CODE_PATTERN_YEAR;
+			String codePatternService = CODE_PATTERN_SERVICE;
+			String dayPattern = DAY_PATTERN;
+			String monthPattern = MONTH_PATTERN;
+			String yearPattern = YEAR_PATTERN;
+			String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
+			String defaultValuePattern = DEFAULT_VALUE_PATTERN;
+			String extractValuePattern = EXTRACT_VALUE_PATTERN;
+			String datetimePattern = DATETIME_PATTERN;
 			String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
 					codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
 
@@ -256,7 +270,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(datetimePattern)) {
 //						System.out.println(tmp);
 
-						seriNumberPattern = seriNumberPattern.replace(m.group(0), "OK");
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), OK);
 
 					} else if (r.toString().equals(dayPattern)) {
 
@@ -350,6 +364,9 @@ public class DossierNumberGenerator {
 		return dossierNumber;
 	}
 
+	private static final String CODE = "{code}";
+	private static final String PROCESS_PATTERN = "%0%d%s";
+	
 	@Deprecated
 	public static String generateDossierNumber(String code, String pattern, long groupId, Long companyId, String agency,
 			String service, String template) throws ParseException, SearchException {
@@ -381,7 +398,7 @@ public class DossierNumberGenerator {
 		// String processId = "100";
 //		String processP = StringPool.BLANK;
 		String processP;
-		if ("{code}".equals(listPattern[0])) {
+		if (CODE.equals(listPattern[0])) {
 			// replace code
 			pattern = pattern.replace(listPattern[0], code);
 			processP = listPattern[2];
@@ -397,7 +414,7 @@ public class DossierNumberGenerator {
 		} else if (processId.length() > processIdPattern.length()) {
 			pattern = pattern.replace(processP, processId.substring(processId.length() - processIdPattern.length()));
 		} else {
-			String p = "%0" + (processIdPattern.length() - processId.length()) + "d%s";
+			String p = String.format(PROCESS_PATTERN, (processIdPattern.length() - processId.length()));
 			pattern = pattern.replace(processP, String.format(p, 0, processId));
 		}
 
@@ -499,7 +516,7 @@ public class DossierNumberGenerator {
 				}
 
 				int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-				String format = "%0" + lengthPatern + "d";
+				String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
 				certNumber = String.format(format, _counterNumber); 
 				
 			}
@@ -511,12 +528,13 @@ public class DossierNumberGenerator {
 		return certNumber;
 
 	}
-
+	private static final String COUNTER_NUMBER_FORMAT = "%0%dd";
+	
 	private static String countByNumber(String pattern, String tmp) {
 
 		long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = "%0" + lengthPatern + "d";
+		String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
 
 		return String.format(format, counter); 
 	}
@@ -564,16 +582,16 @@ public class DossierNumberGenerator {
 	public static String generateDossierNumber(long groupId, String dossierNoPattern, String serviceCode, String govAgencyCode, String templateNo, String serviceProcessCode) {
 
 		//String dossierNumber = StringPool.BLANK;
-		String codePatternGov = "\\{(a+|A+)\\}";
-		String codePatternDate = "\\{(n+|N+)\\}";
-		String codePatternMonth = "\\{(p+|P+)\\}";
-		String codePatternYear = "\\{(q+|Q+)\\}";
-		String codePatternService = "\\{(r+|R+)\\}";
-		String dayPattern = "\\{(d{2}|D{2})\\}";
-		String monthPattern = "\\{(m{2}|M{2})\\}";
-		String yearPattern = "\\{(y+|Y+)\\}";
-		String dynamicVariablePattern = "\\{\\$(.*?)\\}";
-		String datetimePattern = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+		String codePatternGov = CODE_PATTERN_GOV;
+		String codePatternDate = CODE_PATTERN_DATE;
+		String codePatternMonth = CODE_PATTERN_MONTH;
+		String codePatternYear = CODE_PATTERN_YEAR;
+		String codePatternService = CODE_PATTERN_SERVICE;
+		String dayPattern = DAY_PATTERN;
+		String monthPattern = MONTH_PATTERN;
+		String yearPattern = YEAR_PATTERN;
+		String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
+		String datetimePattern = DATETIME_PATTERN;
 		String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
 				codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
 
@@ -690,7 +708,7 @@ public class DossierNumberGenerator {
 				} else if (r.toString().equals(datetimePattern)) {
 //						System.out.println(tmp);
 
-					dossierNoPattern = dossierNoPattern.replace(m.group(0), "OK");
+					dossierNoPattern = dossierNoPattern.replace(m.group(0), OK);
 
 				} else if (r.toString().equals(dayPattern)) {
 

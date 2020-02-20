@@ -1,15 +1,5 @@
 package org.opencps.kyso.message;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.security.cert.Certificate;
-import java.util.Base64;
-
-import org.opencps.kyso.utils.BCYSignatureUtil;
-import org.opencps.kyso.utils.CertUtil;
-import org.opencps.kyso.utils.ExtractTextLocations;
-import org.opencps.kyso.utils.ImageUtil;
-
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -30,6 +20,17 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.security.cert.Certificate;
+import java.util.Base64;
+
+import org.opencps.kyso.utils.BCYSignatureUtil;
+import org.opencps.kyso.utils.CertUtil;
+import org.opencps.kyso.utils.EngineTerm;
+import org.opencps.kyso.utils.ExtractTextLocations;
+import org.opencps.kyso.utils.ImageUtil;
+
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;
 
@@ -48,16 +49,16 @@ public class Engine implements MessageListener {
 	private void _doReceiveJasperRequest(Message message) {
 		// TODO Auto-generated method stub
 		_log.info("KYSO processing .............................");
-		JSONObject msgData = (JSONObject) message.get("msgToEngine");
+		JSONObject msgData = (JSONObject) message.get(EngineTerm.MSG_TO_ENGINE);
 
 		try {
 
-			long fileEntryId = msgData.getLong("fileEntryId");
+			long fileEntryId = msgData.getLong(EngineTerm.FILE_ENTRY_ID);
 
-			long userId = msgData.getLong("userId");
+			long userId = msgData.getLong(EngineTerm.USER_ID);
 
-			boolean eSign = msgData.getBoolean("eSign");
-			long dossierFileId = msgData.getLong("dossierFileId");
+			boolean eSign = msgData.getBoolean(EngineTerm.ESIGN);
+			long dossierFileId = msgData.getLong(EngineTerm.DOSSIER_FILE_ID);
 			
 			if (eSign) {
 				
@@ -80,7 +81,7 @@ public class Engine implements MessageListener {
 
 //				String rootPath = "/Users/binhth/Downloads/apache-tomcat-8.0.45/webapps/WebApplication1/";
 //				String fullPath = rootPath + "TestFile.pdf";
-				String rootPath = PropsUtil.get(ConfigProps.CER_HOME)+"/";
+				String rootPath = PropsUtil.get(ConfigProps.CER_HOME)+StringPool.SLASH;
 //				String fullPath = StringPool.BLANK;
 				
 				if (fileEntryId > 0) {
@@ -90,12 +91,12 @@ public class Engine implements MessageListener {
 					FileUtil.move(fileTemp, file);
 					String fullPath = file.getAbsolutePath();
 
-					String signImagePath = new File(rootPath + emailUser + ".png").getAbsolutePath();
+					String signImagePath = new File(rootPath + emailUser + EngineTerm.PNG_EXTENSION).getAbsolutePath();
 					String imageBase64 = ImageUtil.getSignatureImageBase64ByPath(signImagePath);
 	
 					BufferedImage bufferedImage = ImageUtil.getImageByPath(signImagePath);
 	
-					Certificate cert = CertUtil.getCertificateByPath(new File(rootPath + emailUser + ".cer").getAbsolutePath());
+					Certificate cert = CertUtil.getCertificateByPath(new File(rootPath + emailUser + EngineTerm.CER_EXTENSION).getAbsolutePath());
 	
 					boolean showSignatureInfo = true;
 	
@@ -161,7 +162,7 @@ public class Engine implements MessageListener {
 					signature = Base64.getDecoder().decode("");
 					signer.completeSign(signature, fieldName);
 	
-					File fileSigned = new File(fullPath.replace(".pdf", ".signed.pdf"));
+					File fileSigned = new File(fullPath.replace(EngineTerm.PDF_EXTENSION, EngineTerm.SIGNED_PDF_EXTENSION));
 	
 					ServiceContext serviceContext = new ServiceContext();
 	
@@ -172,12 +173,12 @@ public class Engine implements MessageListener {
 					// turnOn DossierFile Sync
 					
 					JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
-					msgDataIn.put("dossierFileId", dossierFileId);
-					msgDataIn.put("dossierFileSync", eSign);
-					msgDataIn.put("userId", userId);
+					msgDataIn.put(EngineTerm.DOSSIER_FILE_ID, dossierFileId);
+					msgDataIn.put(EngineTerm.DOSSIER_FILE_SYNC, eSign);
+					msgDataIn.put(EngineTerm.USER_ID, userId);
 					
-					message.put("msgToEngine", msgDataIn);
-					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+					message.put(EngineTerm.MSG_TO_ENGINE, msgDataIn);
+					MessageBusUtil.sendMessage(EngineTerm.DOSSIER_IN_DESTINATION, message);
 					
 //					FileUtil.delete(file);
 //					FileUtil.delete(fileSigned);

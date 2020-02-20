@@ -94,7 +94,7 @@ public class DossierDetailNextActionModel {
 	protected Integer checkInput;
 	protected String configNote;
 	protected List<DossierTemplatePartDataModel> dossierParts;
-
+	
 	public Long getProcessActionId() {
 		return processActionId;
 	}

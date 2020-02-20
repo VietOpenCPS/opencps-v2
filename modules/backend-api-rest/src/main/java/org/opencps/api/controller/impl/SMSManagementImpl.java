@@ -21,7 +21,10 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.constants.SMSManagementConstants;
 import org.opencps.api.controller.SMSManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.sms.model.IPacificSearchSMS;
 import org.opencps.communication.constants.SendSMSTerm;
 import org.opencps.communication.model.ServerConfig;
@@ -45,6 +48,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -64,11 +68,11 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Result result = ViettelSMSUtils.sendSMS(
 				groupId, body, StringPool.BLANK, toTelNo);
 
-			return Response.status(200).entity(result.getMessage()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.getMessage()).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -94,11 +98,11 @@ public class SMSManagementImpl implements SMSManagement {
 		_log.info("===============" + input.getUser());
 		
 		JSONObject formDataKey = JSONFactoryUtil.createJSONObject();
-		formDataKey.put("bac", 1);
-		formDataKey.put("baB", "shkdshd");
+//		formDataKey.put("bac", 1);
+//		formDataKey.put("baB", "shkdshd");
 		buildDeliverableSearchDataForm(formDataKey.toJSONString());
 
-		return Response.status(200).entity(_buiderResponseSMS(input)).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(_buiderResponseSMS(input)).build();
 	}
 
 	@Override
@@ -114,15 +118,15 @@ public class SMSManagementImpl implements SMSManagement {
 			JSONObject resultApi = JSONFactoryUtil.createJSONObject(
 				_getZaloUidByTelNo(zaloAccessToken, toTelNo));
 			String uid = "not found";
-			if (resultApi.has("data")) {
+			if (resultApi.has(ConstantUtils.DATA)) {
 
-				uid = resultApi.getJSONObject("data").getString("user_id");
+				uid = resultApi.getJSONObject(ConstantUtils.DATA).getString(ConstantUtils.USER_ID);
 			}
-			return Response.status(200).entity(uid).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(uid).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			return Response.status(500).entity("").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(StringPool.BLANK).build();
 		}
 
 	}
@@ -142,7 +146,7 @@ public class SMSManagementImpl implements SMSManagement {
 		// "0;72;HE THONG XIN THONG BAO\n BAN KHONG THE NHAN TIN NHAN;|0;0;Nhan
 		// den ban b;0362219930"
 
-		String result = "0;72;He thong chua cau hinh;";
+		String result = MessageUtil.getMessage(SMSManagementConstants.SYSTEM_NOT_CONFIG_MESSAGE);
 		JSONObject epacifConfig = JSONFactoryUtil.createJSONObject();
 		try {
 
@@ -216,7 +220,7 @@ public class SMSManagementImpl implements SMSManagement {
 			}
 			else {
 
-				result = "0;72;He thong chua cau hinh.;";
+				result = MessageUtil.getMessage(SMSManagementConstants.SYSTEM_NOT_CONFIG_MESSAGE);
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
@@ -226,21 +230,29 @@ public class SMSManagementImpl implements SMSManagement {
 		}
 		catch (Exception e) {
 			_log.debug(e);
-			result = "0;72;He thong chua cau hinh;";
+			result = MessageUtil.getMessage(SMSManagementConstants.SYSTEM_NOT_CONFIG_MESSAGE);
 		}
 
 		_log.info(result);
 		return result;
 	}
 
+	private static final String MAU_KHONG_DAU = "\\p{InCombiningDiacriticalMarks}+";
+	private static final String DD = "Đ";
+	private static final String D = "D";
+	private static final String dd = "đ";
+	private static final String d = "d";
+	
 	private String _removeAccent(String textConvert) {
 
 		String temp = Normalizer.normalize(textConvert, Normalizer.Form.NFD);
-		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-		return pattern.matcher(temp).replaceAll("").replaceAll(
-			"Đ", "D").replaceAll("đ", "d");
+		Pattern pattern = Pattern.compile(MAU_KHONG_DAU);
+		return pattern.matcher(temp).replaceAll(StringPool.BLANK).replaceAll(
+			DD, D).replaceAll(dd, d);
 	}
 
+	private static final String VN_FORMAT_H = "dd-MM-yyyy-HH-mm";
+	
 	@Override
 	public Response calculateDueDate(
 		HttpServletRequest request, HttpHeaders header, Company company,
@@ -251,22 +263,22 @@ public class SMSManagementImpl implements SMSManagement {
 		try {
 
 			Date startDateS =
-				new SimpleDateFormat("dd-MM-yyyy-HH-mm").parse(startDate);
+				new SimpleDateFormat(VN_FORMAT_H).parse(startDate);
 			String dueDate2 =
-				new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(startDateS);
+				new SimpleDateFormat(VN_FORMAT_H).format(startDateS);
 			_log.info(startDateS);
 			_log.info(dueDate2);
 			DueDateUtils dueDateUtils = new DueDateUtils(
 				startDateS, durationCount, durationUnit, groupId);
-			String dueDate = new SimpleDateFormat("dd-MM-yyyy-HH-mm").format(
+			String dueDate = new SimpleDateFormat(VN_FORMAT_H).format(
 				dueDateUtils.getDueDate());
-			return Response.status(200).entity(dueDate).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(dueDate).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);
 		}
 
-		return Response.status(500).entity(StringPool.BLANK).build();
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(StringPool.BLANK).build();
 	}
 
 	private String _getZaloUidByTelNo(String token, String toTelNo) {
@@ -277,16 +289,18 @@ public class SMSManagementImpl implements SMSManagement {
 
 			JSONObject data = JSONFactoryUtil.createJSONObject();
 
-			data.put("user_id", toTelNo);
+			data.put(ConstantUtils.USER_ID, toTelNo);
 
-			String endPoint = "/v2.0/oa/getprofile?access_token=" + token +
-				"&data=" + data.toJSONString();
+//			String endPoint = "/v2.0/oa/getprofile?access_token=" + token +
+//				"&data=" + data.toJSONString();
+			String endPoint = String.format(MessageUtil.getMessage(SMSManagementConstants.SMS_ACCESS_TOKEN_URL), token, data.toJSONString());
+			
 			_log.info("end point=========" + endPoint);
 
 			JSONObject resPostDossier = _callAPI(
-				HttpMethods.GET, "application/json", "https://openapi.zalo.me",
+				HttpMethods.GET, ConstantUtils.CONTENT_TYPE_JSON, MessageUtil.getMessage(SMSManagementConstants.SMS_ZALO_API_URL),
 				endPoint, StringPool.BLANK, StringPool.BLANK, properties);
-			String uid = resPostDossier.getString("message");
+			String uid = resPostDossier.getString(SMSManagementConstants.SMS_MESSAGE);
 
 			if (Validator.isNotNull(uid)) {
 
@@ -325,16 +339,16 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			String urlPath;
-			if (pathBase.endsWith("/") && endPoint.startsWith("/")) {
+			if (pathBase.endsWith(StringPool.SLASH) && endPoint.startsWith(StringPool.SLASH)) {
 				String endPoint2 = endPoint.substring(1);
 				urlPath = pathBase + endPoint2;
 			}
-			else if ((!pathBase.endsWith("/") && endPoint.startsWith("/")) ||
-				(pathBase.endsWith("/") && !endPoint.startsWith("/"))) {
+			else if ((!pathBase.endsWith(StringPool.SLASH) && endPoint.startsWith(StringPool.SLASH)) ||
+				(pathBase.endsWith(StringPool.SLASH) && !endPoint.startsWith(StringPool.SLASH))) {
 				urlPath = pathBase + endPoint;
 			}
 			else {
-				urlPath = pathBase + "/" + endPoint;
+				urlPath = pathBase + StringPool.SLASH + endPoint;
 			}
 			URL url = new URL(urlPath);
 
@@ -342,21 +356,22 @@ public class SMSManagementImpl implements SMSManagement {
 			conn.setConnectTimeout(RESTFulConfiguration.TIME_OUT);
 
 			conn.setRequestMethod(httpMethod);
-			conn.setRequestProperty("Accept", accept);
+			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			conn.setRequestProperty("groupId", StringPool.BLANK);
+			conn.setRequestProperty(Field.GROUP_ID, StringPool.BLANK);
 
 			if (Validator.isNotNull(username) &&
 				Validator.isNotNull(password)) {
 
-				String authString = username + ":" + password;
+				String authString = username + StringPool.COLON + password;
 
 				String authStringEnc = new String(
 					java.util.Base64.getEncoder().encodeToString(
 						authString.getBytes()));
+				String basicAuth = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStringEnc);
 				conn.setRequestProperty(
-					"Authorization", "Basic " + authStringEnc);
+					HttpHeaders.AUTHORIZATION, basicAuth);
 			}
 
 			if (!properties.isEmpty()) {
@@ -401,7 +416,7 @@ public class SMSManagementImpl implements SMSManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			System.out.println(
 				"================groupId====================" + groupId +
 					" ===" + dossierId);
@@ -621,6 +636,7 @@ public class SMSManagementImpl implements SMSManagement {
 	public static String buildDeliverableSearchDataForm (String formDataKey) {
 
 		String result = StringPool.BLANK;
+		String searchFormat = MessageUtil.getMessage(SMSManagementConstants.SMS_SEARCH_DELIVERABLE);
 		try {
 
 			if (Validator.isNull(formDataKey)) {
@@ -633,18 +649,19 @@ public class SMSManagementImpl implements SMSManagement {
 			for (Iterator<String> iii = formDataKeyObject.keys(); iii.hasNext();) {
 				
 				String key = iii.next();
-				result += " AND " + key + "_data: *" + formDataKeyObject.get(key) + "*";
+				String andQuery = String.format(searchFormat, key, formDataKeyObject.get(key));
+				result += andQuery;
 			}
 		}
 		catch (Exception e) {
 			_log.info(e);
 		}
-		System.out.println("========result==========" + result);
-		
-		String sdd = "KQ01-BGTVT-285799@1, KQ01-BGTVT-285800@2, KQ01-BGTVT-285800@3,KQ01-BGTVT-285799@3";
-		String d = 
-						StringUtil.split(sdd, "BGTVT-285800" + "@")[1].substring(0, 1);
-		System.out.println(d);
+//		System.out.println("========result==========" + result);
+//		
+//		String sdd = "KQ01-BGTVT-285799@1, KQ01-BGTVT-285800@2, KQ01-BGTVT-285800@3,KQ01-BGTVT-285799@3";
+//		String d = 
+//						StringUtil.split(sdd, "BGTVT-285800" + "@")[1].substring(0, 1);
+//		System.out.println(d);
 		
 		return result;
 	}

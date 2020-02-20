@@ -28,6 +28,8 @@ public class DossierActionTerm {
 	public static final String DOSSIER_DOCUMENT_ID = "dossierDocumentId";
 	public static final String JOB_POS_NAME = "jobPosName";
 	public static final String FILES = "files";
+	public static final String RETURN_FILES = "returnFiles";
+	public static final String CREATE_FILES = "createFiles";
 	public static final String ACTIONS = "actions";
 	public static final String STATE = "state";
 	public static final String FROM_STEP_CODE = "fromStepCode";
@@ -59,4 +61,12 @@ public class DossierActionTerm {
 	
 	public static final String DONE_STEP = "400";
 	public static final String ASSIGN_USERS = "assignUsers";
+	public static final String TIMMER = "timmer";
+	public static final String REJECT_CANCELLING = "reject_cancelling";
+	public static final String CANCELLING = "cancelling";
+	public static final String REJECT_SUBMITTING = "reject_submitting";
+	public static final String SUBMITTING = "submitting";
+	public static final String REJECT_CORRECTING = "reject_correcting";
+	public static final String CORRECTING = "correcting";
+	public static final String LST_USER = "lstUser";
 }

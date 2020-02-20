@@ -1,14 +1,5 @@
 package org.opencps.kyso.utils;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.cert.Certificate;
-
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -24,6 +15,15 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.cert.Certificate;
+
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import vgca.svrsigner.ServerSigner;
 
@@ -49,11 +49,11 @@ public class BCYSignatureUtil extends SignatureUtil {
 
 		// String result = StringPool.BLANK;
 		
-		float offsetX = ParamUtil.getFloat(resourceRequest, "offsetX");
-		float offsetY = ParamUtil.getFloat(resourceRequest, "offsetY");
-		float imageZoom = ParamUtil.getFloat(resourceRequest, "imageZoom");
+		float offsetX = ParamUtil.getFloat(resourceRequest, KysoTerm.OFFSET_X);
+		float offsetY = ParamUtil.getFloat(resourceRequest, KysoTerm.OFFSET_Y);
+		float imageZoom = ParamUtil.getFloat(resourceRequest, KysoTerm.IMAGE_ZOOM);
 		
-		boolean showSignatureInfo = ParamUtil.getBoolean(resourceRequest, "showSignatureInfo");
+		boolean showSignatureInfo = ParamUtil.getBoolean(resourceRequest, KysoTerm.SHOW_SIGNATURE_INFO);
 
 		long userId = PortalUtil.getUserId(resourceRequest);
 
@@ -92,17 +92,17 @@ public class BCYSignatureUtil extends SignatureUtil {
 
 			String realPath = ReportUtils
 					.getTemplateReportFilePath(resourceRequest);
-			String realExportPath = realPath + "resources/";
+			String realExportPath = realPath + KysoTerm.RESOURCES_FOLDER;
 
 			String imageBase64 = StringPool.BLANK;
 			String cer = realExportPath;
-			String cerPath = cer + userName + ".cer";
+			String cerPath = cer + userName + KysoTerm.CER_EXTENSION;
 			String signImagePath = StringPool.BLANK;
 			String imgsrc = realExportPath;
 			if (symbolType == 1) {
-				signImagePath = imgsrc + userName + ".png";
+				signImagePath = imgsrc + userName + KysoTerm.PNG_EXTENSION;
 			} else {
-				signImagePath = imgsrc + userName + "_condau.png";
+				signImagePath = imgsrc + userName + KysoTerm.CONDAU_PNG_EXTENSION;
 			}
 
 			imageBase64 = ImageUtil
@@ -115,7 +115,7 @@ public class BCYSignatureUtil extends SignatureUtil {
 			// TODO 
 //			String realExportDir = PortletProps
 //					.get("opencps.file.system.temp.dir");
-			String realExportDir = "/opt/";
+			String realExportDir = KysoTerm.EXPORT_FOLDER;
 			filePath = PDFUtil.saveAsPdf(realExportDir,
 					fileEntry.getFileEntryId());
 			file = new File(filePath);
@@ -224,15 +224,15 @@ public class BCYSignatureUtil extends SignatureUtil {
 			}
 		}
 
-		jsonFeed.put("hashComputers", hashComputers);
-		jsonFeed.put("signFieldNames", signFieldNames);
-		jsonFeed.put("filePaths", filePaths);
-		jsonFeed.put("msg", messages);
-		jsonFeed.put("fileNames", fileNames);
-		jsonFeed.put("dossierFileIds", dossierFileIds);
-		jsonFeed.put("dossierPartIds", dossierPartIds);
-		jsonFeed.put("indexs", indexs);
-		jsonFeed.put("indexSizes", indexSizes);
+		jsonFeed.put(KysoTerm.HASH_COMPUTERS, hashComputers);
+		jsonFeed.put(KysoTerm.SIGN_FIELD_NAMES, signFieldNames);
+		jsonFeed.put(KysoTerm.FILE_PATHS, filePaths);
+		jsonFeed.put(KysoTerm.MSG, messages);
+		jsonFeed.put(KysoTerm.FILE_NAMES, fileNames);
+		jsonFeed.put(KysoTerm.DOSSIER_FILE_IDS, dossierFileIds);
+		jsonFeed.put(KysoTerm.DOSSIER_PART_IDS, dossierPartIds);
+		jsonFeed.put(KysoTerm.INDEXS, indexs);
+		jsonFeed.put(KysoTerm.INDEX_SIZES, indexSizes);
 		PrintWriter out = resourceResponse.getWriter();
 		out.print(jsonFeed.toString());
 

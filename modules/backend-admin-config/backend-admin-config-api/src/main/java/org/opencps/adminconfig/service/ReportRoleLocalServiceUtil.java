@@ -42,6 +42,10 @@ public class ReportRoleLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.adminconfig.service.impl.ReportRoleLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static org.opencps.adminconfig.model.ReportRole addReportRole(
+		long dynamicReportId, long roleId) {
+		return getService().addReportRole(dynamicReportId, roleId);
+	}
 
 	/**
 	* Adds the report role to the database. Also notifies the appropriate model listeners.
@@ -269,6 +273,12 @@ public class ReportRoleLocalServiceUtil {
 	*/
 	public static int getReportRolesCount() {
 		return getService().getReportRolesCount();
+	}
+
+	public static org.opencps.adminconfig.model.ReportRole updateReportRole(
+		long reportRoleId, long dynamicReportId, long roleId) {
+		return getService()
+				   .updateReportRole(reportRoleId, dynamicReportId, roleId);
 	}
 
 	/**

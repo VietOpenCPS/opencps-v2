@@ -18,5 +18,16 @@ public class ConfigConstants {
 	public static final String JASPER_TERM_JRXML_TEMPLATE = "jrxmlTemplate";
 	public static final String JASPER_TERM_FILE_PATH = "filePath";
 	public static final String JASPER_TERM_MSG_TO_ENGINE = "msgToEngine";
-
+	public static final String JASPER_FORM_REPORT = "formReport";
+	public static final String JASPER_FORM_DATA = "formData";
+	public static final String JASPER_REPORT_TYPE = "reportType";
+	public static final String JASPER_FILE_DES = "fileDes";
+	public static final String JASPER_EMPTY_JSON = "{}";
+	public static final char JASPER_BACK_SLASH = '\\';
+	public static final String REPLACE_KEY = "REPLACEKEY";
+	public static final String REPLACE_KEYN = "REPLACEKEYn";
+	public static final String ZERO = "000";
+	public static final String UNICODE_PREFIX = "\\u";
+	public static final String HTML_NEW_LINE = "<br />";
+	public static final String JASPER_BACK_SLASH_QUOTE = "\\";
 }

@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -28,14 +29,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.SignatureManagement;
 import org.opencps.api.controller.util.DossierUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.Dossier;
@@ -64,7 +68,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			Locale locale, User user, ServiceContext serviceContext, Long id, DigitalSignatureInputModel input) throws PortalException {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -103,7 +107,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 	//			_log.info("jsonData: "+jsonData.toJSONString());
 	//			String fullPath = String.valueOf(jsonData.get("fullPath"));
 	//			_log.info("fullPath: "+fullPath);
-				String signedFilePath = jsonData.getString("signedFile");
+				String signedFilePath = jsonData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNEDFILE);
 				File fileSigned = new File(signedFilePath);
 	//			_log.info("TEST long file: "+fileSigned.length());
 	//			_log.info("TEST file sign: "+fileSigned.lastModified());
@@ -168,11 +172,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 						}
 					}
 					// Process success
-					result.put("msg", "success");
+					result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 				}
 			}
 		} else {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
 
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
@@ -193,11 +197,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 			String endPoint = "signature/completeSignature";
 
 			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("sign", sign);
-			params.put("signFieldName", signFieldName);
-			params.put("fileName", fileName);
+			params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGN, sign);
+			params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNFIELDNAME, signFieldName);
+			params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILENAME, fileName);
 
-			JSONObject resPostDossier = rest.callPostAPI(groupId, httpMethod, "application/json",
+			JSONObject resPostDossier = rest.callPostAPI(groupId, httpMethod, ConstantUtils.CONTENT_TYPE_JSON,
 					RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER,
 					RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
@@ -211,7 +215,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		_log.info("START*************");
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -251,17 +255,17 @@ public class SignatureManagementImpl implements SignatureManagement{
 							JSONObject newHashComputedResult = callHashComputedSync(groupId, user, fileEntryId, input.getActionCode(),
 									input.getPostStepCode(), serviceContext);
 							//_log.info("Obj: " + newHashComputedResult);
-							String newHashComputedStr = newHashComputedResult.getString("message");
+							String newHashComputedStr = newHashComputedResult.getString(ConstantUtils.HASHCOMPUTED_MESSAGE_KEY);
 							
 							JSONObject newHashComputed = JSONFactoryUtil.createJSONObject(newHashComputedStr);
 
 //							_log.info("New hash computed: " + newHashComputed.toJSONString());
-							JSONArray hashComputedArr = newHashComputed.getJSONArray("hashComputers");
-							JSONArray signFieldNamesArr = newHashComputed.getJSONArray("signFieldNames");
-							JSONArray fileNamesArr = newHashComputed.getJSONArray("fileNames");
-							JSONArray fullPathOfSignedFilesArr = newHashComputed.getJSONArray("fullPathSigned");
-							JSONArray messagesArr = newHashComputed.getJSONArray("msg");
-							long fileEntrySigned = newHashComputed.getLong("fileEntryId");
+							JSONArray hashComputedArr = newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_HASHCOMPUTERS_KEY);
+							JSONArray signFieldNamesArr = newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_SIGNFIELDNAMES_KEY);
+							JSONArray fileNamesArr = newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_FILENAMES_KEY);
+							JSONArray fullPathOfSignedFilesArr = newHashComputed.getJSONArray(ConstantUtils.HASHCOMPUTED_FULLPATHSIGNED_KEY);
+							JSONArray messagesArr = newHashComputed.getJSONArray(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG);
+							long fileEntrySigned = newHashComputed.getLong(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID);
 //							_log.info("Hash computers: " + hashComputedArr.toJSONString());
 							for (int i = 0; i < hashComputedArr.length(); i++) {
 								hashComputedArrResult.put(hashComputedArr.get(i));
@@ -302,22 +306,22 @@ public class SignatureManagementImpl implements SignatureManagement{
 
 			if (hashComputedArrResult.length() == 0) {
 				results = JSONFactoryUtil.createJSONObject();
-				results.put("msg", "fileEntryId");				
+				results.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));				
 			}
 			else {
-				hashComputed.put("hashComputers", hashComputedArrResult);
-				hashComputed.put("signFieldNames", signFieldNamesArrResult);
-				hashComputed.put("fileNames", fileNamesArrResult);
-				hashComputed.put("msg", messagesArrResult);
-				hashComputed.put("fullPathSigned", fullPathOfSignedFilesArrResult);
-				hashComputed.put("fileEntryId", fileEntryArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_HASHCOMPUTERS_KEY, hashComputedArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_SIGNFIELDNAMES_KEY, signFieldNamesArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_FILENAMES_KEY, fileNamesArrResult);
+				hashComputed.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, messagesArrResult);
+				hashComputed.put(ConstantUtils.HASHCOMPUTED_FULLPATHSIGNED_KEY, fullPathOfSignedFilesArrResult);
+				hashComputed.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID, fileEntryArrResult);
 				
 				results = JSONFactoryUtil.createJSONObject(hashComputed.toJSONString());
 			}
 //			results = JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
 //			_log.info("results: "+results);
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -334,15 +338,15 @@ public class SignatureManagementImpl implements SignatureManagement{
 		// Call initDossier to SERVER
 		String httpMethod = HttpMethods.POST;
 
-		String endPoint = "signature/requestsToken";
+		String endPoint = ConstantUtils.DEFAULTSIGNATURE_HASHCOMPUTED_END_POINT;
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("fileEntryId", fileEntryId);
-		params.put("emailUser", user.getEmailAddress());
-		params.put("typeSignature", actionCode);
-		params.put("postStepCode", postStepCode);
+		params.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_FILEENTRYID, fileEntryId);
+		params.put(ConstantUtils.HASHCOMPUTED_EMAILUSER_KEY, user.getEmailAddress());
+		params.put(ConstantUtils.HASHCOMPUTED_TYPESIGNATURE_KEY, actionCode);
+		params.put(ConstantUtils.HASHCOMPUTED_POSTSTEPCODE_KEY, postStepCode);
 
-		JSONObject resPostHashComputed = rest.callPostAPI(groupId, httpMethod, "application/json",
+		JSONObject resPostHashComputed = rest.callPostAPI(groupId, httpMethod, ConstantUtils.CONTENT_TYPE_JSON,
 				RESTFulConfiguration.SERVER_PATH_BASE, endPoint, RESTFulConfiguration.SERVER_USER,
 				RESTFulConfiguration.SERVER_PASS, properties, params, serviceContext);
 
@@ -424,7 +428,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -477,7 +481,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		//			_log.info("jsonData: "+jsonData.toJSONString());
 		//			String fullPath = String.valueOf(jsonData.get("fullPath"));
 		//			_log.info("fullPath: "+fullPath);
-					String signedFilePath = jsonData.getString("signedFile");
+					String signedFilePath = jsonData.getString(ConstantUtils.API_JSON_DEFAULTSIGNATURE_SIGNEDFILE);
 					File fileSigned = new File(signedFilePath);
 		//			_log.info("TEST long file: "+fileSigned.length());
 		//			_log.info("TEST file sign: "+fileSigned.lastModified());
@@ -498,8 +502,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = String.valueOf(deliverable.getDeliverableState());
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState(2);
+								if (!DeliverableTerm.DELIVERABLE_STATE_INVALID.equals(deliState)) {
+									deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_INVALID_INT);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -573,13 +577,13 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 		
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
 	@Override
@@ -588,7 +592,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			throws PortalException {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -627,7 +631,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 						}
 					}
 					// Process success
-					result.put("msg", "success");
+					result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 				}
 			}
 
@@ -642,7 +646,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -672,8 +676,8 @@ public class SignatureManagementImpl implements SignatureManagement{
 							Deliverable deliverable = DeliverableLocalServiceUtil.getByCode(deliverableCode);
 							if (deliverable != null) {
 								String deliState = String.valueOf(deliverable.getDeliverableState());
-								if (!"2".equals(deliState)) {
-									deliverable.setDeliverableState(2);
+								if (!DeliverableTerm.DELIVERABLE_STATE_INVALID.equals(deliState)) {
+									deliverable.setDeliverableState(DeliverableTerm.DELIVERABLE_STATE_INVALID_INT);
 									DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 								}
 							}
@@ -732,11 +736,11 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 		
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
 		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 	}
@@ -746,7 +750,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 			throws PortalException {
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -785,7 +789,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 						}
 					}
 					// Process success
-					result.put("msg", "success");
+					result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 				}
 			}
 
@@ -800,7 +804,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -890,12 +894,12 @@ public class SignatureManagementImpl implements SignatureManagement{
 			}
 
 			// Process success
-			result.put("msg", "success");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
 		}
 		
 		if (!signOk) {
-			result.put("msg", "fileEntryId");
+			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_FILEENTRYID));
 		}
-		return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 	}
 }

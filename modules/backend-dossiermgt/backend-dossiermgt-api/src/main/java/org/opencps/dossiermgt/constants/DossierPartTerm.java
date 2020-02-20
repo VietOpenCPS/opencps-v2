@@ -18,6 +18,7 @@ public class DossierPartTerm {
 	public static final String SAMPLE_DATA = "sampleData";
 	public static final String REQUIRED = "required";
 	public static final String FILE_TEMPLATE_NO = "fileTemplateNo";
+	public static final String TEMPLATE_FILE_NO = "templateFileNo";
 	public static final String ESIGN = "eSign";
 	public static final String TEMPLATE_ID = "templateId";
 	public static final String DELIVERABLE_TYPE = "deliverableType";

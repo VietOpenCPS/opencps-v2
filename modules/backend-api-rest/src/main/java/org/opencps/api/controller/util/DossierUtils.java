@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.DossierActionDetailModel;
 import org.opencps.api.dossier.model.DossierDataModel;
 import org.opencps.api.dossier.model.DossierDataPublishModel;
@@ -42,6 +43,7 @@ import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -90,7 +92,7 @@ public class DossierUtils {
 			if (user != null) {
 				List<Role> userRoles = user.getRoles();
 				for (Role r : userRoles) {
-					if (r.getName().startsWith("Administrator")) {
+					if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 						isAdministratorData = true;
 						break;
 					}
@@ -216,8 +218,8 @@ public class DossierUtils {
 			
 			//Check lockState
 			if (checkWaiting(lockState, dossierStatus)){
-				model.setDossierOverdue("Tạm dừng xử lý");
-				model.setStepOverdue("Tạm dừng xử lý");
+				model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_PAUSE_MESSAGE));
+				model.setStepOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_PAUSE_MESSAGE));
 			} else if (checkReceiving(dossierStatus)){
 				model.setDossierOverdue(StringPool.BLANK);
 				model.setStepOverdue(StringPool.BLANK);
@@ -231,12 +233,12 @@ public class DossierUtils {
 					if (dueDateTimeStamp != 0 && 3 == valueCompareRelease) {
 						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierOverdue("Sớm hạn");
+						model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_UNDUE_MESSAGE));
 					}
 					if (dueDateTimeStamp != 0 && 3 == valueCompareFinish) {
 						DueDateUtils dueDateUtil = new DueDateUtils(now, dueDateCalc, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierFinishOverdue("Sớm hạn");
+						model.setDossierFinishOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_UNDUE_MESSAGE));
 					}
 //					if (processOnTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
 //							extendDateTimeStamp)){
@@ -247,10 +249,10 @@ public class DossierUtils {
 //						}
 //					}
 					if (dueDateTimeStamp == 0 || 2 == valueCompareRelease) {
-						model.setDossierOverdue("Đúng hạn");
+						model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
 					if (dueDateTimeStamp == 0 || 2 == valueCompareFinish) {
-						model.setDossierFinishOverdue("Đúng hạn");
+						model.setDossierFinishOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_ONTIME_MESSAGE));
 					}
 //					if (processOverTime(releaseDateTimeStamp, dueDateTimeStamp, finishDateTimeStamp,
 //							extendDateTimeStamp)) {
@@ -259,12 +261,12 @@ public class DossierUtils {
 					if (1 == valueCompareRelease) {
 						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierOverdue("Quá hạn");
+						model.setDossierOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_OVERDUE_MESSAGE));
 					}
 					if (1 == valueCompareFinish) {
 						DueDateUtils dueDateUtil = new DueDateUtils(dueDateCalc, now, 1, groupId);
 						model.setTimeOverdueText(dueDateUtil.getOverDueCalcToString());
-						model.setDossierFinishOverdue("Qúa hạn");
+						model.setDossierFinishOverdue(MessageUtil.getMessage(ConstantUtils.DOSSIER_OVERDUE_MESSAGE));
 					}
 				} else {
 					if (dueDateTimeStamp != null && dueDateTimeStamp > 0) {
@@ -291,9 +293,13 @@ public class DossierUtils {
 							if (subTimeStamp > 0) {
 	//							String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 	//									dueDateTimeStamp, groupId, true);
-								model.setDossierOverdue("Quá " + strOverDue);
+								String overdueText = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIER_OVERDUE_WITHVARIABLE_MESSAGE), strOverDue);
+								
+								model.setDossierOverdue(overdueText);
 							} else {
-								model.setDossierOverdue("Còn " + strOverDue);
+								String undueText = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIER_UNDUE_WITHVARIABLE_MESSAGE), strOverDue);
+								
+								model.setDossierOverdue(undueText);
 							}
 						} else {
 							model.setDossierOverdue(StringPool.BLANK);
@@ -318,7 +324,8 @@ public class DossierUtils {
 						if (state > 0) {
 							int actionOverDue = dAction.getActionOverdue();
 							if (actionOverDue > 0) {
-								model.setStepOverdue("Quá "+actionOverDue + " ngày");
+								String overdueText = String.format(MessageUtil.getMessage(ConstantUtils.PROCESSSEQUENCE_MESSAGE_OVERDUE), actionOverDue);
+								model.setStepOverdue(overdueText);
 							} else {
 								model.setStepOverdue(StringPool.BLANK);
 							}
@@ -347,9 +354,12 @@ public class DossierUtils {
 									if (subTimeStamp > 0) {
 //										String strOverDue = calculatorOverDue(durationUnit, subTimeStamp, releaseDateTimeStamp,
 //												dueDateTimeStamp, groupId, true);
-										model.setStepOverdue("Quá " + stepOverDue);
+										String overdueText = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIER_OVERDUE_WITHVARIABLE_MESSAGE), stepOverDue);
+										model.setStepOverdue(overdueText);
 									} else {
-										model.setStepOverdue("Còn " + stepOverDue);
+										String undueText = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIER_UNDUE_WITHVARIABLE_MESSAGE), stepOverDue);
+										
+										model.setStepOverdue(undueText);
 									}
 								} else {
 									model.setStepOverdue(StringPool.BLANK);
@@ -390,7 +400,7 @@ public class DossierUtils {
 							try {
 								for (Role role : roles) {
 									//LamTV_Fix sonarqube
-									if ("Administrator".equals(role.getName())) {
+									if (ConstantUtils.ROLE_ADMIN.equals(role.getName())) {
 
 										isAdmin = true;
 										break;
@@ -403,7 +413,7 @@ public class DossierUtils {
 								_log.error(e);
 							}			
 							if (isAdmin) {
-								model.setPermission("read");
+								model.setPermission(ConstantUtils.PERMISSION_READ);
 							}
 							else {
 								model.setPermission(StringPool.BLANK);
@@ -417,7 +427,7 @@ public class DossierUtils {
 				model.setPermission(StringPool.BLANK);
 			}
 			if (isAdministratorData) {
-				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + "," : "") + userId + "_read");
+				model.setPermission((Validator.isNotNull(model.getPermission()) ? model.getPermission() + StringPool.COMMA : StringPool.BLANK) + userId + ConstantUtils.UNDERLINE_PERMISSION_READ);
 			}
 			model.setLastActionDate(doc.get(DossierTerm.LAST_ACTION_DATE));
 			model.setLastActionCode(doc.get(DossierTerm.LAST_ACTION_CODE));
@@ -443,12 +453,12 @@ public class DossierUtils {
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
-			model.setCertNo(doc.get("so_chung_chi"));
-			if (Validator.isNotNull(doc.get("ngay_ky_cc"))) {
-				Date certDate = APIDateTimeUtils.convertStringToDate(doc.get("ngay_ky_cc"), APIDateTimeUtils._LUCENE_PATTERN);
+			model.setCertNo(doc.get(DeliverableTerm.SO_CHUNG_CHI));
+			if (Validator.isNotNull(doc.get(DeliverableTerm.NGAY_KY_CC))) {
+				Date certDate = APIDateTimeUtils.convertStringToDate(doc.get(DeliverableTerm.NGAY_KY_CC), APIDateTimeUtils._LUCENE_PATTERN);
 				model.setCertDate(APIDateTimeUtils.convertDateToString(certDate, APIDateTimeUtils._NORMAL_DATE));
 			} else {
-				model.setCertDate(doc.get("ngay_ky_cc"));
+				model.setCertDate(doc.get(DeliverableTerm.NGAY_KY_CC));
 			}
 
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
@@ -497,10 +507,10 @@ public class DossierUtils {
 				model.setDocumentDate(APIDateTimeUtils.convertDateToString(documentDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			}
 			if (DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(lockState)) {
-				model.setLock("Yêu cầu bổ sung quá hạn 3 ngày");
+				model.setLock(MessageUtil.getMessage(ConstantUtils.DOSSIER_LOCKOVER3_MESSAGE));
 			}
 			else {
-				model.setLock("Yêu cầu bổ sung trong hạn 3 ngày");
+				model.setLock(MessageUtil.getMessage(ConstantUtils.DOSSIER_LOCKUNDER3_MESSAGE));
 			}
 			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
@@ -801,12 +811,12 @@ public class DossierUtils {
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
 			
-			String certNo = doc.get("so_chung_chi");
-			String certDate = doc.get("ngay_ky_cc");
+			String certNo = doc.get(DeliverableTerm.SO_CHUNG_CHI);
+			String certDate = doc.get(DeliverableTerm.NGAY_KY_CC);
 			if (Validator.isNotNull(certNo) && Validator.isNotNull(certDate)) {
 				Date tempDate = APIDateTimeUtils.convertStringToDate(certDate, APIDateTimeUtils._LUCENE_PATTERN);
 				model.setCertDate(APIDateTimeUtils.convertDateToString(tempDate, APIDateTimeUtils._NORMAL_DATE));
-				model.setCertNo(doc.get("so_chung_chi"));
+				model.setCertNo(doc.get(DeliverableTerm.SO_CHUNG_CHI));
 			}
 
 			model.setEndorsementDate(doc.get(DossierTerm.ENDORSEMENT_DATE));
@@ -961,7 +971,7 @@ public class DossierUtils {
 				model.setStepInstruction(step!= null ? step.getStepInstruction() : StringPool.BLANK);
 			}
 			// Check permission process dossier
-			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("DOSSIER_STATUS",
+			DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(ConstantUtils.DOSSIER_STATUS,
 					input.getGroupId());
 			String statusCode = input.getDossierStatus();
 			String subStatusCode = input.getDossierSubStatus();
@@ -982,7 +992,7 @@ public class DossierUtils {
 //						_log.info("metaData: " +metaData);
 						try {
 							JSONObject metaJson = JSONFactoryUtil.createJSONObject(metaData);
-							specialStatus = metaJson.getString("specialStatus");
+							specialStatus = metaJson.getString(DossierTerm.KEY_SPECIAL_STATUS);
 //							_log.info("specialStatus: " +specialStatus);
 							
 						} catch (Exception e) {
@@ -1047,7 +1057,7 @@ public class DossierUtils {
 		
 		try {
 			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+"CTN"));
+			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID+ConstantUtils.CTN));
 		} catch (Exception e) {
 			//_log.error(e);
 			_log.debug(e);
@@ -1096,7 +1106,7 @@ public class DossierUtils {
 									RoleLocalServiceUtil.getUserRoles(userId);
 							try {
 								for (Role role : roles) {
-									if ("Administrator".equals(role.getName())) {
+									if (ConstantUtils.ROLE_ADMIN.equals(role.getName())) {
 	
 										isAdmin = true;
 										break;
@@ -1109,7 +1119,7 @@ public class DossierUtils {
 								_log.error(e);
 							}			
 							if (isAdmin) {
-								return "read";
+								return ConstantUtils.PERMISSION_READ;
 							}
 						}
 					}

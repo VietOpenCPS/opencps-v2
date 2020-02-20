@@ -23,14 +23,12 @@ import org.apache.cxf.helpers.IOUtils;
 import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.rest.application.api.DossierStatisticApi;
 import org.opencps.rest.application.model.DossierStatisticResultModel;
 
 import backend.api.rest.application.utils.ConstantTerm;
-import backend.api.rest.application.v21.elasticwrap.ElasticQueryWrapUtil;
 
 public class StatisticApiImpl implements DossierStatisticApi{
 
@@ -102,8 +100,8 @@ public class StatisticApiImpl implements DossierStatisticApi{
 				for (int i = 0; i < length; i++) {
 					JSONObject json = tt1.getJSONObject(i);
 					if (i%2 != 0) {
-						json.put("from", 0);
-						json.put("size", 3);
+						json.put(ConstantTerm.FROM, 0);
+						json.put(ConstantTerm.SIZE, 3);
 						sb1.append(json.toString());
 						sb1.append(System.lineSeparator());
 					} else {

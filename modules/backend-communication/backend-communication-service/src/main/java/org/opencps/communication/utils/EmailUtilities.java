@@ -1,5 +1,6 @@
 package org.opencps.communication.utils;
 
+import org.opencps.communication.constants.EmailTerm;
 import org.opencps.communication.constants.MailVariables;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
@@ -28,10 +29,10 @@ public class EmailUtilities {
 			_log.error(e);
 		}
 
-		payload.put("toName", queue.getToUsername());
-		payload.put("toAddress", queue.getToEmail());
+		payload.put(EmailTerm.TO_NAME, queue.getToUsername());
+		payload.put(EmailTerm.TO_ADDRESS, queue.getToEmail());
 
-		String toUserId = payLoadData.getString("toUserId");
+		String toUserId = payLoadData.getString(EmailTerm.TO_USER_ID);
 
 		String detailURL = template.getGuestUrlPattern();
 
@@ -41,7 +42,7 @@ public class EmailUtilities {
 		
 		if (queue.getClassName().equals(MailVariables.DOCFILE_CLASS_NAME)) {			
 			if (queue.getNotificationType().equals(NotificationTemplateTerm.DOCUMENT_01)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { 
 								MailVariables.USERNAME, 
 								MailVariables.FROMUSER,
@@ -52,7 +53,7 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.FROMUSER), 
 								payLoadData.getString(MailVariables.OBJECT)
 					}));
-				payload.put("body", StringUtil.replace(template.getEmailBody(),
+				payload.put(EmailTerm.BODY, StringUtil.replace(template.getEmailBody(),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.ISSUERNAME,
 								MailVariables.CODENO, MailVariables.PROMULGATIONDATE, MailVariables.PROMULGATIONPLACE
@@ -66,21 +67,21 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.PROMULGATIONPLACE)
 								 }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT
 								 },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.OBJECT) }));	
 			}
 			else if (queue.getNotificationType().equals(NotificationTemplateTerm.DOCUMENT_02)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
-				payload.put("body", StringUtil.replace(template.getEmailBody(),
+				payload.put(EmailTerm.BODY, StringUtil.replace(template.getEmailBody(),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.ISSUERNAME,
 								MailVariables.CODENO, MailVariables.PROMULGATIONDATE, MailVariables.PROMULGATIONPLACE,
@@ -96,7 +97,7 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.STATUS)
 								 }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT
 								 },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
@@ -105,14 +106,14 @@ public class EmailUtilities {
 				
 			}
 			else if (queue.getNotificationType().equals(NotificationTemplateTerm.DOCUMENT_03)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
-				payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+				payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.ISSUERNAME,
 								MailVariables.CODENO, MailVariables.PROMULGATIONDATE, MailVariables.PROMULGATIONPLACE },
@@ -124,15 +125,15 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.PROMULGATIONDATE),
 								payLoadData.getString(MailVariables.PROMULGATIONPLACE) }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT,
-								"[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
+								EmailTerm.ACTION_COMMENT_VARIABLE, EmailTerm.SECRET_VARIABLE },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.OBJECT) }));	
 				
 			}
 			else if (queue.getNotificationType().equals(NotificationTemplateTerm.FILEATTACH)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { 
 								MailVariables.FROMUSER, 
 								MailVariables.USEREMAIL, 
@@ -145,7 +146,7 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.USERNAME), 
 								payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
-				payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+				payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 						new String[] { 
 								MailVariables.USERNAME, 
 								MailVariables.USEREMAIL, 
@@ -161,7 +162,7 @@ public class EmailUtilities {
 								detailURL,
 								payLoadData.getString(MailVariables.FILENAME) }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { 
 								MailVariables.FROMUSER, 
 								MailVariables.OBJECT },
@@ -170,14 +171,14 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.OBJECT) }));																
 			}
 			else if (queue.getNotificationType().equals(NotificationTemplateTerm.VOTING_01)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { MailVariables.FROMUSER, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
-				payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+				payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.SUBJECT },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
@@ -186,20 +187,20 @@ public class EmailUtilities {
 								detailURL,
 								payLoadData.getString(MailVariables.SUBJECT) }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.OBJECT) }));																
 			}			
 			else if (queue.getNotificationType().equals(NotificationTemplateTerm.COMMENT)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
-				payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+				payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
@@ -207,112 +208,112 @@ public class EmailUtilities {
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.OBJECT) }));																
 			}
 			else {
-				payload.put("subject",
+				payload.put(EmailTerm.SUBJECT,
 						StringUtil.replace(template.getEmailSubject(),
-								new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-										"[$DETAILURL$]", "[$ACTIONCOMMENT$]" },
-								new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-										payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-										payLoadData.getString("ACTIONCOMMENT") }));
-				payload.put("body",
+								new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+										MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
+								new String[] { payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+										payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+										payLoadData.getString(MailVariables.JSON_ACTION_COMMENT) }));
+				payload.put(EmailTerm.BODY,
 						StringUtil.replace(template.getEmailBody(),
-								new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-										"[$DETAILURL$]", "[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
-								new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-										payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-										payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));
+								new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+										MailVariables.DETAILURL, MailVariables.ACTION_COMMENT, MailVariables.SECRET },
+								new String[] { payLoadData.getString(MailVariables.JSON_USERNAME), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+										payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+										payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));
 
-				payload.put("textMessage",
+				payload.put(EmailTerm.TEXT_MESSAGE,
 						StringUtil.replace(template.getTextMessage(),
-								new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-										"[$DETAILURL$]", "[$ACTIONCOMMENT$]" },
-								new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-										payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-										payLoadData.getString("ACTIONCOMMENT") }));				
+								new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+										MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
+								new String[] { payLoadData.getString(MailVariables.JSON_USERNAME), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+										payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+										payLoadData.getString(MailVariables.JSON_ACTION_COMMENT) }));				
 			}
 		}
 		else if (queue.getClassName().equals(MailVariables.DOCARCHIVE_CLASS_NAME)) {
-			payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+			payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 					new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
-							MailVariables.OBJECT, MailVariables.DETAILURL, "[$ACTIONCOMMENT$]" },
+							MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
 					new String[] { payLoadData.getString(MailVariables.USERNAME),
 							payLoadData.getString(MailVariables.USEREMAIL),
 							payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
-							detailURL, payLoadData.getString("ACTIONCOMMENT") }));
-			payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+							detailURL, payLoadData.getString(MailVariables.JSON_ACTION_COMMENT) }));
+			payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 					new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 							MailVariables.OBJECT, MailVariables.DETAILURL,
-							"[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
+							MailVariables.ACTION_COMMENT, MailVariables.SECRET },
 					new String[] { payLoadData.getString(MailVariables.USERNAME),
 							payLoadData.getString(MailVariables.USEREMAIL),
 							payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 							detailURL,
-							payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));
+							payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));
 
-			payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+			payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 					new String[] { MailVariables.FROMUSER, MailVariables.OBJECT,
-							"[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
+							MailVariables.ACTION_COMMENT, MailVariables.SECRET },
 					new String[] { payLoadData.getString(MailVariables.FROMUSER),
 							payLoadData.getString(MailVariables.OBJECT),
-							payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));															
+							payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));															
 		}
 		else if (queue.getClassName().equals(MailVariables.ACTIVITY_CLASS_NAME)) {			
 			if (queue.getNotificationType().equals(NotificationTemplateTerm.ALBUMFILE)) {
-				payload.put("subject", StringUtil.replace(template.getEmailSubject(),
+				payload.put(EmailTerm.SUBJECT, StringUtil.replace(template.getEmailSubject(),
 						new String[] { MailVariables.FROMUSER, MailVariables.USEREMAIL, MailVariables.FROMUSER,
-								MailVariables.OBJECT, MailVariables.DETAILURL, "[$ACTIONCOMMENT$]" },
+								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
-								detailURL, payLoadData.getString("ACTIONCOMMENT") }));
-				payload.put("body", StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
+								detailURL, payLoadData.getString( MailVariables.JSON_ACTION_COMMENT) }));
+				payload.put(EmailTerm.BODY, StringUtil.replace(HtmlUtil.unescape(template.getEmailBody()),
 						new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER,
 								MailVariables.OBJECT, MailVariables.DETAILURL, MailVariables.FILENAME,
-								"[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
+								MailVariables.ACTION_COMMENT, MailVariables.SECRET },
 						new String[] { payLoadData.getString(MailVariables.USERNAME),
 								payLoadData.getString(MailVariables.USEREMAIL),
 								payLoadData.getString(MailVariables.FROMUSER), payLoadData.getString(MailVariables.OBJECT),
 								detailURL,
 								payLoadData.getString(MailVariables.FILENAME),
-								payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));
+								payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));
 
-				payload.put("textMessage", StringUtil.replace(template.getTextMessage(),
+				payload.put(EmailTerm.TEXT_MESSAGE, StringUtil.replace(template.getTextMessage(),
 						new String[] { MailVariables.FROMUSER, MailVariables.OBJECT,
-								"[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
+								MailVariables.ACTION_COMMENT, MailVariables.SECRET },
 						new String[] { payLoadData.getString(MailVariables.FROMUSER),
 								payLoadData.getString(MailVariables.OBJECT),
-								payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));																
+								payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));																
 			}
 		}
 		else {
-			payload.put("subject",
+			payload.put(EmailTerm.SUBJECT,
 					StringUtil.replace(template.getEmailSubject(),
-							new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-									"[$DETAILURL$]", "[$ACTIONCOMMENT$]" },
-							new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-									payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-									payLoadData.getString("ACTIONCOMMENT") }));
-			payload.put("body",
+							new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+									MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
+							new String[] { payLoadData.getString(MailVariables.JSON_USERNAME), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+									payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+									payLoadData.getString(MailVariables.JSON_ACTION_COMMENT) }));
+			payload.put(EmailTerm.BODY,
 					StringUtil.replace(template.getEmailBody(),
-							new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-									"[$DETAILURL$]", "[$ACTIONCOMMENT$]", "[$PASSWORD$]" },
-							new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-									payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-									payLoadData.getString("ACTIONCOMMENT"), payLoadData.getString("PASSWORD") }));
+							new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+									MailVariables.DETAILURL, MailVariables.ACTION_COMMENT, MailVariables.SECRET },
+							new String[] { payLoadData.getString(MailVariables.JSON_USERNAME), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+									payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+									payLoadData.getString(MailVariables.JSON_ACTION_COMMENT), payLoadData.getString(MailVariables.JSON_SECRET) }));
 
-			payload.put("textMessage",
+			payload.put(EmailTerm.TEXT_MESSAGE,
 					StringUtil.replace(template.getTextMessage(),
-							new String[] { "[$USERNAME$]", "[$USEREMAIL$]", "[$FORMUSER$]", "[$OBJECT$]",
-									"[$DETAILURL$]", "[$ACTIONCOMMENT$]" },
-							new String[] { payLoadData.getString("USERNAME"), payLoadData.getString("USEREMAIL"),
-									payLoadData.getString("FORMUSER"), payLoadData.getString("OBJECT"), detailURL,
-									payLoadData.getString("ACTIONCOMMENT") }));
+							new String[] { MailVariables.USERNAME, MailVariables.USEREMAIL, MailVariables.FROMUSER, MailVariables.OBJECT,
+									MailVariables.DETAILURL, MailVariables.ACTION_COMMENT },
+							new String[] { payLoadData.getString(MailVariables.JSON_USERNAME), payLoadData.getString(MailVariables.JSON_USEREMAIL),
+									payLoadData.getString(MailVariables.JSON_FROMUSER), payLoadData.getString(MailVariables.JSON_OBJECT), detailURL,
+									payLoadData.getString(MailVariables.JSON_ACTION_COMMENT) }));
 		}
 
 		return payload;

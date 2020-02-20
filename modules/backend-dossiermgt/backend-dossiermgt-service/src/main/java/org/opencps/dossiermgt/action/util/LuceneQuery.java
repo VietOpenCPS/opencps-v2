@@ -84,7 +84,17 @@ public class LuceneQuery {
 		}
 	}
 
-
+	private static final String LONG_TYPE = "long";
+	private static final String INTEGER_TYPE = "integer";
+	private static final String INT_TYPE = "int";
+	private static final String SHORT_TYPE = "short";
+	private static final String DOUBLE_TYPE = "double";
+	private static final String FLOAT_TYPE = "float";
+	private static final String BOOLEAN_TYPE = "boolean";
+	private static final String STRING_TYPE = "string";
+	private static final String NULL_TYPE = "null";
+	private static final String DATE_TYPE = "date";
+	
 	public LuceneQuery(String pattern, String paramValues, String paramTypes,
 			SearchContext searchContext) {
 
@@ -116,52 +126,52 @@ public class LuceneQuery {
 					Object param = null;
 					Class<?> clazz = null;
 					switch (paramType) {
-					case "long":
+					case LONG_TYPE:
 						param = GetterUtil.getLong(arrParamValue[i]);
 						clazz = long.class;
 						break;
-					case "integer":
+					case INTEGER_TYPE:
 						param = GetterUtil.getInteger(arrParamValue[i]);
 						clazz = int.class;
 						break;
-					case "int":
+					case INT_TYPE:
 						param = GetterUtil.getInteger(arrParamValue[i]);
 						clazz = int.class;
 						break;
-					case "short":
+					case SHORT_TYPE:
 						param = GetterUtil.getShort(arrParamValue[i]);
 						clazz = short.class;
 						break;
-					case "double":
+					case DOUBLE_TYPE:
 						param = GetterUtil.getDouble(arrParamValue[i]);
 						clazz = double.class;
 						break;
-					case "float":
+					case FLOAT_TYPE:
 						param = GetterUtil.getFloat(arrParamValue[i]);
 						clazz = float.class;
 						break;
-					case "boolean":
+					case BOOLEAN_TYPE:
 						param = GetterUtil.getBoolean(arrParamValue[i]);
 						clazz = boolean.class;
 						break;
-					case "date":
+					case DATE_TYPE:
 						param = APIDateTimeUtils.convertStringToDate(arrParamValue[i], APIDateTimeUtils._TIMESTAMP);
 //								.convertStringToDate(arrParamValue[i]);
 						clazz = Date.class;
 						break;
-					case "string":
+					case STRING_TYPE:
 						param = GetterUtil.getString(arrParamValue[i]);
 						clazz = String.class;
 						break;
-					case "null":
+					case NULL_TYPE:
 						param = null;
 						clazz = null;
 						break;
-					case "":
+					case StringPool.BLANK:
 						param = null;
 						clazz = null;
 						break;
-					case " ":
+					case StringPool.SPACE:
 						param = null;
 						clazz = null;
 						break;

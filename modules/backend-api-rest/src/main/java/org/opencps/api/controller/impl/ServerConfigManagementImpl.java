@@ -487,7 +487,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							}
 							
 							//AUTHEN
-							String authenticate = jsonConfig.getString("authenticate");
+							String authenticate = jsonConfig.getString(ConstantUtils.SERVERCONFIG_AUTHENTICATE);
 //							System.out.println("authenticate: "+authenticate);
 							if (Validator.isNotNull(authenticate)) {
 								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);

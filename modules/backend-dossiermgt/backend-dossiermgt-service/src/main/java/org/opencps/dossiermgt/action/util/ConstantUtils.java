@@ -337,4 +337,7 @@ public class ConstantUtils {
 	public static final String TIME_DAY = "org.opencps.value.text.day";
 	public static final String CONSTANT_ICREMENT = "org.opencps.value.patern.dossierno";
 	public static final String DEFAULT_PROXY_URL = "org.opencps.value.default.url.proxy";
+	
+	public static final String ADMINISTRATOR = "Administrator";
+	public static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
 }

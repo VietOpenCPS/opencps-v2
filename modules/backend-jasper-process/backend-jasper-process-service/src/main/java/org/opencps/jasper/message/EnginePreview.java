@@ -59,10 +59,10 @@ public class EnginePreview implements MessageListener {
 		_log.info("DoPreview.........");
 	
 		
-		String formReport = message.getString("formReport");
+		String formReport = message.getString(ConfigConstants.JASPER_FORM_REPORT);
 		
-		String formData = message.getString("formData");
-		String className = message.getString("className");
+		String formData = message.getString(ConfigConstants.JASPER_FORM_DATA);
+		String className = message.getString(ConfigConstants.JASPER_TERM_CLASS_NAME);
 		_log.info("Object or array: " + isJsonObject(formData));
 		if (ConfigProps.get(ConfigConstants.ENGINE_CLASSNAME_DOSSIERDOCUMENT).equals(className)) {
 			File file = FileUtil.createTempFile(JRReportUtil.DocType.PDF.toString());
@@ -88,7 +88,7 @@ public class EnginePreview implements MessageListener {
 				_log.error("Generate file exception........."+e);
 				}
 		} else {
-			String reportType = message.contains("reportType") ? message.getString("reportType") : ConfigConstants.JASPER_DOCTYPE_PDF;
+			String reportType = message.contains(ConfigConstants.JASPER_REPORT_TYPE) ? message.getString(ConfigConstants.JASPER_REPORT_TYPE) : ConfigConstants.JASPER_DOCTYPE_PDF;
 			File file = null;
 			if (ConfigConstants.JASPER_DOCTYPE_EXCEL.equals(reportType)) {
 				file = FileUtil.createTempFile(JRReportUtil.DocType.XLS.toString());						
@@ -114,7 +114,7 @@ public class EnginePreview implements MessageListener {
 					//.put("", value)
 			
 					responseMessage.setPayload(file.getCanonicalPath());
-					responseMessage.put("fileDes", file.getCanonicalPath());
+					responseMessage.put(ConfigConstants.JASPER_FILE_DES, file.getCanonicalPath());
 						
 					MessageBusUtil.sendMessage(responseMessage.getDestinationName(), responseMessage);
 			

@@ -22,4 +22,18 @@ public class DossierLogTerm {
 	public static final String ORIGINAL = "original";
 	public static final String FILE_TEMPLATE_NO = "dossierPartType";
 	public static final String PROCESS_TYPE = "PROCESS_TYPE";
+	
+	public static final String JOBPOS_TITLE = "jobposTitle";
+	public static final String LOG_FORMAT = "%d%s";
+	public static final String BRIEF_NOTE = "briefNote";
+	public static final String REFERENCEUID = "referenceUid";
+	public static final String FILE_TYPE = "fileType";
+	public static final String FILE_URL = "fileUrl";
+	public static final String DISPLAY_NAME = "displayName";
+	public static final String STATUS = "status";
+	public static final String DOSSIER_FILES = "dossierFiles";
+	public static final String DOSSIER = "dossier";
+	public static final String PAYMENT_REQUEST_DATE = "paymentRequestDate";
+	public static final String PAYMENT_STATUS = "paymentStatus";
+	public static final String PAYMENT_FILE = "paymentFile";
 }

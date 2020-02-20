@@ -68,6 +68,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.constants.DossierManagementConstants;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -183,6 +184,8 @@ import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
@@ -4259,7 +4262,7 @@ public class DossierManagementImpl implements DossierManagement {
 						lastAction.getServiceProcessId());
 				if (serviceProcess != null) {
 					StringBuilder result = new StringBuilder();
-					result.append("graph TD\n");
+					result.append(DossierManagementConstants.START_GRAPH);
 					List<ProcessSequence> lstSequences =
 						ProcessSequenceLocalServiceUtil.getByServiceProcess(
 							groupId, serviceProcess.getServiceProcessId());
@@ -4269,11 +4272,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 					for (ProcessSequence ps : lstSequences) {
 						result.append(ps.getSequenceNo());
-						result.append("(\"[");
+						result.append(DossierManagementConstants.START_NODE);
 						result.append(ps.getSequenceRole());
-						result.append("] ");
+						result.append(DossierManagementConstants.END_NOTE_TITLE);
 						result.append(ps.getSequenceName());
-						result.append("\")\n");
+						result.append(DossierManagementConstants.END_NODE);
 						for (ProcessSequence psOther : lstSequences) {
 							List<String> arcs = new ArrayList<>();
 
@@ -4292,17 +4295,16 @@ public class DossierManagementImpl implements DossierManagement {
 												psOther.getSequenceNo()) &&
 										!arcs.contains(pa.getActionName())) {
 										result.append(ps.getSequenceNo());
-										result.append("-->|\"");
+										result.append(DossierManagementConstants.START_ARROW);
 										result.append(pa.getActionName());
-										result.append("\"|");
+										result.append(DossierManagementConstants.END_ARROW);
 										result.append(psOther.getSequenceNo());
-										result.append("\n");
+										result.append(DossierManagementConstants.CR);
 										if (lastAction.getStepCode().equals(
 											pa.getPreStepCode())) {
-											result.append(
-												"style " + ps.getSequenceNo() +
-													" fill:#f9f,stroke:#333,stroke-width:4px");
-											result.append("\n");
+											String sequenceStyle = String.format(DossierManagementConstants.GRAPH_STYLE, ps.getSequenceNo());
+											result.append(sequenceStyle);
+											result.append(DossierManagementConstants.CR);
 										}
 										arcs.add(pa.getActionName());
 									}
@@ -4360,16 +4362,16 @@ public class DossierManagementImpl implements DossierManagement {
 
 				for (User u : lstUsers) {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
-					userObj.put("userId", u.getUserId());
-					// userObj.put("userName", u.getFullName());
+					userObj.put(Field.USER_ID, u.getUserId());
+					// userObj.put(Field.USER_NAME, u.getFullName());
 					Employee employee =
 						EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 							dossier.getGroupId(), u.getUserId());
 					if (employee != null) {
-						userObj.put("userName", employee.getFullName());
+						userObj.put(Field.USER_NAME, employee.getFullName());
 					}
 					else {
-						userObj.put("userName", u.getFullName());
+						userObj.put(Field.USER_NAME, u.getFullName());
 					}
 					DossierActionUserPK pk = new DossierActionUserPK();
 					pk.setDossierActionId(dossier.getDossierActionId());
@@ -4378,10 +4380,10 @@ public class DossierManagementImpl implements DossierManagement {
 						DossierActionUserLocalServiceUtil.fetchDossierActionUser(
 							pk);
 					if (dau != null) {
-						userObj.put("assigned", dau.getAssigned());
+						userObj.put(DossierActionUserTerm.ASSIGNED, dau.getAssigned());
 					}
 					else {
-						userObj.put("assigned", 0);
+						userObj.put(DossierActionUserTerm.ASSIGNED, 0);
 					}
 
 					userArr.put(userObj);
@@ -4480,9 +4482,9 @@ public class DossierManagementImpl implements DossierManagement {
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
-		message.put("msgToEngine", msgData);
+		message.put(DossierManagementConstants.MSG_TO_ENGINE, msgData);
 		message.put(
-			"dossier", DossierMgtUtils.convertDossierToJSON(
+			DossierManagementConstants.DOSSIER_KEY, DossierMgtUtils.convertDossierToJSON(
 				dossier, dossier.getDossierActionId()));
 
 		MessageBusUtil.sendMessage(
@@ -4491,9 +4493,9 @@ public class DossierManagementImpl implements DossierManagement {
 		Message lgspMessage = new Message();
 		JSONObject lgspMsgData = msgData;
 
-		lgspMessage.put("msgToEngine", lgspMsgData);
+		lgspMessage.put(DossierManagementConstants.MSG_TO_ENGINE, lgspMsgData);
 		lgspMessage.put(
-			"dossier", DossierMgtUtils.convertDossierToJSON(
+			DossierManagementConstants.DOSSIER_KEY, DossierMgtUtils.convertDossierToJSON(
 				dossier, dossier.getDossierActionId()));
 
 		MessageBusUtil.sendMessage(
@@ -4628,7 +4630,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 							}
 
-							payloadObject.put("dossierFiles", dossierFilesArr);
+							payloadObject.put(DossierSyncTerm.PAYLOAD_SYNC_FILES, dossierFilesArr);
 
 							if (Validator.isNotNull(
 								proAction.getReturnDossierFiles())) {
@@ -4658,7 +4660,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 								}
 								payloadObject.put(
-									"dossierFiles", dossierFilesArr);
+									DossierSyncTerm.PAYLOAD_SYNC_FILES, dossierFilesArr);
 							}
 
 							List<DossierDocument> lstDossierDocuments =
@@ -4676,9 +4678,9 @@ public class DossierManagementImpl implements DossierManagement {
 									dossierDocument.getReferenceUid());
 								dossierDocumentArr.put(dossierDocumentObj);
 							}
-							payloadObject.put("dossierFiles", dossierFilesArr);
+							payloadObject.put(DossierSyncTerm.PAYLOAD_SYNC_FILES, dossierFilesArr);
 							payloadObject.put(
-								"dossierDocuments", dossierDocumentArr);
+								DossierSyncTerm.PAYLOAD_SYNC_DOCUMENTS, dossierDocumentArr);
 
 							// Put dossier note
 							payloadObject.put(
@@ -4733,7 +4735,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -4782,7 +4784,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -4829,7 +4831,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -4858,7 +4860,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
-					"No find dossier to restore").build();
+					MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_NOTFOUND)).build();
 			}
 		}
 		catch (Exception e) {
@@ -4882,7 +4884,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -4932,7 +4934,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5000,7 +5002,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5079,7 +5081,7 @@ public class DossierManagementImpl implements DossierManagement {
 						_log.info("Dossier step: " + step);
 						if (step != null) {
 							JSONObject jsonDataStatusText = getStatusText(
-								dossier.getGroupId(), "DOSSIER_STATUS",
+								dossier.getGroupId(), DossierManagementConstants.DOSSIER_STATUS_KEY,
 								step.getDossierStatus(),
 								step.getDossierSubStatus());
 
@@ -5106,7 +5108,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
-					"No find dossier to check step").build();
+					MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_NOTFOUND)).build();
 			}
 		}
 		catch (Exception e) {
@@ -5160,7 +5162,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5184,7 +5186,7 @@ public class DossierManagementImpl implements DossierManagement {
 								stepCode, groupId, serviceProcessId);
 						if (step != null) {
 							JSONObject jsonDataStatusText = getStatusText(
-								dossier.getGroupId(), "DOSSIER_STATUS",
+								dossier.getGroupId(), DossierManagementConstants.DOSSIER_STATUS_KEY,
 								step.getDossierStatus(),
 								step.getDossierSubStatus());
 
@@ -5246,8 +5248,8 @@ public class DossierManagementImpl implements DossierManagement {
 									serviceProcessId,
 									dossier.getDossierActionId(),
 									lastda.getStepCode(), lastda.getStepName(),
-									lastda.getSequenceNo(), "9999",
-									user.getFullName(), "Chuyển dịch đặc biệt",
+									lastda.getSequenceNo(), DossierManagementConstants.SPECIAL_ACTION_CODE,
+									user.getFullName(), DossierManagementConstants.SPECIAL_ACTION_NAME,
 									StringPool.BLANK, 0, stepCode,
 									step.getStepName(), step.getSequenceNo(),
 									null, 0l, StringPool.BLANK,
@@ -5287,17 +5289,17 @@ public class DossierManagementImpl implements DossierManagement {
 						else {
 							return Response.status(
 								HttpServletResponse.SC_BAD_REQUEST).entity(
-									"Not found step!").build();
+									MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_STEPNOTFOUND)).build();
 						}
 					}
 				}
 				return Response.status(
 					HttpServletResponse.SC_BAD_REQUEST).entity(
-						"Dossier is not in process!").build();
+						MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_DOSSIERNOTINPROCESS)).build();
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
-					"No find dossier to check step").build();
+					MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_NOTFOUND)).build();
 			}
 		}
 		catch (Exception e) {
@@ -5320,7 +5322,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5362,7 +5364,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5741,8 +5743,8 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
-				return Response.status(500).entity(
-					"Không update được dueDate của hồ sơ").build();
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+					MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOTUPDATEDUEDATE)).build();
 			}
 
 		}
@@ -5779,7 +5781,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -5849,7 +5851,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(
 					JSONFactoryUtil.looseSerialize(
-						"Phân Quyền thành công!!!")).build();
+						DossierManagementConstants.SET_PERMISSION_SUCCESS)).build();
 			}
 			else {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
@@ -5888,7 +5890,7 @@ public class DossierManagementImpl implements DossierManagement {
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
-				if (r.getName().startsWith("Administrator")) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
 					isAdmin = true;
 					break;
 				}
@@ -6112,7 +6114,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-			return Response.status(500).entity(null).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(null).build();
 		}
 		catch (Exception e) {
 			_log.error(e);
@@ -6132,11 +6134,11 @@ public class DossierManagementImpl implements DossierManagement {
 			Dossier dossier =
 				DossierLocalServiceUtil.getByRef(groupId, referenceUid);
 			if (dossier != null) {
-				jsonData.put("dossierId", dossier.getDossierId());
+				jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 				// Get info group
 				Group group = GroupLocalServiceUtil.getGroup(groupId);
 				jsonData.put(
-					"url", PortalUtil.getPathFriendlyURLPublic() +
+					ConstantUtils.API_JSON_URL, PortalUtil.getPathFriendlyURLPublic() +
 						group.getFriendlyURL());
 			}
 
@@ -6157,7 +6159,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
-		results.put("value", false);
+		results.put(ConstantUtils.API_JSON_VALUE, false);
 		try {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
@@ -6303,7 +6305,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		catch (Exception e) {
 			_log.info(e);
-			return Response.status(500).entity("{error}").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(ConstantUtils.API_JSON_EMPTY_ERROR).build();
 		}
 	}
 
@@ -6349,7 +6351,7 @@ public class DossierManagementImpl implements DossierManagement {
 								dossierImport.getDelegateName())) {
 							return Response.status(
 								HttpStatus.SC_CONFLICT).entity(
-									"{CONFLICT}").build();
+									ConstantUtils.API_JSON_EMPTY_CONFLICT).build();
 						}
 					}
 				}
@@ -6487,7 +6489,7 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.debug(e);
 		}
 		return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(
-			"No Content").build();
+			ConstantUtils.API_JSON_EMPTY_NOCONTENT).build();
 	}
 
 	@Override
@@ -6495,7 +6497,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		return Response.status(HttpStatus.SC_OK).header("Allow", "").build();
+		return Response.status(HttpStatus.SC_OK).header(HttpHeaders.ALLOW, StringPool.BLANK).build();
 	}
 
 	@Override
@@ -6530,7 +6532,7 @@ public class DossierManagementImpl implements DossierManagement {
 					result.toJSONString()).build();
 			}
 			else {
-				throw new Exception("Do not have service");
+				throw new Exception(ConstantUtils.API_JSON_MESSAGE_DONOTHAVESERVICE);
 			}
 		}
 		catch (PortalException e) {
@@ -6701,34 +6703,34 @@ public class DossierManagementImpl implements DossierManagement {
 													ProcessStepRoleTerm.ASSIGNED));
 										}
 									}
-									userObj.put("userId", userId);
+									userObj.put(Field.USER_ID, userId);
 									Employee emp =
 										EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 											groupId, userId);
 									if (emp != null) {
 										userObj.put(
-											"fullName",
+											UserTerm.FULL_NAME,
 											emp.getFullName() != null
 												? emp.getFullName().toUpperCase()
 												: StringPool.BLANK);
 									}
 									else {
 										userObj.put(
-											"fullName",
+											UserTerm.FULL_NAME,
 											u.getFullName() != null
 												? u.getFullName().toUpperCase()
 												: StringPool.BLANK);
 									}
 
-									userObj.put("moderator", moderator);
-									userObj.put("assigned", assigned);
+									userObj.put(DossierManagementConstants.MODERATOR, moderator);
+									userObj.put(DossierManagementConstants.ASSIGNED, assigned);
 
 									outputUserArr.put(userObj);
 								}
 							}
 						}
 
-						result.put("toUsers", outputUserArr);
+						result.put(DossierManagementConstants.TO_USERS, outputUserArr);
 					}
 				}
 			}
@@ -6752,11 +6754,11 @@ public class DossierManagementImpl implements DossierManagement {
 		List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
 		if (roles != null && roles.size() > 0) {
 			for (Role role : roles) {
-				if ("Administrator".equals(role.getName())) {
+				if (ConstantUtils.ROLE_ADMIN.equals(role.getName())) {
 					isAdmin = true;
 					break;
 				}
-				if ("Administrator_data".equals(role.getName())) {
+				if (ConstantUtils.ROLE_ADMIN_DATA.equals(role.getName())) {
 					isAdmin = true;
 					break;
 				}
@@ -6824,7 +6826,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				dossierJson.put(
 					ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
-				dossierJson.put("online", true);
+				dossierJson.put(DossierTerm.ONLINE, true);
 				dossierJson.put(
 					ConvertDossierFromV1Dot9Utils.TEMP_ORIGINALITY, 1);
 				dossierJson.put(
@@ -6926,15 +6928,15 @@ public class DossierManagementImpl implements DossierManagement {
 					ApplicantActions actions = new ApplicantActionsImpl();
 					actions.importApplicantDB(
 						user.getUserId(), applicant.getLong(Field.GROUP_ID),
-						applicant.getString("applicantIdNo"),
-						applicant.getString("applicantName"),
-						applicant.getString("applicantIdType"), null,
-						applicant.getString("email"),
-						applicant.getString("telNo"),
-						applicant.getString("address"),
-						applicant.getString("cityCode"),
-						applicant.getString("districtCode"),
-						applicant.getString("wardCode"), serviceContext);
+						applicant.getString(ApplicantTerm.APPLICANTIDNO),
+						applicant.getString(ApplicantTerm.APPLICANTNAME),
+						applicant.getString(ApplicantTerm.APPLICANTIDTYPE), null,
+						applicant.getString(ApplicantTerm.EMAIL),
+						applicant.getString(ApplicantTerm.TELNO),
+						applicant.getString(ApplicantTerm.ADDRESS),
+						applicant.getString(ApplicantTerm.CITYCODE),
+						applicant.getString(ApplicantTerm.DISTRICTCODE),
+						applicant.getString(ApplicantTerm.WARDCODE), serviceContext);
 				}
 				catch (Exception e) {
 					_log.error(e);
@@ -6990,6 +6992,12 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 	}
 
+	private static final String MARIADB_DRIVER_CLASSNAME = "org.mariadb.jdbc.Driver";
+	private static final String MARIADB_CONNECTION_STRING = "jdbc:mariadb://103.101.163.238:3306/dvc_opencps";
+	private static final String DVCDB_USER = "dvc_user";
+	private static final String DVCDB_SECRET = "dvc@2019";
+	private static final String SQL_DOSSIER_SELECT = "select * from thanhnv_view_dossier_import";
+	private static final String SQL_DOSSIER_FILE_SELECT = "select * from thanhnv_view_dossierFile_import";
 	public int doImportDossier19(
 		String actionCode, String pathBase, long dvcGroupId, long groupId,
 		ServiceContext serviceContext)
@@ -7000,10 +7008,10 @@ public class DossierManagementImpl implements DossierManagement {
 		ResultSet rs = null;
 		int result = 0;
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(MARIADB_DRIVER_CLASSNAME);
 			try (Connection con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019")) {
+				MARIADB_CONNECTION_STRING, DVCDB_USER,
+				DVCDB_SECRET)) {
 				// here sonoo is database name, root is username and password
 	//			String query = "select * from thanhnv_dossier_mapped_done";
 	//			if (groupId > 0) {
@@ -7011,19 +7019,19 @@ public class DossierManagementImpl implements DossierManagement {
 	//				query += " where groupId=" + groupId;
 	//			}
 				stmt = con.createStatement();
-				rs = stmt.executeQuery("select * from thanhnv_view_dossier_import");
+				rs = stmt.executeQuery(SQL_DOSSIER_SELECT);
 	
 				while (rs.next()) {
-					System.out.println(
-						rs.getString(1) + "  " + rs.getString(2) + "  " +
-							rs.getString(3) + "   " + rs.getString("dossierNo"));
+//					System.out.println(
+//						rs.getString(1) + "  " + rs.getString(2) + "  " +
+//							rs.getString(3) + "   " + rs.getString("dossierNo"));
 					result++;
 	
 					JSONObject dossierJson =
 						ConvertDossierFromV1Dot9Utils.buildDossierJSONObject(rs);
 					dossierJson.put(
 						ConvertDossierFromV1Dot9Utils.TEMP_ONLINE_, true);
-					dossierJson.put("online", true);
+					dossierJson.put(DossierTerm.ONLINE, true);
 					dossierJson.put(
 						ConvertDossierFromV1Dot9Utils.TEMP_ORIGINALITY, 1);
 					dossierJson.put(
@@ -7096,10 +7104,10 @@ public class DossierManagementImpl implements DossierManagement {
 //		ResultSet rs = null;
 		int result = 0;
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(MARIADB_DRIVER_CLASSNAME);
 			try (Connection con = DriverManager.getConnection(
-				"jdbc:mariadb://103.101.163.238:3306/dvc_opencps", "dvc_user",
-				"dvc@2019")) {
+				MARIADB_CONNECTION_STRING, DVCDB_USER,
+				DVCDB_SECRET)) {
 				// here sonoo is database name, root is username and password
 				try (Statement stmt = con.createStatement()) {
 		//			String query = "select * from thanhnv_dossierPart_mapped_done2";
@@ -7109,11 +7117,11 @@ public class DossierManagementImpl implements DossierManagement {
 		//			}
 	//				stmt = con.createStatement();
 					try (ResultSet rs = stmt.executeQuery(
-						"select * from thanhnv_view_dossierFile_import")) {
+						SQL_DOSSIER_FILE_SELECT)) {
 						while (rs.next()) {
-							System.out.println(
-								rs.getString(1) + "  " + rs.getString(2) + "  " +
-									rs.getString(3) + "   " + rs.getString("fileUrl"));
+//							System.out.println(
+//								rs.getString(1) + "  " + rs.getString(2) + "  " +
+//									rs.getString(3) + "   " + rs.getString("fileUrl"));
 							result++;
 			
 							JSONObject dossierFile =
@@ -7170,11 +7178,11 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
-				throw new Exception("Do not have permission");
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION));
 			}
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			if (dossier != null) {
-				String[] keys = key.split("\\.");
+				String[] keys = key.split(ConstantUtils.EXTENSION_SPLIT);
 				if (dossier.getMetaData() != null) {
 					JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
 					for (int i = 0; i < keys.length - 1; i++) {
@@ -7183,29 +7191,29 @@ public class DossierManagementImpl implements DossierManagement {
 							obj = obj.getJSONObject(objectKey);
 						}
 						else {
-							return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
+							return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 						}
 					}					
 					if (obj != null && obj.has(keys[keys.length - 1])) {
 						return Response.status(HttpURLConnection.HTTP_OK).entity(obj.getString(keys[keys.length - 1])).build();						
 					}
 					else {
-						return Response.status(HttpURLConnection.HTTP_OK).entity("").build();						
+						return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();						
 					}
 				}
 				else {
-					return Response.status(HttpURLConnection.HTTP_OK).entity("").build();					
+					return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();					
 				}
 			}
 			else {
-				return Response.status(HttpURLConnection.HTTP_OK).entity("").build();				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();				
 			}
 		}
 		catch (Exception e) {
 			_log.debug(e);
 			return Response.status(
 				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
-				"Do not have permission").build();
+				MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 		}
 	}
 
@@ -7216,7 +7224,7 @@ public class DossierManagementImpl implements DossierManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
-				throw new Exception("Do not have permission");
+				throw new Exception(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION));
 			}
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			if (dossier != null) {
@@ -7261,7 +7269,7 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setMetaData(obj.toJSONString());
 					DossierLocalServiceUtil.updateDossier(dossier);
 					
-					return Response.status(HttpURLConnection.HTTP_OK).entity("{ 'ok': true }").build();					
+					return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY).build();					
 				}
 				else {
 					JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
@@ -7269,7 +7277,7 @@ public class DossierManagementImpl implements DossierManagement {
 					
 					while (keyIt.hasNext()) {
 						String key = keyIt.next();			
-						String[] keys = key.split("\\.");
+						String[] keys = key.split(ConstantUtils.EXTENSION_SPLIT);
 						JSONObject tempObj = obj;
 						int index = 0;
 						for (int i = 0; i < keys.length; i++) {
@@ -7304,18 +7312,18 @@ public class DossierManagementImpl implements DossierManagement {
 					dossier.setMetaData(obj.toJSONString());
 					DossierLocalServiceUtil.updateDossier(dossier);
 					
-					return Response.status(HttpURLConnection.HTTP_OK).entity("{ 'ok': true }").build();					
+					return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY).build();					
 				}
 			}
 			else {
-				return Response.status(HttpURLConnection.HTTP_OK).entity("{ 'ok': false }").build();				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_FALSE_EMPTY).build();				
 			}
 		}
 		catch (Exception e) {
 			_log.debug(e);
 			return Response.status(
 				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
-				"Do not have permission").build();
+				MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 		}
 	}
 	

@@ -21,6 +21,7 @@ public class APIDateTimeUtil {
 
 	public static final String _TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	public static final String _VNDATE = "dd/MM/yyyy";
+	public static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 
 	public static String convertDateToString(Date date, String pattern) {
 
@@ -31,7 +32,7 @@ public class APIDateTimeUtil {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(HCM_TIMEZONE));
 
 		Calendar calendar = Calendar.getInstance();
 

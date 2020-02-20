@@ -22,11 +22,14 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Validator;
+
+import org.opencps.auth.api.keys.Constants;
 
 /**
  * 
@@ -42,17 +45,17 @@ public class SendMailUtil {
 
 		if(Validator.isNotNull(payLoad)){
 //			String fromName = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_NAME);
-			String fromName = "MOBILINK Mail System";
+			String fromName = "OpenCPS Mail System";
 			
-			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong("companyId"), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
+			String fromAddress = PrefsPropsUtil.getString(payLoad.getLong(Field.COMPANY_ID), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
-			String toName = payLoad.getString("toName");
+			String toName = payLoad.getString(Constants.MAIL_TO_NAME);
 
-			String toAddress = payLoad.getString("toAddress");
+			String toAddress = payLoad.getString(Constants.MAIL_TO_ADDRESS);
 
-			String subject = payLoad.getString("subject");
+			String subject = payLoad.getString(Constants.MAIL_SUBJECT);
 
-			String body = payLoad.getString("body");
+			String body = payLoad.getString(Constants.MAIL_BODY);
 			
 //			MailMessage mailMessage = new MailMessage();
 			
@@ -78,9 +81,9 @@ public class SendMailUtil {
 
 			subscriptionSender.setSubject(subject);
 			
-			subscriptionSender.setUserId(payLoad.getLong("userId"));
+			subscriptionSender.setUserId(payLoad.getLong(Field.USER_ID));
 			
-			subscriptionSender.setMailId("user", payLoad.getLong("userId"));
+			subscriptionSender.setMailId(Constants.MAIL_USER, payLoad.getLong(Field.USER_ID));
 
 			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
 		
@@ -92,14 +95,14 @@ public class SendMailUtil {
 			
 			//SendUserNotification
 			try {
-				long toUserId = payLoad.getLong("toUserId");
-				long activityId = payLoad.getLong("activityId");
+				long toUserId = payLoad.getLong(Constants.MAIL_TO_USERID);
+				long activityId = payLoad.getLong(Constants.MAIL_ACTIVITY_ID);
 	        	JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
-		        payloadJSON.put("userId", payLoad.getLong("userId"));
-		        payloadJSON.put("toUserId", toUserId);
-		        payloadJSON.put("activityId", activityId);
-		        payloadJSON.put("contentNotification", payLoad.getString("contentNotification"));
-		        payloadJSON.put("subject", payLoad.getString("subject"));
+		        payloadJSON.put(Field.USER_ID, payLoad.getLong(Field.USER_ID));
+		        payloadJSON.put(Constants.MAIL_TO_USERID, toUserId);
+		        payloadJSON.put(Constants.MAIL_ACTIVITY_ID, activityId);
+		        payloadJSON.put(Constants.MAIL_CONTENT_NOTIFICATION, payLoad.getString(Constants.MAIL_CONTENT_NOTIFICATION));
+		        payloadJSON.put(Constants.MAIL_SUBJECT, payLoad.getString(Constants.MAIL_SUBJECT));
 		       // NotificationEvent event = NotificationEventFactoryUtil.createNotificationEvent(timestamp, type, payloadJSONObject)
 		        //UserNotificationEventLocalServiceUtil.
 //		        if(toUserId == 0){
