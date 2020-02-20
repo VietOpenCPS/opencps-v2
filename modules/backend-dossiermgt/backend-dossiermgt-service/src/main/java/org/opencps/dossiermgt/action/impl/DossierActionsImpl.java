@@ -866,17 +866,17 @@ public class DossierActionsImpl implements DossierActions {
 								JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formDataDeliverables);
 
 								// End add generate deliverable if has deliverable type
-								_log.info("strDeliverableType: "+strDeliverableType);
+//								_log.info("strDeliverableType: "+strDeliverableType);
 								if (Validator.isNull(strDeliverableType)) {
 									List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 											.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, false,
 													QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 													new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
-									_log.debug("dossierFilesResult: "+dossierFilesResult.size());
+//									_log.debug("dossierFilesResult: "+dossierFilesResult.size());
 									if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
 										createFile = processFileResult(dossierFilesResult, createFile,
 												dossierPart.getPartNo());
-										_log.debug("createFile: "+createFile.toJSONString());
+//										_log.debug("createFile: "+createFile.toJSONString());
 
 									} else {
 										createFile = processEFormByCreateFile(dossierPart, groupId, dossierId,
@@ -885,7 +885,7 @@ public class DossierActionsImpl implements DossierActions {
 												.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0,
 														false);
 									}
-									_log.debug("dossierFilesResult1: "+dossierFilesResult.size());
+//									_log.debug("dossierFilesResult1: "+dossierFilesResult.size());
 
 									counter = (dossierFilesResult != null && !dossierFilesResult.isEmpty())
 											? dossierFilesResult.size() : 0;
@@ -903,12 +903,12 @@ public class DossierActionsImpl implements DossierActions {
 										if (mappingDataObj.has(DeliverableTypesTerm.DELIVERABLES_KEY)) {
 											String deliverables = mappingDataObj
 													.getString(DeliverableTypesTerm.DELIVERABLES_KEY);
-											_log.info("--------DELIVERABLES----------" + deliverables);
+//											_log.info("--------DELIVERABLES----------" + deliverables);
 //											_log.info("--------HAS E SIGNATURE----------"
 //													+ processAction.getESignature());
 //											_log.info("---------FILE TEMPLATE NO--------" + fileTemplateNo);
 											if (Validator.isNull(deliverables)) {
-												_log.info("--------DELIVERABLES IS NULL----------" + deliverables);
+//												_log.info("--------DELIVERABLES IS NULL----------" + deliverables);
 												// Add one deliverable
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 														.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
@@ -916,7 +916,7 @@ public class DossierActionsImpl implements DossierActions {
 																new DossierFileComparator(false, Field.CREATE_DATE,
 																		Date.class));
 												if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
-													_log.info("--------DELIVERABLES DOSSIER FILE RESULT NOT NULL----------");
+//													_log.info("--------DELIVERABLES DOSSIER FILE RESULT NOT NULL----------");
 													createFile = processFileResult(dossierFilesResult, createFile,
 															dossierPart.getPartNo());
 												} else {
@@ -927,7 +927,7 @@ public class DossierActionsImpl implements DossierActions {
 															dossierPart.getSampleData(), dossierId, serviceContext);
 //													_log.info("Dossier part: " + dossierPart.getPartNo());
 //													_log.info("Form data: " + formData);
-													_log.info("--------eForm----------: " + eForm);
+//													_log.info("--------eForm----------: " + eForm);
 
 													if (eForm) {
 														createFile = processEFormAndUpdateDossierFile(dossierPart,
@@ -999,7 +999,7 @@ public class DossierActionsImpl implements DossierActions {
 														}
 													}
 												}
-												_log.info("--------DELIVERABLES IS NULL PUT DELIVERABLE TYPE----------" + deliverables);
+//												_log.info("--------DELIVERABLES IS NULL PUT DELIVERABLE TYPE----------" + deliverables);
 												dossierFilesResult = DossierFileLocalServiceUtil
 														.getDossierFileByDID_FTNO_DPTS_NOT_NULL_FID(dossierId,
 																fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT }, 0, false);
@@ -1010,17 +1010,17 @@ public class DossierActionsImpl implements DossierActions {
 												createFile.put(ConstantUtils.FILE_ENTRY_ID, fileEntryId);
 												createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												createFiles.put(createFile);
-												_log.info("----DELIVERABLES CREATE FILE JSON-----" + createFile.toString());
+//												_log.info("----DELIVERABLES CREATE FILE JSON-----" + createFile.toString());
 											} else {
-												_log.info("--------DELIVERABLES IS NOT NULL----------" + deliverables);
+//												_log.info("--------DELIVERABLES IS NOT NULL----------" + deliverables);
 												List<DossierFile> dossierFilesResult = DossierFileLocalServiceUtil
 														.getDossierFileByDID_FTNO_DPTS(dossierId, fileTemplateNo, new int[] { DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT, DossierPartTerm.DOSSIER_PART_TYPE_GROUP_OUTPUT },
 																false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 																new DossierFileComparator(false, Field.CREATE_DATE,
 																		Date.class));
-												_log.debug("DELIVERABLE TYPE NOT NULL");
+//												_log.debug("DELIVERABLE TYPE NOT NULL");
 												if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
-													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT NOT EMPTY");
+//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT NOT EMPTY");
 													createFile = JSONFactoryUtil.createJSONObject();
 													createFile = processFileResult(dossierFilesResult, createFile,
 															dossierPart.getPartNo());
@@ -1035,7 +1035,7 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												} else {
-													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT EMPTY");
+//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT EMPTY");
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 															: false;
 													formData = AutoFillFormData.sampleDataBinding(
@@ -1180,7 +1180,7 @@ public class DossierActionsImpl implements DossierActions {
 													counter = (dossierFilesResult != null
 															&& !dossierFilesResult.isEmpty())
 																	? dossierFilesResult.size() : 0;
-													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT RETURN CREATE FILE");
+//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT RETURN CREATE FILE");
 													createFile.put(DossierFileTerm.E_FORM, eForm);
 													createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
 													createFile.put(DossierFileTerm.FORM_DATA, formData);
@@ -1214,8 +1214,8 @@ public class DossierActionsImpl implements DossierActions {
 						result.put(ProcessActionTerm.STR_PROCESS_ACTION, processAction);
 					}
 				}
-				result.put(ProcessActionTerm.CREATE_DOSSIERS, createFiles);
-//				_log.debug("NEXT ACTION CREATE FILES: " + result.toString());
+				result.put(ProcessActionTerm.CREATE_FILES, createFiles);
+//				_log.info("NEXT ACTION CREATE FILES: " + result.toString());
 			}
 		} catch (Exception e) {
 			_log.error(e);
