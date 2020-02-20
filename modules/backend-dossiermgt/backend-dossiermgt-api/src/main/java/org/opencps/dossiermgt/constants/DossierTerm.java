@@ -303,6 +303,7 @@ public class DossierTerm {
 	public static final String KEY_DOSSIER_SUB_STATUS = "dossierSubStatus";
 	public static final String KEY_DOSSIER_LEVEL = "level";
 	public static final String KEY_DOSSIER_STATUS_NAME = "statusName";
+	public static final String KEY_SPECIAL_STATUS = "specialStatus";
 	public static final String KEY_TIMMER = "timmer";
 	public static final String STATUS_TEXT = "statusText";
 	public static final String START_DATE = "startDate";
@@ -358,4 +359,5 @@ public class DossierTerm {
 	public static final String OPENCPSV2 = "OPENCPSV2";
 	public static final String PENDING = "pendding";
 	public static final String WAITING = "waiting";
+	public static final String STEP_DONE_CODE = "400";
 }

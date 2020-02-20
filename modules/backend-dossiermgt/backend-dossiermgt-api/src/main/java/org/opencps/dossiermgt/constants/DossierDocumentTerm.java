@@ -14,5 +14,10 @@ public class DossierDocumentTerm {
 	public static final String DOCUMENT_SCRIPT = "documentScript";
 	public static final String DOC_SYNC = "docSync";
 	public static final String DOSSIER_DOCUMENT_ID = "DossierDocumentId";
-
+	public static final String HOUR = "hour";
+	public static final String PROCESS_HOUR = "processHour";
+	public static final String AM = "AM";
+	public static final String PM = "PM";
+	public static final String START_HOUR = "startHour";
+	public static final String DUE_HOUR = "dueHour";
 }

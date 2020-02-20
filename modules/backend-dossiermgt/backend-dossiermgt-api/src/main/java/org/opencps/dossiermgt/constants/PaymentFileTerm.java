@@ -54,4 +54,5 @@ public class PaymentFileTerm {
 	
 	public static final String PAYMENT_PORTAL = "paymentPortal";
 	public static final String KEYPAY = "KEYPAY";
+	public static final String PAYMENT = "payment";
 }

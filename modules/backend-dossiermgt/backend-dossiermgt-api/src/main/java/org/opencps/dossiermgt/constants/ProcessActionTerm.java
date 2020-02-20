@@ -85,5 +85,5 @@ public class ProcessActionTerm {
 
 	public static final String PRECONDITION_PAY_OK = "payok";
 	public static final String PRECONDITION_SEND_INVOICE_1 = "sendinvoice=1";
-	
+	public static final String PROCESS_ACTION = "processAction";
 }

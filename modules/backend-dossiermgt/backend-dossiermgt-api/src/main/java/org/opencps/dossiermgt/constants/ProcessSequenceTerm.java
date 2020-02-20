@@ -10,4 +10,6 @@ public class ProcessSequenceTerm {
 	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
 	public static final String NEXT_CREATE_DATE = "nextCreateDate";
 	public static final String START_DATE = "startDate";
+	public static final String STATUS_TEXT = "statusText";
+	public static final String OVERDUE_TEXT = "overdueText";
 }

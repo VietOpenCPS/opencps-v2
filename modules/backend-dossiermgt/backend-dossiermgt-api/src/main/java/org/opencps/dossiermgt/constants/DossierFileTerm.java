@@ -48,4 +48,5 @@ public class DossierFileTerm {
 	public static final String EXPIRE_DATE = "expireDate";
 	public static final String REVALIDATE = "revalidate";
 	public static final String IS_SYNC_TRUE = "true";
+	public static final String RETURNED = "returned";
 }

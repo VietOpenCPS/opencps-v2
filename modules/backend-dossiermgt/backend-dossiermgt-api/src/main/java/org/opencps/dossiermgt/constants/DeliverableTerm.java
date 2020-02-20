@@ -36,5 +36,6 @@ public class DeliverableTerm {
 	
 	public static final int DELIVERABLE_STATE_VALID_INT = 1;
 	public static final int DELIVERABLE_STATE_INVALID_INT = 2;
-
+	public static final String SO_CHUNG_CHI = "so_chung_chi";
+	public static final String NGAY_KY_CC = "ngay_ky_cc";
 }

@@ -438,4 +438,22 @@ public class ConstantUtils {
 	
 	public static final String DATA_CER = "data/cer/";
 	public static final String CER = "cer";
+	public static final String MODERATOR = "moderator";
+	public static final String RECEIVING = "receiving";
+	public static final String EDITABLE = "editable";
+	public static final String REQUIRED = "required";
+	public static final String TP99 = "TP99";
+	public static final String SPLIT_SPACE = " : ";
+	public static final String DOSSIER_PAUSE_MESSAGE = "dossier.message.pause";
+	public static final String DOSSIER_UNDUE_MESSAGE = "dossier.message.undue";
+	public static final String DOSSIER_UNDUE_WITHVARIABLE_MESSAGE = "dossier.message.undue.withvariable";
+	public static final String DOSSIER_ONTIME_MESSAGE = "dossier.message.ontime";
+	public static final String DOSSIER_OVERDUE_MESSAGE = "dossier.message.overdue";
+	public static final String DOSSIER_OVERDUE_WITHVARIABLE_MESSAGE = "dossier.message.overdue.withvariable";
+	public static final String PERMISSION_READ = "read";
+	public static final String UNDERLINE_PERMISSION_READ = "_read";
+	public static final String DOSSIER_LOCKOVER3_MESSAGE = "dossier.message.lockover3";
+	public static final String DOSSIER_LOCKUNDER3_MESSAGE = "dossier.message.lockunder3";
+	public static final String CTN = "CTN";
+	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 }
