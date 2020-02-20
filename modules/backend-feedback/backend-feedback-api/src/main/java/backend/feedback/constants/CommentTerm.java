@@ -47,4 +47,7 @@ public class CommentTerm {
 	public static final String ITEM_LV = "itemLv";
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+	public static final String DESTINATION_FOLDER = "Comments/";
+	public static final String DESTINATION_DESC = "Comment attactment";
+	public static final String REGULAR = "regular";
 }

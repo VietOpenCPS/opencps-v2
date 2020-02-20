@@ -1,14 +1,18 @@
 package backend.kyso.api.rest.application;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.net.HttpURLConnection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,13 +27,6 @@ import org.opencps.kyso.action.DigitalSignatureActions;
 import org.opencps.kyso.action.impl.DigitalSignatureActionsImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
-
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -134,7 +131,7 @@ public class BackendKysoApiRestApplication extends Application {
 			}
 //			JSONObject results = JSONFactoryUtil.createJSONObject();
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
@@ -167,11 +164,11 @@ public class BackendKysoApiRestApplication extends Application {
 		}
 	}
 
-	@GET
-	@Produces("text/plain")
-	public String working() {
-		return "It works signature!";
-	}
+//	@GET
+//	@Produces("text/plain")
+//	public String working() {
+//		return "It works signature!";
+//	}
 
 
 }

@@ -48,7 +48,6 @@ import java.util.List;
 import javax.ws.rs.NotFoundException;
 
 import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
 
 import backend.feedback.constants.VotingTerm;
 import backend.feedback.exception.NoSuchVotingException;

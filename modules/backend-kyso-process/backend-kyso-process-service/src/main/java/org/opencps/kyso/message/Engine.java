@@ -1,15 +1,5 @@
 package org.opencps.kyso.message;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.security.cert.Certificate;
-import java.util.Base64;
-
-import org.opencps.kyso.utils.BCYSignatureUtil;
-import org.opencps.kyso.utils.CertUtil;
-import org.opencps.kyso.utils.ExtractTextLocations;
-import org.opencps.kyso.utils.ImageUtil;
-
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -29,6 +19,16 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.security.cert.Certificate;
+import java.util.Base64;
+
+import org.opencps.kyso.utils.BCYSignatureUtil;
+import org.opencps.kyso.utils.CertUtil;
+import org.opencps.kyso.utils.ExtractTextLocations;
+import org.opencps.kyso.utils.ImageUtil;
 
 import backend.kyso.process.service.util.ConfigProps;
 import vgca.svrsigner.ServerSigner;

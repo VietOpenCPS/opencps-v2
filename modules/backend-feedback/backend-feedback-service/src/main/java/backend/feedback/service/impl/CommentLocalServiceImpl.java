@@ -58,12 +58,12 @@ import java.util.Map;
 
 import org.opencps.backend.usermgt.service.util.ConfigConstants;
 
+import backend.auth.api.exception.NotFoundException;
 import backend.feedback.constants.CommentTerm;
 import backend.feedback.exception.NoSuchCommentException;
 import backend.feedback.model.Comment;
 import backend.feedback.service.base.CommentLocalServiceBaseImpl;
 import backend.utils.DLFolderUtil;
-import backend.auth.api.exception.NotFoundException;
 
 /**
  * The implementation of the comment local service.
@@ -143,7 +143,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			serviceContext.setAddGroupPermissions(true);
 			serviceContext.setAddGuestPermissions(true);
 
-			String destination = "Comments/";
+			String destination = CommentTerm.DESTINATION_FOLDER;
 
 			Calendar calendar = Calendar.getInstance();
 
@@ -154,7 +154,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			destination += calendar.get(Calendar.DAY_OF_MONTH);
 
 			DLFolder dlFolder = DLFolderUtil.getTargetFolder(userId, groupId, groupId, false, 0, destination,
-					"Comment attactment", false, serviceContext);
+					CommentTerm.DESTINATION_DESC, false, serviceContext);
 
 			User user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
 
@@ -162,7 +162,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 			PermissionThreadLocal.setPermissionChecker(checker);
 
 			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(userId, groupId, dlFolder.getFolderId(), fileName,
-					fileType, fileName + StringPool.DASH + System.currentTimeMillis(), "Comment attachment",
+					fileType, fileName + StringPool.DASH + System.currentTimeMillis(), CommentTerm.DESTINATION_DESC,
 					StringPool.BLANK, inputStream, fileSize, serviceContext);
 
 			// DLFolderUtil.setFilePermissions(fileEntry);
@@ -199,7 +199,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 		searchContext.addFullQueryEntryClassName(Comment.class.getName());
 		searchContext.setEntryClassNames(new String[] { Comment.class.getName() });
 
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(CommentTerm.PAGINATION_TYPE, CommentTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setAndSearch(true);
 
@@ -207,13 +207,13 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		// LAY CAC THAM SO TRONG PARAMS.
 
-		String classPK = GetterUtil.getString(params.get("classPK"));
+		String classPK = GetterUtil.getString(params.get(Field.CLASS_PK));
 
-		String keywords = GetterUtil.getString(params.get("keywords"));
+		String keywords = GetterUtil.getString(params.get(CommentTerm.KEYWORDS));
 
-		String groupId = GetterUtil.getString(params.get("groupId"));
+		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
-		String className = GetterUtil.getString(params.get("className"));
+		String className = GetterUtil.getString(params.get(CommentTerm.CLASS_NAME));
 
 		BooleanQuery booleanQuery = null;
 
@@ -383,7 +383,7 @@ public class CommentLocalServiceImpl extends CommentLocalServiceBaseImpl {
 
 		String groupId = GetterUtil.getString(params.get(Field.GROUP_ID));
 
-		String className = GetterUtil.getString(params.get("className"));
+		String className = GetterUtil.getString(params.get(CommentTerm.CLASS_NAME));
 
 		String opinion = GetterUtil.getString(params.get(CommentTerm.OPINION));
 		// if (Validator.isNull(opinion)) {
