@@ -46,7 +46,6 @@ import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
-import org.opencps.usermgt.service.util.ServiceProps;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
 public class ApplicantActionsImpl implements ApplicantActions {
@@ -472,7 +471,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				}
 			}
 			
-			System.out.println("flagUser: "+flagUser);
+//			System.out.println("flagUser: "+flagUser);
 			//Process update applicant and user
 			if (flagUser == 0) {
 				//Add applicant and user

@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 @Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class LoginPostAction implements LifecycleAction {
 	private static final Log _log = LogFactoryUtil.getLog(LoginPostAction.class);
+	private static final String DEFAULT_WEB_ROOT = "/web";
+	
 	@Override
 	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
 		User user;
@@ -38,7 +40,7 @@ public class LoginPostAction implements LifecycleAction {
 
 			String friendlyUrl = user.getSiteGroups().get(0).getFriendlyURL();
 
-			lifecycleEvent.getResponse().sendRedirect("/web" + friendlyUrl);
+			lifecycleEvent.getResponse().sendRedirect(DEFAULT_WEB_ROOT + friendlyUrl);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 //			e.printStackTrace();

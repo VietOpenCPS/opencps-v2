@@ -17,4 +17,5 @@ public class ConfigConstants {
 		"opencps.open.evaluation.unauthor.ex.mes";
 	public static final String EVALUATION_NO_CONTENT_EX =
 		"opencps.open.evaluation.nocontent.ex.mes";
+	public static final String HTTP_REQUEST = "HTTP.REQUEST";
 }

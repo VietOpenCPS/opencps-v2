@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
@@ -23,10 +22,10 @@ public class SMSGatewayRest extends Application{
         return Collections.<Object> singleton(this);
     }
 
-    @GET
-    @Produces("text/plain")
-    public String working() {
-
-        return "It works!";
-    }
+//    @GET
+//    @Produces("text/plain")
+//    public String working() {
+//
+//        return "It works!";
+//    }
 }

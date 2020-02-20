@@ -8,6 +8,8 @@ import org.apache.cxf.message.Message;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import backend.communication.service.util.ConfigConstants;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -24,7 +26,7 @@ public class CompanyContextProvider implements ContextProvider<Company> {
 	@Override
 	public Company createContext(Message message) {
 		try {
-			return _portal.getCompany((HttpServletRequest) message.getContextualProperty("HTTP.REQUEST"));
+			return _portal.getCompany((HttpServletRequest) message.getContextualProperty(org.opencps.api.service.util.ConfigConstants.HTTP_REQUEST));
 		} catch (PortalException pe) {
 			if (_log.isWarnEnabled()) {
 				_log.warn("Unable to get company", pe);

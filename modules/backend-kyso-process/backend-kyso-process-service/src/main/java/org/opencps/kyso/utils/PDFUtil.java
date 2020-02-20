@@ -47,13 +47,13 @@ public class PDFUtil {
 				return StringPool.BLANK;
 			}
 
-			if (!"pdf".equals(fileEntry.getExtension())) {
+			if (!KysoTerm.PDF_TYPE.equals(fileEntry.getExtension())) {
 				return StringPool.BLANK;
 			}
 
 			is = fileEntry.getContentStream();
 
-			String imagePath = dest + fileEntry.getTitle() + StringPool.DASH + System.currentTimeMillis() + "_tmp."
+			String imagePath = dest + fileEntry.getTitle() + StringPool.DASH + System.currentTimeMillis() + KysoTerm.TEMP_
 					+ fileEntry.getExtension();
 
 			os = new FileOutputStream(imagePath);

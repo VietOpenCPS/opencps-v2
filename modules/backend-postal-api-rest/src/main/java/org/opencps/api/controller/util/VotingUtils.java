@@ -92,7 +92,7 @@ public class VotingUtils {
 						APIDateTimeUtils._TIMESTAMP));
 
 				ett.setModifiedDate(
-						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
+						APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
 //				_log.error(e);
@@ -211,6 +211,9 @@ public class VotingUtils {
 		return results;
 	}
 
+	private static final String DAY_START_TIME = "00:00:00";
+	private static final String DAY_END_TIME = "23:59:59";
+	
 	public static List<VotingDataModel> mappingVotingDocList(List<Document> votingList, String fromVotingDate, String toVotingDate, ServiceContext serviceContext) {
 
 		List<VotingDataModel> results = new ArrayList<>();
@@ -218,8 +221,8 @@ public class VotingUtils {
 		if (votingList == null) return results;
 
 		VotingDataModel ett = null;
-		Date fromDate = APIDateTimeUtils.convertVNStrToDateTime(fromVotingDate, "00:00:00");
-		Date toDate = APIDateTimeUtils.convertVNStrToDateTime(toVotingDate, "23:59:59");
+		Date fromDate = APIDateTimeUtils.convertVNStrToDateTime(fromVotingDate, DAY_START_TIME);
+		Date toDate = APIDateTimeUtils.convertVNStrToDateTime(toVotingDate, DAY_END_TIME);
 		
 		for (Document doc : votingList) {
 			ett = new VotingDataModel();
@@ -380,7 +383,7 @@ public class VotingUtils {
 						APIDateTimeUtils._TIMESTAMP));
 
 				ett.setModifiedDate(
-						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
+						APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
 				_log.error(e);
@@ -423,7 +426,7 @@ public class VotingUtils {
 						APIDateTimeUtils._TIMESTAMP));
 
 				ett.setModifiedDate(
-						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
+						APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP));
 
 			} catch (ParseException e) {
 				_log.error(e);
@@ -466,7 +469,7 @@ public class VotingUtils {
 						APIDateTimeUtils._TIMESTAMP));
 
 				ett.setModifiedDate(
-						APIDateTimeUtils.convertDateToString(doc.getDate("modified"), APIDateTimeUtils._TIMESTAMP));
+						APIDateTimeUtils.convertDateToString(doc.getDate(Field.MODIFIED_DATE), APIDateTimeUtils._TIMESTAMP));
 
 				ett.setFullName(doc.get(VotingResultTerm.FULLNAME));
 				ett.setEmail(doc.get(VotingResultTerm.EMAIL));

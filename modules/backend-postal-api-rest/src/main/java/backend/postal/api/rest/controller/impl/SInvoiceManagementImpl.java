@@ -259,7 +259,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 					sb.append(output);
 				}
 
-				System.out.println("response: " + sb.toString());
+//				System.out.println("response: " + sb.toString());
 
 				int responseCode = conn.getResponseCode();
 
@@ -317,7 +317,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			_log.error(e);
 		}
 		finally {

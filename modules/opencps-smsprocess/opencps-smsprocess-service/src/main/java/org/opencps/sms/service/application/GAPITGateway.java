@@ -6,7 +6,6 @@ import javax.jws.soap.SOAPBinding;
 
 import org.opencps.sms.service.dto.ReceiveMORequestType;
 import org.opencps.sms.service.dto.ReceiveMOResponseType;
-import org.osgi.service.component.annotations.Component;
 
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)

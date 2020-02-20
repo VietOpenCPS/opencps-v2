@@ -1,0 +1,44 @@
+package org.opencps.usermgt.constants;
+
+public class DVCQGSSOTerm {
+	public static final String DVCQG_OPENID_PROTOCOL = "DVCQG-OPENID";
+	public static final String AUTH_SERVER = "auth_server";
+	public static final String AUTH_ENDPOINT = "auth_endpoint";
+	public static final String CLIENTID = "clientid";
+	public static final String CLIENT_ID = "client_id";
+	public static final String CALLBACK_URL = "callback_url";
+	public static final String SCOPE = "scope";
+	public static final String ACR_VALUES = "acr_values";
+	public static final String OPENID = "openid";
+	public static final String TEXT_HTML = "text/html";
+	public static final String ACCESS_TOKEN = "access_token";
+	public static final String ACCESS_TOKEN_UPPER = "ACCESS_TOKEN";
+	public static final String STATE = "state";
+	public static final String SSO_STATE = "SSO_STATE";
+	public static final String TECH_ID = "TechID";
+	public static final String CHECK_AUTH_FORMAT = "%s?response_type=code&client_id=%s&redirect_uri=%s&scope=%s&acr_values=%s&state=%s";
+	public static final String USERINFO_ENDPOINT = "userinfo_endpoint";
+	public static final String VALIDATETOKEN_ENDPOINT = "validatetoken_endpoint";
+	public static final String BEARER_HEADER = "Bearer %s";
+	public static final String APPLICATION_JSON = "application/json";
+	public static final String APPLCATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+	public static final String VALIDATE_TOKEN_FORMAT = "token=%s&state=0";
+	public static final String EXP = "exp";
+	public static final String ACCESS_TOKEN_ENDPOINT = "accesstoken_endpoint";
+	public static final String ACCESS_TOKEN_FORMAT = "grant_type=authorization_code&code=%s&redirect_uri=%s&client_id=%s&client_secret=%s";
+	public static final String CLIENT_SECRET = "client_secret";
+	public static final String STATUS = "status";
+	public static final String MESSAGE = "message";
+	public static final String AUTH = "auth";
+	public static final String _GROUP_ID = "_GROUP_ID";
+	public static final String _MAPPING_CLASS_NAME = "_MAPPING_CLASS_NAME";
+	public static final String _MAPPING_CLASS_PK = "_MAPPING_CLASS_PK";
+	public static final String _ACCESS_TOKEN = "_ACCESS_TOKEN";
+	public static final String MAPPING = "mapping";
+	public static final String SUCCESS = "success";
+	public static final String EMAIL = "email";
+	public static final String CAS_LOGIN = "CAS_LOGIN";
+	public static final String HTTPS_INITIAL = "HTTPS_INITIAL";
+	public static final String LAST_PATH = "LAST_PATH";
+	public static final String OPEN_ID_CONNECT_SESSION = "OPEN_ID_CONNECT_SESSION";
+}

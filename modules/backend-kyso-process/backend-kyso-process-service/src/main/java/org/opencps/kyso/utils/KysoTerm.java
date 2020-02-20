@@ -22,4 +22,12 @@ public class KysoTerm {
 	public static final String DOSSIER_PART_IDS = "dossierPartIds";
 	public static final String INDEXS = "indexs";
 	public static final String INDEX_SIZES = "indexSizes";
+	public static final String X509 = "X.509";
+	public static final String TEMP_ = "_tmp.";
+	public static final String PDF_TYPE = "pdf";
+	public static final String DOC_TYPE = "doc";
+	public static final String DOCX_TYPE = "docx";
+	
+	public static final String REPORT = "report";
+	public static final String SUBJECT_DN = "SubjectDN";
 }
