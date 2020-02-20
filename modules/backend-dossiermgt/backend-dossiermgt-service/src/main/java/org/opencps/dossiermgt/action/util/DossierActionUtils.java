@@ -31,9 +31,12 @@ public class DossierActionUtils {
 			}
 			else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM) {
 				state = DossierSyncTerm.STATE_WAITING_SYNC;
-			}				
-		}	
-		
+			}		
+			else if (syncType == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
+				state = DossierSyncTerm.STATE_WAITING_SYNC;
+			}
+		}
+
 		return state;
 	}
 	
