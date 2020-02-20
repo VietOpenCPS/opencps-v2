@@ -36,4 +36,6 @@ public interface DossierConstants {
 	String TOP = "top";
 	String DOSSIER_NO = "dossierNo";
 	String SYSTEM = "system";
+	String TOTAL = "total";
+	String DATA = "data";
 }
