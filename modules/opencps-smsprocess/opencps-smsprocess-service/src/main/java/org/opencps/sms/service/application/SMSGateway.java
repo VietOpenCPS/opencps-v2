@@ -38,6 +38,7 @@ import org.opencps.sms.service.dto.ReceiveMORequestType;
 import org.opencps.sms.service.dto.ReceiveMOResponseType;
 import org.opencps.sms.service.util.Constants;
 import org.opencps.sms.service.util.DossierStatus;
+import org.opencps.sms.service.util.MessageUtil;
 import org.opencps.sms.service.util.ServiceProps;
 import org.osgi.service.component.annotations.Component;
 
@@ -45,7 +46,6 @@ import opencps.statistic.common.webservice.exception.UpstreamServiceFailedExcept
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 import ws.bulkSms.impl.CcApi_PortType;
 import ws.bulkSms.impl.CcApi_ServiceLocator;
-import ws.bulkSms.impl.Result;
 
 @Component(immediate = true, property = "jaxws=true", service = SMSGateway.class)
 @WebService(name = "MonoWebServicePortType", serviceName = "MonoWebService")
@@ -73,7 +73,7 @@ public class SMSGateway {
 
         try {
             
-            String applicationName = "";
+            String applicationName = StringPool.BLANK;
             
             String smsReply = buildContent(receiveMORequestType.getMsgbody(), applicationName);
             MOData moData = new MOData(processPerfixNumber(receiveMORequestType.getSrc()), smsReply);
@@ -93,8 +93,8 @@ public class SMSGateway {
     		CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
     		CcApi_PortType portType = locator.getCcApiPort();
     		
-    		portType.wsCpMt("viettelmcdt", "789456a@#123", 
-    				"VIETTELMCDT", "1", receiveMORequestType.getSrc(), receiveMORequestType.getSrc(), "ViettelMCDT", "bulksms", smsReply, "F");            
+    		portType.wsCpMt(Constants.DEFAULT_USER, Constants.DEFAULT_SECRET, 
+    				Constants.DEFAULT_CP_CODE, Constants.DEFAULT_REQUEST_ID, receiveMORequestType.getSrc(), receiveMORequestType.getSrc(), Constants.DEFAULT_SERVICE_ID, Constants.DEFAULT_COMMAND_CODE, smsReply, Constants.DEFAULT_CONTENT_TYPE);            
             
             SMSLogAction.updateSMSGatewayLogSuccess(smsGatewayLog.getSmsId());
             
@@ -137,13 +137,13 @@ public class SMSGateway {
     
     private String processPerfixNumber(String src) {
         
-        if (src.contains("+84")) {
-            src = src.replace("+84", "0");
+        if (src.contains(Constants.VN_PHONE_PLUS)) {
+            src = src.replace(Constants.VN_PHONE_PLUS, String.valueOf(0));
         }
 
-        if ("84".equals(src.substring(0, 2))) {
+        if (Constants.VN_PHONE.equals(src.substring(0, 2))) {
            StringBuilder sb = new StringBuilder(src);
-           sb.replace(0, 2, "0");
+           sb.replace(0, 2, String.valueOf(0));
            
            src = sb.toString();
            
@@ -174,7 +174,7 @@ public class SMSGateway {
         
         StringBuilder sb = new StringBuilder();
         
-        String replyContent = "";
+        String replyContent = StringPool.BLANK;
 
         if (Validator.isNotNull(dossierNo)) {
             String[] slip = StringUtil.split(dossierNo, StringPool.SPACE);
@@ -185,18 +185,19 @@ public class SMSGateway {
                 dossierNo = slip[1];
             }
             else {
-                sb.append("Xin chao! ");
-                sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai chinh cu phap tin nhan. ");
-                sb.append("Tran trong cam on!");
-                
+//                sb.append("Xin chao! ");
+//                sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai chinh cu phap tin nhan. ");
+//                sb.append("Tran trong cam on!");
+            	sb.append(MessageUtil.getMessage(Constants.SMS_FORMAT_ERROR_MESSAGE));
 
                 return sb.toString();
             }
         }
         else {
-            sb.append("Xin chao! ");
-            sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai chinh cu phap tin nhan. ");
-            sb.append("Tran trong cam on!");
+//            sb.append("Xin chao! ");
+//            sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai chinh cu phap tin nhan. ");
+//            sb.append("Tran trong cam on!");
+        	sb.append(MessageUtil.getMessage(Constants.SMS_FORMAT_ERROR_MESSAGE));
             
             
             return sb.toString();
@@ -218,10 +219,10 @@ public class SMSGateway {
         if (Validator.isNotNull(dossierResponse) && dossierResponse.getTotal() != 0) {
             data = dossierResponse.getData().get(0);
         } else {
-            sb.append("Xin chao! ");
-            sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai ma so ho so. ");
-            sb.append("Tran trong cam on.");
-            
+//            sb.append("Xin chao! ");
+//            sb.append("De nghi ca nhan/doanh nghiep vui long kiem tra lai ma so ho so. ");
+//            sb.append("Tran trong cam on.");
+        	sb.append(MessageUtil.getMessage(Constants.SMS_DOSSIER_ERROR_MESSAGE));
 
             return sb.toString();
         }
@@ -244,49 +245,59 @@ public class SMSGateway {
         
         switch (dossierStatus) {
         case DossierStatus.PROCESSING:
-            sb.append("Xin chao, " + data.getApplicantName() + "! ");
-            sb.append("Ho so "); 
-            sb.append(data.getDossierNo());
-            sb.append(" dang trong qua trinh tham dinh. ");
-            sb.append("Tran trong cam on!");
-            
+        	String processingText = String.format(MessageUtil.getMessage(Constants.SMS_DOSSIER_PROCESSING_MESSAGE), data.getApplicantName(), data.getDossierNo());        	
+//            sb.append("Xin chao, " + data.getApplicantName() + "! ");
+//            sb.append("Ho so "); 
+//            sb.append(data.getDossierNo());
+//            sb.append(" dang trong qua trinh tham dinh. ");
+//            sb.append("Tran trong cam on!");
+            sb.append(processingText);
            break;
         case DossierStatus.WAITING:
-            sb.append("Xin chao, " + data.getApplicantName() + "! ");
-            sb.append("Ho so " + data.getDossierNo()+ ". "); 
-            sb.append("De nghi Cong dan/ doanh nghiep som hoan thien bo sung ho so theo yeu cau. ");
-            sb.append("Tran trong cam on!");
-            
+        	String waitingText = String.format(MessageUtil.getMessage(Constants.SMS_DOSSIER_WAITING_MESSAGE), data.getApplicantName(), data.getDossierNo());
+        	
+//            sb.append("Xin chao, " + data.getApplicantName() + "! ");
+//            sb.append("Ho so " + data.getDossierNo()+ ". "); 
+//            sb.append("De nghi Cong dan/ doanh nghiep som hoan thien bo sung ho so theo yeu cau. ");
+//            sb.append("Tran trong cam on!");
+        	sb.append(waitingText);
             break;
         case DossierStatus.DONE:
-            sb.append("Xin chao, ");
-            sb.append(data.getApplicantName() + "! ");
-            sb.append("De nghi den nhan ket qua tai " + data.getGovAgencyName() + ". ");
+//            sb.append("Xin chao, ");
+//            sb.append(data.getApplicantName() + "! ");
+//            sb.append("De nghi den nhan ket qua tai " + data.getGovAgencyName() + ". ");
             if (isOntime(data)) {
-                sb.append("Ho so da giai quyet truoc han. ");
-                sb.append("Ma ho so la " + data.getDossierNo() + ". ");
+            	String ontimeText = String.format(Constants.SMS_DOSSIER_DONE_ONTIME_MESSAGE, data.getApplicantName(), data.getGovAgencyName(), data.getDossierNo());
+                
+//            	sb.append("Ho so da giai quyet truoc han. ");
+//                sb.append("Ma ho so la " + data.getDossierNo() + ". ");
+            	sb.append(ontimeText);
             } else {
-                sb.append("Ma ho so la " + data.getDossierNo() + ". ");
-                sb.append("*Luu y: mang theo giay to can thiet. ");
+            	String overtimeText = String.format(Constants.SMS_DOSSIER_DONE_OVERTIME_MESSAGE, data.getApplicantName(), data.getGovAgencyName(), data.getDossierNo());
+//                sb.append("Ma ho so la " + data.getDossierNo() + ". ");
+//                sb.append("*Luu y: mang theo giay to can thiet. ");
+            	sb.append(overtimeText);
             }
-            sb.append("Tran trong cam on!");
+//            sb.append("Tran trong cam on!");
             
             break;
 
         case DossierStatus.DENIED:
-            sb.append("Xin chao, " + data.getApplicantName() + "! ");
-            sb.append("Ho so " + data.getDossierNo() + ". "); 
-            sb.append("Ho so cua " + data.getApplicantName() + " da bi tu choi giai quyet. ");
-            sb.append("Tran trong cam on!");
-            
+        	String deniedText = String.format(MessageUtil.getMessage(Constants.SMS_DOSSIER_DENIED_MESSAGE), data.getApplicantName(), data.getDossierNo(), data.getApplicantName());
+//            sb.append("Xin chao, " + data.getApplicantName() + "! ");
+//            sb.append("Ho so " + data.getDossierNo() + ". "); 
+//            sb.append("Ho so cua " + data.getApplicantName() + " da bi tu choi giai quyet. ");
+//            sb.append("Tran trong cam on!");
+        	sb.append(deniedText);
             break;
 
         default:
-            sb.append("Xin chao, " + data.getApplicantName() + "! ");
-            sb.append("Ho so " + data.getDossierNo() + " "); 
-            sb.append("dang trong qua trinh giai quyet. ");
-            sb.append("Tran trong cam on!");
-            
+        	String defaultText = String.format(MessageUtil.getMessage(Constants.SMS_DOSSIER_DEFAULT_MESSAGE), data.getApplicantName(), data.getDossierNo());
+//            sb.append("Xin chao, " + data.getApplicantName() + "! ");
+//            sb.append("Ho so " + data.getDossierNo() + " "); 
+//            sb.append("dang trong qua trinh giai quyet. ");
+//            sb.append("Tran trong cam on!");
+        	sb.append(defaultText);
             break;
         }
         

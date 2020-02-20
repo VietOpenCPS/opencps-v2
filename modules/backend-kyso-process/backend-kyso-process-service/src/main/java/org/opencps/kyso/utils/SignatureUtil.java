@@ -228,7 +228,7 @@ public class SignatureUtil {
 //			String signInfoStr = StringPool.BLANK;
 			StringBuilder stringBuilder = new StringBuilder();
 			for (int i = 0; i < jsonArray.length(); i++) {
-				String signInfoStr = jsonArray.getJSONObject(i).getString("SubjectDN");
+				String signInfoStr = jsonArray.getJSONObject(i).getString(KysoTerm.SUBJECT_DN);
 
 				stringBuilder.append(signInfoStr);
 				stringBuilder.append("; ");
@@ -257,14 +257,14 @@ public class SignatureUtil {
 		List<SignerInfo> signerInfos = new ArrayList<SignerInfo>();
 		
 		try {
-			if ("doc".equalsIgnoreCase(extension)
-					|| "docx".equalsIgnoreCase(extension)) {
+			if (KysoTerm.DOC_TYPE.equalsIgnoreCase(extension)
+					|| KysoTerm.DOCX_TYPE.equalsIgnoreCase(extension)) {
 				doccontent = new DocContent(path);
 				if (signer.verify(doccontent)) {
 					signerInfos = signer.getSignatureInfos(doccontent);
 				}
 
-			} else if ("pdf".equalsIgnoreCase(extension)) {
+			} else if (KysoTerm.PDF_TYPE.equalsIgnoreCase(extension)) {
 				pdfcontent = new PdfContent(path);
 
 				if (signer.verify(pdfcontent)) {

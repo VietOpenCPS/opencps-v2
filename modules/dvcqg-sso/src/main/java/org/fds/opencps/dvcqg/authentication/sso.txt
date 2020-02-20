@@ -1,0 +1,99 @@
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+<script>
+$( document ).ready(function() {
+var state = '[$STATE]';
+$.ajax('/o/rest/v2/dvcqgsso/userinfo?authToken=[$CODE]&state=[$STATE]',
+{
+	type: 'GET',
+	dataType: 'json',
+	timeout: 5000,
+	async: false,
+	success: function (data,status,xhr) {
+				$.LoadingOverlay("show");
+				if(state == 'mapping'){
+					doAuth(data);
+				} else{
+					if(parseInt(data.userId) > 0){
+						doAuth(data);
+					}else{
+						window.top.callback_dvcqg(data);
+					}
+				}
+				
+			 },
+			 complete: function (data,status,xhr) {
+				$.LoadingOverlay("hide");
+			 },
+             error: function (jqXhr, textStatus, errorMessage) {
+				$('#userinfo').append('Error: ' + errorMessage);
+			 },
+			 beforeSend: function (xhr) {
+			 }
+	}
+);
+function doAuth(userinfo){
+	$.ajax('/o/rest/v2/dvcqgsso/auth',
+		{
+			dataType: 'json',
+			timeout: 5000,
+			async: false,
+			type:'POST',
+			headers: {
+				
+				Accept: 'application/json; charset=utf-8',
+				"Content-Type": 'application/json; charset=utf-8'
+			},
+			data: JSON.stringify(userinfo),
+			success: function (data,status,xhr) {
+				$('#userinfo').append('Authorization successful');
+				window.top.callback_dvcqg(data);
+			},
+
+			error: function (jqXhr, textStatus, errorMessage) {
+
+				$('#userinfo').append('Error: ' + errorMessage);
+			},
+			beforeSend: function (xhr) {
+				
+			}
+		});
+};
+function doLogin2(data){
+	$.ajax('/o/auth/dvcqg/validatetoken',
+		{
+			dataType: 'json',
+			timeout: 5000,
+			async: false,
+			type:'POST',
+			headers: {
+				userId: data.userId,
+				groupId: data.groupId,
+				accessToken: data.accessToken,
+				Accept: 'application/json; charset=utf-8',
+				"Content-Type": 'application/json; charset=utf-8'
+			},
+			
+			success: function (data,status,xhr) {
+			
+			},
+
+			error: function (jqXhr, textStatus, errorMessage) { 
+			
+			},
+			beforeSend: function (xhr) {
+				
+			}
+		});
+};
+});
+</script>
+<style>
+div#userinfo {
+	display: block;
+	height: 100%;
+	width: 100%;
+	background-color: #a5caef66;
+}
+</style>
+<div id="userinfo"></div>

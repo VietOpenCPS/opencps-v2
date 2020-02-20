@@ -43,7 +43,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(KysoTerm.X509);
 
 		Certificate cert = cf
 			.generateCertificate(new FileInputStream(new File(certPath)));
@@ -62,7 +62,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(KysoTerm.X509);
 
 		X509Certificate cert = (X509Certificate) cf
 			.generateCertificate(new FileInputStream(new File(certPath)));
@@ -81,7 +81,7 @@ public class CertUtil {
 		throws CertificateException, FileNotFoundException, URISyntaxException {
 
 		CertificateFactory cf = CertificateFactory
-			.getInstance("X.509");
+			.getInstance(KysoTerm.X509);
 
 		Certificate cert = cf
 			.generateCertificate(new FileInputStream(new File(new URI(url))));

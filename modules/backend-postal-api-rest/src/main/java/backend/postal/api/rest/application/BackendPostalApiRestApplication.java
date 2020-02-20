@@ -3,8 +3,6 @@ package backend.postal.api.rest.application;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
@@ -57,10 +55,10 @@ public class BackendPostalApiRestApplication extends Application {
 		
 	}
 
-	@GET
-	@Produces("text/plain")
-	public String working() {
-		return "It works!";
-	}
+//	@GET
+//	@Produces("text/plain")
+//	public String working() {
+//		return "It works!";
+//	}
 
 }

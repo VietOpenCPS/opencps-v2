@@ -5,6 +5,7 @@ import java.io.File;
 import javax.portlet.ActionRequest;
 import javax.portlet.ResourceRequest;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -16,24 +17,24 @@ public class ReportUtils {
 	private static Log log = LogFactoryUtil.getLog(ReportUtils.class);
 	
 	public static String getTemplateReportFilePath(ResourceRequest resourceRequest, String fileName) {
-		return resourceRequest.getPortletSession().getPortletContext().getRealPath("/").replace("/", File.separator)
-				.replace(File.separator + ".", "") + "report" + File.separator + fileName;
+		return resourceRequest.getPortletSession().getPortletContext().getRealPath(StringPool.SLASH).replace(StringPool.SLASH, File.separator)
+				.replace(File.separator + StringPool.PERIOD, StringPool.BLANK) + KysoTerm.REPORT + File.separator + fileName;
 	}
 
 	public static String getTemplateReportFilePath(ActionRequest request) {
-		return request.getPortletSession().getPortletContext().getRealPath("/").replace("/", File.separator).replace(File.separator + ".", "");
+		return request.getPortletSession().getPortletContext().getRealPath(StringPool.SLASH).replace(StringPool.SLASH, File.separator).replace(File.separator + StringPool.PERIOD, StringPool.BLANK);
 		
 	}
 	
 	
 	
 	public static String getSubTemplatePath(ResourceRequest resourceRequest) {
-		return resourceRequest.getPortletSession().getPortletContext().getRealPath("/").replace("/", File.separator)
-				.replace(File.separator + ".", "") + "report" + File.separator ;
+		return resourceRequest.getPortletSession().getPortletContext().getRealPath(StringPool.SLASH).replace(StringPool.SLASH, File.separator)
+				.replace(File.separator + StringPool.PERIOD, StringPool.BLANK) + KysoTerm.REPORT + File.separator ;
 	}	
 	
 	public static String getTemplateReportFilePath(ResourceRequest request) {
-		return request.getPortletSession().getPortletContext().getRealPath("/").replace("/", File.separator).replace(File.separator + ".", "");
+		return request.getPortletSession().getPortletContext().getRealPath(StringPool.SLASH).replace(StringPool.SLASH, File.separator).replace(File.separator + StringPool.PERIOD, StringPool.BLANK);
 		
 	}
 	

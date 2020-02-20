@@ -27,6 +27,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
+import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -40,34 +41,34 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public File genneralQRCode(User user, long groupId, long dossierId, ServiceContext serviceContext) {
 		File file = null;
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("VTP_QRCODE");
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(PayGateTerm.VTP_PROTOCOL);
 
 		if (paymentFile != null && serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 			try {
 				JSONObject schema = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 				JSONObject data = JSONFactoryUtil.createJSONObject();
-				data.put(schema.getJSONObject("priority").getString("key"),
-						schema.getJSONObject("priority").getString("value"));
-				data.put(schema.getJSONObject("version").getString("key"),
-						schema.getJSONObject("version").getString("value"));
-				data.put(schema.getJSONObject("type").getString("key"),
-						schema.getJSONObject("type").getString("value"));
-				data.put(schema.getJSONObject("billcode").getString("key"), paymentFile.getInvoiceNo());
-				data.put(schema.getJSONObject("order_id").getString("key"), paymentFile.getPaymentFileId());
-				data.put(schema.getJSONObject("amount").getString("key"), paymentFile.getPaymentAmount());
-				data.put(schema.getJSONObject("merchant_code").getString("key"),
-						schema.getJSONObject("merchant_code").getString("value"));
+				data.put(schema.getJSONObject(PayGateTerm.PRIORITY).getString(PayGateTerm.KEY),
+						schema.getJSONObject(PayGateTerm.PRIORITY).getString(PayGateTerm.VALUE));
+				data.put(schema.getJSONObject(PayGateTerm.VERSION).getString(PayGateTerm.KEY),
+						schema.getJSONObject(PayGateTerm.VERSION).getString(PayGateTerm.VALUE));
+				data.put(schema.getJSONObject(PayGateTerm.TYPE).getString(PayGateTerm.KEY),
+						schema.getJSONObject(PayGateTerm.TYPE).getString(PayGateTerm.VALUE));
+				data.put(schema.getJSONObject(PayGateTerm.BILLCODE).getString(PayGateTerm.KEY), paymentFile.getInvoiceNo());
+				data.put(schema.getJSONObject(PayGateTerm.ORDER_ID).getString(PayGateTerm.KEY), paymentFile.getPaymentFileId());
+				data.put(schema.getJSONObject(PayGateTerm.AMOUNT).getString(PayGateTerm.KEY), paymentFile.getPaymentAmount());
+				data.put(schema.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.KEY),
+						schema.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.VALUE));
 
 				QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
 				BitMatrix matrix = qrCodeWriter.encode(data.toJSONString(), BarcodeFormat.QR_CODE, 200, 200);
 
-				file = FileUtil.createTempFile(".png");
+				file = FileUtil.createTempFile(PayGateTerm.DOT_PNG);
 
 				OutputStream os = new FileOutputStream(file);
 
-				MatrixToImageWriter.writeToStream(matrix, "PNG", os);
+				MatrixToImageWriter.writeToStream(matrix, PayGateTerm.PNG_UPPER, os);
 
 				os.close();
 
@@ -85,10 +86,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public JSONObject doConfirm(User user, ServiceContext serviceContext, String billcode, String merchant_code,
 			String order_id, String check_sum) {
 	
-		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("VTP_QRCODE");
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(PayGateTerm.VTP_PROTOCOL);
 
 		if (serverConfigs == null || serverConfigs.isEmpty()) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "03");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 
 		ServerConfig serverConfig = serverConfigs.get(0);
@@ -99,37 +100,37 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 		} catch (JSONException e) {
 			_log.error(e);
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "03");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 
 		if (config.length() == 0) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "03");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 
-		String conf_merchant_code = config.getJSONObject("merchant_code") != null
-				? config.getJSONObject("merchant_code").getString("value")
+		String conf_merchant_code = config.getJSONObject(PayGateTerm.MERCHANT_CODE) != null
+				? config.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.VALUE)
 				: StringPool.BLANK;
 
-		String access_code = config.getString("access_code");
+		String access_code = config.getString(PayGateTerm.ACCESS_CODE);
 
-		String hash_key = config.getString("hash_key");
+		String hash_key = config.getString(PayGateTerm.HASH_KEY);
 
 		if (Validator.isNull(access_code)) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "03");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 
 		if (Validator.isNull(hash_key)) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "03");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 
 		if (!conf_merchant_code.equals(merchant_code)) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "01");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_01);
 		}
 
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(GetterUtil.getLong(order_id));
 
 		if (paymentFile == null) {
-			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, "01");
+			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_01);
 		}
 
 		if (!paymentFile.getInvoiceNo().equals(billcode)) {
@@ -141,21 +142,21 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				+ paymentFile.getPaymentAmount();
 
 		try {
-			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), "HmacSHA1");
-			Mac mac = Mac.getInstance("HmacSHA1");
+			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
+			Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
 			mac.init(signingKey);
 			String _tmp_check_sum_encode = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
 			if (!_tmp_check_sum_encode.equals(check_sum)) {
 				return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
-						"02");
+						PayGateTerm.ERROR_CODE_02);
 			}
 		} catch (Exception e) {
 			_log.error(e);
 			return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
-					"03");
+					PayGateTerm.ERROR_CODE_03);
 		}
 
-		return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(), "00");
+		return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(), PayGateTerm.ERROR_CODE_00);
 	}
 
 	private String toHexString(byte[] bytes) {
@@ -163,7 +164,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String result = StringPool.BLANK;
 		try {
 			for (byte b : bytes) {
-				formatter.format("%02x", b);
+				formatter.format(PayGateTerm.HEX_FORMAT, b);
 			}
 
 			result = formatter.toString();
@@ -180,12 +181,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	private JSONObject confirmResponseData(String billcode, String order_id, String merchant_code, String check_sum,
 			long trans_amount, String error_code) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		result.put("billcode", billcode);
-		result.put("order_id", order_id);
-		result.put("merchant_code", merchant_code);
-		result.put("check_sum", check_sum);
-		result.put("trans_amount", trans_amount);
-		result.put("error_code", error_code);
+		result.put(PayGateTerm.BILLCODE, billcode);
+		result.put(PayGateTerm.ORDER_ID, order_id);
+		result.put(PayGateTerm.MERCHANT_CODE, merchant_code);
+		result.put(PayGateTerm.CHECK_SUM, check_sum);
+		result.put(PayGateTerm.TRANS_AMOUNT, trans_amount);
+		result.put(PayGateTerm.ERROR_CODE, error_code);
 		return result;
 	}
 

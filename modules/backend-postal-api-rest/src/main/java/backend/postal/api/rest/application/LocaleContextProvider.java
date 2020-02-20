@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
-
+import org.opencps.api.service.util.ConfigConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -23,7 +23,7 @@ public class LocaleContextProvider implements ContextProvider<Locale> {
 
 	@Override
 	public Locale createContext(Message message) {
-		return _portal.getLocale((HttpServletRequest) message.getContextualProperty("HTTP.REQUEST"));
+		return _portal.getLocale((HttpServletRequest) message.getContextualProperty(ConfigConstants.HTTP_REQUEST));
 	}
 
 	@Reference

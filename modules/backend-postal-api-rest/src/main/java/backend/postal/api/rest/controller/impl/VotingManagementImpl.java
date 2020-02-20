@@ -44,7 +44,6 @@ import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.feedback.action.VotingActions;
 import backend.feedback.action.impl.VotingActionsImpl;
 import backend.feedback.constants.VotingResultTerm;
-import backend.feedback.constants.VotingTerm;
 import backend.feedback.model.Voting;
 import backend.feedback.model.VotingResult;
 import backend.feedback.service.VotingLocalServiceUtil;

@@ -20,10 +20,12 @@ public class DossierPartTerm {
 	public static final String FILE_TEMPLATE_NO = "fileTemplateNo";
 	public static final String TEMPLATE_FILE_NO = "templateFileNo";
 	public static final String ESIGN = "eSign";
+	public static final String ESIGN_UPPERCASE = "ESign";
 	public static final String TEMPLATE_ID = "templateId";
 	public static final String DELIVERABLE_TYPE = "deliverableType";
 	public static final String DELIVERABLE_ACTION = "deliverableAction";
 	public static final String EFORM = "eform";
+	public static final String EFORM_UPPERCASE = "EForm";
 	public static final String FORM_DATA = "formData";
 	public static final String REFERENCE_UID = "referenceUid";
 	public static final String DOSSIER_FILE_ID = "dossierFileId";
