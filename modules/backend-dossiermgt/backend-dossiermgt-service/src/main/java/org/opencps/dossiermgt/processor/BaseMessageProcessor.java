@@ -29,6 +29,12 @@ public class BaseMessageProcessor implements IMessageProcessor {
 		else if (dossierSync.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 			processInform();
 		}
+		else if (dossierSync.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
+			processInformDossier();
+		}
 	}
-	
+
+	@Override
+	public void processInformDossier() {
+	}
 }
