@@ -141,12 +141,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					lstGovs.add(di);
 				}
 				for (DictItem di : lstGovs) {
-					if (!"".contentEquals(groupGovAgency.toString())) {
+					if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
 						groupGovAgency.append(StringPool.COMMA);
 					}
 					groupGovAgency.append(di.getItemCode());
 				}
-				if (!"".contentEquals(groupGovAgency.toString())) {
+				if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
 					lstGroupGovs.add(groupGovAgency.toString());					
 				}
 
@@ -160,12 +160,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					lstGovs.add(di);
 				}
 				for (DictItem di : lstGovs) {
-					if (!"".contentEquals(groupGovAgencyQH.toString())) {
+					if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
 						groupGovAgencyQH.append(StringPool.COMMA);
 					}
 					groupGovAgencyQH.append(di.getItemCode());
 				}
-				if (!"".contentEquals(groupGovAgencyQH.toString())) {
+				if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
 					lstGroupGovs.add(groupGovAgencyQH.toString());					
 				}
 				
@@ -179,12 +179,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					lstGovs.add(di);
 				}
 				for (DictItem di : lstGovs) {
-					if (!"".contentEquals(groupGovAgencyXP.toString())) {
+					if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
 						groupGovAgencyXP.append(StringPool.COMMA);
 					}
 					groupGovAgencyXP.append(di.getItemCode());
 				}
-				if (!"".contentEquals(groupGovAgencyXP.toString())) {
+				if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
 					lstGroupGovs.add(groupGovAgencyXP.toString());					
 				}
 				for (String groupGovAgencyCode : lstGroupGovs) {
