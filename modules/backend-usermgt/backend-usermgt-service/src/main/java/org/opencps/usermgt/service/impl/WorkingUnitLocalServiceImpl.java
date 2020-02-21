@@ -14,18 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.CommonTerm;
-import org.opencps.usermgt.constants.WorkingUnitTerm;
-import org.opencps.usermgt.exception.NoSuchWorkingUnitException;
-import org.opencps.usermgt.model.EmployeeJobPos;
-import org.opencps.usermgt.model.WorkingUnit;
-import org.opencps.usermgt.service.base.WorkingUnitLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -57,6 +45,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.exception.NoSuchWorkingUnitException;

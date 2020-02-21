@@ -56,7 +56,8 @@ public class ResourceRoleTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String SELECTED = "selected";
 	public static final String READONLY = "readonly";
-
+	public static final String REGULAR = "regular";
+	
 	private long resourceRoleId;
 
 	private long groupId;

@@ -14,20 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.JobPosTerm;
-import org.opencps.usermgt.constants.UserMGTConstants;
-import org.opencps.usermgt.exception.NoSuchJobPosException;
-import org.opencps.usermgt.model.JobPos;
-import org.opencps.usermgt.service.base.JobPosLocalServiceBaseImpl;
-
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -69,6 +55,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.UserMGTConstants;
 import org.opencps.usermgt.exception.NoSuchJobPosException;

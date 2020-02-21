@@ -32,6 +32,7 @@ public class ApplicantTerm {
 	public static final String TOTAL = "total";
 	public static final String DATA = "data";
 	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String REGULAR = "regular";
 	public static final int PASSWORD_LENGHT = 10;
 	public static final String REPRE_ENTERPRISE = "representativeEnterprise";
 	

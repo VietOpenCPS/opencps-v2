@@ -14,16 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.ResourceUserTerm;
-import org.opencps.usermgt.exception.NoSuchResourceUserException;
-import org.opencps.usermgt.model.ResourceUser;
-import org.opencps.usermgt.service.base.ResourceUserLocalServiceBaseImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -53,6 +43,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.constants.ResourceUserTerm;
 import org.opencps.usermgt.exception.NoSuchResourceUserException;
 import org.opencps.usermgt.model.ResourceUser;
@@ -439,9 +430,9 @@ public class ResourceUserLocalServiceImpl extends ResourceUserLocalServiceBaseIm
 
 		ResourceUser object = null;
 
-		if (objectData.getLong("resourceUserId") > 0) {
+		if (objectData.getLong(ResourceUserTerm.RESOURCEUSER_ID) > 0) {
 
-			object = resourceUserPersistence.fetchByPrimaryKey(objectData.getLong("resourceUserId"));
+			object = resourceUserPersistence.fetchByPrimaryKey(objectData.getLong(ResourceUserTerm.RESOURCEUSER_ID));
 
 			object.setModifiedDate(new Date());
 

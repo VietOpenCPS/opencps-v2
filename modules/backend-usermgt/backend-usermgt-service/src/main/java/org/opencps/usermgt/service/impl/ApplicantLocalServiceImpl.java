@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -383,8 +382,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà"
-					: ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+			String firstName = (ApplicantTerm.APPLICANTIDTYPE_CITIZEN.equals(applicantIdType) ? MessageUtil.getMessage(
+					ConfigConstants.HEADER_USER)
+					: (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equals(applicantIdType) ? MessageUtil.getMessage(
+							ConfigConstants.HEADER_COMPANY) : MessageUtil.getMessage(
+									ConfigConstants.HEADER_BUSSINESS)));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -714,7 +716,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
 		searchContext.setEntryClassNames(new String[] { Applicant.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ApplicantTerm.PAGINATION_TYPE, ApplicantTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);
@@ -1176,12 +1178,12 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
 		Applicant applicant = null;
 		if (applicantId == 0) {
-			System.out.println("contactEmail: " + contactEmail + "| applicantId: " + applicantId);
+//			System.out.println("contactEmail: " + contactEmail + "| applicantId: " + applicantId);
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 			applicant = applicantPersistence.create(applicantId);
 
 			try {
-				System.out.println("MAPPING USER ID: " + mappingUserId);
+//				System.out.println("MAPPING USER ID: " + mappingUserId);
 				// Add audit field
 				applicant.setCreateDate(now);
 				applicant.setModifiedDate(now);
@@ -1224,11 +1226,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		Applicant applicant = null;
 		// String password = "12345";
 		String password = PwdGenerator.getPassword(4) + "1@#A";
-		System.out.println("contactEmail: " + contactEmail + "| password: " + password);
+//		System.out.println("contactEmail: " + contactEmail + "| password: " + password);
 		_log.info("contactEmail: " + contactEmail + "| password: " + password);
 
 		if (applicantId == 0) {
-			System.out.println("contactEmail: " + contactEmail + "| applicantId: " + applicantId);
+//			System.out.println("contactEmail: " + contactEmail + "| applicantId: " + applicantId);
 			applicantId = counterLocalService.increment(Applicant.class.getName());
 			applicant = applicantPersistence.create(applicantId);
 
@@ -1252,8 +1254,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 					password = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 				}
 
-				String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà"
-						: ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+				String firstName = (ApplicantTerm.APPLICANTIDTYPE_CITIZEN.equals(applicantIdType) ? MessageUtil.getMessage(
+						ConfigConstants.HEADER_USER)
+						: (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equals(applicantIdType) ? MessageUtil.getMessage(
+								ConfigConstants.HEADER_COMPANY) : MessageUtil.getMessage(
+										ConfigConstants.HEADER_BUSSINESS)));
 				String lastName = applicantName;
 
 				UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
@@ -1282,13 +1287,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 						StringPool.BLANK, LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(),
 						spn.getLastName(), 0, 0, true, month, dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE,
 						groupIds, organizationIds, roleIds, userGroupIds, sendEmail, context);
-				System.out.println("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
+//				System.out.println("MAPPING USER: " + mappingUser.getLastName() + "," + mappingUser.getFullName());
 				// mappingUser.setStatus(WorkflowConstants.STATUS_APPROVED);
 				userLocalService.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
 				//
 
 				long mappingUserId = mappingUser.getUserId();
-				System.out.println("MAPPING USER ID: " + mappingUserId);
+//				System.out.println("MAPPING USER ID: " + mappingUserId);
 				// Add audit field
 				applicant.setCreateDate(now);
 				applicant.setModifiedDate(now);
@@ -1403,8 +1408,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				secretCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
 			}
 
-			String firstName = ("citizen".equals(applicantIdType) ? "Ông/bà"
-					: ("business".equals(applicantIdType) ? "Quý công ty" : "Tổ chức"));
+			String firstName = (ApplicantTerm.APPLICANTIDTYPE_CITIZEN.equals(applicantIdType) ? MessageUtil.getMessage(
+					ConfigConstants.HEADER_USER)
+					: (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equals(applicantIdType) ? MessageUtil.getMessage(
+							ConfigConstants.HEADER_COMPANY) : MessageUtil.getMessage(
+									ConfigConstants.HEADER_BUSSINESS)));
 			String lastName = applicantName;
 
 			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
