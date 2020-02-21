@@ -14,16 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.JobPosTerm;
-import org.opencps.usermgt.constants.JobPosWorkTerm;
-import org.opencps.usermgt.model.JobPosWork;
-import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.model.User;
@@ -49,6 +39,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.JobPosTerm;
 import org.opencps.usermgt.constants.JobPosWorkTerm;
 import org.opencps.usermgt.model.JobPosWork;
 import org.opencps.usermgt.service.base.JobPosWorkLocalServiceBaseImpl;

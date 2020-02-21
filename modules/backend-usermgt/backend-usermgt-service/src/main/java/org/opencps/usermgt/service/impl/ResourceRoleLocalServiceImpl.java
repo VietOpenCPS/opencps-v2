@@ -14,16 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.usermgt.constants.ResourceRoleTerm;
-import org.opencps.usermgt.exception.NoSuchResourceRoleException;
-import org.opencps.usermgt.model.ResourceRole;
-import org.opencps.usermgt.service.base.ResourceRoleLocalServiceBaseImpl;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -55,6 +45,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.constants.ResourceRoleTerm;
 import org.opencps.usermgt.exception.NoSuchResourceRoleException;
 import org.opencps.usermgt.model.ResourceRole;
@@ -265,7 +256,7 @@ public class ResourceRoleLocalServiceImpl extends ResourceRoleLocalServiceBaseIm
 
 		searchContext.addFullQueryEntryClassName(ResourceRole.class.getName());
 		searchContext.setEntryClassNames(new String[] { ResourceRole.class.getName() });
-		searchContext.setAttribute("paginationType", "regular");
+		searchContext.setAttribute(ResourceRoleTerm.PAGINATION_TYPE, ResourceRoleTerm.REGULAR);
 		searchContext.setLike(true);
 		searchContext.setStart(start);
 		searchContext.setEnd(end);

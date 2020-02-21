@@ -1109,7 +1109,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		Employee object = null;
 
-		if (objectData.getLong("employeeId") > 0) {
+		if (objectData.getLong(EmployeeTerm.EMPLOYEE_ID) > 0) {
 
 			object = employeePersistence.fetchByPrimaryKey(objectData.getLong(EmployeeTerm.EMPLOYEE_ID));
 
