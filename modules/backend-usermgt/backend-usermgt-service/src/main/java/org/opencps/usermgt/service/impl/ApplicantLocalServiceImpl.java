@@ -14,30 +14,6 @@
 
 package org.opencps.usermgt.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.backend.usermgt.service.util.ConfigProps;
-import org.opencps.datamgt.constants.DataMGTConstants;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.usermgt.constants.ApplicantTerm;
-import org.opencps.usermgt.exception.DuplicateApplicantIdException;
-import org.opencps.usermgt.exception.DuplicateContactEmailException;
-import org.opencps.usermgt.exception.NoApplicantIdDateException;
-import org.opencps.usermgt.exception.NoApplicantIdNoException;
-import org.opencps.usermgt.exception.NoApplicantIdTypeException;
-import org.opencps.usermgt.exception.NoApplicantNameException;
-import org.opencps.usermgt.exception.NoSuchApplicantException;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.DateTimeUtils;
-import org.opencps.usermgt.service.util.ServiceProps;
-import org.opencps.usermgt.service.util.UserMgtUtils;
-
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -78,6 +54,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
@@ -92,6 +70,7 @@ import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
 import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.MessageUtil;
 import org.opencps.usermgt.service.util.ServiceProps;
 import org.opencps.usermgt.service.util.UserMgtUtils;
 
@@ -223,11 +202,11 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			String applicantTypeCitizen = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_CITIZEN);
 			String applicantTypeBussiness = ConfigProps.get(ConfigConstants.APPLICANT_TYPE_BUSSINESS);
-			String headerUser = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+			String headerUser = MessageUtil.getMessage(
 					ConfigConstants.HEADER_USER);
-			String headerCompany = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+			String headerCompany = MessageUtil.getMessage(
 					ConfigConstants.HEADER_COMPANY);
-			String headerBussiness = LanguageUtil.get(LocaleUtil.fromLanguageId(ConfigConstants.LANGUAGE_ID),
+			String headerBussiness = MessageUtil.getMessage(
 					ConfigConstants.HEADER_BUSSINESS);
 			String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
 					: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
