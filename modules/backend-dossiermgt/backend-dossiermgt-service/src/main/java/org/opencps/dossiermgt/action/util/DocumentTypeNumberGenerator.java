@@ -339,13 +339,14 @@ public class DocumentTypeNumberGenerator {
 
 		return seriNumberPattern;
 	}
-	private static final String COUNTER_NUMBER_FORMAT_STRING = "%0%dd";
+	private static final String COUNTER_NUMBER_FORMAT_STRING = "%0";
+	private static final String COUNTER_D = "d";
 	
 	private static String countByNumber(String pattern, String tmp) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = String.format(COUNTER_NUMBER_FORMAT_STRING, lengthPatern);
+		String format = COUNTER_NUMBER_FORMAT_STRING + lengthPatern + COUNTER_D;
 
 		long _counterNumber = 0;
 		_log.info("pattern" + pattern);
