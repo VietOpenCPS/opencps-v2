@@ -14,12 +14,16 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 public class CheckFileUtils {
 
 	public static boolean checkFileUpload(Attachment attachment) {
+//		_log.info("START CHECK FILE UPLOAD");
+		
 		if (attachment == null) {
+//			_log.info("START CHECK FILE UPLOAD ATTACHMENT NULL");
 			return false;
 		}
 
 		InputStream stream = null;
 		DataHandler handle = attachment.getDataHandler();
+//		_log.info("UPLOAD ZIP FILE HANDLE: " + handle);
 		if (handle == null) {
 			return false;
 		}
@@ -56,7 +60,7 @@ public class CheckFileUtils {
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_RTF),
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_XML),
 				ReadFilePropertiesUtils.get(ConstantUtils.EXTENTION_ZIP)};
-		
+//		_log.info("EXTENSION: " + handle.getName());
 		String extentFile = FilenameUtils.getExtension(handle.getName());
 		for (String extend : extentionArr) {
 			if (extentFile.equalsIgnoreCase(extend)) {

@@ -795,92 +795,92 @@ public class ReadXMLFileUtils {
 	/** Process Convert Object to xml - END **/
 
 	//Process validate xml
-	public static String validateXML(File xmlFile, boolean flagList) {
-		if (flagList) {
-			File[] files = xmlFile.listFiles();
-			if (files != null && files.length > 0) {
-				StringBuilder sb = new StringBuilder();
-				for (File fileEntry : files) {
-					if (fileEntry.isDirectory()) {
-						String folderPath = fileEntry.getPath();
-						int index = folderPath.lastIndexOf(File.separator);
-						String subFolder = folderPath.substring(index + 1);
-						if (ConstantUtils.SOURCE_VALIDATE.contains(subFolder)) {
-							File[] fileChid = fileEntry.listFiles();
-							for (File file : fileChid) {
-								String fileName = file.getName();
-								String subFileName = ImportZipFileUtils.getSubFileName(fileName);
-								if (Validator.isNotNull(subFileName)) {
-									try {
-									DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-//									builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-//									builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-									builderFactory.setNamespaceAware(true);
-
-									DocumentBuilder parser = builderFactory.newDocumentBuilder();
-									parser.parse(file);
-									} catch (Exception e) {
-										_log.debug(e);
-										//_log.error(e);
-										sb.append(subFolder);
-										sb.append(StringPool.SLASH);
-										sb.append(xmlFile.getName());
-										sb.append(StringPool.COLON + StringPool.SPACE);
-										sb.append(e.getMessage());
-										sb.append(ConstantUtils.HTML_NEW_LINE);
-									}
-								}
-							}
-						}
-					} else {
-						String fileName = fileEntry.getName();
-						String subFileName = ImportZipFileUtils.getSubFileName(fileName);
-						if (Validator.isNotNull(subFileName)) {
-							try {
-								DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-//								builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-//								builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-								builderFactory.setNamespaceAware(true);
-	
-								DocumentBuilder parser = builderFactory.newDocumentBuilder();
-								parser.parse(fileEntry);
-							} catch (Exception e) {
-								e.printStackTrace();
-								_log.debug(e);
-								//_log.error(e);
-								sb.append(fileName);
-								sb.append(StringPool.COLON + StringPool.SPACE);
-								sb.append(e.getMessage());
-								sb.append(ConstantUtils.HTML_NEW_LINE);
-							}
-						}
-					}
-				}
-				return sb.toString();
-			}
-		} else {
-			// parse an XML document into a DOM tree
-			String strError = StringPool.BLANK;
-			try {
-				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-				builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-//				builderFactory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-//				builderFactory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-//				builderFactory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-				builderFactory.setNamespaceAware(true);
-
-				DocumentBuilder parser = builderFactory.newDocumentBuilder();
-				parser.parse(xmlFile);
-			} catch (Exception e) {
-				_log.debug(e);
-				//_log.error(e);
-				strError = xmlFile.getName() + StringPool.COLON + e.getMessage(); 
-			}
-			return strError;
-		}
-
-		return StringPool.BLANK;
-	}
+//	public static String validateXML(File xmlFile, boolean flagList) {
+//		if (flagList) {
+//			File[] files = xmlFile.listFiles();
+//			if (files != null && files.length > 0) {
+//				StringBuilder sb = new StringBuilder();
+//				for (File fileEntry : files) {
+//					if (fileEntry.isDirectory()) {
+//						String folderPath = fileEntry.getPath();
+//						int index = folderPath.lastIndexOf(File.separator);
+//						String subFolder = folderPath.substring(index + 1);
+//						if (ConstantUtils.SOURCE_VALIDATE.contains(subFolder)) {
+//							File[] fileChid = fileEntry.listFiles();
+//							for (File file : fileChid) {
+//								String fileName = file.getName();
+//								String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+//								if (Validator.isNotNull(subFileName)) {
+//									try {
+//									DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+////									builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+////									builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//									builderFactory.setNamespaceAware(true);
+//
+//									DocumentBuilder parser = builderFactory.newDocumentBuilder();
+//									parser.parse(file);
+//									} catch (Exception e) {
+//										_log.debug(e);
+//										//_log.error(e);
+//										sb.append(subFolder);
+//										sb.append(StringPool.SLASH);
+//										sb.append(xmlFile.getName());
+//										sb.append(StringPool.COLON + StringPool.SPACE);
+//										sb.append(e.getMessage());
+//										sb.append(ConstantUtils.HTML_NEW_LINE);
+//									}
+//								}
+//							}
+//						}
+//					} else {
+//						String fileName = fileEntry.getName();
+//						String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+//						if (Validator.isNotNull(subFileName)) {
+//							try {
+//								DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+////								builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+////								builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//								builderFactory.setNamespaceAware(true);
+//	
+//								DocumentBuilder parser = builderFactory.newDocumentBuilder();
+//								parser.parse(fileEntry);
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//								_log.debug(e);
+//								//_log.error(e);
+//								sb.append(fileName);
+//								sb.append(StringPool.COLON + StringPool.SPACE);
+//								sb.append(e.getMessage());
+//								sb.append(ConstantUtils.HTML_NEW_LINE);
+//							}
+//						}
+//					}
+//				}
+//				return sb.toString();
+//			}
+//		} else {
+//			// parse an XML document into a DOM tree
+//			String strError = StringPool.BLANK;
+//			try {
+//				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+//				builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+////				builderFactory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+////				builderFactory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+////				builderFactory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//				builderFactory.setNamespaceAware(true);
+//
+//				DocumentBuilder parser = builderFactory.newDocumentBuilder();
+//				parser.parse(xmlFile);
+//			} catch (Exception e) {
+//				_log.debug(e);
+//				//_log.error(e);
+//				strError = xmlFile.getName() + StringPool.COLON + e.getMessage(); 
+//			}
+//			return strError;
+//		}
+//
+//		return StringPool.BLANK;
+//	}
 
 	public static String getStrError() {
 		return strError;
