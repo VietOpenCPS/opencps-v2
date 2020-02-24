@@ -168,11 +168,15 @@ public class OneGateControllerImpl implements OneGateController {
 //			endTime = System.currentTimeMillis();
 			
 			for (ServiceConfig serviceConfig : serviceConfigs) {
-				if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope())) || (e != null && !Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope()))))) {
+				if (((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
+					_log.debug("SERVICE CONFIG SCOPE: " + e.getScope());
+					_log.debug("SERVICE CONFIG LEVEL: " + serviceConfig.getServiceLevel());
+				}
+				if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
 					elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
-	
+					
 					//Hot fix
 					ServiceInfo serviceInfo = null;
 					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
@@ -215,6 +219,9 @@ public class OneGateControllerImpl implements OneGateController {
 									}
 								}
 								if (isAdmin) {
+									hasPermission = true;
+								}
+								if (((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
 									hasPermission = true;
 								}
 								if (hasPermission) {
