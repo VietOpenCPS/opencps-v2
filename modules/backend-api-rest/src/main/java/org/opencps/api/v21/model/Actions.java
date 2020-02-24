@@ -714,6 +714,17 @@ public class Actions {
         public void setCreateDossiers(String value) {
             this.createDossiers = value;
         }
+		
+		public boolean iseSignature() {
+		
+			return eSignature;
+		}
+
+		
+		public void seteSignature(boolean eSignature) {
+		
+			this.eSignature = eSignature;
+		}
 
         /**
          * Gets the value of the configNote property.

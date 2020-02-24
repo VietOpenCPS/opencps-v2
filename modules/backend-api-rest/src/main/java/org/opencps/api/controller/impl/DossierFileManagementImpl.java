@@ -922,7 +922,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			// Process FILE
 			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
-			
+//			_log.info("UPLOAD ZIP FILE: check extension: " + flagCheck + ", " + file);
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
 						.entity(MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FILEFORMATERROR)).build();
@@ -950,14 +950,14 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 						fileInputStream, ConstantUtils.DEST_DIRECTORY);
 					File fileList = new File(pathFolder);
 					// //Validate xml
-					String strError =
-						ReadXMLFileUtils.validateXML(fileList, true);
-					_log.info("strError: " + strError);
-					if (Validator.isNotNull(strError)) {
-						return Response.status(
-							HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-								strError).build();
-					}
+//					String strError =
+//						ReadXMLFileUtils.validateXML(fileList, true);
+//					_log.info("strError: " + strError);
+//					if (Validator.isNotNull(strError)) {
+//						return Response.status(
+//							HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+//								strError).build();
+//					}
 
 					// String errorCheck = ReadXMLFileUtils.getStrError();
 					// _log.info("errorCheck: "+errorCheck);
@@ -997,13 +997,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					String subFileName =
 						ImportZipFileUtils.getSubFileName(fileName);
 					if (Validator.isNotNull(subFileName)) {
-						String strError =
-							ReadXMLFileUtils.validateXML(fileList, false);
-						if (Validator.isNotNull(strError)) {
-							return Response.status(
-								HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
-									strError).build();
-						}
+//						String strError =
+//							ReadXMLFileUtils.validateXML(fileList, false);
+//						if (Validator.isNotNull(strError)) {
+//							return Response.status(
+//								HttpURLConnection.HTTP_INTERNAL_ERROR).entity(
+//									strError).build();
+//						}
 						String xmlString =
 							ReadXMLFileUtils.convertFiletoString(fileList);
 						result = ReadXMLFileUtils.compareParentFile(
