@@ -813,8 +813,8 @@ public class ReadXMLFileUtils {
 								if (Validator.isNotNull(subFileName)) {
 									try {
 									DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-									builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-									builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//									builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+//									builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 									builderFactory.setNamespaceAware(true);
 
 									DocumentBuilder parser = builderFactory.newDocumentBuilder();
@@ -838,8 +838,8 @@ public class ReadXMLFileUtils {
 						if (Validator.isNotNull(subFileName)) {
 							try {
 								DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-								builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-								builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//								builderFactory.setFeature(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+//								builderFactory.setFeature(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 								builderFactory.setNamespaceAware(true);
 	
 								DocumentBuilder parser = builderFactory.newDocumentBuilder();
@@ -864,9 +864,9 @@ public class ReadXMLFileUtils {
 			try {
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 				builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-				builderFactory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-				builderFactory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-				builderFactory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+//				builderFactory.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+//				builderFactory.setAttribute(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+//				builderFactory.setAttribute(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 				builderFactory.setNamespaceAware(true);
 
 				DocumentBuilder parser = builderFactory.newDocumentBuilder();

@@ -205,8 +205,8 @@ public class NotificationTemplateList {
         "sendSMS",
         "expireDuration",
         "interval",
-        "notifyMessage",
-        "sendNotification"
+        "sendNotification",
+        "notifyMessage"
     })
     public static class NotificationTemplate {
 
