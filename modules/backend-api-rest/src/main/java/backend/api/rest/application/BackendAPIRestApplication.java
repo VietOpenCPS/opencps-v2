@@ -74,6 +74,7 @@ import org.opencps.api.controller.impl.NotificationManagementImpl;
 import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
 import org.opencps.api.controller.impl.NotificationTemplateImpl;
 import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
+import org.opencps.api.controller.impl.OAIManagementImpl;
 import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
 import org.opencps.api.controller.impl.OneGateControllerImpl;
 import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
@@ -222,6 +223,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DVCQGSSOManagementImpl());
 		
 		singletons.add(new DVCQGIManagementImpl());
+		singletons.add(new OAIManagementImpl());
 
 		singletons.add(this);
 
