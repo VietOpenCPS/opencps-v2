@@ -20,6 +20,7 @@ create index IX_F87561BC on opencps_deliverablelog (deliverableId);
 create index IX_E0B1DAA2 on opencps_deliverablelog (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_FCD4A1A4 on opencps_deliverablelog (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_4DB953CC on opencps_deliverabletype (companyId);
 create index IX_4F093D49 on opencps_deliverabletype (groupId, typeCode[$COLUMN_LENGTH:75$]);
 create index IX_A47511D0 on opencps_deliverabletype (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_2CB7CC52 on opencps_deliverabletype (uuid_[$COLUMN_LENGTH:75$], groupId);

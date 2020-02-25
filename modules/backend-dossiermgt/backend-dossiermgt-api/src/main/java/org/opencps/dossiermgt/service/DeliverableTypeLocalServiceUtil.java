@@ -225,6 +225,11 @@ public class DeliverableTypeLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DeliverableType> getAllDeliverableTypes(
+		long companyId) {
+		return getService().getAllDeliverableTypes(companyId);
+	}
+
 	public static org.opencps.dossiermgt.model.DeliverableType getByCode(
 		long groupId, String typeCode) {
 		return getService().getByCode(groupId, typeCode);
