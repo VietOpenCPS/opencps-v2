@@ -380,6 +380,10 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		return deliverableTypePersistence.findByG(groupId, start, end);
 	}
 	
+	public List<DeliverableType> getAllDeliverableTypes(long companyId) {
+		return deliverableTypePersistence.findByC(companyId);
+	}
+	
 	class ModelKeys {
 		public static final String DELIVERABLETYPEID = "deliverableTypeId";
 		public static final String GROUPID = "groupId";

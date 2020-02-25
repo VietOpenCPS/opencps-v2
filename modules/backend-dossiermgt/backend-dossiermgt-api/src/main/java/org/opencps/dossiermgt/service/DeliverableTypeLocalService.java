@@ -202,6 +202,9 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DeliverableType> getAllDeliverableTypes(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DeliverableType getByCode(long groupId, String typeCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
