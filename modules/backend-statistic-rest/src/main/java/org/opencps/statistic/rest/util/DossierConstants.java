@@ -38,4 +38,14 @@ public interface DossierConstants {
 	String SYSTEM = "system";
 	String TOTAL = "total";
 	String DATA = "data";
+	String JSON_SUCCESS_TRUE_EMPTY = "{ 'success': true }";
+	String JSON_SUCCESS_FALSE_EMPTY = "{ 'success': false }";
+	String ADM = "ADM";
+	String XLS = "xls";
+	String XLSX = "xlsx";
+	String ZERO = "0";
+	String ALL = "all";
+	String SYSTEM_1 = "1";
+	String SYSTEM_2 = "2";
+	String SYSTEM_3 = "3";
 }

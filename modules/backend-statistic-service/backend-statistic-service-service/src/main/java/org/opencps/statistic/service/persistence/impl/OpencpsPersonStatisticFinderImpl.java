@@ -16,7 +16,6 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import java.util.List;
 
 import org.opencps.statistic.model.OpencpsPersonStatistic;
-import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.model.impl.OpencpsPersonStatisticImpl;
 import org.opencps.statistic.model.impl.OpencpsVotingStatisticImpl;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
@@ -234,7 +233,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(false);
-			q.addEntity("OpencpsVotingStatistic", OpencpsVotingStatisticImpl.class);
+			q.addEntity("OpencpsPersonStatistic", OpencpsVotingStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 

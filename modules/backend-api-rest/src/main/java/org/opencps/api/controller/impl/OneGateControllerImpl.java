@@ -67,6 +67,8 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -122,6 +124,7 @@ public class OneGateControllerImpl implements OneGateController {
 //			startTime = System.currentTimeMillis();
 			long[] spArr = new long[lstOptions.size()];
 			int count = 0;
+			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 			
 			for (ProcessOption po : lstOptions) {
 				if (mapProcessOptions.get(po.getServiceConfigId()) == null) {
@@ -163,12 +166,17 @@ public class OneGateControllerImpl implements OneGateController {
 				mapTemplates.put(dt.getDossierTemplateId(), dt);
 			}
 //			endTime = System.currentTimeMillis();
+			
 			for (ServiceConfig serviceConfig : serviceConfigs) {
-				if (serviceConfig.getServiceLevel() >= 2) {
+				if (((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
+					_log.debug("SERVICE CONFIG SCOPE: " + e.getScope());
+					_log.debug("SERVICE CONFIG LEVEL: " + serviceConfig.getServiceLevel());
+				}
+				if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
 					elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
-	
+					
 					//Hot fix
 					ServiceInfo serviceInfo = null;
 					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
@@ -211,6 +219,9 @@ public class OneGateControllerImpl implements OneGateController {
 									}
 								}
 								if (isAdmin) {
+									hasPermission = true;
+								}
+								if (((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
 									hasPermission = true;
 								}
 								if (hasPermission) {

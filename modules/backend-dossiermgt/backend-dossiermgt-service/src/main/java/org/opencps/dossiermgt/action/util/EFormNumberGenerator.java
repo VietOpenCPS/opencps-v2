@@ -237,13 +237,14 @@ public class EFormNumberGenerator {
 		return seriNumberPattern;
 	}
 
-	private static final String COUNTER_NUMBER_FORMAT = "%0%dd";
+	private static final String COUNTER_NUMBER_FORMAT = "%0";
+	private static final String COUNTER_D = "d";
 	
 	private static String countByNumber(String pattern, String tmp) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-		String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
+		String format = COUNTER_NUMBER_FORMAT + lengthPatern + COUNTER_D;
 
 		long _counterNumber = 0;
 		_log.info("pattern" + pattern);
@@ -354,7 +355,7 @@ public class EFormNumberGenerator {
 				}
 
 				int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
-				String format = String.format(COUNTER_NUMBER_FORMAT, lengthPatern);
+				String format = COUNTER_NUMBER_FORMAT + lengthPatern + COUNTER_D;
 				certNumber = String.format(format, _counterNumber); 
 				
 			}

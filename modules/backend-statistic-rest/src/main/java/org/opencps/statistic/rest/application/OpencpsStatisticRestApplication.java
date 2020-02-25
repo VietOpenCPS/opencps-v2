@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -430,7 +431,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						for (DictItemGroup dig : lstDigs) {
 							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
 							DictItem parentDi = DictItemLocalServiceUtil.fetchDictItem(di.getParentItemId());
-							System.out.println("DICT ITEM: " + di + ", parent: " + parentDi + ", " + query.getParentAgency());
+//							System.out.println("DICT ITEM: " + di + ", parent: " + parentDi + ", " + query.getParentAgency());
 							if (!Validator.isNull(query.getParentAgency())) {
 								if (di != null && query.getParentAgency() != null && parentDi != null && parentDi.getItemCode().contentEquals(query.getParentAgency())) {
 									lstItems.add(di);									
@@ -453,7 +454,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							}
 							dossierStatisticRequest.setGroupAgencyCode(groupAgencyCodeFilter.toString());
 							dossierStatisticRequest.setSystem(DossierConstants.TOTAL);
-							System.out.println("GROUP CODE AGENCY FILTER: " + groupAgencyCodeFilter);
+//							System.out.println("GROUP CODE AGENCY FILTER: " + groupAgencyCodeFilter);
 						}						
 					}
 					else {
@@ -473,12 +474,12 @@ public class OpencpsStatisticRestApplication extends Application {
 				//
 				DossierStatisticResponse statisticResponse = dossierStatisticFinderService
 						.finderDossierStatisticSystem(dossierStatisticRequest);
-				System.out.println("SEARCH GROUP CODE: " + query.getGroupCode());
+//				System.out.println("SEARCH GROUP CODE: " + query.getGroupCode());
 				if (Validator.isNotNull(query.getGroupCode())) {
 					if (Validator.isNull(query.getParentAgency())) {
 						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
 						
-						System.out.println("SEARCH DICT GROUP: " + dg);
+//						System.out.println("SEARCH DICT GROUP: " + dg);
 						if (dg != null) {
 							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
 							
@@ -491,10 +492,10 @@ public class OpencpsStatisticRestApplication extends Application {
 							dossierStatisticRequest.setSystem(DossierConstants.TOTAL);
 							for (DictItem di : lstItems) {
 								dossierStatisticRequest.setGovAgencyCode(di.getItemCode());
-								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
+//								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
 								DossierStatisticResponse statisticResponseTemp = dossierStatisticFinderService
 										.finderDossierStatisticSystem(dossierStatisticRequest);
-								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
+//								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
@@ -505,7 +506,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					else {
 						DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(query.getGroupCode(), groupId);
 						
-						System.out.println("SEARCH DICT GROUP: " + dg);
+//						System.out.println("SEARCH DICT GROUP: " + dg);
 						if (dg != null) {
 							List<DictItemGroup> lstDigs = DictItemGroupLocalServiceUtil.findByDictGroupId(groupId, dg.getDictGroupId());
 							
@@ -521,10 +522,10 @@ public class OpencpsStatisticRestApplication extends Application {
 							dossierStatisticRequest.setSystem(DossierConstants.TOTAL);
 							for (DictItem di : lstItems) {
 								dossierStatisticRequest.setGovAgencyCode(di.getItemCode());
-								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
+//								System.out.println("SEARCH GROUP AGENCY: " + di.getItemCode());
 								DossierStatisticResponse statisticResponseTemp = dossierStatisticFinderService
 										.finderDossierStatisticSystem(dossierStatisticRequest);
-								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
+//								System.out.println("SEARCH GROUP CODE SIZE: " + statisticResponseTemp.getDossierStatisticData().size());
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
@@ -667,7 +668,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -834,7 +835,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
@@ -1120,7 +1121,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				input.setSystem((String) null);
 			}
 			OpencpsDossierStatistic statistic = OpencpsDossierStatisticLocalServiceUtil.createOrUpdateStatistic(0l,
-					groupId, -1, "ADM", input.getMonth(), input.getYear(), input.getSystem(), input.getTotalCount(),
+					groupId, -1, DossierConstants.ADM, input.getMonth(), input.getYear(), input.getSystem(), input.getTotalCount(),
 					input.getDeniedCount(), input.getCancelledCount(), input.getProcessCount(),
 					input.getRemainingCount(), input.getReceivedCount(), input.getOnlineCount(),
 					input.getReleaseCount(), input.getBetimesCount(), input.getOntimeCount(), input.getOvertimeCount(),
@@ -1264,10 +1265,10 @@ public class OpencpsStatisticRestApplication extends Application {
 			
             Workbook workbook = null;
             
-            if (fileName.endsWith("xls")) {
+            if (fileName.endsWith(DossierConstants.XLS)) {
                 workbook = new HSSFWorkbook(excelFile);            	
             }
-            else if (fileName.endsWith("xlsx")) {
+            else if (fileName.endsWith(DossierConstants.XLSX)) {
                 workbook = new XSSFWorkbook(excelFile);
             }
             Sheet datatypeSheet = workbook.getSheetAt(0);
@@ -1360,14 +1361,14 @@ public class OpencpsStatisticRestApplication extends Application {
                 
                 OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, 0, keyYear, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, false, 0, 0, 0);
             }
-    		return Response.status(200).entity("{ 'success': true }").build();
+    		return Response.status(200).entity(DossierConstants.JSON_SUCCESS_TRUE_EMPTY).build();
 		}
 		catch (Exception e) {
 			LOG.error("error", e);
-			return Response.status(200).entity("{ 'success': false }").build();
+			return Response.status(200).entity(DossierConstants.JSON_SUCCESS_FALSE_EMPTY).build();
 		}
 	}
-
+	
 	@GET
 	@Path("/manual")
 	@Produces({
@@ -1387,7 +1388,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		String domain = query.getDomain();
 		String system = query.getSystem();
 		if (Validator.isNull(system)) {
-			system = "0";
+			system = DossierConstants.ZERO;
 		}
 		String groupAgencyCode = query.getGroupAgencyCode();
 		String fromStatisticDate = query.getFromStatisticDate();
@@ -1422,7 +1423,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				//
 				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 				dossierStatisticRequest.setDomain(domain);
-				if ("all".equals(govAgencyCode)) {
+				if (DossierConstants.ALL.equals(govAgencyCode)) {
 					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
 					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
@@ -1435,7 +1436,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setEnd(end);
 				dossierStatisticRequest.setMonth(month);
 				dossierStatisticRequest.setYear(year);
-				dossierStatisticRequest.setSystem("1");
+				dossierStatisticRequest.setSystem(DossierConstants.SYSTEM_1);
 				//
 				DossierStatisticResponse statisticResponse = dossierStatisticManualFinderService
 						.finderDossierStatisticSystem(dossierStatisticRequest);
@@ -1450,7 +1451,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				LOG.error("error", e);
 				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
 
-				serviceExceptionDetails.setFaultCode("500");
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));
 				serviceExceptionDetails.setFaultMessage(e.getMessage());
 
 				throwException(new OpencpsServiceException(serviceExceptionDetails));
