@@ -719,6 +719,162 @@ public class DeliverableTypeUtil {
 	}
 
 	/**
+	* Returns all the deliverable types where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @return the matching deliverable types
+	*/
+	public static List<DeliverableType> findByC(long companyId) {
+		return getPersistence().findByC(companyId);
+	}
+
+	/**
+	* Returns a range of all the deliverable types where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @return the range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByC(long companyId, int start,
+		int end) {
+		return getPersistence().findByC(companyId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByC(long companyId, int start,
+		int end, OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence().findByC(companyId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the deliverable types where companyId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DeliverableTypeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param companyId the company ID
+	* @param start the lower bound of the range of deliverable types
+	* @param end the upper bound of the range of deliverable types (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching deliverable types
+	*/
+	public static List<DeliverableType> findByC(long companyId, int start,
+		int end, OrderByComparator<DeliverableType> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByC(companyId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first deliverable type in the ordered set where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable type
+	* @throws NoSuchDeliverableTypeException if a matching deliverable type could not be found
+	*/
+	public static DeliverableType findByC_First(long companyId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence().findByC_First(companyId, orderByComparator);
+	}
+
+	/**
+	* Returns the first deliverable type in the ordered set where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching deliverable type, or <code>null</code> if a matching deliverable type could not be found
+	*/
+	public static DeliverableType fetchByC_First(long companyId,
+		OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence().fetchByC_First(companyId, orderByComparator);
+	}
+
+	/**
+	* Returns the last deliverable type in the ordered set where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable type
+	* @throws NoSuchDeliverableTypeException if a matching deliverable type could not be found
+	*/
+	public static DeliverableType findByC_Last(long companyId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence().findByC_Last(companyId, orderByComparator);
+	}
+
+	/**
+	* Returns the last deliverable type in the ordered set where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching deliverable type, or <code>null</code> if a matching deliverable type could not be found
+	*/
+	public static DeliverableType fetchByC_Last(long companyId,
+		OrderByComparator<DeliverableType> orderByComparator) {
+		return getPersistence().fetchByC_Last(companyId, orderByComparator);
+	}
+
+	/**
+	* Returns the deliverable types before and after the current deliverable type in the ordered set where companyId = &#63;.
+	*
+	* @param deliverableTypeId the primary key of the current deliverable type
+	* @param companyId the company ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next deliverable type
+	* @throws NoSuchDeliverableTypeException if a deliverable type with the primary key could not be found
+	*/
+	public static DeliverableType[] findByC_PrevAndNext(
+		long deliverableTypeId, long companyId,
+		OrderByComparator<DeliverableType> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDeliverableTypeException {
+		return getPersistence()
+				   .findByC_PrevAndNext(deliverableTypeId, companyId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the deliverable types where companyId = &#63; from the database.
+	*
+	* @param companyId the company ID
+	*/
+	public static void removeByC(long companyId) {
+		getPersistence().removeByC(companyId);
+	}
+
+	/**
+	* Returns the number of deliverable types where companyId = &#63;.
+	*
+	* @param companyId the company ID
+	* @return the number of matching deliverable types
+	*/
+	public static int countByC(long companyId) {
+		return getPersistence().countByC(companyId);
+	}
+
+	/**
 	* Caches the deliverable type in the entity cache if it is enabled.
 	*
 	* @param deliverableType the deliverable type

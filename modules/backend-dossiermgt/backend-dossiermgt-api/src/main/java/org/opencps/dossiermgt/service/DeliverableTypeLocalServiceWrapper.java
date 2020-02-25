@@ -237,6 +237,12 @@ public class DeliverableTypeLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DeliverableType> getAllDeliverableTypes(
+		long companyId) {
+		return _deliverableTypeLocalService.getAllDeliverableTypes(companyId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DeliverableType getByCode(
 		long groupId, String typeCode) {
 		return _deliverableTypeLocalService.getByCode(groupId, typeCode);
