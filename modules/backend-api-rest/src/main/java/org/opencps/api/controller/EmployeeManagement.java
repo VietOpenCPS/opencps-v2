@@ -141,7 +141,16 @@ public interface EmployeeManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id,
 			@DefaultValue("false") @FormParam("locked") boolean locked);
-	
+
+	@POST
+	@Path("/{id}/lockin")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response unlockEmployeeAccount(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id,
+			@DefaultValue("true") @FormParam("unlocked") boolean unlocked);
+
 	@GET
 	@Path("/exits/{{employeeNo}}/{{email}}")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })

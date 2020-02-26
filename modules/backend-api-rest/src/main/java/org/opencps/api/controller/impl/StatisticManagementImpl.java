@@ -298,6 +298,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					for (MenuConfig menuConfig : menuList) {
 						
 						String queryParams = menuConfig.getQueryParams();
+						LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
 						if (Validator.isNotNull(queryParams)) {
 							int length = queryParams.lastIndexOf("?");
 							if (length > 0) {
@@ -313,12 +314,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
 												if (step != null) {
 													//
-													params.put(DossierTerm.STATUS, step.getDossierStatus());
-													params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+													paramMenuDetail.putAll(params);
+													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 													
-													params = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), params);
+													paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
 													//
-													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
+													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
 															null, serviceContext);
 //													_log.info("count: "+count);
 													if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
@@ -349,12 +351,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 											StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
 											//
 											if (step != null) {
-												params.put(DossierTerm.STATUS, step.getDossierStatus());
-												params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+												paramMenuDetail.putAll(params);
+												paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+												paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 												
-												params = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), params);
+												paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
 												//
-												long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
+												long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
 														null, serviceContext);
 //												_log.info("count: "+count);
 												JSONObject statistic = JSONFactoryUtil.createJSONObject();
@@ -393,6 +396,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 	private LinkedHashMap<String, Object> processAddQueryParams(String subQuery, long userId, String stepCode, LinkedHashMap<String, Object> params) {
 
 		params.put(DossierTerm.ASSIGNED_USER_ID, StringPool.BLANK);
+		_log.info("params subQuery: "+subQuery);
 		if (Validator.isNotNull(subQuery)) {
 			String[] elementParams = subQuery.split("&");
 			for (String param : elementParams) {
@@ -418,7 +422,9 @@ public class StatisticManagementImpl implements StatisticManagement {
 							}
 						} else if (!"step".equalsIgnoreCase(paramSplit[0])
 								&& !"order".equalsIgnoreCase(paramSplit[0])) {
+							_log.info("params subQuery1: "+params + "| paramSplit[0]: "+paramSplit[0]);
 							params.put(paramSplit[0], paramSplit[1]);
+							_log.info("params subQuery2: "+params);
 						}
 					}
 				}

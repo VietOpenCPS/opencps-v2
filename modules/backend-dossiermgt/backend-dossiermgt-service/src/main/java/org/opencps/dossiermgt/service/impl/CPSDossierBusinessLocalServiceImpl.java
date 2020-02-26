@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -625,66 +626,112 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			else {
 				//Sync result files
-				
-			}
-			
-			payloadObject.put("dossierFiles", dossierFilesArr);
-			
-			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-				List<DossierFile> lsDossierFile = lstFiles;
-				dossierFilesArr = JSONFactoryUtil.createJSONArray();
-
-				// check return file
-				List<String> returnDossierFileTemplateNos = ListUtil
-						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
-
-				for (DossierFile dossierFile : lsDossierFile) {
-					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-
-					}
-
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 				}
-				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST ||
+					actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
+					
+				//payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
+				payloadObject.put("dossierFiles", dossierFilesArr);
+					
+				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+					List<DossierFile> lsDossierFile = lstFiles;
+					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+	
+					// check return file
+					List<String> returnDossierFileTemplateNos = ListUtil
+							.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+	
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+	
+						}
+	
+					}
+					payloadObject.put("dossierFiles", dossierFilesArr);
+				}
 
-			for (DossierDocument dossierDocument : lstDossierDocuments) {
-				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
-				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
-				dossierDocumentArr.put(dossierDocumentObj);
-			}
-			payloadObject.put("dossierFiles", dossierFilesArr);				
-			payloadObject.put("dossierDocuments", dossierDocumentArr);
-			
-			//Put dossier note
-			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			//Put dossier note
-			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
-			
-//			_log.info("Flag changed: " + flagChanged);
-			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
-			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+				List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+	
+				for (DossierDocument dossierDocument : lstDossierDocuments) {
+					JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+					dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+					dossierDocumentArr.put(dossierDocumentObj);
+				}
+				payloadObject.put("dossierFiles", dossierFilesArr);
+				payloadObject.put("dossierDocuments", dossierDocumentArr);
+				//Put dossier note
+				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+				//Put submit date
+				payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+					
+	//			_log.info("Flag changed: " + flagChanged);
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+							syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+				}
+				else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
+				}
+				//Gửi thông tin hồ sơ để tra cứu
+				if (state == DossierSyncTerm.STATE_NOT_SYNC
+						&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+						&& OpenCPSConfigUtil.isPublishEventEnable()) {
+					publishEvent(dossier, context, dossierAction.getDossierActionId());
+				}
 			}
-			else {
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
-					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
-			}
-			//Gửi thông tin hồ sơ để tra cứu
-			if (state == DossierSyncTerm.STATE_NOT_SYNC
-					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
-					&& OpenCPSConfigUtil.isPublishEventEnable()) {
-				publishEvent(dossier, context, dossierAction.getDossierActionId());
+			else if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}
+				//
+				payloadObject.put("dossierFiles", dossierFilesArr);
+				
+				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+					List<DossierFile> lsDossierFile = lstFiles;
+					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+	
+					// check return file
+					List<String> returnDossierFileTemplateNos = ListUtil
+							.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+	
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
+					}
+					payloadObject.put("dossierFiles", dossierFilesArr);
+				}
+
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							serverNo, state);
+				} else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							dossier.getServerNo(), state);
+				}
 			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
@@ -834,7 +881,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		} else {
 			//Process role as step
-			if (Validator.isNotNull(curStep.getRoleAsStep())) {
+			if (curStep != null && Validator.isNotNull(curStep.getRoleAsStep())) {
 				copyRoleAsStep(curStep, dossier);
 			}	
 			else {
@@ -3316,7 +3363,20 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
 			Dossier hslt = dossierLocalService.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
 			
-			if (dossierAction != null && (dossierAction.isRollbackable() || hslt.getOriginality() < 0)) {
+			// chi nguoi thuc hien buoc truoc moi duoc phep quay lai buoc
+			User user=UserLocalServiceUtil.getUser(userId);
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (dossierAction != null && !dossierAction.getPending() &&
+					(dossierAction.isRollbackable() || hslt.getOriginality() < 0)
+					&& (isAdmin || dossierAction.getUserId() == userId)) {
+
 				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
 				DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
