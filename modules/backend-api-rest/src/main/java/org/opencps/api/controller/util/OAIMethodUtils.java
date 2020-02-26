@@ -290,7 +290,7 @@ public class OAIMethodUtils {
 
 			for (Document document : listDocument) {
 
-				oMRole = new OMRole();
+//				oMRole = new OMRole();
 
 				String jobPosId = document.get(JobPosTerm.JOBPOS_ID);
 				String groupId = document.get(Field.GROUP_ID);
