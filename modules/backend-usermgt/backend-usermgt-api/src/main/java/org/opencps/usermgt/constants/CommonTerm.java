@@ -11,6 +11,7 @@ public class CommonTerm {
 	public static final String USER_EMAIL = "USEREMAIL";
 	public static final String PASS_WORD = "PASSWORD";
 	public static final String USER_STATUS = "USERSTATUS";
+	public static final String LOCKOUT = "lockout";
 
 	public static final String EMAIL_DASH_ADDRESS = "email-address";
 	public static final String EMAIL_ADDRESS = "emailAddress";
