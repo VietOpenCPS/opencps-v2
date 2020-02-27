@@ -1155,7 +1155,7 @@ public class UserActions implements UserInterface {
 		User user =
 				UserLocalServiceUtil.fetchUser(id);
 
-		if (Validator.isNotNull(user)) {
+		if (Validator.isNull(user)) {
 
 			jsonObject.put(CommonTerm.SCREEN_NAME, id);
 			jsonObject.put(CommonTerm.EMAIL, email);
