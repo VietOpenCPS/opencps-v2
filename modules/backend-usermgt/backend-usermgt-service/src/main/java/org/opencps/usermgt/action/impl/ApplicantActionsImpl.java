@@ -28,11 +28,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -54,6 +52,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.ServiceProps;
@@ -672,21 +671,24 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		String captcha = StringPool.BLANK;
 		HttpSession session = request.getSession();
 
-		/*Enumeration<String> enumeration = session.getAttributeNames();
+		Enumeration<String> enumeration = session.getAttributeNames();
 		
-		List<String> values = Collections.list(enumeration);
+		/*List<String> values = Collections.list(enumeration);
 		
 		for (String tmp : values) {
-			_log.info("========================== > session.getAttributeNames() " + tmp);
+			System.out.println("========================== > session.getAttributeNames() " + tmp);
 		}*/
 
 		if (Validator.isNull(value)) {
+			
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
 
 		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
+			
 			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
+			
 			if (value.equals(captcha)) {
 				session.removeAttribute("_SIMPLE_CAPTCHA");
 				return true;
@@ -694,9 +696,67 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		} else {
+			
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
+	}
+
+	@Override
+	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		User updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), newEmail);
+		
+		if(Validator.isNull(newEmail)) {
+			result.put("message", ApplicantTerm.EMAIL_EMPTY);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+		
+		if(!Validator.isEmailAddress(newEmail)) {
+			result.put("message", ApplicantTerm.EMAIL_FORMAT_INCORRECT);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+
+		if (updateUser != null) {
+			result.put("message", ApplicantTerm.EMAIL_EXISTED);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+
+		updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), oldEmail);
+
+		if (updateUser == null) {
+			result.put("message", ApplicantTerm.EMAIL_NOTEXIST);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+		String screenName = newEmail.substring(0, newEmail.lastIndexOf("@"));
+		updateUser.setEmailAddress(newEmail);
+		updateUser.setScreenName(screenName);
+		updateUser = UserLocalServiceUtil.updateUser(updateUser);
+		
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId());
+		
+		if(applicant != null) {
+			applicant.setContactEmail(newEmail);
+			applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
+		}
+		
+		result.put("message", ApplicantTerm.EMAIL_UPDATE_SUCCESS);
+		
+		JSONObject userObj = JSONFactoryUtil.createJSONObject();
+		userObj.put("userId", updateUser.getUserId());
+		userObj.put("userName", updateUser.getFullName());
+		userObj.put("emailAddess", updateUser.getEmailAddress());
+		userObj.put("applicantId", applicant != null ? applicant.getApplicantId() : 0);
+		result.put("user", userObj);
+
+		return result;
 	}
 
 	//private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";

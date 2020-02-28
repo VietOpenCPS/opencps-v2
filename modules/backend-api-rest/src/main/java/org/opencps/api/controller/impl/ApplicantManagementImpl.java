@@ -972,4 +972,20 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 	}
 
+	@Override
+	public Response updateEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			JSONObject object = actionsImpl.updateAccountEmail(request, header, company, locale, user, serviceContext, oldEmail, newEmail);
+
+			return Response.status(200).entity(object.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }
