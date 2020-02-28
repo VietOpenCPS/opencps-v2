@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -670,21 +671,24 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		String captcha = StringPool.BLANK;
 		HttpSession session = request.getSession();
 
-		/*Enumeration<String> enumeration = session.getAttributeNames();
+		Enumeration<String> enumeration = session.getAttributeNames();
 		
-		List<String> values = Collections.list(enumeration);
+		/*List<String> values = Collections.list(enumeration);
 		
 		for (String tmp : values) {
-			_log.info("========================== > session.getAttributeNames() " + tmp);
+			System.out.println("========================== > session.getAttributeNames() " + tmp);
 		}*/
 
 		if (Validator.isNull(value)) {
+			
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
 
 		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
+			
 			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
+			
 			if (value.equals(captcha)) {
 				session.removeAttribute("_SIMPLE_CAPTCHA");
 				return true;
@@ -692,6 +696,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		} else {
+			
 			session.removeAttribute("_SIMPLE_CAPTCHA");
 			return false;
 		}
