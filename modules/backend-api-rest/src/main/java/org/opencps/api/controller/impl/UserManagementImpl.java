@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -55,6 +56,7 @@ import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -766,15 +768,14 @@ public class UserManagementImpl implements UserManagement {
 			Company company, Locale locale, User user,
 			ServiceContext serviceContext, long id,
 			String email, boolean unlocked) {
-		
+
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			UserInterface actions = new UserActions();
-
-			JSONObject result = actions.unlockAccount(user.getUserId(), company.getCompanyId(), groupId, id, email,
-					unlocked, serviceContext);
-
+			User userUnLocked = UserLocalServiceUtil.updateLockoutById(id, !unlocked);
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put(CommonTerm.SCREEN_NAME, userUnLocked.getScreenName());
+			result.put(CommonTerm.EMAIL_ADDRESS, userUnLocked.getEmailAddress());
+			result.put(CommonTerm.LOCKOUT, userUnLocked.getLockout());
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {
