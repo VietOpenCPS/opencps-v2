@@ -477,6 +477,7 @@ public class DossierUtils {
 			}
 			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
+			model.setDossierCounter(doc.get(DossierTerm.DOSSIER_COUNTER));
 			
 			ouputs.add(model);
 		}
@@ -958,6 +959,7 @@ public class DossierUtils {
 		}
 		model.setServerNo(input.getServerNo());
 		model.setSystemId(input.getSystemId());
+		model.setDossierCounter(input.getDossierCounter());
 
 		return model;
 	}
@@ -1357,9 +1359,9 @@ public class DossierUtils {
 		model.setDelegateType(input.getDelegateType());
 		model.setDocumentNo(input.getDocumentNo());
 		model.setDocumentDate(input.getDocumentDate());
-		//
 		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
-		
+		model.setDossierCounter(input.getDossierCounter());
+
 		return model;
 	}
 
@@ -1450,6 +1452,7 @@ public class DossierUtils {
 		model.setWardCode(input.getWardCode());
 		model.setWardName(input.getWardName());
 		model.setMetaData(input.getMetaData());
+		model.setDossierCounter(input.getDossierCounter());
 		
 		return model;
 	}

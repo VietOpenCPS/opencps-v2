@@ -50,6 +50,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.sql.Timestamp;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -107,7 +109,8 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
-			BookingModelImpl.UUID_COLUMN_BITMASK);
+			BookingModelImpl.UUID_COLUMN_BITMASK |
+			BookingModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
 			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -898,7 +901,8 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
 			new String[] { String.class.getName(), Long.class.getName() },
 			BookingModelImpl.UUID_COLUMN_BITMASK |
-			BookingModelImpl.COMPANYID_COLUMN_BITMASK);
+			BookingModelImpl.COMPANYID_COLUMN_BITMASK |
+			BookingModelImpl.CREATEDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
 			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
@@ -1469,34 +1473,45 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	public static final FinderPath FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
 			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByF_CLASS_NAME_PK",
-			new String[] { String.class.getName(), Long.class.getName() },
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Long.class.getName()
+			},
+			BookingModelImpl.GROUPID_COLUMN_BITMASK |
 			BookingModelImpl.CLASSNAME_COLUMN_BITMASK |
 			BookingModelImpl.CLASSPK_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_CLASS_NAME_PK = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
 			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"countByF_CLASS_NAME_PK",
-			new String[] { String.class.getName(), Long.class.getName() });
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Long.class.getName()
+			});
 
 	/**
-	 * Returns the booking where className = &#63; and classPK = &#63; or throws a {@link NoSuchBookingException} if it could not be found.
+	 * Returns the booking where groupId = &#63; and className = &#63; and classPK = &#63; or throws a {@link NoSuchBookingException} if it could not be found.
 	 *
+	 * @param groupId the group ID
 	 * @param className the class name
 	 * @param classPK the class pk
 	 * @return the matching booking
 	 * @throws NoSuchBookingException if a matching booking could not be found
 	 */
 	@Override
-	public Booking findByF_CLASS_NAME_PK(String className, long classPK)
-		throws NoSuchBookingException {
-		Booking booking = fetchByF_CLASS_NAME_PK(className, classPK);
+	public Booking findByF_CLASS_NAME_PK(long groupId, String className,
+		long classPK) throws NoSuchBookingException {
+		Booking booking = fetchByF_CLASS_NAME_PK(groupId, className, classPK);
 
 		if (booking == null) {
-			StringBundler msg = new StringBundler(6);
+			StringBundler msg = new StringBundler(8);
 
 			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-			msg.append("className=");
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", className=");
 			msg.append(className);
 
 			msg.append(", classPK=");
@@ -1515,29 +1530,32 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	}
 
 	/**
-	 * Returns the booking where className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the booking where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
+	 * @param groupId the group ID
 	 * @param className the class name
 	 * @param classPK the class pk
 	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
 	 */
 	@Override
-	public Booking fetchByF_CLASS_NAME_PK(String className, long classPK) {
-		return fetchByF_CLASS_NAME_PK(className, classPK, true);
+	public Booking fetchByF_CLASS_NAME_PK(long groupId, String className,
+		long classPK) {
+		return fetchByF_CLASS_NAME_PK(groupId, className, classPK, true);
 	}
 
 	/**
-	 * Returns the booking where className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the booking where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
+	 * @param groupId the group ID
 	 * @param className the class name
 	 * @param classPK the class pk
 	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
 	 */
 	@Override
-	public Booking fetchByF_CLASS_NAME_PK(String className, long classPK,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] { className, classPK };
+	public Booking fetchByF_CLASS_NAME_PK(long groupId, String className,
+		long classPK, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, className, classPK };
 
 		Object result = null;
 
@@ -1549,16 +1567,19 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 		if (result instanceof Booking) {
 			Booking booking = (Booking)result;
 
-			if (!Objects.equals(className, booking.getClassName()) ||
+			if ((groupId != booking.getGroupId()) ||
+					!Objects.equals(className, booking.getClassName()) ||
 					(classPK != booking.getClassPK())) {
 				result = null;
 			}
 		}
 
 		if (result == null) {
-			StringBundler query = new StringBundler(4);
+			StringBundler query = new StringBundler(5);
 
 			query.append(_SQL_SELECT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_CLASS_NAME_PK_GROUPID_2);
 
 			boolean bindClassName = false;
 
@@ -1587,6 +1608,8 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
+				qPos.add(groupId);
+
 				if (bindClassName) {
 					qPos.add(className);
 				}
@@ -1605,7 +1628,7 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 						if (_log.isWarnEnabled()) {
 							_log.warn(
-								"BookingPersistenceImpl.fetchByF_CLASS_NAME_PK(String, long, boolean) with parameters (" +
+								"BookingPersistenceImpl.fetchByF_CLASS_NAME_PK(long, String, long, boolean) with parameters (" +
 								StringUtil.merge(finderArgs) +
 								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
 						}
@@ -1638,39 +1661,44 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	}
 
 	/**
-	 * Removes the booking where className = &#63; and classPK = &#63; from the database.
+	 * Removes the booking where groupId = &#63; and className = &#63; and classPK = &#63; from the database.
 	 *
+	 * @param groupId the group ID
 	 * @param className the class name
 	 * @param classPK the class pk
 	 * @return the booking that was removed
 	 */
 	@Override
-	public Booking removeByF_CLASS_NAME_PK(String className, long classPK)
-		throws NoSuchBookingException {
-		Booking booking = findByF_CLASS_NAME_PK(className, classPK);
+	public Booking removeByF_CLASS_NAME_PK(long groupId, String className,
+		long classPK) throws NoSuchBookingException {
+		Booking booking = findByF_CLASS_NAME_PK(groupId, className, classPK);
 
 		return remove(booking);
 	}
 
 	/**
-	 * Returns the number of bookings where className = &#63; and classPK = &#63;.
+	 * Returns the number of bookings where groupId = &#63; and className = &#63; and classPK = &#63;.
 	 *
+	 * @param groupId the group ID
 	 * @param className the class name
 	 * @param classPK the class pk
 	 * @return the number of matching bookings
 	 */
 	@Override
-	public int countByF_CLASS_NAME_PK(String className, long classPK) {
+	public int countByF_CLASS_NAME_PK(long groupId, String className,
+		long classPK) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_CLASS_NAME_PK;
 
-		Object[] finderArgs = new Object[] { className, classPK };
+		Object[] finderArgs = new Object[] { groupId, className, classPK };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler query = new StringBundler(3);
+			StringBundler query = new StringBundler(4);
 
 			query.append(_SQL_COUNT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_CLASS_NAME_PK_GROUPID_2);
 
 			boolean bindClassName = false;
 
@@ -1699,6 +1727,8 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
+				qPos.add(groupId);
+
 				if (bindClassName) {
 					qPos.add(className);
 				}
@@ -1722,6 +1752,7 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 		return count.intValue();
 	}
 
+	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_GROUPID_2 = "booking.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSNAME_1 = "booking.className IS NULL AND ";
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSNAME_2 = "booking.className = ? AND ";
 	private static final String _FINDER_COLUMN_F_CLASS_NAME_PK_CLASSNAME_3 = "(booking.className IS NULL OR booking.className = '') AND ";
@@ -1986,6 +2017,878 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_1 = "booking.serviceCode IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_2 = "booking.serviceCode = ?";
 	private static final String _FINDER_COLUMN_F_GID_SC_DATE_MAX_SERVICECODE_3 = "(booking.serviceCode IS NULL OR booking.serviceCode = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_BOOKING_DATE =
+		new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_GID_BOOKING_DATE",
+			new String[] {
+				Long.class.getName(), Date.class.getName(),
+				Boolean.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE =
+		new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_GID_BOOKING_DATE",
+			new String[] {
+				Long.class.getName(), Date.class.getName(),
+				Boolean.class.getName()
+			},
+			BookingModelImpl.GROUPID_COLUMN_BITMASK |
+			BookingModelImpl.BOOKINGDATE_COLUMN_BITMASK |
+			BookingModelImpl.ONLINE_COLUMN_BITMASK |
+			BookingModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_GID_BOOKING_DATE = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByF_GID_BOOKING_DATE",
+			new String[] {
+				Long.class.getName(), Date.class.getName(),
+				Boolean.class.getName()
+			});
+
+	/**
+	 * Returns all the bookings where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @return the matching bookings
+	 */
+	@Override
+	public List<Booking> findByF_GID_BOOKING_DATE(long groupId,
+		Date bookingDate, boolean online) {
+		return findByF_GID_BOOKING_DATE(groupId, bookingDate, online,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the bookings where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link BookingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param start the lower bound of the range of bookings
+	 * @param end the upper bound of the range of bookings (not inclusive)
+	 * @return the range of matching bookings
+	 */
+	@Override
+	public List<Booking> findByF_GID_BOOKING_DATE(long groupId,
+		Date bookingDate, boolean online, int start, int end) {
+		return findByF_GID_BOOKING_DATE(groupId, bookingDate, online, start,
+			end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the bookings where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link BookingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param start the lower bound of the range of bookings
+	 * @param end the upper bound of the range of bookings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching bookings
+	 */
+	@Override
+	public List<Booking> findByF_GID_BOOKING_DATE(long groupId,
+		Date bookingDate, boolean online, int start, int end,
+		OrderByComparator<Booking> orderByComparator) {
+		return findByF_GID_BOOKING_DATE(groupId, bookingDate, online, start,
+			end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the bookings where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link BookingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param start the lower bound of the range of bookings
+	 * @param end the upper bound of the range of bookings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching bookings
+	 */
+	@Override
+	public List<Booking> findByF_GID_BOOKING_DATE(long groupId,
+		Date bookingDate, boolean online, int start, int end,
+		OrderByComparator<Booking> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE;
+			finderArgs = new Object[] { groupId, _getTime(bookingDate), online };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_BOOKING_DATE;
+			finderArgs = new Object[] {
+					groupId, _getTime(bookingDate), online,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Booking> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Booking>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Booking booking : list) {
+					if ((groupId != booking.getGroupId()) ||
+							!Objects.equals(bookingDate,
+								booking.getBookingDate()) ||
+							(online != booking.isOnline())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_GROUPID_2);
+
+			boolean bindBookingDate = false;
+
+			if (bookingDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_1);
+			}
+			else {
+				bindBookingDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_ONLINE_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(BookingModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindBookingDate) {
+					qPos.add(new Timestamp(bookingDate.getTime()));
+				}
+
+				qPos.add(online);
+
+				if (!pagination) {
+					list = (List<Booking>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Booking>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first booking in the ordered set where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching booking
+	 * @throws NoSuchBookingException if a matching booking could not be found
+	 */
+	@Override
+	public Booking findByF_GID_BOOKING_DATE_First(long groupId,
+		Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator)
+		throws NoSuchBookingException {
+		Booking booking = fetchByF_GID_BOOKING_DATE_First(groupId, bookingDate,
+				online, orderByComparator);
+
+		if (booking != null) {
+			return booking;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", bookingDate=");
+		msg.append(bookingDate);
+
+		msg.append(", online=");
+		msg.append(online);
+
+		msg.append("}");
+
+		throw new NoSuchBookingException(msg.toString());
+	}
+
+	/**
+	 * Returns the first booking in the ordered set where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_GID_BOOKING_DATE_First(long groupId,
+		Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator) {
+		List<Booking> list = findByF_GID_BOOKING_DATE(groupId, bookingDate,
+				online, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last booking in the ordered set where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching booking
+	 * @throws NoSuchBookingException if a matching booking could not be found
+	 */
+	@Override
+	public Booking findByF_GID_BOOKING_DATE_Last(long groupId,
+		Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator)
+		throws NoSuchBookingException {
+		Booking booking = fetchByF_GID_BOOKING_DATE_Last(groupId, bookingDate,
+				online, orderByComparator);
+
+		if (booking != null) {
+			return booking;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", bookingDate=");
+		msg.append(bookingDate);
+
+		msg.append(", online=");
+		msg.append(online);
+
+		msg.append("}");
+
+		throw new NoSuchBookingException(msg.toString());
+	}
+
+	/**
+	 * Returns the last booking in the ordered set where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_GID_BOOKING_DATE_Last(long groupId,
+		Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator) {
+		int count = countByF_GID_BOOKING_DATE(groupId, bookingDate, online);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Booking> list = findByF_GID_BOOKING_DATE(groupId, bookingDate,
+				online, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the bookings before and after the current booking in the ordered set where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param bookingId the primary key of the current booking
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next booking
+	 * @throws NoSuchBookingException if a booking with the primary key could not be found
+	 */
+	@Override
+	public Booking[] findByF_GID_BOOKING_DATE_PrevAndNext(long bookingId,
+		long groupId, Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator)
+		throws NoSuchBookingException {
+		Booking booking = findByPrimaryKey(bookingId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Booking[] array = new BookingImpl[3];
+
+			array[0] = getByF_GID_BOOKING_DATE_PrevAndNext(session, booking,
+					groupId, bookingDate, online, orderByComparator, true);
+
+			array[1] = booking;
+
+			array[2] = getByF_GID_BOOKING_DATE_PrevAndNext(session, booking,
+					groupId, bookingDate, online, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Booking getByF_GID_BOOKING_DATE_PrevAndNext(Session session,
+		Booking booking, long groupId, Date bookingDate, boolean online,
+		OrderByComparator<Booking> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_BOOKING_WHERE);
+
+		query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_GROUPID_2);
+
+		boolean bindBookingDate = false;
+
+		if (bookingDate == null) {
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_1);
+		}
+		else {
+			bindBookingDate = true;
+
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_2);
+		}
+
+		query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_ONLINE_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(BookingModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindBookingDate) {
+			qPos.add(new Timestamp(bookingDate.getTime()));
+		}
+
+		qPos.add(online);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(booking);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Booking> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the bookings where groupId = &#63; and bookingDate = &#63; and online = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 */
+	@Override
+	public void removeByF_GID_BOOKING_DATE(long groupId, Date bookingDate,
+		boolean online) {
+		for (Booking booking : findByF_GID_BOOKING_DATE(groupId, bookingDate,
+				online, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(booking);
+		}
+	}
+
+	/**
+	 * Returns the number of bookings where groupId = &#63; and bookingDate = &#63; and online = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param bookingDate the booking date
+	 * @param online the online
+	 * @return the number of matching bookings
+	 */
+	@Override
+	public int countByF_GID_BOOKING_DATE(long groupId, Date bookingDate,
+		boolean online) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_GID_BOOKING_DATE;
+
+		Object[] finderArgs = new Object[] {
+				groupId, _getTime(bookingDate), online
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_BOOKING_WHERE);
+
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_GROUPID_2);
+
+			boolean bindBookingDate = false;
+
+			if (bookingDate == null) {
+				query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_1);
+			}
+			else {
+				bindBookingDate = true;
+
+				query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_GID_BOOKING_DATE_ONLINE_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindBookingDate) {
+					qPos.add(new Timestamp(bookingDate.getTime()));
+				}
+
+				qPos.add(online);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_GID_BOOKING_DATE_GROUPID_2 = "booking.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_1 = "booking.bookingDate IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_GID_BOOKING_DATE_BOOKINGDATE_2 = "booking.bookingDate = ? AND ";
+	private static final String _FINDER_COLUMN_F_GID_BOOKING_DATE_ONLINE_2 = "booking.online = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_F_CODE_NUMBER = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, BookingImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByF_CODE_NUMBER",
+			new String[] { String.class.getName() },
+			BookingModelImpl.CODENUMBER_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_CODE_NUMBER = new FinderPath(BookingModelImpl.ENTITY_CACHE_ENABLED,
+			BookingModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_CODE_NUMBER",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns the booking where codeNumber = &#63; or throws a {@link NoSuchBookingException} if it could not be found.
+	 *
+	 * @param codeNumber the code number
+	 * @return the matching booking
+	 * @throws NoSuchBookingException if a matching booking could not be found
+	 */
+	@Override
+	public Booking findByF_CODE_NUMBER(String codeNumber)
+		throws NoSuchBookingException {
+		Booking booking = fetchByF_CODE_NUMBER(codeNumber);
+
+		if (booking == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("codeNumber=");
+			msg.append(codeNumber);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchBookingException(msg.toString());
+		}
+
+		return booking;
+	}
+
+	/**
+	 * Returns the booking where codeNumber = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param codeNumber the code number
+	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_CODE_NUMBER(String codeNumber) {
+		return fetchByF_CODE_NUMBER(codeNumber, true);
+	}
+
+	/**
+	 * Returns the booking where codeNumber = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param codeNumber the code number
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching booking, or <code>null</code> if a matching booking could not be found
+	 */
+	@Override
+	public Booking fetchByF_CODE_NUMBER(String codeNumber,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { codeNumber };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER,
+					finderArgs, this);
+		}
+
+		if (result instanceof Booking) {
+			Booking booking = (Booking)result;
+
+			if (!Objects.equals(codeNumber, booking.getCodeNumber())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_BOOKING_WHERE);
+
+			boolean bindCodeNumber = false;
+
+			if (codeNumber == null) {
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_1);
+			}
+			else if (codeNumber.equals("")) {
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_3);
+			}
+			else {
+				bindCodeNumber = true;
+
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindCodeNumber) {
+					qPos.add(codeNumber);
+				}
+
+				List<Booking> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"BookingPersistenceImpl.fetchByF_CODE_NUMBER(String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Booking booking = list.get(0);
+
+					result = booking;
+
+					cacheResult(booking);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Booking)result;
+		}
+	}
+
+	/**
+	 * Removes the booking where codeNumber = &#63; from the database.
+	 *
+	 * @param codeNumber the code number
+	 * @return the booking that was removed
+	 */
+	@Override
+	public Booking removeByF_CODE_NUMBER(String codeNumber)
+		throws NoSuchBookingException {
+		Booking booking = findByF_CODE_NUMBER(codeNumber);
+
+		return remove(booking);
+	}
+
+	/**
+	 * Returns the number of bookings where codeNumber = &#63;.
+	 *
+	 * @param codeNumber the code number
+	 * @return the number of matching bookings
+	 */
+	@Override
+	public int countByF_CODE_NUMBER(String codeNumber) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_CODE_NUMBER;
+
+		Object[] finderArgs = new Object[] { codeNumber };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_BOOKING_WHERE);
+
+			boolean bindCodeNumber = false;
+
+			if (codeNumber == null) {
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_1);
+			}
+			else if (codeNumber.equals("")) {
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_3);
+			}
+			else {
+				bindCodeNumber = true;
+
+				query.append(_FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindCodeNumber) {
+					qPos.add(codeNumber);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_1 = "booking.codeNumber IS NULL";
+	private static final String _FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_2 = "booking.codeNumber = ?";
+	private static final String _FINDER_COLUMN_F_CODE_NUMBER_CODENUMBER_3 = "(booking.codeNumber IS NULL OR booking.codeNumber = '')";
 
 	public BookingPersistenceImpl() {
 		setModelClass(Booking.class);
@@ -2000,6 +2903,7 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 			dbColumnNames.put("uuid", "uuid_");
 			dbColumnNames.put("state", "state_");
+			dbColumnNames.put("online", "online_");
 
 			field.set(this, dbColumnNames);
 		}
@@ -2024,12 +2928,17 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			new Object[] { booking.getUuid(), booking.getGroupId() }, booking);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK,
-			new Object[] { booking.getClassName(), booking.getClassPK() },
-			booking);
+			new Object[] {
+				booking.getGroupId(), booking.getClassName(),
+				booking.getClassPK()
+			}, booking);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
 			new Object[] { booking.getGroupId(), booking.getServiceCode() },
 			booking);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER,
+			new Object[] { booking.getCodeNumber() }, booking);
 
 		booking.resetOriginalValues();
 	}
@@ -2110,7 +3019,8 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			bookingModelImpl, false);
 
 		args = new Object[] {
-				bookingModelImpl.getClassName(), bookingModelImpl.getClassPK()
+				bookingModelImpl.getGroupId(), bookingModelImpl.getClassName(),
+				bookingModelImpl.getClassPK()
 			};
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_CLASS_NAME_PK, args,
@@ -2125,6 +3035,13 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_SC_DATE_MAX, args,
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX, args,
+			bookingModelImpl, false);
+
+		args = new Object[] { bookingModelImpl.getCodeNumber() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_F_CODE_NUMBER, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER, args,
 			bookingModelImpl, false);
 	}
 
@@ -2152,6 +3069,7 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 		if (clearCurrent) {
 			Object[] args = new Object[] {
+					bookingModelImpl.getGroupId(),
 					bookingModelImpl.getClassName(),
 					bookingModelImpl.getClassPK()
 				};
@@ -2163,6 +3081,7 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 		if ((bookingModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_F_CLASS_NAME_PK.getColumnBitmask()) != 0) {
 			Object[] args = new Object[] {
+					bookingModelImpl.getOriginalGroupId(),
 					bookingModelImpl.getOriginalClassName(),
 					bookingModelImpl.getOriginalClassPK()
 				};
@@ -2194,6 +3113,23 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_SC_DATE_MAX,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] { bookingModelImpl.getCodeNumber() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CODE_NUMBER, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER, args);
+		}
+
+		if ((bookingModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_CODE_NUMBER.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					bookingModelImpl.getOriginalCodeNumber()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_CODE_NUMBER, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_CODE_NUMBER, args);
 		}
 	}
 
@@ -2392,6 +3328,17 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] {
+					bookingModelImpl.getGroupId(),
+					bookingModelImpl.getBookingDate(),
+					bookingModelImpl.isOnline()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_BOOKING_DATE,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -2431,6 +3378,31 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((bookingModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						bookingModelImpl.getOriginalGroupId(),
+						bookingModelImpl.getOriginalBookingDate(),
+						bookingModelImpl.getOriginalOnline()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_BOOKING_DATE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE,
+					args);
+
+				args = new Object[] {
+						bookingModelImpl.getGroupId(),
+						bookingModelImpl.getBookingDate(),
+						bookingModelImpl.isOnline()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_BOOKING_DATE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_GID_BOOKING_DATE,
 					args);
 			}
 		}
@@ -2854,6 +3826,15 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_BOOKING = "SELECT booking FROM Booking booking";
 	private static final String _SQL_SELECT_BOOKING_WHERE_PKS_IN = "SELECT booking FROM Booking booking WHERE bookingId IN (";
 	private static final String _SQL_SELECT_BOOKING_WHERE = "SELECT booking FROM Booking booking WHERE ";
@@ -2864,6 +3845,6 @@ public class BookingPersistenceImpl extends BasePersistenceImpl<Booking>
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Booking exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(BookingPersistenceImpl.class);
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
-				"uuid", "state"
+				"uuid", "state", "online"
 			});
 }

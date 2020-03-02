@@ -288,8 +288,21 @@ public class BookingLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.Booking getByClassName_PK(
-		String className, long classPK) {
-		return getService().getByClassName_PK(className, classPK);
+		long groupId, String className, long classPK) {
+		return getService().getByClassName_PK(groupId, className, classPK);
+	}
+
+	public static org.opencps.dossiermgt.model.Booking getByCodeNumber(
+		String codeNumber) {
+		return getService().getByCodeNumber(codeNumber);
+	}
+
+	public static java.util.List getByGID_DATE(long groupIdBooking,
+		String bookingDate, boolean online,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .getByGID_DATE(groupIdBooking, bookingDate, online,
+			serviceContext);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -342,12 +355,14 @@ public class BookingLocalServiceUtil {
 		long classPK, String serviceCode, String codeNumber,
 		String bookingName, String gateNumber, Integer state,
 		java.util.Date checkinDate, java.util.Date bookingDate,
-		boolean speaking, String serviceGroupCode,
+		boolean speaking, String serviceGroupCode, boolean online,
+		String bookingInTime, String telNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .updateBooking(userId, groupId, bookingId, className,
 			classPK, serviceCode, codeNumber, bookingName, gateNumber, state,
-			checkinDate, bookingDate, speaking, serviceGroupCode, serviceContext);
+			checkinDate, bookingDate, speaking, serviceGroupCode, online,
+			bookingInTime, telNo, serviceContext);
 	}
 
 	public static BookingLocalService getService() {

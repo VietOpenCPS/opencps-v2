@@ -391,6 +391,57 @@ public interface BookingModel extends BaseModel<Booking>, GroupedModel,
 	 */
 	public void setCount(int count);
 
+	/**
+	 * Returns the online of this booking.
+	 *
+	 * @return the online of this booking
+	 */
+	public boolean getOnline();
+
+	/**
+	 * Returns <code>true</code> if this booking is online.
+	 *
+	 * @return <code>true</code> if this booking is online; <code>false</code> otherwise
+	 */
+	public boolean isOnline();
+
+	/**
+	 * Sets whether this booking is online.
+	 *
+	 * @param online the online of this booking
+	 */
+	public void setOnline(boolean online);
+
+	/**
+	 * Returns the booking in time of this booking.
+	 *
+	 * @return the booking in time of this booking
+	 */
+	@AutoEscape
+	public String getBookingInTime();
+
+	/**
+	 * Sets the booking in time of this booking.
+	 *
+	 * @param bookingInTime the booking in time of this booking
+	 */
+	public void setBookingInTime(String bookingInTime);
+
+	/**
+	 * Returns the tel no of this booking.
+	 *
+	 * @return the tel no of this booking
+	 */
+	@AutoEscape
+	public String getTelNo();
+
+	/**
+	 * Sets the tel no of this booking.
+	 *
+	 * @param telNo the tel no of this booking
+	 */
+	public void setTelNo(String telNo);
+
 	@Override
 	public boolean isNew();
 

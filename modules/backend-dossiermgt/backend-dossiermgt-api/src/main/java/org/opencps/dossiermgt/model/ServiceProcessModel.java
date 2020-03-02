@@ -492,6 +492,21 @@ public interface ServiceProcessModel extends BaseModel<ServiceProcess>,
 	 */
 	public void setDossierGroupPattern(String dossierGroupPattern);
 
+	/**
+	 * Returns the counter code of this service process.
+	 *
+	 * @return the counter code of this service process
+	 */
+	@AutoEscape
+	public String getCounterCode();
+
+	/**
+	 * Sets the counter code of this service process.
+	 *
+	 * @param counterCode the counter code of this service process
+	 */
+	public void setCounterCode(String counterCode);
+
 	@Override
 	public boolean isNew();
 

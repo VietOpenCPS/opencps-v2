@@ -1,7 +1,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -17,16 +16,21 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -58,15 +62,18 @@ import org.opencps.dossiermgt.action.StatisticActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.StatisticActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.input.model.PersonDossierStatistic;
 import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
@@ -187,7 +194,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			boolean isAdmin = false;
 			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+			long[] menuConfigArr = null;
 			if (roles != null && roles.size() > 0) {
+				int length = roles.size();
+				long[] roleIds = new long[length];
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
 					if ("Administrator".equals(role.getName())) {
@@ -197,6 +207,43 @@ public class StatisticManagementImpl implements StatisticManagement {
 					if ("Administrator_data".equals(role.getName())) {
 						isAdmin = true;
 						break;
+					}
+				}
+				//
+				for (int i = 0; i < length; i++) {
+					roleIds[i] = roles.get(i).getRoleId();
+				}
+				
+				List<MenuRole> meunuRoleList = MenuRoleLocalServiceUtil.getByRoles(roleIds);
+//				Map<Long , Long> mapMenuRole = new HashMap<>();
+				List<Long> menuConfigList = new ArrayList<>();
+				for (MenuRole menuRole : meunuRoleList) {
+					if (menuConfigList.size() > 0 && menuConfigList.contains(menuRole.getMenuConfigId())) {
+						continue;
+					} else {
+						menuConfigList.add(menuRole.getMenuConfigId());
+					}
+				}
+				//
+				menuConfigArr = new long[menuConfigList.size()];
+				for (int i = 0; i < menuConfigList.size(); i++) {
+					menuConfigArr[i] = menuConfigList.get(i);
+				}
+				_log.info("menuConfigList: "+JSONFactoryUtil.looseSerialize(menuConfigList));
+			}
+			//Applicant
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			if (applicant != null) {
+				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, "APPLICANT");
+				if (job != null) {
+					List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
+					if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
+						int length = lstMenuRoles.size();
+						menuConfigArr = new long[length];
+						for (int i = 0; i < length; i++) {
+							MenuRole menu = lstMenuRoles.get(i);
+							menuConfigArr[i] = menu.getMenuConfigId();
+						}
 					}
 				}
 			}
@@ -221,7 +268,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			}
 
 			String stepCode = query.getStep();
-//			_log.info("STEPCODE: "+stepCode);
+			//_log.info("STEPCODE: "+stepCode);
 			if (Validator.isNotNull(stepCode)) {
 				String[] stepArr = stepCode.split(StringPool.COMMA);
 				if (stepArr != null && stepArr.length > 0) {
@@ -293,27 +340,65 @@ public class StatisticManagementImpl implements StatisticManagement {
 //					}
 //				}
 				//
-				List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-				if (menuList != null && menuList.size() > 0) {
-					for (MenuConfig menuConfig : menuList) {
-						
-						String queryParams = menuConfig.getQueryParams();
-						LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
-						if (Validator.isNotNull(queryParams)) {
-							int length = queryParams.lastIndexOf("?");
-							if (length > 0) {
-								String subQuery = queryParams.substring(length + 1);
-								String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split("&") : null;
-								for (String param : elementParams) {
-									if (Validator.isNotNull(param) && param.contains("step=")) {
-										String[] paramSplit = param.split("=");
-										if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
-											long totalGroup = 0;
-											String[] splitStep = paramSplit[1].split(StringPool.COMMA);
-											for (String strStep : splitStep) {
-												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
+				if (isAdmin) {
+					List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+					if (menuList != null && menuList.size() > 0) {
+						for (MenuConfig menuConfig : menuList) {
+							
+							String queryParams = menuConfig.getQueryParams();
+							LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
+							if (Validator.isNotNull(queryParams)) {
+								int length = queryParams.lastIndexOf("?");
+								if (length > 0) {
+									String subQuery = queryParams.substring(length + 1);
+									String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split("&") : null;
+									for (String param : elementParams) {
+										if (Validator.isNotNull(param) && param.contains("step=")) {
+											String[] paramSplit = param.split("=");
+											if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
+												long totalGroup = 0;
+												String[] splitStep = paramSplit[1].split(StringPool.COMMA);
+												for (String strStep : splitStep) {
+													StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
+													if (step != null) {
+														//
+														paramMenuDetail.putAll(params);
+														paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+														paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+														
+														paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+														//
+														long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+																null, serviceContext);
+//														_log.info("count: "+count);
+														if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
+															JSONObject statistic = JSONFactoryUtil.createJSONObject();
+															statistic.put("stepCode", step.getStepCode());
+															statistic.put("stepName", step.getStepName());
+															statistic.put("dossierStatus", step.getDossierStatus());
+															statistic.put("dossierSubStatus", step.getDossierSubStatus());
+															statistic.put("menuGroup", menuConfig.getMenuGroup());
+															statistic.put("totalCount", count);
+															statistics.put(statistic);
+														}
+														
+														total += count;
+														totalGroup += count;
+													}
+												}
+												//
+												JSONObject statistic = JSONFactoryUtil.createJSONObject();
+												statistic.put("stepCode", paramSplit[1]);
+												statistic.put("stepName", "");
+												statistic.put("dossierStatus", "");
+												statistic.put("dossierSubStatus", "");
+												statistic.put("menuGroup", menuConfig.getMenuGroup());
+												statistic.put("totalCount", totalGroup);
+												statistics.put(statistic);
+											} else {
+												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
+												//
 												if (step != null) {
-													//
 													paramMenuDetail.putAll(params);
 													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
 													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
@@ -322,53 +407,103 @@ public class StatisticManagementImpl implements StatisticManagement {
 													//
 													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
 															null, serviceContext);
-//													_log.info("count: "+count);
-													if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
-														JSONObject statistic = JSONFactoryUtil.createJSONObject();
-														statistic.put("stepCode", step.getStepCode());
-														statistic.put("stepName", step.getStepName());
-														statistic.put("dossierStatus", step.getDossierStatus());
-														statistic.put("dossierSubStatus", step.getDossierSubStatus());
-														statistic.put("menuGroup", menuConfig.getMenuGroup());
-														statistic.put("totalCount", count);
-														statistics.put(statistic);
-													}
-													
+													JSONObject statistic = JSONFactoryUtil.createJSONObject();
+													statistic.put("stepCode", step.getStepCode());
+													statistic.put("stepName", step.getStepName());
+													statistic.put("dossierStatus", step.getDossierStatus());
+													statistic.put("dossierSubStatus", step.getDossierSubStatus());
+													statistic.put("menuGroup", menuConfig.getMenuGroup());
+													statistic.put("totalCount", count);
 													total += count;
-													totalGroup += count;
+													statistics.put(statistic);
 												}
 											}
-											//
-											JSONObject statistic = JSONFactoryUtil.createJSONObject();
-											statistic.put("stepCode", paramSplit[1]);
-											statistic.put("stepName", "");
-											statistic.put("dossierStatus", "");
-											statistic.put("dossierSubStatus", "");
-											statistic.put("menuGroup", menuConfig.getMenuGroup());
-											statistic.put("totalCount", totalGroup);
-											statistics.put(statistic);
-										} else {
-											StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
-											//
-											if (step != null) {
-												paramMenuDetail.putAll(params);
-												paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
-												paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-												
-												paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {
+					List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByMenus(menuConfigArr);
+					if (menuList != null && menuList.size() > 0) {
+						for (MenuConfig menuConfig : menuList) {
+							String queryParams = menuConfig.getQueryParams();
+							LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
+							if (Validator.isNotNull(queryParams)) {
+								int length = queryParams.lastIndexOf("?");
+								if (length > 0) {
+									String subQuery = queryParams.substring(length + 1);
+									String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split("&") : null;
+									for (String param : elementParams) {
+										if (Validator.isNotNull(param) && param.contains("step=")) {
+											String[] paramSplit = param.split("=");
+											if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
+												long totalGroup = 0;
+												String[] splitStep = paramSplit[1].split(StringPool.COMMA);
+												for (String strStep : splitStep) {
+													StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
+													if (step != null) {
+														//
+														paramMenuDetail.putAll(params);
+														paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+														paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+														
+														paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+														//
+														long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+																null, serviceContext);
+//														_log.info("count: "+count);
+														if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
+															JSONObject statistic = JSONFactoryUtil.createJSONObject();
+															statistic.put("stepCode", step.getStepCode());
+															statistic.put("stepName", step.getStepName());
+															statistic.put("dossierStatus", step.getDossierStatus());
+															statistic.put("dossierSubStatus", step.getDossierSubStatus());
+															statistic.put("menuGroup", menuConfig.getMenuGroup());
+															statistic.put("totalCount", count);
+															statistics.put(statistic);
+														}
+														
+														total += count;
+														totalGroup += count;
+													}
+												}
 												//
-												long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
-														null, serviceContext);
-//												_log.info("count: "+count);
 												JSONObject statistic = JSONFactoryUtil.createJSONObject();
-												statistic.put("stepCode", step.getStepCode());
-												statistic.put("stepName", step.getStepName());
-												statistic.put("dossierStatus", step.getDossierStatus());
-												statistic.put("dossierSubStatus", step.getDossierSubStatus());
+												statistic.put("stepCode", paramSplit[1]);
+												statistic.put("stepName", "");
+												statistic.put("dossierStatus", "");
+												statistic.put("dossierSubStatus", "");
 												statistic.put("menuGroup", menuConfig.getMenuGroup());
-												statistic.put("totalCount", count);
-												total += count;
+												statistic.put("totalCount", totalGroup);
 												statistics.put(statistic);
+											} else {
+												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
+												//_log.info("paramSplit[1]: "+paramSplit[1]);
+												//
+												if (step != null) {
+													paramMenuDetail.putAll(params);
+													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+													
+													_log.info("paramMenuDetail1: "+paramMenuDetail);
+													paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+													//
+													_log.info("paramMenuDetail12: "+paramMenuDetail);
+													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+															null, serviceContext);
+													_log.info("count: "+count);
+													JSONObject statistic = JSONFactoryUtil.createJSONObject();
+													statistic.put("stepCode", step.getStepCode());
+													statistic.put("stepName", step.getStepName());
+													statistic.put("dossierStatus", step.getDossierStatus());
+													statistic.put("dossierSubStatus", step.getDossierSubStatus());
+													statistic.put("menuGroup", menuConfig.getMenuGroup());
+													statistic.put("totalCount", count);
+													total += count;
+													statistics.put(statistic);
+												}
 											}
 										}
 									}

@@ -20,19 +20,16 @@ import java.io.File;
 import java.util.Date;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.RegistrationForm;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
 
 public class Engine implements MessageListener {
@@ -256,6 +253,41 @@ public class Engine implements MessageListener {
     			Indexer<DossierDocument> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierDocument.class);
     
     			indexer.reindex(dossierDocument);
+				
+			}
+			else if (engineClass.isAssignableFrom(PaymentFile.class)) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(classPK);
+				int tryCount = 0;
+				while (paymentFile == null) {
+					try {
+						Thread.sleep(5000);
+						paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(classPK);
+						tryCount++;
+						if (paymentFile != null || tryCount == MAX_TRY_COUNT) break;
+					}
+					catch (InterruptedException e) {
+						break;
+					}
+				}
+				
+    			ServiceContext serviceContext = new ServiceContext();
+    			_log.info("jasper export paymentFile: " + classPK + ", " + paymentFile );
+    			serviceContext.setUserId(paymentFile.getUserId());
+    
+    			long fileEntryId = 0;
+    
+    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, paymentFile.getGroupId(), file, filePath,
+    					serviceContext);
+    
+    			fileEntryId = fileEntry.getFileEntryId();
+    
+    			paymentFile.setInvoiceFileEntryId(fileEntryId);
+    
+    			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+    
+    			Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+    
+    			indexer.reindex(paymentFile);
 				
 			}
 //			else if (engineClass.isAssignableFrom(Deliverable.class)) {

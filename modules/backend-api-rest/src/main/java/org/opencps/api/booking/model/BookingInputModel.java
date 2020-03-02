@@ -64,7 +64,10 @@ import javax.xml.bind.annotation.XmlType;
  "state",
  "bookingDate",
  "speaking",
- "serviceGroupCode"
+ "serviceGroupCode",
+ "online",
+ "groupIdBooking",
+ "telNo"
 })
 
 @XmlRootElement(name = "BookingInputModel")
@@ -93,6 +96,12 @@ public class BookingInputModel {
 	protected String speaking;
 	@FormParam(value = "serviceGroupCode")
 	protected String serviceGroupCode;
+	@FormParam(value = "online")
+	protected String online;
+	@FormParam(value = "groupIdBooking")
+	protected String groupIdBooking;
+	@FormParam(value = "telNo")
+	protected String telNo;
 
 	public String getClassName() {
 		return className;
@@ -159,6 +168,24 @@ public class BookingInputModel {
 	}
 	public void setServiceGroupCode(String serviceGroupCode) {
 		this.serviceGroupCode = serviceGroupCode;
+	}
+	public String getOnline() {
+		return online;
+	}
+	public void setOnline(String online) {
+		this.online = online;
+	}
+	public String getGroupIdBooking() {
+		return groupIdBooking;
+	}
+	public void setGroupIdBooking(String groupIdBooking) {
+		this.groupIdBooking = groupIdBooking;
+	}
+	public String getTelNo() {
+		return telNo;
+	}
+	public void setTelNo(String telNo) {
+		this.telNo = telNo;
 	}
 
 }

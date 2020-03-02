@@ -24,4 +24,8 @@ public class BookingTerm {
 	public static final String FROM_CHECK_IN_DATE = "fromCheckinDate";
 	public static final String TO_CHECK_IN_DATE = "toCheckinDate";
 	public static final String SPEAKING = "speaking";
+	public static final String ONLINE = "online";
+	public static final String BOOKING_IN_TIME = "bookingInTime";
+	public static final String CODE_NUMBER_SEARCH = "codeNumberSearch";
+	public static final String TEL_NO = "telNo";
 }

@@ -201,7 +201,8 @@ import javax.xml.bind.annotation.XmlType;
     "documentDate",
     "serverNo",
     "systemId",
-    "groupId"
+    "groupId",
+    "dossierCounter"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -310,6 +311,15 @@ public class DossierDetailModel {
 	protected String serverNo;
 	protected int systemId;
 	protected Long groupId;
+	protected String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public Long getGroupId() {
 		return groupId;

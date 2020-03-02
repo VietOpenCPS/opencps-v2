@@ -165,7 +165,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternService)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + dossier.getServiceCode();
-						String number = countByNumber(key, tmp);
+						String number = countByControlNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -682,6 +682,52 @@ public class DossierNumberGenerator {
 
 		return dossierNoPattern;
 	}
-	
+
+	private static String countByControlNumber(String pattern, String tmp) {
+
+		//long counter = CounterLocalServiceUtil.increment(pattern);
+		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+		String format = "%0" + lengthPatern + "d";
+
+		long _counterNumber = 0;
+		Counter counter = null;
+		_log.info("pattern" + pattern);
+		Counter counterDossier = CounterLocalServiceUtil.fetchCounter(pattern);
+
+		if (Validator.isNotNull(counterDossier)) {
+			// create counter config
+			_counterNumber = counterDossier.getCurrentId() + 1;
+			while (counter == null) {
+				counterDossier.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDossier);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			}
+			// _counterNumber = counterConfig.getCurrentId() + 1;
+			// counterConfig.setCurrentId(_counterNumber);
+			// CounterLocalServiceUtil.updateCounter(counterConfig);
+
+		} else {
+			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+			counterDossier = CounterLocalServiceUtil.createCounter(pattern);
+			// increment CurrentCounter
+			_counterNumber = counterDossier.getCurrentId() + 1;
+			while (counter == null) {
+				counterDossier.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDossier);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			}
+		}
+
+		return String.format(format, _counterNumber); 
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DossierNumberGenerator.class.getName());
 }

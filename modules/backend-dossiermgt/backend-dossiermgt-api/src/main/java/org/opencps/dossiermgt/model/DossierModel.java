@@ -1545,6 +1545,21 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setSystemId(int systemId);
 
+	/**
+	 * Returns the dossier counter of this dossier.
+	 *
+	 * @return the dossier counter of this dossier
+	 */
+	@AutoEscape
+	public String getDossierCounter();
+
+	/**
+	 * Sets the dossier counter of this dossier.
+	 *
+	 * @param dossierCounter the dossier counter of this dossier
+	 */
+	public void setDossierCounter(String dossierCounter);
+
 	@Override
 	public boolean isNew();
 

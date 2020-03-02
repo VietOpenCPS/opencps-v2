@@ -46,6 +46,7 @@ public class BookingFinderBaseImpl extends BasePersistenceImpl<Booking> {
 
 			dbColumnNames.put("uuid", "uuid_");
 			dbColumnNames.put("state", "state_");
+			dbColumnNames.put("online", "online_");
 
 			field.set(this, dbColumnNames);
 		}
