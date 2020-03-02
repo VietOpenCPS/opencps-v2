@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -3435,7 +3436,20 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
 			Dossier hslt = dossierLocalService.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
 			
-			if (dossierAction != null && (dossierAction.isRollbackable() || hslt.getOriginality() < 0)) {
+			// chi nguoi thuc hien buoc truoc moi duoc phep quay lai buoc
+			User user=UserLocalServiceUtil.getUser(userId);
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (dossierAction != null && !dossierAction.getPending() &&
+					(dossierAction.isRollbackable() || hslt.getOriginality() < 0)
+					&& (isAdmin || dossierAction.getUserId() == userId)) {
+
 				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
 				DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
