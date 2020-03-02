@@ -1,17 +1,27 @@
 package org.opencps.dossiermgt.action.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.opencps.dossiermgt.action.BookingActions;
 import org.opencps.dossiermgt.model.Booking;
@@ -96,5 +106,41 @@ public class BookingActionsImpl implements BookingActions {
 		return BookingLocalServiceUtil.getByCodeNumber(codeNumber);
 	}
 
+	@Override
+	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String value) {
+		String captcha = StringPool.BLANK;
+		HttpSession session = request.getSession();
+
+		Enumeration<String> enumeration = session.getAttributeNames();
+		
+		/*List<String> values = Collections.list(enumeration);
+		
+		for (String tmp : values) {
+			System.out.println("========================== > session.getAttributeNames() " + tmp);
+		}*/
+
+		if (Validator.isNull(value)) {
+			
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
+		}
+
+		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
+			
+			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
+			
+			if (value.equals(captcha)) {
+				session.removeAttribute("_SIMPLE_CAPTCHA");
+				return true;
+			}
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
+		} else {
+			
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
+		}
+	}
 
 }

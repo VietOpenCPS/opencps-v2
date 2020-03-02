@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.octo.captcha.service.CaptchaServiceException;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,12 +33,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.opencps.api.booking.model.BookingDataModel;
 import org.opencps.api.booking.model.BookingInputModel;
 import org.opencps.api.booking.model.BookingResultsModel;
 import org.opencps.api.booking.model.BookingSearchModel;
 import org.opencps.api.controller.BookingManagement;
 import org.opencps.api.controller.util.BookingUtils;
+import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -47,8 +51,10 @@ import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
+import org.opencps.kernel.prop.PropValues;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import backend.auth.api.exception.ErrorMsgModel;
 
 public class BookingManagementImpl implements BookingManagement{
 
@@ -138,7 +144,7 @@ public class BookingManagementImpl implements BookingManagement{
 //	}
 	@Override
 	public Response addBooking(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, BookingInputModel input) {
+			User user, ServiceContext serviceContext, BookingInputModel input, String jCaptchaResponse) {
 
 		long groupId = GetterUtil.getLong(input.getGroupIdBooking()) > 0 ? GetterUtil.getLong(input.getGroupIdBooking())
 				: GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -187,6 +193,47 @@ public class BookingManagementImpl implements BookingManagement{
 			boolean speaking = Boolean.valueOf(input.getSpeaking());
 			String bookingInTime = StringPool.BLANK;
 			if (online) {
+				//Check captcha
+				String captchaType = PropValues.CAPTCHA_TYPE;
+				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						_log.info("Check captcha result: " + isResponseCorrect);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
+
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+						}
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+					}
+				} else {
+					boolean isValid = actions.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
+
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				}
+				
 				_log.info("bookingDate: "+bookingDate);
 				List bookingList = actions.getBookingCounterOnline(groupId, bookingDateSearch, online, serviceContext);
 				if (bookingList != null && bookingList.size() > 0) {
@@ -575,10 +622,8 @@ public class BookingManagementImpl implements BookingManagement{
 							}
 						}
 					}
-
 				}
 			}
-
 
 			Booking booking = BookingLocalServiceUtil.getByClassName_PK(groupId, className, classPK);
 			if (booking != null) {
