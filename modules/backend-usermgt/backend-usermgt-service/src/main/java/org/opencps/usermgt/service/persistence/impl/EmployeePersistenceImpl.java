@@ -1702,91 +1702,151 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 	private static final String _FINDER_COLUMN_F_MAPPINGUSERID_GROUPID_2 = "employee.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_F_MAPPINGUSERID_MAPPINGUSERID_2 = "employee.mappingUserId = ?";
-	public static final FinderPath FINDER_PATH_FETCH_BY_FB_MUID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_FB_MUID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
 			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
-			FINDER_CLASS_NAME_ENTITY, "fetchByFB_MUID",
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByFB_MUID",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID =
+		new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
+			EmployeeModelImpl.FINDER_CACHE_ENABLED, EmployeeImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByFB_MUID",
 			new String[] { Long.class.getName() },
-			EmployeeModelImpl.MAPPINGUSERID_COLUMN_BITMASK);
+			EmployeeModelImpl.MAPPINGUSERID_COLUMN_BITMASK |
+			EmployeeModelImpl.EMPLOYEENO_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_FB_MUID = new FinderPath(EmployeeModelImpl.ENTITY_CACHE_ENABLED,
 			EmployeeModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByFB_MUID",
 			new String[] { Long.class.getName() });
 
 	/**
-	 * Returns the employee where mappingUserId = &#63; or throws a {@link NoSuchEmployeeException} if it could not be found.
+	 * Returns all the employees where mappingUserId = &#63;.
 	 *
 	 * @param mappingUserId the mapping user ID
-	 * @return the matching employee
-	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 * @return the matching employees
 	 */
 	@Override
-	public Employee findByFB_MUID(long mappingUserId)
-		throws NoSuchEmployeeException {
-		Employee employee = fetchByFB_MUID(mappingUserId);
+	public List<Employee> findByFB_MUID(long mappingUserId) {
+		return findByFB_MUID(mappingUserId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
 
-		if (employee == null) {
-			StringBundler msg = new StringBundler(4);
+	/**
+	 * Returns a range of all the employees where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @return the range of matching employees
+	 */
+	@Override
+	public List<Employee> findByFB_MUID(long mappingUserId, int start, int end) {
+		return findByFB_MUID(mappingUserId, start, end, null);
+	}
 
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+	/**
+	 * Returns an ordered range of all the employees where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByFB_MUID(long mappingUserId, int start, int end,
+		OrderByComparator<Employee> orderByComparator) {
+		return findByFB_MUID(mappingUserId, start, end, orderByComparator, true);
+	}
 
-			msg.append("mappingUserId=");
-			msg.append(mappingUserId);
+	/**
+	 * Returns an ordered range of all the employees where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of employees
+	 * @param end the upper bound of the range of employees (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching employees
+	 */
+	@Override
+	public List<Employee> findByFB_MUID(long mappingUserId, int start, int end,
+		OrderByComparator<Employee> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-			msg.append("}");
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(msg.toString());
-			}
-
-			throw new NoSuchEmployeeException(msg.toString());
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID;
+			finderArgs = new Object[] { mappingUserId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_FB_MUID;
+			finderArgs = new Object[] {
+					mappingUserId,
+					
+					start, end, orderByComparator
+				};
 		}
 
-		return employee;
-	}
-
-	/**
-	 * Returns the employee where mappingUserId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param mappingUserId the mapping user ID
-	 * @return the matching employee, or <code>null</code> if a matching employee could not be found
-	 */
-	@Override
-	public Employee fetchByFB_MUID(long mappingUserId) {
-		return fetchByFB_MUID(mappingUserId, true);
-	}
-
-	/**
-	 * Returns the employee where mappingUserId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param mappingUserId the mapping user ID
-	 * @param retrieveFromCache whether to retrieve from the finder cache
-	 * @return the matching employee, or <code>null</code> if a matching employee could not be found
-	 */
-	@Override
-	public Employee fetchByFB_MUID(long mappingUserId, boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] { mappingUserId };
-
-		Object result = null;
+		List<Employee> list = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_FB_MUID,
+			list = (List<Employee>)finderCache.getResult(finderPath,
 					finderArgs, this);
-		}
 
-		if (result instanceof Employee) {
-			Employee employee = (Employee)result;
+			if ((list != null) && !list.isEmpty()) {
+				for (Employee employee : list) {
+					if ((mappingUserId != employee.getMappingUserId())) {
+						list = null;
 
-			if ((mappingUserId != employee.getMappingUserId())) {
-				result = null;
+						break;
+					}
+				}
 			}
 		}
 
-		if (result == null) {
-			StringBundler query = new StringBundler(3);
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
 
 			query.append(_SQL_SELECT_EMPLOYEE_WHERE);
 
 			query.append(_FINDER_COLUMN_FB_MUID_MAPPINGUSERID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+			}
 
 			String sql = query.toString();
 
@@ -1801,34 +1861,25 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 				qPos.add(mappingUserId);
 
-				List<Employee> list = q.list();
+				if (!pagination) {
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end, false);
 
-				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_FB_MUID,
-						finderArgs, list);
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
 				}
 				else {
-					if (list.size() > 1) {
-						Collections.sort(list, Collections.reverseOrder());
-
-						if (_log.isWarnEnabled()) {
-							_log.warn(
-								"EmployeePersistenceImpl.fetchByFB_MUID(long, boolean) with parameters (" +
-								StringUtil.merge(finderArgs) +
-								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
-						}
-					}
-
-					Employee employee = list.get(0);
-
-					result = employee;
-
-					cacheResult(employee);
+					list = (List<Employee>)QueryUtil.list(q, getDialect(),
+							start, end);
 				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_MUID,
-					finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -1837,26 +1888,273 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			}
 		}
 
-		if (result instanceof List<?>) {
+		return list;
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByFB_MUID_First(long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByFB_MUID_First(mappingUserId,
+				orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the first employee in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByFB_MUID_First(long mappingUserId,
+		OrderByComparator<Employee> orderByComparator) {
+		List<Employee> list = findByFB_MUID(mappingUserId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee
+	 * @throws NoSuchEmployeeException if a matching employee could not be found
+	 */
+	@Override
+	public Employee findByFB_MUID_Last(long mappingUserId,
+		OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = fetchByFB_MUID_Last(mappingUserId, orderByComparator);
+
+		if (employee != null) {
+			return employee;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchEmployeeException(msg.toString());
+	}
+
+	/**
+	 * Returns the last employee in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	 */
+	@Override
+	public Employee fetchByFB_MUID_Last(long mappingUserId,
+		OrderByComparator<Employee> orderByComparator) {
+		int count = countByFB_MUID(mappingUserId);
+
+		if (count == 0) {
 			return null;
 		}
+
+		List<Employee> list = findByFB_MUID(mappingUserId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the employees before and after the current employee in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param employeeId the primary key of the current employee
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next employee
+	 * @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	 */
+	@Override
+	public Employee[] findByFB_MUID_PrevAndNext(long employeeId,
+		long mappingUserId, OrderByComparator<Employee> orderByComparator)
+		throws NoSuchEmployeeException {
+		Employee employee = findByPrimaryKey(employeeId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Employee[] array = new EmployeeImpl[3];
+
+			array[0] = getByFB_MUID_PrevAndNext(session, employee,
+					mappingUserId, orderByComparator, true);
+
+			array[1] = employee;
+
+			array[2] = getByFB_MUID_PrevAndNext(session, employee,
+					mappingUserId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Employee getByFB_MUID_PrevAndNext(Session session,
+		Employee employee, long mappingUserId,
+		OrderByComparator<Employee> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
 		else {
-			return (Employee)result;
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_EMPLOYEE_WHERE);
+
+		query.append(_FINDER_COLUMN_FB_MUID_MAPPINGUSERID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(EmployeeModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(mappingUserId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(employee);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Employee> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
 		}
 	}
 
 	/**
-	 * Removes the employee where mappingUserId = &#63; from the database.
+	 * Removes all the employees where mappingUserId = &#63; from the database.
 	 *
 	 * @param mappingUserId the mapping user ID
-	 * @return the employee that was removed
 	 */
 	@Override
-	public Employee removeByFB_MUID(long mappingUserId)
-		throws NoSuchEmployeeException {
-		Employee employee = findByFB_MUID(mappingUserId);
-
-		return remove(employee);
+	public void removeByFB_MUID(long mappingUserId) {
+		for (Employee employee : findByFB_MUID(mappingUserId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(employee);
+		}
 	}
 
 	/**
@@ -6465,9 +6763,6 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			new Object[] { employee.getGroupId(), employee.getMappingUserId() },
 			employee);
 
-		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_MUID,
-			new Object[] { employee.getMappingUserId() }, employee);
-
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_EMPNO,
 			new Object[] { employee.getGroupId(), employee.getEmployeeNo() },
 			employee);
@@ -6560,13 +6855,6 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPINGUSERID, args,
 			employeeModelImpl, false);
 
-		args = new Object[] { employeeModelImpl.getMappingUserId() };
-
-		finderCache.putResult(FINDER_PATH_COUNT_BY_FB_MUID, args,
-			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_FB_MUID, args,
-			employeeModelImpl, false);
-
 		args = new Object[] {
 				employeeModelImpl.getGroupId(),
 				employeeModelImpl.getEmployeeNo()
@@ -6619,23 +6907,6 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPINGUSERID, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MAPPINGUSERID, args);
-		}
-
-		if (clearCurrent) {
-			Object[] args = new Object[] { employeeModelImpl.getMappingUserId() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_MUID, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_MUID, args);
-		}
-
-		if ((employeeModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_FB_MUID.getColumnBitmask()) != 0) {
-			Object[] args = new Object[] {
-					employeeModelImpl.getOriginalMappingUserId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_MUID, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_FB_MUID, args);
 		}
 
 		if (clearCurrent) {
@@ -6857,6 +7128,12 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] { employeeModelImpl.getMappingUserId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_MUID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID,
+				args);
+
 			args = new Object[] { employeeModelImpl.getGroupId() };
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GROUPID, args);
@@ -6946,6 +7223,23 @@ public class EmployeePersistenceImpl extends BasePersistenceImpl<Employee>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((employeeModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						employeeModelImpl.getOriginalMappingUserId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_MUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID,
+					args);
+
+				args = new Object[] { employeeModelImpl.getMappingUserId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_FB_MUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FB_MUID,
 					args);
 			}
 

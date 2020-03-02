@@ -149,7 +149,7 @@
 			<finder-column name="mappingUserId"></finder-column>
 		</finder>
 
-		<finder return-type="Employee" name="FB_MUID">
+		<finder return-type="Collection" name="FB_MUID">
 			<finder-column name="mappingUserId"/>
 		</finder>
 		
@@ -587,7 +587,7 @@
 			<finder-column name="contactEmail"/>
 		</finder>
 		
-		<finder return-type="Applicant" name="F_MAPPING_ID" unique="true">
+		<finder return-type="Collection" name="F_MAPPING_ID">
 			<finder-column name="mappingUserId"/>
 		</finder>
 

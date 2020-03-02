@@ -19,32 +19,54 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="applicantName" type="String" />
+		<field name="applicantName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
 		<field name="applicantIdDate" type="Date" />
-		<field name="address" type="String" />
+		<field name="address" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="cityCode" type="String" />
-		<field name="cityName" type="String" />
+		<field name="cityName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="districtCode" type="String" />
-		<field name="districtName" type="String" />
+		<field name="districtName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="wardCode" type="String" />
-		<field name="wardName" type="String" />
+		<field name="wardName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="contactName" type="String" />
 		<field name="contactTelNo" type="String" />
-		<field name="contactEmail" type="String" />
+		<field name="contactEmail" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="mappingUserId" type="long" />
 		<field name="activationCode" type="String" />
 		<field name="lock_" type="Boolean" />
-		<field name="profile" type="String" />
+		<field name="profile" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 		<field name="tmpPass" type="String" />
-		<field name="representativeEnterprise" type="String" />
+		<field name="representativeEnterprise" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="verification" type="Integer" />
-		<field name="mappingClassName" type="String" />
-		<field name="mappingClassPK" type="String" />
+		<field name="mappingClassName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="mappingClassPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />

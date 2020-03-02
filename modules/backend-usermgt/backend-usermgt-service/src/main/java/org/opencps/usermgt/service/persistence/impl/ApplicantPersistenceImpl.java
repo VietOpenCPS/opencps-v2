@@ -2913,92 +2913,155 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_1 = "applicant.contactEmail IS NULL";
 	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_2 = "applicant.contactEmail = ?";
 	private static final String _FINDER_COLUMN_F_GID_CTEM_CONTACTEMAIL_3 = "(applicant.contactEmail IS NULL OR applicant.contactEmail = '')";
-	public static final FinderPath FINDER_PATH_FETCH_BY_F_MAPPING_ID = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_MAPPING_ID =
+		new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
 			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
-			FINDER_CLASS_NAME_ENTITY, "fetchByF_MAPPING_ID",
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_MAPPING_ID",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID =
+		new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantModelImpl.FINDER_CACHE_ENABLED, ApplicantImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_MAPPING_ID",
 			new String[] { Long.class.getName() },
-			ApplicantModelImpl.MAPPINGUSERID_COLUMN_BITMASK);
+			ApplicantModelImpl.MAPPINGUSERID_COLUMN_BITMASK |
+			ApplicantModelImpl.APPLICANTNAME_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_MAPPING_ID = new FinderPath(ApplicantModelImpl.ENTITY_CACHE_ENABLED,
 			ApplicantModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_MAPPING_ID",
 			new String[] { Long.class.getName() });
 
 	/**
-	 * Returns the applicant where mappingUserId = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	 * Returns all the applicants where mappingUserId = &#63;.
 	 *
 	 * @param mappingUserId the mapping user ID
-	 * @return the matching applicant
-	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 * @return the matching applicants
 	 */
 	@Override
-	public Applicant findByF_MAPPING_ID(long mappingUserId)
-		throws NoSuchApplicantException {
-		Applicant applicant = fetchByF_MAPPING_ID(mappingUserId);
+	public List<Applicant> findByF_MAPPING_ID(long mappingUserId) {
+		return findByF_MAPPING_ID(mappingUserId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
 
-		if (applicant == null) {
-			StringBundler msg = new StringBundler(4);
+	/**
+	 * Returns a range of all the applicants where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @return the range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_MAPPING_ID(long mappingUserId, int start,
+		int end) {
+		return findByF_MAPPING_ID(mappingUserId, start, end, null);
+	}
 
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+	/**
+	 * Returns an ordered range of all the applicants where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_MAPPING_ID(long mappingUserId, int start,
+		int end, OrderByComparator<Applicant> orderByComparator) {
+		return findByF_MAPPING_ID(mappingUserId, start, end, orderByComparator,
+			true);
+	}
 
-			msg.append("mappingUserId=");
-			msg.append(mappingUserId);
+	/**
+	 * Returns an ordered range of all the applicants where mappingUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param start the lower bound of the range of applicants
+	 * @param end the upper bound of the range of applicants (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching applicants
+	 */
+	@Override
+	public List<Applicant> findByF_MAPPING_ID(long mappingUserId, int start,
+		int end, OrderByComparator<Applicant> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-			msg.append("}");
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(msg.toString());
-			}
-
-			throw new NoSuchApplicantException(msg.toString());
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID;
+			finderArgs = new Object[] { mappingUserId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_MAPPING_ID;
+			finderArgs = new Object[] {
+					mappingUserId,
+					
+					start, end, orderByComparator
+				};
 		}
 
-		return applicant;
-	}
-
-	/**
-	 * Returns the applicant where mappingUserId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param mappingUserId the mapping user ID
-	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
-	 */
-	@Override
-	public Applicant fetchByF_MAPPING_ID(long mappingUserId) {
-		return fetchByF_MAPPING_ID(mappingUserId, true);
-	}
-
-	/**
-	 * Returns the applicant where mappingUserId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param mappingUserId the mapping user ID
-	 * @param retrieveFromCache whether to retrieve from the finder cache
-	 * @return the matching applicant, or <code>null</code> if a matching applicant could not be found
-	 */
-	@Override
-	public Applicant fetchByF_MAPPING_ID(long mappingUserId,
-		boolean retrieveFromCache) {
-		Object[] finderArgs = new Object[] { mappingUserId };
-
-		Object result = null;
+		List<Applicant> list = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
+			list = (List<Applicant>)finderCache.getResult(finderPath,
 					finderArgs, this);
-		}
 
-		if (result instanceof Applicant) {
-			Applicant applicant = (Applicant)result;
+			if ((list != null) && !list.isEmpty()) {
+				for (Applicant applicant : list) {
+					if ((mappingUserId != applicant.getMappingUserId())) {
+						list = null;
 
-			if ((mappingUserId != applicant.getMappingUserId())) {
-				result = null;
+						break;
+					}
+				}
 			}
 		}
 
-		if (result == null) {
-			StringBundler query = new StringBundler(3);
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
 
 			query.append(_SQL_SELECT_APPLICANT_WHERE);
 
 			query.append(_FINDER_COLUMN_F_MAPPING_ID_MAPPINGUSERID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ApplicantModelImpl.ORDER_BY_JPQL);
+			}
 
 			String sql = query.toString();
 
@@ -3013,23 +3076,25 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 				qPos.add(mappingUserId);
 
-				List<Applicant> list = q.list();
+				if (!pagination) {
+					list = (List<Applicant>)QueryUtil.list(q, getDialect(),
+							start, end, false);
 
-				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
-						finderArgs, list);
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
 				}
 				else {
-					Applicant applicant = list.get(0);
-
-					result = applicant;
-
-					cacheResult(applicant);
+					list = (List<Applicant>)QueryUtil.list(q, getDialect(),
+							start, end);
 				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
-					finderArgs);
+				finderCache.removeResult(finderPath, finderArgs);
 
 				throw processException(e);
 			}
@@ -3038,26 +3103,274 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 			}
 		}
 
-		if (result instanceof List<?>) {
+		return list;
+	}
+
+	/**
+	 * Returns the first applicant in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_MAPPING_ID_First(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_MAPPING_ID_First(mappingUserId,
+				orderByComparator);
+
+		if (applicant != null) {
+			return applicant;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchApplicantException(msg.toString());
+	}
+
+	/**
+	 * Returns the first applicant in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_MAPPING_ID_First(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator) {
+		List<Applicant> list = findByF_MAPPING_ID(mappingUserId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last applicant in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching applicant
+	 * @throws NoSuchApplicantException if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant findByF_MAPPING_ID_Last(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = fetchByF_MAPPING_ID_Last(mappingUserId,
+				orderByComparator);
+
+		if (applicant != null) {
+			return applicant;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("mappingUserId=");
+		msg.append(mappingUserId);
+
+		msg.append("}");
+
+		throw new NoSuchApplicantException(msg.toString());
+	}
+
+	/**
+	 * Returns the last applicant in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching applicant, or <code>null</code> if a matching applicant could not be found
+	 */
+	@Override
+	public Applicant fetchByF_MAPPING_ID_Last(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator) {
+		int count = countByF_MAPPING_ID(mappingUserId);
+
+		if (count == 0) {
 			return null;
 		}
+
+		List<Applicant> list = findByF_MAPPING_ID(mappingUserId, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the applicants before and after the current applicant in the ordered set where mappingUserId = &#63;.
+	 *
+	 * @param applicantId the primary key of the current applicant
+	 * @param mappingUserId the mapping user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next applicant
+	 * @throws NoSuchApplicantException if a applicant with the primary key could not be found
+	 */
+	@Override
+	public Applicant[] findByF_MAPPING_ID_PrevAndNext(long applicantId,
+		long mappingUserId, OrderByComparator<Applicant> orderByComparator)
+		throws NoSuchApplicantException {
+		Applicant applicant = findByPrimaryKey(applicantId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Applicant[] array = new ApplicantImpl[3];
+
+			array[0] = getByF_MAPPING_ID_PrevAndNext(session, applicant,
+					mappingUserId, orderByComparator, true);
+
+			array[1] = applicant;
+
+			array[2] = getByF_MAPPING_ID_PrevAndNext(session, applicant,
+					mappingUserId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Applicant getByF_MAPPING_ID_PrevAndNext(Session session,
+		Applicant applicant, long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
 		else {
-			return (Applicant)result;
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_APPLICANT_WHERE);
+
+		query.append(_FINDER_COLUMN_F_MAPPING_ID_MAPPINGUSERID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ApplicantModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(mappingUserId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(applicant);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Applicant> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
 		}
 	}
 
 	/**
-	 * Removes the applicant where mappingUserId = &#63; from the database.
+	 * Removes all the applicants where mappingUserId = &#63; from the database.
 	 *
 	 * @param mappingUserId the mapping user ID
-	 * @return the applicant that was removed
 	 */
 	@Override
-	public Applicant removeByF_MAPPING_ID(long mappingUserId)
-		throws NoSuchApplicantException {
-		Applicant applicant = findByF_MAPPING_ID(mappingUserId);
-
-		return remove(applicant);
+	public void removeByF_MAPPING_ID(long mappingUserId) {
+		for (Applicant applicant : findByF_MAPPING_ID(mappingUserId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(applicant);
+		}
 	}
 
 	/**
@@ -5204,9 +5517,6 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 			new Object[] { applicant.getGroupId(), applicant.getContactEmail() },
 			applicant);
 
-		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID,
-			new Object[] { applicant.getMappingUserId() }, applicant);
-
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_MCN_MCPK,
 			new Object[] {
 				applicant.getGroupId(), applicant.getMappingClassName(),
@@ -5341,13 +5651,6 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 		finderCache.putResult(FINDER_PATH_COUNT_BY_F_GID_CTEM, args,
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_F_GID_CTEM, args,
-			applicantModelImpl, false);
-
-		args = new Object[] { applicantModelImpl.getMappingUserId() };
-
-		finderCache.putResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args,
-			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID, args,
 			applicantModelImpl, false);
 
 		args = new Object[] {
@@ -5497,23 +5800,6 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_GID_CTEM, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_GID_CTEM, args);
-		}
-
-		if (clearCurrent) {
-			Object[] args = new Object[] { applicantModelImpl.getMappingUserId() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID, args);
-		}
-
-		if ((applicantModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_F_MAPPING_ID.getColumnBitmask()) != 0) {
-			Object[] args = new Object[] {
-					applicantModelImpl.getOriginalMappingUserId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_F_MAPPING_ID, args);
 		}
 
 		if (clearCurrent) {
@@ -5737,6 +6023,12 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] { applicantModelImpl.getMappingUserId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID,
+				args);
+
 			args = new Object[] {
 					applicantModelImpl.getGroupId(),
 					applicantModelImpl.getApplicantIdType()
@@ -5799,6 +6091,23 @@ public class ApplicantPersistenceImpl extends BasePersistenceImpl<Applicant>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((applicantModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						applicantModelImpl.getOriginalMappingUserId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID,
+					args);
+
+				args = new Object[] { applicantModelImpl.getMappingUserId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_MAPPING_ID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_MAPPING_ID,
 					args);
 			}
 

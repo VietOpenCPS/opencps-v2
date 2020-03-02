@@ -547,7 +547,9 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			return (Employee)userSerialize;
 		}
 		else {
-			Employee tempE = employeePersistence.fetchByFB_MUID(mappingUserId);
+			List<Employee> lstTempEs = employeePersistence.findByFB_MUID(mappingUserId);
+			
+			Employee tempE = lstTempEs.size() > 0 ? lstTempEs.get(0) : null;
 			if (tempE != null) {
 				try {
 					cache.addToCache("EmployeeMapping",
