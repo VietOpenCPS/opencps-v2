@@ -116,12 +116,13 @@ public class DossierDocumentModelImpl extends BaseModelImpl<DossierDocument>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.DossierDocument"),
 			true);
-	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 1L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
+	public static final long DOCUMENTTYPE_COLUMN_BITMASK = 1L;
+	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierDocument"));
 
@@ -460,7 +461,17 @@ public class DossierDocumentModelImpl extends BaseModelImpl<DossierDocument>
 
 	@Override
 	public void setDocumentType(String documentType) {
+		_columnBitmask |= DOCUMENTTYPE_COLUMN_BITMASK;
+
+		if (_originalDocumentType == null) {
+			_originalDocumentType = _documentType;
+		}
+
 		_documentType = documentType;
+	}
+
+	public String getOriginalDocumentType() {
+		return GetterUtil.getString(_originalDocumentType);
 	}
 
 	@Override
@@ -638,6 +649,8 @@ public class DossierDocumentModelImpl extends BaseModelImpl<DossierDocument>
 		dossierDocumentModelImpl._originalDossierActionId = dossierDocumentModelImpl._dossierActionId;
 
 		dossierDocumentModelImpl._setOriginalDossierActionId = false;
+
+		dossierDocumentModelImpl._originalDocumentType = dossierDocumentModelImpl._documentType;
 
 		dossierDocumentModelImpl._columnBitmask = 0;
 	}
@@ -851,6 +864,7 @@ public class DossierDocumentModelImpl extends BaseModelImpl<DossierDocument>
 	private long _originalDossierActionId;
 	private boolean _setOriginalDossierActionId;
 	private String _documentType;
+	private String _originalDocumentType;
 	private String _documentName;
 	private String _documentCode;
 	private long _documentFileId;

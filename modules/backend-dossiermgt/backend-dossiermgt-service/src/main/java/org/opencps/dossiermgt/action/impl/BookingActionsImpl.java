@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.action.BookingActions;
 import org.opencps.dossiermgt.model.Booking;
@@ -53,14 +54,14 @@ public class BookingActionsImpl implements BookingActions {
 	@Override
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode,
-			ServiceContext serviceContext) {
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, boolean online,
+			String bookingInTime, String telNo, ServiceContext serviceContext) {
 
 		try {
 
 			return BookingLocalServiceUtil.updateBooking(userId, groupId, bookingId, className, classPK, serviceCode,
 					codeNumber, bookingName, gateNumber, state, checkinDate, bookingDate, speaking, serviceGroupCode,
-					serviceContext);
+					online, bookingInTime, telNo, serviceContext);
 		} catch (Exception e) {
 			_log.debug(e);
 		}
@@ -76,6 +77,23 @@ public class BookingActionsImpl implements BookingActions {
 			_log.debug(e);
 			return null;
 		}
+	}
+
+	@Override
+	public List getBookingCounterOnline(long groupIdBooking, String bookingDate, boolean online, ServiceContext serviceContext) {
+		try {
+
+			return BookingLocalServiceUtil.getByGID_DATE(groupIdBooking, bookingDate, online, serviceContext);
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return null;
+	}
+
+	@Override
+	public Booking getByCodeNumber(String codeNumber) {
+		return BookingLocalServiceUtil.getByCodeNumber(codeNumber);
 	}
 
 

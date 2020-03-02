@@ -206,7 +206,8 @@ import javax.xml.bind.annotation.XmlType;
     "documentDate",
     "lock",
     "timeOverdueText",
-    "systemId"
+    "systemId",
+    "dossierCounter"
 })
 public class DossierDataModel {
 
@@ -319,6 +320,15 @@ public class DossierDataModel {
     protected String lock;
     protected String timeOverdueText;
     protected Integer systemId;
+    protected String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public Integer getSystemId() {
 		return systemId;

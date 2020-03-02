@@ -151,10 +151,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 	@Override
 	public Response printDossierDocument(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String documentType) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		long dossierId = GetterUtil.getLong(id);
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		try {
 
@@ -162,7 +163,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 				throw new UnauthenticationException();
 			}
 
-			List<DossierDocument> dossierDocList = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, 0, 5);
+			List<DossierDocument> dossierDocList = null;
+			if (Validator.isNull(documentType)) {
+				dossierDocList = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossierId, 0, 5);
+			} else {
+				dossierDocList = DossierDocumentLocalServiceUtil.getByG_DocTypeList(groupId,
+						dossierId, documentType, 0, 5);
+			}
 			DossierDocument dossierDoc = null;
 			if (dossierDocList  != null && dossierDocList.size() > 0) {
 				dossierDoc = dossierDocList.get(0);

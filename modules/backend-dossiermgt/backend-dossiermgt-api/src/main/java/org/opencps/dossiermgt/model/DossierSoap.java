@@ -130,6 +130,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setGroupDossierId(model.getGroupDossierId());
 		soapModel.setMetaData(model.getMetaData());
 		soapModel.setSystemId(model.getSystemId());
+		soapModel.setDossierCounter(model.getDossierCounter());
 
 		return soapModel;
 	}
@@ -974,6 +975,14 @@ public class DossierSoap implements Serializable {
 		_systemId = systemId;
 	}
 
+	public String getDossierCounter() {
+		return _dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		_dossierCounter = dossierCounter;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1071,4 +1080,5 @@ public class DossierSoap implements Serializable {
 	private long _groupDossierId;
 	private String _metaData;
 	private int _systemId;
+	private String _dossierCounter;
 }

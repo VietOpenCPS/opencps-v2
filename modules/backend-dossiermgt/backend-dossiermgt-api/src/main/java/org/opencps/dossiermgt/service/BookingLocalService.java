@@ -265,7 +265,15 @@ public interface BookingLocalService extends BaseLocalService,
 	public int getBookingsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Booking getByClassName_PK(String className, long classPK);
+	public Booking getByClassName_PK(long groupId, String className,
+		long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Booking getByCodeNumber(String codeNumber);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List getByGID_DATE(long groupIdBooking, String bookingDate,
+		boolean online, ServiceContext serviceContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -305,5 +313,6 @@ public interface BookingLocalService extends BaseLocalService,
 		String className, long classPK, String serviceCode, String codeNumber,
 		String bookingName, String gateNumber, Integer state, Date checkinDate,
 		Date bookingDate, boolean speaking, String serviceGroupCode,
+		boolean online, String bookingInTime, String telNo,
 		ServiceContext serviceContext);
 }

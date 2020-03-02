@@ -294,8 +294,23 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.Booking getByClassName_PK(
-		String className, long classPK) {
-		return _bookingLocalService.getByClassName_PK(className, classPK);
+		long groupId, String className, long classPK) {
+		return _bookingLocalService.getByClassName_PK(groupId, className,
+			classPK);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Booking getByCodeNumber(
+		String codeNumber) {
+		return _bookingLocalService.getByCodeNumber(codeNumber);
+	}
+
+	@Override
+	public java.util.List getByGID_DATE(long groupIdBooking,
+		String bookingDate, boolean online,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return _bookingLocalService.getByGID_DATE(groupIdBooking, bookingDate,
+			online, serviceContext);
 	}
 
 	@Override
@@ -355,11 +370,12 @@ public class BookingLocalServiceWrapper implements BookingLocalService,
 		String serviceCode, String codeNumber, String bookingName,
 		String gateNumber, Integer state, java.util.Date checkinDate,
 		java.util.Date bookingDate, boolean speaking, String serviceGroupCode,
+		boolean online, String bookingInTime, String telNo,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _bookingLocalService.updateBooking(userId, groupId, bookingId,
 			className, classPK, serviceCode, codeNumber, bookingName,
 			gateNumber, state, checkinDate, bookingDate, speaking,
-			serviceGroupCode, serviceContext);
+			serviceGroupCode, online, bookingInTime, telNo, serviceContext);
 	}
 
 	@Override

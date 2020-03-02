@@ -58,6 +58,7 @@ public class ServiceProcessSoap implements Serializable {
 		soapModel.setRequestPayment(model.isRequestPayment());
 		soapModel.setPaymentFee(model.getPaymentFee());
 		soapModel.setDossierGroupPattern(model.getDossierGroupPattern());
+		soapModel.setCounterCode(model.getCounterCode());
 
 		return soapModel;
 	}
@@ -330,6 +331,14 @@ public class ServiceProcessSoap implements Serializable {
 		_dossierGroupPattern = dossierGroupPattern;
 	}
 
+	public String getCounterCode() {
+		return _counterCode;
+	}
+
+	public void setCounterCode(String counterCode) {
+		_counterCode = counterCode;
+	}
+
 	private String _uuid;
 	private long _serviceProcessId;
 	private long _companyId;
@@ -355,4 +364,5 @@ public class ServiceProcessSoap implements Serializable {
 	private boolean _requestPayment;
 	private String _paymentFee;
 	private String _dossierGroupPattern;
+	private String _counterCode;
 }

@@ -250,6 +250,11 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(templateNo)) {
 				template = SpecialCharacterUtils.splitSpecial(templateNo);
 			}
+			String dossierCounter = query.getDossierCounter();
+			String dossierCounterSearch = StringPool.BLANK;
+			if (Validator.isNotNull(dossierCounter)) {
+				dossierCounterSearch = SpecialCharacterUtils.splitSpecial(dossierCounter);
+			}
 			// Integer originality =
 			// GetterUtil.getInteger(query.getOriginality());
 			// String originality = query.getOriginality();
@@ -493,6 +498,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
 			params.put(DossierTerm.REGISTER, query.getRegister());
+			params.put(DossierTerm.DOSSIER_COUNTER_SEARCH, dossierCounterSearch);
 
 			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
 			params.put(DossierTerm.BACKLOG, query.getBacklog());

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
 import java.net.URI;
@@ -602,7 +603,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
 
-//		long dossierId = GetterUtil.getLong(id);
+		long dossierId = GetterUtil.getLong(id);
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -613,27 +614,27 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 
-//			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-//			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
+			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
 
-//			if (paymentFile.getInvoiceFileEntryId() > 0) {
-			long getInvoiceFileEntryId = 0;
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(getInvoiceFileEntryId);
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
 
-			File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-					true);
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
 
-			ResponseBuilder responseBuilder = Response.ok((Object) file);
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-			responseBuilder.header("Content-Disposition",
-					"attachment; filename=\"" + fileEntry.getFileName() + "\"");
-			responseBuilder.header("Content-Type", fileEntry.getMimeType());
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
-			return responseBuilder.build();
-//			} else {
-//				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-//			}
+				return responseBuilder.build();
+
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -903,5 +904,122 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}		
+	}
+
+	@Override
+	public Response updateByPaymentFileId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			Dossier dossier = getDossier(id, groupId);
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long dossierId = dossier.getDossierId();
+	
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+			String referenceUid = input.getReferenceUid();
+			if (Validator.isNull(referenceUid)) {
+				referenceUid = PortalUUIDUtil.generate();
+			}
+	
+			if (Validator.isNotNull(input.getInvoiceTemplateNo())) {
+				paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			}
+			if(Validator.isNotNull(input.getConfirmFileEntryId())){
+				paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			}
+			if(Validator.isNotNull(input.getPaymentStatus())){
+				paymentFile.setPaymentStatus(input.getPaymentStatus());
+			}
+			if(Validator.isNotNull(input.getEinvoice())) {
+				paymentFile.setEinvoice(input.getEinvoice());
+			}
+			if(Validator.isNotNull(input.getPaymentAmount())) {
+				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentMethod())){
+				paymentFile.setPaymentMethod(input.getPaymentMethod());
+			}
+			if(Validator.isNotNull(input.getServiceAmount())){
+				paymentFile.setServiceAmount(input.getServiceAmount());
+			}
+			if(Validator.isNotNull(input.getShipAmount())){
+				paymentFile.setShipAmount(input.getShipAmount());
+			}
+			if(Validator.isNotNull(input.getAdvanceAmount())){
+				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
+			}
+			if(Validator.isNotNull(input.getFeeAmount())){
+				paymentFile.setFeeAmount(input.getFeeAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentNote())){
+				paymentFile.setPaymentNote(input.getPaymentNote());
+			}
+			//Update Invoice File EntryId
+			//PaymentFileActions action = new PaymentFileActionsImpl();
+			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+			
+			String formData = JSONFactoryUtil.looseSerialize(paymentFile);
+			String formReport = paymentConfig.getInvoiceForm();
+
+			ObjectMapper mapper = new ObjectMapper();
+	        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
+
+	        map.put("applicantName", dossier.getApplicantName());
+	        
+	        StringBuilder address = new StringBuilder();
+			address.append(dossier.getAddress());address.append(", ");
+			address.append(dossier.getWardName());address.append(", ");
+			address.append(dossier.getDistrictName());address.append(", ");
+			address.append(dossier.getCityName());
+	        
+	        map.put("address", address.toString());
+	        
+	        String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
+	        map.put("numToWord", num);
+	        map.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
+	        map.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
+	        map.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
+	        
+	        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
+	        if(Validator.isNotNull(workingUnit)) {
+	        	map.put("govAddress", workingUnit.getAddress());
+	        }else {
+	        	map.put("govAddress", "");
+	        }
+	        
+	        formData = mapper.writeValueAsString(map);
+	        //_log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
+			
+			Message message = new Message();
+
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
+			msgData.put("className", PaymentFile.class.getName());
+			msgData.put("classPK", paymentFile.getPaymentFileId());
+			msgData.put("jrxmlTemplate", formReport);
+			msgData.put("formData", formData);
+			msgData.put("userId", serviceContext.getUserId());
+			
+			message.put("msgToEngine", msgData);
+			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			
+			//message.put("formReport", formReport);
+			//message.put("formData", formData);
+			//message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
+			//message.setResponseDestinationName("jasper/engine/preview/callback");
+
+			paymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			//
+			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
+	
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }
