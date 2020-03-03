@@ -100,7 +100,7 @@ public class UserLoginModelImpl extends BaseModelImpl<UserLogin>
 		TABLE_COLUMNS_MAP.put("online_", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_userlogin (uuid_ VARCHAR(75) null,userLoginId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(75) null,hits INTEGER,logout DATE null,ipAddress VARCHAR(75) null,online_ BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_userlogin (uuid_ VARCHAR(75) null,userLoginId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(75) null,hits INTEGER,logout DATE null,ipAddress VARCHAR(255) null,online_ BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_userlogin";
 	public static final String ORDER_BY_JPQL = " ORDER BY userLogin.userLoginId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_userlogin.userLoginId ASC";

@@ -4,11 +4,11 @@ create table m_jobposwork (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	jobPostId LONG,
-	checklistCat VARCHAR(75) null
+	checklistCat VARCHAR(512) null
 );
 
 create table opencps_answer (
@@ -64,17 +64,17 @@ create table opencps_employee (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	employeeNo VARCHAR(75) null,
-	fullName VARCHAR(75) null,
-	title VARCHAR(75) null,
+	fullName VARCHAR(1024) null,
+	title VARCHAR(1024) null,
 	gender INTEGER,
 	birthdate DATE null,
 	telNo VARCHAR(75) null,
 	mobile VARCHAR(75) null,
-	email VARCHAR(75) null,
+	email VARCHAR(512) null,
 	workingStatus INTEGER,
 	mappingUserId LONG,
 	mainJobPostId LONG,
@@ -83,9 +83,9 @@ create table opencps_employee (
 	leaveDate DATE null,
 	fileCertId LONG,
 	fileSignId LONG,
-	fileCertPath VARCHAR(75) null,
-	fileSignPath VARCHAR(75) null,
-	scope VARCHAR(75) null
+	fileCertPath VARCHAR(512) null,
+	fileSignPath VARCHAR(512) null,
+	scope VARCHAR(128) null
 );
 
 create table opencps_employee_jobpos (
@@ -94,7 +94,7 @@ create table opencps_employee_jobpos (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	employeeId LONG,
@@ -107,10 +107,10 @@ create table opencps_hmacauth (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	secret VARCHAR(75) null,
+	secret VARCHAR(255) null,
 	permanent BOOLEAN
 );
 
@@ -120,12 +120,12 @@ create table opencps_jobpos (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	jobPosCode VARCHAR(75) null,
-	title VARCHAR(75) null,
-	description VARCHAR(75) null,
+	title VARCHAR(255) null,
+	description TEXT null,
 	mappingRoleId LONG,
 	leader INTEGER
 );
@@ -136,21 +136,21 @@ create table opencps_officesite (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	name VARCHAR(75) null,
-	enName VARCHAR(75) null,
+	name VARCHAR(512) null,
+	enName VARCHAR(512) null,
 	govAgencyCode VARCHAR(75) null,
-	address VARCHAR(75) null,
+	address VARCHAR(1024) null,
 	telNo VARCHAR(75) null,
 	faxNo VARCHAR(75) null,
-	email VARCHAR(75) null,
-	website VARCHAR(75) null,
+	email VARCHAR(255) null,
+	website VARCHAR(255) null,
 	logoFileEntryId LONG,
 	siteGroupId LONG,
 	adminUserId LONG,
-	preferences VARCHAR(75) null,
+	preferences TEXT null,
 	ceremonyDate DATE null
 );
 
@@ -160,10 +160,10 @@ create table opencps_preferences (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	preferences VARCHAR(75) null
+	preferences TEXT null
 );
 
 create table opencps_question (
@@ -172,19 +172,19 @@ create table opencps_question (
 	groupId LONG,
 	createDate DATE null,
 	modifiedDate DATE null,
-	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
-	content VARCHAR(75) null,
+	fullname VARCHAR(512) null,
+	email VARCHAR(255) null,
+	content TEXT null,
 	publish INTEGER,
 	domainCode VARCHAR(75) null,
-	domainName VARCHAR(75) null,
+	domainName VARCHAR(1024) null,
 	govAgencyCode VARCHAR(75) null,
-	govAgencyName VARCHAR(75) null,
+	govAgencyName VARCHAR(1024) null,
 	questionType VARCHAR(75) null,
 	subDomainCode VARCHAR(75) null,
-	subDomainName VARCHAR(75) null,
+	subDomainName VARCHAR(1024) null,
 	phone VARCHAR(75) null,
-	address VARCHAR(75) null
+	address TEXT null
 );
 
 create table opencps_resourcerole (
@@ -193,11 +193,11 @@ create table opencps_resourcerole (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
-	classPK VARCHAR(75) null,
+	className VARCHAR(255) null,
+	classPK VARCHAR(255) null,
 	roleId LONG,
 	readonly INTEGER
 );
@@ -208,14 +208,14 @@ create table opencps_resourceuser (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
+	className VARCHAR(255) null,
 	classPK VARCHAR(75) null,
 	toUserId LONG,
-	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
+	fullname VARCHAR(1024) null,
+	email VARCHAR(255) null,
 	readonly BOOLEAN
 );
 
@@ -225,13 +225,13 @@ create table opencps_userlogin (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	sessionId VARCHAR(75) null,
 	hits INTEGER,
 	logout DATE null,
-	ipAddress VARCHAR(75) null,
+	ipAddress VARCHAR(255) null,
 	online_ BOOLEAN
 );
 
@@ -241,7 +241,7 @@ create table opencps_usertrackpath (
 	companyId LONG,
 	modifiedDate DATE null,
 	userLoginId LONG,
-	path_ VARCHAR(75) null,
+	path_ VARCHAR(255) null,
 	pathDate DATE null
 );
 
@@ -251,13 +251,13 @@ create table opencps_visibility (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
-	classPK VARCHAR(75) null,
+	className VARCHAR(255) null,
+	classPK VARCHAR(255) null,
 	visibility INTEGER,
-	security VARCHAR(75) null
+	security VARCHAR(255) null
 );
 
 create table opencps_workingunit (
@@ -266,20 +266,20 @@ create table opencps_workingunit (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	name VARCHAR(75) null,
-	enName VARCHAR(75) null,
+	name VARCHAR(512) null,
+	enName VARCHAR(512) null,
 	govAgencyCode VARCHAR(75) null,
 	parentWorkingUnitId LONG,
 	sibling VARCHAR(75) null,
 	treeIndex VARCHAR(75) null,
-	address VARCHAR(75) null,
+	address TEXT null,
 	telNo VARCHAR(75) null,
 	faxNo VARCHAR(75) null,
-	email VARCHAR(75) null,
-	website VARCHAR(75) null,
+	email VARCHAR(255) null,
+	website VARCHAR(255) null,
 	logoFileEntryId LONG,
 	level INTEGER,
 	ceremonyDate DATE null

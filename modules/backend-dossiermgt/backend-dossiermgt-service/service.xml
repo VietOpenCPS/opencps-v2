@@ -1496,7 +1496,7 @@
 			<finder-column name="serviceProcessId" />
             <finder-column name="preStepCode" />
 		</finder>
-		<finder return-type="ProcessAction" name="F_GID_SID_AC_PRE_POST" unique="true">
+		<finder return-type="ProcessAction" name="F_GID_SID_AC_PRE_POST">
 			<finder-column name="groupId" />
 			<finder-column name="serviceProcessId" />
 			<finder-column name="actionCode" />
