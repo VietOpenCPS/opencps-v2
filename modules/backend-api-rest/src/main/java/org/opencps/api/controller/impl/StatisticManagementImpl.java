@@ -229,7 +229,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				for (int i = 0; i < menuConfigList.size(); i++) {
 					menuConfigArr[i] = menuConfigList.get(i);
 				}
-				_log.info("menuConfigList: "+JSONFactoryUtil.looseSerialize(menuConfigList));
+				//_log.info("menuConfigList: "+JSONFactoryUtil.looseSerialize(menuConfigList));
 			}
 			//Applicant
 			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
@@ -487,13 +487,13 @@ public class StatisticManagementImpl implements StatisticManagement {
 													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
 													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 													
-													_log.info("paramMenuDetail1: "+paramMenuDetail);
+													//_log.info("paramMenuDetail1: "+paramMenuDetail);
 													paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
 													//
-													_log.info("paramMenuDetail12: "+paramMenuDetail);
+													//_log.info("paramMenuDetail12: "+paramMenuDetail);
 													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
 															null, serviceContext);
-													_log.info("count: "+count);
+													//_log.info("count: "+count);
 													JSONObject statistic = JSONFactoryUtil.createJSONObject();
 													statistic.put("stepCode", step.getStepCode());
 													statistic.put("stepName", step.getStepName());

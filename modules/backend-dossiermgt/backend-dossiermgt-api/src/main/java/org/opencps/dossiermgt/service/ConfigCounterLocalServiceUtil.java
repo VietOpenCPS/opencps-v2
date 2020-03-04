@@ -54,6 +54,10 @@ public class ConfigCounterLocalServiceUtil {
 		return getService().addConfigCounter(configCounter);
 	}
 
+	public static long countByGroupId(long groupId) {
+		return getService().countByGroupId(groupId);
+	}
+
 	/**
 	* Creates a new config counter with the primary key. Does not add the config counter to the database.
 	*
@@ -202,6 +206,11 @@ public class ConfigCounterLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ConfigCounter> getByGroupId(
+		long groupId, int start, int end) {
+		return getService().getByGroupId(groupId, start, end);
+	}
+
 	/**
 	* Returns the config counter with the primary key.
 	*
@@ -317,6 +326,15 @@ public class ConfigCounterLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.ConfigCounter updateConfigCounter(
 		org.opencps.dossiermgt.model.ConfigCounter configCounter) {
 		return getService().updateConfigCounter(configCounter);
+	}
+
+	public static org.opencps.dossiermgt.model.ConfigCounter updateConfigCounter(
+		long groupId, long userId, long configCounterId, String counterCode,
+		String patternCode, int startCounter,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .updateConfigCounter(groupId, userId, configCounterId,
+			counterCode, patternCode, startCounter, serviceContext);
 	}
 
 	public static ConfigCounterLocalService getService() {
