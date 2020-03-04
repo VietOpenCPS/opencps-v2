@@ -2235,7 +2235,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 
 			try {
-				if (Validator.isNotNull(option) && Validator.isNull(dossier.getDossierNo())) {
+				if (Validator.isNotNull(option) && Validator.isNull(dossier.getDossierNo())
+						&& dossier.getOriginDossierId() > 0) {
+
 					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
 							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
