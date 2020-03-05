@@ -251,7 +251,9 @@ public class CPSDossierBusinessLocalServiceImpl
 	CacheActions cache = new CacheActionsImpl();
 	int ttl = OpenCPSConfigUtil.getCacheTTL();
 	
-	private Dossier createCrossDossier(long groupId, ProcessAction proAction, ProcessStep curStep, DossierAction previousAction, Employee employee, Dossier dossier, User user, ServiceContext context) 
+	private Dossier createCrossDossier(long groupId, ProcessAction proAction, ProcessStep curStep, DossierAction previousAction, Employee employee, Dossier dossier, User user, 
+			JSONObject payloadObj,
+			ServiceContext context) 
 		throws PortalException {
 		if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			//Create new HSLT
@@ -327,6 +329,12 @@ public class CPSDossierBusinessLocalServiceImpl
 					//String delegateTelNo = dossier.getDelegateTelNo();
 					//String delegateEmail = dossier.getDelegateEmail();
 					//String delegateIdNo = dossier.getGovAgencyCode();
+					
+					JSONObject crossDossierObj = JSONFactoryUtil.createJSONObject();
+					crossDossierObj.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossierTemplate.getTemplateNo());
+					crossDossierObj.put(DossierTerm.GOV_AGENCY_CODE, govAgencyCode);
+					crossDossierObj.put(DossierTerm.SERVICE_CODE, serviceCode);
+					payloadObj.put(DossierTerm.CROSS_DOSSIER, crossDossierObj);
 					
 					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
 					Dossier hsltDossier = null;
@@ -1149,7 +1157,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 			
 			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
-			Dossier hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier, user, context);
+			Dossier hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier, user, payloadObject, context);
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
 				if (Validator.isNull(hsltDossier)) {
 					return null;
@@ -1192,9 +1200,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		//Tạo thông tin đồng bộ hồ sơ
 		createDossierSync(groupId, userId, actionConfig, proAction, dossierAction, dossier, syncType, option, payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
-
+		
+		JSONObject newObj = JSONFactoryUtil.createJSONObject(payload);
+		if (payloadObject.has(DossierTerm.CROSS_DOSSIER)) {
+			newObj.put(DossierTerm.CROSS_DOSSIER, payloadObject.getJSONObject(DossierTerm.CROSS_DOSSIER));
+		}
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
-		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, payload, assignUsers, payment, context);
+		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(), assignUsers, payment, context);
 		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
@@ -4304,6 +4316,8 @@ public class CPSDossierBusinessLocalServiceImpl
 			throw new UnauthenticationException("No permission create dossier");
 		}
 		_log.debug("CREATE DOSSIER 1: " + (System.currentTimeMillis() - start) + " ms");
+		_log.debug("CREATE DOSSIER 1.X: " + input.getServiceCode() + ", " + input.getGovAgencyCode() + ", " + input.getDossierTemplateNo());
+		
 		dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(),
 				input.getGovAgencyCode(), input.getDossierTemplateNo());
 

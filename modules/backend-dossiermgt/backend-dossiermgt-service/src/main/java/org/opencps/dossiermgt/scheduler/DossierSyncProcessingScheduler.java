@@ -146,7 +146,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
 	private SchedulerEntryImpl _schedulerEntryImpl = null;
-	  
+	  	
 	private Log _log = LogFactoryUtil.getLog(DossierSyncProcessingScheduler.class);
 	
 }

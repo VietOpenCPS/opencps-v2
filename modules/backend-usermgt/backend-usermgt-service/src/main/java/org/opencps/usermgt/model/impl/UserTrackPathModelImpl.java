@@ -82,7 +82,7 @@ public class UserTrackPathModelImpl extends BaseModelImpl<UserTrackPath>
 		TABLE_COLUMNS_MAP.put("pathDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_usertrackpath (uuid_ VARCHAR(75) null,userTrackPathId LONG not null primary key,companyId LONG,modifiedDate DATE null,userLoginId LONG,path_ VARCHAR(75) null,pathDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_usertrackpath (uuid_ VARCHAR(75) null,userTrackPathId LONG not null primary key,companyId LONG,modifiedDate DATE null,userLoginId LONG,path_ VARCHAR(255) null,pathDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_usertrackpath";
 	public static final String ORDER_BY_JPQL = " ORDER BY userTrackPath.userTrackPathId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_usertrackpath.userTrackPathId ASC";

@@ -15,17 +15,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.v21.model.ActionConfigList;
 import org.opencps.api.v21.model.ApplicantList;
@@ -136,15 +134,92 @@ public class ReadXMLFileUtils {
 		return true;
 	}
 
+	private static File[] swapFile(File[] files, int i, int j) {
+		File temp = files[i];
+		files[i] = files[j];
+		files[j] = temp;
+		return files;
+	}
+	
 	//LamTV_Process get list file of folder
 	public static String listFilesForParentFolder(File fileList, long groupId, long userId,
 			ServiceContext serviceContext) throws Exception {
 		StringBuilder strFileSucess = new StringBuilder();
 		File[] files = fileList.listFiles();
 		String folderParentPath = fileList.getPath();
-		if (files != null && files.length > 0) {
-			for (File fileEntry : files) {
+		String[] fileNames = new String[] {
+			ConstantUtils.SOURCE_DICTS,
+			ConstantUtils.XML_STEP_CONFIG,
+			ConstantUtils.XML_ACTION_CONFIG,
+			ConstantUtils.XML_DOCUMENT_TYPE,
+			ConstantUtils.XML_DELIVERABLE_TYPE,
+			ConstantUtils.XML_PAYMENT_CONFIG,
+			ConstantUtils.XML_SERVER_CONFIG,
+			ConstantUtils.XML_NOTIFICATION_TEMPLATE,
+			ConstantUtils.XML_USERS,
+			ConstantUtils.XML_MENU_CONFIG,
+			ConstantUtils.XML_DYNAMIC_REPORT,
+			ConstantUtils.XML_HOLIDAY,
+			ConstantUtils.XML_APPLICANT,
+			ConstantUtils.XML_WORKING_TIME,
+			ConstantUtils.SOURCE_TEMPLATES,
+			ConstantUtils.SOURCE_PROCESSES,
+			ConstantUtils.SOURCE_SERVICES
+		};
+
+		for (int j = 0; j < fileNames.length; j++) {
+			boolean checkNames = false;
+			
+			for (int i = 0; i < files.length; i++) {
+				int index = files[i].getPath().lastIndexOf(File.separator);
+				String subFolder = files[i].getPath().substring(index + 1);
+				
+				if (subFolder.contains(fileNames[j]) && j < files.length) {
+//					_log.info("Sub folder: "+subFolder + ", " + fileNames[j] + ", " + files[i].getPath());
+				}
+				else if (subFolder.contains(fileNames[j]) && j >= files.length) {
+//					_log.info("Sub folder remove: "+subFolder + ", " + fileNames[j] + ", " + files[i].getPath());
+				}		
+				if (subFolder.contains(fileNames[j])) {
+					checkNames = true;					
+				}
+			}
+			if (!checkNames) {
+				ArrayUtils.removeElement(fileNames, j);				
+			}
+		}
+		List<File> lstFiles = new ArrayList<File>();
+		
+		for (int j = 0; j < fileNames.length; j++) {
+			for (int i = 0; i < files.length; i++) {
+				int index = files[i].getPath().lastIndexOf(File.separator);
+				String subFolder = files[i].getPath().substring(index + 1);
+				if (subFolder.contains(fileNames[j])) {
+					lstFiles.add(files[i]);
+				}				
+			}
+		}
+		File[] preFiles = new File[lstFiles.size()];
+		for (int i = 0; i < lstFiles.size(); i++) {
+			preFiles[i] = lstFiles.get(i);
+		}
+//		for (int i = 0; i < files.length; i++) {
+//			int index = files[i].getPath().lastIndexOf(File.separator);
+//			String subFolder = files[i].getPath().substring(index + 1);
+//			for (int j = 0; j < fileNames.length; j++) {
+//				if (subFolder.contains(fileNames[j]) && j < files.length) {
+//					files = swapFile(files, i, j);
+//				}
+//			}
+//		}
+		List<String> lstPreFileNames = new ArrayList<String>();
+		for (File f : preFiles) {
+			lstPreFileNames.add(f.getPath());
+		}
+		if (preFiles != null && preFiles.length > 0) {
+			for (File fileEntry : preFiles) {
 				if (fileEntry.isDirectory()) {
+					_log.info("Process file: "+fileEntry.getPath());
 					String strChidFile = listFilesForFolder(fileEntry, fileEntry.getPath(), folderParentPath, groupId, userId,
 							serviceContext);
 					//
@@ -160,6 +235,32 @@ public class ReadXMLFileUtils {
 						strFileSucess.append(strParentFile);
 						strFileSucess.append(ConstantUtils.HTML_NEW_LINE);
 					}
+				}
+			}
+		}
+		
+		if (files != null && files.length > 0) {
+			for (File fileEntry : files) {
+				if (!lstPreFileNames.contains(fileEntry.getPath())) {
+//					_log.info("Process file: "+fileEntry.getPath());
+					if (fileEntry.isDirectory()) {
+						_log.info("Process file: "+fileEntry.getPath());
+						String strChidFile = listFilesForFolder(fileEntry, fileEntry.getPath(), folderParentPath, groupId, userId,
+								serviceContext);
+						//
+						strFileSucess.append(strChidFile);
+						strFileSucess.append(ConstantUtils.HTML_NEW_LINE);
+					} else {
+						String fileName = fileEntry.getName();
+						String subFileName = ImportZipFileUtils.getSubFileName(fileName);
+						if (Validator.isNotNull(subFileName)) {
+							String xmlString = convertFiletoString(fileEntry);
+							String strParentFile = compareParentFile(folderParentPath, fileName, xmlString, groupId, userId, serviceContext);
+							//
+							strFileSucess.append(strParentFile);
+							strFileSucess.append(ConstantUtils.HTML_NEW_LINE);
+						}
+					}					
 				}
 			}
 		}

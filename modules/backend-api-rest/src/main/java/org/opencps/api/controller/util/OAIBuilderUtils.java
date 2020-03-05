@@ -49,7 +49,7 @@ public class OAIBuilderUtils {
 	public void destroy() {
 		query = null;
 		results = null;
-		instance = null;
+//		instance = null;
 	}
 
 	private void init() {

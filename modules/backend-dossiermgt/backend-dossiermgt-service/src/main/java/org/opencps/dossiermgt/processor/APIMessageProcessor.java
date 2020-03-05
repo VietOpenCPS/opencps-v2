@@ -477,7 +477,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			return false;
 		}
 		
-		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier);
+		DossierInputModel model = OpenCPSConverter.convertDossierToInputModel(dossier, dossierSync);
 		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
 //			model.setOriginality(DossierTerm.ORIGINALITY_HSLT);
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
@@ -486,6 +486,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
 		}
 //		model.setOnline("true");
+		_log.info("DEBUG SYNC DOSSIER: " + model.getServiceCode() + ", " + model.getGovAgencyCode() + ", " + model.getDossierTemplateNo());
+		
 		DossierDetailModel result = client.postDossier(model);
 		StringBuilder messageText = new StringBuilder();
 		messageText.append(ConstantUtils.POST_DOSSIER);

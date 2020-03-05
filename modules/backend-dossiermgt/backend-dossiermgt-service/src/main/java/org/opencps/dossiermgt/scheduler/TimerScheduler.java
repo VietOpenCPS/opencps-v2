@@ -35,7 +35,6 @@ import java.util.Map;
 
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -364,7 +363,7 @@ public class TimerScheduler extends BaseMessageListener {
 	protected void setSchedulerEngineHelper(SchedulerEngineHelper schedulerEngineHelper) {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
-
+	
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;

@@ -247,20 +247,36 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="contactTelNo" type="String" />
-		<field name="contactEmail" type="String" />
+		<field name="contactEmail" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="delegateType" type="int" />
-		<field name="delegateName" type="String" />
+		<field name="delegateName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="delegateIdNo" type="String" />
 		<field name="delegateTelNo" type="String" />
-		<field name="delegateEmail" type="String" />
-		<field name="delegateAddress" type="String" />
+		<field name="delegateEmail" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="delegateAddress" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="delegateCityCode" type="String" />
-		<field name="delegateCityName" type="String" />
+		<field name="delegateCityName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="delegateDistrictCode" type="String" />
-		<field name="delegateDistrictName" type="String" />
+		<field name="delegateDistrictName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="delegateWardCode" type="String" />
-		<field name="delegateWardName" type="String" />
-		<field name="documentNo" type="String" />
+		<field name="delegateWardName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="documentNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="documentDate" type="Date" />
 		<field name="dossierTemplateNo" type="String" />
 		<field name="dossierTemplateName" type="String">

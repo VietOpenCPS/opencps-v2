@@ -360,4 +360,6 @@ public class DossierTerm {
 	public static final String PENDING = "pendding";
 	public static final String WAITING = "waiting";
 	public static final String STEP_DONE_CODE = "400";
+	
+	public static final String CROSS_DOSSIER = "crossDossier";
 }

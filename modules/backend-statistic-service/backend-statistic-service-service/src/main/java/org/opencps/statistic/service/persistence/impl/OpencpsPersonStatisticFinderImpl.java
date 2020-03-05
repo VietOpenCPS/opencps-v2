@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.opencps.statistic.model.OpencpsPersonStatistic;
 import org.opencps.statistic.model.impl.OpencpsPersonStatisticImpl;
-import org.opencps.statistic.model.impl.OpencpsVotingStatisticImpl;
 import org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder;
 
 public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFinderBaseImpl
@@ -233,7 +232,7 @@ public class OpencpsPersonStatisticFinderImpl extends OpencpsPersonStatisticFind
 			SQLQuery q = session.createSQLQuery(sql);
 
 			q.setCacheable(false);
-			q.addEntity("OpencpsPersonStatistic", OpencpsVotingStatisticImpl.class);
+			q.addEntity("OpencpsPersonStatistic", OpencpsPersonStatisticImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 

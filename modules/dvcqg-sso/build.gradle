@@ -20,7 +20,7 @@ dependencies {
     compileOnly group: 'com.liferay', name: 'com.liferay.portal.security.auto.login', version: '4.0.11'
 }
 
-apply plugin: 'java' 
+//apply plugin: 'java' 
 apply plugin: 'war'
 
 repositories {

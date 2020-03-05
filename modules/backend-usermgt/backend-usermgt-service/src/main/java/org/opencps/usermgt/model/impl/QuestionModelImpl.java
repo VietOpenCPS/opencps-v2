@@ -105,7 +105,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("address", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(75) null,email VARCHAR(75) null,content VARCHAR(75) null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(75) null,phone VARCHAR(75) null,address VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(1024) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(1024) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(1024) null,phone VARCHAR(75) null,address TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";

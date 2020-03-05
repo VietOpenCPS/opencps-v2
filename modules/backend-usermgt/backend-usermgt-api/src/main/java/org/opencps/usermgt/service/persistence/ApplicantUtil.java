@@ -848,49 +848,154 @@ public class ApplicantUtil {
 	}
 
 	/**
-	* Returns the applicant where mappingUserId = &#63; or throws a {@link NoSuchApplicantException} if it could not be found.
+	* Returns all the applicants where mappingUserId = &#63;.
 	*
 	* @param mappingUserId the mapping user ID
-	* @return the matching applicant
-	* @throws NoSuchApplicantException if a matching applicant could not be found
+	* @return the matching applicants
 	*/
-	public static Applicant findByF_MAPPING_ID(long mappingUserId)
-		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+	public static List<Applicant> findByF_MAPPING_ID(long mappingUserId) {
 		return getPersistence().findByF_MAPPING_ID(mappingUserId);
 	}
 
 	/**
-	* Returns the applicant where mappingUserId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	* Returns a range of all the applicants where mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param mappingUserId the mapping user ID
-	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @return the range of matching applicants
 	*/
-	public static Applicant fetchByF_MAPPING_ID(long mappingUserId) {
-		return getPersistence().fetchByF_MAPPING_ID(mappingUserId);
+	public static List<Applicant> findByF_MAPPING_ID(long mappingUserId,
+		int start, int end) {
+		return getPersistence().findByF_MAPPING_ID(mappingUserId, start, end);
 	}
 
 	/**
-	* Returns the applicant where mappingUserId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	* Returns an ordered range of all the applicants where mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
 	*
 	* @param mappingUserId the mapping user ID
-	* @param retrieveFromCache whether to retrieve from the finder cache
-	* @return the matching applicant, or <code>null</code> if a matching applicant could not be found
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching applicants
 	*/
-	public static Applicant fetchByF_MAPPING_ID(long mappingUserId,
+	public static List<Applicant> findByF_MAPPING_ID(long mappingUserId,
+		int start, int end, OrderByComparator<Applicant> orderByComparator) {
+		return getPersistence()
+				   .findByF_MAPPING_ID(mappingUserId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the applicants where mappingUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ApplicantModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param mappingUserId the mapping user ID
+	* @param start the lower bound of the range of applicants
+	* @param end the upper bound of the range of applicants (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching applicants
+	*/
+	public static List<Applicant> findByF_MAPPING_ID(long mappingUserId,
+		int start, int end, OrderByComparator<Applicant> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
-				   .fetchByF_MAPPING_ID(mappingUserId, retrieveFromCache);
+				   .findByF_MAPPING_ID(mappingUserId, start, end,
+			orderByComparator, retrieveFromCache);
 	}
 
 	/**
-	* Removes the applicant where mappingUserId = &#63; from the database.
+	* Returns the first applicant in the ordered set where mappingUserId = &#63;.
 	*
 	* @param mappingUserId the mapping user ID
-	* @return the applicant that was removed
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
 	*/
-	public static Applicant removeByF_MAPPING_ID(long mappingUserId)
+	public static Applicant findByF_MAPPING_ID_First(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator)
 		throws org.opencps.usermgt.exception.NoSuchApplicantException {
-		return getPersistence().removeByF_MAPPING_ID(mappingUserId);
+		return getPersistence()
+				   .findByF_MAPPING_ID_First(mappingUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the first applicant in the ordered set where mappingUserId = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_MAPPING_ID_First(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_MAPPING_ID_First(mappingUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last applicant in the ordered set where mappingUserId = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant
+	* @throws NoSuchApplicantException if a matching applicant could not be found
+	*/
+	public static Applicant findByF_MAPPING_ID_Last(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence()
+				   .findByF_MAPPING_ID_Last(mappingUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last applicant in the ordered set where mappingUserId = &#63;.
+	*
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching applicant, or <code>null</code> if a matching applicant could not be found
+	*/
+	public static Applicant fetchByF_MAPPING_ID_Last(long mappingUserId,
+		OrderByComparator<Applicant> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_MAPPING_ID_Last(mappingUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the applicants before and after the current applicant in the ordered set where mappingUserId = &#63;.
+	*
+	* @param applicantId the primary key of the current applicant
+	* @param mappingUserId the mapping user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next applicant
+	* @throws NoSuchApplicantException if a applicant with the primary key could not be found
+	*/
+	public static Applicant[] findByF_MAPPING_ID_PrevAndNext(long applicantId,
+		long mappingUserId, OrderByComparator<Applicant> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchApplicantException {
+		return getPersistence()
+				   .findByF_MAPPING_ID_PrevAndNext(applicantId, mappingUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the applicants where mappingUserId = &#63; from the database.
+	*
+	* @param mappingUserId the mapping user ID
+	*/
+	public static void removeByF_MAPPING_ID(long mappingUserId) {
+		getPersistence().removeByF_MAPPING_ID(mappingUserId);
 	}
 
 	/**

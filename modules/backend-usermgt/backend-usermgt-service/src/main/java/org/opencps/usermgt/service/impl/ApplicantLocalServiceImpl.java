@@ -102,8 +102,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	private static Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 	public Applicant fetchByMappingID(long mappingID) {
-
-		return applicantPersistence.fetchByF_MAPPING_ID(mappingID);
+		List<Applicant> lstApps = applicantPersistence.findByF_MAPPING_ID(mappingID);
+		Applicant res = (lstApps.size() > 0) ? lstApps.get(0) : null;
+		return res;
 	}
 
 	public Applicant fetchByEmail(String email) {

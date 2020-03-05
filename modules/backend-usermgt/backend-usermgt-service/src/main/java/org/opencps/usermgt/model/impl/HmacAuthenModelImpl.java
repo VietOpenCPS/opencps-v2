@@ -90,7 +90,7 @@ public class HmacAuthenModelImpl extends BaseModelImpl<HmacAuthen>
 		TABLE_COLUMNS_MAP.put("permanent", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_hmacauth (hmacAuthId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,secret VARCHAR(75) null,permanent BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_hmacauth (hmacAuthId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,secret VARCHAR(255) null,permanent BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_hmacauth";
 	public static final String ORDER_BY_JPQL = " ORDER BY hmacAuthen.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_hmacauth.createDate ASC";

@@ -195,7 +195,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 								if (dossier.getDurationUnit() == 0) {
 
 									result.setStepOverdue(
-										overType +
+										overType + StringPool.SPACE +
 											dueDateUtils.getOverDueCalcToString());
 								}
 								else {

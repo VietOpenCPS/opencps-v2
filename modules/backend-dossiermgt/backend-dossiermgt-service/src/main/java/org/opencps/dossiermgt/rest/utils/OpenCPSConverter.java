@@ -41,6 +41,7 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
@@ -984,13 +985,40 @@ public class OpenCPSConverter {
 		return model;
 	}		
 	
-	public static DossierInputModel convertDossierToInputModel(Dossier dossier) {
+	public static DossierInputModel convertDossierToInputModel(Dossier dossier, DossierSync dossierSync) {
 		DossierInputModel model = new DossierInputModel();
 		model.setReferenceUid(dossier.getReferenceUid());
-		model.setServiceCode(dossier.getServiceCode());
+		if (Validator.isNotNull(dossierSync.getPayload())) {
+			try {
+				JSONObject payloadObj = JSONFactoryUtil.createJSONObject(dossierSync.getPayload());
+				if (payloadObj.has(DossierTerm.CROSS_DOSSIER)) {
+					JSONObject crossObj = payloadObj.getJSONObject(DossierTerm.CROSS_DOSSIER);
+					if (crossObj.has(DossierTerm.SERVICE_CODE)) {
+						model.setServiceCode(crossObj.getString(DossierTerm.SERVICE_CODE));						
+					}
+					if (crossObj.has(DossierTerm.GOV_AGENCY_CODE)) {
+						model.setGovAgencyCode(crossObj.getString(DossierTerm.GOV_AGENCY_CODE));						
+					}
+					if (crossObj.has(DossierTerm.DOSSIER_TEMPLATE_NO)) {
+						model.setDossierTemplateNo(crossObj.getString(DossierTerm.DOSSIER_TEMPLATE_NO));	
+					}
+				}
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+			
+		}
+		if (Validator.isNull(model.getServiceCode())) {
+			model.setServiceCode(dossier.getServiceCode());			
+		}
 		model.setServiceName(dossier.getServiceName());
-		model.setGovAgencyCode(dossier.getGovAgencyCode());
-		model.setDossierTemplateNo(dossier.getDossierTemplateNo());
+		if (Validator.isNull(model.getGovAgencyCode())) {
+			model.setGovAgencyCode(dossier.getGovAgencyCode());
+		}
+		if (Validator.isNull(model.getDossierTemplateNo())) {
+			model.setDossierTemplateNo(dossier.getDossierTemplateNo());
+		}
 		model.setApplicantName(dossier.getApplicantName());
 		model.setApplicantIdType(dossier.getApplicantIdType());
 		model.setApplicantIdNo(dossier.getApplicantIdNo());

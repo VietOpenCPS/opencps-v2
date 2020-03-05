@@ -99,7 +99,7 @@ public class ResourceRoleModelImpl extends BaseModelImpl<ResourceRole>
 		TABLE_COLUMNS_MAP.put("readonly", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_resourcerole (uuid_ VARCHAR(75) null,resourceRoleId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,roleId LONG,readonly INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_resourcerole (uuid_ VARCHAR(75) null,resourceRoleId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,classPK VARCHAR(255) null,roleId LONG,readonly INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_resourcerole";
 	public static final String ORDER_BY_JPQL = " ORDER BY resourceRole.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_resourcerole.createDate ASC";

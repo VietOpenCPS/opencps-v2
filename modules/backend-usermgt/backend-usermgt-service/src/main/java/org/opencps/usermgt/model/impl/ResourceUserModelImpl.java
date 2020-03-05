@@ -103,7 +103,7 @@ public class ResourceUserModelImpl extends BaseModelImpl<ResourceUser>
 		TABLE_COLUMNS_MAP.put("readonly", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_resourceuser (uuid_ VARCHAR(75) null,resourceUserId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,toUserId LONG,fullname VARCHAR(75) null,email VARCHAR(75) null,readonly BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_resourceuser (uuid_ VARCHAR(75) null,resourceUserId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,classPK VARCHAR(75) null,toUserId LONG,fullname VARCHAR(1024) null,email VARCHAR(255) null,readonly BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_resourceuser";
 	public static final String ORDER_BY_JPQL = " ORDER BY resourceUser.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_resourceuser.createDate ASC";
