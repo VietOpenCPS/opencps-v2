@@ -2327,7 +2327,7 @@ public class CPSDossierBusinessLocalServiceImpl
 											+ counterConfig.getStartCounter());
 							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
 									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
-									patternCode, counterConfig.getStartCounter(), params);
+									patternCode, counterConfig, params);
 							dossier.setDossierCounter(dossierCounter.trim());
 							_log.info("dossierCounter: " + dossierCounter);
 						} catch (Exception e) {
@@ -2341,7 +2341,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									+ serviceProcess.getCounterCode());
 							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
 									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
-									patternCode, 0, params);
+									patternCode, counterConfig, params);
 							dossier.setDossierCounter(dossierCounter.trim());
 							_log.info("dossierCounter: " + dossierCounter);
 						} catch (Exception e) {
@@ -2384,7 +2384,7 @@ public class CPSDossierBusinessLocalServiceImpl
 											+ counterConfig.getStartCounter());
 							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
 									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
-									patternCode, counterConfig.getStartCounter(), params);
+									patternCode, counterConfig, params);
 							dossier.setDossierCounter(dossierCounter.trim());
 							_log.info("dossierCounter: " + dossierCounter);
 						} catch (Exception e) {
@@ -2398,7 +2398,7 @@ public class CPSDossierBusinessLocalServiceImpl
 									+ serviceProcess.getCounterCode());
 							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
 									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
-									patternCode, 0, params);
+									patternCode, counterConfig, params);
 							dossier.setDossierCounter(dossierCounter.trim());
 							_log.info("dossierCounter: " + dossierCounter);
 						} catch (Exception e) {

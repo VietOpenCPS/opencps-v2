@@ -20,10 +20,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.datamgt.utils.DateTimeUtils;
+import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -41,7 +43,7 @@ public class ConfigCounterNumberGenerator {
 	}
 
 	public static String generateCounterNumber(long groupId, long companyId, long dossierId, long processOtionId,
-			String seriNumberPattern, int startCounter, LinkedHashMap<String, Object> params, SearchContext... searchContext)
+			String seriNumberPattern, ConfigCounter configCounter, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -106,7 +108,7 @@ public class ConfigCounterNumberGenerator {
 					if (r.toString().equals(codePatternDate)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
-						String number = countByNumber(key, tmp, startCounter);
+						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -125,7 +127,7 @@ public class ConfigCounterNumberGenerator {
 					} else if (r.toString().equals(codePatternMonth)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
-						String number = countByNumber(key, tmp, startCounter);
+						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -144,7 +146,7 @@ public class ConfigCounterNumberGenerator {
 					} else if (r.toString().equals(codePatternYear)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
-						String number = countByNumber(key, tmp, startCounter);
+						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -163,7 +165,7 @@ public class ConfigCounterNumberGenerator {
 					} else if (r.toString().equals(codePatternService)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + dossier.getServiceCode();
-						String number = countByNumber(key, tmp, startCounter);
+						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -185,7 +187,7 @@ public class ConfigCounterNumberGenerator {
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + (Validator.isNotNull(govAgencyCode)
 								? govAgencyCode
 								: dossier.getGovAgencyCode());
-						String number = countByNumber(key, tmp, startCounter);
+						String number = countByNumber(key, tmp, configCounter);
 
 						//String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
@@ -297,7 +299,7 @@ public class ConfigCounterNumberGenerator {
 		return dossierNumber;
 	}
 
-	private static String countByNumber(String pattern, String tmp, int startCounter) {
+	private static String countByNumber(String pattern, String tmp, ConfigCounter configCounter) {
 
 		//long counter = CounterLocalServiceUtil.increment(pattern);
 		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
@@ -305,18 +307,18 @@ public class ConfigCounterNumberGenerator {
 
 		long _counterNumber = 0;
 		Counter counter = null;
-		Counter counterConfig = null;
+		Counter counterDetail = null;
 		_log.info("pattern" + pattern);
-		if (startCounter == 0) {
-			counterConfig = CounterLocalServiceUtil.fetchCounter(pattern);
+		if (configCounter.getStartCounter() == 0) {
+			counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 
-			if (Validator.isNotNull(counterConfig)) {
+			if (Validator.isNotNull(counterDetail)) {
 				// create counter config
-				_counterNumber = counterConfig.getCurrentId() + 1;
+				_counterNumber = counterDetail.getCurrentId() + 1;
 				while (counter == null) {
-					counterConfig.setCurrentId(_counterNumber);
+					counterDetail.setCurrentId(_counterNumber);
 					try {
-						counter = CounterLocalServiceUtil.updateCounter(counterConfig);
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
 					} catch (Exception e) {
 						_counterNumber += 1;
 						_log.debug(e);
@@ -328,13 +330,13 @@ public class ConfigCounterNumberGenerator {
 
 			} else {
 				_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-				counterConfig = CounterLocalServiceUtil.createCounter(pattern);
+				counterDetail = CounterLocalServiceUtil.createCounter(pattern);
 				// increment CurrentCounter
-				_counterNumber = counterConfig.getCurrentId() + 1;
+				_counterNumber = counterDetail.getCurrentId() + 1;
 				while (counter == null) {
-					counterConfig.setCurrentId(_counterNumber);
+					counterDetail.setCurrentId(_counterNumber);
 					try {
-						counter = CounterLocalServiceUtil.updateCounter(counterConfig);
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
 					} catch (Exception e) {
 						_counterNumber += 1;
 						_log.debug(e);
@@ -346,13 +348,16 @@ public class ConfigCounterNumberGenerator {
 			}
 		} else {
 			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-			counterConfig = CounterLocalServiceUtil.fetchCounter(pattern);
+			counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 			// increment CurrentCounter
-			_counterNumber = startCounter + 1;
+			_counterNumber = configCounter.getStartCounter() + 1;
 			while (counter == null) {
-				counterConfig.setCurrentId(_counterNumber);
+				counterDetail.setCurrentId(_counterNumber);
 				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterConfig);
+					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+					//
+					configCounter.setStartCounter(0);
+					ConfigCounterLocalServiceUtil.updateConfigCounter(configCounter);
 				} catch (Exception e) {
 					_counterNumber += 1;
 					_log.debug(e);

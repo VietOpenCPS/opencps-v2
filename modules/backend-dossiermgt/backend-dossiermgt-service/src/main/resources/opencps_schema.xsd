@@ -134,6 +134,7 @@
 				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
 				<xsd:element name="sampleCount" type="xsd:long" minOccurs="0" />
 				<xsd:element name="metaData" type="xsd:string" minOccurs="0" />
+				<xsd:element name="dossierCounter" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
