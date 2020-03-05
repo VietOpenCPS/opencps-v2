@@ -64,7 +64,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -106,6 +106,12 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		sb.append(serviceGroupCode);
 		sb.append(", count=");
 		sb.append(count);
+		sb.append(", online=");
+		sb.append(online);
+		sb.append(", bookingInTime=");
+		sb.append(bookingInTime);
+		sb.append(", telNo=");
+		sb.append(telNo);
 		sb.append("}");
 
 		return sb.toString();
@@ -211,6 +217,21 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		}
 
 		bookingImpl.setCount(count);
+		bookingImpl.setOnline(online);
+
+		if (bookingInTime == null) {
+			bookingImpl.setBookingInTime("");
+		}
+		else {
+			bookingImpl.setBookingInTime(bookingInTime);
+		}
+
+		if (telNo == null) {
+			bookingImpl.setTelNo("");
+		}
+		else {
+			bookingImpl.setTelNo(telNo);
+		}
 
 		bookingImpl.resetOriginalValues();
 
@@ -247,6 +268,10 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		serviceGroupCode = objectInput.readUTF();
 
 		count = objectInput.readInt();
+
+		online = objectInput.readBoolean();
+		bookingInTime = objectInput.readUTF();
+		telNo = objectInput.readUTF();
 	}
 
 	@Override
@@ -329,6 +354,22 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 		}
 
 		objectOutput.writeInt(count);
+
+		objectOutput.writeBoolean(online);
+
+		if (bookingInTime == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(bookingInTime);
+		}
+
+		if (telNo == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(telNo);
+		}
 	}
 
 	public String uuid;
@@ -351,4 +392,7 @@ public class BookingCacheModel implements CacheModel<Booking>, Externalizable {
 	public boolean speaking;
 	public String serviceGroupCode;
 	public int count;
+	public boolean online;
+	public String bookingInTime;
+	public String telNo;
 }

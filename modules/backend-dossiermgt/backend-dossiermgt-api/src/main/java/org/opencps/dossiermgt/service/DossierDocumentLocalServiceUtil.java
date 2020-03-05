@@ -250,6 +250,14 @@ public class DossierDocumentLocalServiceUtil {
 		return getService().getByActiocId(groupId, dossierActionId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierDocument> getByG_DocTypeList(
+		long groupId, long dossierId, String documentType, Integer start,
+		Integer end) {
+		return getService()
+				   .getByG_DocTypeList(groupId, dossierId, documentType, start,
+			end);
+	}
+
 	public static org.opencps.dossiermgt.model.DossierDocument getDocByReferenceUid(
 		long groupId, long dossierId, String referenceUid) {
 		return getService()

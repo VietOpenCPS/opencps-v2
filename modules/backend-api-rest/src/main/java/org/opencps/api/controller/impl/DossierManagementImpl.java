@@ -251,6 +251,11 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(templateNo)) {
 				template = SpecialCharacterUtils.splitSpecial(templateNo);
 			}
+			String dossierCounter = query.getDossierCounter();
+			String dossierCounterSearch = StringPool.BLANK;
+			if (Validator.isNotNull(dossierCounter)) {
+				dossierCounterSearch = SpecialCharacterUtils.splitSpecial(dossierCounter);
+			}
 			// Integer originality =
 			// GetterUtil.getInteger(query.getOriginality());
 			// String originality = query.getOriginality();
@@ -494,6 +499,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.ORIGIN, query.getOrigin());
 			params.put(DossierTerm.TIME, query.getTime());
 			params.put(DossierTerm.REGISTER, query.getRegister());
+			params.put(DossierTerm.DOSSIER_COUNTER_SEARCH, dossierCounterSearch);
 
 			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
 			params.put(DossierTerm.BACKLOG, query.getBacklog());
@@ -7105,67 +7111,84 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response putMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		BackendAuth auth = new BackendAuthImpl();
+			Locale locale, User user, ServiceContext serviceContext, String id, String metaData) {
+
+//		try {
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new Exception("Do not have permission");
+//			}
+//			Dossier dossier = DossierUtils.getDossier(id, groupId);
+//			if (dossier != null) {
+//				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+//				Enumeration<String> keyIt = request.getParameterNames();
+//				
+//				while (keyIt.hasMoreElements()) {
+//					String key = keyIt.nextElement();			
+//					String[] keys = key.split("\\.");
+//					JSONObject tempObj = obj;
+//					int index = 0;
+//					for (int i = 0; i < keys.length; i++) {
+//						if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+//							tempObj = tempObj.getJSONObject(keys[i]);
+//						}
+//						else {
+//							index = i;
+//							break;
+//						}
+//					}
+//					if (keys.length == 1) {
+//						obj.put(key, request.getParameter(key));																		
+//					}
+//					else {
+//						if (index == keys.length - 1) {
+//							tempObj.put(keys[index], request.getParameter(key));							
+//						}
+//						else {
+//							JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+//							mergeObj.put(keys[keys.length - 1], request.getParameter(key));
+//							for (int i = keys.length - 2; i > index; i--) {
+//								JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+//								indexObj.put(keys[i], mergeObj);
+//								mergeObj = indexObj;
+//							}
+//							tempObj.put(keys[index], mergeObj);
+//						}
+//					}
+//				}
+//				
+//				dossier.setMetaData(obj.toJSONString());
+//				DossierLocalServiceUtil.updateDossier(dossier);
+//				
+//				return Response.status(200).entity("{ 'ok': true }").build();
+//			}
+//			else {
+//				return Response.status(200).entity("{ 'ok': false }").build();				
+//			}
+//		}
+//		catch (Exception e) {
+//			_log.debug(e);
+//			return Response.status(
+//				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
+//				"Do not have permission").build();
+//		}
 		try {
-			if (!auth.isAuth(serviceContext)) {
-				throw new Exception("Do not have permission");
-			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
-			if (dossier != null) {
-				JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
-				Enumeration<String> keyIt = request.getParameterNames();
-				
-				while (keyIt.hasMoreElements()) {
-					String key = keyIt.nextElement();			
-					String[] keys = key.split("\\.");
-					JSONObject tempObj = obj;
-					int index = 0;
-					for (int i = 0; i < keys.length; i++) {
-						if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
-							tempObj = tempObj.getJSONObject(keys[i]);
-						}
-						else {
-							index = i;
-							break;
-						}
-					}
-					if (keys.length == 1) {
-						obj.put(key, request.getParameter(key));																		
-					}
-					else {
-						if (index == keys.length - 1) {
-							tempObj.put(keys[index], request.getParameter(key));							
-						}
-						else {
-							JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
-							mergeObj.put(keys[keys.length - 1], request.getParameter(key));
-							for (int i = keys.length - 2; i > index; i--) {
-								JSONObject indexObj = JSONFactoryUtil.createJSONObject();
-								indexObj.put(keys[i], mergeObj);
-								mergeObj = indexObj;
-							}
-							tempObj.put(keys[index], mergeObj);
-						}
-					}
-				}
-				
-				dossier.setMetaData(obj.toJSONString());
-				DossierLocalServiceUtil.updateDossier(dossier);
-				
-				return Response.status(200).entity("{ 'ok': true }").build();
-			}
-			else {
-				return Response.status(200).entity("{ 'ok': false }").build();				
-			}
+			JSONObject obj = JSONFactoryUtil.createJSONObject(metaData);
+			JSONObject metaDataOld = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+
+			JSONObject importD = ConvertDossierFromV1Dot9Utils.mergeJSONObject(metaDataOld, obj);
+			dossier.setMetaData(importD.toJSONString());
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+			return Response.status(200).entity(dossier.getMetaData()).build();
+
+		} catch (Exception e) {
+
+			_log.error(e);
+			return Response.status(404).entity("{ 'ok': false }").build();
 		}
-		catch (Exception e) {
-			_log.debug(e);
-			return Response.status(
-				HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
-				"Do not have permission").build();
-		}
+
 	}
 
 	@Override

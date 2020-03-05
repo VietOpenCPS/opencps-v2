@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(195);
+		StringBundler sb = new StringBundler(197);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -260,6 +260,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(metaData);
 		sb.append(", systemId=");
 		sb.append(systemId);
+		sb.append(", dossierCounter=");
+		sb.append(dossierCounter);
 		sb.append("}");
 
 		return sb.toString();
@@ -837,6 +839,13 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 		dossierImpl.setSystemId(systemId);
 
+		if (dossierCounter == null) {
+			dossierImpl.setDossierCounter("");
+		}
+		else {
+			dossierImpl.setDossierCounter(dossierCounter);
+		}
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -961,6 +970,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		metaData = objectInput.readUTF();
 
 		systemId = objectInput.readInt();
+		dossierCounter = objectInput.readUTF();
 	}
 
 	@Override
@@ -1464,6 +1474,13 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		}
 
 		objectOutput.writeInt(systemId);
+
+		if (dossierCounter == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(dossierCounter);
+		}
 	}
 
 	public String uuid;
@@ -1563,4 +1580,5 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public long groupDossierId;
 	public String metaData;
 	public int systemId;
+	public String dossierCounter;
 }

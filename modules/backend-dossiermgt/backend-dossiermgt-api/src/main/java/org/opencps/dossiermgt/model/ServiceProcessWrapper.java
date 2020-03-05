@@ -85,6 +85,7 @@ public class ServiceProcessWrapper implements ServiceProcess,
 		attributes.put("requestPayment", isRequestPayment());
 		attributes.put("paymentFee", getPaymentFee());
 		attributes.put("dossierGroupPattern", getDossierGroupPattern());
+		attributes.put("counterCode", getCounterCode());
 
 		return attributes;
 	}
@@ -242,6 +243,12 @@ public class ServiceProcessWrapper implements ServiceProcess,
 		if (dossierGroupPattern != null) {
 			setDossierGroupPattern(dossierGroupPattern);
 		}
+
+		String counterCode = (String)attributes.get("counterCode");
+
+		if (counterCode != null) {
+			setCounterCode(counterCode);
+		}
 	}
 
 	@Override
@@ -272,6 +279,16 @@ public class ServiceProcessWrapper implements ServiceProcess,
 	@Override
 	public long getCounter() {
 		return _serviceProcess.getCounter();
+	}
+
+	/**
+	* Returns the counter code of this service process.
+	*
+	* @return the counter code of this service process
+	*/
+	@Override
+	public String getCounterCode() {
+		return _serviceProcess.getCounterCode();
 	}
 
 	/**
@@ -632,6 +649,16 @@ public class ServiceProcessWrapper implements ServiceProcess,
 	@Override
 	public void setCounter(long counter) {
 		_serviceProcess.setCounter(counter);
+	}
+
+	/**
+	* Sets the counter code of this service process.
+	*
+	* @param counterCode the counter code of this service process
+	*/
+	@Override
+	public void setCounterCode(String counterCode) {
+		_serviceProcess.setCounterCode(counterCode);
 	}
 
 	/**

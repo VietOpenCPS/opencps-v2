@@ -605,8 +605,9 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 			int size = width + height;
 
-			Color[] colors = new Color[] { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN,
-					Color.LIGHT_GRAY, Color.ORANGE, Color.PINK, Color.WHITE, Color.YELLOW, Color.RED, Color.MAGENTA };
+//			Color[] colors = new Color[] { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN,
+//					Color.LIGHT_GRAY, Color.ORANGE, Color.PINK, Color.WHITE, Color.YELLOW, Color.RED, Color.MAGENTA };
+			Color[] colors = new Color[] { Color.WHITE};
 			int[] noises = new int[] { 1, 2, 3 };
 
 			int fromColorIndex = new Random().nextInt(colors.length);
@@ -618,8 +619,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 					.build();
 			Graphics2D g = captcha.getImage().createGraphics();
 
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+			//g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(colors[ovalColorIndex]);
 
 			switch (noiseIndex) {

@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -87,7 +88,10 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			{ "bookingDate", Types.TIMESTAMP },
 			{ "speaking", Types.BOOLEAN },
 			{ "serviceGroupCode", Types.VARCHAR },
-			{ "count", Types.INTEGER }
+			{ "count", Types.INTEGER },
+			{ "online_", Types.BOOLEAN },
+			{ "bookingInTime", Types.VARCHAR },
+			{ "telNo", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -112,12 +116,15 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		TABLE_COLUMNS_MAP.put("speaking", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("serviceGroupCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("count", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("online_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("bookingInTime", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("telNo", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(255) null,count INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_booking (uuid_ VARCHAR(75) null,bookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK LONG,serviceCode VARCHAR(75) null,codeNumber VARCHAR(75) null,bookingName VARCHAR(75) null,checkinDate DATE null,gateNumber VARCHAR(75) null,state_ INTEGER,bookingDate DATE null,speaking BOOLEAN,serviceGroupCode VARCHAR(255) null,count INTEGER,online_ BOOLEAN,bookingInTime VARCHAR(75) null,telNo VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_booking";
-	public static final String ORDER_BY_JPQL = " ORDER BY booking.bookingId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_booking.bookingId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY booking.createDate DESC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_booking.createDate DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -130,13 +137,16 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.Booking"),
 			true);
-	public static final long CLASSNAME_COLUMN_BITMASK = 1L;
-	public static final long CLASSPK_COLUMN_BITMASK = 2L;
-	public static final long COMPANYID_COLUMN_BITMASK = 4L;
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long BOOKINGID_COLUMN_BITMASK = 64L;
+	public static final long BOOKINGDATE_COLUMN_BITMASK = 1L;
+	public static final long CLASSNAME_COLUMN_BITMASK = 2L;
+	public static final long CLASSPK_COLUMN_BITMASK = 4L;
+	public static final long CODENUMBER_COLUMN_BITMASK = 8L;
+	public static final long COMPANYID_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 32L;
+	public static final long ONLINE_COLUMN_BITMASK = 64L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 128L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Booking"));
 
@@ -197,6 +207,9 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		attributes.put("speaking", isSpeaking());
 		attributes.put("serviceGroupCode", getServiceGroupCode());
 		attributes.put("count", getCount());
+		attributes.put("online", isOnline());
+		attributes.put("bookingInTime", getBookingInTime());
+		attributes.put("telNo", getTelNo());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -325,6 +338,24 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		if (count != null) {
 			setCount(count);
 		}
+
+		Boolean online = (Boolean)attributes.get("online");
+
+		if (online != null) {
+			setOnline(online);
+		}
+
+		String bookingInTime = (String)attributes.get("bookingInTime");
+
+		if (bookingInTime != null) {
+			setBookingInTime(bookingInTime);
+		}
+
+		String telNo = (String)attributes.get("telNo");
+
+		if (telNo != null) {
+			setTelNo(telNo);
+		}
 	}
 
 	@Override
@@ -452,6 +483,8 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public void setCreateDate(Date createDate) {
+		_columnBitmask = -1L;
+
 		_createDate = createDate;
 	}
 
@@ -555,7 +588,17 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public void setCodeNumber(String codeNumber) {
+		_columnBitmask |= CODENUMBER_COLUMN_BITMASK;
+
+		if (_originalCodeNumber == null) {
+			_originalCodeNumber = _codeNumber;
+		}
+
 		_codeNumber = codeNumber;
+	}
+
+	public String getOriginalCodeNumber() {
+		return GetterUtil.getString(_originalCodeNumber);
 	}
 
 	@Override
@@ -615,7 +658,17 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public void setBookingDate(Date bookingDate) {
+		_columnBitmask |= BOOKINGDATE_COLUMN_BITMASK;
+
+		if (_originalBookingDate == null) {
+			_originalBookingDate = _bookingDate;
+		}
+
 		_bookingDate = bookingDate;
+	}
+
+	public Date getOriginalBookingDate() {
+		return _originalBookingDate;
 	}
 
 	@Override
@@ -656,6 +709,63 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	@Override
 	public void setCount(int count) {
 		_count = count;
+	}
+
+	@Override
+	public boolean getOnline() {
+		return _online;
+	}
+
+	@Override
+	public boolean isOnline() {
+		return _online;
+	}
+
+	@Override
+	public void setOnline(boolean online) {
+		_columnBitmask |= ONLINE_COLUMN_BITMASK;
+
+		if (!_setOriginalOnline) {
+			_setOriginalOnline = true;
+
+			_originalOnline = _online;
+		}
+
+		_online = online;
+	}
+
+	public boolean getOriginalOnline() {
+		return _originalOnline;
+	}
+
+	@Override
+	public String getBookingInTime() {
+		if (_bookingInTime == null) {
+			return "";
+		}
+		else {
+			return _bookingInTime;
+		}
+	}
+
+	@Override
+	public void setBookingInTime(String bookingInTime) {
+		_bookingInTime = bookingInTime;
+	}
+
+	@Override
+	public String getTelNo() {
+		if (_telNo == null) {
+			return "";
+		}
+		else {
+			return _telNo;
+		}
+	}
+
+	@Override
+	public void setTelNo(String telNo) {
+		_telNo = telNo;
 	}
 
 	@Override
@@ -715,6 +825,9 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		bookingImpl.setSpeaking(isSpeaking());
 		bookingImpl.setServiceGroupCode(getServiceGroupCode());
 		bookingImpl.setCount(getCount());
+		bookingImpl.setOnline(isOnline());
+		bookingImpl.setBookingInTime(getBookingInTime());
+		bookingImpl.setTelNo(getTelNo());
 
 		bookingImpl.resetOriginalValues();
 
@@ -723,17 +836,17 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public int compareTo(Booking booking) {
-		long primaryKey = booking.getPrimaryKey();
+		int value = 0;
 
-		if (getPrimaryKey() < primaryKey) {
-			return -1;
+		value = DateUtil.compareTo(getCreateDate(), booking.getCreateDate());
+
+		value = value * -1;
+
+		if (value != 0) {
+			return value;
 		}
-		else if (getPrimaryKey() > primaryKey) {
-			return 1;
-		}
-		else {
-			return 0;
-		}
+
+		return 0;
 	}
 
 	@Override
@@ -796,6 +909,14 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		bookingModelImpl._setOriginalClassPK = false;
 
 		bookingModelImpl._originalServiceCode = bookingModelImpl._serviceCode;
+
+		bookingModelImpl._originalCodeNumber = bookingModelImpl._codeNumber;
+
+		bookingModelImpl._originalBookingDate = bookingModelImpl._bookingDate;
+
+		bookingModelImpl._originalOnline = bookingModelImpl._online;
+
+		bookingModelImpl._setOriginalOnline = false;
 
 		bookingModelImpl._columnBitmask = 0;
 	}
@@ -920,12 +1041,30 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 		bookingCacheModel.count = getCount();
 
+		bookingCacheModel.online = isOnline();
+
+		bookingCacheModel.bookingInTime = getBookingInTime();
+
+		String bookingInTime = bookingCacheModel.bookingInTime;
+
+		if ((bookingInTime != null) && (bookingInTime.length() == 0)) {
+			bookingCacheModel.bookingInTime = null;
+		}
+
+		bookingCacheModel.telNo = getTelNo();
+
+		String telNo = bookingCacheModel.telNo;
+
+		if ((telNo != null) && (telNo.length() == 0)) {
+			bookingCacheModel.telNo = null;
+		}
+
 		return bookingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -967,6 +1106,12 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 		sb.append(getServiceGroupCode());
 		sb.append(", count=");
 		sb.append(getCount());
+		sb.append(", online=");
+		sb.append(isOnline());
+		sb.append(", bookingInTime=");
+		sb.append(getBookingInTime());
+		sb.append(", telNo=");
+		sb.append(getTelNo());
 		sb.append("}");
 
 		return sb.toString();
@@ -974,7 +1119,7 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(64);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Booking");
@@ -1060,6 +1205,18 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 			"<column><column-name>count</column-name><column-value><![CDATA[");
 		sb.append(getCount());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>online</column-name><column-value><![CDATA[");
+		sb.append(isOnline());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>bookingInTime</column-name><column-value><![CDATA[");
+		sb.append(getBookingInTime());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>telNo</column-name><column-value><![CDATA[");
+		sb.append(getTelNo());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1092,14 +1249,21 @@ public class BookingModelImpl extends BaseModelImpl<Booking>
 	private String _serviceCode;
 	private String _originalServiceCode;
 	private String _codeNumber;
+	private String _originalCodeNumber;
 	private String _bookingName;
 	private Date _checkinDate;
 	private String _gateNumber;
 	private int _state;
 	private Date _bookingDate;
+	private Date _originalBookingDate;
 	private boolean _speaking;
 	private String _serviceGroupCode;
 	private int _count;
+	private boolean _online;
+	private boolean _originalOnline;
+	private boolean _setOriginalOnline;
+	private String _bookingInTime;
+	private String _telNo;
 	private long _columnBitmask;
 	private Booking _escapedModel;
 }

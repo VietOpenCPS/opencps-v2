@@ -117,6 +117,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.POSTAL_DISTRICT_CODE, dossier.getPostalDistrictCode());
 		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
 		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		obj.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 		String serviceCode = dossier.getServiceCode();
 		ServiceProcess serviceProcess;
 		try {

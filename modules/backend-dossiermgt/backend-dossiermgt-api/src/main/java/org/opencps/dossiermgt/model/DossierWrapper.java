@@ -156,6 +156,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("groupDossierId", getGroupDossierId());
 		attributes.put("metaData", getMetaData());
 		attributes.put("systemId", getSystemId());
+		attributes.put("dossierCounter", getDossierCounter());
 
 		return attributes;
 	}
@@ -747,6 +748,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (systemId != null) {
 			setSystemId(systemId);
 		}
+
+		String dossierCounter = (String)attributes.get("dossierCounter");
+
+		if (dossierCounter != null) {
+			setDossierCounter(dossierCounter);
+		}
 	}
 
 	@Override
@@ -1097,6 +1104,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public long getDossierActionId() {
 		return _dossier.getDossierActionId();
+	}
+
+	/**
+	* Returns the dossier counter of this dossier.
+	*
+	* @return the dossier counter of this dossier
+	*/
+	@Override
+	public String getDossierCounter() {
+		return _dossier.getDossierCounter();
 	}
 
 	/**
@@ -2167,6 +2184,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setDossierActionId(long dossierActionId) {
 		_dossier.setDossierActionId(dossierActionId);
+	}
+
+	/**
+	* Sets the dossier counter of this dossier.
+	*
+	* @param dossierCounter the dossier counter of this dossier
+	*/
+	@Override
+	public void setDossierCounter(String dossierCounter) {
+		_dossier.setDossierCounter(dossierCounter);
 	}
 
 	/**
