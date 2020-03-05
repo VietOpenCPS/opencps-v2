@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -72,6 +73,8 @@ public interface ConfigCounterLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ConfigCounter addConfigCounter(ConfigCounter configCounter);
+
+	public long countByGroupId(long groupId);
 
 	/**
 	* Creates a new config counter with the primary key. Does not add the config counter to the database.
@@ -188,6 +191,9 @@ public interface ConfigCounterLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ConfigCounter> getByGroupId(long groupId, int start, int end);
+
 	/**
 	* Returns the config counter with the primary key.
 	*
@@ -286,4 +292,8 @@ public interface ConfigCounterLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ConfigCounter updateConfigCounter(ConfigCounter configCounter);
+
+	public ConfigCounter updateConfigCounter(long groupId, long userId,
+		long configCounterId, String counterCode, String patternCode,
+		int startCounter, ServiceContext serviceContext);
 }

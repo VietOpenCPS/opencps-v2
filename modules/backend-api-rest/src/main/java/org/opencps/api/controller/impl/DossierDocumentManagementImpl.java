@@ -261,13 +261,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 								jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData);
 								formDataArr.put(jsonData);
 								_log.debug("jsonData: "+jsonData);
-								_log.debug("formDataArr: "+formDataArr);
 								_log.debug("payload: "+payload);
 							}
 						}
 					}
 				}
 				formDataJSON.put(DossierTerm.MAPPING_DOSSIER, formDataArr);
+				_log.debug("formDataJSON: "+formDataJSON);
 
 				Message message = new Message();
 				message.put("formReport", documentScript);
