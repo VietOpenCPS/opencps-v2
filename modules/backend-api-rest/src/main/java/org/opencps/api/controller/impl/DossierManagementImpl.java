@@ -7118,10 +7118,12 @@ public class DossierManagementImpl implements DossierManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			JSONObject obj = JSONFactoryUtil.createJSONObject(metaData);
+			JSONObject metaDataOld = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
 
-			dossier.setMetaData(obj.toJSONString());
-			DossierLocalServiceUtil.updateDossier(dossier);
-			return Response.status(200).entity("{ 'ok': true }").build();
+			JSONObject importD = ConvertDossierFromV1Dot9Utils.mergeJSONObject(metaDataOld, obj);
+			dossier.setMetaData(importD.toJSONString());
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+			return Response.status(200).entity(dossier.getMetaData()).build();
 
 		} catch (Exception e) {
 
