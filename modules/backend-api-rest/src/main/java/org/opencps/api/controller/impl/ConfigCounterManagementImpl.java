@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -50,7 +51,7 @@ public class ConfigCounterManagementImpl implements ConfigCounterManagement{
 			ConfigCounterResultsModel results = new ConfigCounterResultsModel();
 
 			ConfigCounterActions actions = new ConfigCounterActionsImpl();
-			JSONObject jsonData = actions.getConfigCounterList(groupId, 1, 1, serviceContext);
+			JSONObject jsonData = actions.getConfigCounterList(groupId, -1, -1, serviceContext);
 
 			results.setTotal(jsonData.getInt("total"));
 

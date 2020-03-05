@@ -44,6 +44,7 @@ import org.opencps.api.controller.impl.BookingManagementImpl;
 import org.opencps.api.controller.impl.CacheTestManagementImpl;
 import org.opencps.api.controller.impl.CertNumberManagementImpl;
 import org.opencps.api.controller.impl.CommentManagementImpl;
+import org.opencps.api.controller.impl.ConfigCounterManagementImpl;
 import org.opencps.api.controller.impl.DVCQGIManagementImpl;
 import org.opencps.api.controller.impl.DVCQGSSOManagementImpl;
 import org.opencps.api.controller.impl.DataManagementImpl;
@@ -222,6 +223,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new DVCQGSSOManagementImpl());
 		
 		singletons.add(new DVCQGIManagementImpl());
+		singletons.add(new ConfigCounterManagementImpl());
 
 		singletons.add(this);
 
