@@ -1050,7 +1050,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			if (_serviceInfoDVCQGMap == null) {
+				System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _serviceInfoDVCQGMap " + _serviceInfoDVCQGMap.size());
 				_serviceInfoDVCQGMap = dvcqgIntegrationActionImpl.getServiceInfoDVCQGMap(user, serviceContext);
+				
+			}else {
+				System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _serviceInfoDVCQGMap2 " + _serviceInfoDVCQGMap.size());
 			}
 
 			List<Document> documents = (List<Document>) jsonData.get("data");

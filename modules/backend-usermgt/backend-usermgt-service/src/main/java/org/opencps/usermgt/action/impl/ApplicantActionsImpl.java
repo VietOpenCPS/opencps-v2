@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -670,10 +671,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			User user, ServiceContext serviceContext, String value) {
 		String captcha = StringPool.BLANK;
 		HttpSession session = request.getSession();
-
-		Enumeration<String> enumeration = session.getAttributeNames();
+	
+		/*Enumeration<String> enumeration = session.getAttributeNames();
 		
-		/*List<String> values = Collections.list(enumeration);
+		List<String> values = Collections.list(enumeration);
 		
 		for (String tmp : values) {
 			System.out.println("========================== > session.getAttributeNames() " + tmp);
