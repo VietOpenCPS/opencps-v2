@@ -2527,7 +2527,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			DossierAction dActEnd = dossierActionLocalService
 					.fetchDossierAction(dossierAction.getDossierActionId());
 //			DossierAction dActEnd = dossierAction;
-			if (dActEnd != null) {
+
+			// set dueDate null if durationCount = 0
+			if (dActEnd != null && dossier.getDurationCount() > 0) {
 				_log.debug("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
 				DossierAction dActPrevious = dossierActionLocalService
 						.fetchDossierAction(dActEnd.getPreviousActionId());
@@ -2593,6 +2595,8 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
+			} else if (dossier.getDurationCount() <= 0) {
+				dossier.setDueDate(null);
 			}
 		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 			if (dossier.getDueDate() != null) {
