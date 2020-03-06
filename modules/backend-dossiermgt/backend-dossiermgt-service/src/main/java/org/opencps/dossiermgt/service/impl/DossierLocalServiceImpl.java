@@ -6932,4 +6932,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public int countByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.countByG_UID_DS(groupId, userId, dossierStatus);
 	}	
+	
+	public Dossier getByCpsRef(long groupId, String refId) {
+		Dossier dossier = dossierPersistence.fetchByG_REF(groupId, refId);
+		if (dossier == null) {
+			if (refId.contains(DossierTerm.PREFIX_UUID)) {
+				dossier = dossierPersistence.fetchByG_REF(groupId, refId.substring(DossierTerm.PREFIX_UUID.length()));
+			}	
+			else {
+				dossier = dossierPersistence.fetchByG_REF(groupId, DossierTerm.PREFIX_UUID + refId);				
+			}
+		}
+		return dossier;
+	}	
 }

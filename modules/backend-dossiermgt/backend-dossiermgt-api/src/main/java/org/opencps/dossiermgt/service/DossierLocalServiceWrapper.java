@@ -375,6 +375,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier getByCpsRef(long groupId,
+		String refId) {
+		return _dossierLocalService.getByCpsRef(groupId, refId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier getByDossierNo(long groupId,
 		String dossierNo) {
 		return _dossierLocalService.getByDossierNo(groupId, dossierNo);

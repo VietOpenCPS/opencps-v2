@@ -356,6 +356,11 @@ public class DossierLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier getByCpsRef(
+		long groupId, String refId) {
+		return getService().getByCpsRef(groupId, refId);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier getByDossierNo(
 		long groupId, String dossierNo) {
 		return getService().getByDossierNo(groupId, dossierNo);

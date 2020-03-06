@@ -473,8 +473,12 @@ public class CPSDossierBusinessLocalServiceImpl
 							String documentCode = DocumentTypeNumberGenerator.generateDossierDocumentNumber(groupId,
 									dossier.getCompanyId(), dossier.getServiceCode(), dossier.getGovAgencyCode(),
 									dt.getCodePattern());
+							String refUid = UUID.randomUUID().toString();
+							if (Validator.isNotNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
+								refUid = DossierTerm.PREFIX_UUID + refUid;
+							}
 							DossierDocument dossierDocument = DossierDocumentLocalServiceUtil.addDossierDoc(groupId,
-									dossier.getDossierId(), UUID.randomUUID().toString(), dossierAction.getDossierActionId(),
+									dossier.getDossierId(), refUid, dossierAction.getDossierActionId(),
 									dt.getTypeCode(), dt.getDocumentName(), documentCode, 0L, dt.getDocSync(), context);
 												
 							//Generate PDF

@@ -279,6 +279,9 @@ public interface DossierLocalService extends BaseLocalService,
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier getByCpsRef(long groupId, String refId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier getByDossierNo(long groupId, String dossierNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
