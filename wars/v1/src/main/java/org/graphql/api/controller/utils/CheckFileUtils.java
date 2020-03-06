@@ -15,7 +15,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class CheckFileUtils {
 
-	private static final Log log = LogFactoryUtil.getLog(CheckFileUtils.class);
+	private static final Log _log = LogFactoryUtil.getLog(CheckFileUtils.class);
 
 	public static boolean checkFileUpload(CommonsMultipartFile multipartFile) {
 		if (multipartFile == null) {
@@ -27,6 +27,7 @@ public class CheckFileUtils {
 			try {
 				new MimeType(typeAtt);
 			} catch (Exception e) {
+				_log.debug(e);
 				return false;
 			}
 		} else {
@@ -40,6 +41,7 @@ public class CheckFileUtils {
 				return false;
 			}
 		} catch (IOException e1) {
+			_log.debug(e1);
 			return false;
 		}
 		

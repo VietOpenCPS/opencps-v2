@@ -5,12 +5,13 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.support.WebBindingInitializer;
 
 import graphql.ExecutionResult;
 
@@ -37,6 +37,7 @@ import graphql.ExecutionResult;
 @RestController
 public class GraphQLController {
 
+	private static Log _log = LogFactoryUtil.getLog(GraphQLController.class);
 	public GraphQLController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -119,7 +120,7 @@ public class GraphQLController {
 					json = dynamicReportObj.toJSONString();
 				}
 			} catch (JSONException e) {
-				
+				_log.debug(e);
 			}			
 		}
 		
