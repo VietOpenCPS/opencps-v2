@@ -192,6 +192,12 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 											true);
 									DossierFileModel dfModel = new DossierFileModel();
 									dfModel.setReferenceUid(df.getReferenceUid());
+									if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+										if (df.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+											String newRef = df.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+											dfModel.setReferenceUid(newRef);
+										}
+									}
 									dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 									dfModel.setDossierPartNo(df.getDossierPartNo());
 									dfModel.setDisplayName(df.getDisplayName());
@@ -276,8 +282,16 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 
 							}
-							DossierDocumentModel model = OpenCPSConverter.convertDossierDocument(dossierDocument);
-							DossierDocumentModel ddResult = client.postDossierDocument(file, dossier.getReferenceUid(), model);
+							DossierDocumentModel model = OpenCPSConverter.convertDossierDocument(dossierDocument, dossier);
+							DossierDocumentModel ddResult = null;
+							if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+								if (dossier.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+									ddResult = client.postDossierDocument(file, dossier.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length()), model);
+								}
+							}
+							else {
+								ddResult = client.postDossierDocument(file, dossier.getReferenceUid(), model);
+							}
 							if (ddResult == null) {
 								return false;
 							}
@@ -351,7 +365,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 				pfiModel.setPaymentFee(paymentFee != null ? paymentFee : StringPool.BLANK);
 				pfiModel.setPaymentNote(paymentNote != null ? paymentNote : StringPool.BLANK);
-				pfiModel.setReferenceUid(dossier.getReferenceUid());
+				pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+				if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+					if (pfiModel.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+						String newRef = pfiModel.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+						pfiModel.setReferenceUid(newRef);
+					}
+				}
+				
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
@@ -396,7 +417,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 				pfiModel.setPaymentFee(processAction.getPaymentFee());
 				pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-				pfiModel.setReferenceUid(dossier.getReferenceUid());
+				pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+				if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+					if (pfiModel.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+						String newRef = pfiModel.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+						pfiModel.setReferenceUid(newRef);
+					}
+				}
+				
 				pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 				pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
@@ -481,6 +509,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
 //			model.setOriginality(DossierTerm.ORIGINALITY_HSLT);
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
+			model.setReferenceUid(DossierTerm.PREFIX_UUID + model.getReferenceUid());
 		}
 		else {
 			model.setOriginality(DossierTerm.ORIGINALITY_LIENTHONG);
@@ -742,6 +771,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 												true);
 										DossierFileModel dfModel = new DossierFileModel();
 										dfModel.setReferenceUid(df.getReferenceUid());
+										if (dossier.getOriginDossierId() != 0) {
+											dfModel.setReferenceUid(DossierTerm.PREFIX_UUID + df.getReferenceUid());
+										}
 										dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 										dfModel.setDossierPartNo(dossierPartNo);
 										dfModel.setDisplayName(df.getDisplayName());
@@ -781,6 +813,9 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							else if (df != null && df.getEForm()) {
 								DossierFileModel dfModel = new DossierFileModel();
 								dfModel.setReferenceUid(df.getReferenceUid());
+								if (dossier.getOriginDossierId() != 0) {
+									dfModel.setReferenceUid(DossierTerm.PREFIX_UUID + df.getReferenceUid());
+								}
 								dfModel.setModifiedDate(String.valueOf(df.getModifiedDate().getTime()));
 								dfModel.setDossierPartNo(dossierPartNo);
 								dfModel.setDisplayName(df.getDisplayName());
@@ -916,7 +951,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
 			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+			if (dossier.getOriginDossierId() != 0) {
+				pfiModel.setReferenceUid(DossierTerm.PREFIX_UUID + paymentFile.getReferenceUid());
+			}
+			
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
@@ -947,7 +986,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 			pfiModel.setPaymentFee(paymentFile.getPaymentFee());
 			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+			if (dossier.getOriginDossierId() != 0) {
+				pfiModel.setReferenceUid(DossierTerm.PREFIX_UUID + paymentFile.getReferenceUid());
+			}
+			
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
@@ -974,7 +1017,11 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
 			pfiModel.setPaymentFee(processAction.getPaymentFee());
 			pfiModel.setPaymentNote(paymentFile.getPaymentNote());
-			pfiModel.setReferenceUid(dossier.getReferenceUid());
+			pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+			if (dossier.getOriginDossierId() != 0) {
+				pfiModel.setReferenceUid(DossierTerm.PREFIX_UUID + paymentFile.getReferenceUid());
+			}
+			
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());

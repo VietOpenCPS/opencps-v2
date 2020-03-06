@@ -1444,12 +1444,19 @@ public class OpenCPSConverter {
 		return result;
 	}
 	
-	public static DossierDocumentModel convertDossierDocument(DossierDocument dossierDocument) {
+	public static DossierDocumentModel convertDossierDocument(DossierDocument dossierDocument, Dossier dossier) {
 		DossierDocumentModel result = new DossierDocumentModel();
 		result.setDocumentCode(dossierDocument.getDocumentCode());
 		result.setDocumentName(dossierDocument.getDocumentName());
 		result.setDocumentType(dossierDocument.getDocumentType());
 		result.setReferenceUid(dossierDocument.getReferenceUid());
+		if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+			if (result.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+				String newRef = result.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+				result.setReferenceUid(newRef);
+			}
+		}
+		
 		return result;
 	}
 	

@@ -362,4 +362,5 @@ public class DossierTerm {
 	public static final String STEP_DONE_CODE = "400";
 	
 	public static final String CROSS_DOSSIER = "crossDossier";
+	public static final String PREFIX_UUID = "xxx-cps-";
 }
