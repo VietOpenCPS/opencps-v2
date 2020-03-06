@@ -28,9 +28,8 @@ public class OAIManagementImpl implements OAIManagement {
 
 		_log.debug("oaiQuery=" + query);
 
-		OAIBuilderUtils builder = OAIBuilderUtils.getInstance(query);
+		OAIBuilderUtils builder = new OAIBuilderUtils(query);
 		OAIPMHtype results = builder.getResults();
-		builder.destroy();
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 	}
