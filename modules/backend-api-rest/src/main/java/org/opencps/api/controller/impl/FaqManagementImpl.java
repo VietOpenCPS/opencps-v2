@@ -105,7 +105,7 @@ public class FaqManagementImpl implements FaqManagement {
 				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
 				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
 						serviceContext, jCaptchaResponse);
-
+				
 				if (!isValid) {
 					ErrorMsgModel error = new ErrorMsgModel();
 					error.setMessage("Captcha incorrect");
@@ -154,6 +154,8 @@ public class FaqManagementImpl implements FaqManagement {
 			}
 		}
 		catch (Exception e) {
+			_log.error(e);
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

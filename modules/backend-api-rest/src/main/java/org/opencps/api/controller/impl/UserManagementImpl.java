@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -56,7 +55,6 @@ import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
-import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
@@ -314,6 +312,7 @@ public class UserManagementImpl implements UserManagement {
 			ServiceContext serviceContext, String screenname_email, String jCaptchaResponse) {
 		UserInterface actions = new UserActions();
 		String captchaType = PropValues.CAPTCHA_TYPE;
+		
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
 			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
@@ -348,7 +347,7 @@ public class UserManagementImpl implements UserManagement {
 				
 				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
 						serviceContext, jCaptchaResponse);
-				System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  isValid " + isValid);
+				
 				if (!isValid) {
 					ErrorMsgModel error = new ErrorMsgModel();
 					error.setMessage("Captcha incorrect");
@@ -376,41 +375,62 @@ public class UserManagementImpl implements UserManagement {
 	public Response getForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String screenname_email, String code, String jCaptchaResponse) {
 		UserInterface actions = new UserActions();
+		
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
+			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+				String captchaId = request.getSession().getId();
+		        try {
+		        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+		        			jCaptchaResponse);
+		        	_log.info("Check captcha result: " + isResponseCorrect);
+		        	if (!isResponseCorrect) {
+		        		ErrorMsgModel error = new ErrorMsgModel();
+		        		error.setMessage("Captcha incorrect");
+		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+		    			error.setDescription("Captcha incorrect");
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-			String captchaId = request.getSession().getId();
-	        try {
-	        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
-	        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-	        			jCaptchaResponse);
-	        	_log.info("Check captcha result: " + isResponseCorrect);
-	        	if (!isResponseCorrect) {
+		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+		        	}
+		        } catch (CaptchaServiceException e) {
+		        	_log.debug(e);
 	        		ErrorMsgModel error = new ErrorMsgModel();
 	        		error.setMessage("Captcha incorrect");
 	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
 	    			error.setDescription("Captcha incorrect");
 
 	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-	        	}
-	        } catch (CaptchaServiceException e) {
-	        	_log.debug(e);
-        		ErrorMsgModel error = new ErrorMsgModel();
-        		error.setMessage("Captcha incorrect");
-    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-    			error.setDescription("Captcha incorrect");
+		        }
+			}else {
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+				
+				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, jCaptchaResponse);
+			
+				if (!isValid) {
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage("Captcha incorrect");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Captcha incorrect");
 
-    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-	        }
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				}
+			}
+			
 			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
 					serviceContext);
-
+			
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
 
 			return Response.status(200).entity(userAccountModel).build();
 
 		} catch (Exception e) {
+			e.printStackTrace();
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 
 		}
@@ -768,14 +788,15 @@ public class UserManagementImpl implements UserManagement {
 			Company company, Locale locale, User user,
 			ServiceContext serviceContext, long id,
 			String email, boolean unlocked) {
-
+		
 		try {
 
-			User userUnLocked = UserLocalServiceUtil.updateLockoutById(id, !unlocked);
-			JSONObject result = JSONFactoryUtil.createJSONObject();
-			result.put(CommonTerm.SCREEN_NAME, userUnLocked.getScreenName());
-			result.put(CommonTerm.EMAIL_ADDRESS, userUnLocked.getEmailAddress());
-			result.put(CommonTerm.LOCKOUT, userUnLocked.getLockout());
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			UserInterface actions = new UserActions();
+
+			JSONObject result = actions.unlockAccount(user.getUserId(), company.getCompanyId(), groupId, id, email,
+					unlocked, serviceContext);
+
 			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 
 		} catch (Exception e) {

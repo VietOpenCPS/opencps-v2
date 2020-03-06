@@ -1050,7 +1050,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			if (_serviceInfoDVCQGMap == null) {
+				
 				_serviceInfoDVCQGMap = dvcqgIntegrationActionImpl.getServiceInfoDVCQGMap(user, serviceContext);
+					
 			}
 
 			List<Document> documents = (List<Document>) jsonData.get("data");

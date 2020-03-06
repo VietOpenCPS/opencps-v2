@@ -1058,7 +1058,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					_mapItems.put(key, item);
 				}
 
-				if (weightIndex >= 0.8) {
+				if (weightIndex >= 0.4) {
 
 					item.put("similarityPercent", df.format(weightIndex * 100));
 
@@ -1094,7 +1094,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				item.put("mapped", false);
 				_mapItems.put(key, item);
 
-				if (weightIndex >= 0.8) {
+				if (weightIndex >= 0.4) {
 
 					item.put("similarityPercent", df.format(weightIndex * 100));
 
