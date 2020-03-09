@@ -15,20 +15,20 @@ public class OAIBuilderUtils {
 	private static final String M_CALCULATE = "calculate";
 	private RequestType query;
 	private OAIPMHtype results;
-	private static OAIBuilderUtils instance;
+//	private static OAIBuilderUtils instance;
 
-	private OAIBuilderUtils(RequestType query) {
+	public OAIBuilderUtils(RequestType query) {
 		super();
 		this.query = query;
 		init();
 	}
 
-	public static OAIBuilderUtils getInstance(RequestType query) {
-		if (instance == null) {
-			instance = new OAIBuilderUtils(query);
-		}
-		return instance;
-	}
+//	public static OAIBuilderUtils getInstance(RequestType query) {
+//		if (instance == null) {
+//			instance = new OAIBuilderUtils(query);
+//		}
+//		return instance;
+//	}
 
 	public RequestType getQuery() {
 		return query;
@@ -46,11 +46,11 @@ public class OAIBuilderUtils {
 		this.results = results;
 	}
 
-	public void destroy() {
-		query = null;
-		results = null;
+//	public void destroy() {
+//		query = null;
+//		results = null;
 //		instance = null;
-	}
+//	}
 
 	private void init() {
 
