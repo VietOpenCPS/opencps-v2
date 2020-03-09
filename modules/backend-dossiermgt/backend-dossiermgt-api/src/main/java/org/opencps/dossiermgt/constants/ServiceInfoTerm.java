@@ -30,4 +30,5 @@ public class ServiceInfoTerm {
 	public static final String KEY_SERVICE_INFO = "serviceInfo";
 	public static final String KEY_APPLICANT = "applicant";
 	public static final String KEY_DOSSIER_NO = "dossierNo";
+	public static final String IS_NOTARIZATION = "isNotarization";
 }

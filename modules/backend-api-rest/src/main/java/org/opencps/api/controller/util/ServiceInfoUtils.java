@@ -181,7 +181,8 @@ public class ServiceInfoUtils {
 		model.setMaxLevel(serviceInfo.getMaxLevel());
 		model.setActive(Boolean.toString(serviceInfo.getPublic_()));
 		model.setGovAgencyText(serviceInfo.getGovAgencyText());
-
+		model.setIsNotarization(serviceInfo.getIsNotarization());
+		
 		List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 				.getByServiceInfoId(serviceInfo.getServiceInfoId());
 		

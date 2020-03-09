@@ -6,10 +6,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +31,10 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.NotarizationActions;
 import org.opencps.dossiermgt.action.impl.NotarizationActionsImpl;
+import org.opencps.dossiermgt.action.util.NotarizationCounterNumberGenerator;
+import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Notarization;
+import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
 import org.opencps.dossiermgt.service.NotarizationLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -64,8 +69,14 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 			String signerPosition = input.getSignerPosition();
 			String statusCode = input.getStatusCode();
 			Date notarizationDateFmt = new Date(notarizationDate);
-			
 			Notarization notarization = actions.createNotarization(groupId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDateFmt, signerName, signerPosition, statusCode, serviceContext);
+			if (notarizationNo == 0) {
+				ConfigCounter cc = ConfigCounterLocalServiceUtil.fetchByCountrCode(groupId, NOTARIZATION_COUNTER);
+				String notarizationNoText = NotarizationCounterNumberGenerator.generateCounterNumber(groupId, company.getCompanyId(), notarization.getNotarizationId(), 
+						cc.getPatternCode(), cc, new LinkedHashMap<String, Object>(), new SearchContext());
+				notarization.setNotarizationNo(Long.valueOf(notarizationNoText));
+				notarization = NotarizationLocalServiceUtil.updateNotarization(notarization);
+			}
 			result = NotarizationUtils.mappingToNotarizationDetailModel(notarization);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
@@ -74,7 +85,9 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
+	
+	private static final String NOTARIZATION_COUNTER = "SO_CHUNG_THUC_BAN_SAO";
+	
 	@Override
 	public Response updateNotarization(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Long notarizationId, NotarizationInputModel input) {

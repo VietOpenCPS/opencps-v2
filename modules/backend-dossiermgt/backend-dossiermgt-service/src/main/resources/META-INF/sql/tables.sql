@@ -47,6 +47,20 @@ create table opencps_booking (
 	count INTEGER
 );
 
+create table opencps_configcounter (
+	uuid_ VARCHAR(75) null,
+	configCounterId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	counterCode VARCHAR(75) null,
+	patternCode VARCHAR(75) null,
+	startCounter INTEGER
+);
+
 create table opencps_deliverable (
 	uuid_ VARCHAR(75) null,
 	deliverableId LONG not null primary key,
@@ -248,7 +262,8 @@ create table opencps_dossier (
 	originDossierNo VARCHAR(255) null,
 	groupDossierId LONG,
 	metaData TEXT null,
-	systemId INTEGER
+	systemId INTEGER,
+	dossierCounter VARCHAR(75) null
 );
 
 create table opencps_dossieraction (
@@ -944,7 +959,8 @@ create table opencps_serviceinfo (
 	domainIndex VARCHAR(75) null,
 	maxLevel INTEGER,
 	public_ BOOLEAN,
-	govAgencyText VARCHAR(75) null
+	govAgencyText VARCHAR(75) null,
+	isNotarization BOOLEAN
 );
 
 create table opencps_serviceinfomapping (
@@ -984,7 +1000,8 @@ create table opencps_serviceprocess (
 	serverName TEXT null,
 	requestPayment BOOLEAN,
 	paymentFee VARCHAR(255) null,
-	dossierGroupPattern VARCHAR(75) null
+	dossierGroupPattern VARCHAR(75) null,
+	counterCode VARCHAR(75) null
 );
 
 create table opencps_serviceprocessrole (

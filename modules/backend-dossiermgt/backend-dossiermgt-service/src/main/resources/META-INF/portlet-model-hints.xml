@@ -58,6 +58,19 @@
 		</field>
 		<field name="count" type="int" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.ConfigCounter">
+		<field name="uuid" type="String" />
+		<field name="configCounterId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="counterCode" type="String" />
+		<field name="patternCode" type="String" />
+		<field name="startCounter" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />
 		<field name="deliverableId" type="long" />
@@ -371,6 +384,7 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="systemId" type="int" />
+		<field name="dossierCounter" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -1395,6 +1409,7 @@
 		<field name="maxLevel" type="int" />
 		<field name="public_" type="boolean" />
 		<field name="govAgencyText" type="String" />
+		<field name="isNotarization" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfoMapping">
 		<field name="serviceInfoMappingId" type="long" />
@@ -1449,6 +1464,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="dossierGroupPattern" type="String" />
+		<field name="counterCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcessRole">
 		<field name="uuid" type="String" />

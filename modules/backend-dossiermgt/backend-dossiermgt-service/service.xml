@@ -47,7 +47,8 @@
 		<column name="maxLevel" type="int" />
 		<column name="public_" type="boolean" />
 		<column name="govAgencyText" type="String" />
-
+		<column name="isNotarization" type="boolean" />
+		
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -566,6 +567,7 @@
 		<column name="groupDossierId" type="long" />
 		<column name="metaData" type="String" />
 		<column name="systemId" type="int" />
+		<column name="dossierCounter" type="String" />
 		
 		<!-- Order -->
 		
@@ -1148,7 +1150,8 @@
 		<column name="requestPayment" type="boolean"/>
 		<column name="paymentFee" type="String"/>
 		<column name="dossierGroupPattern" type="String"/>
-
+		<column name="counterCode" type="String"/>
+		
 		<finder return-type="Collection" name="G_ID">
 			<finder-column name="groupId" />
 		</finder>
@@ -1175,7 +1178,32 @@
 
 	</entity>
 
+	<entity local-service="true" name="ConfigCounter"
+		remote-service="false" table="opencps_configcounter" uuid="true">
 
+		<column name="configCounterId" type="long" primary="true" />
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="counterCode" type="String" />
+		<column name="patternCode" type="String" />
+		<column name="startCounter" type="int" />
+		<!-- <column name="year" type="int" /> -->
+
+		<finder return-type="Collection" name="G_ID">
+			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="ConfigCounter" name="GID_CODE">
+			<finder-column name="groupId" />
+			<finder-column name="counterCode" />
+		</finder>
+	</entity>
 
 	<entity local-service="true" name="ServiceProcessRole"
 		remote-service="false" table="opencps_serviceprocessrole" uuid="true">

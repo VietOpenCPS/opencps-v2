@@ -88,6 +88,7 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		attributes.put("maxLevel", getMaxLevel());
 		attributes.put("public_", isPublic_());
 		attributes.put("govAgencyText", getGovAgencyText());
+		attributes.put("isNotarization", isIsNotarization());
 
 		return attributes;
 	}
@@ -262,6 +263,12 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		if (govAgencyText != null) {
 			setGovAgencyText(govAgencyText);
 		}
+
+		Boolean isNotarization = (Boolean)attributes.get("isNotarization");
+
+		if (isNotarization != null) {
+			setIsNotarization(isNotarization);
+		}
 	}
 
 	@Override
@@ -427,6 +434,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public long getGroupId() {
 		return _serviceInfo.getGroupId();
+	}
+
+	/**
+	* Returns the is notarization of this service info.
+	*
+	* @return the is notarization of this service info
+	*/
+	@Override
+	public boolean getIsNotarization() {
+		return _serviceInfo.getIsNotarization();
 	}
 
 	/**
@@ -597,6 +614,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public boolean isEscapedModel() {
 		return _serviceInfo.isEscapedModel();
+	}
+
+	/**
+	* Returns <code>true</code> if this service info is is notarization.
+	*
+	* @return <code>true</code> if this service info is is notarization; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isIsNotarization() {
+		return _serviceInfo.isIsNotarization();
 	}
 
 	@Override
@@ -788,6 +815,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public void setGroupId(long groupId) {
 		_serviceInfo.setGroupId(groupId);
+	}
+
+	/**
+	* Sets whether this service info is is notarization.
+	*
+	* @param isNotarization the is notarization of this service info
+	*/
+	@Override
+	public void setIsNotarization(boolean isNotarization) {
+		_serviceInfo.setIsNotarization(isNotarization);
 	}
 
 	/**

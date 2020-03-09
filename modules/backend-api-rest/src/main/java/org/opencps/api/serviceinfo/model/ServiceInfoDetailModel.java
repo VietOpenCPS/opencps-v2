@@ -82,7 +82,8 @@ import javax.xml.bind.annotation.XmlType;
     "fileTemplates",
     "serviceConfigs",
     "active",
-    "govAgencyText"
+    "govAgencyText",
+    "isNotarization"
 })
 @XmlRootElement(name = "ServiceInfoDetailModel")
 public class ServiceInfoDetailModel {
@@ -109,8 +110,17 @@ public class ServiceInfoDetailModel {
     @XmlElement(name = "public")
     protected String _public;
     protected String govAgencyText;
+    protected Boolean isNotarization;
+    
+    public Boolean getIsNotarization() {
+		return isNotarization;
+	}
 
-    public String getActive() {
+	public void setIsNotarization(Boolean isNotarization) {
+		this.isNotarization = isNotarization;
+	}
+
+	public String getActive() {
 		return active;
 	}
 
