@@ -753,7 +753,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		object.setFeeText(objectData.getString(ServiceInfoTerm.FEE_TEXT));
 		object.setMaxLevel(objectData.getInt(ServiceInfoTerm.MAX_LEVEL));
 		object.setPublic_(objectData.getBoolean(ServiceInfoTerm.PUBLIC_));
-
+		if (objectData.has(ServiceInfoTerm.IS_NOTARIZATION)) {
+			object.setIsNotarization(objectData.getBoolean(ServiceInfoTerm.IS_NOTARIZATION));
+		}
 		object.setAdministrationCode(objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE));
 		object.setDomainCode(objectData.getString(ServiceInfoTerm.DOMAIN_CODE));
 

@@ -65,7 +65,7 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(59);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -123,6 +123,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		sb.append(public_);
 		sb.append(", govAgencyText=");
 		sb.append(govAgencyText);
+		sb.append(", isNotarization=");
+		sb.append(isNotarization);
 		sb.append("}");
 
 		return sb.toString();
@@ -294,6 +296,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 			serviceInfoImpl.setGovAgencyText(govAgencyText);
 		}
 
+		serviceInfoImpl.setIsNotarization(isNotarization);
+
 		serviceInfoImpl.resetOriginalValues();
 
 		return serviceInfoImpl;
@@ -335,6 +339,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 
 		public_ = objectInput.readBoolean();
 		govAgencyText = objectInput.readUTF();
+
+		isNotarization = objectInput.readBoolean();
 	}
 
 	@Override
@@ -494,6 +500,8 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 		else {
 			objectOutput.writeUTF(govAgencyText);
 		}
+
+		objectOutput.writeBoolean(isNotarization);
 	}
 
 	public String uuid;
@@ -524,4 +532,5 @@ public class ServiceInfoCacheModel implements CacheModel<ServiceInfo>,
 	public int maxLevel;
 	public boolean public_;
 	public String govAgencyText;
+	public boolean isNotarization;
 }

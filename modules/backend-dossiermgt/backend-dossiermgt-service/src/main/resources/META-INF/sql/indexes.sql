@@ -8,6 +8,10 @@ create index IX_D55B8904 on opencps_booking (groupId, serviceCode[$COLUMN_LENGTH
 create index IX_915B3B70 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F25BDDF2 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_F420D66C on opencps_configcounter (groupId, counterCode[$COLUMN_LENGTH:75$]);
+create index IX_6442A351 on opencps_configcounter (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_EA0DCA13 on opencps_configcounter (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_62C6C2A0 on opencps_deliverable (deliverableCode[$COLUMN_LENGTH:75$], deliverableState);
 create index IX_8D12CC2D on opencps_deliverable (deliverableState, govAgencyCode[$COLUMN_LENGTH:75$], deliverableType[$COLUMN_LENGTH:75$], applicantIdNo[$COLUMN_LENGTH:75$]);
 create index IX_6113CEF4 on opencps_deliverable (groupId, deliverableCode[$COLUMN_LENGTH:75$]);

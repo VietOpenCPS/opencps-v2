@@ -12,6 +12,8 @@
 	<bean class="org.opencps.dossiermgt.service.impl.BookingLocalServiceImpl" id="org.opencps.dossiermgt.service.BookingLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.BookingPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.BookingPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.BookingFinderImpl" id="org.opencps.dossiermgt.service.persistence.BookingFinder" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ConfigCounterLocalServiceImpl" id="org.opencps.dossiermgt.service.ConfigCounterLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ConfigCounterPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ConfigCounterPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl" id="org.opencps.dossiermgt.service.CPSDossierBusinessLocalService" />
 	<bean class="org.opencps.dossiermgt.service.impl.DeliverableLocalServiceImpl" id="org.opencps.dossiermgt.service.DeliverableLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DeliverablePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DeliverablePersistence" parent="basePersistence" />

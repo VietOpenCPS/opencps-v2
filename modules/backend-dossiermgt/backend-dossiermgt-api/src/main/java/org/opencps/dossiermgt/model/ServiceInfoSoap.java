@@ -61,6 +61,7 @@ public class ServiceInfoSoap implements Serializable {
 		soapModel.setMaxLevel(model.getMaxLevel());
 		soapModel.setPublic_(model.isPublic_());
 		soapModel.setGovAgencyText(model.getGovAgencyText());
+		soapModel.setIsNotarization(model.isIsNotarization());
 
 		return soapModel;
 	}
@@ -341,6 +342,18 @@ public class ServiceInfoSoap implements Serializable {
 		_govAgencyText = govAgencyText;
 	}
 
+	public boolean getIsNotarization() {
+		return _isNotarization;
+	}
+
+	public boolean isIsNotarization() {
+		return _isNotarization;
+	}
+
+	public void setIsNotarization(boolean isNotarization) {
+		_isNotarization = isNotarization;
+	}
+
 	private String _uuid;
 	private long _serviceInfoId;
 	private long _groupId;
@@ -369,4 +382,5 @@ public class ServiceInfoSoap implements Serializable {
 	private int _maxLevel;
 	private boolean _public_;
 	private String _govAgencyText;
+	private boolean _isNotarization;
 }

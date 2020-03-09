@@ -8,6 +8,7 @@
 
 package org.opencps.api.notarization.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -74,6 +75,7 @@ public class NotarizationInputModel {
 	@FormParam(value = "totalFee")
     protected Long totalFee;
 	@FormParam(value = "notarizationNo")
+	@DefaultValue(value = "0")
     protected Long notarizationNo;
 	@FormParam(value = "notarizationYear")
     protected Integer notarizationYear;

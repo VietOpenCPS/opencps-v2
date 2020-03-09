@@ -4,6 +4,7 @@
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="org.opencps.dossiermgt.model.ActionConfig" />
 	<import class="org.opencps.dossiermgt.model.Booking" />
+	<import class="org.opencps.dossiermgt.model.ConfigCounter" />
 	<import class="org.opencps.dossiermgt.model.Deliverable" />
 	<import class="org.opencps.dossiermgt.model.DeliverableLog" />
 	<import class="org.opencps.dossiermgt.model.DeliverableType" />
@@ -99,6 +100,21 @@
 		<property name="speaking" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="serviceGroupCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="count" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
+	<class name="org.opencps.dossiermgt.model.impl.ConfigCounterImpl" table="opencps_configcounter">
+		<id name="configCounterId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="counterCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="patternCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="startCounter" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableImpl" table="opencps_deliverable">
 		<id name="deliverableId" type="long">
@@ -309,6 +325,7 @@
 		<property name="groupDossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="systemId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="dossierCounter" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">
@@ -1049,6 +1066,7 @@
 		<property name="maxLevel" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="public_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="govAgencyText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="isNotarization" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoMappingImpl" table="opencps_serviceinfomapping">
 		<id name="serviceInfoMappingId" type="long">
@@ -1091,6 +1109,7 @@
 		<property name="requestPayment" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="paymentFee" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="dossierGroupPattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="counterCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceProcessRoleImpl" table="opencps_serviceprocessrole">
 		<composite-id class="org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK" name="primaryKey">

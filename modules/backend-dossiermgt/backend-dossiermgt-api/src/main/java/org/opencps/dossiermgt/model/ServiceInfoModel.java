@@ -515,6 +515,27 @@ public interface ServiceInfoModel extends BaseModel<ServiceInfo>, GroupedModel,
 	 */
 	public void setGovAgencyText(String govAgencyText);
 
+	/**
+	 * Returns the is notarization of this service info.
+	 *
+	 * @return the is notarization of this service info
+	 */
+	public boolean getIsNotarization();
+
+	/**
+	 * Returns <code>true</code> if this service info is is notarization.
+	 *
+	 * @return <code>true</code> if this service info is is notarization; <code>false</code> otherwise
+	 */
+	public boolean isIsNotarization();
+
+	/**
+	 * Sets whether this service info is is notarization.
+	 *
+	 * @param isNotarization the is notarization of this service info
+	 */
+	public void setIsNotarization(boolean isNotarization);
+
 	@Override
 	public boolean isNew();
 
