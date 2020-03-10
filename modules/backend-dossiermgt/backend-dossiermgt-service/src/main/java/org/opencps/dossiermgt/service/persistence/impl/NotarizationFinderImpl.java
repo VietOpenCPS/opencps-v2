@@ -42,8 +42,12 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
-
-			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			if (dossierId <= 0) {
+				sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			}
+			else {
+				sql = sql.replace(FILTER_DOSSIER_ID, FILTER_DOSSIER_ID_VALUE);
+			}
 			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
@@ -63,6 +67,9 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			QueryPos qPos = QueryPos.getInstance(q);
 			if (groupId > 0) {
 				qPos.add(groupId);				
+			}
+			if (dossierId > 0) {
+				qPos.add(dossierId);
 			}
 			
 			return (List<Notarization>)QueryUtil.list(q, getDialect(), start, end);
@@ -101,7 +108,12 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
 
-			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			if (dossierId <= 0) {
+				sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			}
+			else {
+				sql = sql.replace(FILTER_DOSSIER_ID, FILTER_DOSSIER_ID_VALUE);
+			}
 			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
@@ -126,8 +138,11 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			if (groupId > 0) {
 				qPos.add(groupId);				
 			}
+			if (dossierId > 0) {
+				qPos.add(dossierId);
+			}
 			
-			List ls = (List) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List ls = q.list();
 
 			if (ls.size() > 0) {
 				return Integer.getInteger(ls.get(0).toString());

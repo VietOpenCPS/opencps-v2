@@ -54,7 +54,7 @@ public interface NotarizationManagement {
 	@Path("/{notarizationId}")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@ApiOperation(value = "Add a notarization", response = ApplicantModel.class)
+	@ApiOperation(value = "Put a notarization", response = ApplicantModel.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a notarization was created", response = ApplicantModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
