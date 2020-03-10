@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -122,6 +123,27 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(result).build();
 			}
 			else {
+				if (dossierId == 0) {
+					dossierId = oldNotarization.getDossierId();
+				}
+				if (notarizationNo == 0) {
+					notarizationNo = oldNotarization.getNotarizationNo();
+				}
+				if (notarizationYear == 0) {
+					notarizationYear = oldNotarization.getNotarizationYear();
+				}
+				if (notarizationDate == 0) {
+					notarizationDate = oldNotarization.getNotarizationDate().getTime();
+				}
+				if (Validator.isNull(signerName)) {
+					signerName = oldNotarization.getSignerName();
+				}
+				if (Validator.isNull(signerPosition)) {
+					signerPosition = oldNotarization.getSignerPosition();
+				}
+				if (Validator.isNull(statusCode)) {
+					statusCode = oldNotarization.getStatusCode();
+				}
 				Notarization notarization = actions.updateNotarization(groupId, notarizationId, dossierId, fileName, totalRecord, totalPage, totalCopy, totalFee, notarizationNo, notarizationYear, notarizationDateFmt, signerName, signerPosition, statusCode, serviceContext);
 				result = NotarizationUtils.mappingToNotarizationDetailModel(notarization);
 
