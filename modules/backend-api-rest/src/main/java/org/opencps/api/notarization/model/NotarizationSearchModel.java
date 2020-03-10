@@ -80,7 +80,7 @@ public class NotarizationSearchModel {
 	@DefaultValue(StringPool.BLANK)
     protected String fileName;
 	@QueryParam(value = "totalRecord")
-	@DefaultValue(StringPool.BLANK)
+	@DefaultValue("0")
     protected Integer totalRecord;
 	@QueryParam(value = "totalPage")
 	@DefaultValue(StringPool.BLANK)

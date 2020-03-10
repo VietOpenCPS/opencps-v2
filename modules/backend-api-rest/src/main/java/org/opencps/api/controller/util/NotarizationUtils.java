@@ -22,6 +22,7 @@ public class NotarizationUtils {
 		model.setSignerName(notarization.getSignerName());
 		model.setSignerPosition(notarization.getSignerPosition());
 		model.setStatusCode(notarization.getStatusCode());
+		model.setNotarizationId(notarization.getNotarizationId());
 		return model;
 	}
 
@@ -39,6 +40,7 @@ public class NotarizationUtils {
 		model.setSignerName(notarization.getSignerName());
 		model.setSignerPosition(notarization.getSignerPosition());
 		model.setStatusCode(notarization.getStatusCode());
+		model.setNotarizationId(notarization.getNotarizationId());
 		return model;
 	}
 	

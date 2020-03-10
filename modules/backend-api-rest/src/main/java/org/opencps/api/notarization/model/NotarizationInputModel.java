@@ -65,6 +65,7 @@ public class NotarizationInputModel {
 	@FormParam(value = "fileName")
     protected String fileName;
 	@FormParam(value = "dossierId")
+	@DefaultValue("0")
     protected Long dossierId;
 	@FormParam(value = "totalRecord")
     protected Integer totalRecord;
@@ -78,14 +79,19 @@ public class NotarizationInputModel {
 	@DefaultValue(value = "0")
     protected Long notarizationNo;
 	@FormParam(value = "notarizationYear")
+	@DefaultValue("0")
     protected Integer notarizationYear;
 	@FormParam(value = "notarizationDate")
+	@DefaultValue("0")
     protected Long notarizationDate;
 	@FormParam(value = "signerName")
+	@DefaultValue("")
     protected String signerName;
 	@FormParam(value = "signerPosition")
+	@DefaultValue("")
     protected String signerPosition;
 	@FormParam(value = "statusCode")
+	@DefaultValue("")
     protected String statusCode;
 
     /**

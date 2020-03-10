@@ -136,6 +136,7 @@ import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.NotarizationTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -160,6 +161,7 @@ import org.opencps.dossiermgt.model.DossierMark;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierTemplate;
 import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.Notarization;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
@@ -186,6 +188,7 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.NotarizationLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
@@ -3122,6 +3125,44 @@ public class CPSDossierBusinessLocalServiceImpl
 			Date extendDate = new Date(GetterUtil.getLong(jsonData.get(DossierTerm.EXTEND_DATE)));
 			jsonData.put(DossierTerm.EXTEND_DATE, APIDateTimeUtils.convertDateToString(extendDate, APIDateTimeUtils._NORMAL_DATE_TIME));		
 		}
+		
+		//Notarization
+		ServiceInfo si;
+		try {
+			si = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(), dossier.getServiceCode());
+			if (si != null) {
+				jsonData.put(ServiceInfoTerm.IS_NOTARIZATION, si.isIsNotarization());
+			}
+			else {
+				jsonData.put(ServiceInfoTerm.IS_NOTARIZATION, false);
+			}
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		
+		List<Notarization> lstNotarizations = NotarizationLocalServiceUtil.findByG_DID(groupId, dossierId);
+		JSONArray notarizationArr = JSONFactoryUtil.createJSONArray();
+		for (Notarization nt : lstNotarizations) {
+			JSONObject notObj = JSONFactoryUtil.createJSONObject();
+			notObj.put(NotarizationTerm.NOTARIZATION_ID, nt.getNotarizationId());
+			notObj.put(NotarizationTerm.DOSSIER_ID, nt.getDossierId());
+			notObj.put(NotarizationTerm.GROUP_ID, nt.getGroupId());
+			notObj.put(NotarizationTerm.FILE_NAME, nt.getFileName());
+			notObj.put(NotarizationTerm.NOTARIZATION_DATE, nt.getNotarizationDate() != null ? APIDateTimeUtils.convertDateToString(nt.getNotarizationDate(), APIDateTimeUtils._NORMAL_PARTTERN) : StringPool.BLANK);
+			notObj.put(NotarizationTerm.NOTARIZATION_NO, nt.getNotarizationNo());
+			notObj.put(NotarizationTerm.NOTARIZATION_YEAR, nt.getNotarizationYear());
+			notObj.put(NotarizationTerm.SIGNER_NAME, nt.getSignerName());
+			notObj.put(NotarizationTerm.SIGNER_POSITION, nt.getSignerPosition());
+			notObj.put(NotarizationTerm.STATUS_CODE, nt.getStatusCode());
+			notObj.put(NotarizationTerm.TOTAL_COPY, nt.getTotalCopy());
+			notObj.put(NotarizationTerm.TOTAL_FEE, nt.getTotalFee());
+			notObj.put(NotarizationTerm.TOTAL_PAGE, nt.getTotalPage());
+			notObj.put(NotarizationTerm.TOTAL_RECORD, nt.getTotalRecord());
+			
+			notarizationArr.put(notObj);
+		}
+		jsonData.put(DossierTerm.NOTARIZATIONS, notarizationArr);
+		
 		return jsonData;
 	}
 

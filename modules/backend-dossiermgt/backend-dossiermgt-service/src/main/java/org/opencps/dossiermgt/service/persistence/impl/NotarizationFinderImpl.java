@@ -42,8 +42,12 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
-
-			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			if (dossierId <= 0) {
+				sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			}
+			else {
+				sql = sql.replace(FILTER_DOSSIER_ID, FILTER_DOSSIER_ID_VALUE);
+			}
 			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
@@ -63,6 +67,9 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			QueryPos qPos = QueryPos.getInstance(q);
 			if (groupId > 0) {
 				qPos.add(groupId);				
+			}
+			if (dossierId > 0) {
+				qPos.add(dossierId);
 			}
 			
 			return (List<Notarization>)QueryUtil.list(q, getDialect(), start, end);
@@ -87,21 +94,91 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			String signerPosition,
 			String statusCode) {
 
+//		Session session = null;
+//
+//		try {
+//			session = openSession();
+//
+//			String sql = _customSQL.get(getClass(), COUNT_ADVANCED_SEARCH);
+//
+//			if (groupId > 0) {
+//				sql = sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
+//			}
+//			else {
+//				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
+//			}
+//
+//			if (dossierId <= 0) {
+//				sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+//			}
+//			else {
+//				sql = sql.replace(FILTER_DOSSIER_ID, FILTER_DOSSIER_ID_VALUE);
+//			}
+//			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
+//			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
+//			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
+//			sql = sql.replace(FILTER_TOTAL_COPY, StringPool.BLANK);
+//			sql = sql.replace(FILTER_TOTAL_FEE, StringPool.BLANK);
+//			sql = sql.replace(FILTER_NOTARIZATION_NO, StringPool.BLANK);
+//			sql = sql.replace(FILTER_NOTARIZATION_YEAR, StringPool.BLANK);
+//			sql = sql.replace(FILTER_NOTARIZATION_DATE, StringPool.BLANK);
+//			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
+//			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
+//			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
+//
+//			_log.debug("Search notarization: " + sql + ", dossierId: " + dossierId);
+//
+//			SQLQuery q = session.createSQLQuery(sql);
+//
+//			q.setCacheable(true);
+//			q.addScalar(COUNT_COLUMN, Type.INTEGER);
+//			
+//			QueryPos qPos = QueryPos.getInstance(q);
+//
+//			if (groupId > 0) {
+//				qPos.add(groupId);				
+//			}
+//			if (dossierId > 0) {
+//				qPos.add(dossierId);
+//			}
+//			
+//			List ls = q.list();
+//
+//			if (ls.size() > 0) {
+//				return Integer.getInteger(ls.get(0).toString());
+//			} 
+//			else {
+//				return 0;
+//			}
+//		} catch (Exception e) {
+//			try {
+//				throw new SystemException(e);
+//			} catch (SystemException se) {
+////		            se.printStackTrace();
+//				_log.error(se);
+//			}
+//		} finally {
+//			closeSession(session);
+//		}
+//
+//		return 0;
 		Session session = null;
-
 		try {
 			session = openSession();
 
-			String sql = _customSQL.get(getClass(), COUNT_ADVANCED_SEARCH);
-
+			String sql = _customSQL.get(getClass(), FIND_ADVANCED_SEARCH);
 			if (groupId > 0) {
 				sql = sql.replace(FILTER_GROUP_ID, FILTER_GROUP_ID_VALUE);
 			}
 			else {
 				sql = sql.replace(FILTER_GROUP_ID, StringPool.BLANK);
 			}
-
-			sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			if (dossierId <= 0) {
+				sql = sql.replace(FILTER_DOSSIER_ID, StringPool.BLANK);
+			}
+			else {
+				sql = sql.replace(FILTER_DOSSIER_ID, FILTER_DOSSIER_ID_VALUE);
+			}
 			sql = sql.replace(FILTER_FILENAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_RECORD, StringPool.BLANK);
 			sql = sql.replace(FILTER_TOTAL_PAGE, StringPool.BLANK);
@@ -113,34 +190,27 @@ public class NotarizationFinderImpl extends NotarizationFinderBaseImpl implement
 			sql = sql.replace(FILTER_SIGNER_NAME, StringPool.BLANK);
 			sql = sql.replace(FILTER_SIGNER_POSITION, StringPool.BLANK);
 			sql = sql.replace(FILTER_STATUS_CODE, StringPool.BLANK);
-
 			_log.debug("Search notarization: " + sql);
-
 			SQLQuery q = session.createSQLQuery(sql);
-
-			q.setCacheable(true);
-			q.addScalar(COUNT_COLUMN, Type.INTEGER);
+			q.setCacheable(false);
+			q.addEntity(NOTARIZATION_ENTITY, NotarizationImpl.class);
 			
 			QueryPos qPos = QueryPos.getInstance(q);
-
 			if (groupId > 0) {
 				qPos.add(groupId);				
 			}
-			
-			List ls = (List) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			if (ls.size() > 0) {
-				return Integer.getInteger(ls.get(0).toString());
-			} 
-			else {
-				return 0;
+			if (dossierId > 0) {
+				qPos.add(dossierId);
 			}
+			
+			List ls = (List<Notarization>)QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			
+			return ls.size();
 		} catch (Exception e) {
 			try {
 				throw new SystemException(e);
 			} catch (SystemException se) {
-//		            se.printStackTrace();
-				_log.error(se);
+				se.printStackTrace();
 			}
 		} finally {
 			closeSession(session);
