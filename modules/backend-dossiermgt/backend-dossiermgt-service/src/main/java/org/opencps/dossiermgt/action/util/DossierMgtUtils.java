@@ -498,7 +498,7 @@ public class DossierMgtUtils {
 		return dossier;
 	}
 
-	public static boolean checkPreCondition(String[] preConditions, Dossier dossier) {
+	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
 		boolean result = true;
 		
 		
@@ -637,9 +637,45 @@ public class DossierMgtUtils {
 					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
 				}
 			}
+			// BA Duan
+			if (preCondition.contains("isRoles=")) {
+				String[] splitDuration = preCondition.split("=");
+				if (splitDuration.length == 2) {
+					result = result && checkIsRoles(splitDuration[1], curUser, dossier);
+				}
+			}
 		}
 
 		return result;
+	}
+
+	private static boolean checkIsRoles(String role, User curUser, Dossier dossier) {
+
+		boolean flag = false;
+
+		if (Validator.isNull(curUser)) {
+			return flag;
+		}
+		
+		String[] roles = role.split(StringPool.PLUS);
+		List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(curUser.getUserId());
+		
+		for (String preconditionRoleCode : roles) {
+
+			JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), preconditionRoleCode);
+
+			for (Role r : lstRoles) {
+				if (r.getRoleId() == jobPos.getMappingRoleId()) {
+					flag = true;
+					break;
+				}
+			}
+			if (flag) {
+				break;
+			}
+		}
+	
+		return flag;
 	}
 		
 	private static boolean checkServiceCode(String serviceCode, Dossier dossier) {
