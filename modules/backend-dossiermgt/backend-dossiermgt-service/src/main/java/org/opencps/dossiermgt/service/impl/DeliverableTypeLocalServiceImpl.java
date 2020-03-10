@@ -381,7 +381,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 	}
 	
 	public List<DeliverableType> getAllDeliverableTypes(long companyId) {
-		return deliverableTypePersistence.findByG(companyId);
+		return deliverableTypePersistence.findByC(companyId);
 	}
 	
 	class ModelKeys {
