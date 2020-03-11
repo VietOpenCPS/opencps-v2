@@ -44,7 +44,7 @@ public class BookingActionsImpl implements BookingActions {
 		try {
 
 			hits = BookingLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
-			if (hits != null) {
+			if (hits != null && hits.getLength() > 0) {
 				result.put("data", hits.toList());
 
 				long total = BookingLocalServiceUtil.countLucene(params, searchContext);
