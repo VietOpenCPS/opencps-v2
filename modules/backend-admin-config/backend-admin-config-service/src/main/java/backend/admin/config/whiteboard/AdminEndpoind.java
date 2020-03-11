@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
@@ -20,7 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -81,6 +82,48 @@ public class AdminEndpoind extends Endpoint {
 	private static final String END = "end";
 
 	private static final String START = "start";
+	private static final String PORTAL_URL = "portalURL";
+	private static final String COMPANY_ID = "companyId";
+	private static final String DYNAMIC_QUERY = "dynamicQuery";
+	private static final String RESPONSE_TYPE = "responeType";
+	private static final String DETAIL = "detail";
+	private static final String TITLE = "title";
+	private static final String COLUMN = "column";
+	private static final String LIST_TABLE_MENU = "listTableMenu";
+	private static final String PUBLIC_MANAGER = "publicManager";
+	private static final String MENU = "menu";
+	private static final String NAME = "name";
+	private static final String VALUE_FILTER = "value_filter";
+	private static final String NUMBER = "number";
+	private static final String AUTO_COMPLETE = "autocomplete";
+	private static final String TYPE_INT = "int";
+	private static final String DATA_TYPE = "data_type";
+	private static final String KEY = "key";
+	private static final String CHECK_BOX = "checkbox";
+	private static final String QUERY_LIKE = "like";
+	private static final String COMPARE_LT = "lt";
+	private static final String COMPARE_LE = "le";
+	private static final String COMPARE_GT = "gt";
+	private static final String COMPARE_GE = "ge";
+	private static final String LOCAL_ACCESSS = "localaccess";
+	private static final String P_AUTH = "Token";
+	private static final String USER_REQUEST_ID = "userid";
+	private static final String USER_ID = "USER_ID";
+	private static final String CLASSNAME_WORKING_UNIT = "opencps_workingunit";
+	private static final String CLASSNAME_APPLICANT = "opencps_applicant";
+	private static final String HEARDER_NAME = "headersName";
+	private static final String DETAIL_COLUMN = "detailColumns";
+	private static final String EXT_FORM = "extForm";
+	private static final String DEPENDENCY_TITLE = "dependency_title";
+	private static final String DEPENDENCY_LINK = "dependency_link";
+	private static final String DYNAMIC_COUNT = "dynamicQueryCount";
+//	private static final String ENCODING = "UTF-8";
+	private static final String TIMEZONE_HCM = "Asia/Ho_Chi_Minh";
+	private static final String PROCESS_DELETE = "adminProcessDelete";
+	private static final String PROCESS_DATA = "adminProcessData";
+	private static final String HEADERS = "headers";
+	private static final String CLASSNAME_EMPLOYEE = "opencps_employee";
+	private static final String PARAMETER = "parameters";
 
 	/**
 	 * @Override onOpen websocket connect
@@ -116,11 +159,11 @@ public class AdminEndpoind extends Endpoint {
 		Map<String, List<String>> parameters = session.getRequestParameterMap();
 		
 		// user parameters
-		String groupIdStr = parameters.get("groupId").get(0);
-		String portalURL = parameters.get("portalURL").get(0);
-		String companyId = parameters.get("companyId").get(0);
-		String userId = parameters.get("userId").get(0);
-		String userName = parameters.get("userName").get(0);
+		String groupIdStr = parameters.get(Field.GROUP_ID).get(0);
+		String portalURL = parameters.get(PORTAL_URL).get(0);
+		String companyId = parameters.get(COMPANY_ID).get(0);
+		String userId = parameters.get(Field.USER_ID).get(0);
+		String userName = parameters.get(Field.USER_NAME).get(0);
 
 		JSONObject messageData = JSONFactoryUtil.createJSONObject();
 
@@ -158,12 +201,11 @@ public class AdminEndpoind extends Endpoint {
 				
 				if (message.getString(CMD).equals(GET)) {
 
-					method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery");
+					method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(DYNAMIC_QUERY);
 
 					DynamicQuery dynamicQuery = (DynamicQuery) method.invoke(model);
 
-					if (Validator.isNotNull(adminConfig) && !"detail".equals(message.getString("responeType"))) {
-
+					if (Validator.isNotNull(adminConfig) && !DETAIL.equals(message.getString(RESPONSE_TYPE))) {
 						String columns = adminConfig.getColumns();
 
 						JSONArray arraysColumn = JSONFactoryUtil.createJSONArray(columns);
@@ -178,23 +220,23 @@ public class AdminEndpoind extends Endpoint {
 
 								JSONObject column = arraysColumn.getJSONObject(i);
 								
-								projectionList.add(ProjectionFactoryUtil.property(column.getString("column")));
+								projectionList.add(ProjectionFactoryUtil.property(column.getString(COLUMN)));
 
 							}
 							
-							if ("listTableMenu".equals(message.getString(RESPONE))) {
-								projectionList.add(ProjectionFactoryUtil.property("publicManager"));
+							if (LIST_TABLE_MENU.equals(message.getString(RESPONE))) {
+								projectionList.add(ProjectionFactoryUtil.property(PUBLIC_MANAGER));
 							}
 
 							dynamicQuery.setProjection(projectionList);
 
 						}
 
-					} else if ("menu".equals(message.getString("responeType"))) {
+					} else if (MENU.equals(message.getString(RESPONSE_TYPE))) {
 						ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
-						projectionList.add(ProjectionFactoryUtil.property("code"));
-						projectionList.add(ProjectionFactoryUtil.property("name"));
+						projectionList.add(ProjectionFactoryUtil.property(CODE));
+						projectionList.add(ProjectionFactoryUtil.property(NAME));
 
 						dynamicQuery.setProjection(projectionList);
 					}
@@ -206,47 +248,47 @@ public class AdminEndpoind extends Endpoint {
 
 							JSONObject filter = message.getJSONArray(FILTER).getJSONObject(i);
 
-							if (Validator.isNotNull(filter.getString("value_filter"))
-									&& filter.getString("value_filter").length() > 0) {
+							if (Validator.isNotNull(filter.getString(VALUE_FILTER))
+									&& filter.getString(VALUE_FILTER).length() > 0) {
 
-								if ("=".equals(filter.getString(COMPARE))) {
-									if ("number".equals(filter.getString("type")) || "autocomplete".equals(filter.getString("type"))) {
-										if (filter.getBoolean("int")) {
-											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-													.eq(filter.getInt("value_filter")));
+								if (StringPool.EQUAL.equals(filter.getString(COMPARE))) {
+									if (NUMBER.equals(filter.getString(TYPE)) || AUTO_COMPLETE.equals(filter.getString(TYPE))) {
+										if (filter.getBoolean(TYPE_INT)) {
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(filter.getInt(VALUE_FILTER)));
 										} else {
-											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-													.eq(filter.getLong("value_filter")));
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(filter.getLong(VALUE_FILTER)));
 										}
 										
-									} else if ("checkbox".equals(filter.getString("type"))) {
-										if ("int".equals(filter.getString("data_type"))) {
-											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-													.eq(filter.getBoolean("value_filter") ? 1 : 0));
+									} else if (CHECK_BOX.equals(filter.getString(TYPE))) {
+										if (TYPE_INT.equals(filter.getString(DATA_TYPE))) {
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(filter.getBoolean(VALUE_FILTER) ? 1 : 0));
 										} else {
-											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-													.eq(filter.getBoolean("value_filter")));
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(filter.getBoolean(VALUE_FILTER)));
 										}
 									} else {
-										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-												.eq(filter.getString("value_filter")));
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+												.eq(filter.getString(VALUE_FILTER)));
 									}
-								} else if ("like".equals(filter.getString(COMPARE))) {
+								} else if (QUERY_LIKE.equals(filter.getString(COMPARE))) {
 									dynamicQuery.add(
-											PropertyFactoryUtil.forName(filter.getString("key")).like(StringPool.PERCENT
-													+ filter.getString("value_filter") + StringPool.PERCENT));
-								} else if ("lt".equals(filter.getString(COMPARE))) {
-									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-											.lt(filter.getLong("value_filter")));
-								} else if ("le".equals(filter.getString(COMPARE))) {
-									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-											.le(filter.getLong("value_filter")));
-								} else if ("gt".equals(filter.getString(COMPARE))) {
-									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-											.gt(filter.getLong("value_filter")));
-								} else if ("ge".equals(filter.getString(COMPARE))) {
-									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString("key"))
-											.ge(filter.getLong("value_filter")));
+											PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
+													+ filter.getString(VALUE_FILTER) + StringPool.PERCENT));
+								} else if (COMPARE_LT.equals(filter.getString(COMPARE))) {
+									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+											.lt(filter.getLong(VALUE_FILTER)));
+								} else if (COMPARE_LE.equals(filter.getString(COMPARE))) {
+									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+											.le(filter.getLong(VALUE_FILTER)));
+								} else if (COMPARE_GT.equals(filter.getString(COMPARE))) {
+									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+											.gt(filter.getLong(VALUE_FILTER)));
+								} else if (COMPARE_GE.equals(filter.getString(COMPARE))) {
+									dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+											.ge(filter.getLong(VALUE_FILTER)));
 								}
 
 							}
@@ -260,16 +302,16 @@ public class AdminEndpoind extends Endpoint {
 					if (groupId > 0 && adminConfig.getGroupFilter()) {
 						Disjunction disjunction = RestrictionsFactoryUtil.disjunction();
 						if (Validator.isNotNull(code)
-								&& ("opencps_workingunit".equals(code) || "opencps_applicant".equals(code))) {
-							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+								&& (CLASSNAME_WORKING_UNIT.equals(code) || CLASSNAME_APPLICANT.equals(code))) {
+							disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 						} else {
-							disjunction.add(RestrictionsFactoryUtil.eq("groupId", 0l));
-							disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
+							disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, 0l));
+							disjunction.add(RestrictionsFactoryUtil.eq(Field.GROUP_ID, groupId));
 						}
 						dynamicQuery.add(disjunction);
 					}
 
-					method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery",
+					method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(DYNAMIC_QUERY,
 							DynamicQuery.class, int.class, int.class);
 
 					messageData.put(STATUS, HttpStatus.OK);
@@ -282,20 +324,20 @@ public class AdminEndpoind extends Endpoint {
 					if (message.getBoolean(CONFIG)) {
 
 						JSONObject config = JSONFactoryUtil.createJSONObject();
-						config.put("code", adminConfig.getCode());
-						config.put("name", adminConfig.getName());
-						config.put("headersName", headersObj.getJSONArray("headers"));
-						config.put("columns", adminConfig.getColumns());
-						config.put("detailColumns", adminConfig.getDetailColumns());
-						config.put("extForm", adminConfig.getExtForm());
-						config.put("dependency_title", headersObj.get("dependency_title"));
-						config.put("dependency_link", headersObj.get("dependency_link"));
+						config.put(CODE, adminConfig.getCode());
+						config.put(NAME, adminConfig.getName());
+						config.put(HEARDER_NAME, headersObj.getJSONArray(HEADERS));
+						config.put(COLUMN, adminConfig.getColumns());
+						config.put(DETAIL_COLUMN, adminConfig.getDetailColumns());
+						config.put(EXT_FORM, adminConfig.getExtForm());
+						config.put(DEPENDENCY_TITLE, headersObj.get(DEPENDENCY_TITLE));
+						config.put(DEPENDENCY_LINK, headersObj.get(DEPENDENCY_LINK));
 
 						messageData.put(message.getString(RESPONE), config);
 
 					} else if (message.getBoolean(COUNTER)) {
 
-						Method methodCounter = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQueryCount",
+						Method methodCounter = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(DYNAMIC_COUNT,
 								DynamicQuery.class);
 						
 						messageData.put(message.getString(RESPONE), methodCounter.invoke(model, dynamicQuery));
@@ -304,11 +346,7 @@ public class AdminEndpoind extends Endpoint {
 
 						int start = Validator.isNotNull(message.getString(START)) ? message.getInt(START) : 0;
 						int end = Validator.isNotNull(message.getString(END)) ? message.getInt(END) : 1;
-						
-//						System.out.println("code: " + code.equals("opencps_employee"));
-						_log.debug("code: " + "opencps_employee".equals(code));
-						_log.debug("lengColumns: " + lengColumns);
-						if ("opencps_employee".equals(code)) {
+						if (CLASSNAME_EMPLOYEE.equals(code)) {
 							
 							List<Object[]> employees = (List<Object[]>) method.invoke(model, dynamicQuery, start, end);
 
@@ -334,13 +372,13 @@ public class AdminEndpoind extends Endpoint {
 						
 					}
 
-					messageData.put("title", headersObj.getString("title"));
+					messageData.put(TITLE, headersObj.getString(TITLE));
 
 				} else {
 
 					if (message.getString(CMD).equals(DELETE)) {
 
-						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("adminProcessDelete",
+						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DELETE,
 								Long.class);
 
 						messageData.put(message.getString(RESPONE), method.invoke(model, message.getLong(ID)));
@@ -348,15 +386,15 @@ public class AdminEndpoind extends Endpoint {
 
 					} else {
 
-						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("adminProcessData",
+						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
 								JSONObject.class);
 
 						JSONObject postData = message.getJSONObject(DATA);
 						
-						postData.put("groupId", groupIdStr);
-						postData.put("companyId", companyId);
-						postData.put("userId", userId);
-						postData.put("userName", userName);
+						postData.put(Field.GROUP_ID, groupIdStr);
+						postData.put(COMPANY_ID, companyId);
+						postData.put(Field.USER_ID, userId);
+						postData.put(Field.USER_NAME, userName);
 						
 						messageData.put(message.getString(RESPONE), method.invoke(model, message.getJSONObject(DATA)));
 
@@ -370,13 +408,13 @@ public class AdminEndpoind extends Endpoint {
 
 				RestTemplate restTemplate = new RestTemplate();
 
-				restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+				restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
 				HttpHeaders headers = new HttpHeaders();
 
 				headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-				JSONObject headerObject = message.getJSONObject("headers");
+				JSONObject headerObject = message.getJSONObject(HEADERS);
 
 				JSONArray keys = headerObject.names();
 
@@ -388,22 +426,19 @@ public class AdminEndpoind extends Endpoint {
 					headers.set(key, value);
 
 				}
-				headers.set("localaccess", headerObject.getString("Token"));
-				headers.set("userid", headerObject.getString("USER_ID"));
+				headers.set(LOCAL_ACCESSS, headerObject.getString(P_AUTH));
+				headers.set(USER_REQUEST_ID, headerObject.getString(USER_ID));
 				
-				HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-				
-//				HttpEntity<String> response = restTemplate.exchange("http://" + portalURL + message.getString("api"),
-//						HttpMethod.GET, entity, String.class);
+				HttpEntity<String> entity = new HttpEntity<>(PARAMETER, headers);
 				//BNG
-				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString("api"),
+				HttpEntity<String> response = restTemplate.exchange(portalURL + message.getString(API),
 						HttpMethod.GET, entity, String.class);
 
 				String resultString = response.getBody();
 
 				JSONArray responeData = JSONFactoryUtil.createJSONArray();
 				try {
-					responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray("data");
+					responeData = JSONFactoryUtil.createJSONObject(resultString).getJSONArray(DATA);
 				} catch (Exception e) {
 					_log.debug(e);
 					responeData = JSONFactoryUtil.createJSONArray(resultString);
@@ -450,7 +485,7 @@ public class AdminEndpoind extends Endpoint {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(TIMEZONE_HCM));
 
 		Calendar calendar = Calendar.getInstance();
 
