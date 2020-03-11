@@ -1,5 +1,7 @@
 package backend.admin.config.whiteboard;
 
+import com.liferay.petra.string.StringPool;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -44,26 +46,26 @@ class GZipServletResponseWrapper extends HttpServletResponseWrapper {
 			this.printWriter.flush();
 		}
 
-		IOException exception1 = null;
+		//IOException exception1 = null;
 		try {
 			if (this.gzipOutputStream != null) {
 				this.gzipOutputStream.flush();
 			}
 		} catch (IOException e) {
-			exception1 = e;
+			throw e;
 		}
 
-		IOException exception2 = null;
+		//IOException exception2 = null;
 		try {
 			super.flushBuffer();
 		} catch (IOException e) {
-			exception2 = e;
+			throw e;
 		}
 
-		if (exception1 != null)
-			throw exception1;
-		if (exception2 != null)
-			throw exception2;
+//		if (exception1 != null)
+//			throw exception1;
+//		if (exception2 != null)
+//			throw exception2;
 	}
 
 	@Override

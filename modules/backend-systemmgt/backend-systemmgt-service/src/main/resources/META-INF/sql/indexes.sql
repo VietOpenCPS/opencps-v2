@@ -1,1 +1,0 @@
-create unique index IX_D10DE127 on opencps_scheduler (schedulerType[$COLUMN_LENGTH:255$]);
