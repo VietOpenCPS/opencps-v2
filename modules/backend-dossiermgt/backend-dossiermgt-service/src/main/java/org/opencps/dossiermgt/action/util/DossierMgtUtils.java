@@ -657,7 +657,7 @@ public class DossierMgtUtils {
 			return flag;
 		}
 		
-		String[] roles = role.split(StringPool.PLUS);
+		String[] roles = StringUtil.split(role, StringPool.PLUS);
 		List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(curUser.getUserId());
 		
 		for (String preconditionRoleCode : roles) {

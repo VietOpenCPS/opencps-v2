@@ -3299,15 +3299,15 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 			long groupId, User curUser) {
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
 				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
-			System.out.println("hhhhhhhhiiiiiiiiiiiiiiiiiii");
+
 			return false;
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
-		System.out.println("==============preCondition===================" + preCondition);
+
 //		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
 //		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			System.out.println("============dddddd=preCondition===================" + preCondition);
+
 			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
 		}
 
