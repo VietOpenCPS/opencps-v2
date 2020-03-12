@@ -894,9 +894,23 @@ public class DossierManagementImpl implements DossierManagement {
 			String fromDueDate =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 						query.getFromDueDate());
-				String toDueDate =
+			String toDueDate =
+				APIDateTimeUtils.convertNormalDateToLuceneDate(
+					query.getToDueDate());
+			
+			String fromReleaseDate =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
-						query.getToDueDate());
+						query.getFromReleaseDate());
+			String toReleaseDate =
+				APIDateTimeUtils.convertNormalDateToLuceneDate(
+					query.getToReleaseDate());
+			
+			String fromFinishDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+						query.getFromFinishDate());
+			String toFinishDate =
+				APIDateTimeUtils.convertNormalDateToLuceneDate(
+					query.getToFinishDate());
 			
 			String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
@@ -964,6 +978,11 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
 			params.put(DossierTerm.FROM_DUEDATE, fromDueDate);
 			params.put(DossierTerm.TO_DUEDATE, toDueDate);
+
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
+			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
+			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
 			
 			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
 			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
