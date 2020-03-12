@@ -78,7 +78,7 @@ public class ServiceProcessRoleModelImpl extends BaseModelImpl<ServiceProcessRol
 		TABLE_COLUMNS_MAP.put("condition_", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocessrole (uuid_ VARCHAR(75) null,serviceProcessId LONG not null,roleId LONG not null,roleCode VARCHAR(255) null,roleName VARCHAR(255) null,moderator BOOLEAN,condition_ VARCHAR(75) null,primary key (serviceProcessId, roleId))";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceprocessrole (uuid_ VARCHAR(75) null,serviceProcessId LONG not null,roleId LONG not null,roleCode VARCHAR(255) null,roleName VARCHAR(255) null,moderator BOOLEAN,condition_ VARCHAR(255) null,primary key (serviceProcessId, roleId))";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceprocessrole";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceProcessRole.id.serviceProcessId ASC, serviceProcessRole.id.roleId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceprocessrole.serviceProcessId ASC, opencps_serviceprocessrole.roleId ASC";

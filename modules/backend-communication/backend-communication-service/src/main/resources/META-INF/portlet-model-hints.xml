@@ -27,8 +27,12 @@
 		<field name="payload" type="String">
 			<hint-collection name="LONGEST_TEXT" />
 		</field>
-		<field name="fromUsername" type="String" />
-		<field name="toUsername" type="String" />
+		<field name="fromUsername" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="toUsername" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="toUserId" type="long" />
 		<field name="toEmail" type="String">
 			<hint name="max-length">255</hint>
@@ -44,7 +48,9 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="notificationType" type="String">
@@ -82,7 +88,9 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="govAgencyCode" type="String">
@@ -107,12 +115,16 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="uId" type="String" />
 		<field name="telNo" type="String" />
-		<field name="zaloOAId" type="String" />
+		<field name="zaloOAId" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="isFollowed" type="int" />
 		<field name="payload" type="String">
 			<hint-collection name="LONGEST_TEXT" />

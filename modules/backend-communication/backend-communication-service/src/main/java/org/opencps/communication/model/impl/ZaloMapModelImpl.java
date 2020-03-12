@@ -96,7 +96,7 @@ public class ZaloMapModelImpl extends BaseModelImpl<ZaloMap>
 		TABLE_COLUMNS_MAP.put("payload", Types.CLOB);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,zaloOAId VARCHAR(75) null,isFollowed INTEGER,payload TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_zalomap (zaloMapId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,uId VARCHAR(75) null,telNo VARCHAR(75) null,zaloOAId VARCHAR(255) null,isFollowed INTEGER,payload TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_zalomap";
 	public static final String ORDER_BY_JPQL = " ORDER BY zaloMap.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_zalomap.createDate ASC";

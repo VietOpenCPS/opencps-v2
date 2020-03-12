@@ -99,7 +99,7 @@ public class DynamicReportModelImpl extends BaseModelImpl<DynamicReport>
 		TABLE_COLUMNS_MAP.put("reportType", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dynamicreport (dynamicReportId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,sharing INTEGER,reportName VARCHAR(75) null,reportCode VARCHAR(75) null,filterConfig TEXT null,tableConfig TEXT null,userConfig VARCHAR(1000) null,reportType VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dynamicreport (dynamicReportId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,sharing INTEGER,reportName VARCHAR(1024) null,reportCode VARCHAR(128) null,filterConfig TEXT null,tableConfig TEXT null,userConfig VARCHAR(1000) null,reportType VARCHAR(128) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dynamicreport";
 	public static final String ORDER_BY_JPQL = " ORDER BY dynamicReport.reportCode ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dynamicreport.reportCode ASC";

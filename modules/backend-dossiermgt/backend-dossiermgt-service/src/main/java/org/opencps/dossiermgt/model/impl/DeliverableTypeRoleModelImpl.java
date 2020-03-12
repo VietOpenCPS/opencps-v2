@@ -97,7 +97,7 @@ public class DeliverableTypeRoleModelImpl extends BaseModelImpl<DeliverableTypeR
 		TABLE_COLUMNS_MAP.put("moderator", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletyperole (uuid_ VARCHAR(75) null,deliverableTypeRoleId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableTypeId LONG,roleId LONG,moderator BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletyperole (uuid_ VARCHAR(75) null,deliverableTypeRoleId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,deliverableTypeId LONG,roleId LONG,moderator BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverabletyperole";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableTypeRole.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverabletyperole.createDate ASC";

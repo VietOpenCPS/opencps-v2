@@ -103,7 +103,7 @@ public class DossierRequestUDModelImpl extends BaseModelImpl<DossierRequestUD>
 		TABLE_COLUMNS_MAP.put("statusReg", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierrequests (uuid_ VARCHAR(75) null,dossierRequestId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,requestType VARCHAR(75) null,comment_ VARCHAR(75) null,isNew INTEGER,statusReg INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierrequests (uuid_ VARCHAR(75) null,dossierRequestId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,requestType VARCHAR(128) null,comment_ TEXT null,isNew INTEGER,statusReg INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierrequests";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierRequestUD.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierrequests.modifiedDate DESC";

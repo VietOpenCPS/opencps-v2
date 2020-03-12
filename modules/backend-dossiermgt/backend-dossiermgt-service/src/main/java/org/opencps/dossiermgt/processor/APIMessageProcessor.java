@@ -305,6 +305,13 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			//_log.error(e);
 			return false;
 		}
+		String originReferenceUid = dossier.getReferenceUid();
+		
+		if (Validator.isNotNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
+			if (dossier.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+				originReferenceUid = dossier.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+			}
+		}
 		
 		//Process action
 		try {
@@ -381,7 +388,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setShipAmount(paymentFile.getShipAmount());
 				
 				//_log.debug("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				client.postPaymentFiles(originReferenceUid, pfiModel);
 				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 2: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
 			} else if (processAction != null && (processAction
@@ -397,7 +404,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 				String paymentNote = paymentFile != null ? paymentFile.getPaymentNote() : StringPool.BLANK;
 				pfiModel.setPaymentNote(paymentNote);
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				client.postPaymentFiles(originReferenceUid, pfiModel);
 				
 				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
 						+ APIDateTimeUtils.convertDateToString(new Date()));
@@ -431,7 +438,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setEinvoice(paymentFile.getEinvoice());
 				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 				
-				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+				client.postPaymentFiles(originReferenceUid, pfiModel);
 			}
 		}
 		catch (Exception e) {
@@ -462,7 +469,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			_log.debug(e);
 		}
 
-		ExecuteOneAction actionResult = client.postDossierAction(dossier.getReferenceUid(), actionModel);
+		ExecuteOneAction actionResult = client.postDossierAction(originReferenceUid, actionModel);
 		if (client.isWriteLog()) {
 			dossierSync.setMessageText(messageText.toString());
 			dossierSync.setAcknowlegement(acknowlegement.toString());

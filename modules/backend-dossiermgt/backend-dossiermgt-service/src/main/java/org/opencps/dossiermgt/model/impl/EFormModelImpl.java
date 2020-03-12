@@ -107,7 +107,7 @@ public class EFormModelImpl extends BaseModelImpl<EForm> implements EFormModel {
 		TABLE_COLUMNS_MAP.put("secret", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(75) null,serviceCode VARCHAR(75) null,fileTemplateNo VARCHAR(75) null,eFormName VARCHAR(75) null,formScriptFileId LONG,formReportFileId LONG,eFormData VARCHAR(75) null,email VARCHAR(75) null,secret VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_eform (uuid_ VARCHAR(75) null,eFormId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,eFormNo VARCHAR(128) null,serviceCode VARCHAR(128) null,fileTemplateNo VARCHAR(128) null,eFormName VARCHAR(512) null,formScriptFileId LONG,formReportFileId LONG,eFormData TEXT null,email VARCHAR(255) null,secret VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_eform";
 	public static final String ORDER_BY_JPQL = " ORDER BY eForm.eFormId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_eform.eFormId ASC";
