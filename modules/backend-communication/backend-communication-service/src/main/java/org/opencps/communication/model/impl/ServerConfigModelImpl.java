@@ -98,7 +98,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		TABLE_COLUMNS_MAP.put("lastSync", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serverconfig (serverConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(255) null,serverNo VARCHAR(255) null,serverName TEXT null,protocol VARCHAR(255) null,configs TEXT null,lastSync DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serverconfig (serverConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(255) null,serverNo VARCHAR(255) null,serverName TEXT null,protocol VARCHAR(255) null,configs TEXT null,lastSync DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serverconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY serverConfig.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serverconfig.createDate ASC";

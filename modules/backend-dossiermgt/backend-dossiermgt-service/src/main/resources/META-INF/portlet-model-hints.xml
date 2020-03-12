@@ -9,8 +9,12 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="actionCode" type="String" />
-		<field name="actionName" type="String" />
+		<field name="actionCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="actionName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="extraForm" type="boolean" />
 		<field name="formConfig" type="String">
 			<hint name="max-length">65535</hint>
@@ -25,7 +29,9 @@
 		<field name="infoType" type="int" />
 		<field name="pending" type="boolean" />
 		<field name="rollbackable" type="boolean" />
-		<field name="notificationType" type="String" />
+		<field name="notificationType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="documentType" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -40,16 +46,28 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="className" type="String" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="classPK" type="long" />
-		<field name="serviceCode" type="String" />
-		<field name="codeNumber" type="String" />
-		<field name="bookingName" type="String" />
+		<field name="serviceCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="codeNumber" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="bookingName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="checkinDate" type="Date" />
-		<field name="gateNumber" type="String" />
+		<field name="gateNumber" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="state" type="int" />
 		<field name="bookingDate" type="Date" />
 		<field name="speaking" type="boolean" />
@@ -64,11 +82,17 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="counterCode" type="String" />
-		<field name="patternCode" type="String" />
+		<field name="counterCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="patternCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="startCounter" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
@@ -77,17 +101,35 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="deliverableCode" type="String" />
-		<field name="deliverableName" type="String" />
-		<field name="deliverableType" type="String" />
-		<field name="govAgencyCode" type="String" />
-		<field name="govAgencyName" type="String" />
-		<field name="applicantIdNo" type="String" />
-		<field name="applicantName" type="String" />
-		<field name="subject" type="String" />
+		<field name="deliverableCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="deliverableName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="deliverableType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="applicantIdNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="applicantName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="subject" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="formData" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -106,7 +148,9 @@
 		<field name="fileEntryId" type="long" />
 		<field name="dossierId" type="long" />
 		<field name="docSync" type="int" />
-		<field name="fileAttachs" type="String" />
+		<field name="fileAttachs" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableLog">
 		<field name="uuid" type="String" />
@@ -114,12 +158,18 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="deliverableId" type="long" />
-		<field name="dossierUid" type="String" />
-		<field name="author" type="String" />
+		<field name="dossierUid" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="author" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="content" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -136,10 +186,14 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="typeCode" type="String" />
+		<field name="typeCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="typeName" type="String">
 			<hint name="max-length">575</hint>
 		</field>
@@ -181,7 +235,9 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="deliverableTypeId" type="long" />
@@ -221,34 +277,56 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="referenceUid" type="String" />
+		<field name="referenceUid" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="counter" type="long" />
 		<field name="registerBookCode" type="String">
 			<hint name="max-length">100</hint>
 		</field>
-		<field name="registerBookName" type="String" />
-		<field name="dossierRegister" type="String" />
-		<field name="processNo" type="String" />
-		<field name="serviceCode" type="String" />
-		<field name="serviceName" type="String" />
-		<field name="govAgencyCode" type="String" />
+		<field name="registerBookName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="dossierRegister" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="processNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="serviceCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="serviceName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="applicantName" type="String">
 			<hint name="max-length">500</hint>
 		</field>
-		<field name="applicantIdType" type="String" />
-		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdType" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="applicantIdNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="applicantIdDate" type="Date" />
 		<field name="address" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="cityCode" type="String" />
+		<field name="cityCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="cityName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="districtCode" type="String" />
+		<field name="districtCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="districtName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -259,7 +337,9 @@
 		<field name="contactName" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="contactTelNo" type="String" />
+		<field name="contactTelNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="contactEmail" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -267,23 +347,33 @@
 		<field name="delegateName" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="delegateIdNo" type="String" />
-		<field name="delegateTelNo" type="String" />
+		<field name="delegateIdNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="delegateTelNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="delegateEmail" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="delegateAddress" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="delegateCityCode" type="String" />
+		<field name="delegateCityCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="delegateCityName" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="delegateDistrictCode" type="String" />
+		<field name="delegateDistrictCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="delegateDistrictName" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="delegateWardCode" type="String" />
+		<field name="delegateWardCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="delegateWardName" type="String">
 			<hint name="max-length">512</hint>
 		</field>
@@ -291,7 +381,9 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="documentDate" type="Date" />
-		<field name="dossierTemplateNo" type="String" />
+		<field name="dossierTemplateNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="dossierTemplateName" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -324,7 +416,9 @@
 		<field name="dossierStatusText" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
-		<field name="dossierSubStatus" type="String" />
+		<field name="dossierSubStatus" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="dossierSubStatusText" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -358,7 +452,9 @@
 		<field name="postalWardName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="postalTelNo" type="String" />
+		<field name="postalTelNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="password" type="String" />
 		<field name="notification" type="boolean" />
 		<field name="online" type="boolean" />
@@ -384,7 +480,9 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="systemId" type="int" />
-		<field name="dossierCounter" type="String" />
+		<field name="dossierCounter" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -571,7 +669,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
-		<field name="author" type="String" />
+		<field name="author" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="content" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -596,8 +696,12 @@
 		</field>
 		<field name="fileCheck" type="int" />
 		<field name="fileMark" type="int" />
-		<field name="fileComment" type="String" />
-		<field name="recordCount" type="String" />
+		<field name="fileComment" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="recordCount" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierPart">
 		<field name="uuid" type="String" />
@@ -605,10 +709,14 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="templateNo" type="String" />
+		<field name="templateNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="partNo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -654,8 +762,12 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
 		<field name="referenceUid" type="String" />
-		<field name="requestType" type="String" />
-		<field name="comment" type="String" />
+		<field name="requestType" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="comment" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 		<field name="isNew" type="int" />
 		<field name="statusReg" type="int" />
 	</model>
@@ -710,12 +822,18 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="statusCode" type="String" />
-		<field name="statusCodeDVCQG" type="String" />
-		<field name="subStatusCode" type="String" />
+		<field name="statusCodeDVCQG" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="subStatusCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierSync">
 		<field name="uuid" type="String" />
@@ -725,15 +843,25 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
-		<field name="dossierRefUid" type="String" />
+		<field name="dossierRefUid" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="syncRefUid" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="dossierActionId" type="long" />
-		<field name="actionCode" type="String" />
-		<field name="actionName" type="String" />
-		<field name="actionUser" type="String" />
-		<field name="actionNote" type="String" />
+		<field name="actionCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="actionName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="actionUser" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="actionNote" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="syncType" type="int" />
 		<field name="infoType" type="int" />
 		<field name="payload" type="String">
@@ -790,17 +918,31 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="eFormNo" type="String" />
-		<field name="serviceCode" type="String" />
-		<field name="fileTemplateNo" type="String" />
-		<field name="eFormName" type="String" />
+		<field name="eFormNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="serviceCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="fileTemplateNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="eFormName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="formScriptFileId" type="long" />
 		<field name="formReportFileId" type="long" />
-		<field name="eFormData" type="String" />
-		<field name="email" type="String" />
+		<field name="eFormData" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="email" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="secret" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.MenuConfig">
@@ -811,8 +953,12 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="menuGroup" type="String" />
-		<field name="menuName" type="String" />
+		<field name="menuGroup" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="menuName" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
 		<field name="order" type="int" />
 		<field name="menuType" type="int" />
 		<field name="queryParams" type="String">
@@ -824,7 +970,9 @@
 		<field name="buttonConfig" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="icon" type="String" />
+		<field name="icon" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="viewScript" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -873,7 +1021,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -910,7 +1060,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="dossierId" type="long" />
 		<field name="referenceUid" type="String" />
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">500</hint>
 		</field>
@@ -932,7 +1084,9 @@
 			<hint name="max-length">4000</hint>
 		</field>
 		<field name="paymentStatus" type="int" />
-		<field name="paymentMethod" type="String" />
+		<field name="paymentMethod" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="confirmDatetime" type="Date" />
 		<field name="confirmPayload" type="String">
 			<hint name="max-length">4000</hint>
@@ -1007,7 +1161,9 @@
 		<field name="makeBriefNote" type="String">
 			<hint name="max-length">500</hint>
 		</field>
-		<field name="syncActionCode" type="String" />
+		<field name="syncActionCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="rollbackable" type="boolean" />
 		<field name="createDossierNo" type="boolean" />
 		<field name="eSignature" type="boolean" />
@@ -1024,7 +1180,9 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="checkInput" type="int" />
-		<field name="postAction" type="String" />
+		<field name="postAction" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessOption">
 		<field name="uuid" type="String" />
@@ -1075,7 +1233,9 @@
 			<hint name="max-length">500</hint>
 		</field>
 		<field name="pluginType" type="int" />
-		<field name="sequenceNo" type="String" />
+		<field name="sequenceNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="pluginForm" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -1126,8 +1286,12 @@
 		<field name="sequenceNo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="dossierStatus" type="String" />
-		<field name="dossierSubStatus" type="String" />
+		<field name="dossierStatus" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="dossierSubStatus" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="durationCount" type="double" />
 		<field name="customProcessUrl" type="String">
 			<hint name="max-length">255</hint>
@@ -1203,21 +1367,31 @@
 		<field name="applicantName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
-		<field name="applicantIdType" type="String" />
-		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdType" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="applicantIdNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="applicantIdDate" type="Date" />
 		<field name="address" type="String">
 			<hint name="max-length">575</hint>
 		</field>
-		<field name="cityCode" type="String" />
+		<field name="cityCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="cityName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
-		<field name="districtCode" type="String" />
+		<field name="districtCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="districtName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
-		<field name="wardCode" type="String" />
+		<field name="wardCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="wardName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
@@ -1235,7 +1409,9 @@
 			<hint name="max-length">275</hint>
 		</field>
 		<field name="registrationState" type="int" />
-		<field name="registrationClass" type="String" />
+		<field name="registrationClass" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="submitting" type="boolean" />
 		<field name="representativeEnterprise" type="String">
 			<hint name="max-length">255</hint>
@@ -1251,7 +1427,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="registrationId" type="long" />
 		<field name="referenceUid" type="String" />
-		<field name="formNo" type="String" />
+		<field name="formNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="formName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
@@ -1301,8 +1479,12 @@
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="formNo" type="String" />
-		<field name="formName" type="String" />
+		<field name="formNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="formName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="multiple" type="boolean" />
 		<field name="formScript" type="String">
 			<hint name="max-length">65535</hint>
@@ -1326,7 +1508,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceInfoId" type="long" />
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
@@ -1353,8 +1537,12 @@
 		<field name="eForm" type="boolean" />
 		<field name="formScriptFileId" type="long" />
 		<field name="formReportFileId" type="long" />
-		<field name="eFormNoPattern" type="String" />
-		<field name="eFormNamePattern" type="String" />
+		<field name="eFormNoPattern" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="eFormNamePattern" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfo">
 		<field name="uuid" type="String" />
@@ -1365,7 +1553,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="serviceCode" type="String" />
+		<field name="serviceCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="serviceName" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
@@ -1396,19 +1586,29 @@
 		<field name="feeText" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="administrationCode" type="String" />
+		<field name="administrationCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="administrationName" type="String">
 			<hint name="max-length">500</hint>
 		</field>
-		<field name="administrationIndex" type="String" />
-		<field name="domainCode" type="String" />
+		<field name="administrationIndex" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="domainCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="domainName" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="domainIndex" type="String" />
+		<field name="domainIndex" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="maxLevel" type="int" />
 		<field name="public_" type="boolean" />
-		<field name="govAgencyText" type="String" />
+		<field name="govAgencyText" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="isNotarization" type="boolean" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfoMapping">
@@ -1416,11 +1616,17 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="serviceCode" type="String" />
-		<field name="serviceCodeDVCQG" type="String" />
+		<field name="serviceCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="serviceCodeDVCQG" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcess">
 		<field name="uuid" type="String" />
@@ -1463,8 +1669,12 @@
 		<field name="paymentFee" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="dossierGroupPattern" type="String" />
-		<field name="counterCode" type="String" />
+		<field name="dossierGroupPattern" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="counterCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcessRole">
 		<field name="uuid" type="String" />
@@ -1477,7 +1687,9 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="moderator" type="boolean" />
-		<field name="condition" type="String" />
+		<field name="condition" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.StepConfig">
 		<field name="uuid" type="String" />
@@ -1487,13 +1699,25 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="stepCode" type="String" />
-		<field name="stepName" type="String" />
+		<field name="stepCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="stepName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="stepType" type="int" />
-		<field name="dossierStatus" type="String" />
-		<field name="dossierSubStatus" type="String" />
-		<field name="menuGroup" type="String" />
-		<field name="menuStepName" type="String" />
+		<field name="dossierStatus" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="dossierSubStatus" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="menuGroup" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="menuStepName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="buttonConfig" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -1503,6 +1727,8 @@
 		<field name="userLogId" type="long" />
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
-		<field name="payload" type="String" />
+		<field name="payload" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 	</model>
 </model-hints>

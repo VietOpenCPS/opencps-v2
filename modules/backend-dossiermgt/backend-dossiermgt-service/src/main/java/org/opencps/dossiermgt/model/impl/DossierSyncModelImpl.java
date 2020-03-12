@@ -116,7 +116,7 @@ public class DossierSyncModelImpl extends BaseModelImpl<DossierSync>
 		TABLE_COLUMNS_MAP.put("acknowlegement", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiersync (uuid_ VARCHAR(75) null,DossierSyncId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierRefUid VARCHAR(75) null,syncRefUid VARCHAR(255) null,dossierActionId LONG,actionCode VARCHAR(75) null,actionName VARCHAR(75) null,actionUser VARCHAR(75) null,actionNote VARCHAR(75) null,syncType INTEGER,infoType INTEGER,payload TEXT null,serverNo VARCHAR(75) null,state_ INTEGER,retry INTEGER,messageText TEXT null,acknowlegement TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiersync (uuid_ VARCHAR(75) null,DossierSyncId LONG not null primary key,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,dossierId LONG,dossierRefUid VARCHAR(128) null,syncRefUid VARCHAR(255) null,dossierActionId LONG,actionCode VARCHAR(128) null,actionName VARCHAR(512) null,actionUser VARCHAR(255) null,actionNote TEXT null,syncType INTEGER,infoType INTEGER,payload TEXT null,serverNo VARCHAR(75) null,state_ INTEGER,retry INTEGER,messageText TEXT null,acknowlegement TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiersync";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierSync.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiersync.modifiedDate ASC";
