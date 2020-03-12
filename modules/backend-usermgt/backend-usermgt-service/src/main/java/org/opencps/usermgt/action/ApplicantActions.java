@@ -67,4 +67,6 @@ public interface ApplicantActions {
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
 			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException;
 
+	public Applicant verifyApplicant(long applicantId)
+			throws PortalException;
 }

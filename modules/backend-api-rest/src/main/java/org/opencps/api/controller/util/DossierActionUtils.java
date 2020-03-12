@@ -52,7 +52,9 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -398,6 +400,7 @@ public class DossierActionUtils {
 	// LamTV_Mapping detail Next Action
 	@SuppressWarnings("unchecked")
 	public static DossierDetailNextActionModel mappingToDetailNextActions(
+		long groupId,
 		JSONObject jsonData)
 		throws PortalException {
 
@@ -526,20 +529,52 @@ public class DossierActionUtils {
 				List<DossierActionNextActiontoUser> outputUsers =
 					new ArrayList<DossierActionNextActiontoUser>();
 				DossierActionNextActiontoUser modelUser = null;
+				
 				if (lstUser != null && lstUser.size() > 0) {
 					boolean moderator = false;
 					int assigned = 0;
+					long[] jobPosIds = new long[lstUser.size()];
+					int count = 0;
+					long[] mUserIds = new long[lstUser.size()];
+					for (User user : lstUser) {
+						long userId = user.getUserId();
+						mUserIds[count++] = userId;
+					}
+					List<Employee> lstEmps = EmployeeLocalServiceUtil.findByG_MUSERID(groupId, mUserIds);
+					Map<Long, Employee> mapEmps = new HashMap<Long, Employee>();
+					for (Employee e : lstEmps) {
+						mapEmps.put(e.getMappingUserId(), e);
+					}
+					count = 0;
+					
 					for (User user : lstUser) {
 						long userId = user.getUserId();
 						Employee employee =
-							EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+							mapEmps.get(userId);
+						_log.debug("employee1: " + employee);
+						if (employee != null &&
+							employee.getWorkingStatus() == 1) {
+							jobPosIds[count++] = employee.getMainJobPostId();
+						}
+					}
+					
+					List<JobPos> lstJps = JobPosLocalServiceUtil.findByF_jobPosIds(groupId, jobPosIds);					
+					Map<Long, String> mapJps = new HashMap<Long, String>();
+					for (JobPos jp : lstJps) {
+						mapJps.put(jp.getJobPosId(), jp.getTitle());
+					}
+
+					for (User user : lstUser) {
+						long userId = user.getUserId();
+						Employee employee =
+							mapEmps.get(userId);
 						_log.debug("employee1: " + employee);
 						if (employee != null &&
 							employee.getWorkingStatus() == 1) {
 							modelUser = new DossierActionNextActiontoUser();
 							Map<String, Object> attr =
 								user.getModelAttributes();
-
+							
 							moderator = false;
 							assigned = 0;
 							if (attr != null) {
@@ -567,6 +602,10 @@ public class DossierActionUtils {
 
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
+							if (mapJps.containsKey(employee.getMainJobPostId())) {
+								String jobPosTitle = mapJps.get(employee.getMainJobPostId());
+								modelUser.setJobPosTitle(jobPosTitle);
+							}
 							boolean flag = true;
 							if (outputUsers != null && !outputUsers.isEmpty()) {
 								for (DossierActionNextActiontoUser doUserAct : outputUsers) {
@@ -584,6 +623,63 @@ public class DossierActionUtils {
 							}
 						}
 					}
+										
+//					for (User user : lstUser) {
+//						long userId = user.getUserId();
+//						Employee employee =
+//							EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+//						_log.debug("employee1: " + employee);
+//						if (employee != null &&
+//							employee.getWorkingStatus() == 1) {
+//							modelUser = new DossierActionNextActiontoUser();
+//							Map<String, Object> attr =
+//								user.getModelAttributes();
+//							jobPosIds[count++] = employee.getMainJobPostId();
+//							
+//							moderator = false;
+//							assigned = 0;
+//							if (attr != null) {
+//								if (attr.containsKey(
+//									ProcessStepRoleTerm.MODERATOR)) {
+//									moderator = GetterUtil.getBoolean(
+//										attr.get(
+//											ProcessStepRoleTerm.MODERATOR));
+//								}
+//								if (attr.containsKey(
+//									ProcessStepRoleTerm.ASSIGNED)) {
+//									assigned = GetterUtil.getInteger(
+//										attr.get(ProcessStepRoleTerm.ASSIGNED));
+//								}
+//							}
+//
+//							modelUser.setUserId(userId);
+//
+//							if (employee != null) {
+//								modelUser.setUserName(employee.getFullName());
+//							}
+//							// else {
+//							// modelUser.setUserName(user.getFullName());
+//							// }
+//
+//							modelUser.setModerator(moderator);
+//							modelUser.setAssigned(assigned);
+//							boolean flag = true;
+//							if (outputUsers != null && !outputUsers.isEmpty()) {
+//								for (DossierActionNextActiontoUser doUserAct : outputUsers) {
+//									if (userId == doUserAct.getUserId()) {
+//										flag = false;
+//										break;
+//									}
+//								}
+//								if (flag) {
+//									outputUsers.add(modelUser);
+//								}
+//							}
+//							else {
+//								outputUsers.add(modelUser);
+//							}
+//						}
+//					}					
 				}
 				model.setToUsers(outputUsers);
 

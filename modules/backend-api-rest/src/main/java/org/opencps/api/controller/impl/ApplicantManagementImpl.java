@@ -202,6 +202,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
 			params.put(ApplicantTerm.APPLICANTNAME, query.getApplicantName());
+			params.put(ApplicantTerm.VERIFICATION, query.getVerification());
+			params.put(ApplicantTerm.HAVE_ACCOUNT, query.isHaveAccount());
+			
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
@@ -1000,6 +1003,31 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_EMPTY).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response verifyApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+		BackendAuth auth = new BackendAuthImpl();
+		ApplicantModel results = new ApplicantModel();
+
+		Applicant applicant = null;
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			applicant = actions.verifyApplicant(id);
+
+			results = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
