@@ -2,7 +2,6 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -32,7 +31,6 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -51,18 +49,14 @@ import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.ImportDataUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.datamgt.model.DictItemInputModel;
-import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.model.DictCollection;
-import org.opencps.datamgt.model.DictItem;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
@@ -78,12 +72,6 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.synchronization.action.DictCollectionTempInterface;
-import org.opencps.synchronization.action.PushDictItemInterface;
-import org.opencps.synchronization.action.impl.PushDictItemActions;
-import org.opencps.synchronization.constants.DataMGTTempConstants;
-import org.opencps.synchronization.constants.SyncServerTerm;
-import org.opencps.synchronization.model.DictItemTemp;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
@@ -842,10 +830,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		try {
 			DictcollectionInterface dictItemDataUtil =
 				new DictCollectionActions();
-			PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
-			DictItemModel dictItemModel = new DictItemModel();
-			DictCollectionTempInterface dictItemDataTempUtil =
-				new org.opencps.synchronization.action.impl.DictCollectionActions();
+			//DictItemModel dictItemModel = new DictItemModel();
 
 			long groupId =
 				GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -893,83 +878,12 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					String sibling = input.getSibling();
 					String metaData = HtmlUtil.escape(input.getMetaData());
 
-					DictItem dictItemObj = dictItemDataUtil.addDictItems(
+					dictItemDataUtil.addDictItems(
 						user.getUserId(), groupId, collectionCode,
 						parentItemCode, itemCode, itemName, itemNameEN,
 						itemDescription, sibling, input.getLevel(), metaData,
 						serviceContext);
-					DictItemTemp temp =
-						dictItemDataTempUtil.getDictItemTempByItemCode(
-							collectionCode, itemCode, groupId, serviceContext);
-					if (temp == null) {
-						dictItemDataTempUtil.addDictItemsTemp(
-							user.getUserId(), groupId, collectionCode,
-							parentItemCode, itemCode, itemName, itemNameEN,
-							itemDescription, sibling, input.getLevel(),
-							metaData, DataMGTTempConstants.DATA_STATUS_ACTIVE,
-							serviceContext);
-					}
-					else {
-						dictItemDataTempUtil.updateDictItemTempByItemCode(
-							user.getUserId(), groupId, serviceContext,
-							collectionCode, itemCode, itemCode, itemName,
-							itemNameEN, itemDescription, sibling,
-							parentItemCode,
-							DataMGTTempConstants.DATA_STATUS_ACTIVE);
-					}
 
-					try {
-						List<ServerConfig> lstServers =
-							ServerConfigLocalServiceUtil.getServerConfigs(
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-						// DictItem item =
-						// dictItemDataUtil.getDictItemByItemCode(code,
-						// input.getItemCode(), groupId,
-						// serviceContext);
-
-						for (ServerConfig sc : lstServers) {
-							String configs = sc.getConfigs();
-							if (Validator.isNotNull(configs)) {
-								try {
-									JSONObject configObj =
-										JSONFactoryUtil.createJSONObject(
-											configs);
-									if (configObj.has(
-										SyncServerTerm.SERVER_TYPE) &&
-										configObj.getString(
-											SyncServerTerm.SERVER_TYPE).equals(
-												SyncServerTerm.SYNC_SERVER_TYPE) &&
-										configObj.has(
-											SyncServerTerm.SERVER_USERNAME) &&
-										configObj.has(
-											SyncServerTerm.SERVER_SECRET) &&
-										configObj.has(
-											SyncServerTerm.SERVER_URL) &&
-										(configObj.has(SyncServerTerm.PUSH) &&
-											configObj.getBoolean(
-												SyncServerTerm.PUSH))) {
-										if (groupId == sc.getGroupId()) {
-											pushDictItemUtil.addPushDictItem(
-												user.getUserId(), groupId,
-												sc.getServerNo(),
-												collectionCode, itemCode,
-												itemName, itemNameEN,
-												itemDescription, parentItemCode,
-												sibling,
-												SyncServerTerm.METHOD_CREATE,
-												"", serviceContext);
-										}
-									}
-								}
-								catch (Exception e) {
-									_log.error(e);
-								}
-							}
-						}
-					}
-					catch (Exception e) {
-						_log.error(e);
-					}
 					importNum++;
 				}
 				catch (Exception e) {
