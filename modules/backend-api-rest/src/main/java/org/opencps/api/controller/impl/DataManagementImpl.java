@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,17 +69,6 @@ import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.synchronization.action.DictCollectionTempInterface;
-import org.opencps.synchronization.action.PushDictGroupInterface;
-import org.opencps.synchronization.action.PushDictItemInterface;
-import org.opencps.synchronization.action.impl.PushDictGroupActions;
-import org.opencps.synchronization.action.impl.PushDictItemActions;
-import org.opencps.synchronization.constants.DataMGTTempConstants;
-import org.opencps.synchronization.constants.SyncServerTerm;
-import org.opencps.synchronization.model.DictCollectionTemp;
-import org.opencps.synchronization.model.DictGroupTemp;
-import org.opencps.synchronization.model.DictItemTemp;
-import org.opencps.synchronization.service.DictItemTempLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -160,7 +151,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -174,17 +164,6 @@ public class DataManagementImpl implements DataManagement {
 					collectionCode, collectionName, collectionNameEN,
 					description, serviceContext);
 
-			DictCollectionTemp oldCollectionTemp = dictItemDataTempUtil.getDictCollectionTempDetail(input.getCollectionCode(), groupId);
-			
-			if (oldCollectionTemp == null) {
-				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId,
-					collectionCode, collectionName, collectionNameEN,
-						description, DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);				
-			}
-			else {
-				dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, collectionCode, collectionCode, collectionName, collectionNameEN, description, DataMGTTempConstants.DATA_STATUS_ACTIVE, DataMGTTempConstants.DATA_MUST_SYNCHRONIZED, serviceContext);
-			}
-			
 			// return json object after update
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
@@ -200,7 +179,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictCollectionInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -218,24 +196,6 @@ public class DataManagementImpl implements DataManagement {
 					collectionCode, collectionName, collectionNameEN,
 					description, serviceContext);
 
-			DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(oldCode, groupId);
-			if (temp != null) {
-			dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, oldCode,
-					collectionCode, collectionName, collectionNameEN,
-					description, 
-					DataMGTTempConstants.DATA_STATUS_ACTIVE,
-					DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-						serviceContext);				
-			}
-			else {
-				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId, oldCode,
-						collectionName, collectionNameEN,
-						description, 
-						DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-						serviceContext);								
-			}
-
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
 			return Response.status(200).entity(dictCollectionModel).build();
@@ -249,18 +209,12 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictCollection(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			boolean flag = dictItemDataUtil.deleteDictCollection(code, groupId, serviceContext);
-			
-			DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(code, groupId);
-			if (temp != null) {
-				dictItemDataTempUtil.deleteDictCollectionTemp(code, groupId, serviceContext);				
-			}
 			
 			if (flag) {
 				return Response.status(200).build();
@@ -311,7 +265,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String dataform,
 			long modifiedDateTime) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -322,10 +275,6 @@ public class DataManagementImpl implements DataManagement {
 			if (modifiedDateTime == 0 || (modifiedDateTime != 0 && oldCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0)) {
 				DictCollection dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 						serviceContext);
-				if (dictCollection != null) {
-				dictItemDataTempUtil.addDataForm(user.getUserId(), groupId, code, dataform,
-							serviceContext);					
-				}
 
 				return Response.status(200).entity(dictCollection != null ? dictCollection.getDataForm() : StringPool.BLANK).build();				
 			}
@@ -384,7 +333,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictGroupInputModel input) {
 		Groups dictGroupModel = new Groups();
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 		
 		try {
 
@@ -393,22 +341,6 @@ public class DataManagementImpl implements DataManagement {
 			DictGroup dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, input.getGroupCode(),
 					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
 			
-			DictGroupTemp temp = dictItemDataTempUtil.getDictGroupTempDetail(code, input.getGroupCode(), groupId);
-			if (temp == null) {
-			dictItemDataTempUtil.addDictGroupsTemp(user.getUserId(), groupId, code, input.getGroupCode(),
-					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), 
-					DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);				
-			}
-			else {
-				dictItemDataTempUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, 
-						input.getGroupCode(),
-						input.getGroupCode(),
-						input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), 
-						DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);								
-			}
-
 			// return json object after update
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
@@ -424,7 +356,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String groupCode, DictGroupInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 		
 		try {
 
@@ -433,20 +364,6 @@ public class DataManagementImpl implements DataManagement {
 			DictGroup dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
 					serviceContext);
-			
-			DictGroupTemp temp = dictItemDataTempUtil.getDictGroupTempDetail(code, groupCode, groupId);
-			if (temp != null) {
-			dictItemDataTempUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
-					DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);				
-			}
-			else {
-				dictItemDataTempUtil.addDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-						input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
-						DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);								
-			}
 
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
@@ -461,7 +378,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 		
 		try {
 
@@ -469,11 +385,6 @@ public class DataManagementImpl implements DataManagement {
 			
 //			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
 			boolean flag = dictItemDataUtil.deleteDictgroups(code, groupCode, groupId, serviceContext);
-			
-			DictGroupTemp temp = dictItemDataTempUtil.getDictGroupTempDetail(code, groupCode, groupId);
-			if (temp != null) {
-				dictItemDataTempUtil.deleteDictGroupsTemp(groupCode, groupId, serviceContext);				
-			}
 			
 			if (flag) {
 
@@ -535,8 +446,6 @@ public class DataManagementImpl implements DataManagement {
 			Locale locale, User user, ServiceContext serviceContext, String code, String groupCode, String itemCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictGroupItemModel dictGroupItemModel = new DictGroupItemModel();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -546,44 +455,11 @@ public class DataManagementImpl implements DataManagement {
 					groupCode, itemCode, serviceContext);
 
 			try {
-			dictItemDataTempUtil.addDictGroupsDictItemsTemp(user.getUserId(), groupId, code,
-					groupCode, itemCode, serviceContext);
-			}
-			catch (DuplicateCategoryException e) {
-//				e.printStackTrace();
-				_log.error(e);
-			}
-			try {
 				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS);
 
 				DictGroup group = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
 
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_SECRET)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictGroupUtil.addPushDictGroup(user.getUserId(), groupId, 
-											sc.getServerNo(),
-											code, groupCode,
-											group.getGroupName(), group.getGroupNameEN(), group.getGroupDescription(),
-											itemCode, SyncServerTerm.METHOD_ADD_TO_GROUP, serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
 			} catch (Exception e) {
 				_log.error(e);
 			}
@@ -602,105 +478,59 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictgroupsDictItems(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String groupCode, String itemCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushDictGroupInterface pushDictGroupUtil = new PushDictGroupActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-			DictCollection collection = null;
-			try {
-				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictGroup group = null;
-			try {
-				if (collection != null) {
-					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictItem item = null;
-
-			try {
-				if (collection != null)
-					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
-							groupId);
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			DictItemGroup dictItemGroup = null;
-
-			try {
-				if (collection != null && group != null && item != null)
-					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
-							group.getDictGroupId(), item.getDictItemId());
-			} catch (Exception e) {
-				_log.error(e);
-			}
+//			DictCollection collection = null;
+//			try {
+//				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictGroup group = null;
+//			try {
+//				if (collection != null) {
+//					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
+//				}
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictItem item = null;
+//
+//			try {
+//				if (collection != null)
+//					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
+//							groupId);
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
+//			DictItemGroup dictItemGroup = null;
+//
+//			try {
+//				if (collection != null && group != null && item != null)
+//					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
+//							group.getDictGroupId(), item.getDictItemId());
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
 			boolean flag = dictItemDataUtil.deleteDictgroupsDictItems(groupId, code, groupCode, itemCode,
 					serviceContext);
 			
-			try {
-			dictItemDataTempUtil.deleteDictGroupsDictItemsTemp(groupId, code, groupCode, itemCode,
-					serviceContext);
-			}
-			catch (NotFoundException e) {
-				_log.error(e);
-			}
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				if (group != null) {
-					for (ServerConfig sc : lstServers) {
-						String configs = sc.getConfigs();
-						if (Validator.isNotNull(configs)) {
-							try {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-								if (configObj.has(SyncServerTerm.SERVER_TYPE)
-										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_SECRET)
-										&& configObj.has(SyncServerTerm.SERVER_URL)
-										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-									if (groupId == sc.getGroupId()) {
-										if (dictItemGroup != null)
-											pushDictGroupUtil.addPushDictGroup(user.getUserId(), groupId, 
-													sc.getServerNo(),
-													code,
-													groupCode, group.getGroupName(), group.getGroupNameEN(),
-													group.getGroupDescription(), itemCode,
-													SyncServerTerm.METHOD_REMOVE_FROM_GROUP, serviceContext);
-									}
-								}
-							} catch (Exception e) {
-								_log.error(e);
-							}
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
-
 			if (flag) {
 
-				return Response.status(200).build();
+				return Response.status(HttpURLConnection.HTTP_OK).build();
 
 			} else {
 
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
-				error.setCode(404);
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 				error.setDescription("not found!");
 
-				return Response.status(404).entity(error).build();
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 			}
 
@@ -779,8 +609,6 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
-		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -797,62 +625,6 @@ public class DataManagementImpl implements DataManagement {
 					parentItemCode, itemCode, itemName, itemNameEN,
 					itemDescription, sibling, input.getLevel(), metaData,
 					serviceContext);
-			DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
-			if (temp == null) {
-			dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code,
-					parentItemCode, itemCode, itemName, itemNameEN,
-					itemDescription, sibling, input.getLevel(), metaData,
-					DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);				
-			}
-			else {
-				dictItemDataTempUtil.updateDictItemTempByItemCode(
-						user.getUserId(), groupId, 
-						serviceContext,
-						code,
-						itemCode, 
-						itemCode,
-						itemName, itemNameEN,
-						itemDescription, sibling,
-						parentItemCode,
-						DataMGTTempConstants.DATA_STATUS_ACTIVE);								
-			}
-
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-				//DictItem item = dictItemDataUtil.getDictItemByItemCode(code, input.getItemCode(), groupId,
-				//		serviceContext);
-
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_SECRET)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-											sc.getServerNo(),
-											code,
-											itemCode, itemName, itemNameEN,
-											itemDescription, parentItemCode, sibling,
-											SyncServerTerm.METHOD_CREATE, "", serviceContext);
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 
 			// return json object after update
 			dictItemModel = DataManagementUtils.mapperDictItemModel(dictItem, dictItemDataUtil, user.getUserId(),
@@ -902,76 +674,31 @@ public class DataManagementImpl implements DataManagement {
 			DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
-		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String newItemCode = HtmlUtil.escape(input.getItemCode());
 			String itemName = HtmlUtil.escape(input.getItemName());
 			String itemNameEN = HtmlUtil.escape(input.getItemNameEN());
 			String itemDescription = HtmlUtil.escape(input.getItemDescription());
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-			String metaData = HtmlUtil.escape(input.getMetaData());
+//			String metaData = HtmlUtil.escape(input.getMetaData());
 
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, newItemCode, itemName, itemNameEN,
 					itemDescription, sibling, parentItemCode);
-
-			DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
-			if (temp != null) {
-			dictItemDataTempUtil.updateDictItemTempByItemCode(user.getUserId(), groupId, serviceContext, code,
-					itemCode, newItemCode, itemName, itemNameEN,
-						itemDescription, sibling, parentItemCode, DataMGTTempConstants.DATA_STATUS_ACTIVE);				
-			}
-			else {
-				dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code,
-						parentItemCode, newItemCode, itemName, itemNameEN,
-						itemDescription, sibling, input.getLevel(), metaData,
-						DataMGTTempConstants.DATA_STATUS_ACTIVE,
-						serviceContext);				
-			}
-
-			List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-			for (ServerConfig sc : lstServers) {
-				String configs = sc.getConfigs();
-				if (Validator.isNotNull(configs)) {
-					try {
-						JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-						if (configObj.has(SyncServerTerm.SERVER_TYPE)
-								&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-										.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-								&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-								&& configObj.has(SyncServerTerm.SERVER_SECRET)
-								&& configObj.has(SyncServerTerm.SERVER_URL)
-								&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-							if (groupId == sc.getGroupId()) {
-								pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-										sc.getServerNo(),
-										code, itemCode,
-										itemName, itemNameEN, itemDescription,
-										parentItemCode, sibling, SyncServerTerm.METHOD_UPDATE, "",
-										serviceContext);
-							}
-						}
-					} catch (Exception e) {
-						_log.error(e);
-					}
-				}
-			}
 
 			if (Validator.isNull(ett)) {
 
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
-				error.setCode(404);
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 				error.setDescription("not found!");
 
-				return Response.status(404).entity(error).build();
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 			} else {
 
@@ -979,7 +706,7 @@ public class DataManagementImpl implements DataManagement {
 				dictItemModel = DataManagementUtils.mapperDictItemModel(ett, dictItemDataUtil, user.getUserId(),
 						company.getCompanyId(), groupId, serviceContext);
 
-				return Response.status(200).entity(dictItemModel).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(dictItemModel).build();
 
 			}
 
@@ -992,11 +719,10 @@ public class DataManagementImpl implements DataManagement {
 	public Response dateletDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
 
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			DictItem dictColl = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
 
@@ -1005,55 +731,14 @@ public class DataManagementImpl implements DataManagement {
 				ErrorMsg error = new ErrorMsg();
 
 				error.setMessage("not found!");
-				error.setCode(404);
+				error.setCode(HttpURLConnection.HTTP_NOT_FOUND);
 				error.setDescription("not found!");
 
-				return Response.status(404).entity(error).build();
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(error).build();
 
 			} else {
-				DictItem item = dictItemDataUtil.getDictItemByItemCode(code, itemCode, groupId, serviceContext);
-
 				DictItemLocalServiceUtil.deleteDictItem(groupId, itemCode, serviceContext);
-				try {
-				DictItemTempLocalServiceUtil.deleteDictItemTemp(groupId, itemCode, serviceContext);
-				}
-				catch (NotFoundException e) {
-//					e.printStackTrace();
-					_log.error(e);
-				}
-				try {
-					List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS);
-
-					for (ServerConfig sc : lstServers) {
-						String configs = sc.getConfigs();
-						if (Validator.isNotNull(configs)) {
-							try {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-								if (configObj.has(SyncServerTerm.SERVER_TYPE)
-										&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-												.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-										&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-										&& configObj.has(SyncServerTerm.SERVER_SECRET)
-										&& configObj.has(SyncServerTerm.SERVER_URL)
-										&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-									if (groupId == sc.getGroupId()) {
-										pushDictItemUtil.addPushDictItem(user.getUserId(), groupId, 
-												sc.getServerNo(),
-												code, itemCode,
-												item.getItemName(), item.getItemNameEN(), item.getItemDescription(), "",
-												item.getSibling(), SyncServerTerm.METHOD_DELETE, "", serviceContext);
-									}
-								}
-							} catch (Exception e) {
-								_log.error(e);
-							}
-						}
-					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
-				return Response.status(200).build();
+				return Response.status(HttpURLConnection.HTTP_OK).build();
 
 			}
 
@@ -1119,8 +804,6 @@ public class DataManagementImpl implements DataManagement {
 				value = jsonMetaData.getString(key);
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 				_log.error(e);
 			}
 
@@ -1143,7 +826,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateMetaDataOfDictItem(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1152,8 +834,6 @@ public class DataManagementImpl implements DataManagement {
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		PushDictItemInterface pushDictItemUtil = new PushDictItemActions();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -1162,55 +842,6 @@ public class DataManagementImpl implements DataManagement {
 			
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, metaData);
-			
-			try {
-			dictItemDataTempUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
-					itemCode, input.getMetaData());
-			}
-			catch (DuplicateCategoryException | NotFoundException e) {
-//				e.printStackTrace();
-				_log.error(e);
-			}
-			DictItem parentEtt = null;
-			try {
-				parentEtt = DictItemLocalServiceUtil.fetchDictItem(ett.getParentItemId());
-			} catch (Exception e) {
-				_log.error(e);
-			}
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-				String parentItemCode = (Validator.isNotNull(parentEtt) ? parentEtt.getItemCode() : null);
-				for (ServerConfig sc : lstServers) {
-					String configs = sc.getConfigs();
-					if (Validator.isNotNull(configs)) {
-						try {
-							JSONObject configObj = JSONFactoryUtil.createJSONObject(configs);
-							if (configObj.has(SyncServerTerm.SERVER_TYPE)
-									&& configObj.getString(SyncServerTerm.SERVER_TYPE)
-											.equals(SyncServerTerm.SYNC_SERVER_TYPE)
-									&& configObj.has(SyncServerTerm.SERVER_USERNAME)
-									&& configObj.has(SyncServerTerm.SERVER_SECRET)
-									&& configObj.has(SyncServerTerm.SERVER_URL)
-									&& (configObj.has(SyncServerTerm.PUSH) && configObj.getBoolean(SyncServerTerm.PUSH))) {
-								if (groupId == sc.getGroupId()) {
-									pushDictItemUtil.addPushDictItem(sc.getUserId(), groupId, 
-											sc.getServerNo(),
-											code, itemCode,
-											ett.getItemName(), ett.getItemNameEN(), ett.getItemDescription(),
-											parentItemCode, ett.getSibling(), SyncServerTerm.METHOD_UPDATE_METADATA,
-											input.getMetaData(), serviceContext);
-
-								}
-							}
-						} catch (Exception e) {
-							_log.error(e);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-			}
 
 			if (Validator.isNull(ett)) {
 
@@ -1237,10 +868,8 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateOrCreateNewDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input, long modifiedDateTime) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -1270,7 +899,6 @@ public class DataManagementImpl implements DataManagement {
 					ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
 							itemCode, newItemCode, itemName, itemNameEN,
 							itemDescription, sibling, parentItemCode);
-					// TODO: Reindex dictItemGroup
 					List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(
 							groupId, ett.getDictItemId());
 					if (digList != null && digList.size() > 0) {
@@ -1279,21 +907,6 @@ public class DataManagementImpl implements DataManagement {
 						for (DictItemGroup dig : digList) {
 							indexer.reindex(dig);
 						}
-					}
-
-					//Update DictItemTemp
-					DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
-					if (temp != null) {
-					dictItemDataTempUtil.updateDictItemTempByItemCode(user.getUserId(), groupId, serviceContext, code,
-							itemCode, newItemCode, itemName, itemNameEN,
-							itemDescription, sibling, parentItemCode, DataMGTTempConstants.DATA_STATUS_ACTIVE);	
-				}
-				else {
-						dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code,
-								parentItemCode, newItemCode, itemName, itemNameEN,
-								itemDescription, sibling, input.getLevel(), metaData,
-								DataMGTTempConstants.DATA_STATUS_ACTIVE,
-								serviceContext);										
 					}
 				}
 				else {
@@ -1304,7 +917,6 @@ public class DataManagementImpl implements DataManagement {
 				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, parentItemCode,
 						itemCode, itemName, itemNameEN, itemDescription,
 						sibling, input.getLevel(), metaData, serviceContext);
-				// TODO: Reindex dictItemGroup
 				List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(
 						groupId, ett.getDictItemId());
 				if (digList != null && digList.size() > 0) {
@@ -1313,19 +925,6 @@ public class DataManagementImpl implements DataManagement {
 					for (DictItemGroup dig : digList) {
 						indexer.reindex(dig);
 					}
-				}
-
-				//Update DictItemTemp
-				DictItemTemp temp = dictItemDataTempUtil.getDictItemTempByItemCode(code, itemCode, groupId, serviceContext);
-				if (temp == null) {
-				dictItemDataTempUtil.addDictItemsTemp(user.getUserId(), groupId, code, parentItemCode,
-						itemCode, itemName, itemNameEN, itemDescription,
-							sibling, input.getLevel(), metaData, DataMGTTempConstants.DATA_STATUS_ACTIVE, serviceContext);					
-				}
-				else {
-					dictItemDataTempUtil.updateDictItemTempByItemCode(user.getUserId(), groupId, serviceContext, code,
-							itemCode, newItemCode, itemName, itemNameEN,
-							itemDescription, sibling, parentItemCode, DataMGTTempConstants.DATA_STATUS_ACTIVE);												
 				}
 			}
 
@@ -1358,10 +957,8 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateOrCreateNewDictCollection(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, DictCollectionInputModel input,
 			long modifiedDateTime) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -1386,21 +983,6 @@ public class DataManagementImpl implements DataManagement {
 					dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
 							collectionCode, collectionName, collectionNameEN,
 							description, serviceContext);
-					DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(code, groupId);
-					if (temp != null) {
-					dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, code,
-							collectionCode, collectionName, collectionNameEN,
-							description, DataMGTTempConstants.DATA_STATUS_ACTIVE, 
-							DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-								serviceContext);						
-					}
-					else {
-						dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId, code,
-								collectionName, collectionNameEN, description, 
-								DataMGTTempConstants.DATA_STATUS_ACTIVE, 
-								DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-								serviceContext);						
-					}
 				}
 				else {
 					throw new DuplicateCategoryException();
@@ -1408,21 +990,6 @@ public class DataManagementImpl implements DataManagement {
 			} else {
 				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code,
 						collectionName, collectionNameEN, description, serviceContext);
-				DictCollectionTemp temp = dictItemDataTempUtil.getDictCollectionTempDetail(code, groupId);
-				if (temp == null) {
-				dictItemDataTempUtil.addDictCollectionTemp(user.getUserId(), groupId, code,
-						collectionName, collectionNameEN, description, 
-						DataMGTTempConstants.DATA_STATUS_ACTIVE, 
-						DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-							serviceContext);					
-				}
-				else {
-					dictItemDataTempUtil.updateDictCollectionTemp(user.getUserId(), groupId, code,
-							collectionCode, collectionName, collectionNameEN,
-							description, DataMGTTempConstants.DATA_STATUS_ACTIVE, 
-							DataMGTTempConstants.DATA_MUST_SYNCHRONIZED,
-							serviceContext);											
-				}
 			}
 
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
@@ -1438,7 +1005,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response getSyncDictCollections(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1477,7 +1043,6 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getSyncDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1559,7 +1124,6 @@ public class DataManagementImpl implements DataManagement {
 		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		DictCollectionTempInterface dictItemDataTempUtil = new org.opencps.synchronization.action.impl.DictCollectionActions();
 
 		try {
 
@@ -1579,20 +1143,6 @@ public class DataManagementImpl implements DataManagement {
 					dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 							input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(),
 							input.getGroupDescription(), serviceContext);
-					DictGroupTemp temp = dictItemDataTempUtil.getDictGroupTempDetail(code, groupCode, groupId);
-					if (temp != null) {
-					dictItemDataTempUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-							input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(),
-							input.getGroupDescription(), 
-							DataMGTTempConstants.DATA_STATUS_ACTIVE,
-								serviceContext);						
-					}
-					else {
-						dictItemDataTempUtil.addDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-								input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), 
-								DataMGTTempConstants.DATA_STATUS_ACTIVE,
-								serviceContext);						
-					}
 				}
 				else {
 					throw new DuplicateCategoryException();
@@ -1600,21 +1150,6 @@ public class DataManagementImpl implements DataManagement {
 			} else {
 				dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, groupCode,
 						input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
-				DictGroupTemp temp = dictItemDataTempUtil.getDictGroupTempDetail(code, groupCode, groupId);
-
-				if (temp == null) {
-				dictItemDataTempUtil.addDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-						input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), 
-						DataMGTTempConstants.DATA_STATUS_ACTIVE,
-							serviceContext);					
-				}
-				else {
-					dictItemDataTempUtil.updateDictGroupsTemp(user.getUserId(), groupId, code, groupCode,
-							input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(),
-							input.getGroupDescription(), 
-							DataMGTTempConstants.DATA_STATUS_ACTIVE,
-							serviceContext);											
-				}
 			}
 
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
@@ -1630,7 +1165,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response getSyncDictgroupsDictItems(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1669,7 +1203,6 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getDictgroup(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
