@@ -77,7 +77,7 @@ public class ApplicantSearchModel {
     protected String applicantName;
 	@QueryParam(value = "verification")
 	@DefaultValue("")
-	protected Integer verification;
+	protected String verification;
 	@QueryParam(value = "haveAccount")
 	@DefaultValue("false")
 	protected boolean haveAccount;
@@ -88,10 +88,10 @@ public class ApplicantSearchModel {
 	public void setHaveAccount(boolean haveAccount) {
 		this.haveAccount = haveAccount;
 	}
-	public Integer getVerification() {
+	public String getVerification() {
 		return verification;
 	}
-	public void setVerification(Integer verification) {
+	public void setVerification(String verification) {
 		this.verification = verification;
 	}
 	public String getApplicantName() {
