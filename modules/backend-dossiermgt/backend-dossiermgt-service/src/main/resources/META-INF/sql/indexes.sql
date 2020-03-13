@@ -3,16 +3,10 @@ create index IX_1833407B on opencps_actionconfig (groupId, eventType);
 create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_EDA28DB7 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-<<<<<<< HEAD
-create index IX_2B451CAC on opencps_booking (className[$COLUMN_LENGTH:75$], classPK);
-create index IX_96163B06 on opencps_booking (codeNumber[$COLUMN_LENGTH:75$]);
+create index IX_96163B06 on opencps_booking (codeNumber[$COLUMN_LENGTH:255$]);
 create index IX_35D7C193 on opencps_booking (groupId, bookingDate, online_);
-create index IX_68310EDE on opencps_booking (groupId, className[$COLUMN_LENGTH:75$], classPK);
-create index IX_D55B8904 on opencps_booking (groupId, serviceCode[$COLUMN_LENGTH:75$]);
-=======
-create index IX_2B451CAC on opencps_booking (className[$COLUMN_LENGTH:255$], classPK);
+create index IX_68310EDE on opencps_booking (groupId, className[$COLUMN_LENGTH:255$], classPK);
 create index IX_D55B8904 on opencps_booking (groupId, serviceCode[$COLUMN_LENGTH:128$]);
->>>>>>> upstream/release-candidate-2.3-original
 create index IX_915B3B70 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F25BDDF2 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -207,7 +201,7 @@ create unique index IX_BA68EE42 on opencps_process_plugin (uuid_[$COLUMN_LENGTH:
 create index IX_E0EDED53 on opencps_processaction (autoEvent[$COLUMN_LENGTH:255$]);
 create index IX_17F0C502 on opencps_processaction (groupId, actionCode[$COLUMN_LENGTH:255$], serviceProcessId);
 create index IX_84A534F9 on opencps_processaction (groupId, autoEvent[$COLUMN_LENGTH:255$]);
-create unique index IX_6689E997 on opencps_processaction (groupId, serviceProcessId, actionCode[$COLUMN_LENGTH:255$], preStepCode[$COLUMN_LENGTH:255$], postStepCode[$COLUMN_LENGTH:255$]);
+create index IX_6689E997 on opencps_processaction (groupId, serviceProcessId, actionCode[$COLUMN_LENGTH:255$], preStepCode[$COLUMN_LENGTH:255$], postStepCode[$COLUMN_LENGTH:255$]);
 create index IX_77A1E779 on opencps_processaction (groupId, serviceProcessId, preStepCode[$COLUMN_LENGTH:255$], createDossiers[$COLUMN_LENGTH:255$]);
 create index IX_3F5FEA35 on opencps_processaction (postStepCode[$COLUMN_LENGTH:255$], groupId);
 create index IX_C791AD26 on opencps_processaction (preStepCode[$COLUMN_LENGTH:255$], groupId);
