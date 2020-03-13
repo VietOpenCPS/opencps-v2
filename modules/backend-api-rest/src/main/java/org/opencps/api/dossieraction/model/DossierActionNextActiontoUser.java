@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
     "userId",
     "userName",
     "moderator",
-    "assigned"
+    "assigned",
+    "jobPosTitle"
 })
 public class DossierActionNextActiontoUser {
 
@@ -47,8 +48,17 @@ public class DossierActionNextActiontoUser {
     protected String userName;
     protected Boolean moderator;
     protected Integer assigned;
+    protected String jobPosTitle;
+    
+    public String getJobPosTitle() {
+		return jobPosTitle;
+	}
 
-    /**
+	public void setJobPosTitle(String jobPosTitle) {
+		this.jobPosTitle = jobPosTitle;
+	}
+
+	/**
      * Gets the value of the userId property.
      * 
      * @return

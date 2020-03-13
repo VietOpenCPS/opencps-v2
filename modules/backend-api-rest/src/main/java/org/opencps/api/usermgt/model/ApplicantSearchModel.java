@@ -50,7 +50,9 @@ import javax.xml.bind.annotation.XmlType;
     "type",
     "lock",
     "idNo",
-    "applicantName"
+    "applicantName",
+    "verification",
+    "haveAccount"
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
@@ -73,7 +75,25 @@ public class ApplicantSearchModel {
     protected String idNo;
 	@QueryParam(value = "applicantName")
     protected String applicantName;
-
+	@QueryParam(value = "verification")
+	@DefaultValue("")
+	protected Integer verification;
+	@QueryParam(value = "haveAccount")
+	@DefaultValue("false")
+	protected boolean haveAccount;
+	
+	public boolean isHaveAccount() {
+		return haveAccount;
+	}
+	public void setHaveAccount(boolean haveAccount) {
+		this.haveAccount = haveAccount;
+	}
+	public Integer getVerification() {
+		return verification;
+	}
+	public void setVerification(Integer verification) {
+		this.verification = verification;
+	}
 	public String getApplicantName() {
 		return applicantName;
 	}

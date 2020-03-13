@@ -439,4 +439,8 @@ public interface ApplicantLocalService extends BaseLocalService,
 		long applicantId, String applicantIdNo, String applicantName,
 		String applicantIdType, Date applicantIdDate, String contactEmail,
 		String contactTelNo, ServiceContext context) throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicant(long applicantId)
+		throws PortalException;
 }

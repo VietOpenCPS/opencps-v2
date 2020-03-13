@@ -586,4 +586,10 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			return StringPool.BLANK;
 		}
 	}
+
+	@Override
+	public Applicant verifyApplicant(long applicantId) throws PortalException {
+		Applicant applicant = ApplicantLocalServiceUtil.verifyApplicant(applicantId);
+		return applicant;
+	}
 }

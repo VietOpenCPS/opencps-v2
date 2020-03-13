@@ -54,4 +54,6 @@ public class ApplicantTerm {
 	public static final String APPLICANTIDTYPE_CITIZEN = "citizen";
 	public static final String APPLICANTIDTYPE_BUSINESS = "business";
 	public static final String APPLICANTIDTYPE_ORGANIZATION = "organization";
+	
+	public static final String HAVE_ACCOUNT = "haveAccount";
 }
