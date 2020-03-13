@@ -193,11 +193,18 @@
 		<column name="speaking" type="boolean" />
 		<column name="serviceGroupCode" type="String" />
 		<column name="count" type="int" />
+		<column name="online" type="boolean" />
+		<column name="bookingInTime" type="String" />
+		<column name="telNo" type="String" />
 
 		<!-- Order -->
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
 
 		<!-- Finder methods -->
 		<finder name="F_CLASS_NAME_PK" return-type="Booking">
+			<finder-column name="groupId" />
 			<finder-column name="className" />
 			<finder-column name="classPK" />
 		</finder>
@@ -205,10 +212,14 @@
 			<finder-column name="groupId" />
 			<finder-column name="serviceCode" />
 		</finder>
-<!-- 		<finder name="F_GID_FORM" return-type="EForm"> -->
-<!-- 			<finder-column name="groupId" /> -->
-<!-- 			<finder-column name="eFormNo" /> -->
-<!-- 		</finder> -->
+		<finder name="F_GID_BOOKING_DATE" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="bookingDate" />
+			<finder-column name="online" />
+		</finder>
+		<finder name="F_CODE_NUMBER" return-type="Booking">
+			<finder-column name="codeNumber" />
+		</finder>
 
 	</entity>
 
@@ -1040,7 +1051,7 @@
 		<column name="invoiceNo" type="String" />
 		<column name="invoicePayload" type="String" />
 		<column name="einvoice" type="String" />
-<!-- 		<column name="invoiceFileEntryId" type="long" /> -->
+		<column name="invoiceFileEntryId" type="long" />
 
 		<!-- Order -->
 		<order by="desc">
@@ -2560,6 +2571,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 			<finder-column name="referenceUid" />
+		</finder>
+	<finder return-type="Collection" name="F_DID_DOCTYPE">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="documentType" />
 		</finder>
 	</entity>
 

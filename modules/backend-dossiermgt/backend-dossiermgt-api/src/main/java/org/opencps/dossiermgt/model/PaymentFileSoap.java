@@ -68,6 +68,7 @@ public class PaymentFileSoap implements Serializable {
 		soapModel.setInvoiceNo(model.getInvoiceNo());
 		soapModel.setInvoicePayload(model.getInvoicePayload());
 		soapModel.setEinvoice(model.getEinvoice());
+		soapModel.setInvoiceFileEntryId(model.getInvoiceFileEntryId());
 
 		return soapModel;
 	}
@@ -400,6 +401,14 @@ public class PaymentFileSoap implements Serializable {
 		_einvoice = einvoice;
 	}
 
+	public long getInvoiceFileEntryId() {
+		return _invoiceFileEntryId;
+	}
+
+	public void setInvoiceFileEntryId(long invoiceFileEntryId) {
+		_invoiceFileEntryId = invoiceFileEntryId;
+	}
+
 	private String _uuid;
 	private long _paymentFileId;
 	private long _groupId;
@@ -435,4 +444,5 @@ public class PaymentFileSoap implements Serializable {
 	private String _invoiceNo;
 	private String _invoicePayload;
 	private String _einvoice;
+	private long _invoiceFileEntryId;
 }

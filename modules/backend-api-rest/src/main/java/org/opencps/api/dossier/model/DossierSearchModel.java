@@ -125,7 +125,8 @@ import javax.xml.bind.annotation.XmlType;
     "undueTime",
     "toBacklogDate",
     "backlog",
-    "assignedUserIdSearch"
+    "assignedUserIdSearch",
+    "dossierCounter"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -293,6 +294,16 @@ public class DossierSearchModel {
     protected int backlog;
     @QueryParam(value = "assignedUserId")
     protected String assignedUserIdSearch;
+    @QueryParam(value = "dossierCounter")
+    protected String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public Integer getViapostal() {
 		return viapostal;

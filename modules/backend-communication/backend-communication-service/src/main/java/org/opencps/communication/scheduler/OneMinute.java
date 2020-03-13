@@ -2,6 +2,7 @@ package org.opencps.communication.scheduler;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -23,12 +24,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalService;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.communication.sms.utils.BCTSMSUtils;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
@@ -109,10 +112,19 @@ public class OneMinute extends BaseMessageListener {
 								flagSend = true;
 							} */
 
+							if (NotificationType.BOOKING_01.equalsIgnoreCase(messageEntry.getNotificationType())) {
+								String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+										messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+								JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
+								if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
+									resultSendSMS.setMessage("Success");
+									resultSendSMS.setResult(1L);
+								}
+							} else {
 							//Send viettel
 							resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
 								messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-
+							}
 							_log.debug("END SEND SMS");
 						}
 

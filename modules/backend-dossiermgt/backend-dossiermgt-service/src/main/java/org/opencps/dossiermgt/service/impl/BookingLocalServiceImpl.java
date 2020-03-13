@@ -46,10 +46,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.BookingTerm;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.base.BookingLocalServiceBaseImpl;
@@ -92,6 +94,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		String checkinTo = GetterUtil.getString(params.get(BookingTerm.TO_CHECK_IN_DATE));
 		String gateNumber = GetterUtil.getString(params.get(BookingTerm.GATE_NUMBER));
 		String className = GetterUtil.getString(params.get(BookingTerm.CLASS_NAME));
+		String online = GetterUtil.getString(params.get(BookingTerm.ONLINE));
+		String codeNumber = GetterUtil.getString(params.get(BookingTerm.CODE_NUMBER));
 
 		Indexer<Booking> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Booking.class);
 
@@ -114,7 +118,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH};
+			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH,
+					BookingTerm.CODE_NUMBER_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -238,6 +243,20 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(online)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
+			query.addField(BookingTerm.ONLINE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(codeNumber)) {
+			MultiMatchQuery query = new MultiMatchQuery(codeNumber);
+
+			query.addFields(BookingTerm.CODE_NUMBER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -252,10 +271,12 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		String state = String.valueOf((params.get(EFormTerm.STATE)));
 		String from = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
 		String to = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
-		String bookingFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
-		String bookingTo = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
+		String checkinFrom = GetterUtil.getString(params.get(BookingTerm.FROM_CREATE_DATE));
+		String checkinTo = GetterUtil.getString(params.get(BookingTerm.TO_CREATE_DATE));
 		String gateNumber = GetterUtil.getString(params.get(BookingTerm.GATE_NUMBER));
 		String className = GetterUtil.getString(params.get(BookingTerm.CLASS_NAME));
+		String online = GetterUtil.getString(params.get(BookingTerm.ONLINE));
+		String codeNumber = GetterUtil.getString(params.get(BookingTerm.CODE_NUMBER));
 
 		Indexer<Booking> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Booking.class);
 
@@ -275,7 +296,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH};
+			String[] subQuerieArr = new String[] { EFormTerm.EFORM_NO_SEARCH, EFormTerm.SERVICE_CODE_SEARCH,
+					BookingTerm.CODE_NUMBER_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -375,28 +397,42 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			}
 		}
 
-		String fromBookingDateFilter = bookingFrom + ConstantsTerm.HOUR_START;
-		String toBookingDateFilter = bookingTo + ConstantsTerm.HOUR_END;
+		String fromCheckinDateFilter = checkinFrom + ConstantsTerm.HOUR_START;
+		String toCheckinDateFilter = checkinTo + ConstantsTerm.HOUR_END;
 
-		if (Validator.isNotNull(bookingFrom)) {
-			if (Validator.isNotNull(bookingTo)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, true, true);
+		if (Validator.isNotNull(checkinFrom)) {
+			if (Validator.isNotNull(checkinTo)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, true, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			} else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, true, false);
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, true, false);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		} else {
-			if (Validator.isNotNull(bookingTo)) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.BOOKING_DATE,
-						fromBookingDateFilter, toBookingDateFilter, false, true);
+			if (Validator.isNotNull(checkinTo)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(BookingTerm.CHECK_IN_DATE_LUCENE,
+						fromCheckinDateFilter, toCheckinDateFilter, false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(online)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
+			query.addField(BookingTerm.ONLINE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(codeNumber)) {
+			MultiMatchQuery query = new MultiMatchQuery(codeNumber);
+
+			query.addFields(BookingTerm.CODE_NUMBER);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -407,8 +443,8 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Booking updateBooking(long userId, long groupId, long bookingId, String className, long classPK,
 			String serviceCode, String codeNumber, String bookingName, String gateNumber, Integer state,
-			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode,
-			ServiceContext serviceContext) {
+			Date checkinDate, Date bookingDate, boolean speaking, String serviceGroupCode, boolean online,
+			String bookingInTime, String telNo, ServiceContext serviceContext) {
 
 		Date now = new Date();
 
@@ -436,6 +472,10 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 					booking.setBookingDate(bookingDate);
 				if (Validator.isNotNull(serviceGroupCode))
 					booking.setServiceGroupCode(serviceGroupCode);
+				if (Validator.isNotNull(bookingInTime))
+					booking.setBookingInTime(bookingInTime);
+				if (Validator.isNotNull(telNo))
+					booking.setTelNo(telNo);
 
 				//Check date before
 				Calendar calUpdate = Calendar.getInstance();
@@ -462,6 +502,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 				if (Validator.isNotNull(state))
 					booking.setState(state);
 				booking.setSpeaking(speaking);
+				booking.setOnline(online);
 			}
 			//
 			return bookingPersistence.update(booking);
@@ -485,7 +526,10 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 			booking.setState(state);
 			booking.setBookingDate(bookingDate);
 			booking.setSpeaking(speaking);
+			booking.setOnline(online);
 			booking.setServiceGroupCode(serviceGroupCode);
+			booking.setBookingInTime(bookingInTime);
+			booking.setTelNo(telNo);
 			//Get max count booking in day
 			_log.info("serviceGroupCode: "+serviceGroupCode);
 			int countCode = bookingFinder.findBookingMaxByServiceGroupCode(groupId, serviceGroupCode);
@@ -500,7 +544,15 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 		}
 	}
 
-	public Booking getByClassName_PK(String className, long classPK) {
-		return bookingPersistence.fetchByF_CLASS_NAME_PK(className, classPK);
+	public Booking getByClassName_PK(long groupId, String className, long classPK) {
+		return bookingPersistence.fetchByF_CLASS_NAME_PK(groupId, className, classPK);
+	}
+
+	public List getByGID_DATE(long groupIdBooking, String bookingDate, boolean online, ServiceContext serviceContext) {
+		return bookingFinder.findBookingDateOnline(groupIdBooking, bookingDate, online);
+	}
+
+	public Booking getByCodeNumber(String codeNumber) {
+		return bookingPersistence.fetchByF_CODE_NUMBER(codeNumber);
 	}
 }

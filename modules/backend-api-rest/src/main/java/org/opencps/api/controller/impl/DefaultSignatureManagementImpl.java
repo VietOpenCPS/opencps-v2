@@ -693,6 +693,7 @@ public class DefaultSignatureManagementImpl
 								option.getServiceProcessId();
 							ProcessAction proAction =
 								DossierUtils.getProcessAction(
+									user,
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
@@ -722,6 +723,7 @@ public class DefaultSignatureManagementImpl
 					if (option != null) {
 						long serviceProcessId = option.getServiceProcessId();
 						ProcessAction proAction = DossierUtils.getProcessAction(
+							user,
 							groupId, dossier, actionCode, serviceProcessId);
 						if (proAction != null) {
 							dossierAction.doAction(
@@ -927,6 +929,7 @@ public class DefaultSignatureManagementImpl
 								option.getServiceProcessId();
 							ProcessAction proAction =
 								DossierUtils.getProcessAction(
+									user,
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
@@ -956,6 +959,7 @@ public class DefaultSignatureManagementImpl
 					if (option != null) {
 						long serviceProcessId = option.getServiceProcessId();
 						ProcessAction proAction = DossierUtils.getProcessAction(
+							user,
 							groupId, dossier, actionCode, serviceProcessId);
 						if (proAction != null) {
 							dossierAction.doAction(
@@ -1166,6 +1170,7 @@ public class DefaultSignatureManagementImpl
 								option.getServiceProcessId();
 							ProcessAction proAction =
 								DossierUtils.getProcessAction(
+									user,
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
@@ -1195,6 +1200,7 @@ public class DefaultSignatureManagementImpl
 					if (option != null) {
 						long serviceProcessId = option.getServiceProcessId();
 						ProcessAction proAction = DossierUtils.getProcessAction(
+							user,
 							groupId, dossier, actionCode, serviceProcessId);
 						if (proAction != null) {
 							dossierAction.doAction(
@@ -1392,7 +1398,7 @@ public class DefaultSignatureManagementImpl
 					if (insideProcess) {
 						if (option != null) {
 							long serviceProcessId = option.getServiceProcessId();
-							ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+							ProcessAction proAction = DossierUtils.getProcessAction(user, groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
 								dossierAction.doAction(groupId, userId, dossier, option, proAction,
@@ -1413,7 +1419,7 @@ public class DefaultSignatureManagementImpl
 							groupId);
 					if (option != null) {
 						long serviceProcessId = option.getServiceProcessId();
-						ProcessAction proAction = DossierUtils.getProcessAction(groupId, dossier, actionCode,
+						ProcessAction proAction = DossierUtils.getProcessAction(user, groupId, dossier, actionCode,
 								serviceProcessId);
 						if (proAction != null) {
 							dossierAction.doAction(groupId, userId, dossier, option, proAction,

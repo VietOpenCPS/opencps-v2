@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.impl.ConfigCounterActionsImpl;
 import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.service.base.ConfigCounterLocalServiceBaseImpl;
 
@@ -46,6 +47,7 @@ public class ConfigCounterLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil} to access the config counter local service.
 	 */
+
 	private static final Log _log = LogFactoryUtil.getLog(ConfigCounterLocalServiceImpl.class);
 
 	public ConfigCounter updateConfigCounter(long groupId, long userId, long configCounterId, String counterCode, String patternCode,
@@ -99,5 +101,6 @@ public class ConfigCounterLocalServiceImpl
 
 	public long countByGroupId(long groupId) {
 		return configCounterPersistence.countByG_ID(groupId);
-	}	
+	}
+
 }

@@ -262,6 +262,11 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(templateNo)) {
 				template = SpecialCharacterUtils.splitSpecial(templateNo);
 			}
+			String dossierCounter = query.getDossierCounter();
+			String dossierCounterSearch = StringPool.BLANK;
+			if (Validator.isNotNull(dossierCounter)) {
+				dossierCounterSearch = SpecialCharacterUtils.splitSpecial(dossierCounter);
+			}
 			// Integer originality =
 			// GetterUtil.getInteger(query.getOriginality());
 			// String originality = query.getOriginality();
@@ -540,6 +545,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
 			
 			params.put(DossierTerm.REGISTER, query.getRegister());
+			params.put(DossierTerm.DOSSIER_COUNTER_SEARCH, dossierCounterSearch);
 
 			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
 			params.put(DossierTerm.BACKLOG, query.getBacklog());
@@ -1626,6 +1632,7 @@ public class DossierManagementImpl implements DossierManagement {
 										option.getServiceProcessId();
 									ProcessAction proAction =
 										DossierUtils.getProcessAction(
+											user,
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
@@ -1666,6 +1673,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 									ProcessAction proAction =
 										DossierUtils.getProcessAction(
+											user,
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
@@ -1871,7 +1879,7 @@ public class DossierManagementImpl implements DossierManagement {
 							long serviceProcessId =
 								option.getServiceProcessId();
 							ProcessAction proAction =
-								DossierUtils.getProcessAction(
+								DossierUtils.getProcessAction(user,
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
@@ -3111,15 +3119,16 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Dossier dossier = null;
-		try {
-			long dossierId = Integer.parseInt(id);
-			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		}
-		catch (NumberFormatException nfe) {
+		if (Validator.isNumber(id)) {
 
+			dossier = DossierLocalServiceUtil.fetchDossier(Integer.parseInt(id));
+		} else {
+
+			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 		}
 		if (dossier == null) {
-			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+
+			return Response.status(HttpStatus.SC_NOT_FOUND).entity(null).build();
 		}
 		List<Role> userRoles = user.getRoles();
 		boolean isAdmin = false;
@@ -4375,7 +4384,7 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(
 					da.getStepCode(), groupId, da.getServiceProcessId());
 
-				List<User> lstUsers = actions.getAssignUsersByStep(dossier, ps);
+				List<User> lstUsers = actions.getAssignUsersByStep(user.getUserId(), dossier, ps);
 				result.put(ConstantUtils.TOTAL, lstUsers.size());
 				JSONArray userArr = JSONFactoryUtil.createJSONArray();
 
@@ -6103,6 +6112,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 											ProcessAction proAction =
 												DossierUtils.getProcessAction(
+													user,
 													groupId, dossier,
 													actionCode,
 													serviceProcessId);
@@ -6233,6 +6243,7 @@ public class DossierManagementImpl implements DossierManagement {
 						StringBuilder sb = new StringBuilder();
 						for (ProcessAction processAction : processActionList) {
 							if (enable == 1 && (processCheckEnable(
+								user,
 								processAction.getPreCondition(),
 								processAction.getAutoEvent(), dossier,
 								actionCode, groupId))) {
@@ -6263,7 +6274,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 
 	private boolean processCheckEnable(
-		String preCondition, String autoEvent, Dossier dossier,
+		User user, String preCondition, String autoEvent, Dossier dossier,
 		String actionCode, long groupId) {
 
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) ||
@@ -6274,7 +6285,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user);
 		}
 
 		return true;
@@ -6650,7 +6661,7 @@ public class DossierManagementImpl implements DossierManagement {
 													psr.getCondition());
 
 											if (DossierMgtUtils.checkPreCondition(
-												conditions, dossier)) {
+												conditions, dossier, user)) {
 												lstStepRoles.add(psr);
 											}
 										}

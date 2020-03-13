@@ -58,4 +58,5 @@ public class PropKeys {
 
 	public static final String SMS_END_POINT = "org.sms.jaxrs.endpoint";
 
+	public static final String CAPTCHA_TYPE = "opencps.captcha.type";
 }

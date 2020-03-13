@@ -266,6 +266,14 @@ public class DossierDocumentLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierDocument> getByG_DocTypeList(
+		long groupId, long dossierId, String documentType, Integer start,
+		Integer end) {
+		return _dossierDocumentLocalService.getByG_DocTypeList(groupId,
+			dossierId, documentType, start, end);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierDocument getDocByReferenceUid(
 		long groupId, long dossierId, String referenceUid) {
 		return _dossierDocumentLocalService.getDocByReferenceUid(groupId,

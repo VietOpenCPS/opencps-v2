@@ -2860,6 +2860,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
 			? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
+		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
 
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -2901,7 +2902,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
-			documentDate, strSystemId, viaPostal, backlogDate, backlog,
+			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3046,6 +3047,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
 			? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
+		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
 
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -3084,7 +3086,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toReceiveNotDoneDate, paymentStatus, origin, fromStatisticDate,
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
-			documentDate, strSystemId, viaPostal, backlogDate, backlog,
+			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3109,7 +3111,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				DossierTerm.CURRENT_ACTION_USER,
 				DossierTerm.ORIGIN_DOSSIER_NO_SEARCH,
 				ServiceInfoTerm.SERVICE_CODE_SEARCH,
-				DossierTerm.DELEGATE_NAME_SEARCH
+				DossierTerm.DELEGATE_NAME_SEARCH, DossierTerm.DOSSIER_COUNTER_SEARCH
 			};
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
@@ -3213,10 +3215,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer originDossierId, String time, String register, int day,
 		Long groupDossierId, String assignedUserId, String assignedUserIdSearch, Integer delegateType,
 		String documentNo, String documentDate, String strSystemId,
-		Integer viaPostal, String backlogDate, Integer backlog,
+		Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 		BooleanQuery booleanQuery)
 		throws ParseException {
 
+		//Dossier Counter
+		if (Validator.isNotNull(dossierCounterSearch)) {
+			MultiMatchQuery query =
+				new MultiMatchQuery(dossierCounterSearch);
+			query.addField(DossierTerm.DOSSIER_COUNTER);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		// viaPostal
 		if (Validator.isNotNull(viaPostal)) {
 			MultiMatchQuery query =
@@ -3753,15 +3762,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(dossierNo)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
 			BooleanQuery query = new BooleanQueryImpl();
 			for (String key : keyDossier) {
-				WildcardQuery wildQuery = new WildcardQueryImpl(
-					DossierTerm.DOSSIER_NO_SEARCH,
-					key.toLowerCase() + StringPool.STAR);
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch, key.toLowerCase() + StringPool.STAR);
 				query.add(wildQuery, BooleanClauseOccur.MUST);
 			}
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(certificateNo)) {
