@@ -217,6 +217,8 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="day" type="int" />
-		<field name="hours" type="String" />
+		<field name="hours" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 </model-hints>

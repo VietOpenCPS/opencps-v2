@@ -91,7 +91,7 @@ public class AdminConfigModelImpl extends BaseModelImpl<AdminConfig>
 		TABLE_COLUMNS_MAP.put("publicManager", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_adminconfig (id_ LONG not null primary key,code_ VARCHAR(75) null,name VARCHAR(75) null,bundleName VARCHAR(75) null,modelName VARCHAR(75) null,serviceUtilName VARCHAR(75) null,headersName VARCHAR(75) null,columns VARCHAR(75) null,detailColumns VARCHAR(75) null,extForm BOOLEAN,groupFilter BOOLEAN,publicManager BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_adminconfig (id_ LONG not null primary key,code_ VARCHAR(255) null,name TEXT null,bundleName VARCHAR(255) null,modelName VARCHAR(255) null,serviceUtilName VARCHAR(255) null,headersName VARCHAR(1000) null,columns TEXT null,detailColumns TEXT null,extForm BOOLEAN,groupFilter BOOLEAN,publicManager BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_adminconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY adminConfig.id ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_adminconfig.id_ ASC";

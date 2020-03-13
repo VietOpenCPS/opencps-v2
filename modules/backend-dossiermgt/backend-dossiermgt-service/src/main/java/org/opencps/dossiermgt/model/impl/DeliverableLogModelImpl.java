@@ -106,7 +106,7 @@ public class DeliverableLogModelImpl extends BaseModelImpl<DeliverableLog>
 		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,deliverableId LONG,dossierUid VARCHAR(75) null,author VARCHAR(75) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null,fileEntryId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverablelog (uuid_ VARCHAR(75) null,deliverableLogId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,deliverableId LONG,dossierUid VARCHAR(255) null,author VARCHAR(255) null,content TEXT null,deliverableAction INTEGER,actionDate DATE null,payload TEXT null,fileEntryId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverablelog";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableLog.deliverableLogId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverablelog.deliverableLogId ASC";

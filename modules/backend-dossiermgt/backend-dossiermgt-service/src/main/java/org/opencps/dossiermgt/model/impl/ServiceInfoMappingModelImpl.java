@@ -89,7 +89,7 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		TABLE_COLUMNS_MAP.put("serviceCodeDVCQG", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfomapping (serviceInfoMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(75) null,serviceCodeDVCQG VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfomapping (serviceInfoMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(128) null,serviceCodeDVCQG VARCHAR(128) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceinfomapping";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceInfoMapping.serviceInfoMappingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceinfomapping.serviceInfoMappingId ASC";

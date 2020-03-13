@@ -3,14 +3,30 @@
 <model-hints>
 	<model name="org.opencps.adminconfig.model.AdminConfig">
 		<field name="id" type="long" />
-		<field name="code" type="String" />
-		<field name="name" type="String" />
-		<field name="bundleName" type="String" />
-		<field name="modelName" type="String" />
-		<field name="serviceUtilName" type="String" />
-		<field name="headersName" type="String" />
-		<field name="columns" type="String" />
-		<field name="detailColumns" type="String" />
+		<field name="code" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="name" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="bundleName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="modelName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceUtilName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="headersName" type="String">
+			<hint name="max-length">1000</hint>
+		</field>
+		<field name="columns" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="detailColumns" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
 		<field name="extForm" type="boolean" />
 		<field name="groupFilter" type="boolean" />
 		<field name="publicManager" type="boolean" />
@@ -20,12 +36,18 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="sharing" type="int" />
-		<field name="reportName" type="String" />
-		<field name="reportCode" type="String" />
+		<field name="reportName" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="reportCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="filterConfig" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -35,7 +57,9 @@
 		<field name="userConfig" type="String">
 			<hint name="max-length">1000</hint>
 		</field>
-		<field name="reportType" type="String" />
+		<field name="reportType" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.adminconfig.model.ReportRole">
 		<field name="reportRoleId" type="long" />
