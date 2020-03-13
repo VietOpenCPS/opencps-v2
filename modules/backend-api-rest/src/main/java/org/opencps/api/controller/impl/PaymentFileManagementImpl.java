@@ -5,6 +5,8 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -19,8 +21,11 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
+import java.net.URI;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,6 +47,9 @@ import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -54,10 +62,32 @@ import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusException;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
 
@@ -583,7 +613,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
 
-//		long dossierId = GetterUtil.getLong(id);
+		long dossierId = GetterUtil.getLong(id);
 
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
@@ -594,27 +624,27 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				throw new UnauthenticationException();
 			}
 
-//			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
 
-//			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
+			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
 
-//			if (paymentFile.getInvoiceFileEntryId() > 0) {
-			long getInvoiceFileEntryId = 0;
-			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(getInvoiceFileEntryId);
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
 
 			File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
 					true);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
-			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
-			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
-					attachmentFilename);
-			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
 
 			return responseBuilder.build();
-//			} else {
-//				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-//			}
+
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -811,43 +841,83 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
 				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
 				
-				String formData = JSONFactoryUtil.looseSerialize(paymentFile);
+				//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
+				JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
 				String formReport = paymentConfig.getInvoiceForm();
 
-				ObjectMapper mapper = new ObjectMapper();
-		        Map<String, String> map = (Map<String, String>)mapper.readValue(formData, Map.class);
+				//ObjectMapper mapper = new ObjectMapper();
+				//Map<String, String> map = (Map<String, String>) mapper.readValue(formData, Map.class);
 
-		        map.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
-		        
+				jsonData.put("applicantName", dossier.getApplicantName());
+
 		        StringBuilder address = new StringBuilder();
-				address.append(dossier.getAddress());address.append(", ");
-				address.append(dossier.getWardName());address.append(", ");
-				address.append(dossier.getDistrictName());address.append(", ");
+				address.append(dossier.getAddress());
+				address.append(", ");
+				address.append(dossier.getWardName());
+				address.append(", ");
+				address.append(dossier.getDistrictName());
+				address.append(", ");
 				address.append(dossier.getCityName());
-		        
-		        map.put(DossierTerm.ADDRESS, address.toString());
-		        
+
+				jsonData.put("address", address.toString());
+				jsonData.put("metaData", JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
+				jsonData.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+				jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+				jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+				jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
+				jsonData.put(DossierTerm.APPLICANT_ID_DATE, APIDateTimeUtils.convertDateToString(dossier.getApplicantIdDate(),
+						APIDateTimeUtils._NORMAL_PARTTERN));
+				jsonData.put(DossierTerm.CITY_CODE, dossier.getCityCode());
+				jsonData.put(DossierTerm.CITY_NAME, dossier.getCityName());
+				jsonData.put(DossierTerm.DISTRICT_CODE, dossier.getDistrictCode());
+				jsonData.put(DossierTerm.DISTRICT_NAME, dossier.getDistrictName());
+				jsonData.put(DossierTerm.WARD_CODE, dossier.getWardCode());
+				jsonData.put(DossierTerm.WARD_NAME, dossier.getWardName());
+				jsonData.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				jsonData.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
+				jsonData.put(DossierTerm.ADDRESS, dossier.getAddress());
+				jsonData.put(DossierTerm.CONTACT_TEL_NO, dossier.getContactTelNo());
+				jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
+				jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
+				jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+				jsonData.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+				jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+				// map.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
+				// map.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+				// map.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+				jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
+				jsonData.put(DossierTerm.RECEIVE_DATE,
+						APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+				jsonData.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+				jsonData.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+				jsonData.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
+				jsonData.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+				// map.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
+				jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+				jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+				jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+
 		        String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
-		        map.put(PaymentConfigTerm.NUM_TO_WORD, num);
-		        map.put(PaymentConfigTerm.INVOICE_TEMPLATE_NO, paymentConfig.getInvoiceTemplateNo());
-		        map.put(PaymentConfigTerm.INVOICE_ISSUE_NO, paymentConfig.getInvoiceIssueNo());
-		        map.put(PaymentConfigTerm.GOV_AGENCY_TAX_NO, paymentConfig.getGovAgencyTaxNo());
+		        jsonData.put(PaymentConfigTerm.NUM_TO_WORD, num);
+		        jsonData.put(PaymentConfigTerm.INVOICE_TEMPLATE_NO, paymentConfig.getInvoiceTemplateNo());
+		        jsonData.put(PaymentConfigTerm.INVOICE_ISSUE_NO, paymentConfig.getInvoiceIssueNo());
+		        jsonData.put(PaymentConfigTerm.GOV_AGENCY_TAX_NO, paymentConfig.getGovAgencyTaxNo());
 		        
 		        WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId, dossier.getGovAgencyCode());
 		        if(Validator.isNotNull(workingUnit)) {
-		        	map.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, workingUnit.getAddress());
+		        	jsonData.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, workingUnit.getAddress());
 		        }else {
-		        	map.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, StringPool.BLANK);
+		        	jsonData.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, StringPool.BLANK);
 		        }
-		        
-		        formData = mapper.writeValueAsString(map);
-		        _log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + formData);
+
+				//formData = mapper.writeValueAsString(map);
+				_log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + jsonData);
 				
 				Message message = new Message();
 
-				message.put(ConstantUtils.API_JSON_FORM_REPORT, formReport);
+				message.put("formReport", formReport);
 
-				message.put(ConstantUtils.API_JSON_FORM_DATA, formData);
+				message.put("formData", jsonData.toJSONString());
 
 				message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
 				message.setResponseDestinationName(ConstantUtils.DOSSIERDOCUMENT_JASPER_ENGINE_PREVIEW_CALLBACK);
@@ -875,14 +945,173 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 				} catch (MessageBusException e) {
 					_log.error(e);
-					throw new Exception(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_PREVIEW_NOT_AVAILABLE));
+					throw new Exception("Preview rendering not available");
 				}
 			} else {
-				throw new Exception(String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERDOCUMENT_MESSAGE_CANNOTGETDOSSIERWITHID), id));
+				throw new Exception("Cant get dossier with id_" + id);
 			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}		
+	}
+
+	@Override
+	public Response updateByPaymentFileId(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+			Dossier dossier = getDossier(id, groupId);
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long dossierId = dossier.getDossierId();
+	
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+			String referenceUid = input.getReferenceUid();
+			if (Validator.isNull(referenceUid)) {
+				referenceUid = PortalUUIDUtil.generate();
+			}
+	
+			if (Validator.isNotNull(input.getInvoiceTemplateNo())) {
+				paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			}
+			if(Validator.isNotNull(input.getConfirmFileEntryId())){
+				paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
+			}
+			if(Validator.isNotNull(input.getPaymentStatus())){
+				paymentFile.setPaymentStatus(input.getPaymentStatus());
+			}
+			if(Validator.isNotNull(input.getEinvoice())) {
+				paymentFile.setEinvoice(input.getEinvoice());
+			}
+			if(Validator.isNotNull(input.getPaymentAmount())) {
+				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentMethod())){
+				paymentFile.setPaymentMethod(input.getPaymentMethod());
+			}
+			if(Validator.isNotNull(input.getServiceAmount())){
+				paymentFile.setServiceAmount(input.getServiceAmount());
+			}
+			if(Validator.isNotNull(input.getShipAmount())){
+				paymentFile.setShipAmount(input.getShipAmount());
+			}
+			if(Validator.isNotNull(input.getAdvanceAmount())){
+				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
+			}
+			if(Validator.isNotNull(input.getFeeAmount())){
+				paymentFile.setFeeAmount(input.getFeeAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentNote())){
+				paymentFile.setPaymentNote(input.getPaymentNote());
+			}
+			//Update Invoice File EntryId
+			//PaymentFileActions action = new PaymentFileActionsImpl();
+			//PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossier.getDossierId(), referenceUid);
+			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getByInvoiceTemplateNo(groupId, paymentFile.getInvoiceTemplateNo());
+			
+			//String formData = JSONFactoryUtil.looseSerialize(paymentFile);
+			JSONObject jsonData = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(paymentFile));
+			String formReport = paymentConfig.getInvoiceForm();
+
+			//ObjectMapper mapper = new ObjectMapper();
+			//Map<String, String> map = (Map<String, String>) mapper.readValue(formData, Map.class);
+
+			jsonData.put("applicantName", dossier.getApplicantName());
+
+			StringBuilder address = new StringBuilder();
+			address.append(dossier.getAddress());
+			address.append(", ");
+			address.append(dossier.getWardName());
+			address.append(", ");
+			address.append(dossier.getDistrictName());
+			address.append(", ");
+			address.append(dossier.getCityName());
+
+			jsonData.put("address", address.toString());
+			//
+			jsonData.put("metaData", JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
+			jsonData.put(DossierTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
+			jsonData.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			jsonData.put(DossierTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
+			jsonData.put(DossierTerm.APPLICANT_ID_TYPE, dossier.getApplicantIdType());
+			jsonData.put(DossierTerm.APPLICANT_ID_DATE, APIDateTimeUtils.convertDateToString(dossier.getApplicantIdDate(),
+					APIDateTimeUtils._NORMAL_PARTTERN));
+			jsonData.put(DossierTerm.CITY_CODE, dossier.getCityCode());
+			jsonData.put(DossierTerm.CITY_NAME, dossier.getCityName());
+			jsonData.put(DossierTerm.DISTRICT_CODE, dossier.getDistrictCode());
+			jsonData.put(DossierTerm.DISTRICT_NAME, dossier.getDistrictName());
+			jsonData.put(DossierTerm.WARD_CODE, dossier.getWardCode());
+			jsonData.put(DossierTerm.WARD_NAME, dossier.getWardName());
+			jsonData.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+			jsonData.put(DossierTerm.APPLICANT_NAME, dossier.getApplicantName());
+			jsonData.put(DossierTerm.ADDRESS, dossier.getAddress());
+			jsonData.put(DossierTerm.CONTACT_TEL_NO, dossier.getContactTelNo());
+			jsonData.put(DossierTerm.CONTACT_EMAIL, dossier.getContactEmail());
+			jsonData.put(DossierTerm.CONTACT_NAME, dossier.getContactName());
+			jsonData.put(DossierTerm.DELEGATE_ADDRESS, dossier.getDelegateAddress());
+			jsonData.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+			jsonData.put(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+			// map.put(DossierTerm.SAMPLE_COUNT, dossier.getSampleCount());
+			// map.put(DossierTerm.DURATION_UNIT, dossier.getDurationUnit());
+			// map.put(DossierTerm.DURATION_COUNT, dossier.getDurationCount());
+			jsonData.put(DossierTerm.SECRET_KEY, dossier.getPassword());
+			jsonData.put(DossierTerm.RECEIVE_DATE,
+					APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			jsonData.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
+			jsonData.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+			jsonData.put(DossierTerm.DELEGATE_TELNO, dossier.getDelegateTelNo());
+			jsonData.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
+			// map.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
+			jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+			jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+			jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+
+			String num = PaymentFileUtils.readNum(Long.toString(paymentFile.getPaymentAmount()));
+			jsonData.put("numToWord", num);
+			jsonData.put("invoiceTemplateNo", paymentConfig.getInvoiceTemplateNo());
+			jsonData.put("invoiceIssueNo", paymentConfig.getInvoiceIssueNo());
+			jsonData.put("govAgencyTaxNo", paymentConfig.getGovAgencyTaxNo());
+
+			WorkingUnit workingUnit = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(groupId,
+					dossier.getGovAgencyCode());
+			if (Validator.isNotNull(workingUnit)) {
+				jsonData.put("govAddress", workingUnit.getAddress());
+			} else {
+				jsonData.put("govAddress", "");
+			}
+
+			//formData = mapper.writeValueAsString(map);
+			_log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + JSONFactoryUtil.looseSerialize(jsonData));
+
+			Message message = new Message();
+
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
+			msgData.put("className", PaymentFile.class.getName());
+			msgData.put("classPK", paymentFile.getPaymentFileId());
+			msgData.put("jrxmlTemplate", formReport);
+			msgData.put("formData", jsonData.toJSONString());
+			msgData.put("userId", serviceContext.getUserId());
+			
+			message.put("msgToEngine", msgData);
+			MessageBusUtil.sendMessage("jasper/engine/out/destination", message);
+			
+			//message.put("formReport", formReport);
+			//message.put("formData", formData);
+			//message.setResponseId(String.valueOf(dossier.getPrimaryKeyObj()));
+			//message.setResponseDestinationName("jasper/engine/preview/callback");
+
+			paymentFile = PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			//
+			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
+	
+			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }

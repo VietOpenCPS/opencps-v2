@@ -95,6 +95,7 @@ public class PaymentFileWrapper implements PaymentFile,
 		attributes.put("invoiceNo", getInvoiceNo());
 		attributes.put("invoicePayload", getInvoicePayload());
 		attributes.put("einvoice", getEinvoice());
+		attributes.put("invoiceFileEntryId", getInvoiceFileEntryId());
 
 		return attributes;
 	}
@@ -310,6 +311,12 @@ public class PaymentFileWrapper implements PaymentFile,
 		if (einvoice != null) {
 			setEinvoice(einvoice);
 		}
+
+		Long invoiceFileEntryId = (Long)attributes.get("invoiceFileEntryId");
+
+		if (invoiceFileEntryId != null) {
+			setInvoiceFileEntryId(invoiceFileEntryId);
+		}
 	}
 
 	@Override
@@ -505,6 +512,16 @@ public class PaymentFileWrapper implements PaymentFile,
 	@Override
 	public long getGroupId() {
 		return _paymentFile.getGroupId();
+	}
+
+	/**
+	* Returns the invoice file entry ID of this payment file.
+	*
+	* @return the invoice file entry ID of this payment file
+	*/
+	@Override
+	public long getInvoiceFileEntryId() {
+		return _paymentFile.getInvoiceFileEntryId();
 	}
 
 	/**
@@ -926,6 +943,16 @@ public class PaymentFileWrapper implements PaymentFile,
 	@Override
 	public void setGroupId(long groupId) {
 		_paymentFile.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the invoice file entry ID of this payment file.
+	*
+	* @param invoiceFileEntryId the invoice file entry ID of this payment file
+	*/
+	@Override
+	public void setInvoiceFileEntryId(long invoiceFileEntryId) {
+		_paymentFile.setInvoiceFileEntryId(invoiceFileEntryId);
 	}
 
 	/**

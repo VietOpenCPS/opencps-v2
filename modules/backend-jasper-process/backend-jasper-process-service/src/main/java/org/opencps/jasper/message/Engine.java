@@ -146,6 +146,31 @@ public class Engine implements MessageListener {
 					MessageBusUtil.sendMessage(ConfigConstants.JASPER_DESTINATION_DOSSIER, message);
 				}												
 			}
+			else if ("org.opencps.dossiermgt.model.PaymentFile".equals(className)) {
+				JSONObject jsonData = JSONFactoryUtil.createJSONObject();
+				try {
+					jsonData = JSONFactoryUtil.createJSONObject(msgData.getString("formData"));
+				} catch (JSONException e1) {
+					_log.error(e1);
+				}
+	
+				String fileExport = JRReportUtil.createReportFile(msgData.getString("jrxmlTemplate"),
+						jsonData.toJSONString(), null, file.getCanonicalPath());
+
+				if (Validator.isNotNull(fileExport)) {
+				
+					_log.info("Jasper export success: " + fileExport);
+					
+					JSONObject msgDataIn = JSONFactoryUtil.createJSONObject();
+					msgDataIn.put("className", className);
+					msgDataIn.put("classPK", classPK);
+					msgDataIn.put("userId", userId);
+					msgDataIn.put("filePath", fileExport );
+					
+					message.put("msgToEngine", msgDataIn);
+					MessageBusUtil.sendMessage("jasper/dossier/in/destination", message);
+				}				
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}

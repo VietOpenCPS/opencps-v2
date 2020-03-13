@@ -103,7 +103,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			{ "invoiceIssueNo", Types.VARCHAR },
 			{ "invoiceNo", Types.VARCHAR },
 			{ "invoicePayload", Types.VARCHAR },
-			{ "einvoice", Types.VARCHAR }
+			{ "einvoice", Types.VARCHAR },
+			{ "invoiceFileEntryId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -143,9 +144,10 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		TABLE_COLUMNS_MAP.put("invoiceNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("invoicePayload", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("einvoice", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("invoiceFileEntryId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(500) null,paymentFee VARCHAR(500) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(500) null,epaymentProfile STRING null,bankInfo STRING null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload STRING null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(500) null,govAgencyTaxNo VARCHAR(500) null,invoiceTemplateNo VARCHAR(500) null,invoiceIssueNo VARCHAR(500) null,invoiceNo VARCHAR(500) null,invoicePayload STRING null,einvoice STRING null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_paymentfile (uuid_ VARCHAR(75) null,paymentFileId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dossierId LONG,referenceUid VARCHAR(75) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(500) null,paymentFee VARCHAR(500) null,advanceAmount LONG,feeAmount LONG,serviceAmount LONG,shipAmount LONG,paymentAmount LONG,paymentNote VARCHAR(500) null,epaymentProfile STRING null,bankInfo STRING null,paymentStatus INTEGER,paymentMethod VARCHAR(75) null,confirmDatetime DATE null,confirmPayload STRING null,confirmFileEntryId LONG,confirmNote VARCHAR(75) null,approveDatetime DATE null,accountUserName VARCHAR(500) null,govAgencyTaxNo VARCHAR(500) null,invoiceTemplateNo VARCHAR(500) null,invoiceIssueNo VARCHAR(500) null,invoiceNo VARCHAR(500) null,invoicePayload STRING null,einvoice STRING null,invoiceFileEntryId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_paymentfile";
 	public static final String ORDER_BY_JPQL = " ORDER BY paymentFile.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_paymentfile.createDate DESC";
@@ -242,6 +244,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		attributes.put("invoiceNo", getInvoiceNo());
 		attributes.put("invoicePayload", getInvoicePayload());
 		attributes.put("einvoice", getEinvoice());
+		attributes.put("invoiceFileEntryId", getInvoiceFileEntryId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -459,6 +462,12 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 		if (einvoice != null) {
 			setEinvoice(einvoice);
+		}
+
+		Long invoiceFileEntryId = (Long)attributes.get("invoiceFileEntryId");
+
+		if (invoiceFileEntryId != null) {
+			setInvoiceFileEntryId(invoiceFileEntryId);
 		}
 	}
 
@@ -986,6 +995,16 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 	}
 
 	@Override
+	public long getInvoiceFileEntryId() {
+		return _invoiceFileEntryId;
+	}
+
+	@Override
+	public void setInvoiceFileEntryId(long invoiceFileEntryId) {
+		_invoiceFileEntryId = invoiceFileEntryId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				PaymentFile.class.getName()));
@@ -1057,6 +1076,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		paymentFileImpl.setInvoiceNo(getInvoiceNo());
 		paymentFileImpl.setInvoicePayload(getInvoicePayload());
 		paymentFileImpl.setEinvoice(getEinvoice());
+		paymentFileImpl.setInvoiceFileEntryId(getInvoiceFileEntryId());
 
 		paymentFileImpl.resetOriginalValues();
 
@@ -1356,12 +1376,14 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			paymentFileCacheModel.einvoice = null;
 		}
 
+		paymentFileCacheModel.invoiceFileEntryId = getInvoiceFileEntryId();
+
 		return paymentFileCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(71);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1433,6 +1455,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		sb.append(getInvoicePayload());
 		sb.append(", einvoice=");
 		sb.append(getEinvoice());
+		sb.append(", invoiceFileEntryId=");
+		sb.append(getInvoiceFileEntryId());
 		sb.append("}");
 
 		return sb.toString();
@@ -1440,7 +1464,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(109);
+		StringBundler sb = new StringBundler(112);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.PaymentFile");
@@ -1586,6 +1610,10 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 			"<column><column-name>einvoice</column-name><column-value><![CDATA[");
 		sb.append(getEinvoice());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>invoiceFileEntryId</column-name><column-value><![CDATA[");
+		sb.append(getInvoiceFileEntryId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1640,6 +1668,7 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 	private String _invoiceNo;
 	private String _invoicePayload;
 	private String _einvoice;
+	private long _invoiceFileEntryId;
 	private long _columnBitmask;
 	private PaymentFile _escapedModel;
 }

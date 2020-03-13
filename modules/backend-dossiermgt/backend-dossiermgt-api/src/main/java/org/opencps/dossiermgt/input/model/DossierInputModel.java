@@ -73,6 +73,15 @@ public class DossierInputModel {
 	private String metaData;
 	private Integer delegateType;
 	private int systemId;
+	private String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public int getSystemId() {
 		return systemId;

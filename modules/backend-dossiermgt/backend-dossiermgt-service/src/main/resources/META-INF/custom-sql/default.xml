@@ -26,7 +26,14 @@
 			group by dau.userId;
         ]]>
     </sql>
-    <sql id="org.opencps.dossiermgt.service.persistence.NotarizationFinder.findAdvancedSearch">
+
+    <sql id="org.opencps.dossiermgt.service.persistence.BookingFinder.findBookingDateOnline">
+        <![CDATA[
+            select bk.bookingId, bk.className, bk.classPK, bk.bookingDate, bk.bookingInTime from opencps_booking as bk 
+			where groupId = ? and DATE(bookingDate) = ? and online_ = ? ORDER BY bookingId desc;
+        ]]>
+    </sql>
+        <sql id="org.opencps.dossiermgt.service.persistence.NotarizationFinder.findAdvancedSearch">
         <![CDATA[
             select * from opencps_notarization where 1=1
             [$FILTER_GROUP_ID$]

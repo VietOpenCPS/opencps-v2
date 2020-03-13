@@ -44,7 +44,10 @@ create table opencps_booking (
 	bookingDate DATE null,
 	speaking BOOLEAN,
 	serviceGroupCode VARCHAR(255) null,
-	count INTEGER
+	count INTEGER,
+	online_ BOOLEAN,
+	bookingInTime VARCHAR(75) null,
+	telNo VARCHAR(75) null
 );
 
 create table opencps_configcounter (
@@ -679,7 +682,8 @@ create table opencps_paymentfile (
 	invoiceIssueNo VARCHAR(500) null,
 	invoiceNo VARCHAR(500) null,
 	invoicePayload STRING null,
-	einvoice STRING null
+	einvoice STRING null,
+	invoiceFileEntryId LONG
 );
 
 create table opencps_process_plugin (

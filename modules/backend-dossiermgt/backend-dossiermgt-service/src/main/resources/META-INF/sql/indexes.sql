@@ -4,6 +4,9 @@ create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], com
 create unique index IX_EDA28DB7 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_2B451CAC on opencps_booking (className[$COLUMN_LENGTH:75$], classPK);
+create index IX_96163B06 on opencps_booking (codeNumber[$COLUMN_LENGTH:75$]);
+create index IX_35D7C193 on opencps_booking (groupId, bookingDate, online_);
+create index IX_68310EDE on opencps_booking (groupId, className[$COLUMN_LENGTH:75$], classPK);
 create index IX_D55B8904 on opencps_booking (groupId, serviceCode[$COLUMN_LENGTH:75$]);
 create index IX_915B3B70 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_F25BDDF2 on opencps_booking (uuid_[$COLUMN_LENGTH:75$], groupId);
@@ -95,6 +98,7 @@ create index IX_B06993A5 on opencps_dossieractionuser (uuid_[$COLUMN_LENGTH:75$]
 
 create index IX_7E9B770D on opencps_dossierdocument (dossierId);
 create index IX_FCE3302B on opencps_dossierdocument (groupId, dossierActionId);
+create index IX_D80E15BE on opencps_dossierdocument (groupId, dossierId, documentType[$COLUMN_LENGTH:255$]);
 create index IX_703C7CE on opencps_dossierdocument (groupId, dossierId, referenceUid[$COLUMN_LENGTH:75$]);
 create unique index IX_15D0143F on opencps_dossierdocument (uuid_[$COLUMN_LENGTH:75$], groupId);
 

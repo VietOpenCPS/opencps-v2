@@ -79,6 +79,9 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		attributes.put("speaking", isSpeaking());
 		attributes.put("serviceGroupCode", getServiceGroupCode());
 		attributes.put("count", getCount());
+		attributes.put("online", isOnline());
+		attributes.put("bookingInTime", getBookingInTime());
+		attributes.put("telNo", getTelNo());
 
 		return attributes;
 	}
@@ -204,6 +207,24 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 		if (count != null) {
 			setCount(count);
 		}
+
+		Boolean online = (Boolean)attributes.get("online");
+
+		if (online != null) {
+			setOnline(online);
+		}
+
+		String bookingInTime = (String)attributes.get("bookingInTime");
+
+		if (bookingInTime != null) {
+			setBookingInTime(bookingInTime);
+		}
+
+		String telNo = (String)attributes.get("telNo");
+
+		if (telNo != null) {
+			setTelNo(telNo);
+		}
 	}
 
 	@Override
@@ -234,6 +255,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public long getBookingId() {
 		return _booking.getBookingId();
+	}
+
+	/**
+	* Returns the booking in time of this booking.
+	*
+	* @return the booking in time of this booking
+	*/
+	@Override
+	public String getBookingInTime() {
+		return _booking.getBookingInTime();
 	}
 
 	/**
@@ -352,6 +383,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Returns the online of this booking.
+	*
+	* @return the online of this booking
+	*/
+	@Override
+	public boolean getOnline() {
+		return _booking.getOnline();
+	}
+
+	/**
 	* Returns the primary key of this booking.
 	*
 	* @return the primary key of this booking
@@ -404,6 +445,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public int getState() {
 		return _booking.getState();
+	}
+
+	/**
+	* Returns the tel no of this booking.
+	*
+	* @return the tel no of this booking
+	*/
+	@Override
+	public String getTelNo() {
+		return _booking.getTelNo();
 	}
 
 	/**
@@ -467,6 +518,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Returns <code>true</code> if this booking is online.
+	*
+	* @return <code>true</code> if this booking is online; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isOnline() {
+		return _booking.isOnline();
+	}
+
+	/**
 	* Returns <code>true</code> if this booking is speaking.
 	*
 	* @return <code>true</code> if this booking is speaking; <code>false</code> otherwise
@@ -499,6 +560,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public void setBookingId(long bookingId) {
 		_booking.setBookingId(bookingId);
+	}
+
+	/**
+	* Sets the booking in time of this booking.
+	*
+	* @param bookingInTime the booking in time of this booking
+	*/
+	@Override
+	public void setBookingInTime(String bookingInTime) {
+		_booking.setBookingInTime(bookingInTime);
 	}
 
 	/**
@@ -638,6 +709,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	}
 
 	/**
+	* Sets whether this booking is online.
+	*
+	* @param online the online of this booking
+	*/
+	@Override
+	public void setOnline(boolean online) {
+		_booking.setOnline(online);
+	}
+
+	/**
 	* Sets the primary key of this booking.
 	*
 	* @param primaryKey the primary key of this booking
@@ -690,6 +771,16 @@ public class BookingWrapper implements Booking, ModelWrapper<Booking> {
 	@Override
 	public void setState(int state) {
 		_booking.setState(state);
+	}
+
+	/**
+	* Sets the tel no of this booking.
+	*
+	* @param telNo the tel no of this booking
+	*/
+	@Override
+	public void setTelNo(String telNo) {
+		_booking.setTelNo(telNo);
 	}
 
 	/**

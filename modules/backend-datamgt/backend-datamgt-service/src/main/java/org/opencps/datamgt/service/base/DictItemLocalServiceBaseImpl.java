@@ -51,12 +51,15 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictItemLocalService;
+import org.opencps.datamgt.service.persistence.CommentPersistence;
 import org.opencps.datamgt.service.persistence.DictCollectionPersistence;
 import org.opencps.datamgt.service.persistence.DictGroupPersistence;
 import org.opencps.datamgt.service.persistence.DictItemGroupPersistence;
 import org.opencps.datamgt.service.persistence.DictItemPersistence;
 import org.opencps.datamgt.service.persistence.FileAttachPersistence;
 import org.opencps.datamgt.service.persistence.HolidayPersistence;
+import org.opencps.datamgt.service.persistence.VotingPersistence;
+import org.opencps.datamgt.service.persistence.VotingResultPersistence;
 import org.opencps.datamgt.service.persistence.WorkTimePersistence;
 
 import java.io.Serializable;
@@ -433,6 +436,43 @@ public abstract class DictItemLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the comment local service.
+	 *
+	 * @return the comment local service
+	 */
+	public org.opencps.datamgt.service.CommentLocalService getCommentLocalService() {
+		return commentLocalService;
+	}
+
+	/**
+	 * Sets the comment local service.
+	 *
+	 * @param commentLocalService the comment local service
+	 */
+	public void setCommentLocalService(
+		org.opencps.datamgt.service.CommentLocalService commentLocalService) {
+		this.commentLocalService = commentLocalService;
+	}
+
+	/**
+	 * Returns the comment persistence.
+	 *
+	 * @return the comment persistence
+	 */
+	public CommentPersistence getCommentPersistence() {
+		return commentPersistence;
+	}
+
+	/**
+	 * Sets the comment persistence.
+	 *
+	 * @param commentPersistence the comment persistence
+	 */
+	public void setCommentPersistence(CommentPersistence commentPersistence) {
+		this.commentPersistence = commentPersistence;
+	}
+
+	/**
 	 * Returns the dict collection local service.
 	 *
 	 * @return the dict collection local service
@@ -659,6 +699,81 @@ public abstract class DictItemLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the voting local service.
+	 *
+	 * @return the voting local service
+	 */
+	public org.opencps.datamgt.service.VotingLocalService getVotingLocalService() {
+		return votingLocalService;
+	}
+
+	/**
+	 * Sets the voting local service.
+	 *
+	 * @param votingLocalService the voting local service
+	 */
+	public void setVotingLocalService(
+		org.opencps.datamgt.service.VotingLocalService votingLocalService) {
+		this.votingLocalService = votingLocalService;
+	}
+
+	/**
+	 * Returns the voting persistence.
+	 *
+	 * @return the voting persistence
+	 */
+	public VotingPersistence getVotingPersistence() {
+		return votingPersistence;
+	}
+
+	/**
+	 * Sets the voting persistence.
+	 *
+	 * @param votingPersistence the voting persistence
+	 */
+	public void setVotingPersistence(VotingPersistence votingPersistence) {
+		this.votingPersistence = votingPersistence;
+	}
+
+	/**
+	 * Returns the voting result local service.
+	 *
+	 * @return the voting result local service
+	 */
+	public org.opencps.datamgt.service.VotingResultLocalService getVotingResultLocalService() {
+		return votingResultLocalService;
+	}
+
+	/**
+	 * Sets the voting result local service.
+	 *
+	 * @param votingResultLocalService the voting result local service
+	 */
+	public void setVotingResultLocalService(
+		org.opencps.datamgt.service.VotingResultLocalService votingResultLocalService) {
+		this.votingResultLocalService = votingResultLocalService;
+	}
+
+	/**
+	 * Returns the voting result persistence.
+	 *
+	 * @return the voting result persistence
+	 */
+	public VotingResultPersistence getVotingResultPersistence() {
+		return votingResultPersistence;
+	}
+
+	/**
+	 * Sets the voting result persistence.
+	 *
+	 * @param votingResultPersistence the voting result persistence
+	 */
+	public void setVotingResultPersistence(
+		VotingResultPersistence votingResultPersistence) {
+		this.votingResultPersistence = votingResultPersistence;
+	}
+
+	/**
 	 * Returns the work time local service.
 	 *
 	 * @return the work time local service
@@ -860,6 +975,10 @@ public abstract class DictItemLocalServiceBaseImpl extends BaseLocalServiceImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.datamgt.service.CommentLocalService.class)
+	protected org.opencps.datamgt.service.CommentLocalService commentLocalService;
+	@BeanReference(type = CommentPersistence.class)
+	protected CommentPersistence commentPersistence;
 	@BeanReference(type = org.opencps.datamgt.service.DictCollectionLocalService.class)
 	protected org.opencps.datamgt.service.DictCollectionLocalService dictCollectionLocalService;
 	@BeanReference(type = DictCollectionPersistence.class)
@@ -884,6 +1003,14 @@ public abstract class DictItemLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.datamgt.service.HolidayLocalService holidayLocalService;
 	@BeanReference(type = HolidayPersistence.class)
 	protected HolidayPersistence holidayPersistence;
+	@BeanReference(type = org.opencps.datamgt.service.VotingLocalService.class)
+	protected org.opencps.datamgt.service.VotingLocalService votingLocalService;
+	@BeanReference(type = VotingPersistence.class)
+	protected VotingPersistence votingPersistence;
+	@BeanReference(type = org.opencps.datamgt.service.VotingResultLocalService.class)
+	protected org.opencps.datamgt.service.VotingResultLocalService votingResultLocalService;
+	@BeanReference(type = VotingResultPersistence.class)
+	protected VotingResultPersistence votingResultPersistence;
 	@BeanReference(type = org.opencps.datamgt.service.WorkTimeLocalService.class)
 	protected org.opencps.datamgt.service.WorkTimeLocalService workTimeLocalService;
 	@BeanReference(type = WorkTimePersistence.class)

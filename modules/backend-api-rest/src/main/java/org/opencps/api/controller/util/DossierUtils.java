@@ -514,6 +514,7 @@ public class DossierUtils {
 			}
 			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
+			model.setDossierCounter(doc.get(DossierTerm.DOSSIER_COUNTER));
 			if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
 				model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
 			}
@@ -872,14 +873,15 @@ public class DossierUtils {
 		if (Validator.isNull(input)) {
 			return model;
 		}
-		try {
-			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
-		} catch (Exception e) {
-			//_log.error(e);
-			_log.debug(e);
+//		try {
+//			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
+//			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
+//		} catch (Exception e) {
+//			//_log.error(e);
+//			_log.debug(e);
 			model.setDossierIdCTN(StringPool.BLANK);
-		}
+			model.setGroupId(input.getGroupId());
+//		}
 		
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
 		model.setDossierName(input.getDossierName());
@@ -1047,6 +1049,7 @@ public class DossierUtils {
 		}
 		model.setServerNo(input.getServerNo());
 		model.setSystemId(input.getSystemId());
+		model.setDossierCounter(input.getDossierCounter());
 
 		return model;
 	}
@@ -1185,7 +1188,7 @@ public class DossierUtils {
 	}
 
 	//LamTV: Process get process action
-	public static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
 		_log.debug("GET PROCESS ACTION____");
@@ -1229,7 +1232,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
 							action = act;
 							break;							
 						}
@@ -1446,9 +1449,9 @@ public class DossierUtils {
 		model.setDelegateType(input.getDelegateType());
 		model.setDocumentNo(input.getDocumentNo());
 		model.setDocumentDate(input.getDocumentDate());
-		//
 		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
-		
+		model.setDossierCounter(input.getDossierCounter());
+
 		return model;
 	}
 
@@ -1539,6 +1542,7 @@ public class DossierUtils {
 		model.setWardCode(input.getWardCode());
 		model.setWardName(input.getWardName());
 		model.setMetaData(input.getMetaData());
+		model.setDossierCounter(input.getDossierCounter());
 		
 		return model;
 	}

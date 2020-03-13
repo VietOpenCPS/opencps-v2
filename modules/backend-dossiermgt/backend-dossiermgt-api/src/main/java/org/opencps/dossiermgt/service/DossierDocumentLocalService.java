@@ -217,6 +217,10 @@ public interface DossierDocumentLocalService extends BaseLocalService,
 	public DossierDocument getByActiocId(long groupId, long dossierActionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierDocument> getByG_DocTypeList(long groupId,
+		long dossierId, String documentType, Integer start, Integer end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DossierDocument getDocByReferenceUid(long groupId, long dossierId,
 		String referenceUid);
 
