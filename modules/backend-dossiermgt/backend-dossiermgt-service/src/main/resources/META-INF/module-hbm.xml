@@ -100,6 +100,9 @@
 		<property name="speaking" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="serviceGroupCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="count" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property column="online_" name="online" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="bookingInTime" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="telNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ConfigCounterImpl" table="opencps_configcounter">
 		<id name="configCounterId" type="long">
@@ -760,6 +763,7 @@
 		<property name="invoiceNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="invoicePayload" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="einvoice" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="invoiceFileEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessActionImpl" table="opencps_processaction">
 		<id name="processActionId" type="long">

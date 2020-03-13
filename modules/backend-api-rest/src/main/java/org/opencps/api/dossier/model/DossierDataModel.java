@@ -207,7 +207,8 @@ import javax.xml.bind.annotation.XmlType;
     "lock",
     "timeOverdueText",
     "systemId",
-    "serviceLevel"
+    "serviceLevel",
+    "dossierCounter"
 })
 public class DossierDataModel {
 
@@ -321,7 +322,15 @@ public class DossierDataModel {
     protected String timeOverdueText;
     protected Integer systemId;
     protected int serviceLevel;
+    protected String dossierCounter;
 
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 	public int getServiceLevel() {
 		return serviceLevel;
 	}

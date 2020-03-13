@@ -75,6 +75,9 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="count" type="int" />
+		<field name="online" type="boolean" />
+		<field name="bookingInTime" type="String" />
+		<field name="telNo" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ConfigCounter">
 		<field name="uuid" type="String" />
@@ -1115,6 +1118,7 @@
 		<field name="einvoice" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
+		<field name="invoiceFileEntryId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessAction">
 		<field name="uuid" type="String" />

@@ -824,6 +824,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			//
 			document.addNumberSortable(DossierTerm.SYSTEM_ID, object.getSystemId());
+			document.addTextSortable(DossierTerm.DOSSIER_COUNTER, object.getDossierCounter());
+
+			if (Validator.isNotNull(object.getDossierCounter())) {
+				document.addTextSortable(DossierTerm.DOSSIER_COUNTER_SEARCH,
+						SpecialCharacterUtils.splitSpecial(object.getDossierCounter()));
+			} else {
+				document.addTextSortable(DossierTerm.DOSSIER_COUNTER_SEARCH, StringPool.BLANK);
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
