@@ -713,7 +713,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
 		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
 		String verification = String.valueOf(params.get(ApplicantTerm.VERIFICATION));
-		boolean haveAccount = Boolean.valueOf(params.get(ApplicantTerm.HAVE_ACCOUNT) != null ? (String)params.get(ApplicantTerm.HAVE_ACCOUNT) : "false");
+		Boolean haveAccount = params.get(ApplicantTerm.HAVE_ACCOUNT) != null ? (Boolean)params.get(ApplicantTerm.HAVE_ACCOUNT) : false;
 		
 		Indexer<Applicant> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
