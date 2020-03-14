@@ -365,7 +365,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 						}
 					}
@@ -521,7 +521,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
 						if (dauList != null && dauList.size() > 0) {
 							for (DossierActionUser dau : dauList) {
-								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+								userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
 							}
 						}
 					}

@@ -77,7 +77,7 @@ public class DefaultSignatureManagementImpl
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
@@ -257,7 +257,7 @@ public class DefaultSignatureManagementImpl
 		_log.info("START*************");
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -399,7 +399,7 @@ public class DefaultSignatureManagementImpl
 			// JSONFactoryUtil.createJSONObject(hashComputed.getString(RESTFulConfiguration.MESSAGE));
 			// _log.info("results: "+results);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -527,7 +527,7 @@ public class DefaultSignatureManagementImpl
 			"SONDT SIGNNATUREMGT_IMPL ==============  " +
 				JSONFactoryUtil.looseSerialize(input));
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 		long userId = user.getUserId();
 
@@ -740,7 +740,7 @@ public class DefaultSignatureManagementImpl
 		if (!signOk) {
 			result.put("msg", "fileEntryId");
 		}
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 	}
 
@@ -753,7 +753,7 @@ public class DefaultSignatureManagementImpl
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = Long.valueOf(id);
 
 		if (!auth.isAuth(serviceContext)) {
