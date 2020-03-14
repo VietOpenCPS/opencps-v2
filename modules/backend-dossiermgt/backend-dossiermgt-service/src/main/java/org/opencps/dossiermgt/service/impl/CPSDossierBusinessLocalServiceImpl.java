@@ -5223,7 +5223,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			//
-			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
 					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
@@ -5759,7 +5759,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			//
-			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
 					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
@@ -7049,13 +7049,13 @@ public class CPSDossierBusinessLocalServiceImpl
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
-	private static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+	private static ProcessAction getProcessAction(long userId, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
 		//_log.debug("GET PROCESS ACTION____");
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		
+		User systemUser = UserLocalServiceUtil.fetchUser(userId);
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
@@ -7093,7 +7093,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, systemUser)) {
 							action = act;
 							break;							
 						}

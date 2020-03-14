@@ -41,6 +41,7 @@ public class NotificationType {
 	public static final String USER_03 = "USER-03";
 	public static final String USER_04 = "USER-04";
 	public static final String USER_05 = "USER-05";
+	public static final String BOOKING_01 = "BOOKING-01";
 	//Value
 	public static final String VALUE_DOSSIER_01 = "Y\u00EAu c\u1EA7u b\u1ED5 sung h\u1ED3 s\u01A1";
 	public static final String VALUE_DOSSIER_02 = "Y\u00EAu c\u1EA7u thanh to\u00E1n";

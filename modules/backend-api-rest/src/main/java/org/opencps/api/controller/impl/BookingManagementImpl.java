@@ -1,7 +1,9 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -15,6 +17,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -41,8 +44,11 @@ import org.opencps.api.booking.model.BookingSearchModel;
 import org.opencps.api.controller.BookingManagement;
 import org.opencps.api.controller.util.BookingUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
+import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.BookingActions;
 import org.opencps.dossiermgt.action.impl.BookingActionsImpl;
@@ -52,6 +58,9 @@ import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
+import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -637,6 +646,44 @@ public class BookingManagementImpl implements BookingManagement{
 			}
 
 			BookingDataModel result = BookingUtils.mappingForGetDetail(booking);
+			if (result != null) {
+				long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+				NotificationQueue queue = NotificationQueueLocalServiceUtil
+						.createNotificationQueue(notificationQueueId);
+
+				Date now = new Date();
+
+				Calendar cal = Calendar.getInstance();
+
+				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+				queue.setCreateDate(now);
+				queue.setModifiedDate(now);
+				queue.setGroupId(booking.getGroupId());
+				queue.setCompanyId(booking.getCompanyId());
+
+				queue.setNotificationType(NotificationType.BOOKING_01);
+				queue.setClassName(Booking.class.getName());
+				queue.setClassPK(String.valueOf(booking.getPrimaryKey()));
+				queue.setToUsername(booking.getUserName());
+				queue.setToUserId(booking.getUserId());
+				queue.setToEmail("");
+				queue.setToTelNo(booking.getTelNo());
+
+				JSONObject payload = JSONFactoryUtil.createJSONObject();
+				try {
+					// _log.info("START PAYLOAD: ");
+					payload.put("Booking", JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(booking)));
+				} catch (JSONException parse) {
+					_log.error(parse);
+				}
+				// _log.info("payloadTest: "+payload.toJSONString());
+				queue.setPayload(payload.toJSONString());
+				queue.setExpireDate(cal.getTime());
+
+				NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+			}
 
 			return Response.status(200).entity(result).build();
 

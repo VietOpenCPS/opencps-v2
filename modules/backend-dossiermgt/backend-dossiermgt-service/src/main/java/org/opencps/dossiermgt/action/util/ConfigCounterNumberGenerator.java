@@ -307,10 +307,10 @@ public class ConfigCounterNumberGenerator {
 
 		long _counterNumber = 0;
 		Counter counter = null;
-		Counter counterDetail = null;
+		//Counter counterDetail = null;
 		_log.info("pattern" + pattern);
 		if (configCounter.getStartCounter() == 0) {
-			counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
+			Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 
 			if (Validator.isNotNull(counterDetail)) {
 				// create counter config
@@ -348,20 +348,35 @@ public class ConfigCounterNumberGenerator {
 			}
 		} else {
 			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
-			counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
+			Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 			// increment CurrentCounter
 			_counterNumber = configCounter.getStartCounter() + 1;
 			while (counter == null) {
-				counterDetail.setCurrentId(_counterNumber);
-				try {
-					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
-					//
-					configCounter.setStartCounter(0);
-					ConfigCounterLocalServiceUtil.updateConfigCounter(configCounter);
-				} catch (Exception e) {
-					_counterNumber += 1;
-					_log.debug(e);
+				if (counterDetail != null) {
+					counterDetail.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+						//
+						configCounter.setStartCounter(0);
+						ConfigCounterLocalServiceUtil.updateConfigCounter(configCounter);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
+				} else {
+					counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+					counterDetail.setCurrentId(_counterNumber);
+					try {
+						counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+						//
+						configCounter.setStartCounter(0);
+						ConfigCounterLocalServiceUtil.updateConfigCounter(configCounter);
+					} catch (Exception e) {
+						_counterNumber += 1;
+						_log.debug(e);
+					}
 				}
+				
 			}
 		}
 

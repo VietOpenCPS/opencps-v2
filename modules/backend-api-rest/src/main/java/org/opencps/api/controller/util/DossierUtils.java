@@ -1098,7 +1098,7 @@ public class DossierUtils {
 	}
 
 	//LamTV: Process get process action
-	public static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
 		_log.debug("GET PROCESS ACTION____");
@@ -1142,7 +1142,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
 							action = act;
 							break;							
 						}

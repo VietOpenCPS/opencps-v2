@@ -1527,6 +1527,7 @@ public class DossierManagementImpl implements DossierManagement {
 										option.getServiceProcessId();
 									ProcessAction proAction =
 										DossierUtils.getProcessAction(
+											user,
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
@@ -1567,6 +1568,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 									ProcessAction proAction =
 										DossierUtils.getProcessAction(
+											user,
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
@@ -1772,7 +1774,7 @@ public class DossierManagementImpl implements DossierManagement {
 							long serviceProcessId =
 								option.getServiceProcessId();
 							ProcessAction proAction =
-								DossierUtils.getProcessAction(
+								DossierUtils.getProcessAction(user,
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
@@ -4265,7 +4267,7 @@ public class DossierManagementImpl implements DossierManagement {
 				ProcessStep ps = ProcessStepLocalServiceUtil.fetchBySC_GID(
 					da.getStepCode(), groupId, da.getServiceProcessId());
 
-				List<User> lstUsers = actions.getAssignUsersByStep(dossier, ps);
+				List<User> lstUsers = actions.getAssignUsersByStep(user.getUserId(), dossier, ps);
 				result.put("total", lstUsers.size());
 				JSONArray userArr = JSONFactoryUtil.createJSONArray();
 
@@ -5993,6 +5995,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 											ProcessAction proAction =
 												DossierUtils.getProcessAction(
+													user,
 													groupId, dossier,
 													actionCode,
 													serviceProcessId);
@@ -6123,6 +6126,7 @@ public class DossierManagementImpl implements DossierManagement {
 						StringBuilder sb = new StringBuilder();
 						for (ProcessAction processAction : processActionList) {
 							if (enable == 1 && (processCheckEnable(
+								user,
 								processAction.getPreCondition(),
 								processAction.getAutoEvent(), dossier,
 								actionCode, groupId))) {
@@ -6153,7 +6157,7 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 
 	private boolean processCheckEnable(
-		String preCondition, String autoEvent, Dossier dossier,
+		User user, String preCondition, String autoEvent, Dossier dossier,
 		String actionCode, long groupId) {
 
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) ||
@@ -6164,7 +6168,7 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, user);
 		}
 
 		return true;
@@ -6540,7 +6544,7 @@ public class DossierManagementImpl implements DossierManagement {
 													psr.getCondition());
 
 											if (DossierMgtUtils.checkPreCondition(
-												conditions, dossier)) {
+												conditions, dossier, user)) {
 												lstStepRoles.add(psr);
 											}
 										}

@@ -103,6 +103,8 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 
 import backend.auth.api.exception.ErrorMsgModel;
@@ -532,7 +534,7 @@ public class DossierActionsImpl implements DossierActions {
 							// Check permission enable button
 //							_log.info("SONDT NEXTACTIONLIST PRECONDITION ======== " + preCondition);
 							if (!isAdministratorData) {
-								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId))
+								if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user))
 									data.put(ProcessActionTerm.ENABLE, enable);
 								else
 									data.put(ProcessActionTerm.ENABLE, 0);
@@ -598,8 +600,11 @@ public class DossierActionsImpl implements DossierActions {
 							data.put(ProcessActionTerm.AUTO_EVENT, autoEvent);
 							data.put(ProcessActionTerm.PRE_CONDITION, preCondition);
 							data.put(ProcessActionTerm.ALLOW_ASSIGN_USER, processAction.getAllowAssignUser());
-							
-							data.put(ProcessActionTerm.ENABLE, 1);
+
+							if (processCheckEnable(preCondition, autoEvent, dossier, actionCode, groupId, user))
+								data.put(ProcessActionTerm.ENABLE, 1);
+							else
+								data.put(ProcessActionTerm.ENABLE, 0);
 							//
 							results.put(data);
 						}
@@ -620,6 +625,7 @@ public class DossierActionsImpl implements DossierActions {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
+		User user = UserLocalServiceUtil.fetchUser(userId);
 
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -718,7 +724,7 @@ public class DossierActionsImpl implements DossierActions {
 								if (Validator.isNotNull(psr.getCondition())) {
 									String[] conditions = StringUtil.split(psr.getCondition());
 
-									if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+									if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
 										lstStepRoles.add(psr);
 									}
 								}
@@ -1407,6 +1413,8 @@ public class DossierActionsImpl implements DossierActions {
 			LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end, ServiceContext serviceContext)
 			throws PortalException {
 
+		User curUser = UserLocalServiceUtil.fetchUser(userId);
+
 		JSONArray results = JSONFactoryUtil.createJSONArray();
 
 		List<ProcessAction> lstProcessAction;
@@ -1466,7 +1474,7 @@ public class DossierActionsImpl implements DossierActions {
 						// String returnDossierFiles =
 						// processAction.getReturnDossierFiles();
 
-						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier);
+						boolean checkPreCondition = DossierMgtUtils.checkPreCondition(preConditions, dossier, curUser);
 
 						if (!checkPreCondition) {
 							continue;
@@ -1505,9 +1513,17 @@ public class DossierActionsImpl implements DossierActions {
 
 									if (users != null) {
 										for (User user : users) {
-											HashMap<String, Object> moderator = new HashMap<>();
-											moderator.put("moderator", serviceProcessRole.getModerator());
-											user.setModelAttributes(moderator);
+
+											Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
+											
+											if (!user.isLockout() && user.isActive() &&
+													Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
+
+												HashMap<String, Object> moderator = new HashMap<>();
+												moderator.put("moderator", serviceProcessRole.getModerator());
+												user.setModelAttributes(moderator);
+												lstUser.add(user);
+											}
 										}
 
 										lstUser.addAll(users);
@@ -1521,12 +1537,18 @@ public class DossierActionsImpl implements DossierActions {
 
 									if (users != null) {
 										for (User user : users) {
-											HashMap<String, Object> moderator = new HashMap<>();
-											moderator.put("moderator", processStepRole.getModerator());
-											user.setModelAttributes(moderator);
+											Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
+											
+											if (!user.isLockout() && user.isActive() &&
+													Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
+
+												HashMap<String, Object> moderator = new HashMap<>();
+												moderator.put("moderator", processStepRole.getModerator());
+												user.setModelAttributes(moderator);
+												lstUser.add(user);
+											}
 										}
 
-										lstUser.addAll(users);
 									}
 								}
 							}
@@ -3274,16 +3296,19 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 
 	//LamTV_Process check permission action
 	private boolean processCheckEnable(String preCondition, String autoEvent, Dossier dossier, String actionCode,
-			long groupId) {
+			long groupId, User curUser) {
 		if (AUTO_EVENT_SUBMIT.equals(autoEvent) || AUTO_EVENT_TIMMER.equals(autoEvent)
 				|| AUTO_EVENT_LISTENER.equals(autoEvent) || AUTO_EVENT_SPECIAL.equals(autoEvent)) {
+
 			return false;
 		}
 		String[] preConditionArr = StringUtil.split(preCondition);
+
 //		_log.info("SONDT processCheckEnable PRECONDISTIONARR ========= " + JSONFactoryUtil.looseSerialize(preConditionArr));
 //		_log.info("SONDT processCheckEnable dossier ========= " + JSONFactoryUtil.looseSerialize(dossier));
 		if (preConditionArr != null && preConditionArr.length > 0) {
-			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier);
+
+			return DossierMgtUtils.checkPreCondition(preConditionArr, dossier, curUser);
 		}
 
 //		int originality = dossier.getOriginality();
@@ -3319,7 +3344,11 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
-						if (!user.isLockout() && user.isActive()) {
+						
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+
+						if (!user.isLockout() && user.isActive() &&
+								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							HashMap<String, Object> moderator = new HashMap<>();
 							moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 							user.setModelAttributes(moderator);
@@ -3341,7 +3370,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 							.getRoleUsers(serviceProcessRole.getRoleId());
 					if (users != null && users.size() > 0) {
 						for (User user : users) {
-							if (!user.isLockout() && user.isActive()) {
+							
+							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+							if (!user.isLockout() && user.isActive() &&
+									Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 								HashMap<String, Object> moderator = new HashMap<>();
 								moderator.put("moderator", serviceProcessRole.getModerator());
 								user.setModelAttributes(moderator);
@@ -3368,7 +3400,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 		for (ProcessStepRole role : processStepRoleList) {
 			List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 			for (User u : lstUsers) {
-				if (!u.isLockout() && u.isActive()) {
+				Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
+				if (!u.isLockout() && u.isActive() &&
+						Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);	
 					HashMap<String, Object> moderator = new HashMap<>();
@@ -3390,7 +3424,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				for (ProcessStepRole role : stepRoleAsStepList) {
 					List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 					for (User u : lstUsers) {
-						if (!u.isLockout() && u.isActive()) {
+						
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(u.getGroupId(), u.getUserId());
+						if (!u.isLockout() && u.isActive() &&
+								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							HashMap<String, Object> assigned = new HashMap<>();
 							assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 							HashMap<String, Object> moderator = new HashMap<>();
@@ -3424,8 +3461,9 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 				for (DossierActionUser dau : lstDaus) {
 					if (dau.getUserId() == u.getUserId()) {
 						User user = UserLocalServiceUtil.fetchUser(dau.getUserId());
-
-						if (!user.isLockout() && user.isActive()) {
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
+						if (!user.isLockout() && user.isActive() &&
+								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							HashMap<String, Object> assigned = new HashMap<>();
 							assigned.put(ProcessStepRoleTerm.ASSIGNED, dau.getAssigned());
 							HashMap<String, Object> moderator = new HashMap<>();
@@ -3647,9 +3685,10 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 	}
 
 	@Override
-	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps) {
+	public List<User> getAssignUsersByStep(long userId, Dossier dossier, ProcessStep ps) {
 		List<User> lstUser = new ArrayList<>();
 
+		User user = UserLocalServiceUtil.fetchUser(userId);
 		if (ps != null) {
 
 			List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
@@ -3674,7 +3713,7 @@ private String _buildDossierNote(Dossier dossier, String actionNote, long groupI
 						if (Validator.isNotNull(psr.getCondition())) {
 							String[] conditions = StringUtil.split(psr.getCondition());
 
-							if (DossierMgtUtils.checkPreCondition(conditions, dossier)) {
+							if (DossierMgtUtils.checkPreCondition(conditions, dossier, user)) {
 								lstStepRoles.add(psr);
 							}
 						}
