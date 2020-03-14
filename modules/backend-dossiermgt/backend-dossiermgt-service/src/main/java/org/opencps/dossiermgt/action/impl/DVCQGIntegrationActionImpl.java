@@ -1455,6 +1455,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			_log.debug("config->>>  " + config.toJSONString());
 			String adapter_url = config.getString("adapter_url");
 			String integration_endpoint = config.getString("integration_endpoint");
 			String madonvi = config.getString("madonvi");
@@ -1583,6 +1584,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put("data", synsObjects);
 				body.put("service", "DongBoHoSoMC");
 				result = syncData(serverConfig, body);
+				_log.debug("syncDossierAndDossierStatus " + result.toJSONString());
 				if (result.has("error_code") && result.getString("error_code").equals("00")) {
 					body = JSONFactoryUtil.createJSONObject();
 					synsObjects = JSONFactoryUtil.createJSONArray();

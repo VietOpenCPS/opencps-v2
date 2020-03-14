@@ -3538,6 +3538,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
+		
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
 			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
 		}
