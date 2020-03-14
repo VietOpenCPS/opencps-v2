@@ -48,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -127,7 +126,6 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
@@ -3780,23 +3778,26 @@ public class DossierManagementImpl implements DossierManagement {
 					groupId, company, user, serviceContext,
 					DossierUtils.convertFormModelToPublishModel(input));
 			//add by TrungNT
-			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-			String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
-			if(Validator.isNotNull(mappingDossierStatus)) {
-				List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
-				
-				for (ServerConfig sc : lstScs) {
-					try {
-						List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
-						if (lstQueues == null || lstQueues.isEmpty()) {
-							PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);					
-						}
+			if(dossier.getOriginality() == 0) {
+				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+				String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
+				if(Validator.isNotNull(mappingDossierStatus)) {
+					List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(dossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
+					
+					for (ServerConfig sc : lstScs) {
+						try {
+							List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(), dossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+							if (lstQueues == null || lstQueues.isEmpty()) {
+								PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);					
+							}
 
-					} catch (PortalException e) {
-						_log.debug(e);
+						} catch (PortalException e) {
+							_log.debug(e);
+						}
 					}
 				}
 			}
+			
 			return Response.status(200).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 		}
