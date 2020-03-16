@@ -482,7 +482,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			DossierDetailNextActionModel result =
-				DossierActionUtils.mappingToDetailNextActions(jsonData);
+				DossierActionUtils.mappingToDetailNextActions(groupId, jsonData);
 			// Check if user is delegate user
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if (dossier != null) {

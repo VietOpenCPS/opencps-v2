@@ -629,4 +629,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			return false;
 		}
 	}
+	public Applicant verifyApplicant(long applicantId) throws PortalException {
+		Applicant applicant = ApplicantLocalServiceUtil.verifyApplicant(applicantId);
+		return applicant;
+	}
 }

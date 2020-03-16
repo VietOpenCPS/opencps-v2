@@ -563,6 +563,12 @@ public class ApplicantLocalServiceUtil {
 			contactEmail, contactTelNo, context);
 	}
 
+	public static org.opencps.usermgt.model.Applicant verifyApplicant(
+		long applicantId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().verifyApplicant(applicantId);
+	}
+
 	public static ApplicantLocalService getService() {
 		return _serviceTracker.getService();
 	}

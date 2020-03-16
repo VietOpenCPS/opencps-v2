@@ -75,4 +75,6 @@ public interface ApplicantActions {
 
 	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String value);
+
+	public Applicant verifyApplicant(long applicantId) throws PortalException;
 }
