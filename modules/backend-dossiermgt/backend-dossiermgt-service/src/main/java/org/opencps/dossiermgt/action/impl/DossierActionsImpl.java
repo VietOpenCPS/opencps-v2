@@ -712,6 +712,7 @@ public class DossierActionsImpl implements DossierActions {
 
 					List<ProcessStepRole> processStepRoleList = ProcessStepRoleLocalServiceUtil
 							.findByP_S_ID(processStep.getProcessStepId());
+					_log.debug("ROLE LIST: " + processStepRoleList.size());
 					if (Validator.isNotNull(processStep.getRoleAsStep())) {
 						String[] steps = StringUtil.split(processStep.getRoleAsStep());
 						for (String stepCode : steps) {
@@ -740,9 +741,11 @@ public class DossierActionsImpl implements DossierActions {
 									lstStepRoles.add(psr);
 								}
 							}
+							_log.debug("PROCESS STEP ROLE: " + lstStepRoles.size());
 							lstUser.addAll(processRoleListUser(dossier, lstStepRoles, serviceProcessId));
 						}						
 					}
+					_log.info("List user by process step role: " + lstUser.size());
 					if (lstUser != null && !lstUser.isEmpty()) {
 						result.put(ProcessActionTerm.LIST_USER, lstUser);
 					}
@@ -3372,7 +3375,9 @@ public class DossierActionsImpl implements DossierActions {
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
-					Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+					//Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+					Employee emp = mapEmps.get(user.getUserId());
+					
 						if (!user.isLockout() && user.isActive() &&
 								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							if (mapEmps.containsKey(user.getUserId())) {

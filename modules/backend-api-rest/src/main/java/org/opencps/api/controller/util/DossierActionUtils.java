@@ -413,7 +413,7 @@ public class DossierActionUtils {
 				ProcessAction processAction =
 					(ProcessAction) jsonData.get(ProcessActionTerm.PROCESS_ACTION);
 				List<User> lstUser = (List<User>) jsonData.get(DossierActionTerm.LST_USER);
-				// _log.info("LAmTV_List user: "+lstUser);
+//				 _log.info("LAmTV_List user: "+lstUser);
 				JSONArray createFiles = jsonData.getJSONArray(DossierActionTerm.CREATE_FILES);
 				List<DossierFile> returnFiles =
 					(List<DossierFile>) jsonData.get(DossierActionTerm.RETURN_FILES);
