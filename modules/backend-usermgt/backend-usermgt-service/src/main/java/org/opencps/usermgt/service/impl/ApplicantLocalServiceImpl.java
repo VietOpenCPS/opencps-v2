@@ -803,7 +803,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				for (String oneVerification : multi) {
 					MultiMatchQuery query = new MultiMatchQuery(oneVerification);
 					query.addFields(ApplicantTerm.VERIFICATION);
-					booleanQuery.add(query, BooleanClauseOccur.SHOULD);									
+					verificationQuery.add(query, BooleanClauseOccur.SHOULD);									
 				}
 				
 				booleanQuery.add(verificationQuery, BooleanClauseOccur.MUST);
@@ -839,6 +839,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
 		String applicantName = String.valueOf(params.get(ApplicantTerm.APPLICANTNAME));
+		String verification = String.valueOf(params.get(ApplicantTerm.VERIFICATION));
+		Boolean haveAccount = params.get(ApplicantTerm.HAVE_ACCOUNT) != null ? (Boolean)params.get(ApplicantTerm.HAVE_ACCOUNT) : false;
 
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
@@ -917,7 +919,34 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		if (Validator.isNotNull(verification)) {
+			if (verification.contains(StringPool.COMMA)) {
+				String[] multi = verification.split(StringPool.COMMA);
+				BooleanQuery verificationQuery = new BooleanQueryImpl();
+				
+				for (String oneVerification : multi) {
+					MultiMatchQuery query = new MultiMatchQuery(oneVerification);
+					query.addFields(ApplicantTerm.VERIFICATION);
+					verificationQuery.add(query, BooleanClauseOccur.SHOULD);									
+				}
+				
+				booleanQuery.add(verificationQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(verification);
 
+				query.addFields(ApplicantTerm.VERIFICATION);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);				
+			}
+		}
+		
+		if (haveAccount) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
+			query.addFields(ApplicantTerm.MAPPINGUSERID);
+			booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);			
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
