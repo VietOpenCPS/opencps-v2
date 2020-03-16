@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Hits;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import javax.ws.rs.core.HttpHeaders;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
@@ -30,6 +32,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -584,6 +590,43 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			}
 		} else {
 			return StringPool.BLANK;
+		}
+	}
+
+	@Override
+	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String value) {
+		String captcha = StringPool.BLANK;
+		HttpSession session = request.getSession();
+	
+		/*Enumeration<String> enumeration = session.getAttributeNames();
+		
+		List<String> values = Collections.list(enumeration);
+		
+		for (String tmp : values) {
+			System.out.println("========================== > session.getAttributeNames() " + tmp);
+		}*/
+
+		if (Validator.isNull(value)) {
+			
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
+		}
+
+		if (session.getAttribute("_SIMPLE_CAPTCHA") != null) {
+			
+			captcha = (String) session.getAttribute("_SIMPLE_CAPTCHA");
+			
+			if (value.equals(captcha)) {
+				session.removeAttribute("_SIMPLE_CAPTCHA");
+				return true;
+			}
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
+		} else {
+			
+			session.removeAttribute("_SIMPLE_CAPTCHA");
+			return false;
 		}
 	}
 }

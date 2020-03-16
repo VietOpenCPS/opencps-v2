@@ -73,6 +73,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -816,6 +817,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User user, ServiceContext serviceContext, ApplicantInputModel input, String jCaptchaResponse) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
+		String captchaType = PropValues.CAPTCHA_TYPE;
 		ApplicantModel result = new ApplicantModel();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
@@ -842,30 +844,68 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				
 			}
 			else {
-				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-				String captchaId = request.getSession().getId();
-		        try {
-		        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
-		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-		        			jCaptchaResponse);
-		        	_log.info("Check captcha result: " + isResponseCorrect);
-		        	if (!isResponseCorrect) {
-		        		ErrorMsgModel error = new ErrorMsgModel();
-		        		error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
-		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-		    			error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
+//				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+//				String captchaId = request.getSession().getId();
+//				try {
+//					_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+//					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+//					_log.info("Check captcha result: " + isResponseCorrect);
+//					if (!isResponseCorrect) {
+//						ErrorMsgModel error = new ErrorMsgModel();
+//						error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
+//						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+//						error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
+//
+//						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+//					}
+//				} catch (CaptchaServiceException e) {
+//					_log.debug(e);
+//					ErrorMsgModel error = new ErrorMsgModel();
+//					error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
+//					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+//					error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
+//
+//					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+//				}
+				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						_log.info("Check captcha result: " + isResponseCorrect);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
 
-		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		        	}
-		        } catch (CaptchaServiceException e) {
-		        	_log.debug(e);
-	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_MESSAGE_NOTCORRECT));
-	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_DESCRIPTION_NOTCORRECT));
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+						}
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
 
-	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		        }
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+					}
+				} else {
+					ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+					boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
+
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				}
 			}
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());

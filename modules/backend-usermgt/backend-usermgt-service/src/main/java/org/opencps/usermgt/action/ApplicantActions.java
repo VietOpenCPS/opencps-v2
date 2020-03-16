@@ -1,15 +1,21 @@
 package org.opencps.usermgt.action;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-
-import org.opencps.usermgt.model.Applicant;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import javax.ws.rs.core.HttpHeaders;
+
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.opencps.usermgt.model.Applicant;
 
 public interface ApplicantActions {
 	@Deprecated
@@ -67,4 +73,6 @@ public interface ApplicantActions {
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
 			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException;
 
+	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String value);
 }
