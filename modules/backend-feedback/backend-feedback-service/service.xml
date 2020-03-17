@@ -23,7 +23,7 @@
 
 		<finder return-type="Collection" name="EM_ID">
 			<finder-column name="employeeId" />
-		</finder>
+		</finder>ques
 		
 		<finder return-type="Collection" name="EM_ID_S">
 			<finder-column name="employeeId" />

@@ -500,7 +500,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 //										.replaceAll("{employeeName}", employeeName);
 								System.out.println("urlGet: "+urlGet);
 							} catch (Exception e) {
-								System.out.println("error: "+e);
+								_log.debug(e);
+//								System.out.println("error: "+e);
 							}
 							
 							//
