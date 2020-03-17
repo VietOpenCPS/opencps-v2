@@ -208,7 +208,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
@@ -216,8 +216,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			// boolean isCitizen = false;
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 				// query.setStart(0);
 				// query.setEnd(15);
 			}

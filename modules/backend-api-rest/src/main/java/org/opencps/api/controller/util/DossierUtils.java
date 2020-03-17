@@ -581,9 +581,9 @@ public class DossierUtils {
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
 		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return (int)durationCount + strOverDue;
+			return Math.abs((int)durationCount) + strOverDue;
 		} else {
-			return (int)overDue + strOverDue;
+			return Math.abs((int)overDue) + strOverDue;
 		}
 	}
 
@@ -1457,19 +1457,19 @@ public class DossierUtils {
 		return model;
 	}
 	
-	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && 
-				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
-	}
-
-	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate != 0 && (dueDate == 0
-				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
-	}
-
-	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
-	}
+//	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && 
+//				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
+//	}
+//
+//	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate != 0 && (dueDate == 0
+//				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
+//	}
+//
+//	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
+//	}
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)

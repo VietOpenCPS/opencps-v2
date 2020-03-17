@@ -35,7 +35,7 @@ public class SendSMSTerm {
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
 	public static final String COUNTRY_CODE = "countryCode";
-	
+
 	/** Key by BCT **/
 	/**
 	 * Configs fields

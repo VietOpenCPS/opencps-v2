@@ -1,6 +1,9 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierTerm {
+	public static final String CONSTANT_DOSSIER = "dossier";
+	public static final String CONSTANT_DOSSIER_FILES = "dossierFiles";
+	public static final String CONSTANT_DOSSIER_DOC = "dossierDocuments";
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
@@ -210,6 +213,7 @@ public class DossierTerm {
 	public static final String TO_RELEASE_DATE = "toReleaseDate";
 	public static final String RELEASE_DATE_LUCENE = "releaseDateLucene";
 	public static final String SECRET_KEY = "secretKey";
+	public static final String SECRET_CODE = "secretCode";
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
