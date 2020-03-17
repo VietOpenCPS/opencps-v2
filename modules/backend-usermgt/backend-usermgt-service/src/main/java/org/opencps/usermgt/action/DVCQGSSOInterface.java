@@ -17,7 +17,7 @@ public interface DVCQGSSOInterface {
 			int vnconnect, String currentURL);
 
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state);
+			String state, String redirectURL);
 
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
 			String authToken, String state);

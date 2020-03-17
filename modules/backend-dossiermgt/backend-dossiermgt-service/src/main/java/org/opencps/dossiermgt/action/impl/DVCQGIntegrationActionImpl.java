@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -916,12 +921,36 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	@Override
-	public String getAccessToken(User user, ServiceContext serviceContext) {
+	public String getAccessToken(User user, HttpServletRequest request, HttpServletResponse response, ServiceContext serviceContext) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
-
-			return getAccessToken(serverConfig);
+			HttpSession session = request.getSession();
+			
+			Enumeration<String> enumeration = session.getAttributeNames();
+			
+			List<String> values = Collections.list(enumeration);
+			
+			for (String value : values) {
+				_log.info("========================== > session.getAttributeNames() " + value);
+			}
+			
+			String accessToken = (String)session.getAttribute("ACCESS_TOKEN");
+			
+			if(Validator.isNull(accessToken)) {
+			
+				accessToken = getAccessToken(serverConfig);
+				
+				session.setAttribute("ACCESS_TOKEN", accessToken);
+			}else {
+				
+				
+			}
+			
+			
+			
+			
+			return accessToken;
 
 		}
 		return StringPool.BLANK;

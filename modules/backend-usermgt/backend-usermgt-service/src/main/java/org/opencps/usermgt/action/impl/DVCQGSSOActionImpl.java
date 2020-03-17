@@ -41,7 +41,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state) {
+			String state, String redirectURL) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
@@ -57,7 +57,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String acr_values = config.getString("acr_values");
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
 						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
-						+ state;
+						+ state+ "&redirect=" + redirectURL;
 
 				return endpoint;
 

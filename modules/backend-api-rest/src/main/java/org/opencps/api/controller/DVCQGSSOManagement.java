@@ -38,7 +38,7 @@ public interface DVCQGSSOManagement {
 	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
 	public Response getAuthURL(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("state") String state);
+			@Context ServiceContext serviceContext, @FormParam("state") String state, @FormParam("redirectURL") String redirectURL);
 
 	@GET
 	@Path("/userinfo")

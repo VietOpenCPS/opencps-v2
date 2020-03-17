@@ -77,13 +77,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String state) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String state, String redirectURL) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
-		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state);
+		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL);
 
 		return Response.status(200).entity(endpoint).build();
 	}

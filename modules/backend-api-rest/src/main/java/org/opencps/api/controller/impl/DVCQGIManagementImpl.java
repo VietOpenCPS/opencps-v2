@@ -66,7 +66,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		serviceContext.setScopeGroupId(groupId);
 		serviceContext.setCompanyId(company.getCompanyId());
-		String result = actionImpl.getAccessToken(user, serviceContext);
+		String result = actionImpl.getAccessToken(user, request, response,  serviceContext);
 
 		return Response.status(200).entity(result).build();
 	}
