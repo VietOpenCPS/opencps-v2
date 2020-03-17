@@ -31,4 +31,7 @@ public class ServiceInfoTerm {
 	public static final String KEY_APPLICANT = "applicant";
 	public static final String KEY_DOSSIER_NO = "dossierNo";
 	public static final String IS_NOTARIZATION = "isNotarization";
+	public static final String SERVICE_CODE_DVCQG = "serviceCodeDVCQG";
+	public static final String SERVICE_CODE_DVCQG_SEARCH = "serviceCodeDVCQGSearch";
+	public static final String CFG_SERVER_NO = "SERVER_DVC";
 }

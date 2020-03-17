@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -102,6 +102,12 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(phone);
 		sb.append(", address=");
 		sb.append(address);
+		sb.append(", className=");
+		sb.append(className);
+		sb.append(", classPK=");
+		sb.append(classPK);
+		sb.append(", synced=");
+		sb.append(synced);
 		sb.append("}");
 
 		return sb.toString();
@@ -215,6 +221,22 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 			questionImpl.setAddress(address);
 		}
 
+		if (className == null) {
+			questionImpl.setClassName("");
+		}
+		else {
+			questionImpl.setClassName(className);
+		}
+
+		if (classPK == null) {
+			questionImpl.setClassPK("");
+		}
+		else {
+			questionImpl.setClassPK(classPK);
+		}
+
+		questionImpl.setSynced(synced);
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -243,6 +265,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		subDomainName = objectInput.readUTF();
 		phone = objectInput.readUTF();
 		address = objectInput.readUTF();
+		className = objectInput.readUTF();
+		classPK = objectInput.readUTF();
+
+		synced = objectInput.readInt();
 	}
 
 	@Override
@@ -341,6 +367,22 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		else {
 			objectOutput.writeUTF(address);
 		}
+
+		if (className == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(className);
+		}
+
+		if (classPK == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(classPK);
+		}
+
+		objectOutput.writeInt(synced);
 	}
 
 	public long questionId;
@@ -361,4 +403,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String subDomainName;
 	public String phone;
 	public String address;
+	public String className;
+	public String classPK;
+	public int synced;
 }

@@ -21,11 +21,16 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import javax.ws.rs.core.HttpHeaders;
+import javax.xml.bind.DatatypeConverter;
+
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,7 +38,9 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -53,6 +60,10 @@ import org.opencps.usermgt.listener.ApplicantListenerMessageKeys;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.UserMgtUtils;
+
+import nl.captcha.Captcha;
+import nl.captcha.backgrounds.GradiatedBackgroundProducer;
+import nl.captcha.text.producer.DefaultTextProducer;
 
 public class ApplicantActionsImpl implements ApplicantActions {
 
@@ -594,6 +605,83 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
+	public String getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Integer width, Integer height) {
+		String data = StringPool.BLANK;
+
+		try {
+			if (width == null || width == 0) {
+				width = 180;
+			}
+
+			if (height == null || height == 0) {
+				height = 40;
+			}
+
+			int size = width + height;
+
+//			Color[] colors = new Color[] { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN,
+//					Color.LIGHT_GRAY, Color.ORANGE, Color.PINK, Color.WHITE, Color.YELLOW, Color.RED, Color.MAGENTA };
+			Color[] colors = new Color[] { Color.WHITE};
+			int[] noises = new int[] { 1, 2, 3 };
+
+			int fromColorIndex = new Random().nextInt(colors.length);
+			int toColorIndex = new Random().nextInt(colors.length);
+			int ovalColorIndex = new Random().nextInt(colors.length);
+			int noiseIndex = new Random().nextInt(noises.length);
+			Captcha captcha = new Captcha.Builder(width, height).addText(new DefaultTextProducer())
+					.addBackground(new GradiatedBackgroundProducer(colors[fromColorIndex], colors[toColorIndex]))
+					.build();
+			Graphics2D g = captcha.getImage().createGraphics();
+
+			//g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(colors[ovalColorIndex]);
+
+			switch (noiseIndex) {
+			case 1:
+				for (int i = 0; i < size; i += 5) {
+					g.drawOval(i, i, size - i, size - i);
+				}
+
+				break;
+			case 2:
+				for (int i = 0; i < size; i += 10) {
+					g.drawRect(i, i, size - i, size - i);
+				}
+
+				break;
+			default:
+				break;
+			}
+
+			g.dispose();
+
+			//_log.info("---->>>> CAPTCHA: " + captcha.getAnswer());
+			//System.out.println("---->>>> CAPTCHA: " + captcha.getAnswer());
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			ImageIO.write(captcha.getImage(), "png", baos);
+
+			data = DatatypeConverter.printBase64Binary(baos.toByteArray());
+
+			//_log.info("---->>>> CAPTCHA Image: " + data);
+			//System.out.println("---->>>> CAPTCHA Image: " + data);
+
+			HttpSession session = request.getSession(true);
+
+			session.invalidate();
+
+			session.setAttribute("_SIMPLE_CAPTCHA", captcha.getAnswer());
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return data;
+	}
+
+	@Override
 	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String value) {
 		String captcha = StringPool.BLANK;
@@ -633,4 +721,62 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		Applicant applicant = ApplicantLocalServiceUtil.verifyApplicant(applicantId);
 		return applicant;
 	}
+
+	@Override
+	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		User updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), newEmail);
+		
+		if(Validator.isNull(newEmail)) {
+			result.put("message", ApplicantTerm.EMAIL_EMPTY);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+		
+		if(!Validator.isEmailAddress(newEmail)) {
+			result.put("message", ApplicantTerm.EMAIL_FORMAT_INCORRECT);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+
+		if (updateUser != null) {
+			result.put("message", ApplicantTerm.EMAIL_EXISTED);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+
+		updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), oldEmail);
+
+		if (updateUser == null) {
+			result.put("message", ApplicantTerm.EMAIL_NOTEXIST);
+			result.put("user", JSONFactoryUtil.createJSONObject());
+			return result;
+		}
+		String screenName = newEmail.substring(0, newEmail.lastIndexOf("@"));
+		updateUser.setEmailAddress(newEmail);
+		updateUser.setScreenName(screenName);
+		updateUser = UserLocalServiceUtil.updateUser(updateUser);
+		
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId());
+		
+		if(applicant != null) {
+			applicant.setContactEmail(newEmail);
+			applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
+		}
+		
+		result.put("message", ApplicantTerm.EMAIL_UPDATE_SUCCESS);
+		
+		JSONObject userObj = JSONFactoryUtil.createJSONObject();
+		userObj.put("userId", updateUser.getUserId());
+		userObj.put("userName", updateUser.getFullName());
+		userObj.put("emailAddess", updateUser.getEmailAddress());
+		userObj.put("applicantId", applicant != null ? applicant.getApplicantId() : 0);
+		result.put("user", userObj);
+
+		return result;
+	}
+
 }

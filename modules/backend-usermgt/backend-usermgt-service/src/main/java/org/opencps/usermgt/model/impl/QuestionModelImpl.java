@@ -80,7 +80,10 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			{ "subDomainCode", Types.VARCHAR },
 			{ "subDomainName", Types.VARCHAR },
 			{ "phone", Types.VARCHAR },
-			{ "address", Types.VARCHAR }
+			{ "address", Types.VARCHAR },
+			{ "className", Types.VARCHAR },
+			{ "classPK", Types.VARCHAR },
+			{ "synced", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -103,9 +106,12 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("subDomainName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("phone", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("address", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("classPK", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("synced", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(1024) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(1024) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(1024) null,phone VARCHAR(75) null,address TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(1024) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(1024) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(1024) null,phone VARCHAR(75) null,address TEXT null,className VARCHAR(75) null,classPK VARCHAR(75) null,synced INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";
@@ -121,12 +127,15 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.Question"),
 			true);
-	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long PUBLISH_COLUMN_BITMASK = 4L;
-	public static final long QUESTIONTYPE_COLUMN_BITMASK = 8L;
-	public static final long SUBDOMAINCODE_COLUMN_BITMASK = 16L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
+	public static final long CLASSNAME_COLUMN_BITMASK = 1L;
+	public static final long CLASSPK_COLUMN_BITMASK = 2L;
+	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long PUBLISH_COLUMN_BITMASK = 16L;
+	public static final long QUESTIONTYPE_COLUMN_BITMASK = 32L;
+	public static final long SUBDOMAINCODE_COLUMN_BITMASK = 64L;
+	public static final long SYNCED_COLUMN_BITMASK = 128L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.Question"));
 
@@ -185,6 +194,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		attributes.put("subDomainName", getSubDomainName());
 		attributes.put("phone", getPhone());
 		attributes.put("address", getAddress());
+		attributes.put("className", getClassName());
+		attributes.put("classPK", getClassPK());
+		attributes.put("synced", getSynced());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -300,6 +312,24 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 		if (address != null) {
 			setAddress(address);
+		}
+
+		String className = (String)attributes.get("className");
+
+		if (className != null) {
+			setClassName(className);
+		}
+
+		String classPK = (String)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
+		}
+
+		Integer synced = (Integer)attributes.get("synced");
+
+		if (synced != null) {
+			setSynced(synced);
 		}
 	}
 
@@ -605,6 +635,78 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		_address = address;
 	}
 
+	@Override
+	public String getClassName() {
+		if (_className == null) {
+			return "";
+		}
+		else {
+			return _className;
+		}
+	}
+
+	@Override
+	public void setClassName(String className) {
+		_columnBitmask |= CLASSNAME_COLUMN_BITMASK;
+
+		if (_originalClassName == null) {
+			_originalClassName = _className;
+		}
+
+		_className = className;
+	}
+
+	public String getOriginalClassName() {
+		return GetterUtil.getString(_originalClassName);
+	}
+
+	@Override
+	public String getClassPK() {
+		if (_classPK == null) {
+			return "";
+		}
+		else {
+			return _classPK;
+		}
+	}
+
+	@Override
+	public void setClassPK(String classPK) {
+		_columnBitmask |= CLASSPK_COLUMN_BITMASK;
+
+		if (_originalClassPK == null) {
+			_originalClassPK = _classPK;
+		}
+
+		_classPK = classPK;
+	}
+
+	public String getOriginalClassPK() {
+		return GetterUtil.getString(_originalClassPK);
+	}
+
+	@Override
+	public int getSynced() {
+		return _synced;
+	}
+
+	@Override
+	public void setSynced(int synced) {
+		_columnBitmask |= SYNCED_COLUMN_BITMASK;
+
+		if (!_setOriginalSynced) {
+			_setOriginalSynced = true;
+
+			_originalSynced = _synced;
+		}
+
+		_synced = synced;
+	}
+
+	public int getOriginalSynced() {
+		return _originalSynced;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -654,6 +756,9 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionImpl.setSubDomainName(getSubDomainName());
 		questionImpl.setPhone(getPhone());
 		questionImpl.setAddress(getAddress());
+		questionImpl.setClassName(getClassName());
+		questionImpl.setClassPK(getClassPK());
+		questionImpl.setSynced(getSynced());
 
 		questionImpl.resetOriginalValues();
 
@@ -729,6 +834,14 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		questionModelImpl._originalQuestionType = questionModelImpl._questionType;
 
 		questionModelImpl._originalSubDomainCode = questionModelImpl._subDomainCode;
+
+		questionModelImpl._originalClassName = questionModelImpl._className;
+
+		questionModelImpl._originalClassPK = questionModelImpl._classPK;
+
+		questionModelImpl._originalSynced = questionModelImpl._synced;
+
+		questionModelImpl._setOriginalSynced = false;
 
 		questionModelImpl._columnBitmask = 0;
 	}
@@ -859,12 +972,30 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			questionCacheModel.address = null;
 		}
 
+		questionCacheModel.className = getClassName();
+
+		String className = questionCacheModel.className;
+
+		if ((className != null) && (className.length() == 0)) {
+			questionCacheModel.className = null;
+		}
+
+		questionCacheModel.classPK = getClassPK();
+
+		String classPK = questionCacheModel.classPK;
+
+		if ((classPK != null) && (classPK.length() == 0)) {
+			questionCacheModel.classPK = null;
+		}
+
+		questionCacheModel.synced = getSynced();
+
 		return questionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{questionId=");
 		sb.append(getQuestionId());
@@ -902,6 +1033,12 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		sb.append(getPhone());
 		sb.append(", address=");
 		sb.append(getAddress());
+		sb.append(", className=");
+		sb.append(getClassName());
+		sb.append(", classPK=");
+		sb.append(getClassPK());
+		sb.append(", synced=");
+		sb.append(getSynced());
 		sb.append("}");
 
 		return sb.toString();
@@ -909,7 +1046,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(67);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Question");
@@ -987,6 +1124,18 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 			"<column><column-name>address</column-name><column-value><![CDATA[");
 		sb.append(getAddress());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>className</column-name><column-value><![CDATA[");
+		sb.append(getClassName());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>classPK</column-name><column-value><![CDATA[");
+		sb.append(getClassPK());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>synced</column-name><column-value><![CDATA[");
+		sb.append(getSynced());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1023,6 +1172,13 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 	private String _subDomainName;
 	private String _phone;
 	private String _address;
+	private String _className;
+	private String _originalClassName;
+	private String _classPK;
+	private String _originalClassPK;
+	private int _synced;
+	private int _originalSynced;
+	private boolean _setOriginalSynced;
 	private long _columnBitmask;
 	private Question _escapedModel;
 }

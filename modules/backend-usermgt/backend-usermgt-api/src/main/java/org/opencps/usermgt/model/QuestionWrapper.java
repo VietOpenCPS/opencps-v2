@@ -75,6 +75,9 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		attributes.put("subDomainName", getSubDomainName());
 		attributes.put("phone", getPhone());
 		attributes.put("address", getAddress());
+		attributes.put("className", getClassName());
+		attributes.put("classPK", getClassPK());
+		attributes.put("synced", getSynced());
 
 		return attributes;
 	}
@@ -188,6 +191,24 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		if (address != null) {
 			setAddress(address);
 		}
+
+		String className = (String)attributes.get("className");
+
+		if (className != null) {
+			setClassName(className);
+		}
+
+		String classPK = (String)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
+		}
+
+		Integer synced = (Integer)attributes.get("synced");
+
+		if (synced != null) {
+			setSynced(synced);
+		}
 	}
 
 	@Override
@@ -208,6 +229,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public String getAddress() {
 		return _question.getAddress();
+	}
+
+	/**
+	* Returns the class name of this question.
+	*
+	* @return the class name of this question
+	*/
+	@Override
+	public String getClassName() {
+		return _question.getClassName();
+	}
+
+	/**
+	* Returns the class pk of this question.
+	*
+	* @return the class pk of this question
+	*/
+	@Override
+	public String getClassPK() {
+		return _question.getClassPK();
 	}
 
 	/**
@@ -400,6 +441,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 		return _question.getSubDomainName();
 	}
 
+	/**
+	* Returns the synced of this question.
+	*
+	* @return the synced of this question
+	*/
+	@Override
+	public int getSynced() {
+		return _question.getSynced();
+	}
+
 	@Override
 	public int hashCode() {
 		return _question.hashCode();
@@ -438,6 +489,26 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_question.setCachedModel(cachedModel);
+	}
+
+	/**
+	* Sets the class name of this question.
+	*
+	* @param className the class name of this question
+	*/
+	@Override
+	public void setClassName(String className) {
+		_question.setClassName(className);
+	}
+
+	/**
+	* Sets the class pk of this question.
+	*
+	* @param classPK the class pk of this question
+	*/
+	@Override
+	public void setClassPK(String classPK) {
+		_question.setClassPK(classPK);
 	}
 
 	/**
@@ -644,6 +715,16 @@ public class QuestionWrapper implements Question, ModelWrapper<Question> {
 	@Override
 	public void setSubDomainName(String subDomainName) {
 		_question.setSubDomainName(subDomainName);
+	}
+
+	/**
+	* Sets the synced of this question.
+	*
+	* @param synced the synced of this question
+	*/
+	@Override
+	public void setSynced(int synced) {
+		_question.setSynced(synced);
 	}
 
 	@Override

@@ -183,6 +183,21 @@ public class AnswerLocalServiceUtil {
 		return getService().fetchAnswer(answerId);
 	}
 
+	public static org.opencps.usermgt.model.Answer fetchByG_CN_CPK(
+		long groupId, String className, String classPK) {
+		return getService().fetchByG_CN_CPK(groupId, className, classPK);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.Answer> findByG_P_SYNC(
+		long groupId, int publish, int synced) {
+		return getService().findByG_P_SYNC(groupId, publish, synced);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.Answer> findByG_Q(
+		long groupId, long questionId) {
+		return getService().findByG_Q(groupId, questionId);
+	}
+
 	public static java.util.List<org.opencps.usermgt.model.Answer> findByG_Q_PL(
 		long groupId, long questionId, int[] publishs, int start, int end) {
 		return getService()
@@ -266,6 +281,14 @@ public class AnswerLocalServiceUtil {
 		return getService()
 				   .updateAnswer(userId, groupId, answerId, questionId,
 			content, publish);
+	}
+
+	public static org.opencps.usermgt.model.Answer updateAnswer(long userId,
+		long groupId, long answerId, long questionId, String content,
+		int publish, String className, String classPK, int synced) {
+		return getService()
+				   .updateAnswer(userId, groupId, answerId, questionId,
+			content, publish, className, classPK, synced);
 	}
 
 	public static AnswerLocalService getService() {
