@@ -103,6 +103,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDatePharseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -1307,6 +1308,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
+								getFileAttachMail(dossier);
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
 										actionConfig.getNotificationType(), 
@@ -2640,6 +2642,14 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}			
+		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePharseUtil dueDatePharse = new DueDatePharseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
 		}
 		
 		//Check if dossier is done
@@ -3702,6 +3712,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							String contactEmail = (isEmailNotify(dossier)) ? dossier.getContactEmail() : StringPool.BLANK;
 							String telNo = (isSmsNotify(dossier)) ? dossier.getContactTelNo() : StringPool.BLANK;
 							
+							getFileAttachMail(dossier);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
@@ -7118,6 +7129,21 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		return action;
+	}
+
+	private void getFileAttachMail (Dossier dossier) {
+		
+		List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
+		for (DossierFile dossierFile : dossierFiles) {
+			// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
+			_log.info("================DOSSIERFILE=============" + dossierFile);
+		}
+		
+		List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		for (DossierDocument dossierDocument : dossierDocuments) {
+			// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
+			_log.info("================dossierDocument=============" + dossierDocument);
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
