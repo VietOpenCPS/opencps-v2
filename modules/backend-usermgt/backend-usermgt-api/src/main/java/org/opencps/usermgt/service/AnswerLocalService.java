@@ -169,6 +169,13 @@ public interface AnswerLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Answer fetchAnswer(long answerId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Answer fetchByG_CN_CPK(long groupId, String className, String classPK);
+
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced);
+
+	public List<Answer> findByG_Q(long groupId, long questionId);
+
 	public List<Answer> findByG_Q_PL(long groupId, long questionId,
 		int[] publishs, int start, int end);
 
@@ -233,4 +240,8 @@ public interface AnswerLocalService extends BaseLocalService,
 
 	public Answer updateAnswer(long userId, long groupId, long answerId,
 		long questionId, String content, int publish);
+
+	public Answer updateAnswer(long userId, long groupId, long answerId,
+		long questionId, String content, int publish, String className,
+		String classPK, int synced);
 }

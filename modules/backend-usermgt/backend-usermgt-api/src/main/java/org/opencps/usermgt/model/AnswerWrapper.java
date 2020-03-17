@@ -67,6 +67,9 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 		attributes.put("questionId", getQuestionId());
 		attributes.put("content", getContent());
 		attributes.put("publish", getPublish());
+		attributes.put("className", getClassName());
+		attributes.put("classPK", getClassPK());
+		attributes.put("synced", getSynced());
 
 		return attributes;
 	}
@@ -132,6 +135,24 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 		if (publish != null) {
 			setPublish(publish);
 		}
+
+		String className = (String)attributes.get("className");
+
+		if (className != null) {
+			setClassName(className);
+		}
+
+		String classPK = (String)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
+		}
+
+		Integer synced = (Integer)attributes.get("synced");
+
+		if (synced != null) {
+			setSynced(synced);
+		}
 	}
 
 	@Override
@@ -152,6 +173,26 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 	@Override
 	public long getAnswerId() {
 		return _answer.getAnswerId();
+	}
+
+	/**
+	* Returns the class name of this answer.
+	*
+	* @return the class name of this answer
+	*/
+	@Override
+	public String getClassName() {
+		return _answer.getClassName();
+	}
+
+	/**
+	* Returns the class pk of this answer.
+	*
+	* @return the class pk of this answer
+	*/
+	@Override
+	public String getClassPK() {
+		return _answer.getClassPK();
 	}
 
 	/**
@@ -245,6 +286,16 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 	}
 
 	/**
+	* Returns the synced of this answer.
+	*
+	* @return the synced of this answer
+	*/
+	@Override
+	public int getSynced() {
+		return _answer.getSynced();
+	}
+
+	/**
 	* Returns the user ID of this answer.
 	*
 	* @return the user ID of this answer
@@ -312,6 +363,26 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_answer.setCachedModel(cachedModel);
+	}
+
+	/**
+	* Sets the class name of this answer.
+	*
+	* @param className the class name of this answer
+	*/
+	@Override
+	public void setClassName(String className) {
+		_answer.setClassName(className);
+	}
+
+	/**
+	* Sets the class pk of this answer.
+	*
+	* @param classPK the class pk of this answer
+	*/
+	@Override
+	public void setClassPK(String classPK) {
+		_answer.setClassPK(classPK);
 	}
 
 	/**
@@ -418,6 +489,16 @@ public class AnswerWrapper implements Answer, ModelWrapper<Answer> {
 	@Override
 	public void setQuestionId(long questionId) {
 		_answer.setQuestionId(questionId);
+	}
+
+	/**
+	* Sets the synced of this answer.
+	*
+	* @param synced the synced of this answer
+	*/
+	@Override
+	public void setSynced(int synced) {
+		_answer.setSynced(synced);
 	}
 
 	/**

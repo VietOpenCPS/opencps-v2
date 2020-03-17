@@ -93,8 +93,67 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 		return questionPersistence.update(question);
 	}
 	
+	public Question updateQuestion(
+			long companyId, long groupId, long questionId, String fullname,
+			String email, String content, int publish, String domainCode,
+			String domainName, String govAgencyCode, String govAgencyName,
+			String questionType, String subDomainCode, String subDomainName, String className, String classPK, int synced) {
+			Question question = null;
+			Date now = new Date();
+			
+			if (questionId == 0) {
+				questionId = counterLocalService.increment(Question.class.getName());
+				question = questionPersistence.create(questionId);
+				
+				question.setCreateDate(now);
+				question.setModifiedDate(now);
+				question.setCompanyId(companyId);
+				question.setGroupId(groupId);
+				question.setFullname(fullname);
+				question.setEmail(email);
+				question.setContent(content);
+				question.setPublish(publish);
+				question.setDomainCode(domainCode);
+				question.setDomainName(domainName);
+				question.setGovAgencyCode(govAgencyCode);
+				question.setGovAgencyName(govAgencyName);
+				question.setQuestionType(questionType);
+				question.setSubDomainCode(subDomainCode);
+				question.setSubDomainName(subDomainName);
+				question.setClassName(className);
+				question.setClassPK(classPK);
+				question.setSynced(synced);
+			}
+			else {
+				question = questionPersistence.fetchByPrimaryKey(questionId);
+				
+				question.setModifiedDate(now);
+				question.setCompanyId(companyId);
+				question.setGroupId(groupId);
+				question.setFullname(fullname);
+				question.setEmail(email);
+				question.setContent(content);
+				question.setPublish(publish);
+				question.setDomainCode(domainCode);
+				question.setDomainName(domainName);
+				question.setGovAgencyCode(govAgencyCode);
+				question.setGovAgencyName(govAgencyName);
+				question.setQuestionType(questionType);
+				question.setSubDomainCode(subDomainCode);
+				question.setSubDomainName(subDomainName);
+				question.setClassName(className);
+				question.setClassPK(classPK);
+				question.setSynced(synced);
+			}
+			return questionPersistence.update(question);
+		}
+	
 	public List<Question> findByG_PL(long groupId, int[] publishs, int start, int end) {
 		return questionPersistence.findByG_PL(groupId, publishs, start, end);
+	}
+	
+	public List<Question> findByG_P_SYNC(long groupId, int publish, int synced) {
+		return questionPersistence.findByG_P_SYNC(groupId, publish, synced);
 	}
 
 	public int countByG_PL(long groupId, int[] publishs) {
@@ -109,5 +168,9 @@ public class QuestionLocalServiceImpl extends QuestionLocalServiceBaseImpl {
 
 	public int countByQuerySearch(long groupId, String keyword, String domainCode, String govAgencyCode, Integer publish, String questionType, Boolean answer, String subDomainCode) {
 		return questionFinder.countQuestionSearch(groupId, keyword, domainCode, govAgencyCode, publish, questionType, answer, subDomainCode);
+	}
+	
+	public Question fetchByG_CN_CPK(long groupId, String className, String classPK) {
+		return questionPersistence.fetchByG_CN_CPK(groupId, className, classPK);
 	}
 }

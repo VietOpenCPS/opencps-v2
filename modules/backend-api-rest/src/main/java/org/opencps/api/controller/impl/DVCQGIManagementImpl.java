@@ -93,4 +93,141 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_REQUESTBODYINCORRECT)).build();
 		}
 	}
+	@Override
+	public Response doMappingServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCode,
+			String serviceCodeDVCQG) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+
+			JSONObject result = actionImpl.mappingServiceInfo(user, groupId, serviceContext, serviceCode,
+					serviceCodeDVCQG);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
+		}
+	}
+
+	@Override
+	public Response doRemoveMappingServiceInfo(HttpServletRequest request, HttpServletResponse response,
+			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, long id) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+			return Response.status(200)
+					.entity(String.valueOf(actionImpl.removeMappingServiceInfo(user, groupId, serviceContext, id)))
+					.build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
+		}
+	}
+
+	@Override
+	public Response doSyncServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCodes) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+
+			JSONObject result = actionImpl.syncServiceInfo(user, groupId, serviceContext, serviceCodes);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("error").build();
+		}
+	}
+
+	@Override
+	public Response getSharingQA(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+			JSONObject result = actionImpl.getSharingQA(user, serviceContext, JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doSyncSharingQA(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+			JSONObject result = actionImpl.doSyncSharingQA(user, serviceContext,
+					JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doSyncServiceDomain(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+			JSONObject result = actionImpl.doSyncServiceDomain(user, serviceContext,
+					JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doSyncGovernmentAgency(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		try {
+			JSONObject result = actionImpl.doSyncGovernmentAgency(user, serviceContext,
+					JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doSyncServiceAdministration(HttpServletRequest request, HttpServletResponse response,
+			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+			JSONObject result = actionImpl.doSyncServiceAdministration(user, serviceContext,
+					JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
 }
