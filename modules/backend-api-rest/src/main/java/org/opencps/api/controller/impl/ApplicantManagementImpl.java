@@ -29,7 +29,9 @@ import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -774,18 +776,30 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response getJCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, Integer width, Integer height) {
+
+                String captchaType = PropValues.CAPTCHA_TYPE;
+
+		File destDir = new File(ConstantUtils.JCAPTCHA_DIR);
+
+		if (!destDir.exists()) {
+			destDir.mkdir();
+		}
+
+		File file = null;
 		try {
+            if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			
 		    String captchaId = request.getSession().getId();
-			File destDir = new File(ConstantUtils.JCAPTCHA_DIR);
-			if (!destDir.exists()) {
-				destDir.mkdir();
-			}
+//			File destDir = new File(ConstantUtils.JCAPTCHA_DIR);
+//			if (!destDir.exists()) {
+//				destDir.mkdir();
+//			}
 			String captchafileName = String.format(MessageUtil.getMessage(ConstantUtils.JCAPTCHA_FILENAME), captchaId);
 			
-			File file = new File(captchafileName);
+//			File file = new File(captchafileName);
+			file = new File(captchafileName);
 			if (!file.exists()) {
 				file.createNewFile();				
 			}
@@ -807,6 +821,39 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				} catch (IOException e) {
 					_log.debug(e);
 				}
+			}
+			} else {
+
+				String fileName = System.currentTimeMillis() + ".png";
+
+				file = new File("jcaptcha/" + fileName);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+				String base64Image = actionsImpl.getSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, width, height);
+
+				try (FileOutputStream fos = new FileOutputStream(file);) {
+
+					byte[] decoder = Base64.getDecoder().decode(base64Image);
+
+					fos.write(decoder);
+					fos.close();
+				} catch (Exception e) {
+					_log.error(e);
+				}
+			}
+
+			if (file != null && file.exists()) {
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
 			}
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
@@ -1068,6 +1115,57 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			results = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Integer width, Integer height) {
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			String imageData = actionsImpl.getSimpleCaptcha(request, header, company, locale, user, serviceContext,
+					width, height);
+
+			return Response.status(200).entity(imageData).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	@Override
+	public Response validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ApplicantInputModel input, String value) {
+
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user, serviceContext,
+					value);
+
+			return Response.status(200).entity(String.valueOf(isValid)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			JSONObject object = actionsImpl.updateAccountEmail(request, header, company, locale, user, serviceContext, oldEmail, newEmail);
+
+			return Response.status(200).entity(object.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

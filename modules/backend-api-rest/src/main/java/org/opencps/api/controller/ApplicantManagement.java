@@ -217,7 +217,7 @@ public interface ApplicantManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getJCaptcha(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext);	
+			@Context ServiceContext serviceContext, @PathParam("width") Integer width, @PathParam("height") Integer height);	
 	
 	@POST
 	@Path("/withcaptcha")
@@ -263,5 +263,43 @@ public interface ApplicantManagement {
 	public Response verifyApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("id") long id);
+
+	@GET
+	@Path("/simplecaptcha")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "get reCAPTCHA"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getSimpleCaptcha(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("width") Integer width, @PathParam("height") Integer height);	
 	
+	@POST
+	@Path("/validatecaptcha")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Register a applicant", response = ApplicantModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = ApplicantModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response validateSimpleCaptcha(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@BeanParam ApplicantInputModel input, @FormParam("value") String value);
+	
+	
+	@POST
+	@Path("/updatemail")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Register a applicant", response = ApplicantModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = ApplicantModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response updateEmail(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@FormParam("oldEmail") String oldEmail, @FormParam("newEmail") String newEmail);	
 }
