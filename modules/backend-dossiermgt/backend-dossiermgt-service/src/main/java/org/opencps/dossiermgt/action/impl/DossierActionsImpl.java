@@ -3355,7 +3355,7 @@ public class DossierActionsImpl implements DossierActions {
 					HashMap<String, Object> assigned = new HashMap<>();
 					assigned.put(ProcessStepRoleTerm.ASSIGNED, 0);
 					for (User user : users) {
-						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
 						if (!user.isLockout() && user.isActive() &&
 								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							HashMap<String, Object> moderator = new HashMap<>();
@@ -3379,7 +3379,7 @@ public class DossierActionsImpl implements DossierActions {
 							.getRoleUsers(serviceProcessRole.getRoleId());
 					if (users != null && users.size() > 0) {
 						for (User user : users) {
-							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(user.getGroupId(), user.getUserId());
+							Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), user.getUserId());
 							if (!user.isLockout() && user.isActive() &&
 									Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 								HashMap<String, Object> moderator = new HashMap<>();
@@ -3432,7 +3432,7 @@ public class DossierActionsImpl implements DossierActions {
 				for (ProcessStepRole role : stepRoleAsStepList) {
 					List<User> lstUsers = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
 					for (User u : lstUsers) {
-						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(u.getGroupId(), u.getUserId());
+						Employee emp = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(), u.getUserId());
 						if (!u.isLockout() && u.isActive() &&
 								Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 							HashMap<String, Object> assigned = new HashMap<>();
