@@ -3,79 +3,85 @@ package org.opencps.datamgt.util;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class DueDatePharseUtil {
+public class DueDatePhaseUtil {
 
 	public static String ALL_DAY = "allDay";
 	public static String WORK_DAY = "workDay";
 	public static String DAY_OF_WEEK = "dayOfWeek";
 	public static String DAY_OF_MONTH = "dayOfMonth";
 	public static String MONTH = "month";
+	public static String DUEDATE_PHASE = "dueDatePhase";
 
 	int dateOption;
 	long groupId;
 	private Date startDate;
 	private Date dueDate;
-	private String dueDatePharses;
+	private String dueDatePhases;
 
 	public Date getDueDate() {
 		return dueDate;
 	}
 
-	public DueDatePharseUtil(long groupId, Date startDate, int dateOption, String dueDatePharses) {
+	public DueDatePhaseUtil(long groupId, Date startDate, int dateOption, String dueDatePhases) {
 		super();
 		this.groupId = groupId;
 		this.startDate = startDate;
 		this.dateOption = dateOption;
-		this.dueDatePharses = dueDatePharses;
+		this.dueDatePhases = dueDatePhases;
 		init();
 	}
 
 	private void init() {
 
+		JSONObject phase = JSONFactoryUtil.createJSONObject();
 		try {
 
-			JSONArray dueDatePharses = JSONFactoryUtil.createJSONArray(this.dueDatePharses);
-			JSONObject pharse = JSONFactoryUtil.createJSONObject();
+			JSONArray dueDatePhases = JSONFactoryUtil.createJSONObject(this.dueDatePhases).getJSONArray(DUEDATE_PHASE);
+
 			switch (this.dateOption) {
 			case 11:
-				pharse = dueDatePharses.getJSONObject(0);
+				phase = dueDatePhases.getJSONObject(0);
 				break;
 			case 12:
-				pharse = dueDatePharses.getJSONObject(1);
+				phase = dueDatePhases.getJSONObject(1);
 				break;
 			case 13:
-				pharse = dueDatePharses.getJSONObject(2);
+				phase = dueDatePhases.getJSONObject(2);
 				break;
 
 			default:
 				break;
 			}
 
-			if (pharse.has(ALL_DAY) && pharse.has(WORK_DAY)) {
+			if (phase.has(ALL_DAY) && phase.has(WORK_DAY)) {
 
-				setByAllDay(pharse);
-			} else if (pharse.has(DAY_OF_WEEK)) {
+				setByAllDay(phase);
+			} else if (phase.has(DAY_OF_WEEK)) {
 
-				setByDayOfWeek(pharse);
-			} else if (pharse.has(DAY_OF_MONTH) && pharse.has(MONTH)) {
+				setByDayOfWeek(phase);
+			} else if (phase.has(DAY_OF_MONTH) && phase.has(MONTH)) {
 
-				setByDayOfMonth(pharse);
+				setByDayOfMonth(phase);
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			_log.error(e);
+			// DuanBA: if BA not config
+			setByAllDay(phase);
 		}
 
 	}
 
-	private void setByAllDay(JSONObject pharse) {
+	private void setByAllDay(JSONObject phase) {
 
-		int allDay = pharse.getInt(ALL_DAY, 0);
-		double workDay = pharse.getDouble(WORK_DAY, 0D);
+		int allDay = phase.getInt(ALL_DAY, 0);
+		double workDay = phase.getDouble(WORK_DAY, 0D);
 		Calendar calStartDate = Calendar.getInstance();
 
 		calStartDate.setTime(this.startDate);
@@ -84,13 +90,15 @@ public class DueDatePharseUtil {
 		this.dueDate = dueDateUtil.getDueDate();
 	}
 
-	private void setByDayOfWeek(JSONObject pharse) {
+	private void setByDayOfWeek(JSONObject phase) {
 
 		// TODO: cal day of week
 	}
 
-	private void setByDayOfMonth(JSONObject pharse) {
+	private void setByDayOfMonth(JSONObject phase) {
 
 		// TODO: cal day of Month
 	}
+
+	private static Log _log = LogFactoryUtil.getLog(DueDatePhaseUtil.class);
 }

@@ -103,7 +103,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
-import org.opencps.datamgt.util.DueDatePharseUtil;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -2647,7 +2647,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
 			&& serviceProcess != null) {
 
-			DueDatePharseUtil dueDatePharse = new DueDatePharseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
 			bResult.put(DossierTerm.DUE_DATE, true);
 		}
