@@ -10,8 +10,6 @@ buildscript {
 	}
 }
 
-apply plugin: "com.liferay.css.builder"
-
 dependencies {
 	compile group: "org.springframework", name: "spring-webmvc-portlet", version: "4.1.9.RELEASE"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
@@ -53,6 +51,9 @@ dependencies {
 	compile name : "filters-2.0.235", transitive:false
     compile name : "jcaptcha-2.0-alpha-1-SNAPSHOT", transitive:false
     compile name : "jcaptcha-api-1.0", transitive:false
+    compile name : "java-jwt-3.10.0", transitive:false
+	
+
 }
 
 war {

@@ -1362,7 +1362,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
-getFileAttachMail(dossier);
+								getFileAttachMail(dossier);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
@@ -2793,6 +2793,15 @@ getFileAttachMail(dossier);
 			dossier.setDueDate(dueDatePharse.getDueDate());
 			bResult.put(DossierTerm.DUE_DATE, true);
 		}
+		else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
+		}
 		
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
@@ -3894,7 +3903,7 @@ getFileAttachMail(dossier);
 							if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 								fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
 							}
-                                                        getFileAttachMail(dossier);
+							getFileAttachMail(dossier);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
@@ -7358,13 +7367,11 @@ getFileAttachMail(dossier);
 	}
 
 	private void getFileAttachMail (Dossier dossier) {
-		
 		List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 		for (DossierFile dossierFile : dossierFiles) {
 			// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 			_log.info("================DOSSIERFILE=============" + dossierFile);
 		}
-		
 		List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		for (DossierDocument dossierDocument : dossierDocuments) {
 			// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
