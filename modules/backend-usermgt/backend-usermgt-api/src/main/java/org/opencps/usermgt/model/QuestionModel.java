@@ -329,6 +329,50 @@ public interface QuestionModel extends BaseModel<Question>, ShardedModel {
 	 */
 	public void setAddress(String address);
 
+	/**
+	 * Returns the class name of this question.
+	 *
+	 * @return the class name of this question
+	 */
+	@AutoEscape
+	public String getClassName();
+
+	/**
+	 * Sets the class name of this question.
+	 *
+	 * @param className the class name of this question
+	 */
+	public void setClassName(String className);
+
+	/**
+	 * Returns the class pk of this question.
+	 *
+	 * @return the class pk of this question
+	 */
+	@AutoEscape
+	public String getClassPK();
+
+	/**
+	 * Sets the class pk of this question.
+	 *
+	 * @param classPK the class pk of this question
+	 */
+	public void setClassPK(String classPK);
+
+	/**
+	 * Returns the synced of this question.
+	 *
+	 * @return the synced of this question
+	 */
+	public int getSynced();
+
+	/**
+	 * Sets the synced of this question.
+	 *
+	 * @param synced the synced of this question
+	 */
+	public void setSynced(int synced);
+
 	@Override
 	public boolean isNew();
 

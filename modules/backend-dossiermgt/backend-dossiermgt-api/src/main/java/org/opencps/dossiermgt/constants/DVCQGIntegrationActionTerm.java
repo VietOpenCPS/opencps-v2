@@ -166,4 +166,5 @@ public class DVCQGIntegrationActionTerm {
 
 		return dateFormat.format(calendar.getTime());
 	}
+	
 }

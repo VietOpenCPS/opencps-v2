@@ -199,7 +199,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 											dueDateUtils.getOverDueCalcToString());
 								}
 								else {
-									String stepOverDue = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_STEPOVERDUE), dueDateUtils.getOverDueCalcToHours());
+									String stepOverDue = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_STEPOVERDUE), overType, dueDateUtils.getOverDueCalcToHours());
 									
 									result.setStepOverdue(
 										stepOverDue);

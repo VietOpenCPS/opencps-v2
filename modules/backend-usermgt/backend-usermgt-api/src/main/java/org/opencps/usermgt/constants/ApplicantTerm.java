@@ -56,4 +56,11 @@ public class ApplicantTerm {
 	public static final String APPLICANTIDTYPE_ORGANIZATION = "organization";
 	
 	public static final String HAVE_ACCOUNT = "haveAccount";
+
+	public static final String EMAIL_EXISTED = "email-existed";
+	public static final String EMAIL_NOTEXIST = "email-notexist";
+	public static final String UPDATE_EMAIL_SUCCESS = "update-email-success";
+	public static final String EMAIL_EMPTY = "email-empty";
+	public static final String EMAIL_FORMAT_INCORRECT = "email-format-incorrect";
+	public static final String EMAIL_UPDATE_SUCCESS = "email-update-success";
 }

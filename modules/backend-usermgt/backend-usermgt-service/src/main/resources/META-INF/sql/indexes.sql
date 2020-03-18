@@ -2,6 +2,8 @@ create index IX_FEDE85E2 on m_jobposwork (groupId, jobPostId, checklistCat[$COLU
 create index IX_EF986354 on m_jobposwork (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_34C9AED6 on m_jobposwork (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_E0215973 on opencps_answer (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$]);
+create index IX_5C24A68A on opencps_answer (groupId, publish, synced);
 create index IX_9B933367 on opencps_answer (groupId, questionId, publish);
 
 create unique index IX_58ABB49 on opencps_applicant (applicantIdNo[$COLUMN_LENGTH:75$]);
@@ -47,8 +49,10 @@ create unique index IX_A55BFF69 on opencps_preferences (groupId, userId);
 create index IX_158E960F on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_A6935451 on opencps_preferences (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_E14E050B on opencps_question (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$]);
 create index IX_B1131CB8 on opencps_question (groupId, publish, questionType[$COLUMN_LENGTH:75$], govAgencyCode[$COLUMN_LENGTH:75$]);
 create index IX_92C13CE9 on opencps_question (groupId, publish, questionType[$COLUMN_LENGTH:75$], subDomainCode[$COLUMN_LENGTH:75$]);
+create index IX_91A961F2 on opencps_question (groupId, publish, synced);
 
 create index IX_91CAEB92 on opencps_resourcerole (groupId, className[$COLUMN_LENGTH:255$], classPK[$COLUMN_LENGTH:255$], roleId);
 create index IX_6858DC81 on opencps_resourcerole (uuid_[$COLUMN_LENGTH:75$], companyId);
