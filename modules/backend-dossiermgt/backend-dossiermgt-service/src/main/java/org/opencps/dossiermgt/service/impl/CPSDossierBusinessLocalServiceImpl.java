@@ -7144,8 +7144,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(proAction.getReturnDossierFiles()));
 			_log.debug("==========proAction.getReturnDossierFiles()===========" + proAction.getReturnDossierFiles());
 			if (returnFileTempNoList.size() > 0) {
+
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
-				
+
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
@@ -7160,20 +7161,23 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-			}
-			
-			List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			for (DossierDocument dossierDocument : dossierDocuments) {
-	
-				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
-				if (fileEntry != null) {
-					jsonObject = JSONFactoryUtil.createJSONObject();
-					jsonObject.put("name", fileEntry.getFileName());
-					jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
-					documents.put(jsonObject);
+
+				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+				for (DossierDocument dossierDocument : dossierDocuments) {
+					// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
+					_log.info("================dossierDocument=============" + dossierDocument.getDocumentFileId());
+					if (returnFileTempNoList.indexOf(dossierDocument.getDocumentType()) >= 0) {
+						_log.info("================dossierDocument.getDocumentType()=============");
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
+						if (fileEntry != null) {
+							jsonObject = JSONFactoryUtil.createJSONObject();
+							jsonObject.put("name", fileEntry.getFileName());
+							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+							documents.put(jsonObject);
+						}
+					}
 				}
-				// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
-				_log.info("================dossierDocument=============" + dossierDocument.getDocumentFileId());
 			}
 		}
 		catch (Exception e) {
