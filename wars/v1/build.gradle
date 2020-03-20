@@ -10,7 +10,6 @@ buildscript {
 	}
 }
 
-apply plugin: "com.liferay.css.builder"
 
 dependencies {
 	compile group: "org.springframework", name: "spring-webmvc-portlet", version: "4.1.9.RELEASE"
