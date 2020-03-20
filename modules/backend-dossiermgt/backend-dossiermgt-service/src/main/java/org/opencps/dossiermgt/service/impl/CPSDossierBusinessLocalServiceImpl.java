@@ -2784,6 +2784,14 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}			
+		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
 		}
 		else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
@@ -3725,6 +3733,11 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		if (ac != null && ac.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
+		
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
@@ -7354,13 +7367,11 @@ public class CPSDossierBusinessLocalServiceImpl
 	}
 
 	private void getFileAttachMail (Dossier dossier) {
-
 		List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 		for (DossierFile dossierFile : dossierFiles) {
 			// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 			_log.info("================DOSSIERFILE=============" + dossierFile);
 		}
-
 		List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		for (DossierDocument dossierDocument : dossierDocuments) {
 			// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung

@@ -789,7 +789,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFormData(df.getFormData());
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setRemoved(df.getRemoved());
-										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
+//										DossierFileModel dfResult = client.postDossierFile(file, dossier.getReferenceUid(), dfModel);
+										DossierFileModel dfResult = client.postDossierFile(file, result.getReferenceUid(), dfModel);
 										messageText.append(ConstantUtils.POST_DOSIER_FILE);
 										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
@@ -839,7 +840,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 										dfModel.setFileType(fileEntry.getMimeType());
 										dfModel.setDisplayName(fileEntry.getFileName());
 										
-										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
+//										DossierFileModel dfResult = client.postDossierFileEForm(file, dossier.getReferenceUid(), dfModel);
+										DossierFileModel dfResult = client.postDossierFileEForm(file, result.getReferenceUid(), dfModel);
 										messageText.append(ConstantUtils.POST_DOSIER_FILE);
 										messageText.append(System.lineSeparator());
 										messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
@@ -864,7 +866,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 	
 								}
 								else {
-									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
+//									DossierFileModel dfResult = client.postDossierFileEForm(null, dossier.getReferenceUid(), dfModel);
+									DossierFileModel dfResult = client.postDossierFileEForm(null, result.getReferenceUid(), dfModel);
 									messageText.append(ConstantUtils.POST_DOSIER_FILE);
 									messageText.append(System.lineSeparator());
 									messageText.append(JSONFactoryUtil.looseSerialize(dfModel));
@@ -893,7 +896,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								markInputModel.setFileMark(dossierMark.getFileMark());
 								markInputModel.setFileComment(dossierMark.getFileComment());
 								
-								client.postDossierMark(String.valueOf(dossier.getOriginDossierId()), df.getDossierPartNo(), markInputModel);
+//								client.postDossierMark(String.valueOf(dossier.getOriginDossierId()), df.getDossierPartNo(), markInputModel);
+								client.postDossierMark(String.valueOf(result.getDossierId()), df.getDossierPartNo(), markInputModel);
 							}							
 						}
 					}
@@ -935,7 +939,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			}
 			pfiModel.setReferenceUid(StringPool.BLANK);
 			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+//			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			client.postPaymentFiles(result.getReferenceUid(), pfiModel);
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 1 : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}else if(processAction != null && (processAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI)){
@@ -969,7 +974,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+//			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			client.postPaymentFiles(result.getReferenceUid(), pfiModel);
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
@@ -1004,7 +1010,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+//			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
+			client.postPaymentFiles(result.getReferenceUid(), pfiModel);
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
@@ -1035,7 +1042,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setEinvoice(paymentFile.getEinvoice());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
-			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
+//			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);			
+			client.postPaymentFiles(result.getReferenceUid(), pfiModel);			
 		}
 		ExecuteOneAction actionModel = new ExecuteOneAction();
 		actionModel.setActionCode(dossierSync.getActionCode());
