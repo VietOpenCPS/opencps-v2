@@ -373,6 +373,14 @@ public class VotingLocalServiceImpl extends VotingLocalServiceBaseImpl {
 		return votingPersistence.countByF_CLNAME_CLPK(className, classPK);
 	}
 
+	public List<Voting> getVotingByG_Class_Name_PK(long groupId, String className, String classPK) {
+		return votingPersistence.findByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
+	public long countVotingByG_Class_Name_PK(long groupId, String className, String classPK) {
+		return votingPersistence.countByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public Voting adminProcessDelete(Long id) {

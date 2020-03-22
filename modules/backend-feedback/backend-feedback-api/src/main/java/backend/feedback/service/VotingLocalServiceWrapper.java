@@ -79,6 +79,13 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 		return _votingLocalService.countVotingByClass_Name_PK(className, classPK);
 	}
 
+	@Override
+	public long countVotingByG_Class_Name_PK(long groupId, String className,
+		String classPK) {
+		return _votingLocalService.countVotingByG_Class_Name_PK(groupId,
+			className, classPK);
+	}
+
 	/**
 	* Creates a new voting with the primary key. Does not add the voting to the database.
 	*
@@ -292,6 +299,13 @@ public class VotingLocalServiceWrapper implements VotingLocalService,
 	public java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_PK(
 		String className, String classPK) {
 		return _votingLocalService.getVotingByClass_Name_PK(className, classPK);
+	}
+
+	@Override
+	public java.util.List<backend.feedback.model.Voting> getVotingByG_Class_Name_PK(
+		long groupId, String className, String classPK) {
+		return _votingLocalService.getVotingByG_Class_Name_PK(groupId,
+			className, classPK);
 	}
 
 	/**
