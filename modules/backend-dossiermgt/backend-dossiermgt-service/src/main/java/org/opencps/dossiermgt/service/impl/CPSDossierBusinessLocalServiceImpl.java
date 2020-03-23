@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -77,15 +79,11 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -103,6 +101,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -1174,7 +1173,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		//Create notification
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, payloadObject, context);
+			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, payloadObject, context);
 		}
 		
 		//Create subcription
@@ -1220,7 +1219,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierAction;
 	}
 	
-	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig,
+	private void createNotificationQueue(User user, long groupId, Dossier dossier, ProcessAction proAction, ActionConfig actionConfig,
 			DossierAction dossierAction, JSONObject payloadObject, ServiceContext context) throws PortalException {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
@@ -1307,6 +1306,8 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
+								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
+								payloadObj.put("filesAttach", filesAttach);
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
 										actionConfig.getNotificationType(), 
@@ -2640,6 +2641,14 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}			
+		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
 		}
 		
 		//Check if dossier is done
@@ -3539,12 +3548,12 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
-		if (dossier.isOnline() && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+			createNotificationQueueOutsideProcess(userId, groupId, dossier, proAction, actionConfig, context);
 		}
 
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
@@ -3654,7 +3663,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		return true;
 	}
 	
-	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ProcessAction proAction, ActionConfig actionConfig, ServiceContext context) {
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
@@ -3702,6 +3711,8 @@ public class CPSDossierBusinessLocalServiceImpl
 							String contactEmail = (isEmailNotify(dossier)) ? dossier.getContactEmail() : StringPool.BLANK;
 							String telNo = (isSmsNotify(dossier)) ? dossier.getContactTelNo() : StringPool.BLANK;
 							
+							JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
+							payloadObj.put("filesAttach", filesAttach);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
@@ -7118,6 +7129,64 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		return action;
+	}
+
+	private JSONObject getFileAttachMailForApplicant (Dossier dossier, ProcessAction proAction) {
+//		processAction
+//		returnDossierFile 
+		JSONObject filesAttach = JSONFactoryUtil.createJSONObject();
+		JSONArray files = JSONFactoryUtil.createJSONArray();
+		JSONArray documents = JSONFactoryUtil.createJSONArray();
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		_log.debug("============getFileAttachMailForApplicant=================");
+		try {
+			List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+			_log.debug("==========proAction.getReturnDossierFiles()===========" + proAction.getReturnDossierFiles());
+			if (returnFileTempNoList.size() > 0) {
+
+				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
+
+				for (DossierFile dossierFile : dossierFiles) {
+					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
+					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
+					if (returnFileTempNoList.indexOf(dossierFile.getFileTemplateNo()) >= 0) {
+						_log.debug("=============dossierFile.getFileTemplateNo()================");
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+						if (fileEntry != null) {
+							jsonObject = JSONFactoryUtil.createJSONObject();
+							jsonObject.put("name", fileEntry.getFileName());
+							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+							files.put(jsonObject);
+						}
+					}
+				}
+
+				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+				for (DossierDocument dossierDocument : dossierDocuments) {
+					// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
+					_log.info("================dossierDocument=============" + dossierDocument.getDocumentFileId());
+					if (returnFileTempNoList.indexOf(dossierDocument.getDocumentType()) >= 0) {
+						_log.info("================dossierDocument.getDocumentType()=============");
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
+						if (fileEntry != null) {
+							jsonObject = JSONFactoryUtil.createJSONObject();
+							jsonObject.put("name", fileEntry.getFileName());
+							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+							documents.put(jsonObject);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+			e.printStackTrace();
+		}
+		filesAttach.put("dossierFiles", files);
+		filesAttach.put("dossierDocuments", documents);
+		return filesAttach;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
