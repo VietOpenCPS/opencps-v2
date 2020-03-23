@@ -925,16 +925,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
-			HttpSession session = request.getSession();
 			
-			Enumeration<String> enumeration = session.getAttributeNames();
-			
-			List<String> values = Collections.list(enumeration);
-			
-			for (String value : values) {
-				_log.info("========================== > session.getAttributeNames() " + value);
-			}
-			
+			String accessToken = getAccessToken(serverConfig);
+
+			/*HttpSession session = request.getSession();
+					
 			String accessToken = (String)session.getAttribute("ACCESS_TOKEN");
 			
 			if(Validator.isNull(accessToken)) {
@@ -942,14 +937,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				accessToken = getAccessToken(serverConfig);
 				
 				session.setAttribute("ACCESS_TOKEN", accessToken);
-			}else {
-				
-				
-			}
-			
-			
-			
-			
+			}*/
+
 			return accessToken;
 
 		}

@@ -55,4 +55,13 @@ public interface DVCQGSSOManagement {
 	public Response doAuth(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, String userinfo);
+	
+	
+	@POST
+	@Path("/changeemail")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON})
+	public Response doChangeEmail(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("oldEmail") String oldEmail, @QueryParam("newEmail") String newEmail, @QueryParam("techId") String techId);
 }

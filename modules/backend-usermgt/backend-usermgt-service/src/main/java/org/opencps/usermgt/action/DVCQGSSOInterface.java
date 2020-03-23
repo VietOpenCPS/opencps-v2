@@ -27,4 +27,7 @@ public interface DVCQGSSOInterface {
 
 	public boolean isValidAccessToken(String accessToken);
 
+	public JSONObject doChangeEmail(User user, long companyId, long groupId, HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, String oldEmail, String newEmail, String techId);
+
 }

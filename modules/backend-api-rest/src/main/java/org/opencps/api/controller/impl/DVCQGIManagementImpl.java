@@ -79,7 +79,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setScopeGroupId(groupId);
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
-			_log.info("Ton ngo khong da dao choi o day1.");
+			_log.info("Ton ngo khong da dao choi o day.");
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
 					JSONFactoryUtil.createJSONObject(body));
 			return Response.status(200).entity(result.toJSONString()).build();
