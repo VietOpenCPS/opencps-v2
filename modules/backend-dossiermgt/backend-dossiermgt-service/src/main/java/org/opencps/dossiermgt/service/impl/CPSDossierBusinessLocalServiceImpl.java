@@ -2282,7 +2282,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
-				|| (dateOption == 2))
+				|| (dateOption == DossierTerm.DATE_OPTION_TWO))
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -2363,7 +2363,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		//Update counter and dossierNo
-		if (dateOption == 2) {
+		if (dateOption == DossierTerm.DATE_OPTION_TWO || dateOption == DossierTerm.DATE_OPTION_TEN) {
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
