@@ -105,6 +105,11 @@
 			<finder-column name="className" />
 			<finder-column name="classPK" />
 		</finder>
+		<finder return-type="Collection" name="F_G_CLNAME_CLPK">
+			<finder-column name="groupId" />
+			<finder-column name="className" />
+			<finder-column name="classPK" />
+		</finder>
 	</entity>
 
 	<entity name="VotingResult" uuid="true" local-service="true"
