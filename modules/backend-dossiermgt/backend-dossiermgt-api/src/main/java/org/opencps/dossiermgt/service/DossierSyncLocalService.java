@@ -208,6 +208,9 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public List<DossierSync> findByState(Integer state, Integer start,
 		Integer end);
 
+	public List<DossierSync> findByStates(int[] states, Integer start,
+		Integer end);
+
 	public List<DossierSync> findForApplicantAndActionCode(long groupId,
 		String actionCode, int start, int end);
 

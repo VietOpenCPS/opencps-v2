@@ -1622,6 +1622,240 @@ public class DossierSyncUtil {
 	}
 
 	/**
+	* Returns all the dossier syncs where state = &#63;.
+	*
+	* @param state the state
+	* @return the matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int state) {
+		return getPersistence().findBySTS(state);
+	}
+
+	/**
+	* Returns a range of all the dossier syncs where state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @return the range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int state, int start, int end) {
+		return getPersistence().findBySTS(state, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier syncs where state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int state, int start, int end,
+		OrderByComparator<DossierSync> orderByComparator) {
+		return getPersistence().findBySTS(state, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier syncs where state = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int state, int start, int end,
+		OrderByComparator<DossierSync> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findBySTS(state, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dossier sync in the ordered set where state = &#63;.
+	*
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public static DossierSync findBySTS_First(int state,
+		OrderByComparator<DossierSync> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierSyncException {
+		return getPersistence().findBySTS_First(state, orderByComparator);
+	}
+
+	/**
+	* Returns the first dossier sync in the ordered set where state = &#63;.
+	*
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public static DossierSync fetchBySTS_First(int state,
+		OrderByComparator<DossierSync> orderByComparator) {
+		return getPersistence().fetchBySTS_First(state, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier sync in the ordered set where state = &#63;.
+	*
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync
+	* @throws NoSuchDossierSyncException if a matching dossier sync could not be found
+	*/
+	public static DossierSync findBySTS_Last(int state,
+		OrderByComparator<DossierSync> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierSyncException {
+		return getPersistence().findBySTS_Last(state, orderByComparator);
+	}
+
+	/**
+	* Returns the last dossier sync in the ordered set where state = &#63;.
+	*
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dossier sync, or <code>null</code> if a matching dossier sync could not be found
+	*/
+	public static DossierSync fetchBySTS_Last(int state,
+		OrderByComparator<DossierSync> orderByComparator) {
+		return getPersistence().fetchBySTS_Last(state, orderByComparator);
+	}
+
+	/**
+	* Returns the dossier syncs before and after the current dossier sync in the ordered set where state = &#63;.
+	*
+	* @param DossierSyncId the primary key of the current dossier sync
+	* @param state the state
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next dossier sync
+	* @throws NoSuchDossierSyncException if a dossier sync with the primary key could not be found
+	*/
+	public static DossierSync[] findBySTS_PrevAndNext(long DossierSyncId,
+		int state, OrderByComparator<DossierSync> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierSyncException {
+		return getPersistence()
+				   .findBySTS_PrevAndNext(DossierSyncId, state,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the dossier syncs where state = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param states the states
+	* @return the matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int[] states) {
+		return getPersistence().findBySTS(states);
+	}
+
+	/**
+	* Returns a range of all the dossier syncs where state = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param states the states
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @return the range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int[] states, int start, int end) {
+		return getPersistence().findBySTS(states, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier syncs where state = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param states the states
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int[] states, int start, int end,
+		OrderByComparator<DossierSync> orderByComparator) {
+		return getPersistence().findBySTS(states, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dossier syncs where state = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierSyncModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param state the state
+	* @param start the lower bound of the range of dossier syncs
+	* @param end the upper bound of the range of dossier syncs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dossier syncs
+	*/
+	public static List<DossierSync> findBySTS(int[] states, int start, int end,
+		OrderByComparator<DossierSync> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findBySTS(states, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the dossier syncs where state = &#63; from the database.
+	*
+	* @param state the state
+	*/
+	public static void removeBySTS(int state) {
+		getPersistence().removeBySTS(state);
+	}
+
+	/**
+	* Returns the number of dossier syncs where state = &#63;.
+	*
+	* @param state the state
+	* @return the number of matching dossier syncs
+	*/
+	public static int countBySTS(int state) {
+		return getPersistence().countBySTS(state);
+	}
+
+	/**
+	* Returns the number of dossier syncs where state = any &#63;.
+	*
+	* @param states the states
+	* @return the number of matching dossier syncs
+	*/
+	public static int countBySTS(int[] states) {
+		return getPersistence().countBySTS(states);
+	}
+
+	/**
 	* Caches the dossier sync in the entity cache if it is enabled.
 	*
 	* @param dossierSync the dossier sync

@@ -270,6 +270,12 @@ public class DossierSyncLocalServiceWrapper implements DossierSyncLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findByStates(
+		int[] states, Integer start, Integer end) {
+		return _dossierSyncLocalService.findByStates(states, start, end);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierSync> findForApplicantAndActionCode(
 		long groupId, String actionCode, int start, int end) {
 		return _dossierSyncLocalService.findForApplicantAndActionCode(groupId,
