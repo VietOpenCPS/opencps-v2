@@ -7,7 +7,7 @@ create table m_fileattach (
 	createDate DATE null,
 	modifiedDate DATE null,
 	className VARCHAR(500) null,
-	classPK VARCHAR(75) null,
+	classPK VARCHAR(255) null,
 	fullName VARCHAR(500) null,
 	email VARCHAR(500) null,
 	fileEntryId LONG,
@@ -89,8 +89,8 @@ create table opencps_dictitem (
 	itemDescription TEXT null,
 	parentItemId LONG,
 	level INTEGER,
-	sibling VARCHAR(75) null,
-	treeIndex VARCHAR(75) null,
+	sibling VARCHAR(255) null,
+	treeIndex VARCHAR(255) null,
 	metaData TEXT null
 );
 

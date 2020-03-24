@@ -194,7 +194,7 @@ create index IX_928D77F1 on opencps_paymentfile (groupId, dossierId);
 create index IX_6BE34299 on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C65D9B5B on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-create index IX_11472582 on opencps_process_plugin (stepCode[$COLUMN_LENGTH:75$], serviceProcessId);
+create index IX_11472582 on opencps_process_plugin (stepCode[$COLUMN_LENGTH:128$], serviceProcessId);
 create index IX_8A6577C0 on opencps_process_plugin (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_BA68EE42 on opencps_process_plugin (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -261,8 +261,8 @@ create index IX_3D316604 on opencps_registrationlog (groupId, registrationId);
 create index IX_ACA4DD02 on opencps_registrationlog (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6C64BC04 on opencps_registrationlog (uuid_[$COLUMN_LENGTH:75$], groupId);
 
-create index IX_5ADCCA49 on opencps_registrationtemplate (groupId, formNo[$COLUMN_LENGTH:128$], govAgencyCode[$COLUMN_LENGTH:75$]);
-create index IX_D7DDCD42 on opencps_registrationtemplate (groupId, govAgencyCode[$COLUMN_LENGTH:75$]);
+create index IX_5ADCCA49 on opencps_registrationtemplate (groupId, formNo[$COLUMN_LENGTH:128$], govAgencyCode[$COLUMN_LENGTH:128$]);
+create index IX_D7DDCD42 on opencps_registrationtemplate (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_B9CBE330 on opencps_registrationtemplate (groupId, registrationTemplateId);
 create unique index IX_22CC0D32 on opencps_registrationtemplate (uuid_[$COLUMN_LENGTH:75$], groupId);
 

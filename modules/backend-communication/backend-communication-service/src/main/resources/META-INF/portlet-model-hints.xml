@@ -23,7 +23,9 @@
 		<field name="className" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="classPK" type="String" />
+		<field name="classPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="payload" type="String">
 			<hint-collection name="LONGEST_TEXT" />
 		</field>
@@ -120,8 +122,12 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="uId" type="String" />
-		<field name="telNo" type="String" />
+		<field name="uId" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="telNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="zaloOAId" type="String">
 			<hint name="max-length">255</hint>
 		</field>
