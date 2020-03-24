@@ -434,6 +434,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			params.append("&client_secret=" + client_secret);
 
 			String endpoint = auth_server + accesstoken_endpoint;
+			
+			_log.debug("endpoint --->>> " + endpoint);
 
 			URL url = new URL(endpoint);
 
