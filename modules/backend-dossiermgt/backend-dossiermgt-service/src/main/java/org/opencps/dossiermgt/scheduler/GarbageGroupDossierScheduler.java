@@ -46,7 +46,7 @@ public class GarbageGroupDossierScheduler extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 4, TimeUnit.HOUR);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
@@ -83,7 +83,7 @@ public class GarbageGroupDossierScheduler extends BaseMessageListener {
 	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
 	    }
 	    
-	    return StorageType.MEMORY_CLUSTERED;
+	    return StorageType.PERSISTED;
 	}
 	  
 	/**

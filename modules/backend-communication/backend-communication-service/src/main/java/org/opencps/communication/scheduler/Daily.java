@@ -130,7 +130,7 @@ public class Daily extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.DAY);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
@@ -167,7 +167,7 @@ public class Daily extends BaseMessageListener {
 	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
 	    }
 	    
-	    return StorageType.MEMORY_CLUSTERED;
+	    return StorageType.PERSISTED;
 	}
 	  
 	/**

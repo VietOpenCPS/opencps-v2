@@ -108,7 +108,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		TABLE_COLUMNS_MAP.put("expireDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notificationqueue (notificationQueueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,className VARCHAR(512) null,classPK VARCHAR(75) null,payload TEXT null,fromUsername VARCHAR(512) null,toUsername VARCHAR(512) null,toUserId LONG,toEmail VARCHAR(255) null,toTelNo VARCHAR(255) null,publicationDate DATE null,expireDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notificationqueue (notificationQueueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,className VARCHAR(512) null,classPK VARCHAR(255) null,payload TEXT null,fromUsername VARCHAR(512) null,toUsername VARCHAR(512) null,toUserId LONG,toEmail VARCHAR(255) null,toTelNo VARCHAR(255) null,publicationDate DATE null,expireDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notificationqueue";
 	public static final String ORDER_BY_JPQL = " ORDER BY notificationQueue.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationqueue.createDate ASC";
