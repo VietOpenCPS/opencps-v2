@@ -76,8 +76,12 @@
 		</field>
 		<field name="count" type="int" />
 		<field name="online" type="boolean" />
-		<field name="bookingInTime" type="String" />
-		<field name="telNo" type="String" />
+		<field name="bookingInTime" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="telNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ConfigCounter">
 		<field name="uuid" type="String" />
@@ -288,7 +292,7 @@
 			<hint name="max-length">100</hint>
 		</field>
 		<field name="registerBookName" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">1024</hint>
 		</field>
 		<field name="dossierRegister" type="String">
 			<hint name="max-length">255</hint>
@@ -306,7 +310,7 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="govAgencyName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="applicantName" type="String">
 			<hint name="max-length">500</hint>
@@ -331,11 +335,13 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="districtName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
-		<field name="wardCode" type="String" />
+		<field name="wardCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="wardName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="contactName" type="String">
 			<hint name="max-length">65535</hint>
@@ -360,7 +366,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="delegateAddress" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 		<field name="delegateCityCode" type="String">
 			<hint name="max-length">128</hint>
@@ -432,28 +438,28 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="postalServiceName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">1024</hint>
 		</field>
 		<field name="postalAddress" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 		<field name="postalCityCode" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="postalCityName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="postalDistrictCode" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="postalDistrictName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="postalWardCode" type="String">
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="postalWardName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="postalTelNo" type="String">
 			<hint name="max-length">128</hint>
@@ -505,7 +511,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="fromStepName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="fromSequenceNo" type="String">
 			<hint name="max-length">255</hint>
@@ -517,10 +523,10 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="actionName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="actionNote" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 		<field name="actionOverdue" type="int" />
 		<field name="syncActionCode" type="String">
@@ -532,7 +538,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="stepName" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="sequenceNo" type="String">
 			<hint name="max-length">255</hint>
@@ -570,7 +576,7 @@
 			<hint name="max-length">500</hint>
 		</field>
 		<field name="actionNote" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierActionUser">
@@ -601,7 +607,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="documentName" type="String">
-			<hint name="max-length">255</hint>
+			<hint name="max-length">512</hint>
 		</field>
 		<field name="documentCode" type="String">
 			<hint name="max-length">100</hint>
@@ -870,7 +876,9 @@
 		<field name="payload" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
-		<field name="serverNo" type="String" />
+		<field name="serverNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="state" type="int" />
 		<field name="retry" type="int" />
 		<field name="messageText" type="String">
@@ -1231,7 +1239,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="stepCode" type="String" />
+		<field name="stepCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="serviceProcessId" type="long" />
 		<field name="pluginName" type="String">
 			<hint name="max-length">500</hint>
@@ -1479,7 +1489,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -1533,7 +1545,9 @@
 	<model name="org.opencps.dossiermgt.model.ServiceFileTemplate">
 		<field name="uuid" type="String" />
 		<field name="serviceInfoId" type="long" />
-		<field name="fileTemplateNo" type="String" />
+		<field name="fileTemplateNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="templateName" type="String">
 			<hint name="max-length">1000</hint>
 		</field>
@@ -1554,7 +1568,9 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceCode" type="String">
@@ -1638,7 +1654,9 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="processNo" type="String">

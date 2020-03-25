@@ -108,6 +108,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -1361,6 +1362,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
+								getFileAttachMail(dossier);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
@@ -2782,6 +2784,23 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}			
+		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
+		}
+		else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
 		}
 		
 		//Check if dossier is done
@@ -3717,6 +3736,11 @@ public class CPSDossierBusinessLocalServiceImpl
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
+		
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
 			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
 		}
@@ -3879,6 +3903,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 								fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
 							}
+							getFileAttachMail(dossier);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
@@ -7339,6 +7364,19 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		return action;
+	}
+
+	private void getFileAttachMail (Dossier dossier) {
+		List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
+		for (DossierFile dossierFile : dossierFiles) {
+			// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
+			_log.info("================DOSSIERFILE=============" + dossierFile);
+		}
+		List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		for (DossierDocument dossierDocument : dossierDocuments) {
+			// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
+			_log.info("================dossierDocument=============" + dossierDocument);
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);

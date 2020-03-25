@@ -1,5 +1,7 @@
 package org.graphql.api.controller.impl;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -50,7 +52,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,7 +67,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
@@ -83,7 +83,6 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -261,11 +260,13 @@ public class RestfulController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) {
 		long checkUserId = -1;
 		String emailAddress = StringPool.BLANK;
-		
+		String loginMax = PropsUtil.get("opencps.user.login.max");
+		String secretKey = PropsUtil.get("opencps.jwt.secret");
+		String SECRET = Validator.isNotNull(secretKey) ? secretKey : "secret";
+
 		try {
 
 			Enumeration<String> headerNames = request.getHeaderNames();
@@ -303,10 +304,16 @@ public class RestfulController {
 				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
 						CompanyConstants.AUTH_TYPE_EA);
 
+				User user = UserLocalServiceUtil.fetchUser(userId);
+				Algorithm algorithm = Algorithm.HMAC256(SECRET);
+				String token = JWT.create()
+						.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+						.sign(algorithm);
+				response.setHeader("jwt-token", token);
+				
 				if (userId != 20139) {
 					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-					
-					User user = UserLocalServiceUtil.fetchUser(userId);
+
 //					String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 //					
 //					UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
@@ -324,18 +331,23 @@ public class RestfulController {
 					if (Validator.isNotNull(employee)) {
 
 						if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
+							response.setStatus(HttpServletResponse.SC_OK);
 							return "pending";
 						} else {
+							response.setStatus(HttpServletResponse.SC_OK);
 							return "/c";
 						}
 					} else {
 						if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+							response.setStatus(HttpServletResponse.SC_OK);
 							return "pending";
 						} else {
+							response.setStatus(HttpServletResponse.SC_OK);
 							return "ok";
 						}
 					}
 				} else {
+					response.setStatus(HttpServletResponse.SC_OK);
 					return "ok";
 				}
 				
@@ -345,6 +357,10 @@ public class RestfulController {
 		catch (AuthException ae) {
 			System.out.println("AUTH EXCEPTION: " + checkUserId);
 			_log.debug(ae);
+			int max = 5;
+			if (Validator.isNotNull(loginMax)) {
+				max = Integer.parseInt(loginMax);
+			}
 			if (checkUserId != -1) {
 				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
 				
@@ -354,33 +370,39 @@ public class RestfulController {
 					String captchaId = request.getSession().getId();
 					try {
 						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
-						if (!isResponseCorrect)
+						if (!isResponseCorrect) {
+							response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 							return "captcha";
+						}
 					} catch (CaptchaServiceException e) {
 						_log.debug(e);
+						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 						return "captcha";
 					}
 				}
 				else {
-					return "captcha";
+					response.setStatus(HttpServletResponse.SC_OK);
+					return "";
 				}
 			}
 			else {
 				try {
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
-					
-					if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+					if (checkUser != null && checkUser.getFailedLoginAttempts() >= max) {
 						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 						String jCaptchaResponse = request.getParameter("j_captcha_response");
 						String captchaId = request.getSession().getId();
 				        try {
 				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
 				        			jCaptchaResponse);
-				        	if (!isResponseCorrect) 
+				        	if (!isResponseCorrect) {
+				        		response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 				        		return "captcha";
+				        	}
 				        } catch (CaptchaServiceException e) {
 				        	_log.debug(e);
+							response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 				        	return "captcha";
 				        }				
 					}		
@@ -396,20 +418,24 @@ public class RestfulController {
 				Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 				User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
 				
-				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
-					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String jCaptchaResponse = request.getParameter("j_captcha_response");
-					String captchaId = request.getSession().getId();
-			        try {
-			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-			        			jCaptchaResponse);
-			        	if (!isResponseCorrect) 
-			        		return "captcha";
-			        } catch (CaptchaServiceException e) {
-			        	_log.debug(e);
-			        	return "captcha";
-			        }				
-				}		
+				if (checkUser.isLockout()) {
+					response.setStatus(HttpServletResponse.SC_OK);
+					return "lockout";
+				}
+//				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+//					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+//					String jCaptchaResponse = request.getParameter("j_captcha_response");
+//					String captchaId = request.getSession().getId();
+//			        try {
+//			        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
+//			        			jCaptchaResponse);
+//			        	if (!isResponseCorrect) 
+//			        		return "captcha";
+//			        } catch (CaptchaServiceException e) {
+//			        	_log.debug(e);
+//			        	return "captcha";
+//			        }				
+//				}		
 			} catch (PortalException e) {
 				_log.debug(e);
 			}
@@ -420,6 +446,7 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
+		response.setStatus(HttpServletResponse.SC_OK);
 		return "";
 	}
 
