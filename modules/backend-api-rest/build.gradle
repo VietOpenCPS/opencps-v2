@@ -94,6 +94,9 @@ dependencies {
 	compileOnly group: "javax.mail", name: "mail", version: "1.4"
 	compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	// https://mvnrepository.com/artifact/org.jboss.spec.javax.net.ssl/jboss-jsse-api_8.0_spec
+	compile group: 'org.jboss.spec.javax.net.ssl', name: 'jboss-jsse-api_8.0_spec', version: '1.0.0.Final'
+
 }
 
 repositories {

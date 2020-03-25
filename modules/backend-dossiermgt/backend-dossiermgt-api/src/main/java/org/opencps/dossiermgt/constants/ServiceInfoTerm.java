@@ -15,9 +15,11 @@ public class ServiceInfoTerm {
 	public static final String REGULAR_TEXT = "regularText";
 	public static final String FEE_TEXT = "feeText";
 	public static final String ADMINISTRATION_CODE = "administrationCode";
+	public static final String ADMINISTRATION_CODE_SEARCH = "administrationCodeSearch";
 	public static final String ADMINISTRATION_NAME = "administrationName";
 	public static final String ADMINISTRATION_INDEX = "administrationIndex";
 	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_CODE_SEARCH = "domainCodeSearch";
 	public static final String DOMAIN_NAME  = "domainName";
 	public static final String DOMAIN_INDEX = "domainIndex";
 	public static final String MAX_LEVEL = "maxLevel";

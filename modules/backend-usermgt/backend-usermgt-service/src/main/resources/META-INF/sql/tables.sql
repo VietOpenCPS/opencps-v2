@@ -225,6 +225,16 @@ create table opencps_resourceuser (
 	readonly BOOLEAN
 );
 
+create table opencps_sync_scheduler (
+	uuid_ VARCHAR(75) null,
+	syncSchedulerId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	className VARCHAR(75) null,
+	typeCode VARCHAR(75) null,
+	syncDate DATE null
+);
+
 create table opencps_userlogin (
 	uuid_ VARCHAR(75) null,
 	userLoginId LONG not null primary key,

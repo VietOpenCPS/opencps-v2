@@ -781,7 +781,36 @@
             <finder-column name="synced" comparator="="></finder-column>
         </finder>
 		
-	</entity>			
+	</entity>	
+	<entity name="SyncScheduler" uuid="true" local-service="true"
+		remote-service="false" table="opencps_sync_scheduler">
+
+		<!-- PK fields -->
+		<column name="syncSchedulerId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="className" type="String" />
+		<column name="typeCode" type="String" />
+		<column name="syncDate" type="Date" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+		
+		<finder return-type="SyncScheduler" name="GID_NAME_SYNC">
+			<finder-column name="className" />
+			<finder-column name="syncDate" />
+		</finder>
+		<finder return-type="SyncScheduler" name="GID_NAME_TYPE">
+			<finder-column name="className" />
+			<finder-column name="typeCode" />
+		</finder>
+		
+	</entity>
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

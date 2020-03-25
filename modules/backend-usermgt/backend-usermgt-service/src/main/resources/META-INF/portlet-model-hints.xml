@@ -314,6 +314,15 @@
 		</field>
 		<field name="readonly" type="boolean" />
 	</model>
+	<model name="org.opencps.usermgt.model.SyncScheduler">
+		<field name="uuid" type="String" />
+		<field name="syncSchedulerId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="className" type="String" />
+		<field name="typeCode" type="String" />
+		<field name="syncDate" type="Date" />
+	</model>
 	<model name="org.opencps.usermgt.model.UserLogin">
 		<field name="uuid" type="String" />
 		<field name="userLoginId" type="long" />
