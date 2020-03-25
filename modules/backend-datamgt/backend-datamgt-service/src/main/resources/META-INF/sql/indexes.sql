@@ -1,4 +1,4 @@
-create index IX_9F60A0BE on m_fileattach (groupId, className[$COLUMN_LENGTH:500$], classPK[$COLUMN_LENGTH:75$], docFileId);
+create index IX_9F60A0BE on m_fileattach (groupId, className[$COLUMN_LENGTH:500$], classPK[$COLUMN_LENGTH:255$], docFileId);
 
 create index IX_A4AAE818 on opencps_comment (groupId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$]);
 create index IX_19A6AF20 on opencps_comment (groupId, userId, className[$COLUMN_LENGTH:75$], classPK[$COLUMN_LENGTH:75$], opinion);
@@ -18,7 +18,7 @@ create index IX_A99E2460 on opencps_dictgroup (uuid_[$COLUMN_LENGTH:75$], compan
 create unique index IX_1B2442E2 on opencps_dictgroup (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_9E48E215 on opencps_dictitem (dictCollectionId, groupId);
-create index IX_5EE7EDA3 on opencps_dictitem (dictCollectionId, parentItemId, treeIndex[$COLUMN_LENGTH:75$]);
+create index IX_5EE7EDA3 on opencps_dictitem (dictCollectionId, parentItemId, treeIndex[$COLUMN_LENGTH:255$]);
 create index IX_8CC4CD on opencps_dictitem (groupId, dictCollectionId, parentItemId, level);
 create index IX_750A2581 on opencps_dictitem (itemCode[$COLUMN_LENGTH:100$], dictCollectionId, groupId);
 create index IX_7B053904 on opencps_dictitem (itemCode[$COLUMN_LENGTH:100$], groupId);

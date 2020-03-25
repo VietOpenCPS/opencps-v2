@@ -110,7 +110,7 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dictitem (uuid_ VARCHAR(75) null,dictItemId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dictCollectionId LONG,itemCode VARCHAR(100) null,itemName STRING null,itemNameEN STRING null,itemDescription TEXT null,parentItemId LONG,level INTEGER,sibling VARCHAR(75) null,treeIndex VARCHAR(75) null,metaData TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dictitem (uuid_ VARCHAR(75) null,dictItemId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dictCollectionId LONG,itemCode VARCHAR(100) null,itemName STRING null,itemNameEN STRING null,itemDescription TEXT null,parentItemId LONG,level INTEGER,sibling VARCHAR(255) null,treeIndex VARCHAR(255) null,metaData TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dictitem";
 	public static final String ORDER_BY_JPQL = " ORDER BY dictItem.sibling ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dictitem.sibling ASC";
