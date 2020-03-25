@@ -64,6 +64,7 @@ import org.opencps.usermgt.service.persistence.QuestionFinder;
 import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
+import org.opencps.usermgt.service.persistence.SyncSchedulerPersistence;
 import org.opencps.usermgt.service.persistence.UserLoginPersistence;
 import org.opencps.usermgt.service.persistence.UserTrackPathPersistence;
 import org.opencps.usermgt.service.persistence.VisibilityPersistence;
@@ -918,6 +919,44 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the sync scheduler local service.
+	 *
+	 * @return the sync scheduler local service
+	 */
+	public org.opencps.usermgt.service.SyncSchedulerLocalService getSyncSchedulerLocalService() {
+		return syncSchedulerLocalService;
+	}
+
+	/**
+	 * Sets the sync scheduler local service.
+	 *
+	 * @param syncSchedulerLocalService the sync scheduler local service
+	 */
+	public void setSyncSchedulerLocalService(
+		org.opencps.usermgt.service.SyncSchedulerLocalService syncSchedulerLocalService) {
+		this.syncSchedulerLocalService = syncSchedulerLocalService;
+	}
+
+	/**
+	 * Returns the sync scheduler persistence.
+	 *
+	 * @return the sync scheduler persistence
+	 */
+	public SyncSchedulerPersistence getSyncSchedulerPersistence() {
+		return syncSchedulerPersistence;
+	}
+
+	/**
+	 * Sets the sync scheduler persistence.
+	 *
+	 * @param syncSchedulerPersistence the sync scheduler persistence
+	 */
+	public void setSyncSchedulerPersistence(
+		SyncSchedulerPersistence syncSchedulerPersistence) {
+		this.syncSchedulerPersistence = syncSchedulerPersistence;
+	}
+
+	/**
 	 * Returns the user login local service.
 	 *
 	 * @return the user login local service
@@ -1284,6 +1323,10 @@ public abstract class JobPosWorkLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.ResourceUserLocalService resourceUserLocalService;
 	@BeanReference(type = ResourceUserPersistence.class)
 	protected ResourceUserPersistence resourceUserPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.SyncSchedulerLocalService.class)
+	protected org.opencps.usermgt.service.SyncSchedulerLocalService syncSchedulerLocalService;
+	@BeanReference(type = SyncSchedulerPersistence.class)
+	protected SyncSchedulerPersistence syncSchedulerPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.UserLoginLocalService.class)
 	protected org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService;
 	@BeanReference(type = UserLoginPersistence.class)
