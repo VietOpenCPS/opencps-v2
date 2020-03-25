@@ -49,6 +49,7 @@ public class ServiceInfoUtils {
 				model.setCreateDate(doc.get(Field.CREATE_DATE));
 				model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 				model.setServiceCode(doc.get(ServiceInfoTerm.SERVICE_CODE));
+				model.setServiceCodeDVCQG(doc.get(ServiceInfoTerm.SERVICE_CODE_DVCQG));
 				model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
 				model.setProcessText(doc.get(ServiceInfoTerm.PROCESS_TEXT));
 				model.setMethodText(doc.get(ServiceInfoTerm.METHOD_TEXT));

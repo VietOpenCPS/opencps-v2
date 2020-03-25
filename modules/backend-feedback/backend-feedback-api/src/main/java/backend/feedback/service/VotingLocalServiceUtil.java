@@ -85,6 +85,12 @@ public class VotingLocalServiceUtil {
 		return getService().countVotingByClass_Name_PK(className, classPK);
 	}
 
+	public static long countVotingByG_Class_Name_PK(long groupId,
+		String className, String classPK) {
+		return getService()
+				   .countVotingByG_Class_Name_PK(groupId, className, classPK);
+	}
+
 	/**
 	* Creates a new voting with the primary key. Does not add the voting to the database.
 	*
@@ -278,6 +284,12 @@ public class VotingLocalServiceUtil {
 	public static java.util.List<backend.feedback.model.Voting> getVotingByClass_Name_PK(
 		String className, String classPK) {
 		return getService().getVotingByClass_Name_PK(className, classPK);
+	}
+
+	public static java.util.List<backend.feedback.model.Voting> getVotingByG_Class_Name_PK(
+		long groupId, String className, String classPK) {
+		return getService()
+				   .getVotingByG_Class_Name_PK(groupId, className, classPK);
 	}
 
 	/**

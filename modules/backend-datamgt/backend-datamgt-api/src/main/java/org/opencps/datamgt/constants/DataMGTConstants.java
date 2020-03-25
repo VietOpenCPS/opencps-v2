@@ -12,6 +12,7 @@ public class DataMGTConstants implements Constants, WebKeys {
 	
 	public static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 	public static final String ADMINTRATION_CODE = "SERVICE_ADMINISTRATION";
+	public static final String SERVICE_ADMINISTRATION = "SERVICE_ADMINISTRATION";
 	public static final String SERVICE_DOMAIN = "SERVICE_DOMAIN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_STATUS = "DOSSIER_SUB_STATUS";

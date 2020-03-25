@@ -23,7 +23,7 @@
 
 		<finder return-type="Collection" name="EM_ID">
 			<finder-column name="employeeId" />
-		</finder>
+		</finder>ques
 		
 		<finder return-type="Collection" name="EM_ID_S">
 			<finder-column name="employeeId" />
@@ -102,6 +102,11 @@
 		</order>
 
 		<finder return-type="Collection" name="F_CLNAME_CLPK">
+			<finder-column name="className" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder return-type="Collection" name="F_G_CLNAME_CLPK">
+			<finder-column name="groupId" />
 			<finder-column name="className" />
 			<finder-column name="classPK" />
 		</finder>

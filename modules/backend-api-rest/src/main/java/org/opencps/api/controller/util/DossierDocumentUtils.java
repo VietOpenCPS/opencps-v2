@@ -84,6 +84,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+		jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 
 		// MetaData
 		String metaData = dossier.getMetaData();

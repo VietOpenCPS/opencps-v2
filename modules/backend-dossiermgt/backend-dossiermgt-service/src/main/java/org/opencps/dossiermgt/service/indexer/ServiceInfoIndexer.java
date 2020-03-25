@@ -1,16 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.dossiermgt.action.util.AccentUtils;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -38,10 +28,11 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 @Component(
@@ -82,7 +73,12 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, serviceCode);
 		if (Validator.isNotNull(serviceCode)) {
 			String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(serviceCode);
+			
 			document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
+			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(object.getGroupId(), serviceCode);
+			document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+			String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+			document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
 		}
 
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME, object.getServiceName());
@@ -97,11 +93,23 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.RESULT_TEXT, object.getRegularText());
 		document.addKeywordSortable(ServiceInfoTerm.REGULAR_TEXT, object.getRegularText());
 		document.addKeywordSortable(ServiceInfoTerm.FEE_TEXT, object.getFeeText());
-		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_CODE, object.getAdministrationCode());
+		
+		String administrationCode = object.getAdministrationCode();
+		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_CODE, administrationCode);
+		if (Validator.isNotNull(administrationCode)) {
+			String administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
+			document.addTextSortable(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
+		}
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_NAME, object.getAdministrationName());
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_INDEX, object.getAdministrationIndex());
-		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_CODE, object.getDomainCode());
 		
+		String domainCode = object.getDomainCode();
+		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_CODE, domainCode);
+		if (Validator.isNotNull(domainCode)) {
+			String domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			document.addTextSortable(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+		}
+		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_NAME, object.getDomainName());
 		//Sort by agency
 		DictCollection dictAgency = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.ADMINTRATION_CODE,
 				object.getGroupId());

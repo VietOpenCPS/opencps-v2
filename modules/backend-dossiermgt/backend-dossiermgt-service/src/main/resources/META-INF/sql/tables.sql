@@ -44,7 +44,24 @@ create table opencps_booking (
 	bookingDate DATE null,
 	speaking BOOLEAN,
 	serviceGroupCode VARCHAR(255) null,
-	count INTEGER
+	count INTEGER,
+	online_ BOOLEAN,
+	bookingInTime VARCHAR(75) null,
+	telNo VARCHAR(75) null
+);
+
+create table opencps_configcounter (
+	uuid_ VARCHAR(75) null,
+	configCounterId LONG not null primary key,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	counterCode VARCHAR(75) null,
+	patternCode VARCHAR(75) null,
+	startCounter INTEGER
 );
 
 create table opencps_deliverable (
@@ -170,7 +187,7 @@ create table opencps_dossier (
 	serviceName VARCHAR(75) null,
 	govAgencyCode VARCHAR(75) null,
 	govAgencyName VARCHAR(255) null,
-	applicantName VARCHAR(500) null,
+	applicantName TEXT null,
 	applicantIdType VARCHAR(75) null,
 	applicantIdNo VARCHAR(75) null,
 	applicantIdDate DATE null,
@@ -248,7 +265,8 @@ create table opencps_dossier (
 	originDossierNo VARCHAR(255) null,
 	groupDossierId LONG,
 	metaData TEXT null,
-	systemId INTEGER
+	systemId INTEGER,
+	dossierCounter VARCHAR(75) null
 );
 
 create table opencps_dossieraction (
@@ -659,7 +677,8 @@ create table opencps_paymentfile (
 	invoiceIssueNo VARCHAR(500) null,
 	invoiceNo VARCHAR(500) null,
 	invoicePayload STRING null,
-	einvoice STRING null
+	einvoice STRING null,
+	invoiceFileEntryId LONG
 );
 
 create table opencps_process_plugin (
@@ -979,7 +998,8 @@ create table opencps_serviceprocess (
 	serverName TEXT null,
 	requestPayment BOOLEAN,
 	paymentFee VARCHAR(255) null,
-	dossierGroupPattern VARCHAR(75) null
+	dossierGroupPattern VARCHAR(75) null,
+	counterCode VARCHAR(75) null
 );
 
 create table opencps_serviceprocessrole (

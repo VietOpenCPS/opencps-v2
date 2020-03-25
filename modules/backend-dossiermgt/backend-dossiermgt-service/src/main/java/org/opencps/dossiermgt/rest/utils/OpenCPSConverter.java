@@ -49,6 +49,7 @@ import org.opencps.dossiermgt.rest.model.DossierMarkInputModel;
 import org.opencps.dossiermgt.rest.model.DossierMarkResultModel;
 import org.opencps.dossiermgt.rest.model.DossierPublishModel;
 import org.opencps.dossiermgt.rest.model.ExecuteOneAction;
+import org.opencps.dossiermgt.rest.model.InformDossierInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -1034,7 +1035,20 @@ public class OpenCPSConverter {
 		}
 		return model;
 	}
-	
+
+	public static InformDossierInputModel convertInformDossierToInputModel(Dossier dossier) {
+		InformDossierInputModel model = new InformDossierInputModel();
+		model.setReferenceUid(dossier.getReferenceUid());
+		model.setDossierNo(dossier.getDossierNo());
+		if (Validator.isNotNull(dossier.getReceiveDate())) {
+			model.setReceiveDate(dossier.getReceiveDate().getTime());
+		}
+		if (Validator.isNotNull(dossier.getDueDate())) {
+			model.setDueDate(dossier.getDueDate().getTime());
+		}
+		return model;
+	}
+
 	public static Map<String, Object> convertExecuteActionHttpParams(ExecuteOneAction model) {
 	    Map<String, Object> params = new HashMap<>();
 	    params.put(ExecuteOneActionTerm.ACTION_CODE, model.getActionCode());
@@ -1527,5 +1541,23 @@ public class OpenCPSConverter {
 		obj.put("OrganizationInchargeName", StringPool.BLANK);
 		
 		return obj;
-	}	
+	}
+
+	public static Map<String, Object> convertInformHttpParams(InformDossierInputModel model) {
+		Map<String, Object> params = new HashMap<>();
+
+		if (Validator.isNotNull(model.getReferenceUid())) {
+			params.put(DossierTerm.REFERENCE_UID, model.getReferenceUid());
+		}
+		if (Validator.isNotNull(model.getDossierNo())) {
+			params.put(DossierTerm.DOSSIER_NO, model.getDossierNo());
+		}
+		if (Validator.isNotNull(model.getReceiveDate())) {
+			params.put(DossierTerm.RECEIVE_DATE, model.getReceiveDate());
+		}
+		if (Validator.isNotNull(model.getDueDate())) {
+			params.put(DossierTerm.DUE_DATE, model.getDueDate());
+		}
+		return params;
+	}
 }

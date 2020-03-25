@@ -1,6 +1,9 @@
 package org.opencps.dossiermgt.constants;
 
 public class DossierTerm {
+	public static final String CONSTANT_DOSSIER = "dossier";
+	public static final String CONSTANT_DOSSIER_FILES = "dossierFiles";
+	public static final String CONSTANT_DOSSIER_DOC = "dossierDocuments";
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
@@ -210,6 +213,7 @@ public class DossierTerm {
 	public static final String TO_RELEASE_DATE = "toReleaseDate";
 	public static final String RELEASE_DATE_LUCENE = "releaseDateLucene";
 	public static final String SECRET_KEY = "secretKey";
+	public static final String SECRET_CODE = "secretCode";
 	
 	public static final String CURRENT_ACTION_USER = "currentActionUsers";
 	public static final String DOSSIER_NAME = "dossierName";
@@ -238,6 +242,10 @@ public class DossierTerm {
 	//public static final int DATE_OPTION_RESET_DUE_DATE = 8;
 	//PAUSE OVERDUE
 	public static final int DATE_OPTION_PAUSE_OVERDUE = 9;
+	public static final int DATE_OPTION_TEN = 10;
+	public static final int DATE_OPTION_DUEDATE_PHASE_1 = 11;
+	public static final int DATE_OPTION_DUEDATE_PHASE_2 = 12;
+	public static final int DATE_OPTION_DUEDATE_PHASE_3 = 13;
 	
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
@@ -286,4 +294,6 @@ public class DossierTerm {
 	public static final String SMS_NOTIFY = "smsNotify";
 	public static final String EMAIL_NOTIFY = "emailNotify";
 	public static final String SERVICE_LEVEL = "serviceLevel";
+	public static final String DOSSIER_COUNTER = "dossierCounter";
+	public static final String DOSSIER_COUNTER_SEARCH = "dossierCounterSearch";
 }

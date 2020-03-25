@@ -21,6 +21,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordTrackerLocalServiceUtil;
@@ -49,6 +52,7 @@ import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
+import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -1141,6 +1145,44 @@ public class UserActions implements UserInterface {
 			return null;
 		}
 
+	}
+
+	public JSONObject unlockAccount(long userId, long companyId, long groupId, long id, String email, 
+			boolean unlocked, ServiceContext serviceContext) throws PortalException {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		User user =
+				UserLocalServiceUtil.fetchUser(id);
+
+		if (Validator.isNull(user)) {
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, id);
+			jsonObject.put(CommonTerm.EMAIL, email);
+			jsonObject.put(CommonTerm.EXITS, false);
+		}
+		else {
+			
+
+			if (unlocked) {
+
+				user.setFailedLoginAttempts(0);
+				user.setLockout(false);
+				user.setLockoutDate(null);
+			}
+
+			Indexer<User> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(user);
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+			jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+			jsonObject.put(CommonTerm.EXITS, true);
+
+		}
+
+		return jsonObject;
 	}
 
 }

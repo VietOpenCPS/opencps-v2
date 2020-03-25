@@ -60,6 +60,7 @@ import javax.xml.bind.annotation.XmlType;
     "createDate",
     "modifiedDate",
     "serviceCode",
+    "serviceCodeDVCQG",
     "serviceName",
     "processText",
     "methodText",
@@ -85,6 +86,7 @@ public class ServiceInfoModel {
     protected String createDate;
     protected String modifiedDate;
     protected String serviceCode;
+    protected String serviceCodeDVCQG;
     protected String serviceName;
     protected String processText;
     protected String methodText;
@@ -207,6 +209,30 @@ public class ServiceInfoModel {
      */
     public void setServiceCode(String value) {
         this.serviceCode = value;
+    }
+    
+    /**
+     * Gets the value of the serviceCodeDVCQG property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getServiceCodeDVCQG() {
+        return serviceCodeDVCQG;
+    }
+
+    /**
+     * Sets the value of the serviceCodeDVCQG property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setServiceCodeDVCQG(String value) {
+        this.serviceCodeDVCQG = value;
     }
 
     /**

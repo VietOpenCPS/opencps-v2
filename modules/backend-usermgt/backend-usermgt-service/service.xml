@@ -684,6 +684,9 @@
 		<column name="subDomainName" type="String" />
 
 		<!-- Order -->
+        <column name="className" type="String"></column>
+        <column name="classPK" type="String"></column>
+        <column name="synced" type="int"></column>
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
@@ -707,6 +710,16 @@
             <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
             <finder-column name="questionType"></finder-column>
             <finder-column name="subDomainCode"></finder-column>
+        </finder>
+        <finder name="G_CN_CPK" return-type="Question">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="className"></finder-column>
+            <finder-column name="classPK"></finder-column>
+        </finder>
+        <finder name="G_P_SYNC" return-type="Collection">
+            <finder-column name="groupId" comparator="="></finder-column>
+            <finder-column comparator="=" name="publish"></finder-column>
+            <finder-column name="synced" comparator="="></finder-column>
         </finder>
 	</entity>
 	
@@ -732,6 +745,9 @@
 		<column name="publish" type="int" />
 
 		<!-- Order -->
+        <column name="className" type="String"></column>
+        <column name="classPK" type="String"></column>
+        <column name="synced" type="int"></column>
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
@@ -739,6 +755,20 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="questionId"></finder-column>
             <finder-column name="publish" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+        <finder name="G_CN_CPK" return-type="Answer">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="className"></finder-column>
+            <finder-column name="classPK"></finder-column>
+        </finder>
+        <finder name="G_Q" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="questionId"></finder-column>
+        </finder>
+        <finder name="G_P_SYNC" return-type="Collection">
+            <finder-column name="groupId" comparator="="></finder-column>
+            <finder-column name="publish" comparator="="></finder-column>
+            <finder-column name="synced" comparator="="></finder-column>
         </finder>
 		
 	</entity>			

@@ -1462,6 +1462,11 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
+		@FormParam("classForName") String classForName,
+		@FormParam("driverManagerUrl") String driverManagerUrl,
+		@FormParam("driverManagerUser") String driverManagerUser,
+		@FormParam("driverManagerPazz") String driverManagerPazz,
+		@FormParam("mainQuery") String mainQuery,
 		@FormParam("dvcGroupId") long dvcGroupId,
 		@FormParam("groupId") long groupId);
 
@@ -1486,6 +1491,11 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
+		@FormParam("classForName") String classForName,
+		@FormParam("driverManagerUrl") String driverManagerUrl,
+		@FormParam("driverManagerUser") String driverManagerUser,
+		@FormParam("driverManagerPazz") String driverManagerPazz,
+		@FormParam("mainQuery") String mainQuery,
 		@FormParam("dvcGroupId") long dvcGroupId,
 		@FormParam("groupId") long groupId);
 	
@@ -1507,22 +1517,48 @@ public interface DossierManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") String id,
 		@PathParam("key") String key);	
-
+	
 	@PUT
 	@Path("/{id}/metadata")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
 	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
 	})
-	@ApiOperation(value = "Put the key of meta data detail of Dossier by its id (or referenceId)", response = DossierDetailModel.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierDetailModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = DossierDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
 	})
-
 	public Response putMetaDataDetailDossier(
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext, @PathParam("id") String id);	
+		@Context ServiceContext serviceContext, @PathParam("id") String id,
+		@FormParam("metaData") String metaData);
+
+	@PUT
+	@Path("/inform/{id}")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Update a Dossier", response = DossierDetailModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was updated", response = DossierDetailModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+
+	public Response updateInformDossier(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") String id,
+		@BeanParam DossierInputModel input);
 }

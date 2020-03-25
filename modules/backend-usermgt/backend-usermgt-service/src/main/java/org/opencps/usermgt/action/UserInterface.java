@@ -6,6 +6,7 @@ import java.security.DigestException;
 
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -76,4 +77,9 @@ public interface UserInterface {
 			throws Exception;
 
 	public String getUserById(long userId);
+
+	public JSONObject unlockAccount(long userId, long companyId, long groupId, long id, String email, boolean unlocked,
+			ServiceContext serviceContext)
+			throws PortalException;
+
 }

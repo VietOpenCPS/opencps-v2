@@ -26,13 +26,19 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +52,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -65,6 +72,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
@@ -78,6 +87,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
@@ -119,8 +129,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 			params.put(Field.KEYWORD_SEARCH, keySearch);
 
-			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
-			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
+			//Administration Code
+			String administrationCode = query.getAdministration();
+			String administrationCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(administrationCode)) {
+				administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
+			}
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
+			//Domain Code
+			String domainCode = query.getDomain();
+			String domainSearch = StringPool.BLANK;
+			if (Validator.isNotNull(domainCode)) {
+				domainSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			}
+			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainSearch);
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 
@@ -141,8 +163,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			//_log.info("jsonData.hit: "+jsonData.get("data"));
-
+			_log.info("jsonData.hit: " + jsonData.get("data"));
+			_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> jsonData.getInt(\"total\") "
+					+ jsonData.getInt("total"));
 			results.setTotal(jsonData.getInt("total"));
 			results.getData().addAll(ServiceInfoUtils
 					.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
@@ -1038,11 +1061,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			if(_serviceInfoDVCQGMap == null) {
-				_serviceInfoDVCQGMap = dvcqgIntegrationActionImpl.getServiceInfoDVCQGMap(user,
-						serviceContext);
+			if (_serviceInfoDVCQGMap == null) {
+				
+				_serviceInfoDVCQGMap = dvcqgIntegrationActionImpl.getServiceInfoDVCQGMap(user, serviceContext);
+					
 			}
-			
 
 			List<Document> documents = (List<Document>) jsonData.get("data");
 			JSONArray data = JSONFactoryUtil.createJSONArray();
@@ -1050,6 +1073,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				JSONObject item = JSONFactoryUtil.createJSONObject();
 				String serviceName = doc.get(ServiceInfoTerm.SERVICE_NAME);
 				String serviceCode = doc.get(ServiceInfoTerm.SERVICE_CODE);
+				String serviceCodeDVCQG = doc.get(ServiceInfoTerm.SERVICE_CODE_DVCQG);
 				String administrationCode = doc.get(ServiceInfoTerm.ADMINISTRATION_CODE);
 				String domainCode = doc.get(ServiceInfoTerm.DOMAIN_CODE);
 				String administrationName = doc.get(ServiceInfoTerm.ADMINISTRATION_NAME);
@@ -1057,6 +1081,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				item.put("serviceInfoId", GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
 				item.put("serviceName", serviceName);
 				item.put("serviceCode", serviceCode);
+				item.put("serviceCodeDVCQG", serviceCodeDVCQG);
 				item.put("administrationCode", administrationCode);
 				item.put("domainCode", domainCode);
 				item.put("administrationName", administrationName);
@@ -1079,4 +1104,91 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	}
 
 	private static HashMap<String, String> _serviceInfoDVCQGMap = null;
+
+	@Override
+	public Response doSyncServiceInfoFromDVC(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String method, String endpointPath, String body) {
+
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, ServiceInfoTerm.CFG_SERVER_NO);
+
+			if (serverConfig != null) {
+				JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String serverUrl = StringPool.BLANK;
+				String authStrEnc = StringPool.BLANK;
+
+				String apiUrl = StringPool.BLANK;
+
+				StringBuilder sb = new StringBuilder();
+
+				URL urlVal = null;
+				String groupIdRequest = StringPool.BLANK;
+				StringBuilder postData = new StringBuilder();
+				JSONObject dataObj = JSONFactoryUtil.createJSONObject(body);
+				Iterator<?> keys = dataObj.keys();
+				while (keys.hasNext()) {
+					String key = (String) keys.next();
+					if (!"".equals(postData.toString())) {
+						postData.append("&");
+					}
+					postData.append(key);
+					postData.append("=");
+					postData.append(dataObj.get(key));
+				}
+
+				if (configObj.has(SyncServerTerm.SERVER_USERNAME) && configObj.has(SyncServerTerm.SERVER_SECRET)
+						&& configObj.has(SyncServerTerm.SERVER_URL) && configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+					authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+							+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+
+					serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+					groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+				}
+
+				apiUrl = serverUrl + endpointPath;
+				if ("GET".equals(method)) {
+					urlVal = new URL(apiUrl + "?" + postData.toString());
+				} else {
+					urlVal = new URL(apiUrl);
+				}
+
+				java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+				conn.setRequestProperty("groupId", groupIdRequest);
+				conn.setRequestMethod(method);
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+
+				if ("POST".equals(method) || "PUT".equals(method)) {
+					conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+					conn.setRequestProperty("Content-Length",
+							"" + Integer.toString(postData.toString().getBytes().length));
+
+					conn.setUseCaches(false);
+					conn.setDoInput(true);
+					conn.setDoOutput(true);
+
+					OutputStream os = conn.getOutputStream();
+					os.write(postData.toString().getBytes());
+					os.close();
+				}
+
+				BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+				int cp;
+				while ((cp = brf.read()) != -1) {
+					sb.append((char) cp);
+				}
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
+
+			} else {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+		}
+
+	}
 }

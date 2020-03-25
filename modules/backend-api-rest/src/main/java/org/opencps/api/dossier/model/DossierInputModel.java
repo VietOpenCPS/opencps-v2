@@ -118,7 +118,8 @@ import javax.xml.bind.annotation.XmlType;
 	"delegateType",
 	"documentNo",
 	"documentDate",
-	"systemId"
+	"systemId",
+	"dossierCounter"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -251,6 +252,16 @@ public class DossierInputModel {
 	private String metaData;
 	@FormParam(value = "systemId")
 	private Integer systemId;
+	@FormParam(value = "dossierCounter")
+	private String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public Integer getSystemId() {
 		return systemId;

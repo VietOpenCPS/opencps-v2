@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -29,7 +30,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
@@ -40,6 +44,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -80,8 +85,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -99,6 +102,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierUserActions;
@@ -107,6 +111,7 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
+import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -136,6 +141,7 @@ import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DocumentType;
 import org.opencps.dossiermgt.model.Dossier;
@@ -166,6 +172,7 @@ import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ConfigCounterLocalServiceUtil;
 import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -227,6 +234,8 @@ public class CPSDossierBusinessLocalServiceImpl
 	private static final String BN_TELEPHONE = "BN_telephone";
 	private static final String BN_ADDRESS = "BN_address";
 	private static final String BN_EMAIL = "BN_email";
+	
+	private static String CHECK_BQP_TODO = PropsUtil.get("opencps.is.bqp");
 	
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
@@ -438,9 +447,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		ActionConfig ac = actionConfig;
 		if (ac != null) {
 			if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
+				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith(StringPool.AT)) {
 					//Generate document
-					String[] documentTypes = ac.getDocumentType().split(",");
+					String[] documentTypes = ac.getDocumentType().split(StringPool.COMMA);
 					for (String documentType : documentTypes) {
 						DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 						if (dt != null) {
@@ -498,7 +507,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Check if generate dossier document
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
 			// Generate document
-			String[] documentTypes = documentTypeList.split(",");
+			String[] documentTypes = documentTypeList.split(StringPool.COMMA);
 			for (String documentType : documentTypes) {
 				DocumentType dt = DocumentTypeLocalServiceUtil.getByTypeCode(groupId, documentType.trim());
 				if (dt != null) {
@@ -525,9 +534,9 @@ public class CPSDossierBusinessLocalServiceImpl
 					formDataObj.put("url", context.getPortalURL());
 					formDataObj.put("documentCode", documentCode);
 					if (employee != null) {
-						formDataObj.put("userName", employee.getFullName());
+						formDataObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						formDataObj.put("userName", user.getFullName());
+						formDataObj.put(Field.USER_NAME, user.getFullName());
 					}
 
 					Message message = new Message();
@@ -625,66 +634,112 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			else {
 				//Sync result files
-				
-			}
-			
-			payloadObject.put("dossierFiles", dossierFilesArr);
-			
-			if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
-				List<DossierFile> lsDossierFile = lstFiles;
-				dossierFilesArr = JSONFactoryUtil.createJSONArray();
-
-				// check return file
-				List<String> returnDossierFileTemplateNos = ListUtil
-						.toList(StringUtil.split(proAction.getReturnDossierFiles()));
-
-				for (DossierFile dossierFile : lsDossierFile) {
-					if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
-						JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
-						dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
-						dossierFilesArr.put(dossierFileObj);
-
-					}
-
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 				}
-				payloadObject.put("dossierFiles", dossierFilesArr);				
 			}
 			
-			List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST ||
+					actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
+					
+				//payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
+				payloadObject.put("dossierFiles", dossierFilesArr);
+					
+				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+					List<DossierFile> lsDossierFile = lstFiles;
+					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+	
+					// check return file
+					List<String> returnDossierFileTemplateNos = ListUtil
+							.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+	
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+	
+						}
+	
+					}
+					payloadObject.put("dossierFiles", dossierFilesArr);
+				}
 
-			for (DossierDocument dossierDocument : lstDossierDocuments) {
-				JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
-				dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
-				dossierDocumentArr.put(dossierDocumentObj);
-			}
-			payloadObject.put("dossierFiles", dossierFilesArr);				
-			payloadObject.put("dossierDocuments", dossierDocumentArr);
-			
-			//Put dossier note
-			payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
-			//Put dossier note
-			payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
-			
-//			_log.info("Flag changed: " + flagChanged);
-			payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
-			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
-				String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+				List<DossierDocument> lstDossierDocuments = dossierDocumentLocalService.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				JSONArray dossierDocumentArr = JSONFactoryUtil.createJSONArray();
+	
+				for (DossierDocument dossierDocument : lstDossierDocuments) {
+					JSONObject dossierDocumentObj = JSONFactoryUtil.createJSONObject();
+					dossierDocumentObj.put(DossierDocumentTerm.REFERENCE_UID, dossierDocument.getReferenceUid());
+					dossierDocumentArr.put(dossierDocumentObj);
+				}
+				payloadObject.put("dossierFiles", dossierFilesArr);
+				payloadObject.put("dossierDocuments", dossierDocumentArr);
+				//Put dossier note
+				payloadObject.put(DossierTerm.DOSSIER_NOTE, dossier.getDossierNote());
+				//Put submit date
+				payloadObject.put(DossierTerm.SUBMIT_DATE, dossier.getSubmitDate() != null ? dossier.getSubmitDate().getTime() : 0);
+					
+	//			_log.info("Flag changed: " + flagChanged);
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
+							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+							syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+				}
+				else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
 						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
+						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
+				}
+				//Gửi thông tin hồ sơ để tra cứu
+				if (state == DossierSyncTerm.STATE_NOT_SYNC
+						&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
+						&& OpenCPSConfigUtil.isPublishEventEnable()) {
+					publishEvent(dossier, context, dossierAction.getDossierActionId());
+				}
 			}
-			else {
-				dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
-					dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
-					syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
-			}
-			//Gửi thông tin hồ sơ để tra cứu
-			if (state == DossierSyncTerm.STATE_NOT_SYNC
-					&& actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
-					&& OpenCPSConfigUtil.isPublishEventEnable()) {
-				publishEvent(dossier, context, dossierAction.getDossierActionId());
+			else if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM_DOSSIER) {
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}
+				//
+				payloadObject.put("dossierFiles", dossierFilesArr);
+				
+				if (Validator.isNotNull(proAction.getReturnDossierFiles())) {
+					List<DossierFile> lsDossierFile = lstFiles;
+					dossierFilesArr = JSONFactoryUtil.createJSONArray();
+	
+					// check return file
+					List<String> returnDossierFileTemplateNos = ListUtil
+							.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+	
+					for (DossierFile dossierFile : lsDossierFile) {
+						if (returnDossierFileTemplateNos.contains(dossierFile.getFileTemplateNo())) {
+							JSONObject dossierFileObj = JSONFactoryUtil.createJSONObject();
+							dossierFileObj.put(DossierFileTerm.REFERENCE_UID, dossierFile.getReferenceUid());
+							dossierFilesArr.put(dossierFileObj);
+						}
+					}
+					payloadObject.put("dossierFiles", dossierFilesArr);
+				}
+
+				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				if (Validator.isNotNull(dossier.getServerNo())
+						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
+					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							serverNo, state);
+				} else {
+					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
+							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
+							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							dossier.getServerNo(), state);
+				}
 			}
 		}
 		else if (actionConfig != null && actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
@@ -809,7 +864,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
 					dossier, curStatus, curSubStatus, prevStatus,
-					dateOption != null ? dateOption : actionConfig.getDateOption(), option, serviceProcess, context);
+					dateOption != null ? dateOption : (actionConfig != null ? actionConfig.getDateOption() : 0), option, serviceProcess, context);
 			for (Map.Entry<String, Boolean> entry : resultFlagChanged.entrySet()) {
 				flagChanged.put(entry.getKey(), entry.getValue());
 			}
@@ -834,7 +889,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 		} else {
 			//Process role as step
-			if (Validator.isNotNull(curStep.getRoleAsStep())) {
+			if (curStep != null && Validator.isNotNull(curStep.getRoleAsStep())) {
 				copyRoleAsStep(curStep, dossier);
 			}	
 			else {
@@ -900,12 +955,12 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
-			Serializable serviceProcessCache = cache.getFromCache("ServiceProcess", groupId +"_"+ serviceProcessId);
+			Serializable serviceProcessCache = cache.getFromCache("ServiceProcess", groupId +StringPool.UNDERLINE+ serviceProcessId);
 			if (serviceProcessCache == null) {
 				serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
 				if (serviceProcess != null) {
 					cache.addToCache("ServiceProcess",
-							groupId +"_"+ serviceProcessId, (Serializable) serviceProcess,
+							groupId +StringPool.UNDERLINE+ serviceProcessId, (Serializable) serviceProcess,
 							ttl);
 				}
 			} else {
@@ -967,11 +1022,11 @@ public class CPSDossierBusinessLocalServiceImpl
 										Iterator<?> keys = jsonBody.keys();
 										while (keys.hasNext()) {
 											String key = (String) keys.next();
-											if (!"".equals(postData.toString())) {
-												postData.append("&");
+											if (!StringPool.BLANK.equals(postData.toString())) {
+												postData.append(StringPool.AMPERSAND);
 											}
 											postData.append(key);
-											postData.append("=");
+											postData.append(StringPool.EQUAL);
 											postData.append(jsonBody.get(key));
 										}
 
@@ -981,7 +1036,7 @@ public class CPSDossierBusinessLocalServiceImpl
 												&& Validator.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
 											authStrEnc = Base64.getEncoder()
 													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
-															+ ":" + configObj.getString(SyncServerTerm.SERVER_SECRET))
+															+ StringPool.COLON + configObj.getString(SyncServerTerm.SERVER_SECRET))
 																	.getBytes());
 										}
 										if (configObj.has(SyncServerTerm.SERVER_URL)) {
@@ -994,20 +1049,20 @@ public class CPSDossierBusinessLocalServiceImpl
 											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
 										}
 										if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
-											if (jsonHeader.has("groupId")) {
-												groupIdRequest = String.valueOf(jsonHeader.getLong("groupId"));
+											if (jsonHeader.has(Field.GROUP_ID)) {
+												groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
 											}
 										}
 
 										if ("GET".equals(method)) {
-											urlVal = new URL(apiUrl + "?" + postData.toString());
+											urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
 										} else {
 											urlVal = new URL(apiUrl);
 										}
 										_log.debug("API URL: " + apiUrl);
 										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
 												.openConnection();
-										conn.setRequestProperty("groupId", groupIdRequest);
+										conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 										conn.setRequestMethod(method);
 										conn.setRequestProperty("Accept", "application/json");
 										if (Validator.isNotNull(authStrEnc)) {
@@ -1121,7 +1176,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		//Create notification
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueue(user, groupId, dossier, actionConfig, dossierAction, payloadObject, context);
+			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, payloadObject, context);
 		}
 		
 		//Create subcription
@@ -1167,7 +1222,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		return dossierAction;
 	}
 	
-	private void createNotificationQueue(User user, long groupId, Dossier dossier, ActionConfig actionConfig,
+	private void createNotificationQueue(User user, long groupId, Dossier dossier, ProcessAction proAction, ActionConfig actionConfig,
 			DossierAction dossierAction, JSONObject payloadObject, ServiceContext context) throws PortalException {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
@@ -1254,6 +1309,8 @@ public class CPSDossierBusinessLocalServiceImpl
 							}
 							
 							if (foundApplicant != null) {
+								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
+								payloadObj.put("filesAttach", filesAttach);
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
 										actionConfig.getNotificationType(), 
@@ -1531,9 +1588,10 @@ public class CPSDossierBusinessLocalServiceImpl
 					}
 					
 				}
-
+                                if (oldPaymentFile != null) {
 				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
 				paymentFileLocalService.updatePaymentFile(oldPaymentFile);
+}
 			}
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
@@ -1541,8 +1599,10 @@ public class CPSDossierBusinessLocalServiceImpl
 			String paymentMethod = checkPaymentMethod(intpaymentMethod);
 			if (oldPaymentFile != null) {
 				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+//				oldPaymentFile.setPaymentMethod(paymentMethod);
+				if (Validator.isNotNull(paymentMethod)) {
 				oldPaymentFile.setPaymentMethod(paymentMethod);
-				
+				}
 				paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 			}
 		}
@@ -1601,6 +1661,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 		
 		if (oldPaymentFile != null) {
+			if (Validator.isNotNull(paymentMethod)) {
+				oldPaymentFile.setPaymentMethod(paymentMethod);
+			}
 			if (Validator.isNotNull(paymentNote))
 				oldPaymentFile.setPaymentNote(paymentNote);
 			try {
@@ -1639,6 +1702,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 			PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
 						dossier.getGovAgencyCode());
+			_log.info("paymentConfig: " + JSONFactoryUtil.looseSerialize(paymentConfig));
 				
 			if (Validator.isNotNull(paymentConfig)) {
 				paymentFile.setInvoiceTemplateNo(paymentConfig.getInvoiceTemplateNo());
@@ -1646,6 +1710,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				paymentFile.setGovAgencyCode(paymentConfig.getGovAgencyCode());
 				paymentFile.setGovAgencyName(paymentConfig.getGovAgencyName());
 			}
+			_log.info("paymentFile: " + JSONFactoryUtil.looseSerialize(paymentFile));
 				
 			paymentFileLocalService.updatePaymentFile(paymentFile);
 			JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
@@ -1850,7 +1915,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	
 	private String generatorPayURL(long groupId, long paymentFileId, String pattern,
 			Dossier dossier) throws IOException {
-		String result = "";
+		String result = StringPool.BLANK;
 		try {
 			PaymentFile paymentFile = paymentFileLocalService.getPaymentFile(paymentFileId);
 			PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
@@ -1869,8 +1934,8 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 				String net_cost = String.valueOf(paymentFile.getPaymentAmount());
 				
-				String ship_fee = "0";
-				String tax = "0";
+				String ship_fee = String.valueOf(0);
+				String tax = String.valueOf(0);
 
 				String bank_code = StringPool.BLANK;
 
@@ -2183,7 +2248,9 @@ public class CPSDossierBusinessLocalServiceImpl
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 
 			try {
-				if (Validator.isNotNull(option) && Validator.isNull(dossier.getDossierNo())) {
+				if (Validator.isNotNull(option) && Validator.isNull(dossier.getDossierNo())
+						&& dossier.getOriginDossierId() > 0) {
+
 					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
 							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
 
@@ -2218,57 +2285,34 @@ public class CPSDossierBusinessLocalServiceImpl
 				((DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA)
 				|| (DossierTerm.DOSSIER_STATUS_NEW.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)
-				|| (dateOption == 2))
+				|| (dateOption == DossierTerm.DATE_OPTION_TWO))
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
-				dossier.setReceiveDate(now);
-				bResult.put(DossierTerm.RECEIVE_DATE, true);
+			dossier.setReceiveDate(now);
+			bResult.put(DossierTerm.RECEIVE_DATE, true);
 
-				Double durationCount = serviceProcess.getDurationCount();
-				int durationUnit = serviceProcess.getDurationUnit();
-				Date dueDate = null;
-				if (Validator.isNotNull(durationCount) && durationCount > 0
-						&& !areEqualDouble(durationCount, 0.00d, 3)) {
-					// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
-					DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
-					dueDate = dueDateUtils.getDueDate();
-				}
-				
-				if (Validator.isNotNull(dueDate)) {
-					dossier.setDueDate(dueDate);
+			/** 
+			 * THANHNV create common init DueDate DossierNo DossierCounter 
+			 
+			Double durationCount = serviceProcess.getDurationCount();
+			int durationUnit = serviceProcess.getDurationUnit();
+			Date dueDate = null;
+			if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
+				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit,
+				// dossier.getGroupId());
+				DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
+				dueDate = dueDateUtils.getDueDate();
+			}
+
+			if (Validator.isNotNull(dueDate)) {
+				dossier.setDueDate(dueDate);
 //					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
-					bResult.put(DossierTerm.DUE_DATE, true);
-				}
-				
-				dossier.setDurationCount(durationCount);
-				dossier.setDurationUnit(durationUnit);
-	
-				if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
-					long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
-							dossier.getRegisterBookCode());
-					dossier.setCounter(counterCode);
-				}
+				bResult.put(DossierTerm.DUE_DATE, true);
+			}
 
-				if (Validator.isNull(dossier.getDossierNo())) {
-					try {
-						String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
-								dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(), params);
-						dossier.setDossierNo(dossierRef.trim());
-					} catch (Exception e) {
-						_log.debug(e);
-					}
-				}
-				
-//				dossier = DossierLocalServiceUtil.updateDossier(dossier);
-//			} catch (PortalException e) {
-//				_log.error(e);
-//				e.printStackTrace();
-//			}
-		}
-
-		//Update counter and dossierNo
-		if (dateOption == 2) {
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
@@ -2278,16 +2322,67 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			if (Validator.isNull(dossier.getDossierNo())) {
 				try {
-					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
-							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
-							params);
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(),
+							dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+							serviceProcess.getDossierNoPattern(), params);
 					dossier.setDossierNo(dossierRef.trim());
 				} catch (Exception e) {
 					_log.debug(e);
 				}
 			}
+			if (Validator.isNull(dossier.getDossierCounter()) && Validator.isNotNull(serviceProcess.getCounterCode())) {
+				ConfigCounter counterConfig = ConfigCounterLocalServiceUtil.fetchByCountrCode(dossier.getGroupId(),
+						serviceProcess.getCounterCode());
+				if (counterConfig != null) {
+					if (Validator.isNotNull(counterConfig.getStartCounter()) && counterConfig.getStartCounter() > 0) {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode() + "| getStartCounter(): "
+											+ counterConfig.getStartCounter());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					} else {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					}
+				}
+			}
+			
+			THANHNV: end
+			*/
+
+			if (Validator.isNotNull(CHECK_BQP_TODO) &&
+					(DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
+				
+				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
+			} else {
+				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, true, now, params);
+			}
+			
+			if (Validator.isNotNull(dossier.getDueDate())) {
+				bResult.put(DossierTerm.DUE_DATE, true);
+			}
 		}
-		
+
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(prevStatus) && DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus)) {	
 //			try {
 //				DossierLocalServiceUtil.updateProcessDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
@@ -2406,7 +2501,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			DossierAction dActEnd = dossierActionLocalService
 					.fetchDossierAction(dossierAction.getDossierActionId());
 //			DossierAction dActEnd = dossierAction;
-			if (dActEnd != null) {
+
+			// set dueDate null if durationCount = 0
+			if (dActEnd != null && dossier.getDurationCount() > 0) {
 				_log.debug("dActEnd.getPreviousActionId(): "+dActEnd.getPreviousActionId());
 				DossierAction dActPrevious = dossierActionLocalService
 						.fetchDossierAction(dActEnd.getPreviousActionId());
@@ -2472,6 +2569,8 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
+			} else if (dossier.getDurationCount() <= 0) {
+				dossier.setDueDate(null);
 			}
 		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 			if (dossier.getDueDate() != null) {
@@ -2506,6 +2605,76 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}			
+		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)
+			&& serviceProcess != null) {
+
+			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
+			dossier.setDueDate(dueDatePharse.getDueDate());
+			bResult.put(DossierTerm.DUE_DATE, true);
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
+		} else //Update counter and dossierNo
+		if (dateOption == DossierTerm.DATE_OPTION_TWO || dateOption == DossierTerm.DATE_OPTION_TEN) {
+
+			/** 
+			 * THANHNV create common init DueDate DossierNo DossierCounter 
+			 
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
+							params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+			if (Validator.isNull(dossier.getDossierCounter()) && Validator.isNotNull(serviceProcess.getCounterCode())) {
+				ConfigCounter counterConfig = ConfigCounterLocalServiceUtil.fetchByCountrCode(dossier.getGroupId(),
+						serviceProcess.getCounterCode());
+				if (counterConfig != null) {
+					if (Validator.isNotNull(counterConfig.getStartCounter()) && counterConfig.getStartCounter() > 0) {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode() + "| getStartCounter(): "
+											+ counterConfig.getStartCounter());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					} else {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					}
+				}
+			}
+			THANHNV: end
+			*/
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		}
 		
 		//Check if dossier is done
@@ -2650,6 +2819,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+		jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 
 		// MetaData
 		String metaData = dossier.getMetaData();
@@ -2935,7 +3105,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}			
 
@@ -3316,7 +3486,20 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
 			Dossier hslt = dossierLocalService.getByOrigin(dossier.getGroupId(), dossier.getDossierId());
 			
-			if (dossierAction != null && (dossierAction.isRollbackable() || hslt.getOriginality() < 0)) {
+			// chi nguoi thuc hien buoc truoc moi duoc phep quay lai buoc
+			User user=UserLocalServiceUtil.getUser(userId);
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (dossierAction != null && !dossierAction.getPending() &&
+					(dossierAction.isRollbackable() || hslt.getOriginality() < 0)
+					&& (isAdmin || dossierAction.getUserId() == userId)) {
+
 				dossierActionLocalService.updateState(dossierAction.getDossierActionId(), DossierActionTerm.STATE_ROLLBACK);
 			
 				DossierAction previousAction = dossierActionLocalService.fetchDossierAction(dossierAction.getPreviousActionId());
@@ -3358,7 +3541,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (ac != null && dossierAction != null) {
 			//Only create dossier document if 2 && 3
 			if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
-				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith("@")) {
+				if (Validator.isNotNull(ac.getDocumentType()) && !ac.getActionCode().startsWith(StringPool.AT)) {
 					//Generate document
 					DocumentType dt = documentTypeLocalService.getByTypeCode(groupId, ac.getDocumentType());
 					if (dt != null) {
@@ -3390,8 +3573,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
+		
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueueOutsideProcess(userId, groupId, dossier, actionConfig, context);
+			createNotificationQueueOutsideProcess(userId, groupId, dossier, proAction, actionConfig, context);
 		}
 
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
@@ -3501,7 +3689,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		return true;
 	}
 	
-	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ActionConfig actionConfig, ServiceContext context) {
+	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier, ProcessAction proAction, ActionConfig actionConfig, ServiceContext context) {
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
@@ -3549,6 +3737,8 @@ public class CPSDossierBusinessLocalServiceImpl
 							String contactEmail = (isEmailNotify(dossier)) ? dossier.getContactEmail() : StringPool.BLANK;
 							String telNo = (isSmsNotify(dossier)) ? dossier.getContactTelNo() : StringPool.BLANK;
 							
+							JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
+							payloadObj.put("filesAttach", filesAttach);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
 									actionConfig.getNotificationType(), 
@@ -3625,15 +3815,15 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (subUser != null && subUser.has(DossierActionUserTerm.ASSIGNED)
 					&& subUser.getInt(DossierActionUserTerm.ASSIGNED) == DossierActionUserTerm.ASSIGNED_TH) {
 				DossierActionUserPK pk = new DossierActionUserPK();
-				long userIdAssigned = subUser.getLong("userId");
+				long userIdAssigned = subUser.getLong(Field.USER_ID);
 				int assigned = subUser.has(DossierActionUserTerm.ASSIGNED) ? subUser.getInt(DossierActionUserTerm.ASSIGNED) : 0;
 				
 				pk.setDossierActionId(dossierAction.getDossierActionId());
 				
-				pk.setUserId(subUser.getLong("userId"));
+				pk.setUserId(subUser.getLong(Field.USER_ID));
 	
 				DossierUser dossierUser = null;
-				dossierUser = mapDus.get(subUser.getLong("userId"));
+				dossierUser = mapDus.get(subUser.getLong(Field.USER_ID));
 				
 				if (dossierUser != null) {
 					//Update dossier user if assigned
@@ -3684,7 +3874,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				DossierActionUserPK pk = new DossierActionUserPK();
 				
 				pk.setDossierActionId(dossierAction.getDossierActionId());
-				pk.setUserId(subUser.getLong("userId"));
+				pk.setUserId(subUser.getLong(Field.USER_ID));
 	
 				org.opencps.dossiermgt.model.DossierActionUser dau = dossierActionUserLocalService.fetchDossierActionUser(pk);
 				if (Validator.isNull(dau)) {
@@ -3956,8 +4146,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		String[] stepCodeArr = StringUtil.split(curStep.getRoleAsStep());
 		if (stepCodeArr.length > 0) {
 			for (String stepCode : stepCodeArr) {
-				if (stepCode.startsWith("!")) {
-					int index = stepCode.indexOf("!");
+				if (stepCode.startsWith(StringPool.EXCLAMATION)) {
+					int index = stepCode.indexOf(StringPool.EXCLAMATION);
 					String stepCodePunc = stepCode.substring(index + 1);
 					List<org.opencps.dossiermgt.model.DossierActionUser> lstDaus = dossierActionUserLocalService.getByDossierAndStepCode(dossier.getDossierId(), stepCodePunc);
 					List<DossierAction> lstDossierActions = dossierActionLocalService.findDossierActionByDID_STEP(dossier.getDossierId(), stepCodePunc);
@@ -5079,7 +5269,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			//
-			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
 					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
@@ -5296,6 +5486,24 @@ public class CPSDossierBusinessLocalServiceImpl
 			String delegateEmail = jsonDossier.getString(DossierTerm.DELEGATE_EMAIL);
 			String delegateAddress = jsonDossier.getString(DossierTerm.DELEGATE_ADDRESS);
 			//TODO
+			String cityCode = jsonDossier.getString(DossierTerm.CITY_CODE);
+			String cityName = StringPool.BLANK;
+			if (Validator.isNotNull(cityCode)) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, cityCode);
+			}
+
+			String districtCode = jsonDossier.getString(DossierTerm.DISTRICT_CODE);
+			String districtName = StringPool.BLANK;
+			if (Validator.isNotNull(districtCode)) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, districtCode);
+			}
+
+			String wardCode = jsonDossier.getString(DossierTerm.WARD_CODE);
+			String wardName = StringPool.BLANK;
+			if (Validator.isNotNull(wardCode)) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, wardCode);
+			}
+			//
 			String delegateCityCode = jsonDossier.getString(DossierTerm.DELEGATE_CITYCODE);
 			String delegateCityName = StringPool.BLANK;
 			if (Validator.isNotNull(delegateCityCode)) {
@@ -5347,6 +5555,21 @@ public class CPSDossierBusinessLocalServiceImpl
 					dossier.setDueDate(dueDate);
 				if (Validator.isNotNull(metaData))
 					dossier.setMetaData(metaData);
+				if (Validator.isNotNull(address))
+					dossier.setAddress(address);
+				if (Validator.isNotNull(cityCode))
+					dossier.setCityCode(cityCode);
+				if (Validator.isNotNull(cityName))
+					dossier.setCityName(cityName);
+				if (Validator.isNotNull(districtCode))
+					dossier.setDistrictCode(districtCode);
+				if (Validator.isNotNull(districtName))
+					dossier.setDistrictName(districtName);
+				if (Validator.isNotNull(wardCode))
+					dossier.setWardCode(wardCode);
+				if (Validator.isNotNull(wardName))
+					dossier.setWardName(wardName);
+				
 				//
 				dossier.setSystemId(input.getSystemId());
 
@@ -5582,7 +5805,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			//
-			ProcessAction proAction = getProcessAction(groupId, dossier, actionCode,
+			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
 					payload, StringPool.BLANK, input.getPayment(), 0, serviceContext);
@@ -6132,10 +6355,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (dossier != null) {
 			long dossierId = dossier.getPrimaryKey();
 
-			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
-				throw new UnauthorizationException();
-			}
-
+//			if (!auth.hasResource(serviceContext, PaymentFile.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 			String referenceUid = input.getReferenceUid();
@@ -6154,7 +6376,9 @@ public class CPSDossierBusinessLocalServiceImpl
 						input.getPaymentMethod(), serviceContext);		
 			}
 			
-			paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			if (Validator.isNotNull(input.getInvoiceTemplateNo())) {
+				paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());
+			}
 			if(Validator.isNotNull(input.getConfirmFileEntryId())){
 				paymentFile.setConfirmFileEntryId(input.getConfirmFileEntryId());
 			}
@@ -6179,6 +6403,13 @@ public class CPSDossierBusinessLocalServiceImpl
 			if(Validator.isNotNull(input.getAdvanceAmount())){
 				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
 			}
+			if(Validator.isNotNull(input.getFeeAmount())){
+				paymentFile.setFeeAmount(input.getFeeAmount());
+			}
+			if(Validator.isNotNull(input.getPaymentNote())){
+				paymentFile.setPaymentNote(input.getPaymentNote());
+			}
+			
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
 		}
 
@@ -6864,13 +7095,13 @@ public class CPSDossierBusinessLocalServiceImpl
 	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
 	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
-	private static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+	private static ProcessAction getProcessAction(long userId, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
 		//_log.debug("GET PROCESS ACTION____");
 		ProcessAction action = null;
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
-		
+		User systemUser = UserLocalServiceUtil.fetchUser(userId);
 		try {
 			List<ProcessAction> actions = ProcessActionLocalServiceUtil.getByActionCode(groupId, actionCode,
 					serviceProcessId);
@@ -6908,7 +7139,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, systemUser)) {
 							action = act;
 							break;							
 						}
@@ -6924,6 +7155,146 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 
 		return action;
+	}
+
+	private JSONObject getFileAttachMailForApplicant (Dossier dossier, ProcessAction proAction) {
+//		processAction
+//		returnDossierFile 
+		JSONObject filesAttach = JSONFactoryUtil.createJSONObject();
+		JSONArray files = JSONFactoryUtil.createJSONArray();
+		JSONArray documents = JSONFactoryUtil.createJSONArray();
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		_log.debug("============getFileAttachMailForApplicant=================");
+		try {
+			List<String> returnFileTempNoList = ListUtil.toList(StringUtil.split(proAction.getReturnDossierFiles()));
+			_log.debug("==========proAction.getReturnDossierFiles()===========" + proAction.getReturnDossierFiles());
+			if (returnFileTempNoList.size() > 0) {
+
+				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(), DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
+
+				for (DossierFile dossierFile : dossierFiles) {
+					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
+					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
+					if (returnFileTempNoList.indexOf(dossierFile.getFileTemplateNo()) >= 0) {
+						_log.debug("=============dossierFile.getFileTemplateNo()================");
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+						if (fileEntry != null) {
+							jsonObject = JSONFactoryUtil.createJSONObject();
+							jsonObject.put("name", fileEntry.getFileName());
+							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+							files.put(jsonObject);
+						}
+					}
+				}
+
+				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+				for (DossierDocument dossierDocument : dossierDocuments) {
+					// TODO: xu ly loc dossierDocument de dinh kem mail thong bao bo sung
+					_log.info("================dossierDocument=============" + dossierDocument.getDocumentFileId());
+					if (returnFileTempNoList.indexOf(dossierDocument.getDocumentType()) >= 0) {
+						_log.info("================dossierDocument.getDocumentType()=============");
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierDocument.getDocumentFileId());
+						if (fileEntry != null) {
+							jsonObject = JSONFactoryUtil.createJSONObject();
+							jsonObject.put("name", fileEntry.getFileName());
+							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+							documents.put(jsonObject);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+			e.printStackTrace();
+		}
+		filesAttach.put("dossierFiles", files);
+		filesAttach.put("dossierDocuments", documents);
+		return filesAttach;
+	}
+
+	private Dossier setDossierNoNDueDate(Dossier dossier, ServiceProcess serviceProcess, ProcessOption option,
+			boolean setDossierNo, boolean setDueDate, Date dueDateStart,
+			LinkedHashMap<String, Object> params) {
+		
+		if (setDueDate) {
+			Double durationCount = serviceProcess.getDurationCount();
+			int durationUnit = serviceProcess.getDurationUnit();
+			Date dueDate = null;
+			if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
+				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit,
+				// dossier.getGroupId());
+				DueDateUtils dueDateUtils = new DueDateUtils(dueDateStart, durationCount, durationUnit, dossier.getGroupId());
+				dueDate = dueDateUtils.getDueDate();
+			}
+
+			if (Validator.isNotNull(dueDate)) {
+				dossier.setDueDate(dueDate);
+//					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
+				// bResult.put(DossierTerm.DUE_DATE, true);
+			}
+
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
+		}
+
+		if (setDossierNo) {
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
+							params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+			if (Validator.isNull(dossier.getDossierCounter()) && Validator.isNotNull(serviceProcess.getCounterCode())) {
+				ConfigCounter counterConfig = ConfigCounterLocalServiceUtil.fetchByCountrCode(dossier.getGroupId(),
+						serviceProcess.getCounterCode());
+				if (counterConfig != null) {
+					if (Validator.isNotNull(counterConfig.getStartCounter()) && counterConfig.getStartCounter() > 0) {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode() + "| getStartCounter(): "
+											+ counterConfig.getStartCounter());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					} else {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					}
+				}
+			}
+		}
+		return dossier;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);

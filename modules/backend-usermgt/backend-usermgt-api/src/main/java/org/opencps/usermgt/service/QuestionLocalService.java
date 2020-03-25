@@ -171,7 +171,13 @@ public interface QuestionLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Question fetchByG_CN_CPK(long groupId, String className,
+		String classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Question fetchQuestion(long questionId);
+
+	public List<Question> findByG_P_SYNC(long groupId, int publish, int synced);
 
 	public List<Question> findByG_PL(long groupId, int[] publishs, int start,
 		int end);
@@ -236,6 +242,13 @@ public interface QuestionLocalService extends BaseLocalService,
 		int publish, String domainCode, String domainName,
 		String govAgencyCode, String govAgencyName, String questionType,
 		String subDomainCode, String subDomainName);
+
+	public Question updateQuestion(long companyId, long groupId,
+		long questionId, String fullname, String email, String content,
+		int publish, String domainCode, String domainName,
+		String govAgencyCode, String govAgencyName, String questionType,
+		String subDomainCode, String subDomainName, String className,
+		String classPK, int synced);
 
 	/**
 	* Updates the question in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

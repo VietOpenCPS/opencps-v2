@@ -410,6 +410,17 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String employeeName = query.getEmployeeName();
 			String maNgKy = query.getMa_ng_ky();
 			String maCQQL = query.getMa_cqql();
+			String loai = query.getLoai();
+			String ten = query.getTen();
+			String cqTen = query.getCqTen();
+			String cqId = query.getCqId();
+			String soHoChieu = query.getSoHoChieu();
+			String hoTen = query.getHoTen();
+			String ngaySinh = query.getNgaySinh();
+			String noiSinh = query.getNoiSinh();
+			String flagSearch = query.getFlagSearch();
+			String classNameInput = query.getClassName();
+			String classPKInput = query.getClassPK();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -431,28 +442,56 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							try {
 								urlGet = jsonConfig.getString("url");
 								if (urlGet.contains("{eFormNo}")) {
-									urlGet = urlGet.replace("{eFormNo}", URLEncoder.encode(String.valueOf(eFormNo), "UTF-8"));
+									urlGet = urlGet.replace("{eFormNo}", Validator.isNotNull(eFormNo) ? URLEncoder.encode(String.valueOf(eFormNo), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{maCha}")) {
-									urlGet = urlGet.replace("{maCha}", URLEncoder.encode(String.valueOf(maCha), "UTF-8"));
+									urlGet = urlGet.replace("{maCha}", Validator.isNotNull(maCha) ? URLEncoder.encode(String.valueOf(maCha), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{nameDM}")) {
-									urlGet = urlGet.replace("{nameDM}", URLEncoder.encode(String.valueOf(nameDM), "UTF-8"));
+									urlGet = urlGet.replace("{nameDM}", Validator.isNotNull(nameDM) ? URLEncoder.encode(String.valueOf(nameDM), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{parentId}")) {
-									urlGet = urlGet.replace("{parentId}", URLEncoder.encode(String.valueOf(parentId), "UTF-8"));
+									urlGet = urlGet.replace("{parentId}", Validator.isNotNull(parentId) ? URLEncoder.encode(String.valueOf(parentId), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{govAgencyName}")) {
-									urlGet = urlGet.replace("{govAgencyName}", URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8"));
+									urlGet = urlGet.replace("{govAgencyName}", Validator.isNotNull(govAgencyName) ? URLEncoder.encode(String.valueOf(govAgencyName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{employeeName}")) {
-									urlGet = urlGet.replace("{employeeName}", URLEncoder.encode(String.valueOf(employeeName), "UTF-8"));
+									urlGet = urlGet.replace("{employeeName}", Validator.isNotNull(employeeName) ? URLEncoder.encode(String.valueOf(employeeName), "UTF-8") : StringPool.BLANK);
 								}
 								if (urlGet.contains("{ma_ng_ky}")) {
 									urlGet = urlGet.replace("{ma_ng_ky}", maNgKy);
 								}
 								if (urlGet.contains("{ma_cqql}")) {
 									urlGet = urlGet.replace("{ma_cqql}", maCQQL);
+								}
+								//HCTN
+								if (urlGet.contains("{loai}")) {
+									urlGet = urlGet.replace("{loai}", Validator.isNotNull(loai) ? URLEncoder.encode(String.valueOf(loai), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{ten}")) {
+									urlGet = urlGet.replace("{ten}", Validator.isNotNull(ten) ? URLEncoder.encode(String.valueOf(ten), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{cqTen}")) {
+									urlGet = urlGet.replace("{cqTen}", Validator.isNotNull(cqTen) ? URLEncoder.encode(String.valueOf(cqTen), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{cqId}")) {
+									urlGet = urlGet.replace("{cqId}", Validator.isNotNull(cqId) ? URLEncoder.encode(String.valueOf(cqId), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{soHoChieu}")) {
+									urlGet = urlGet.replace("{soHoChieu}", Validator.isNotNull(soHoChieu) ? URLEncoder.encode(String.valueOf(soHoChieu), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{hoTen}")) {
+									urlGet = urlGet.replace("{hoTen}", Validator.isNotNull(hoTen) ? URLEncoder.encode(String.valueOf(hoTen), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{ngaySinh}")) {
+									urlGet = urlGet.replace("{ngaySinh}", Validator.isNotNull(ngaySinh) ? URLEncoder.encode(String.valueOf(ngaySinh), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{noiSinh}")) {
+									urlGet = urlGet.replace("{noiSinh}", Validator.isNotNull(noiSinh) ? URLEncoder.encode(String.valueOf(noiSinh), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{flagSearch}")) {
+									urlGet = urlGet.replace("{flagSearch}", Validator.isNotNull(flagSearch) ? URLEncoder.encode(String.valueOf(flagSearch), "UTF-8") : StringPool.BLANK);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
@@ -461,7 +500,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 //										.replaceAll("{employeeName}", employeeName);
 								System.out.println("urlGet: "+urlGet);
 							} catch (Exception e) {
-								System.out.println("error: "+e);
+								_log.debug(e);
+//								System.out.println("error: "+e);
 							}
 							
 							//
@@ -519,6 +559,118 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								sb.append((char) cp);
 							}
 							System.out.println("RESULT PROXY: " + sb.toString());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
+						}
+						else if ("POST".equals(method) || "PUT".equals(method)) {
+							System.out.println("method INSERT OR UPDATE: "+method);
+							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
+							String urlUpdate = jsonConfig.getString("url");
+							System.out.println("urlUpdate: "+urlUpdate);
+							
+							//
+							long groupIdUpdate = 0;
+							String authStrEnc = StringPool.BLANK;
+							String classNameUpdate = StringPool.BLANK;
+							String classPKUpdate = StringPool.BLANK;
+							//
+							String params = jsonConfig.getString("params");
+							System.out.println("params: "+params);
+							JSONObject jsonBodyData = JSONFactoryUtil.createJSONObject();
+							if (Validator.isNotNull(params)) {
+								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(params);
+								//
+								String strHeader = jsonParams.getString("header");
+								if (Validator.isNotNull(strHeader)) {
+									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(strHeader);
+									//
+									groupIdUpdate = jsonHeader.getLong("groupId");
+									System.out.println("groupIdUpdate: "+groupIdUpdate);
+									
+								}
+								//
+								String strBody = jsonParams.getString("body");
+								if (Validator.isNotNull(strBody)) {
+									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(strBody);
+									//
+									classNameUpdate = jsonBody.getString("className");
+									if (classNameUpdate.contains("{className}")) {
+										classNameUpdate = classNameUpdate.replace("{className}", Validator.isNotNull(classNameInput) ? URLEncoder.encode(String.valueOf(classNameInput), "UTF-8") : StringPool.BLANK);
+									}
+									classPKUpdate = jsonBody.getString("classPK");
+									if (classPKUpdate.contains("{classPK}")) {
+										classPKUpdate = classPKUpdate.replace("{classPK}", Validator.isNotNull(classPKInput) ? URLEncoder.encode(String.valueOf(classPKInput), "UTF-8") : StringPool.BLANK);
+									}
+									
+									jsonBodyData.put("className", classNameUpdate);
+									jsonBodyData.put("classPK", classPKUpdate);
+									System.out.println("className: "+classNameUpdate);
+									System.out.println("classPK: "+classPKUpdate);
+									
+								}
+							}
+							
+							//AUTHEN
+							String authenticate = jsonConfig.getString("authenticate");
+							System.out.println("authenticate: "+authenticate);
+							if (Validator.isNotNull(authenticate)) {
+								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);
+								//
+								String type = jsonAuthen.getString("type");
+								System.out.println("type: "+type);
+								if ("base".equals(type)) {
+									String userName = jsonAuthen.getString("username");
+									String password = jsonAuthen.getString("password");
+									System.out.println("userName: "+userName);
+									System.out.println("password: "+password);
+									//
+									if (Validator.isNotNull(userName) && Validator.isNotNull(password)) {
+										authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
+									}
+								}
+							}
+
+							StringBuilder postData = new StringBuilder();
+							Iterator<?> keys = jsonBodyData.keys();
+							while (keys.hasNext()) {
+								String key = (String) keys.next();
+								if (!"".equals(postData.toString())) {
+									postData.append("&");
+								}
+								postData.append(key);
+								postData.append("=");
+								postData.append(jsonBodyData.get(key));
+							}
+
+							URL urlVal = new URL(urlUpdate);
+							_log.debug("API URL: " + urlVal);
+							java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
+							conn.setRequestProperty("groupId", GetterUtil.getString(groupIdUpdate));
+							conn.setRequestMethod(method);
+							conn.setRequestProperty("Accept", "application/json");
+							if (Validator.isNotNull(authStrEnc)) {
+								conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
+							}
+							_log.debug("BASIC AUTHEN: " + authStrEnc);
+							conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+							conn.setRequestProperty("Content-Length",
+									"" + Integer.toString(postData.toString().getBytes().length));
+
+							conn.setUseCaches(false);
+							conn.setDoInput(true);
+							conn.setDoOutput(true);
+							_log.debug("POST DATA: " + postData.toString());
+							OutputStream os = conn.getOutputStream();
+							os.write(postData.toString().getBytes());
+							os.close();
+
+								
+							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+							int cp;
+							while ((cp = brf.read()) != -1) {
+								sb.append((char) cp);
+							}
+							_log.debug("RESULT PROXY: " + sb.toString());
 							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
 						}
 						

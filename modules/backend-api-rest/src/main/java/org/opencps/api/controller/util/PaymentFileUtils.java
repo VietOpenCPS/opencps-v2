@@ -172,6 +172,7 @@ public class PaymentFileUtils {
 
 		PaymentFileModel model = new PaymentFileModel();
 
+		model.setPaymentFileId(paymentFile.getPaymentFileId());
 		model.setCreateDate(APIDateTimeUtils.convertDateToString(paymentFile.getCreateDate()));
 		model.setModifiedDate(APIDateTimeUtils.convertDateToString(paymentFile.getModifiedDate()));
 		model.setReferenceUid(paymentFile.getReferenceUid());

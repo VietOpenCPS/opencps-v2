@@ -11,6 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -59,7 +60,7 @@ public interface DossierDocumentManagement {
 
 	public Response printDossierDocument(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @PathParam("id") String id);
+			@Context ServiceContext serviceContext, @PathParam("id") String id, @QueryParam("documentType") String documentType);
 
 	@POST
 	@Path("/preview/{typeCode}")

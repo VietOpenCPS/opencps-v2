@@ -673,6 +673,206 @@ public class VotingUtil {
 	}
 
 	/**
+	* Returns all the votings where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the matching votings
+	*/
+	public static List<Voting> findByF_G_CLNAME_CLPK(long groupId,
+		String className, String classPK) {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
+	/**
+	* Returns a range of all the votings where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @return the range of matching votings
+	*/
+	public static List<Voting> findByF_G_CLNAME_CLPK(long groupId,
+		String className, String classPK, int start, int end) {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK(groupId, className, classPK, start,
+			end);
+	}
+
+	/**
+	* Returns an ordered range of all the votings where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching votings
+	*/
+	public static List<Voting> findByF_G_CLNAME_CLPK(long groupId,
+		String className, String classPK, int start, int end,
+		OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK(groupId, className, classPK, start,
+			end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the votings where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VotingModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param start the lower bound of the range of votings
+	* @param end the upper bound of the range of votings (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching votings
+	*/
+	public static List<Voting> findByF_G_CLNAME_CLPK(long groupId,
+		String className, String classPK, int start, int end,
+		OrderByComparator<Voting> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK(groupId, className, classPK, start,
+			end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first voting in the ordered set where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting
+	* @throws NoSuchVotingException if a matching voting could not be found
+	*/
+	public static Voting findByF_G_CLNAME_CLPK_First(long groupId,
+		String className, String classPK,
+		OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK_First(groupId, className, classPK,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first voting in the ordered set where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_G_CLNAME_CLPK_First(long groupId,
+		String className, String classPK,
+		OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_G_CLNAME_CLPK_First(groupId, className, classPK,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last voting in the ordered set where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting
+	* @throws NoSuchVotingException if a matching voting could not be found
+	*/
+	public static Voting findByF_G_CLNAME_CLPK_Last(long groupId,
+		String className, String classPK,
+		OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK_Last(groupId, className, classPK,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last voting in the ordered set where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching voting, or <code>null</code> if a matching voting could not be found
+	*/
+	public static Voting fetchByF_G_CLNAME_CLPK_Last(long groupId,
+		String className, String classPK,
+		OrderByComparator<Voting> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_G_CLNAME_CLPK_Last(groupId, className, classPK,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the votings before and after the current voting in the ordered set where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param votingId the primary key of the current voting
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next voting
+	* @throws NoSuchVotingException if a voting with the primary key could not be found
+	*/
+	public static Voting[] findByF_G_CLNAME_CLPK_PrevAndNext(long votingId,
+		long groupId, String className, String classPK,
+		OrderByComparator<Voting> orderByComparator)
+		throws backend.feedback.exception.NoSuchVotingException {
+		return getPersistence()
+				   .findByF_G_CLNAME_CLPK_PrevAndNext(votingId, groupId,
+			className, classPK, orderByComparator);
+	}
+
+	/**
+	* Removes all the votings where groupId = &#63; and className = &#63; and classPK = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	*/
+	public static void removeByF_G_CLNAME_CLPK(long groupId, String className,
+		String classPK) {
+		getPersistence().removeByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
+	/**
+	* Returns the number of votings where groupId = &#63; and className = &#63; and classPK = &#63;.
+	*
+	* @param groupId the group ID
+	* @param className the class name
+	* @param classPK the class pk
+	* @return the number of matching votings
+	*/
+	public static int countByF_G_CLNAME_CLPK(long groupId, String className,
+		String classPK) {
+		return getPersistence()
+				   .countByF_G_CLNAME_CLPK(groupId, className, classPK);
+	}
+
+	/**
 	* Caches the voting in the entity cache if it is enabled.
 	*
 	* @param voting the voting

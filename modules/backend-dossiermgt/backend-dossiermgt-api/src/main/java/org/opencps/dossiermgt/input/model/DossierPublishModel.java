@@ -78,6 +78,15 @@ public class DossierPublishModel {
 	protected Integer sampleCount;
 	protected String dossierName;
 	protected String metaData;
+	protected String dossierCounter;
+
+	public String getDossierCounter() {
+		return dossierCounter;
+	}
+
+	public void setDossierCounter(String dossierCounter) {
+		this.dossierCounter = dossierCounter;
+	}
 
 	public int getViaPostal() {
 		return viaPostal;

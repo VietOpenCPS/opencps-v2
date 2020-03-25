@@ -114,6 +114,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 					String code = message.getString(CODE);
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
+					_log.info("adminConfig: "+JSONFactoryUtil.looseSerialize(adminConfig));
 	
 					String bunderStr;
 					String modelStr;

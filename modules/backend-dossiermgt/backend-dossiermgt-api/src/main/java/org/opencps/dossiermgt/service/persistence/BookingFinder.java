@@ -24,4 +24,7 @@ import aQute.bnd.annotation.ProviderType;
 public interface BookingFinder {
 	public int findBookingMaxByServiceGroupCode(long groupId,
 		String serviceGroupCode);
+
+	public java.util.List findBookingDateOnline(long groupId,
+		String bookingDate, boolean online);
 }

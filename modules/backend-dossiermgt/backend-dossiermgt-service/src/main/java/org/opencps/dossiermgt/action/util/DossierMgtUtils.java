@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -67,7 +68,7 @@ public class DossierMgtUtils {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
 		obj.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
-		obj.put(DossierTerm.GROUP_ID, dossier.getGroupId());
+		obj.put(Field.GROUP_ID, dossier.getGroupId());
 		obj.put(DossierTerm.SERVER_NO, dossier.getServerNo());
 		obj.put(DossierTerm.REFERENCE_UID, dossier.getReferenceUid());
 		obj.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
@@ -117,6 +118,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.POSTAL_DISTRICT_CODE, dossier.getPostalDistrictCode());
 		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
 		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
+		obj.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 		String serviceCode = dossier.getServiceCode();
 		ServiceProcess serviceProcess;
 		try {
@@ -230,13 +232,13 @@ public class DossierMgtUtils {
 					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
-						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put(Field.USER_ID, dau.getUserId());
 						//
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
 						if (employee != null) {
-							assignUserObj.put("userName", employee.getFullName());
+							assignUserObj.put(Field.USER_NAME, employee.getFullName());
 						} else {
-							assignUserObj.put("userName", u.getFullName());
+							assignUserObj.put(Field.USER_NAME, u.getFullName());
 						}
 						
 						assignUserArr.put(assignUserObj);					
@@ -247,13 +249,13 @@ public class DossierMgtUtils {
 				if (!lstUsers.contains(da.getUserId())) {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put(Field.USER_ID, da.getUserId());
 
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
 					if (employee != null) {
-						assignUserObj.put("userName", employee.getFullName());
+						assignUserObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						assignUserObj.put("userName", da.getUserName());
+						assignUserObj.put(Field.USER_NAME, da.getUserName());
 					}
 					
 					assignUserArr.put(assignUserObj);					
@@ -381,13 +383,13 @@ public class DossierMgtUtils {
 					if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
 						JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 						lstUsers.add(dau.getUserId());
-						assignUserObj.put("userId", dau.getUserId());
+						assignUserObj.put(Field.USER_ID, dau.getUserId());
 						//
 						Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, u.getUserId());
 						if (employee != null) {
-							assignUserObj.put("userName", employee.getFullName());
+							assignUserObj.put(Field.USER_NAME, employee.getFullName());
 						} else {
-							assignUserObj.put("userName", u.getFullName());
+							assignUserObj.put(Field.USER_NAME, u.getFullName());
 						}
 						
 						assignUserArr.put(assignUserObj);					
@@ -398,13 +400,13 @@ public class DossierMgtUtils {
 				if (!lstUsers.contains(da.getUserId())) {
 					JSONObject assignUserObj = JSONFactoryUtil.createJSONObject();
 					lstUsers.add(da.getUserId());
-					assignUserObj.put("userId", da.getUserId());
+					assignUserObj.put(Field.USER_ID, da.getUserId());
 
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, da.getUserId());
 					if (employee != null) {
-						assignUserObj.put("userName", employee.getFullName());
+						assignUserObj.put(Field.USER_NAME, employee.getFullName());
 					} else {
-						assignUserObj.put("userName", da.getUserName());
+						assignUserObj.put(Field.USER_NAME, da.getUserName());
 					}
 					
 					assignUserArr.put(assignUserObj);					
@@ -497,7 +499,7 @@ public class DossierMgtUtils {
 		return dossier;
 	}
 
-	public static boolean checkPreCondition(String[] preConditions, Dossier dossier) {
+	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
 		boolean result = true;
 		
 		
@@ -636,9 +638,45 @@ public class DossierMgtUtils {
 					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
 				}
 			}
+			// BA Duan
+			if (preCondition.contains("isRoles=")) {
+				String[] splitDuration = preCondition.split("=");
+				if (splitDuration.length == 2) {
+					result = result && checkIsRoles(splitDuration[1], curUser, dossier);
+				}
+			}
 		}
 
 		return result;
+	}
+
+	private static boolean checkIsRoles(String role, User curUser, Dossier dossier) {
+
+		boolean flag = false;
+
+		if (Validator.isNull(curUser)) {
+			return flag;
+		}
+		
+		String[] roles = StringUtil.split(role, StringPool.PLUS);
+		List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(curUser.getUserId());
+		
+		for (String preconditionRoleCode : roles) {
+
+			JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), preconditionRoleCode);
+
+			for (Role r : lstRoles) {
+				if (r.getRoleId() == jobPos.getMappingRoleId()) {
+					flag = true;
+					break;
+				}
+			}
+			if (flag) {
+				break;
+			}
+		}
+	
+		return flag;
 	}
 		
 	private static boolean checkServiceCode(String serviceCode, Dossier dossier) {

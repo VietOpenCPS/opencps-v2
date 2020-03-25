@@ -365,7 +365,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								}
 							}
 							catch (Exception e) {
-								
+								_log.debug(e);
 							}
 						}
 					}
@@ -521,7 +521,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
 						if (dauList != null && dauList.size() > 0) {
 							for (DossierActionUser dau : dauList) {
-								userAssignedList.add(dau.getUserId() + "_" + dossierAction.getStepCode() + "_" + dau.getAssigned());
+								userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
 							}
 						}
 					}
@@ -561,13 +561,13 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				document.addTextSortable(DossierTerm.REFERENCE_UID, object.getReferenceUid());
 			}
 
-				document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
+			document.addTextSortable(DossierTerm.SERVICE_CODE, object.getServiceCode());
 			if (Validator.isNotNull(object.getServiceCode())) {
 				String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(object.getServiceCode());
 				document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
 			}
 
-				document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
+			document.addTextSortable(DossierTerm.SERVICE_NAME, object.getServiceName());
 
 			if (Validator.isNotNull(object.getServiceName())) {
 				document.addTextSortable(DossierTerm.SERVICE_NAME_SEARCH,
@@ -807,6 +807,14 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			}
 			//
 			document.addNumberSortable(DossierTerm.SYSTEM_ID, object.getSystemId());
+			document.addTextSortable(DossierTerm.DOSSIER_COUNTER, object.getDossierCounter());
+
+			if (Validator.isNotNull(object.getDossierCounter())) {
+				document.addTextSortable(DossierTerm.DOSSIER_COUNTER_SEARCH,
+						SpecialCharacterUtils.splitSpecial(object.getDossierCounter()));
+			} else {
+				document.addTextSortable(DossierTerm.DOSSIER_COUNTER_SEARCH, StringPool.BLANK);
+			}
 		} catch (Exception e) {
 			_log.error(e);
 		}

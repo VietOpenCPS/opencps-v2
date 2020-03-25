@@ -64,7 +64,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{questionId=");
 		sb.append(questionId);
@@ -98,6 +98,12 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		sb.append(subDomainCode);
 		sb.append(", subDomainName=");
 		sb.append(subDomainName);
+		sb.append(", className=");
+		sb.append(className);
+		sb.append(", classPK=");
+		sb.append(classPK);
+		sb.append(", synced=");
+		sb.append(synced);
 		sb.append("}");
 
 		return sb.toString();
@@ -197,6 +203,22 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 			questionImpl.setSubDomainName(subDomainName);
 		}
 
+		if (className == null) {
+			questionImpl.setClassName("");
+		}
+		else {
+			questionImpl.setClassName(className);
+		}
+
+		if (classPK == null) {
+			questionImpl.setClassPK("");
+		}
+		else {
+			questionImpl.setClassPK(classPK);
+		}
+
+		questionImpl.setSynced(synced);
+
 		questionImpl.resetOriginalValues();
 
 		return questionImpl;
@@ -223,6 +245,10 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		questionType = objectInput.readUTF();
 		subDomainCode = objectInput.readUTF();
 		subDomainName = objectInput.readUTF();
+		className = objectInput.readUTF();
+		classPK = objectInput.readUTF();
+
+		synced = objectInput.readInt();
 	}
 
 	@Override
@@ -307,6 +333,22 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 		else {
 			objectOutput.writeUTF(subDomainName);
 		}
+
+		if (className == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(className);
+		}
+
+		if (classPK == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(classPK);
+		}
+
+		objectOutput.writeInt(synced);
 	}
 
 	public long questionId;
@@ -325,4 +367,7 @@ public class QuestionCacheModel implements CacheModel<Question>, Externalizable 
 	public String questionType;
 	public String subDomainCode;
 	public String subDomainName;
+	public String className;
+	public String classPK;
+	public int synced;
 }

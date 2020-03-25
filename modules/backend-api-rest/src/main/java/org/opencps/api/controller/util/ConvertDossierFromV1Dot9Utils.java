@@ -160,6 +160,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static final String TEMP_DELEGATETYPE = "delegateType";
 	public static final String TEMP_DOCUMENTNO = "documentNo";
 	public static final String TEMP_DOCUMENTDATE = "documentDate";
+	public static final String ACTION_DONE_PAYMENT = "actionDonePayment";
 
 	public static void setDossierFileObject(
 		JSONObject j, ServiceContext serviceContext) {
@@ -195,7 +196,7 @@ public class ConvertDossierFromV1Dot9Utils {
 						groupId, dossier.getDossierId(), dossierPartNo, 2,
 						displayName);
 			}
-			if (oldDossierFile != null) {
+			if (oldDossierFile != null && !displayName.equals(oldDossierFile.getDisplayName())) {
 				_log.info("__Start update file at:" + new Date());
 
 				// DossierFile dossierFile = null;
@@ -216,15 +217,14 @@ public class ConvertDossierFromV1Dot9Utils {
 			else {
 				_log.info("__Start add file at:" + new Date());
 				DossierFile dossierFile = null;
+				InputStream inputStream = null;
 				// _log.info(
 				// groupId + "===" + dossier.getDossierId() + "===" +
 				// dossierPartNo + "===" + displayName);
 
-				InputStream inputStream =
-					getFileFromDVCOld(j.getString("fileUrl"));
-
-				if (dossier == null || inputStream == null) {
-					return;
+				if (Validator.isNotNull(j.getString("fileUrl"))) {
+					inputStream =
+							getFileFromDVCOld(j.getString("fileUrl"));
 				}
 
 				dossierFile = action.addDossierFile(
@@ -411,6 +411,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		objectData.put(TEMP_DELEGATETYPE, 0);
 		objectData.put(TEMP_DOCUMENTNO, "");
 		objectData.put(TEMP_DOCUMENTDATE, 0l);
+		objectData.put(ACTION_DONE_PAYMENT, "");
 		return objectData;
 	}
 
@@ -514,7 +515,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	}
 
 	public static JSONObject callActionDoneDossier(
-		String pathBase, long groupId, long id, String actionCode,
+		String pathBase, long groupId, long id, String actionCode, String payment,
 		ServiceContext serviceContext)
 		throws PortalException {
 
@@ -525,7 +526,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		String endPoint = "dossiers/" + id + "/actions";
 
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("payment", "");
+		params.put("payment", payment);
 		params.put("assignUsers", "");
 		params.put("actionNote", "");
 		params.put(
@@ -852,6 +853,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			objectData.put(TEMP_DELEGATETYPE, rs.getString(TEMP_DELEGATETYPE));
 			objectData.put(TEMP_DOCUMENTNO, rs.getString(TEMP_DOCUMENTNO));
 			objectData.put(TEMP_DOCUMENTDATE, rs.getString(TEMP_DOCUMENTDATE));
+			objectData.put(ACTION_DONE_PAYMENT, rs.getString(ACTION_DONE_PAYMENT));
 		}
 		catch (SQLException e) {
 

@@ -78,6 +78,10 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 			document.addTextSortable(BookingTerm.CLASS_NAME, object.getClassName());
 			document.addTextSortable(BookingTerm.BOOKING_NAME, object.getBookingName());
 			document.addTextSortable(BookingTerm.CODE_NUMBER, object.getCodeNumber());
+			if (Validator.isNotNull(object.getCodeNumber())) {
+				document.addTextSortable(BookingTerm.CODE_NUMBER_SEARCH,
+						SpecialCharacterUtils.splitSpecial(object.getCodeNumber()));
+			}
 			document.addTextSortable(BookingTerm.GATE_NUMBER, object.getGateNumber());
 //
 			if (Validator.isNotNull(object.getCheckinDate())) {
@@ -106,9 +110,12 @@ public class BookingIndexer extends BaseIndexer<Booking> {
 				document.addTextSortable(BookingTerm.BOOKING_DATE_LUCENE, StringPool.BLANK);
 			}
 
+			document.addTextSortable(BookingTerm.ONLINE, Boolean.toString(object.getOnline()));
 			document.addTextSortable(BookingTerm.SPEAKING, String.valueOf(object.getSpeaking()));
 			document.addTextSortable("serviceGroupCode", object.getServiceGroupCode());
 			document.addNumberSortable("count", object.getCount());
+			document.addTextSortable(BookingTerm.BOOKING_IN_TIME, object.getBookingInTime());
+			document.addTextSortable(BookingTerm.TEL_NO, object.getTelNo());
 
 		} catch (Exception e) {
 			_log.error(e);

@@ -57,6 +57,22 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="count" type="int" />
+		<field name="online" type="boolean" />
+		<field name="bookingInTime" type="String" />
+		<field name="telNo" type="String" />
+	</model>
+	<model name="org.opencps.dossiermgt.model.ConfigCounter">
+		<field name="uuid" type="String" />
+		<field name="configCounterId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="counterCode" type="String" />
+		<field name="patternCode" type="String" />
+		<field name="startCounter" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.Deliverable">
 		<field name="uuid" type="String" />
@@ -223,7 +239,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="applicantName" type="String">
-			<hint name="max-length">500</hint>
+			<hint name="max-length">5000</hint>
 		</field>
 		<field name="applicantIdType" type="String" />
 		<field name="applicantIdNo" type="String" />
@@ -355,6 +371,7 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="systemId" type="int" />
+		<field name="dossierCounter" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
@@ -916,6 +933,7 @@
 		<field name="einvoice" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
+		<field name="invoiceFileEntryId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessAction">
 		<field name="uuid" type="String" />
@@ -1418,6 +1436,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="dossierGroupPattern" type="String" />
+		<field name="counterCode" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcessRole">
 		<field name="uuid" type="String" />

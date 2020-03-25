@@ -28,7 +28,9 @@ import javax.xml.bind.annotation.XmlType;
     "bookingDate",
     "speaking",
     "serviceGroupCode",
-    "count"
+    "count",
+    "online",
+    "bookingInTime"
 })
 @XmlRootElement(name = "BookingDataModel")
 public class BookingDataModel {
@@ -48,6 +50,8 @@ public class BookingDataModel {
 	protected boolean speaking;
 	protected String serviceGroupCode;
 	protected Integer count;
+	protected boolean online;
+	protected String bookingInTime;
 
 	public Long getBookingId() {
 		return bookingId;
@@ -138,6 +142,18 @@ public class BookingDataModel {
 	}
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+	public boolean isOnline() {
+		return online;
+	}
+	public void setOnline(boolean online) {
+		this.online = online;
+	}
+	public String getBookingInTime() {
+		return bookingInTime;
+	}
+	public void setBookingInTime(String bookingInTime) {
+		this.bookingInTime = bookingInTime;
 	}
 
 }

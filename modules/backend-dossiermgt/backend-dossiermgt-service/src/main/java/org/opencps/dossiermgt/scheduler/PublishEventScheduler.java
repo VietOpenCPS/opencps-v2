@@ -54,19 +54,19 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = PublishEventScheduler.class)
 public class PublishEventScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
-	
+
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
 			isRunning = true;
-		}
-		else {
+		} else {
 			return;
 		}
 		try {
 			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-			
-			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0, 10);
+
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0,
+					10);
 			_log.info("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {
@@ -78,32 +78,28 @@ public class PublishEventScheduler extends BaseMessageListener {
 						if (retry < PublishQueueTerm.MAX_RETRY) {
 							pq.setRetry(pq.getRetry() + 1);
 							pq.setStatus(PublishQueueTerm.STATE_WAITING_SYNC);
-							PublishQueueLocalServiceUtil.updatePublishQueue(pq);					
-						}
-						else {
+							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+						} else {
 							pq.setRetry(0);
 							pq.setStatus(PublishQueueTerm.STATE_ACK_ERROR);
 							PublishQueueLocalServiceUtil.updatePublishQueue(pq);
-						}				
-					}
-					else {
+						}
+					} else {
 						pq.setStatus(PublishQueueTerm.STATE_RECEIVED_ACK);
-						PublishQueueLocalServiceUtil.updatePublishQueue(pq);				
-		//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+						PublishQueueLocalServiceUtil.updatePublishQueue(pq);
+						//				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
 					}
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					_log.debug(e);
 				}
 			}
 			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			_log.debug(e);
 		}
 		isRunning = false;
 	}
-	
+
 	private boolean processPublish(PublishQueue pq) {
 		long dossierId = pq.getDossierId();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -112,7 +108,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 		}
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
-		
+
+		_log.debug("pq.getServerNo() --->>> " + pq.getServerNo() + "|" + dossier.getOriginality() + "|"
+				+ sc.getProtocol());
+
 		if (ServerConfigTerm.PUBLISH_PROTOCOL.equals(sc.getProtocol())) {
 			try {
 				if (dossier != null && dossier.getOriginality() > 0) {
@@ -130,22 +129,20 @@ public class PublishEventScheduler extends BaseMessageListener {
 					}
 					if (result.getDossierId() != null) {
 						return true;
-					}
-					else {
+					} else {
 						return false;
 					}
-				}
-				else {
+				} else {
 					return true;
 				}
 			} catch (JSONException e) {
 				_log.error(e);
-			}			
-		}
-		else if (ServerConfigTerm.LGSP_PROTOCOL.equals(sc.getProtocol())) {
+			}
+		} else if (ServerConfigTerm.LGSP_PROTOCOL.equals(sc.getProtocol())) {
 			try {
 				if (dossier != null && dossier.getOriginality() > 0) {
-					LGSPRestClient client = LGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
+					LGSPRestClient client = LGSPRestClient
+							.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 					Mtoken token = client.getToken();
 					if (Validator.isNotNull(token.getAccessToken())) {
 						JSONObject dossierObj = DossierMgtUtils.convertDossierToJSON(dossier,
@@ -167,104 +164,94 @@ public class PublishEventScheduler extends BaseMessageListener {
 						}
 						if (result.getStatus() != 200) {
 							return false;
-						}
-						else {
+						} else {
 							ServiceContext context = new ServiceContext();
-							MResult result2 = client.postDocumentTrace(token.getAccessToken(), dossierObj.getLong(DossierTerm.DOSSIER_ID));	
+							MResult result2 = client.postDocumentTrace(token.getAccessToken(),
+									dossierObj.getLong(DossierTerm.DOSSIER_ID));
 							JSONObject messageObj = JSONFactoryUtil.createJSONObject();
 							messageObj.put("token", token.getAccessToken());
 							JSONObject lgspObj = OpenCPSConverter.convertToDocumentTraces(dossierId);
 							messageObj.put("MDocumentTraces", lgspObj.toJSONString());
 							String messageText = messageObj.toJSONString();
 							String acknowlegement = JSONFactoryUtil.looseSerialize(result2);
-							PublishQueueLocalServiceUtil.updatePublishQueue(
-									sc.getGroupId(), 0l, 2, 0l, 
-									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-									messageText, acknowlegement,
-									context);	
-							
+							PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), 0l, 2, 0l,
+									sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0,
+									messageText, acknowlegement, context);
+
 							if (result2.getStatus() != 200) {
 								return false;
-							}
-							else {
+							} else {
 								return true;
 							}
 						}
-					}
-					else {
+					} else {
 						return false;
 					}
-				}
-				else {
+				} else {
 					return true;
 				}
 			} catch (JSONException e) {
 				_log.error(e);
 			} catch (PortalException e) {
 				_log.error(e);
-			}					
+			}
 		}
 		//add by TrungNt
 		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-			
+
 			try {
-				if (dossier != null && dossier.getOriginality() > 0) {
-					DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-					
-					JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier);
-					if(result.has("error_code") && result.getString("error_code").equals("0")) {
-						PublishQueueLocalServiceUtil.updatePublishQueue(
-								sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
-								sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
-								String.valueOf(dossier.getDossierNo()), result.toJSONString(),
-								new ServiceContext());	
-						return true;
-					}
-					
-					return false;
-					
-				}
-				else {
+
+				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+
+				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier);
+				_log.debug(result.toJSONString());
+				if (result.has("error_code") && result.getString("error_code").equals("0")) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
+							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
+							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
+							result.toJSONString(), new ServiceContext());
 					return true;
 				}
+
 			} catch (Exception e) {
 				_log.error(e);
-			}				
+			}
 		}
 		return true;
 	}
-	
-	  @Activate
-	  @Modified
-	  protected void activate(Map<String,Object> properties) throws SchedulerException {
-		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5, TimeUnit.SECOND);
 
-		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-		  
-//		  _schedulerEntryImpl.setTrigger(jobTrigger);
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) throws SchedulerException {
+		String listenerClass = getClass().getName();
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5,
+				TimeUnit.SECOND);
 
-		  if (_initialized) {
-			  deactivate();
-		  }
+		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 
-	    _schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-	    _initialized = true;
-	  }
-	  
+		//		  _schedulerEntryImpl.setTrigger(jobTrigger);
+
+		if (_initialized) {
+			deactivate();
+		}
+
+		_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
+		_initialized = true;
+	}
+
 	@Deactivate
 	protected void deactivate() {
 		if (_initialized) {
 			try {
 				_schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());
-		    } catch (SchedulerException se) {
-		        if (_log.isWarnEnabled()) {
-		        	_log.warn("Unable to unschedule trigger", se);
-		        }
-		    }
+			} catch (SchedulerException se) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to unschedule trigger", se);
+				}
+			}
 
-		      _schedulerEngineHelper.unregister(this);
+			_schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
 	}
@@ -274,13 +261,13 @@ public class PublishEventScheduler extends BaseMessageListener {
 	 * @return StorageType The storage type to use.
 	*/
 	protected StorageType getStorageType() {
-	    if (_schedulerEntryImpl instanceof StorageTypeAware) {
-	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
-	    }
-	    
-	    return StorageType.MEMORY_CLUSTERED;
+		if (_schedulerEntryImpl instanceof StorageTypeAware) {
+			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
+		}
+
+		return StorageType.MEMORY_CLUSTERED;
 	}
-	  
+
 	/**
 	   * setModuleServiceLifecycle: So this requires some explanation...
 	   * 
@@ -297,7 +284,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
-	  
+
 	@Reference(unbind = "-")
 	protected void setTriggerFactory(TriggerFactory triggerFactory) {
 		_triggerFactory = triggerFactory;
@@ -307,12 +294,12 @@ public class PublishEventScheduler extends BaseMessageListener {
 	protected void setSchedulerEngineHelper(SchedulerEngineHelper schedulerEngineHelper) {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
-	
+
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
 	private SchedulerEntryImpl _schedulerEntryImpl = null;
 
 	private Log _log = LogFactoryUtil.getLog(PublishEventScheduler.class);
-	
+
 }

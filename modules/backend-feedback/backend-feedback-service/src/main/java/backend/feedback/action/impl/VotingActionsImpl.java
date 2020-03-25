@@ -48,10 +48,12 @@ public class VotingActionsImpl implements VotingActions {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
 			if (!"0".equals(classPK)) {
-				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
+				// long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
+				long count = VotingLocalServiceUtil.countVotingByG_Class_Name_PK(groupId, className, classPK);
 				if (count == 0) {
 					// Add new voting with classPK
-					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+					// List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
+					List<Voting> votingList = VotingLocalServiceUtil.getVotingByG_Class_Name_PK(groupId, className, "0");
 					if (votingList != null) {
 						String subject;
 						String choices;

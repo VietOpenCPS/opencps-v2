@@ -53,6 +53,9 @@ public class BookingSoap implements Serializable {
 		soapModel.setSpeaking(model.isSpeaking());
 		soapModel.setServiceGroupCode(model.getServiceGroupCode());
 		soapModel.setCount(model.getCount());
+		soapModel.setOnline(model.isOnline());
+		soapModel.setBookingInTime(model.getBookingInTime());
+		soapModel.setTelNo(model.getTelNo());
 
 		return soapModel;
 	}
@@ -269,6 +272,34 @@ public class BookingSoap implements Serializable {
 		_count = count;
 	}
 
+	public boolean getOnline() {
+		return _online;
+	}
+
+	public boolean isOnline() {
+		return _online;
+	}
+
+	public void setOnline(boolean online) {
+		_online = online;
+	}
+
+	public String getBookingInTime() {
+		return _bookingInTime;
+	}
+
+	public void setBookingInTime(String bookingInTime) {
+		_bookingInTime = bookingInTime;
+	}
+
+	public String getTelNo() {
+		return _telNo;
+	}
+
+	public void setTelNo(String telNo) {
+		_telNo = telNo;
+	}
+
 	private String _uuid;
 	private long _bookingId;
 	private long _groupId;
@@ -289,4 +320,7 @@ public class BookingSoap implements Serializable {
 	private boolean _speaking;
 	private String _serviceGroupCode;
 	private int _count;
+	private boolean _online;
+	private String _bookingInTime;
+	private String _telNo;
 }

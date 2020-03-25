@@ -147,7 +147,7 @@ public interface DossierActions {
 			String delegateWardCode, String delegateWardName, double durationCount, int durationUnit, String dossierName, String processNo,
 			String metaData, ServiceContext context) throws PortalException;
 
-	public List<User> getAssignUsersByStep(Dossier dossier, ProcessStep ps);
+	public List<User> getAssignUsersByStep(long userId, Dossier dossier, ProcessStep ps);
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);
 	
 	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,

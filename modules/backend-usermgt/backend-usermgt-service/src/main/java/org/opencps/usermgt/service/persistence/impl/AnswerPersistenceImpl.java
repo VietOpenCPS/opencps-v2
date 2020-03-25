@@ -55,6 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -980,6 +981,1442 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 	private static final String _FINDER_COLUMN_G_Q_PL_QUESTIONID_2 = "answer.questionId = ? AND ";
 	private static final String _FINDER_COLUMN_G_Q_PL_PUBLISH_2 = "answer.publish = ?";
 	private static final String _FINDER_COLUMN_G_Q_PL_PUBLISH_7 = "answer.publish IN (";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_CN_CPK = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, AnswerImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_CN_CPK",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			AnswerModelImpl.GROUPID_COLUMN_BITMASK |
+			AnswerModelImpl.CLASSNAME_COLUMN_BITMASK |
+			AnswerModelImpl.CLASSPK_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_CN_CPK = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_CN_CPK",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or throws a {@link NoSuchAnswerException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @return the matching answer
+	 * @throws NoSuchAnswerException if a matching answer could not be found
+	 */
+	@Override
+	public Answer findByG_CN_CPK(long groupId, String className, String classPK)
+		throws NoSuchAnswerException {
+		Answer answer = fetchByG_CN_CPK(groupId, className, classPK);
+
+		if (answer == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", className=");
+			msg.append(className);
+
+			msg.append(", classPK=");
+			msg.append(classPK);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchAnswerException(msg.toString());
+		}
+
+		return answer;
+	}
+
+	/**
+	 * Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @return the matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_CN_CPK(long groupId, String className, String classPK) {
+		return fetchByG_CN_CPK(groupId, className, classPK, true);
+	}
+
+	/**
+	 * Returns the answer where groupId = &#63; and className = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_CN_CPK(long groupId, String className,
+		String classPK, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, className, classPK };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_CN_CPK,
+					finderArgs, this);
+		}
+
+		if (result instanceof Answer) {
+			Answer answer = (Answer)result;
+
+			if ((groupId != answer.getGroupId()) ||
+					!Objects.equals(className, answer.getClassName()) ||
+					!Objects.equals(classPK, answer.getClassPK())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_CN_CPK_GROUPID_2);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_2);
+			}
+
+			boolean bindClassPK = false;
+
+			if (classPK == null) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_1);
+			}
+			else if (classPK.equals("")) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_3);
+			}
+			else {
+				bindClassPK = true;
+
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindClassPK) {
+					qPos.add(classPK);
+				}
+
+				List<Answer> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_CN_CPK,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"AnswerPersistenceImpl.fetchByG_CN_CPK(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Answer answer = list.get(0);
+
+					result = answer;
+
+					cacheResult(answer);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_CN_CPK,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Answer)result;
+		}
+	}
+
+	/**
+	 * Removes the answer where groupId = &#63; and className = &#63; and classPK = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @return the answer that was removed
+	 */
+	@Override
+	public Answer removeByG_CN_CPK(long groupId, String className,
+		String classPK) throws NoSuchAnswerException {
+		Answer answer = findByG_CN_CPK(groupId, className, classPK);
+
+		return remove(answer);
+	}
+
+	/**
+	 * Returns the number of answers where groupId = &#63; and className = &#63; and classPK = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param className the class name
+	 * @param classPK the class pk
+	 * @return the number of matching answers
+	 */
+	@Override
+	public int countByG_CN_CPK(long groupId, String className, String classPK) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_CN_CPK;
+
+		Object[] finderArgs = new Object[] { groupId, className, classPK };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_CN_CPK_GROUPID_2);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSNAME_2);
+			}
+
+			boolean bindClassPK = false;
+
+			if (classPK == null) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_1);
+			}
+			else if (classPK.equals("")) {
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_3);
+			}
+			else {
+				bindClassPK = true;
+
+				query.append(_FINDER_COLUMN_G_CN_CPK_CLASSPK_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				if (bindClassPK) {
+					qPos.add(classPK);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_CN_CPK_GROUPID_2 = "answer.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSNAME_1 = "answer.className IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSNAME_2 = "answer.className = ? AND ";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSNAME_3 = "(answer.className IS NULL OR answer.className = '') AND ";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSPK_1 = "answer.classPK IS NULL";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSPK_2 = "answer.classPK = ?";
+	private static final String _FINDER_COLUMN_G_CN_CPK_CLASSPK_3 = "(answer.classPK IS NULL OR answer.classPK = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Q = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, AnswerImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_Q",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, AnswerImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_Q",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			AnswerModelImpl.GROUPID_COLUMN_BITMASK |
+			AnswerModelImpl.QUESTIONID_COLUMN_BITMASK |
+			AnswerModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_Q = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_Q",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns all the answers where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @return the matching answers
+	 */
+	@Override
+	public List<Answer> findByG_Q(long groupId, long questionId) {
+		return findByG_Q(groupId, questionId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the answers where groupId = &#63; and questionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @return the range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_Q(long groupId, long questionId, int start,
+		int end) {
+		return findByG_Q(groupId, questionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the answers where groupId = &#63; and questionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_Q(long groupId, long questionId, int start,
+		int end, OrderByComparator<Answer> orderByComparator) {
+		return findByG_Q(groupId, questionId, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the answers where groupId = &#63; and questionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_Q(long groupId, long questionId, int start,
+		int end, OrderByComparator<Answer> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q;
+			finderArgs = new Object[] { groupId, questionId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Q;
+			finderArgs = new Object[] {
+					groupId, questionId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Answer> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Answer>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Answer answer : list) {
+					if ((groupId != answer.getGroupId()) ||
+							(questionId != answer.getQuestionId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Q_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Q_QUESTIONID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(AnswerModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(questionId);
+
+				if (!pagination) {
+					list = (List<Answer>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Answer>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching answer
+	 * @throws NoSuchAnswerException if a matching answer could not be found
+	 */
+	@Override
+	public Answer findByG_Q_First(long groupId, long questionId,
+		OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = fetchByG_Q_First(groupId, questionId, orderByComparator);
+
+		if (answer != null) {
+			return answer;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", questionId=");
+		msg.append(questionId);
+
+		msg.append("}");
+
+		throw new NoSuchAnswerException(msg.toString());
+	}
+
+	/**
+	 * Returns the first answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_Q_First(long groupId, long questionId,
+		OrderByComparator<Answer> orderByComparator) {
+		List<Answer> list = findByG_Q(groupId, questionId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching answer
+	 * @throws NoSuchAnswerException if a matching answer could not be found
+	 */
+	@Override
+	public Answer findByG_Q_Last(long groupId, long questionId,
+		OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = fetchByG_Q_Last(groupId, questionId, orderByComparator);
+
+		if (answer != null) {
+			return answer;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", questionId=");
+		msg.append(questionId);
+
+		msg.append("}");
+
+		throw new NoSuchAnswerException(msg.toString());
+	}
+
+	/**
+	 * Returns the last answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_Q_Last(long groupId, long questionId,
+		OrderByComparator<Answer> orderByComparator) {
+		int count = countByG_Q(groupId, questionId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Answer> list = findByG_Q(groupId, questionId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the answers before and after the current answer in the ordered set where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param answerId the primary key of the current answer
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next answer
+	 * @throws NoSuchAnswerException if a answer with the primary key could not be found
+	 */
+	@Override
+	public Answer[] findByG_Q_PrevAndNext(long answerId, long groupId,
+		long questionId, OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = findByPrimaryKey(answerId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Answer[] array = new AnswerImpl[3];
+
+			array[0] = getByG_Q_PrevAndNext(session, answer, groupId,
+					questionId, orderByComparator, true);
+
+			array[1] = answer;
+
+			array[2] = getByG_Q_PrevAndNext(session, answer, groupId,
+					questionId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Answer getByG_Q_PrevAndNext(Session session, Answer answer,
+		long groupId, long questionId,
+		OrderByComparator<Answer> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_ANSWER_WHERE);
+
+		query.append(_FINDER_COLUMN_G_Q_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_Q_QUESTIONID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(AnswerModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(questionId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(answer);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Answer> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the answers where groupId = &#63; and questionId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 */
+	@Override
+	public void removeByG_Q(long groupId, long questionId) {
+		for (Answer answer : findByG_Q(groupId, questionId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(answer);
+		}
+	}
+
+	/**
+	 * Returns the number of answers where groupId = &#63; and questionId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param questionId the question ID
+	 * @return the number of matching answers
+	 */
+	@Override
+	public int countByG_Q(long groupId, long questionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_Q;
+
+		Object[] finderArgs = new Object[] { groupId, questionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Q_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Q_QUESTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(questionId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_Q_GROUPID_2 = "answer.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_Q_QUESTIONID_2 = "answer.questionId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_P_SYNC = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, AnswerImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_SYNC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC =
+		new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, AnswerImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_SYNC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName()
+			},
+			AnswerModelImpl.GROUPID_COLUMN_BITMASK |
+			AnswerModelImpl.PUBLISH_COLUMN_BITMASK |
+			AnswerModelImpl.SYNCED_COLUMN_BITMASK |
+			AnswerModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_P_SYNC = new FinderPath(AnswerModelImpl.ENTITY_CACHE_ENABLED,
+			AnswerModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_SYNC",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @return the matching answers
+	 */
+	@Override
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced) {
+		return findByG_P_SYNC(groupId, publish, synced, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @return the range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced,
+		int start, int end) {
+		return findByG_P_SYNC(groupId, publish, synced, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced,
+		int start, int end, OrderByComparator<Answer> orderByComparator) {
+		return findByG_P_SYNC(groupId, publish, synced, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link AnswerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param start the lower bound of the range of answers
+	 * @param end the upper bound of the range of answers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching answers
+	 */
+	@Override
+	public List<Answer> findByG_P_SYNC(long groupId, int publish, int synced,
+		int start, int end, OrderByComparator<Answer> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC;
+			finderArgs = new Object[] { groupId, publish, synced };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_P_SYNC;
+			finderArgs = new Object[] {
+					groupId, publish, synced,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Answer> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Answer>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Answer answer : list) {
+					if ((groupId != answer.getGroupId()) ||
+							(publish != answer.getPublish()) ||
+							(synced != answer.getSynced())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_PUBLISH_2);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_SYNCED_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(AnswerModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				qPos.add(synced);
+
+				if (!pagination) {
+					list = (List<Answer>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Answer>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching answer
+	 * @throws NoSuchAnswerException if a matching answer could not be found
+	 */
+	@Override
+	public Answer findByG_P_SYNC_First(long groupId, int publish, int synced,
+		OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = fetchByG_P_SYNC_First(groupId, publish, synced,
+				orderByComparator);
+
+		if (answer != null) {
+			return answer;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", synced=");
+		msg.append(synced);
+
+		msg.append("}");
+
+		throw new NoSuchAnswerException(msg.toString());
+	}
+
+	/**
+	 * Returns the first answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_P_SYNC_First(long groupId, int publish, int synced,
+		OrderByComparator<Answer> orderByComparator) {
+		List<Answer> list = findByG_P_SYNC(groupId, publish, synced, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching answer
+	 * @throws NoSuchAnswerException if a matching answer could not be found
+	 */
+	@Override
+	public Answer findByG_P_SYNC_Last(long groupId, int publish, int synced,
+		OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = fetchByG_P_SYNC_Last(groupId, publish, synced,
+				orderByComparator);
+
+		if (answer != null) {
+			return answer;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", publish=");
+		msg.append(publish);
+
+		msg.append(", synced=");
+		msg.append(synced);
+
+		msg.append("}");
+
+		throw new NoSuchAnswerException(msg.toString());
+	}
+
+	/**
+	 * Returns the last answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching answer, or <code>null</code> if a matching answer could not be found
+	 */
+	@Override
+	public Answer fetchByG_P_SYNC_Last(long groupId, int publish, int synced,
+		OrderByComparator<Answer> orderByComparator) {
+		int count = countByG_P_SYNC(groupId, publish, synced);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Answer> list = findByG_P_SYNC(groupId, publish, synced, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the answers before and after the current answer in the ordered set where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param answerId the primary key of the current answer
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next answer
+	 * @throws NoSuchAnswerException if a answer with the primary key could not be found
+	 */
+	@Override
+	public Answer[] findByG_P_SYNC_PrevAndNext(long answerId, long groupId,
+		int publish, int synced, OrderByComparator<Answer> orderByComparator)
+		throws NoSuchAnswerException {
+		Answer answer = findByPrimaryKey(answerId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Answer[] array = new AnswerImpl[3];
+
+			array[0] = getByG_P_SYNC_PrevAndNext(session, answer, groupId,
+					publish, synced, orderByComparator, true);
+
+			array[1] = answer;
+
+			array[2] = getByG_P_SYNC_PrevAndNext(session, answer, groupId,
+					publish, synced, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Answer getByG_P_SYNC_PrevAndNext(Session session, Answer answer,
+		long groupId, int publish, int synced,
+		OrderByComparator<Answer> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_ANSWER_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_SYNC_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_SYNC_PUBLISH_2);
+
+		query.append(_FINDER_COLUMN_G_P_SYNC_SYNCED_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(AnswerModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(publish);
+
+		qPos.add(synced);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(answer);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Answer> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the answers where groupId = &#63; and publish = &#63; and synced = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 */
+	@Override
+	public void removeByG_P_SYNC(long groupId, int publish, int synced) {
+		for (Answer answer : findByG_P_SYNC(groupId, publish, synced,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(answer);
+		}
+	}
+
+	/**
+	 * Returns the number of answers where groupId = &#63; and publish = &#63; and synced = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param publish the publish
+	 * @param synced the synced
+	 * @return the number of matching answers
+	 */
+	@Override
+	public int countByG_P_SYNC(long groupId, int publish, int synced) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_P_SYNC;
+
+		Object[] finderArgs = new Object[] { groupId, publish, synced };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_ANSWER_WHERE);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_PUBLISH_2);
+
+			query.append(_FINDER_COLUMN_G_P_SYNC_SYNCED_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(publish);
+
+				qPos.add(synced);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_P_SYNC_GROUPID_2 = "answer.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_P_SYNC_PUBLISH_2 = "answer.publish = ? AND ";
+	private static final String _FINDER_COLUMN_G_P_SYNC_SYNCED_2 = "answer.synced = ?";
 
 	public AnswerPersistenceImpl() {
 		setModelClass(Answer.class);
@@ -994,6 +2431,11 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 	public void cacheResult(Answer answer) {
 		entityCache.putResult(AnswerModelImpl.ENTITY_CACHE_ENABLED,
 			AnswerImpl.class, answer.getPrimaryKey(), answer);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_CN_CPK,
+			new Object[] {
+				answer.getGroupId(), answer.getClassName(), answer.getClassPK()
+			}, answer);
 
 		answer.resetOriginalValues();
 	}
@@ -1046,6 +2488,8 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache((AnswerModelImpl)answer, true);
 	}
 
 	@Override
@@ -1056,6 +2500,45 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 		for (Answer answer : answers) {
 			entityCache.removeResult(AnswerModelImpl.ENTITY_CACHE_ENABLED,
 				AnswerImpl.class, answer.getPrimaryKey());
+
+			clearUniqueFindersCache((AnswerModelImpl)answer, true);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(AnswerModelImpl answerModelImpl) {
+		Object[] args = new Object[] {
+				answerModelImpl.getGroupId(), answerModelImpl.getClassName(),
+				answerModelImpl.getClassPK()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_CN_CPK, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_CN_CPK, args,
+			answerModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(AnswerModelImpl answerModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					answerModelImpl.getGroupId(), answerModelImpl.getClassName(),
+					answerModelImpl.getClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_CN_CPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_CN_CPK, args);
+		}
+
+		if ((answerModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_CN_CPK.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					answerModelImpl.getOriginalGroupId(),
+					answerModelImpl.getOriginalClassName(),
+					answerModelImpl.getOriginalClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_CN_CPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_CN_CPK, args);
 		}
 	}
 
@@ -1239,6 +2722,24 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q_PL,
 				args);
 
+			args = new Object[] {
+					answerModelImpl.getGroupId(),
+					answerModelImpl.getQuestionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Q, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q,
+				args);
+
+			args = new Object[] {
+					answerModelImpl.getGroupId(), answerModelImpl.getPublish(),
+					answerModelImpl.getSynced()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_SYNC, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -1267,10 +2768,57 @@ public class AnswerPersistenceImpl extends BasePersistenceImpl<Answer>
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q_PL,
 					args);
 			}
+
+			if ((answerModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						answerModelImpl.getOriginalGroupId(),
+						answerModelImpl.getOriginalQuestionId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Q, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q,
+					args);
+
+				args = new Object[] {
+						answerModelImpl.getGroupId(),
+						answerModelImpl.getQuestionId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Q, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Q,
+					args);
+			}
+
+			if ((answerModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						answerModelImpl.getOriginalGroupId(),
+						answerModelImpl.getOriginalPublish(),
+						answerModelImpl.getOriginalSynced()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_SYNC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC,
+					args);
+
+				args = new Object[] {
+						answerModelImpl.getGroupId(),
+						answerModelImpl.getPublish(),
+						answerModelImpl.getSynced()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_SYNC, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P_SYNC,
+					args);
+			}
 		}
 
 		entityCache.putResult(AnswerModelImpl.ENTITY_CACHE_ENABLED,
 			AnswerImpl.class, answer.getPrimaryKey(), answer, false);
+
+		clearUniqueFindersCache(answerModelImpl, false);
+		cacheUniqueFindersCache(answerModelImpl);
 
 		answer.resetOriginalValues();
 

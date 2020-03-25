@@ -54,6 +54,7 @@ import org.opencps.dossiermgt.service.DossierActionLocalService;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
+import org.opencps.dossiermgt.service.persistence.ConfigCounterPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverableFinder;
 import org.opencps.dossiermgt.service.persistence.DeliverableLogPersistence;
 import org.opencps.dossiermgt.service.persistence.DeliverablePersistence;
@@ -574,6 +575,44 @@ public abstract class DossierActionLocalServiceBaseImpl
 	 */
 	public void setBookingFinder(BookingFinder bookingFinder) {
 		this.bookingFinder = bookingFinder;
+	}
+
+	/**
+	 * Returns the config counter local service.
+	 *
+	 * @return the config counter local service
+	 */
+	public org.opencps.dossiermgt.service.ConfigCounterLocalService getConfigCounterLocalService() {
+		return configCounterLocalService;
+	}
+
+	/**
+	 * Sets the config counter local service.
+	 *
+	 * @param configCounterLocalService the config counter local service
+	 */
+	public void setConfigCounterLocalService(
+		org.opencps.dossiermgt.service.ConfigCounterLocalService configCounterLocalService) {
+		this.configCounterLocalService = configCounterLocalService;
+	}
+
+	/**
+	 * Returns the config counter persistence.
+	 *
+	 * @return the config counter persistence
+	 */
+	public ConfigCounterPersistence getConfigCounterPersistence() {
+		return configCounterPersistence;
+	}
+
+	/**
+	 * Sets the config counter persistence.
+	 *
+	 * @param configCounterPersistence the config counter persistence
+	 */
+	public void setConfigCounterPersistence(
+		ConfigCounterPersistence configCounterPersistence) {
+		this.configCounterPersistence = configCounterPersistence;
 	}
 
 	/**
@@ -2549,6 +2588,10 @@ public abstract class DossierActionLocalServiceBaseImpl
 	protected BookingPersistence bookingPersistence;
 	@BeanReference(type = BookingFinder.class)
 	protected BookingFinder bookingFinder;
+	@BeanReference(type = org.opencps.dossiermgt.service.ConfigCounterLocalService.class)
+	protected org.opencps.dossiermgt.service.ConfigCounterLocalService configCounterLocalService;
+	@BeanReference(type = ConfigCounterPersistence.class)
+	protected ConfigCounterPersistence configCounterPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.CPSDossierBusinessLocalService.class)
 	protected org.opencps.dossiermgt.service.CPSDossierBusinessLocalService cpsDossierBusinessLocalService;
 	@BeanReference(type = org.opencps.dossiermgt.service.DeliverableLocalService.class)

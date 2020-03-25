@@ -477,6 +477,7 @@ public class DossierUtils {
 			}
 			
 			model.setSystemId(GetterUtil.getInteger(doc.get(DossierTerm.SYSTEM_ID)));
+			model.setDossierCounter(doc.get(DossierTerm.DOSSIER_COUNTER));
 			
 			ouputs.add(model);
 		}
@@ -580,9 +581,9 @@ public class DossierUtils {
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
 		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return (int)durationCount + strOverDue;
+			return Math.abs((int)durationCount) + strOverDue;
 		} else {
-			return (int)overDue + strOverDue;
+			return Math.abs((int)overDue) + strOverDue;
 		}
 	}
 
@@ -782,14 +783,15 @@ public class DossierUtils {
 		if (Validator.isNull(input)) {
 			return model;
 		}
-		try {
-			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
-			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
-		} catch (Exception e) {
-			//_log.error(e);
-			_log.debug(e);
-			model.setDossierIdCTN(StringPool.BLANK);
-		}
+//		try {
+//			Document dossierDoc = DossierLocalServiceUtil.getDossierById(input.getDossierId(), input.getCompanyId());
+//			model.setDossierIdCTN(dossierDoc.get(DossierTerm.DOSSIER_ID_CTN));
+//		} catch (Exception e) {
+//			//_log.error(e);
+//			_log.debug(e);
+		model.setDossierIdCTN(StringPool.BLANK);
+		model.setGroupId(input.getGroupId());
+//		}
 		
 		model.setDossierId(GetterUtil.getInteger(input.getDossierId()));
 		model.setDossierName(input.getDossierName());
@@ -957,6 +959,7 @@ public class DossierUtils {
 		}
 		model.setServerNo(input.getServerNo());
 		model.setSystemId(input.getSystemId());
+		model.setDossierCounter(input.getDossierCounter());
 
 		return model;
 	}
@@ -1095,7 +1098,7 @@ public class DossierUtils {
 	}
 
 	//LamTV: Process get process action
-	public static ProcessAction getProcessAction(long groupId, Dossier dossier, String actionCode,
+	public static ProcessAction getProcessAction(User user, long groupId, Dossier dossier, String actionCode,
 			long serviceProcessId) throws PortalException {
 
 		_log.debug("GET PROCESS ACTION____");
@@ -1139,7 +1142,7 @@ public class DossierUtils {
 					if (stepStatus.contentEquals(dossierStatus)
 							&& StringUtil.containsIgnoreCase(stepSubStatus, dossierSubStatus)
 							&& flagCheck) {
-						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier)) {
+						if (Validator.isNotNull(act.getPreCondition()) && DossierMgtUtils.checkPreCondition(act.getPreCondition().split(StringPool.COMMA), dossier, user)) {
 							action = act;
 							break;							
 						}
@@ -1356,9 +1359,9 @@ public class DossierUtils {
 		model.setDelegateType(input.getDelegateType());
 		model.setDocumentNo(input.getDocumentNo());
 		model.setDocumentDate(input.getDocumentDate());
-		//
 		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
-		
+		model.setDossierCounter(input.getDossierCounter());
+
 		return model;
 	}
 
@@ -1449,23 +1452,24 @@ public class DossierUtils {
 		model.setWardCode(input.getWardCode());
 		model.setWardName(input.getWardName());
 		model.setMetaData(input.getMetaData());
+		model.setDossierCounter(input.getDossierCounter());
 		
 		return model;
 	}
 	
-	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && 
-				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
-	}
-
-	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate != 0 && (dueDate == 0
-				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
-	}
-
-	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
-		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
-	}
+//	private static boolean processBeTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && 
+//				((releaseDate<dueDate && extendDate!=0) || (finishDate!=0 && finishDate<dueDate )));
+//	}
+//
+//	private static boolean processOnTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate != 0 && (dueDate == 0
+//				|| (releaseDate < dueDate && extendDate == 0 && (finishDate == 0 || finishDate >= dueDate))));
+//	}
+//
+//	private static boolean processOverTime(long releaseDate, long dueDate, long finishDate, long extendDate) {
+//		return (releaseDate!=0 && dueDate!=0 && releaseDate>=dueDate);
+//	}
 
 	private static boolean checkWaiting(String lockState, String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_WAITING.equals(dossierStatus)

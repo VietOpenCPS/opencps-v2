@@ -21,6 +21,7 @@ public class SendSMSTerm {
 	 * Protocol from table serverConfig, result to get information SMS server
 	 */
 	public static final String SERVER_CONFIG_PROTOCOL_VT_SMS = "VT_SMS_INF";
+	public static final String SERVER_CONFIG_PROTOCOL_BCT_SMS = "BCT_SMS_INF";
 
 	/**
 	 * Configs fields
@@ -34,6 +35,17 @@ public class SendSMSTerm {
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
 	public static final String COUNTRY_CODE = "countryCode";
+
+	/** Key by BCT **/
+	/**
+	 * Configs fields
+	 */
+	public static final String BCT_CP_CODE = "cp_code";
+	public static final String BCT_ALIAS = "alias";
+	public static final String BCT_USER_NAME = "api-username";
+	public static final String BCT_PASSWORD = "api-password";
+	public static final String BCT_CONTENT_TYPE = "content_type";
+	public static final String BCT_PACKAGE_ID = "package_id";
 
 	/**
 	 * Zalo Preference to send message zalo

@@ -22,7 +22,9 @@ import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +61,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -81,15 +84,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantModel result = new ApplicantModel();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		try {
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
-			
+
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
@@ -103,25 +105,25 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			
+
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getDistrictCode())) {
 				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getWardCode())) {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
+
 			}
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
-					cityCode, cityName, districtCode, districtName,
-					wardCode, wardName, contactName, contactTelNo,
-					input.getPassword());
-			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address, cityCode, cityName, districtCode,
+					districtName, wardCode, wardName, contactName, contactTelNo, input.getPassword());
+			_log.info("Success register applicant: "
+					+ (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail()
+							: "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(200).entity(result).build();
@@ -131,7 +133,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
-	
+
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
 		DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode, groupId);
@@ -146,7 +148,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
-	
+
 	private static final String ADMINISTRATIVE_REGION = "ADMINISTRATIVE_REGION";
 
 	Log _log = LogFactoryUtil.getLog(ApplicantManagementImpl.class);
@@ -164,9 +166,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
-//				throw new UnauthorizationException();
-//			}
+			//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
+			//				throw new UnauthorizationException();
+			//			}
 
 			if (query.getEnd() == 0) {
 
@@ -195,7 +197,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			results.setTotal(jsonData.getInt("total"));
 			if (jsonData != null && jsonData.getInt("total") > 0) {
-				results.getData().addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
+				results.getData()
+						.addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
 			}
 
 			return Response.status(200).entity(results).build();
@@ -280,7 +283,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					}
 				}
 			}
-			
 
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String address = HtmlUtil.escape(input.getAddress());
@@ -294,24 +296,24 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String districtName = HtmlUtil.escape(input.getDistrictName());
 			String wardName = HtmlUtil.escape(input.getWardName());
 			String profile = input.getProfile();
-			
+
 			if (Validator.isNotNull(input.getCityCode()) && Validator.isNull(cityName)) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getDistrictCode()) && Validator.isNull(districtName)) {
 				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getWardCode()) && Validator.isNull(wardName)) {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
+
 			}
-			
+
 			if (isAllowed) {
-				applicant = actions.updateApplicant(serviceContext,groupId, id, applicantName, address, cityCode,
-						cityName, districtCode, districtName, wardCode,
-						wardName, contactName, contactTelNo, contactEmail, profile);
+				applicant = actions.updateApplicant(serviceContext, groupId, id, applicantName, address, cityCode,
+						cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+						contactEmail, profile);
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
@@ -389,10 +391,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.getApplicantDetail (serviceContext, id);
+				applicant = actions.getApplicantDetail(serviceContext, id);
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
-				
+
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
@@ -419,8 +421,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User requestUser = ApplicantUtils.getUser(id);
 
 			boolean isAllowed = false;
-			
-			
 
 			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)) {
 				isAllowed = true;
@@ -436,7 +436,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				applicant = actions.updateProfile(serviceContext,groupId, id, input.getValue());
+				applicant = actions.updateProfile(serviceContext, groupId, id, input.getValue());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
@@ -481,14 +481,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			if (isAllowed) {
-				
+
 				Applicant applicantUpdated = ApplicantLocalServiceUtil.getApplicant(id);
-				
+
 				JSONObject profile = JSONFactoryUtil.createJSONObject(applicantUpdated.getProfile());
-				
+
 				profile.put(key, input.getValue());
-				
-				actions.updateProfile(serviceContext,groupId, id, profile.toString());
+
+				actions.updateProfile(serviceContext, groupId, id, profile.toString());
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -530,9 +530,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					break;
 				}
 			}
-			
-			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY)
-					|| isAdmin) {
+
+			if (auth.hasResource(serviceContext, Applicant.class.getName(), ActionKeys.ADD_ENTRY) || isAdmin) {
 				isAllowed = true;
 			} else {
 				if (Validator.isNull(requestUser)) {
@@ -566,20 +565,20 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	public Response activateApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
 		ApplicantActions actions = new ApplicantActionsImpl();
-//		ApplicantModel results = new ApplicantModel();
-		
+		//		ApplicantModel results = new ApplicantModel();
+
 		long applicantId = 0;
-		
+
 		try {
 			ApplicantLocalServiceUtil.getApplicant(id);
-			
+
 			applicantId = id;
-			
+
 		} catch (Exception e) {
 			_log.debug(e);
 			try {
 				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
-				
+
 				if (Validator.isNotNull(applc)) {
 					applicantId = applc.getApplicantId();
 				}
@@ -587,20 +586,18 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				// TODO: handle exception
 				_log.debug(e2);
 			}
-			
+
 		}
 
 		Applicant applicant = null;
 		try {
-			
-			
 
 			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
-//			results = ApplicantUtils.mappingToApplicantModel(applicant);
-			
+			//			results = ApplicantUtils.mappingToApplicantModel(applicant);
+
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
-			
+
 			resultObj.put("email", applicant.getContactEmail());
 			resultObj.put("token", applicant.getTmpPass());
 
@@ -622,40 +619,40 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			secret_key = client.getConsumerSecret();
 		}
 		MToken token = IToken.getToken(tokenUrl, consumer_key, secret_key);
-		
+
 		return token;
 	}
-	   
+
 	@Override
 	public Response ngspGetApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
 		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
-		
+
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
 		try {
 			if (sc != null) {
-				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
-				access_token = token.getAccessToken();				
-			}
-			else {
+				MToken token = getToken(
+						NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
+				access_token = token.getAccessToken();
+			} else {
 				MToken token = getToken(null);
-				access_token = token.getAccessToken();				
+				access_token = token.getAccessToken();
 			}
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		
-//		String msdn = "0100109106";
+
+		//		String msdn = "0100109106";
 		String msdn = applicantIdNo;
 
 		try {
 			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, msdn);
 			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
-			
-			return Response.status(200).entity(result.toJSONString()).build();			
+
+			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -663,39 +660,37 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName,
-			String contactName) {
+			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName, String contactName) {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
 		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
-		
+
 		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.NGSP_PROTOCOL);
 		ServerConfig sc = (lstScs.isEmpty() ? null : lstScs.get(0));
 		try {
 			if (sc != null) {
-				MToken token = getToken(NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
-				access_token = token.getAccessToken();				
-			}
-			else {
+				MToken token = getToken(
+						NGSPRestClient.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs())));
+				access_token = token.getAccessToken();
+			} else {
 				MToken token = getToken(null);
-				access_token = token.getAccessToken();				
+				access_token = token.getAccessToken();
 			}
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		
+
 		try {
 			String rs = IDoanhNghiep.chiTietDoanhNghiep(apiUrl, access_token, applicantIdNo);
 			JSONObject result = JSONFactoryUtil.createJSONObject(rs);
 			JSONObject data = result.getJSONObject("Data");
 			JSONObject returnObj = JSONFactoryUtil.createJSONObject();
-			
+
 			if (Validator.isNull(data.getJSONObject("MainInformation"))) {
 				returnObj.put("error", true);
 				returnObj.put("message", "Không tìm thấy thông tin doanh nghiệp");
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
-			}
-			else {
+				return Response.status(200).entity(returnObj.toJSONString()).build();
+			} else {
 				JSONObject mainInfoObj = data.getJSONObject("MainInformation");
 				if (Validator.isNotNull(mainInfoObj.getString("NAME"))) {
 					if (Validator.isNotNull(applicantName) && !applicantName.equals(mainInfoObj.getString("NAME"))) {
@@ -705,12 +700,17 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 				JSONObject representativesObj = data.getJSONObject("Representatives");
 				if (representativesObj != null) {
-					if (Validator.isNotNull(contactName) && !contactName.equals(representativesObj.getString("FULL_NAME"))) {
+					if (Validator.isNotNull(contactName)
+							&& !contactName.equals(representativesObj.getString("FULL_NAME"))) {
 						returnObj.put("warning", true);
-						returnObj.put("message", (Validator.isNotNull(returnObj.getString("message")) ? returnObj.getString("message") + "," : "") + "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
-					}					
+						returnObj.put("message",
+								(Validator.isNotNull(returnObj.getString("message"))
+										? returnObj.getString("message") + ","
+										: "")
+										+ "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
+					}
 				}
-				return Response.status(200).entity(returnObj.toJSONString()).build();							
+				return Response.status(200).entity(returnObj.toJSONString()).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -719,40 +719,77 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 	@Override
 	public Response getJCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext) {
+			User user, ServiceContext serviceContext, Integer width, Integer height) {
+
+		String captchaType = PropValues.CAPTCHA_TYPE;
+
+		File destDir = new File("jcaptcha");
+
+		if (!destDir.exists()) {
+			destDir.mkdir();
+		}
+
+		File file = null;
+
 		try {
-			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-			
-		    String captchaId = request.getSession().getId();
-			File destDir = new File("jcaptcha");
-			if (!destDir.exists()) {
-				destDir.mkdir();
-			}
-			File file = new File("jcaptcha/" + captchaId  + ".png");
-			if (!file.exists()) {
-				file.createNewFile();				
-			}
-	
-			if (file.exists()) {
-			    BufferedImage challengeImage = instance.getImageChallengeForID(
-			    captchaId, Locale.US );
-			    try {
-					ImageIO.write( challengeImage, "png", file );
-					ResponseBuilder responseBuilder = Response.ok((Object) file);
 
-					responseBuilder.header("Content-Disposition",
-							"attachment; filename=\"" + file.getName() + "\"");
-					responseBuilder.header("Content-Type", "image/png");
+			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 
-					return responseBuilder.build();
-				    
-				} catch (IOException e) {
-					_log.debug(e);
+				String captchaId = request.getSession().getId();
+
+				file = new File("jcaptcha/" + captchaId + ".png");
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+
+				if (file.exists()) {
+					BufferedImage challengeImage = instance.getImageChallengeForID(captchaId, Locale.US);
+					try {
+						ImageIO.write(challengeImage, "png", file);
+
+					} catch (IOException e) {
+						_log.debug(e);
+					}
+				}
+
+			} else {
+
+				String fileName = System.currentTimeMillis() + ".png";
+
+				file = new File("jcaptcha/" + fileName);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+				String base64Image = actionsImpl.getSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, width, height);
+
+				try (FileOutputStream fos = new FileOutputStream(file);) {
+
+					byte[] decoder = Base64.getDecoder().decode(base64Image);
+
+					fos.write(decoder);
+					fos.close();
+				} catch (Exception e) {
+					_log.error(e);
 				}
 			}
+
+			if (file != null && file.exists()) {
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+				responseBuilder.header("Content-Type", "image/png");
+
+				return responseBuilder.build();
+			}
+
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
-		}
-		catch (Exception e) {
+
+		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -762,17 +799,19 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User user, ServiceContext serviceContext, ApplicantInputModel input, String jCaptchaResponse) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
-		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-		
-		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		String captchaType = PropValues.CAPTCHA_TYPE;
 
+		ApplicantModel result = new ApplicantModel();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
 		try {
 			String cityName = StringPool.BLANK;
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
-			
+
 			if (!auth2.checkToken(request, header)) {
 				throw new UnauthenticationException();
 			}
@@ -785,33 +824,48 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				}
 			}
 			if (isAdmin) {
-				
-			}
-			else {
-				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-				String captchaId = request.getSession().getId();
-		        try {
-		        	_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
-		        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-		        			jCaptchaResponse);
-		        	_log.info("Check captcha result: " + isResponseCorrect);
-		        	if (!isResponseCorrect) {
-		        		ErrorMsgModel error = new ErrorMsgModel();
-		        		error.setMessage("Captcha incorrect");
-		    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-		    			error.setDescription("Captcha incorrect");
 
-		    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		        	}
-		        } catch (CaptchaServiceException e) {
-		        	_log.debug(e);
-	        		ErrorMsgModel error = new ErrorMsgModel();
-	        		error.setMessage("Captcha incorrect");
-	    			error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-	    			error.setDescription("Captcha incorrect");
+			} else {
+				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						_log.info("Check captcha result: " + isResponseCorrect);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
 
-	    			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-		        }
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+						}
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+					}
+				} else {
+					ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+					boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
+
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				}
+
 			}
 			String applicantName = HtmlUtil.escape(input.getApplicantName());
 			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
@@ -823,25 +877,25 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			
+
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getDistrictCode())) {
 				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-				
+
 			}
 			if (Validator.isNotNull(input.getWardCode())) {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-				
+
 			}
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
-					cityCode, cityName, districtCode, districtName,
-					wardCode, wardName, contactName, contactTelNo,
-					input.getPassword());
-			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address, cityCode, cityName, districtCode,
+					districtName, wardCode, wardName, contactName, contactTelNo, input.getPassword());
+			_log.info("Success register applicant: "
+					+ (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail()
+							: "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 			return Response.status(200).entity(result).build();
@@ -859,11 +913,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
-		
+
 		try {
 
-			JSONObject jsonObject = actions.createApplicantAccount(user.getUserId(), company.getCompanyId(), groupId, id,
-					input.getScreenName(), input.getEmail(), input.isExist(), serviceContext);
+			JSONObject jsonObject = actions.createApplicantAccount(user.getUserId(), company.getCompanyId(), groupId,
+					id, input.getScreenName(), input.getEmail(), input.isExist(), serviceContext);
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
@@ -877,6 +931,57 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				return Response.status(200).entity(employeeAccountModel).build();
 
 			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Integer width, Integer height) {
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			String imageData = actionsImpl.getSimpleCaptcha(request, header, company, locale, user, serviceContext,
+					width, height);
+
+			return Response.status(200).entity(imageData).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ApplicantInputModel input, String value) {
+
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user, serviceContext,
+					value);
+
+			return Response.status(200).entity(String.valueOf(isValid)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String oldEmail, String newEmail) {
+		try {
+
+			ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+			JSONObject object = actionsImpl.updateAccountEmail(request, header, company, locale, user, serviceContext, oldEmail, newEmail);
+
+			return Response.status(200).entity(object.toJSONString()).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

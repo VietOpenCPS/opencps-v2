@@ -65,7 +65,7 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(71);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -137,6 +137,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		sb.append(invoicePayload);
 		sb.append(", einvoice=");
 		sb.append(einvoice);
+		sb.append(", invoiceFileEntryId=");
+		sb.append(invoiceFileEntryId);
 		sb.append("}");
 
 		return sb.toString();
@@ -324,6 +326,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 			paymentFileImpl.setEinvoice(einvoice);
 		}
 
+		paymentFileImpl.setInvoiceFileEntryId(invoiceFileEntryId);
+
 		paymentFileImpl.resetOriginalValues();
 
 		return paymentFileImpl;
@@ -378,6 +382,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		invoiceNo = objectInput.readUTF();
 		invoicePayload = objectInput.readUTF();
 		einvoice = objectInput.readUTF();
+
+		invoiceFileEntryId = objectInput.readLong();
 	}
 
 	@Override
@@ -546,6 +552,8 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 		else {
 			objectOutput.writeUTF(einvoice);
 		}
+
+		objectOutput.writeLong(invoiceFileEntryId);
 	}
 
 	public String uuid;
@@ -583,4 +591,5 @@ public class PaymentFileCacheModel implements CacheModel<PaymentFile>,
 	public String invoiceNo;
 	public String invoicePayload;
 	public String einvoice;
+	public long invoiceFileEntryId;
 }
