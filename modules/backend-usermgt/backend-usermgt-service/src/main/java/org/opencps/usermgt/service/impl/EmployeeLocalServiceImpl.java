@@ -978,6 +978,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setEmail(objectData.getString("email"));
 		object.setWorkingStatus(objectData.getInt("workingStatus"));
 		object.setMainJobPostId(objectData.getLong("mainJobPostId"));
+		object.setScope(objectData.getString("scope"));
 		// object.setPhotoFileEntryId(objectData.getString("photoFileEntryId"));
 		if (objectData.getLong("birthdate") > 0)
 			object.setBirthdate(new Date(objectData.getLong("birthdate")));
