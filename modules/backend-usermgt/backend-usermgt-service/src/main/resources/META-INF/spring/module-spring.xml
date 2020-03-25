@@ -32,6 +32,8 @@
 	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceRolePersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.ResourceUserLocalServiceImpl" id="org.opencps.usermgt.service.ResourceUserLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.ResourceUserPersistenceImpl" id="org.opencps.usermgt.service.persistence.ResourceUserPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.SyncSchedulerLocalServiceImpl" id="org.opencps.usermgt.service.SyncSchedulerLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.SyncSchedulerPersistenceImpl" id="org.opencps.usermgt.service.persistence.SyncSchedulerPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.UserLoginLocalServiceImpl" id="org.opencps.usermgt.service.UserLoginLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.UserLoginPersistenceImpl" id="org.opencps.usermgt.service.persistence.UserLoginPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.UserTrackPathLocalServiceImpl" id="org.opencps.usermgt.service.UserTrackPathLocalService" />
