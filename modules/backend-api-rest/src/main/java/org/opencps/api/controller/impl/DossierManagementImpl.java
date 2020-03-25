@@ -7405,5 +7405,24 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response updateEparDossier(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, DossierPublishModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		try {
+			Dossier dossier =
+				CPSDossierBusinessLocalServiceUtil.eparPublish(
+					groupId, company, user, serviceContext,
+					DossierUtils.convertFormModelToPublishModel(input));
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}	
 }

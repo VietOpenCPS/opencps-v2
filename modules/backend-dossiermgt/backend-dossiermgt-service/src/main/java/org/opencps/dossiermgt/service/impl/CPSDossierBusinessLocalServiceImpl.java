@@ -7379,5 +7379,103 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 	}
 
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
+	public Dossier eparPublish(long groupId, Company company,
+			User user, ServiceContext serviceContext, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String referenceUid = input.getReferenceUid();
+			int counter = 0;
+			String serviceCode = input.getServiceCode();
+			String serviceName = input.getServiceName();
+			String govAgencyCode = input.getGovAgencyCode();
+			String govAgencyName = input.getGovAgencyName();
+			String applicantName = input.getApplicantName();
+			String applicantType = input.getApplicantIdType();
+			String applicantIdNo = input.getApplicantIdNo();
+			String applicantIdDate = input.getApplicantIdDate();
+			String address = input.getAddress();
+			String cityCode = input.getCityCode();
+			String cityName = input.getCityName();
+			String districtCode = input.getDistrictCode();
+			String districtName = input.getDistrictName();
+			String wardCode = input.getWardCode();
+			String wardName = input.getWardName();
+			String contactName = input.getContactName();
+			String contactTelNo = input.getContactTelNo();
+			String contactEmail = input.getContactEmail();
+			String dossierTemplateNo = input.getDossierTemplateNo();
+			String password = input.getPassword();
+			String online = input.getOnline();
+			String applicantNote = input.getApplicantNote();
+			int originality = 0;
+			long createDateLong = GetterUtil.getLong(input.getCreateDate());
+			long modifiedDateLong = GetterUtil.getLong(input.getModifiedDate());
+			long submitDateLong = GetterUtil.getLong(input.getSubmitDate());
+			long receiveDateLong = GetterUtil.getLong(input.getReceiveDate());
+			long dueDateLong = GetterUtil.getLong(input.getDueDate());
+			long releaseDateLong = GetterUtil.getLong(input.getReleaseDate());
+			long finishDateLong = GetterUtil.getLong(input.getFinishDate());
+			long cancellingDateLong = GetterUtil.getLong(input.getCancellingDate());
+			long correcttingDateLong = GetterUtil.getLong(input.getCorrecttingDate());
+			long endorsementDateLong = GetterUtil.getLong(input.getEndorsementDate());
+			long extendDateLong = GetterUtil.getLong(input.getExtendDate());
+			long processDateLong = GetterUtil.getLong(input.getProcessDate());
+			String submissionNote = input.getSubmissionNote();
+			String lockState = input.getLockState();
+			String dossierNo = input.getDossierNo();
+			
+			Dossier oldDossier = null;
+			if (Validator.isNotNull(input.getReferenceUid())) {
+				oldDossier = getDossier(input.getReferenceUid(), groupId);
+			} else {
+			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
+			}
+
+		if (oldDossier == null || oldDossier.getOriginality() == 0) {
+			Date appIdDate = null;
+			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+			try {
+				appIdDate = sdf.parse(applicantIdDate);
+			} catch (Exception e) {
+				_log.debug(e);
+			}
+			
+			Dossier dossier = dossierLocalService.eparPublishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, appIdDate, address,
+					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+					contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
+					createDateLong != 0 ? new Date(createDateLong) : null,
+					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
+					submitDateLong != 0 ? new Date(submitDateLong) : null,
+					receiveDateLong != 0 ? new Date(receiveDateLong) : null,
+					dueDateLong != 0 ? new Date(dueDateLong) : null,
+					releaseDateLong != 0 ? new Date(releaseDateLong) : null,
+					finishDateLong != 0 ? new Date(finishDateLong) : null,
+					cancellingDateLong != 0 ? new Date(cancellingDateLong) : null,
+					correcttingDateLong != 0 ? new Date(correcttingDateLong) : null,
+					endorsementDateLong != 0 ? new Date(endorsementDateLong) : null,
+					extendDateLong != 0 ? new Date(extendDateLong) : null,
+					processDateLong != 0 ? new Date(processDateLong) : null, input.getDossierNo(),
+					input.getDossierStatus(), input.getDossierStatusText(), input.getDossierSubStatus(),
+					input.getDossierSubStatusText(),
+					input.getDossierActionId() != null ? input.getDossierActionId() : 0, submissionNote, lockState,
+					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
+					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
+					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
+					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), serviceContext);
+				
+				return dossier;
+			}
+			return oldDossier;
+	}	
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
 }
