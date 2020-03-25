@@ -93,11 +93,23 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.RESULT_TEXT, object.getRegularText());
 		document.addKeywordSortable(ServiceInfoTerm.REGULAR_TEXT, object.getRegularText());
 		document.addKeywordSortable(ServiceInfoTerm.FEE_TEXT, object.getFeeText());
-		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_CODE, object.getAdministrationCode());
+		
+		String administrationCode = object.getAdministrationCode();
+		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_CODE, administrationCode);
+		if (Validator.isNotNull(administrationCode)) {
+			String administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
+			document.addTextSortable(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
+		}
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_NAME, object.getAdministrationName());
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_INDEX, object.getAdministrationIndex());
-		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_CODE, object.getDomainCode());
 		
+		String domainCode = object.getDomainCode();
+		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_CODE, domainCode);
+		if (Validator.isNotNull(domainCode)) {
+			String domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			document.addTextSortable(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+		}
+		document.addKeywordSortable(ServiceInfoTerm.DOMAIN_NAME, object.getDomainName());
 		//Sort by agency
 		DictCollection dictAgency = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(DataMGTConstants.ADMINTRATION_CODE,
 				object.getGroupId());
