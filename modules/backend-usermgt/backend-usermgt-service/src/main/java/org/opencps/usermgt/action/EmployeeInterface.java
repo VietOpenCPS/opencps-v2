@@ -65,7 +65,10 @@ public interface EmployeeInterface {
 
 	JSONObject lockEmployeeAccount(long userId, long companyId, long groupId, long id, boolean locked,
 			ServiceContext serviceContext) throws PortalException;
-	
+
+	JSONObject unlockEmployeeAccount(long userId, long companyId, long groupId, long id, boolean unlocked,
+			ServiceContext serviceContext) throws PortalException;
+
 	JSONObject lockEmployeeAccount(Employee employee, boolean locked,
 		ServiceContext serviceContext) throws PortalException;
 

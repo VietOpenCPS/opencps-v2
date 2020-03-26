@@ -679,6 +679,48 @@ public class EmployeeActions implements EmployeeInterface {
 	}
 
 	@Override
+	public JSONObject unlockEmployeeAccount(
+		long userId, long companyId, long groupId, long id, boolean unlocked,
+		ServiceContext serviceContext)
+		throws PortalException {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		// Employee employee = EmployeeLocalServiceUtil.fetchEmployee(id);
+		Employee employee = EmployeeLocalServiceUtil.getEmployee(id);
+
+		if (Validator.isNotNull(employee) && employee.getMappingUserId() < 0) {
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, id);
+			jsonObject.put(CommonTerm.EMAIL, StringPool.BLANK);
+			jsonObject.put(CommonTerm.EXITS, false);
+		}
+		else {
+			User user =
+				UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
+
+			if (unlocked) {
+
+				user.setFailedLoginAttempts(0);
+				user.setLockout(false);
+				user.setLockoutDate(null);
+			}
+
+			Indexer<User> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(user);
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+			jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+			jsonObject.put(CommonTerm.EXITS, true);
+
+		}
+
+		return jsonObject;
+	}
+
+	@Override
 	public void validateExits(
 		long userId, long companyId, long groupId, String employeeNo,
 		String email, ServiceContext serviceContext)

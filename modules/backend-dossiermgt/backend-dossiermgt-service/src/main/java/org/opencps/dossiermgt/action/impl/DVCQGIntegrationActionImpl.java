@@ -38,6 +38,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 
@@ -925,7 +927,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	@Override
-	public String getAccessToken(User user, ServiceContext serviceContext) {
+	public String getAccessToken(User user, HttpServletRequest request, HttpServletResponse response, ServiceContext serviceContext) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQGIntegrationActionTerm.DVCQG_INTEGRATION);
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
@@ -1386,6 +1388,23 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
+	@Override
+	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		_log.info("-->>>>>>>> getSharingQA: " + serverConfigs + "|" + serverConfigs.size());
+		if (serverConfigs != null && !serverConfigs.isEmpty()) {
+			try {
+				ServerConfig serverConfig = serverConfigs.get(0);
+				result = getSharingData(serverConfig, data);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+
+		return result;
+	}
+
 	private boolean hasSyncDossier(String dossierNo, JSONObject config, String accessToken) {
 		JSONObject searchData = searchDossier(dossierNo, config, accessToken);
 		if (searchData != null && searchData.has(DVCQGIntegrationActionTerm.RESULT)) {
@@ -1396,6 +1415,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext, long id) {
+
+		try {
+			ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(id);
+			return true;
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
 	}
 
 	private JSONObject searchDossier(String dossierNo, JSONObject config, String accessToken) {
@@ -1605,19 +1636,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		return result;
-	}
-
-	@Override
-	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext,
-			long id) {
-
-		try {
-			ServiceInfoMappingLocalServiceUtil.deleteServiceInfoMapping(id);
-			return true;
-		} catch (Exception e) {
-			_log.error(e);
-			return false;
-		}
 	}
 
 	@Override
@@ -1947,23 +1965,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 	
-	@Override
-	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data) {
-		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQGIntegrationActionTerm.DVCQG_INTEGRATION);
-//		JSONObject result = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs +  StringPool.PIPE + serverConfigs.size());
-		if (serverConfigs != null && !serverConfigs.isEmpty()) {
-//			try {
-//				ServerConfig serverConfig = serverConfigs.get(0);
-				//JSONObject result = getSharingData(serverConfig, data);
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-		}
-		
-		return null;
-	}
-
 //	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
 //	private static HashMap<String, JSONObject> _mapItems = null;
 

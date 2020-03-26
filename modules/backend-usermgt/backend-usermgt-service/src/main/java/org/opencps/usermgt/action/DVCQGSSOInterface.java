@@ -17,7 +17,7 @@ public interface DVCQGSSOInterface {
 			int vnconnect, String currentURL);
 
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state);
+			String state, String redirectURL);
 
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
 			String authToken, String state);
@@ -26,5 +26,8 @@ public interface DVCQGSSOInterface {
 			ServiceContext serviceContext, String userInfo) throws Exception;
 
 	public boolean isValidAccessToken(String accessToken);
+
+	public JSONObject doChangeEmail(User user, long companyId, long groupId, HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, String oldEmail, String newEmail, String techId);
 
 }

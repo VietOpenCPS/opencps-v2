@@ -4,12 +4,15 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author trungnt
  *
  */
 public interface DVCQGIntegrationAction {
-	public String getAccessToken(User user, ServiceContext serviceContext);
+	public String getAccessToken(User user, HttpServletRequest request, HttpServletResponse response, ServiceContext serviceContext);
 	public JSONObject getSharingDictCollection(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject getSharingData(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId, String isUpdating);

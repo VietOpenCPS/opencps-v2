@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordTrackerLocalServiceUtil;
@@ -1149,6 +1151,44 @@ public class UserActions implements UserInterface {
 			return null;
 		}
 
+	}
+
+	public JSONObject unlockAccount(long userId, long companyId, long groupId, long id, String email, 
+			boolean unlocked, ServiceContext serviceContext) throws PortalException {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		User user =
+				UserLocalServiceUtil.fetchUser(id);
+
+		if (Validator.isNull(user)) {
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, id);
+			jsonObject.put(CommonTerm.EMAIL, email);
+			jsonObject.put(CommonTerm.EXITS, false);
+		}
+		else {
+			
+
+			if (unlocked) {
+
+				user.setFailedLoginAttempts(0);
+				user.setLockout(false);
+				user.setLockoutDate(null);
+			}
+
+			Indexer<User> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+			indexer.reindex(user);
+
+			jsonObject.put(CommonTerm.SCREEN_NAME, user.getScreenName());
+			jsonObject.put(CommonTerm.EMAIL, user.getEmailAddress());
+			jsonObject.put(CommonTerm.EXITS, true);
+
+		}
+
+		return jsonObject;
 	}
 
 }
