@@ -224,6 +224,11 @@ public class PublishQueueLocalServiceUtil {
 		return getService().getByStatus(status, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatuses(
+		int[] statuses, int start, int end) {
+		return getService().getByStatuses(statuses, start, end);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
 	}

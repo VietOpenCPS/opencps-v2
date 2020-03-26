@@ -237,6 +237,12 @@ public class PublishQueueLocalServiceWrapper implements PublishQueueLocalService
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PublishQueue> getByStatuses(
+		int[] statuses, int start, int end) {
+		return _publishQueueLocalService.getByStatuses(statuses, start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _publishQueueLocalService.getIndexableActionableDynamicQuery();
 	}

@@ -2532,7 +2532,10 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="dossierId"></finder-column>
             <finder-column name="dossierActionId"></finder-column>
-        </finder>        
+        </finder> 
+        <finder name="STS" return-type="Collection">
+            <finder-column name="state" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>               
 	</entity>
 	
 	<entity local-service="true" name="DossierDocument" remote-service="false"
@@ -2631,6 +2634,9 @@
 			<finder-column name="status" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="modifiedDate" comparator="&lt;="/>		
 		</finder>
+        <finder name="STS" return-type="Collection">
+            <finder-column name="status" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 	</entity>
 		
 	<entity name="DeliverableTypeRole" table="opencps_deliverabletyperole"

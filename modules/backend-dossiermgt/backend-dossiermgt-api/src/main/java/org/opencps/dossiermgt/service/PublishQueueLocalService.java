@@ -203,6 +203,9 @@ public interface PublishQueueLocalService extends BaseLocalService,
 	public List<PublishQueue> getByStatus(int status, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PublishQueue> getByStatuses(int[] statuses, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**

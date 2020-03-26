@@ -173,4 +173,9 @@ public class PublishQueueLocalServiceImpl
 	public List<PublishQueue> findByST_LT_MD(int[] statuses, Date d, int start, int end) {
 		return publishQueuePersistence.findByST_LT_MD(statuses, d, start, end);
 	}
+	
+	public List<PublishQueue> getByStatuses(int[] statuses, int start, int end) {
+		return publishQueuePersistence.findBySTS(statuses, start, end);
+	}
+	
 }

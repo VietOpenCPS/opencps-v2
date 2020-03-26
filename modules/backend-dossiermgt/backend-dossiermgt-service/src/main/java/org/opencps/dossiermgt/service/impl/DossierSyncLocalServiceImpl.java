@@ -153,4 +153,9 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	public void removeByDossierId (long groupId, long dossierId) {
 		dossierSyncPersistence.removeByG_DID(groupId, dossierId);
 	}
+	
+	public List<DossierSync> findByStates(int[] states, Integer start, Integer end) {
+		return dossierSyncPersistence.findBySTS(states, start, end);
+	}
+	
 }
