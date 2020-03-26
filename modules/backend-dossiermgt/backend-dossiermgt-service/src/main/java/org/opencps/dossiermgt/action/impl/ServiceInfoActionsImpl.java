@@ -499,7 +499,14 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 			long admCount = 0;
 
-			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//Administration Code
+			String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+			String domainCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(domainCode)) {
+				domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			}
+			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
 			//params.put(ServiceInfoTerm.ADMINISTRATION_CODE, administration);
 			//Administration Code
 			String administrationCodeSearch = StringPool.BLANK;
