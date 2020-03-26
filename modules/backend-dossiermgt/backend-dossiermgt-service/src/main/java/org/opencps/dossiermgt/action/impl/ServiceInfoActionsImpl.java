@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -42,6 +43,7 @@ import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -240,7 +242,14 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		for (Document doc : documents) {
 			long admCount = 0;
 
-			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//params.put(ServiceInfoTerm.ADMINISTRATION_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//Administration Code
+			String administrationCode = doc.get(DictItemTerm.ITEM_CODE);
+			String administrationCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(administrationCode)) {
+				administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
+			}
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
@@ -294,7 +303,14 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
 			long admCount = 0;
 
-			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+			//Domain Code
+			String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+			String domainSearch = StringPool.BLANK;
+			if (Validator.isNotNull(domainCode)) {
+				domainSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			}
+			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainSearch);
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
@@ -484,7 +500,14 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			long admCount = 0;
 
 			params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, administration);
+			//params.put(ServiceInfoTerm.ADMINISTRATION_CODE, administration);
+			//Administration Code
+			String administrationCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(administration)) {
+				administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administration);
+			}
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
+
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
