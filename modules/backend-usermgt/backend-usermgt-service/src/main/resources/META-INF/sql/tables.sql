@@ -86,7 +86,8 @@ create table opencps_employee (
 	fileCertId LONG,
 	fileSignId LONG,
 	fileCertPath VARCHAR(500) null,
-	fileSignPath VARCHAR(500) null
+	fileSignPath VARCHAR(500) null,
+	scope VARCHAR(75) null
 );
 
 create table opencps_employee_jobpos (

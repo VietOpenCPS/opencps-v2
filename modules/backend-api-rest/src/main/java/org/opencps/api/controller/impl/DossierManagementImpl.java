@@ -239,6 +239,13 @@ public class DossierManagementImpl implements DossierManagement {
 			if ("all".equals(agency)) {
 				agency = StringPool.BLANK;
 			}
+			if (Validator.isNull(agency)) {
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null && Validator.isNotNull(employee.getScope())) {
+					agency = employee.getScope();
+				}
+			}
+			
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
 			if (Validator.isNotNull(serviceCode)) {
@@ -775,6 +782,14 @@ public class DossierManagementImpl implements DossierManagement {
 			// If user is citizen then default owner true
 			if (isCitizen) {
 				owner = String.valueOf(true);
+			}
+			else {
+				if (Validator.isNull(agency)) {
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					if (employee != null && Validator.isNotNull(employee.getScope())) {
+						agency = employee.getScope();
+					}					
+				}
 			}
 			if (Boolean.valueOf(query.getSpecialKey())) {
 				owner = String.valueOf(false);
