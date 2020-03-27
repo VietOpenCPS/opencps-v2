@@ -74,7 +74,9 @@ public class EmployeeLocalServiceUtil {
 	}
 
 	public static org.opencps.usermgt.model.Employee adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
+		com.liferay.portal.kernel.json.JSONObject objectData)
+		throws org.opencps.usermgt.exception.DuplicateEmployeeNoException,
+			org.opencps.usermgt.exception.DuplicateEmployeeEmailException {
 		return getService().adminProcessData(objectData);
 	}
 
