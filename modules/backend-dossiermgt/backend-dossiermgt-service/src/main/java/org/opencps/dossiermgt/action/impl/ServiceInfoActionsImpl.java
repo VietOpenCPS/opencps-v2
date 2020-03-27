@@ -560,4 +560,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		return result;
 	}
 
+	@Override
+	public JSONObject doSynServiceInfoFromDVC(long userId, long groupId, ServiceContext serviceContext, String method, String url, String data) {
+		return null;
+	}
+
 }
