@@ -227,7 +227,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		attributes.put("contactEmail", getContactEmail());
 		attributes.put("mappingUserId", getMappingUserId());
 		attributes.put("activationCode", getActivationCode());
-		attributes.put("lock_", getLock_());
+		attributes.put("lock_", isLock_());
 		attributes.put("profile", getProfile());
 		attributes.put("tmpPass", getTmpPass());
 		attributes.put("representativeEnterprise", getRepresentativeEnterprise());
@@ -876,12 +876,17 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	}
 
 	@Override
-	public Boolean getLock_() {
+	public boolean getLock_() {
 		return _lock_;
 	}
 
 	@Override
-	public void setLock_(Boolean lock_) {
+	public boolean isLock_() {
+		return _lock_;
+	}
+
+	@Override
+	public void setLock_(boolean lock_) {
 		_lock_ = lock_;
 	}
 
@@ -931,12 +936,12 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	}
 
 	@Override
-	public Integer getVerification() {
+	public int getVerification() {
 		return _verification;
 	}
 
 	@Override
-	public void setVerification(Integer verification) {
+	public void setVerification(int verification) {
 		_verification = verification;
 	}
 
@@ -1051,7 +1056,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		applicantImpl.setContactEmail(getContactEmail());
 		applicantImpl.setMappingUserId(getMappingUserId());
 		applicantImpl.setActivationCode(getActivationCode());
-		applicantImpl.setLock_(getLock_());
+		applicantImpl.setLock_(isLock_());
 		applicantImpl.setProfile(getProfile());
 		applicantImpl.setTmpPass(getTmpPass());
 		applicantImpl.setRepresentativeEnterprise(getRepresentativeEnterprise());
@@ -1318,7 +1323,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 			applicantCacheModel.activationCode = null;
 		}
 
-		applicantCacheModel.lock_ = getLock_();
+		applicantCacheModel.lock_ = isLock_();
 
 		applicantCacheModel.profile = getProfile();
 
@@ -1419,7 +1424,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append(", activationCode=");
 		sb.append(getActivationCode());
 		sb.append(", lock_=");
-		sb.append(getLock_());
+		sb.append(isLock_());
 		sb.append(", profile=");
 		sb.append(getProfile());
 		sb.append(", tmpPass=");
@@ -1543,7 +1548,7 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lock_</column-name><column-value><![CDATA[");
-		sb.append(getLock_());
+		sb.append(isLock_());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>profile</column-name><column-value><![CDATA[");
@@ -1615,11 +1620,11 @@ public class ApplicantModelImpl extends BaseModelImpl<Applicant>
 	private long _originalMappingUserId;
 	private boolean _setOriginalMappingUserId;
 	private String _activationCode;
-	private Boolean _lock_;
+	private boolean _lock_;
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
-	private Integer _verification;
+	private int _verification;
 	private String _mappingClassName;
 	private String _originalMappingClassName;
 	private String _mappingClassPK;

@@ -467,14 +467,21 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	 *
 	 * @return the lock_ of this applicant
 	 */
-	public Boolean getLock_();
+	public boolean getLock_();
 
 	/**
-	 * Sets the lock_ of this applicant.
+	 * Returns <code>true</code> if this applicant is lock_.
+	 *
+	 * @return <code>true</code> if this applicant is lock_; <code>false</code> otherwise
+	 */
+	public boolean isLock_();
+
+	/**
+	 * Sets whether this applicant is lock_.
 	 *
 	 * @param lock_ the lock_ of this applicant
 	 */
-	public void setLock_(Boolean lock_);
+	public void setLock_(boolean lock_);
 
 	/**
 	 * Returns the profile of this applicant.
@@ -526,14 +533,14 @@ public interface ApplicantModel extends BaseModel<Applicant>, GroupedModel,
 	 *
 	 * @return the verification of this applicant
 	 */
-	public Integer getVerification();
+	public int getVerification();
 
 	/**
 	 * Sets the verification of this applicant.
 	 *
 	 * @param verification the verification of this applicant
 	 */
-	public void setVerification(Integer verification);
+	public void setVerification(int verification);
 
 	/**
 	 * Returns the mapping class name of this applicant.

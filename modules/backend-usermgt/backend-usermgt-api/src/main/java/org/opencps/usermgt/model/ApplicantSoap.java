@@ -57,7 +57,7 @@ public class ApplicantSoap implements Serializable {
 		soapModel.setContactEmail(model.getContactEmail());
 		soapModel.setMappingUserId(model.getMappingUserId());
 		soapModel.setActivationCode(model.getActivationCode());
-		soapModel.setLock_(model.getLock_());
+		soapModel.setLock_(model.isLock_());
 		soapModel.setProfile(model.getProfile());
 		soapModel.setTmpPass(model.getTmpPass());
 		soapModel.setRepresentativeEnterprise(model.getRepresentativeEnterprise());
@@ -308,11 +308,15 @@ public class ApplicantSoap implements Serializable {
 		_activationCode = activationCode;
 	}
 
-	public Boolean getLock_() {
+	public boolean getLock_() {
 		return _lock_;
 	}
 
-	public void setLock_(Boolean lock_) {
+	public boolean isLock_() {
+		return _lock_;
+	}
+
+	public void setLock_(boolean lock_) {
 		_lock_ = lock_;
 	}
 
@@ -340,11 +344,11 @@ public class ApplicantSoap implements Serializable {
 		_representativeEnterprise = representativeEnterprise;
 	}
 
-	public Integer getVerification() {
+	public int getVerification() {
 		return _verification;
 	}
 
-	public void setVerification(Integer verification) {
+	public void setVerification(int verification) {
 		_verification = verification;
 	}
 
@@ -388,11 +392,11 @@ public class ApplicantSoap implements Serializable {
 	private String _contactEmail;
 	private long _mappingUserId;
 	private String _activationCode;
-	private Boolean _lock_;
+	private boolean _lock_;
 	private String _profile;
 	private String _tmpPass;
 	private String _representativeEnterprise;
-	private Integer _verification;
+	private int _verification;
 	private String _mappingClassName;
 	private String _mappingClassPK;
 }

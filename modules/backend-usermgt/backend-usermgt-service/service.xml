@@ -549,11 +549,11 @@
 		<column name="contactEmail" type="String" />
 		<column name="mappingUserId" type="long" />
 		<column name="activationCode" type="String" />
-		<column name="lock_" type="Boolean" />
+		<column name="lock_" type="boolean" />
 		<column name="profile" type="String" />
 		<column name="tmpPass" type="String" />
 		<column name="representativeEnterprise" type="String" />
-		<column name="verification" type="Integer" />
+		<column name="verification" type="int" />
         <column name="mappingClassName" type="String"></column>
         <column name="mappingClassPK" type="String"></column>
 
