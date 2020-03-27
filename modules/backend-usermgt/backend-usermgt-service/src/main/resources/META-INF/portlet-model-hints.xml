@@ -55,7 +55,7 @@
 		</field>
 		<field name="mappingUserId" type="long" />
 		<field name="activationCode" type="String" />
-		<field name="lock_" type="Boolean" />
+		<field name="lock_" type="boolean" />
 		<field name="profile" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
@@ -63,7 +63,7 @@
 		<field name="representativeEnterprise" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="verification" type="Integer" />
+		<field name="verification" type="int" />
 		<field name="mappingClassName" type="String">
 			<hint name="max-length">255</hint>
 		</field>

@@ -42,6 +42,9 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.NoApplicantIdNoException;
 import org.opencps.usermgt.exception.NoSuchApplicantException;
 import org.opencps.usermgt.model.Applicant;
 
@@ -87,7 +90,9 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public Applicant addApplicant(Applicant applicant);
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Applicant adminProcessData(JSONObject objectData);
+	public Applicant adminProcessData(JSONObject objectData)
+		throws DuplicateContactEmailException, NoApplicantIdNoException,
+			DuplicateApplicantIdException;
 
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant adminProcessDelete(Long id);
