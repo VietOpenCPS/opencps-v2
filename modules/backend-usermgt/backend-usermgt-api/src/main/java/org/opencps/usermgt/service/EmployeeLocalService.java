@@ -101,7 +101,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 			NoSuchUserException, PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Employee adminProcessData(JSONObject objectData);
+	public Employee adminProcessData(JSONObject objectData)
+		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException;
 
 	@Indexable(type = IndexableType.DELETE)
 	public Employee adminProcessDelete(Long id);
