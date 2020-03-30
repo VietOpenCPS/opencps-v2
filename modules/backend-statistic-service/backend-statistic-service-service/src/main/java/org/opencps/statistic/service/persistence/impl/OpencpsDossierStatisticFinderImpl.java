@@ -302,7 +302,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			
-			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
+			if (groupAgencyCode.contains("total")) {
+				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);				
+			}
 
 			//LOG.info(sql);
 
@@ -332,6 +334,10 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			/* add govAgency parameter */
 			if (!govAgency.contentEquals(TOTAL)) {
 				qPos.add(govAgency);
+			}
+			
+			if (!groupAgencyCode.contentEquals(TOTAL)) {
+				qPos.add(groupAgencyCode);
 			}
 
 			/* add reporting */
@@ -381,7 +387,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM,CONDITION_SYSTEM_REPLACE);
 			}
 			
-			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
+			if (groupAgencyCode.contains(TOTAL)) {
+				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);				
+			}
 	
 			//LOG.info("sql: "+sql);
 	
@@ -412,6 +420,10 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 				qPos.add(govAgency);
 			}
 	
+			if (!groupAgencyCode.contentEquals(TOTAL)) {
+				qPos.add(groupAgencyCode);
+			}
+			
 			/* add reporting */
 			//qPos.add(reporting);
 	
