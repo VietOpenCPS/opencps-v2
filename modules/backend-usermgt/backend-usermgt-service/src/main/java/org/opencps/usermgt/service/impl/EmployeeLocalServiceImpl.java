@@ -930,7 +930,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Employee adminProcessData(JSONObject objectData) {
+	public Employee adminProcessData(JSONObject objectData)
+			throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException {
 
 		Employee object = null;
 
@@ -943,6 +944,16 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		}
 		else {
+
+			int checkExitsEmp = employeePersistence.countByF_email(objectData.getLong("groupId"), objectData.getString("email"));
+			if (checkExitsEmp > 0) {
+				throw new DuplicateEmployeeEmailException("email_exits");
+			} else {
+				checkExitsEmp = employeePersistence.countByF_employeeNo(objectData.getLong("groupId"), objectData.getString("employeeNo"));
+				if (checkExitsEmp > 0) {
+					throw new DuplicateEmployeeEmailException("employeeNo_exits");
+				}
+			}
 
 			long id =
 				CounterLocalServiceUtil.increment(Employee.class.getName());
