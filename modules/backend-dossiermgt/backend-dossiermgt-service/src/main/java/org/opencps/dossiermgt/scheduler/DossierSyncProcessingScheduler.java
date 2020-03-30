@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.processor.IMessageProcessor;
 import org.opencps.dossiermgt.processor.MessageProcessor;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.kernel.prop.PropValues;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
+
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
@@ -67,12 +70,15 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		}
 		isRunning = false;
 	}
-	
+
+	//Time engine dossier
+	private static int TIME_SYNC = Validator.isNotNull(PropValues.TIME_STATISTIC_DOSSIER) ? Integer.valueOf(PropValues.TIME_STATISTIC_DOSSIER) : 45;
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45, TimeUnit.SECOND);
+		  _log.info("TIME_SYNC: "+TIME_SYNC);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, TIME_SYNC, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
