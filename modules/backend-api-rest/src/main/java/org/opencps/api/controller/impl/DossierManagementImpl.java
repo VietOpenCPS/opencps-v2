@@ -99,6 +99,8 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -110,6 +112,7 @@ import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.DossierMarkActions;
 import org.opencps.dossiermgt.action.DossierSyncActions;
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
@@ -135,6 +138,7 @@ import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
@@ -7392,6 +7396,26 @@ public class DossierManagementImpl implements DossierManagement {
 				oldDossier = DossierLocalServiceUtil.updateDossier(oldDossier);
 				DossierDetailModel result =
 						DossierUtils.mappingForGetDetail(oldDossier, user.getUserId());
+				//Update DVC_QG
+				_log.info("input.getDvcqgIntegration(): "+input.getDvcqgIntegration());
+				if (Validator.isNotNull(input.getDvcqgIntegration()) && input.getDvcqgIntegration()) {
+					//add by TrungNT Fake
+					DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+					String mappingDossierStatus = actionImpl.getMappingStatus(oldDossier.getGroupId(), oldDossier);
+					if(Validator.isNotNull(mappingDossierStatus)) {
+						List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(oldDossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
+						for (ServerConfig sc : lstScs) {
+							try {
+								List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(oldDossier.getGroupId(), oldDossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+								if (lstQueues == null || lstQueues.isEmpty()) {
+									PublishQueueLocalServiceUtil.updatePublishQueue(oldDossier.getGroupId(), 0, oldDossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
+								}
+							} catch (PortalException e) {
+								_log.debug(e);
+							}
+						}
+					}
+				}
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}

@@ -119,7 +119,8 @@ import javax.xml.bind.annotation.XmlType;
 	"documentNo",
 	"documentDate",
 	"systemId",
-	"dossierCounter"
+	"dossierCounter",
+	"dvcqgIntegration"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -254,6 +255,16 @@ public class DossierInputModel {
 	private Integer systemId;
 	@FormParam(value = "dossierCounter")
 	private String dossierCounter;
+	@FormParam(value = "dvcqgIntegration")
+	private Boolean dvcqgIntegration;
+
+	public Boolean getDvcqgIntegration() {
+		return dvcqgIntegration;
+	}
+
+	public void setDvcqgIntegration(Boolean dvcqgIntegration) {
+		this.dvcqgIntegration = dvcqgIntegration;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;

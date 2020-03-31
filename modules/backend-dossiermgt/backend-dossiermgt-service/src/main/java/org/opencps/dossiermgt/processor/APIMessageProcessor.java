@@ -493,6 +493,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 		StringBuilder acknowlegement = new StringBuilder(); 
 				
 		InformDossierInputModel model = OpenCPSConverter.convertInformDossierToInputModel(dossier);
+		model.setDvcqgIntegration(true);
 		DossierDetailModel result = client.putDossier(model);
 		messageText.append("PUT /dossiers/inform\n");
 		messageText.append(JSONFactoryUtil.looseSerialize(model));
