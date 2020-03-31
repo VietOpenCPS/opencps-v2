@@ -132,9 +132,9 @@ public class NotarizationManagementImpl implements NotarizationManagement {
 				if (notarizationYear == 0) {
 					notarizationYear = oldNotarization.getNotarizationYear();
 				}
-				if (notarizationDate == 0) {
-					notarizationDate = oldNotarization.getNotarizationDate().getTime();
-				}
+//				if (notarizationDate == 0) {
+//					notarizationDate = oldNotarization.getNotarizationDate().getTime();
+//				}
 				if (Validator.isNull(signerName)) {
 					signerName = oldNotarization.getSignerName();
 				}

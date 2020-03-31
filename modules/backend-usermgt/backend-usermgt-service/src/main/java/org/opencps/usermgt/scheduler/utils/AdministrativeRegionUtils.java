@@ -1,7 +1,6 @@
 package org.opencps.usermgt.scheduler.utils;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -132,6 +131,7 @@ public class AdministrativeRegionUtils {
 			sc.init(null, trustAllCerts, new SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		} catch (Exception e) {
+			_log.debug(e);
 		}
 	}
 

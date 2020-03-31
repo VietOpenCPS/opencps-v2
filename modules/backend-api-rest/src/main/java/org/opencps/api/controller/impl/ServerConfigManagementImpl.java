@@ -575,8 +575,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							//
 							long groupIdUpdate = 0;
 							String authStrEnc = StringPool.BLANK;
-							String classNameUpdate = StringPool.BLANK;
-							String classPKUpdate = StringPool.BLANK;
+							String classNameUpdate;// = StringPool.BLANK;
+							String classPKUpdate;// = StringPool.BLANK;
 							//
 							String params = jsonConfig.getString("params");
 							System.out.println("params: "+params);

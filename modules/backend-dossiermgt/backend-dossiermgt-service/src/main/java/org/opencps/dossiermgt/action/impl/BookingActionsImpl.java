@@ -110,10 +110,10 @@ public class BookingActionsImpl implements BookingActions {
 	@Override
 	public boolean validateSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String value) {
-		String captcha = StringPool.BLANK;
+		String captcha;// = StringPool.BLANK;
 		HttpSession session = request.getSession();
 
-		Enumeration<String> enumeration = session.getAttributeNames();
+		Enumeration<String> enumeration;// = session.getAttributeNames();
 		
 		/*List<String> values = Collections.list(enumeration);
 		

@@ -1535,6 +1535,8 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getDueDate())) {
 	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
 	    }
+		params.put(DossierTerm.KEY_DVCQG_INTEGRATION, model.isDvcqgIntegration());
+		
 	    return params;
 	}
 	

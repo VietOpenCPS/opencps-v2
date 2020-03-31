@@ -1240,6 +1240,11 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (payloadObject.has(DossierTerm.CROSS_DOSSIER)) {
 			newObj.put(DossierTerm.CROSS_DOSSIER, payloadObject.getJSONObject(DossierTerm.CROSS_DOSSIER));
 		}
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
+
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(), assignUsers, payment, context);
 		
@@ -2795,6 +2800,68 @@ public class CPSDossierBusinessLocalServiceImpl
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption, serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
 			bResult.put(DossierTerm.DUE_DATE, true);
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
+		} else //Update counter and dossierNo
+		if (dateOption == DossierTerm.DATE_OPTION_TWO || dateOption == DossierTerm.DATE_OPTION_TEN) {
+
+			/** 
+			 * THANHNV create common init DueDate DossierNo DossierCounter 
+			 
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
+							params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+			if (Validator.isNull(dossier.getDossierCounter()) && Validator.isNotNull(serviceProcess.getCounterCode())) {
+				ConfigCounter counterConfig = ConfigCounterLocalServiceUtil.fetchByCountrCode(dossier.getGroupId(),
+						serviceProcess.getCounterCode());
+				if (counterConfig != null) {
+					if (Validator.isNotNull(counterConfig.getStartCounter()) && counterConfig.getStartCounter() > 0) {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode() + "| getStartCounter(): "
+											+ counterConfig.getStartCounter());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					} else {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					}
+				}
+			}
+			THANHNV: end
+			*/
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		}
 		
 		//Check if dossier is done
@@ -7517,5 +7584,87 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			return oldDossier;
 	}	
+
+	private Dossier setDossierNoNDueDate(Dossier dossier, ServiceProcess serviceProcess, ProcessOption option,
+			boolean setDossierNo, boolean setDueDate, Date dueDateStart,
+			LinkedHashMap<String, Object> params) {
+		
+		if (setDueDate) {
+			Double durationCount = serviceProcess.getDurationCount();
+			int durationUnit = serviceProcess.getDurationUnit();
+			Date dueDate = null;
+			if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
+				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit,
+				// dossier.getGroupId());
+				DueDateUtils dueDateUtils = new DueDateUtils(dueDateStart, durationCount, durationUnit, dossier.getGroupId());
+				dueDate = dueDateUtils.getDueDate();
+			}
+
+			if (Validator.isNotNull(dueDate)) {
+				dossier.setDueDate(dueDate);
+//					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);					
+				// bResult.put(DossierTerm.DUE_DATE, true);
+			}
+
+			dossier.setDurationCount(durationCount);
+			dossier.setDurationUnit(durationUnit);
+		}
+
+		if (setDossierNo) {
+			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
+				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
+						dossier.getRegisterBookCode());
+				dossier.setCounter(counterCode);
+			}
+
+			if (Validator.isNull(dossier.getDossierNo())) {
+				try {
+					String dossierRef = DossierNumberGenerator.generateDossierNumber(dossier.getGroupId(), dossier.getCompanyId(),
+							dossier.getDossierId(), option.getProcessOptionId(), serviceProcess.getDossierNoPattern(),
+							params);
+					dossier.setDossierNo(dossierRef.trim());
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+			}
+			if (Validator.isNull(dossier.getDossierCounter()) && Validator.isNotNull(serviceProcess.getCounterCode())) {
+				ConfigCounter counterConfig = ConfigCounterLocalServiceUtil.fetchByCountrCode(dossier.getGroupId(),
+						serviceProcess.getCounterCode());
+				if (counterConfig != null) {
+					if (Validator.isNotNull(counterConfig.getStartCounter()) && counterConfig.getStartCounter() > 0) {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode() + "| getStartCounter(): "
+											+ counterConfig.getStartCounter());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					} else {
+						String patternCode = counterConfig.getPatternCode();
+						try {
+							_log.info("dossierId: " + dossier.getDossierId() + "| option.getProcessOptionId(): "
+									+ option.getProcessOptionId() + "| serviceProcess.getCounterCode(): "
+									+ serviceProcess.getCounterCode());
+							String dossierCounter = ConfigCounterNumberGenerator.generateCounterNumber(dossier.getGroupId(),
+									dossier.getCompanyId(), dossier.getDossierId(), option.getProcessOptionId(),
+									patternCode, counterConfig, params);
+							dossier.setDossierCounter(dossierCounter.trim());
+							_log.info("dossierCounter: " + dossierCounter);
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+					}
+				}
+			}
+		}
+		return dossier;
+	}
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
 }

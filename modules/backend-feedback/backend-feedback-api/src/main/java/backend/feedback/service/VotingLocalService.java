@@ -100,6 +100,9 @@ public interface VotingLocalService extends BaseLocalService,
 
 	public long countVotingByClass_Name_PK(String className, String classPK);
 
+	public long countVotingByG_Class_Name_PK(long groupId, String className,
+		String classPK);
+
 	/**
 	* Creates a new voting with the primary key. Does not add the voting to the database.
 	*
@@ -254,6 +257,10 @@ public interface VotingLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Voting> getVotingByClass_Name_PK(String className,
 		String classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Voting> getVotingByG_Class_Name_PK(long groupId,
+		String className, String classPK);
 
 	/**
 	* Returns the voting matching the UUID and group.

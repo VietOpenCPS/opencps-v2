@@ -45,14 +45,14 @@ public class BCTSMSUtils {
 			//
 			_log.info(configObj);
 			if (configObj.has(SendSMSTerm.BCT_CP_CODE) && configObj.has(SendSMSTerm.BCT_ALIAS)
-					&& configObj.has(SendSMSTerm.BCT_USER_NAME) && configObj.has(SendSMSTerm.BCT_PASSWORD)
+					&& configObj.has(SendSMSTerm.BCT_USER_NAME) && configObj.has(SendSMSTerm.BCT_SECRET)
 					&& configObj.has(SendSMSTerm.BCT_CONTENT_TYPE) && configObj.has(SendSMSTerm.BCT_PACKAGE_ID)
 					&& Validator.isNotNull(toTelNo)) {
 
 				//String cpCode = configObj.getString(SendSMSTerm.BCT_CP_CODE);
 				//String alias = configObj.getString(SendSMSTerm.BCT_ALIAS);
 				String userName = configObj.getString(SendSMSTerm.BCT_USER_NAME);
-				String password = configObj.getString(SendSMSTerm.BCT_PASSWORD);
+				String password = configObj.getString(SendSMSTerm.BCT_SECRET);
 				//String contentType = configObj.getString(SendSMSTerm.BCT_CONTENT_TYPE);
 				//String packageId = configObj.getString(SendSMSTerm.BCT_PACKAGE_ID);
 				String serverUrl = configObj.getString("url");
@@ -66,7 +66,7 @@ public class BCTSMSUtils {
 
 				//
 				String authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
-				String apiUrl = StringPool.BLANK;
+				String apiUrl;// = StringPool.BLANK;
 
 				StringBuilder sb = new StringBuilder();
 				try {
@@ -76,7 +76,7 @@ public class BCTSMSUtils {
 					while (keys.hasNext()) {
 						String key = (String) keys.next();
 						if (!"".equals(postData.toString()) && key.equals(SendSMSTerm.BCT_USER_NAME)
-								&& key.equals(SendSMSTerm.BCT_PASSWORD) && key.equals("url")) {
+								&& key.equals(SendSMSTerm.BCT_SECRET) && "url".contentEquals(key)) {
 							postData.append("&");
 						}
 						postData.append(key);

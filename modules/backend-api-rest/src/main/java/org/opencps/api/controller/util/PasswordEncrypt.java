@@ -19,6 +19,8 @@ public class PasswordEncrypt {
 	/** Secret key spec used to generate secret key */
 	private static SecretKeySpec secretKeySpec;
 
+	private static final String DIGEST_5 = "MD5";
+	
 	private static String asHexStr(byte buf[]) {
 		StringBuffer strbuf = new StringBuffer(buf.length * 2);
 		int i;
@@ -79,7 +81,7 @@ public class PasswordEncrypt {
 
 		SecretKey secretKey = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
 
-		MessageDigest md = MessageDigest.getInstance("MD5");
+		MessageDigest md = MessageDigest.getInstance(DIGEST_5);
 		md.update(secretKey.getEncoded());
 		md.update(salt);
 		for (int i = 1; i < iterationCount; i++)
