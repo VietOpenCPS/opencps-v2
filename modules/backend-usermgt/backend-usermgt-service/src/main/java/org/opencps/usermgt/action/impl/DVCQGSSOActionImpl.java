@@ -785,7 +785,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		oldUser.setEmailAddress(newEmail);
 
-		oldUser = UserLocalServiceUtil.updateUser(oldUser);
+		UserLocalServiceUtil.updateUser(oldUser);
 
 		applicant.setContactEmail(newEmail);
 
@@ -795,7 +795,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		if (applicant0 != null) {
 			applicant0.setContactEmail(newEmail);
-			applicant0 = ApplicantLocalServiceUtil.updateApplicant(applicant0);
+			ApplicantLocalServiceUtil.updateApplicant(applicant0);
 		}
 
 		result.put("statusCode", 200);

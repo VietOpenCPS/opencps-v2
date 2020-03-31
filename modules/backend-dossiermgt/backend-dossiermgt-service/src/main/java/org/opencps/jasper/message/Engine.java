@@ -281,23 +281,24 @@ public class Engine implements MessageListener {
 				
     			ServiceContext serviceContext = new ServiceContext();
     			_log.info("jasper export paymentFile: " + classPK + ", " + paymentFile );
-    			serviceContext.setUserId(paymentFile.getUserId());
-    
-    			long fileEntryId = 0;
-    
-    			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, paymentFile.getGroupId(), file, filePath,
-    					serviceContext);
-    
-    			fileEntryId = fileEntry.getFileEntryId();
-    
-    			paymentFile.setInvoiceFileEntryId(fileEntryId);
-    
-    			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
-    
-    			Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
-    
-    			indexer.reindex(paymentFile);
-				
+    			if (paymentFile != null) {
+    				serviceContext.setUserId(paymentFile.getUserId());
+        			long fileEntryId = 0;
+        		    
+        			FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, paymentFile.getGroupId(), file, filePath,
+        					serviceContext);
+        
+        			fileEntryId = fileEntry.getFileEntryId();
+        
+        			paymentFile.setInvoiceFileEntryId(fileEntryId);
+        
+        			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+        
+        			Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+        
+        			indexer.reindex(paymentFile);
+    			}
+    							
 			}
 //			else if (engineClass.isAssignableFrom(Deliverable.class)) {
 //				Deliverable openCPSDeliverable = DeliverableLocalServiceUtil.fetchDeliverable(classPK);

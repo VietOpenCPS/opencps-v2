@@ -373,7 +373,7 @@ public class RestfulController {
 
 		} 
 		catch (AuthException ae) {
-			System.out.println("AUTH EXCEPTION: " + checkUserId);
+//			System.out.println("AUTH EXCEPTION: " + checkUserId);
 			_log.debug(ae);
 			int max = 5;
 			if (Validator.isNotNull(loginMax)) {

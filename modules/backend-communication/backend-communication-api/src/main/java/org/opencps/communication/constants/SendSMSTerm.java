@@ -43,7 +43,7 @@ public class SendSMSTerm {
 	public static final String BCT_CP_CODE = "cp_code";
 	public static final String BCT_ALIAS = "alias";
 	public static final String BCT_USER_NAME = "api-username";
-	public static final String BCT_PASSWORD = "api-password";
+	public static final String BCT_SECRET = "api-password";
 	public static final String BCT_CONTENT_TYPE = "content_type";
 	public static final String BCT_PACKAGE_ID = "package_id";
 	

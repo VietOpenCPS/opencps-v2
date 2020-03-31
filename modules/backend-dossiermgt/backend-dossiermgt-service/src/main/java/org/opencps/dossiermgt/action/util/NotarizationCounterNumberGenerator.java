@@ -83,7 +83,7 @@ public class NotarizationCounterNumberGenerator {
 
 			//Process Pattern
 			//String serviceProcessCode = StringPool.BLANK;
-			String govAgencyCode = StringPool.BLANK;
+			String govAgencyCode;// = StringPool.BLANK;
 			govAgencyCode = dossier.getGovAgencyCode();
 
 			for (String pattern : patterns) {

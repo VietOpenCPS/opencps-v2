@@ -344,7 +344,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncGovernmentAgency(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;// = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> doSyncGovernmentAgency: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -433,7 +433,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;// = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> doSyncGovernmentAgency: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -522,7 +522,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	@Override
 	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;// = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> doSyncServiceDomain: " + serverConfigs + "|" + serverConfigs.size());
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -631,7 +631,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				if (!data.has("service")) {
 					autoSyncAllFAQ = true;
 				}
-				JSONObject qajson = JSONFactoryUtil.createJSONObject();
+				JSONObject qajson;// = JSONFactoryUtil.createJSONObject();
 				if (autoSyncAllFAQ) {
 					data.put("service", "LayDanhSachHoiDapGuiTuDVCQG");
 					qajson = getSharingData(serverConfig, data);
@@ -739,7 +739,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				String domainName = StringPool.BLANK;
 
-				String domainCode = StringPool.BLANK;
+				String domainCode;// = StringPool.BLANK;
 
 				if (Validator.isNotNull(malinhvuc)) {
 					domainCode = malinhvuc;
@@ -778,7 +778,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					if (answers != null) {
 						for (Answer answer : answers) {
 							if (Validator.isNotNull(answer.getClassName())
-									&& answer.getClassName().equals("dvcqg_answer")) {
+									&& "dvcqg_answer".contentEquals(answer.getClassName())) {
 								traloiids.add(GetterUtil.getLong(answer.getClassPK()));
 							}
 						}
@@ -941,7 +941,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private JSONArray getAnswer(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject qajson = JSONFactoryUtil.createJSONObject();
+		JSONObject qajson;// = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> syncAnswer: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
@@ -2022,7 +2022,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						Question question = QuestionLocalServiceUtil.fetchQuestion(answer.getQuestionId());
 						if (question != null && question.getPublish() == 1
 								&& Validator.isNotNull(question.getClassName())
-								&& question.getClassName().equalsIgnoreCase("dvcqg_question")) {
+								&& "dvcqg_question".contentEquals(question.getClassName())) {
 							item = JSONFactoryUtil.createJSONObject();
 							item.put("HOIDAPID", question.getClassPK());
 							item.put("MADONVI", question.getGovAgencyCode());
@@ -2036,7 +2036,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 					}
 					body.put("data", data);
-					JSONObject result = syncData(serverConfig, body);
+					JSONObject result;// = syncData(serverConfig, body);
 					/*if (result.has("error_code") && result.getInt("error_code") == 0) {
 						for (int i = 0; i < data.length(); i++) {
 							JSONObject _tmp = data.getJSONObject(i);

@@ -29,7 +29,6 @@ import org.opencps.usermgt.model.SyncScheduler;
 import org.opencps.usermgt.scheduler.utils.AdministrativeRegionUtils;
 import org.opencps.usermgt.service.SyncSchedulerLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -65,7 +64,7 @@ public class UserRegisterUpdateSheduler extends BaseMessageListener {
 
 		if (syncScheduler != null) {
 
-			Date syncDate = syncScheduler.getSyncDate();
+			Date syncDate;// = syncScheduler.getSyncDate();
 			//Co thong tin rooif
 			ServiceContext serviceContext = new ServiceContext();
 			long groupId = 35166;
@@ -81,7 +80,7 @@ public class UserRegisterUpdateSheduler extends BaseMessageListener {
 				String address = jsonCongDan.getString("diaChiThuongTru");
 				String contactName = jsonCongDan.getString("tenDayDu");
 				String contactTelNo = jsonCongDan.getString("dienThoaiDiDong");
-				String password = "";
+				String secret = "";
 				//
 				String cityId = jsonCongDan.getString("diaChiThuongTruTinhId");
 				String districtId = jsonCongDan.getString("diaChiThuongTruHuyenId");
@@ -100,9 +99,9 @@ public class UserRegisterUpdateSheduler extends BaseMessageListener {
 				String wardName = mapWar.get("ten");
 				//
 				ApplicantActions actions = new ApplicantActionsImpl();
-				Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+				actions.register(serviceContext, groupId, applicantName, applicantIdType,
 						applicantIdNo, applicantIdDate, contactEmail, address, cityCode, cityName, districtCode,
-						districtName, wardCode, wardName, contactName, contactTelNo, password);
+						districtName, wardCode, wardName, contactName, contactTelNo, secret);
 			}
 		}
 	}

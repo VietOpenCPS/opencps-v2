@@ -197,7 +197,7 @@ public class BookingManagementImpl implements BookingManagement{
 			if (online) {
 				//Check captcha
 				String captchaType = PropValues.CAPTCHA_TYPE;
-				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String captchaId = request.getSession().getId();
 					try {
@@ -785,9 +785,11 @@ public class BookingManagementImpl implements BookingManagement{
 			BookingActions actions = new BookingActionsImpl();
 			List bookingList = actions.getBookingCounterOnline(groupId, bookingDateSearch, online, serviceContext);
 			_log.info("bookingList: "+bookingList);
-			_log.info("splitBookingDate[0]: "+splitBookingDate[0]);
-			_log.info("splitBookingDate[1]: "+splitBookingDate[1]);
-			_log.info("splitBookingDate[2]: "+splitBookingDate[2]);
+			if (splitBookingDate != null) {
+				_log.info("splitBookingDate[0]: "+splitBookingDate[0]);
+				_log.info("splitBookingDate[1]: "+splitBookingDate[1]);
+				_log.info("splitBookingDate[2]: "+splitBookingDate[2]);				
+			}
 
 			JSONObject jsonValue = JSONFactoryUtil.createJSONObject();
 			jsonValue.put("booking", false);
@@ -801,7 +803,7 @@ public class BookingManagementImpl implements BookingManagement{
 				_log.info("bookingLast: "+bookingLast);
 				
 				if (Validator.isNotNull(bookingLast.getString(4)) && bookingLast.getString(4).contains("-")) {
-					if (splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
+					if (splitBookingDate != null && splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
 						&& GetterUtil.getInteger(splitBookingDate[1]) == (cal.get(Calendar.MONTH) + 1)
 						&& GetterUtil.getInteger(splitBookingDate[2]) == cal.get(Calendar.YEAR)) {
 						
@@ -888,7 +890,7 @@ public class BookingManagementImpl implements BookingManagement{
 					}
 				}
 			} else {
-				if (splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
+				if (splitBookingDate != null && splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
 						&& GetterUtil.getInteger(splitBookingDate[1]) == (cal.get(Calendar.MONTH) + 1)
 						&& GetterUtil.getInteger(splitBookingDate[2]) == cal.get(Calendar.YEAR)) {
 

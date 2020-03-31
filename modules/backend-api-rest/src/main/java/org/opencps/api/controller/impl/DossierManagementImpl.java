@@ -3139,7 +3139,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 
-		if (dossier != null) {
+//		if (dossier != null) {
 			DossierAction dossierAction =
 				DossierActionLocalServiceUtil.fetchDossierAction(
 					dossier.getDossierActionId());
@@ -3212,10 +3212,10 @@ public class DossierManagementImpl implements DossierManagement {
 //				}
 //			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
-		}
-		else {
-			return Response.status(404).entity(null).build();
-		}
+//		}
+//		else {
+//			return Response.status(404).entity(null).build();
+//		}
 	}
 
 	@Override

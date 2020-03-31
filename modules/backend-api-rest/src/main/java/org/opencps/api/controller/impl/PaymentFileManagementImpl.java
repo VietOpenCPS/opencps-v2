@@ -971,10 +971,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			long dossierId = dossier.getDossierId();
 	
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-			String referenceUid = input.getReferenceUid();
-			if (Validator.isNull(referenceUid)) {
-				referenceUid = PortalUUIDUtil.generate();
-			}
+//			String referenceUid = input.getReferenceUid();
+//			if (Validator.isNull(referenceUid)) {
+//				referenceUid = PortalUUIDUtil.generate();
+//			}
 	
 			if (Validator.isNotNull(input.getInvoiceTemplateNo())) {
 				paymentFile.setInvoiceTemplateNo(input.getInvoiceTemplateNo());

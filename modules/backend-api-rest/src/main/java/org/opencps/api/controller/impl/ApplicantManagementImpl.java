@@ -788,7 +788,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		File file = null;
 		try {
-            if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+            if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			
 		    String captchaId = request.getSession().getId();
@@ -917,7 +917,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //
 //					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 //				}
-				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String captchaId = request.getSession().getId();
 					try {
