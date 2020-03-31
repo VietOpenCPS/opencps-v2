@@ -79,9 +79,9 @@ import org.opencps.usermgt.service.QuestionLocalServiceUtil;
  */
 public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
-	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = null;
-
-	private static HashMap<String, JSONObject> _mapItems = null;
+	private static HashMap<String, Map<CharSequence, Integer>> _mapChars = new HashMap<String, Map<CharSequence, Integer>>();
+	
+	private static HashMap<String, JSONObject> _mapItems = new HashMap<String, JSONObject>();
 
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
@@ -1085,8 +1085,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 		} else {
 			_log.info("----------------------------->>>>>getServiceInfoSimilarity: get new data");
-			_mapChars = new HashMap<String, Map<CharSequence, Integer>>();
-			_mapItems = new HashMap<String, JSONObject>();
+//			_mapChars = new HashMap<String, Map<CharSequence, Integer>>();
+//			_mapItems = new HashMap<String, JSONObject>();
 			for (Map.Entry<String, String> entry : map.entrySet()) {
 				String key = entry.getKey();
 				String name = entry.getValue().replaceAll("[.,-_:;\\\"\\']", "").toLowerCase();
