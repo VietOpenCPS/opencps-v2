@@ -310,7 +310,7 @@ public class RestfulController {
 
 			String email = account[0];
 			String password = account[1];
-			emailAddress = email;
+			emailAddress += email;
 			
 			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 					CompanyConstants.AUTH_TYPE_EA);
