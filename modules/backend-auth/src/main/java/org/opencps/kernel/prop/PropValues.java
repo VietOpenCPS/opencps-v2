@@ -58,5 +58,8 @@ public class PropValues {
 	public static final String SMS_END_POINT = PropsUtil.get(PropKeys.SMS_END_POINT);
 
 	public static final String CAPTCHA_TYPE = PropsUtil.get(PropKeys.CAPTCHA_TYPE);
+	//
+	public static final String TIME_STATISTIC_DOSSIER = PropsUtil.get(PropKeys.TIME_STATISTIC_DOSSIER);
+	public static final String TIME_SYNC_DOSSIER = PropsUtil.get(PropKeys.TIME_SYNC_DOSSIER);
 
 }

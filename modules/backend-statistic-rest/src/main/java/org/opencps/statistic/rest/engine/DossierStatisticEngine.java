@@ -47,6 +47,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.kernel.prop.PropValues;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
@@ -740,6 +741,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //		}
 	}
 
+	//Time engine dossier
+	private static int timeStatistic = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
+			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time"))
+			: 10;
 	/**
 	   * activate: Called whenever the properties for the component change (ala Config Admin)
 	   * or OSGi is activating the component.
@@ -750,7 +755,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeStatistic, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);

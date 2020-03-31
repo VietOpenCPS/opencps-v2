@@ -235,7 +235,7 @@ public class CPSDossierBusinessLocalServiceImpl
 	private static final String BN_ADDRESS = "BN_address";
 	private static final String BN_EMAIL = "BN_email";
 	
-	private static String CHECK_BQP_TODO = PropsUtil.get("opencps.is.bqp");
+	private static String CHECK_CONFIG_DATEOPTION = PropsUtil.get("opencps.is.config.dateoption");
 	
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
@@ -1184,6 +1184,11 @@ public class CPSDossierBusinessLocalServiceImpl
 		
 		//Tạo thông tin đồng bộ hồ sơ
 		createDossierSync(groupId, userId, actionConfig, proAction, dossierAction, dossier, syncType, option, payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
+
+		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
+		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+			publishEvent(dossier, context, dossierAction.getDossierActionId());
+		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, payload, assignUsers, payment, context);
@@ -2370,7 +2375,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			THANHNV: end
 			*/
 
-			if (Validator.isNotNull(CHECK_BQP_TODO) &&
+			if (Validator.isNotNull(CHECK_CONFIG_DATEOPTION) &&
 					(DossierTerm.DOSSIER_STATUS_PROCESSING.equals(curStatus) && dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG)) {
 				
 				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);

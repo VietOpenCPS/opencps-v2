@@ -55,7 +55,10 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 
 	@Override
 	public org.opencps.usermgt.model.Applicant adminProcessData(
-		com.liferay.portal.kernel.json.JSONObject objectData) {
+		com.liferay.portal.kernel.json.JSONObject objectData)
+		throws org.opencps.usermgt.exception.DuplicateContactEmailException,
+			org.opencps.usermgt.exception.NoApplicantIdNoException,
+			org.opencps.usermgt.exception.DuplicateApplicantIdException {
 		return _applicantLocalService.adminProcessData(objectData);
 	}
 

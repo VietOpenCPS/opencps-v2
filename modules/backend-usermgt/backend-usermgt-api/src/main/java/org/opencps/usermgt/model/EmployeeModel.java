@@ -484,6 +484,21 @@ public interface EmployeeModel extends BaseModel<Employee>, GroupedModel,
 	 */
 	public void setFileSignPath(String fileSignPath);
 
+	/**
+	 * Returns the scope of this employee.
+	 *
+	 * @return the scope of this employee
+	 */
+	@AutoEscape
+	public String getScope();
+
+	/**
+	 * Sets the scope of this employee.
+	 *
+	 * @param scope the scope of this employee
+	 */
+	public void setScope(String scope);
+
 	@Override
 	public boolean isNew();
 
