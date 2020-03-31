@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -38,7 +39,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DossierSyncProcessingScheduler.class)
 public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
-
+	private static int timeSyncDossier = Validator.isNotNull(PropsUtil.get("opencps.sync.dossier.time"))
+			? Integer.valueOf(PropsUtil.get("opencps.sync.dossier.time"))
+			: 45;
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (!isRunning) {
@@ -71,17 +74,15 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		isRunning = false;
 	}
 
-	//Time engine dossier
-	private static int TIME_SYNC = Validator.isNotNull(PropValues.TIME_STATISTIC_DOSSIER) ? Integer.valueOf(PropValues.TIME_STATISTIC_DOSSIER) : 45;
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  _log.info("TIME_SYNC: "+TIME_SYNC);
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, TIME_SYNC, TimeUnit.SECOND);
+		//Time engine dossier
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
@@ -118,7 +119,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
 	    }
 	    
-	    return StorageType.MEMORY_CLUSTERED;
+	    return StorageType.PERSISTED;
 	}
 	  
 	/**
