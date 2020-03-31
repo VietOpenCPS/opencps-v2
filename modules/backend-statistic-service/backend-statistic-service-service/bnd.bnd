@@ -5,8 +5,8 @@ Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 
 -includeresource: \
-	@jackson-databind-2.8.9.jar,\
-	@jackson-core-2.8.9.jar,\
-	@jackson-annotations-2.8.9.jar,\
+	@jackson-databind-2.9.8.jar,\
+	@jackson-core-2.9.8.jar,\
+	@jackson-annotations-2.9.8.jar,\
 	@validation-api-1.1.0.Final.jar
 Import-Package: *;resolution:=optional

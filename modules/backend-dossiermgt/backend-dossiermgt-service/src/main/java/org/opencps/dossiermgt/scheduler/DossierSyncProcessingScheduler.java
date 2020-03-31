@@ -47,7 +47,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		try {
 			_log.info("OpenCPS SYNC DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
-			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByState(DossierSyncTerm.STATE_WAITING_SYNC, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<DossierSync> lstSyncs = DossierSyncLocalServiceUtil.findByStates(new int[] { DossierSyncTerm.STATE_WAITING_SYNC, DossierSyncTerm.STATE_ALREADY_SENT }, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 			
 			for (DossierSync ds : lstSyncs) {
 				IMessageProcessor processor = MessageProcessor.getProcessor(ds);

@@ -255,6 +255,11 @@ public class DossierSyncLocalServiceUtil {
 		return getService().findByState(state, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByStates(
+		int[] states, Integer start, Integer end) {
+		return getService().findByStates(states, start, end);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findForApplicantAndActionCode(
 		long groupId, String actionCode, int start, int end) {
 		return getService()

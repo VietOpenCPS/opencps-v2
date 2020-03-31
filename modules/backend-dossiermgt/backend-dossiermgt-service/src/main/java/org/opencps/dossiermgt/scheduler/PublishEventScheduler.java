@@ -66,7 +66,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		try {
 			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
-			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatus(PublishQueueTerm.STATE_WAITING_SYNC, 0, 10);
+			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatuses(new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT }, 0, 10);
 			_log.info("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {

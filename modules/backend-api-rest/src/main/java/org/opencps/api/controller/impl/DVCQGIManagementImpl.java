@@ -61,7 +61,10 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response doConfirm(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-		String result = actionImpl.getAccessToken(user, serviceContext);
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		String result = actionImpl.getAccessToken(user, request, response,  serviceContext);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}

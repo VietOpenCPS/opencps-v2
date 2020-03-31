@@ -124,6 +124,14 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		String assignUsers, String payment, int syncType, ServiceContext context)
 		throws PortalException, SystemException, Exception;
 
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public Dossier eparPublish(long groupId, Company company, User user,
+		ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		throws UnauthenticationException, PortalException, Exception;
+
 	/**
 	* Returns the OSGi service identifier.
 	*

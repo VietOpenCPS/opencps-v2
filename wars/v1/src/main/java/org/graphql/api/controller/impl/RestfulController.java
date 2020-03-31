@@ -269,6 +269,24 @@ public class RestfulController {
 
 		try {
 
+			String jCaptchaResponse = request.getParameter("j_captcha_response");
+			if (Validator.isNotNull(jCaptchaResponse)) {
+				
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+				String captchaId = request.getSession().getId();
+				try {
+					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+					if (!isResponseCorrect) {
+						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+						return "captcha";
+					}
+				} catch (CaptchaServiceException e) {
+					_log.debug(e);
+					response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+					return "captcha";
+				}
+			}
+
 			Enumeration<String> headerNames = request.getHeaderNames();
 
 			String strBasic = StringPool.BLANK;

@@ -1147,7 +1147,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	public Applicant adminProcessData(JSONObject objectData) {
+	public Applicant adminProcessData(JSONObject objectData)
+		throws DuplicateContactEmailException, NoApplicantIdNoException, DuplicateApplicantIdException {
 
 		Applicant object = null;
 
@@ -1159,6 +1160,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			object.setModifiedDate(new Date());
 
 		} else {
+
+			int checkExitsAplc = applicantPersistence.countByF_EMAIL(objectData.getString("contactEmail"));
+			if (checkExitsAplc > 0) {
+				throw new DuplicateContactEmailException("email_exits");
+			} else if (Validator.isNull(objectData.getString("applicantIdNo"))) {
+				throw new NoApplicantIdNoException("NoApplicantIdNo");
+			} else {
+				checkExitsAplc = applicantPersistence.countByF_APLC_ID(objectData.getString("applicantIdNo"));
+				if (checkExitsAplc > 0) {
+					throw new DuplicateApplicantIdException("applicantIdNo_exits");
+				}
+			}
 
 			long id = CounterLocalServiceUtil.increment(Applicant.class.getName());
 

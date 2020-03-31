@@ -240,6 +240,33 @@ public interface DossierLocalService extends BaseLocalService,
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
 		Projection projection);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier eparPublishDossier(long groupId, long dossierId,
+		String referenceUid, int counter, String serviceCode,
+		String serviceName, String govAgencyCode, String govAgencyName,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		Date applicantIdDate, String address, String cityCode, String cityName,
+		String districtCode, String districtName, String wardCode,
+		String wardName, String contactName, String contactTelNo,
+		String contactEmail, String dossierTemplateNo, String password,
+		int viaPostal, String postalAddress, String postalCityCode,
+		String postalCityName, String postalTelNo, boolean online,
+		boolean notification, String applicantNote, int originality,
+		Date createDate, Date modifiedDate, Date submitDate, Date receiveDate,
+		Date dueDate, Date releaseDate, Date finishDate, Date cancellingDate,
+		Date correctingDate, Date endorsementDate, Date extendDate,
+		Date processDate, String dossierNo, String dossierStatus,
+		String dossierStatusText, String dossierSubStatus,
+		String dossierSubStatusText, long dossierActionId,
+		String submissionNote, String lockState, String delegateName,
+		String delegateIdNo, String delegateTelNo, String delegateEmail,
+		String delegateAddress, String delegateCityCode,
+		String delegateCityName, String delegateDistrictCode,
+		String delegateDistrictName, String delegateWardCode,
+		String delegateWardName, double durationCount, int durationUnit,
+		String dossierName, String processNo, String metaData,
+		ServiceContext context) throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchByDO_NO(String dossierNo);
 

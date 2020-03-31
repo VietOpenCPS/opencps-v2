@@ -1,6 +1,7 @@
 package org.opencps.usermgt.action.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -18,6 +19,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,7 +47,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 	@Override
 	public String getAuthURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String state) {
+			String state, String redirectURL) {
 
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQGSSOTerm.DVCQG_OPENID_PROTOCOL);
 
@@ -59,6 +61,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				String callback_url = config.getString(DVCQGSSOTerm.CALLBACK_URL);
 				String scope = config.getString(DVCQGSSOTerm.SCOPE);
 				String acr_values = config.getString(DVCQGSSOTerm.ACR_VALUES);
+				state = state + "@" + redirectURL;
+				state = Base64.getEncoder().encodeToString(state.getBytes());
 				String endpoint = auth_server + auth_endpoint + "?response_type=code" + "&client_id=" + clientid
 						+ "&redirect_uri=" + callback_url + "&scope=" + scope + "&acr_values=" + acr_values + "&state="
 						+ state;
@@ -739,6 +743,65 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		}
 
 		return session;
+	}
+
+	@Override
+	public JSONObject doChangeEmail(User user, long companyId, long groupId, HttpServletRequest request,
+			HttpServletResponse response, ServiceContext serviceContext, String oldEmail, String newEmail,
+			String techId) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		User oldUser = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, oldEmail);
+
+		if (oldUser == null) {
+			result.put("statusCode", 404);
+			result.put("message", "not found user with emailadress: " + oldEmail);
+			return result;
+		} else {
+			if (oldUser.getUserId() != user.getUserId()) {
+				result.put("statusCode", 401);
+				result.put("message", "does not have permission to update");
+				return result;
+			}
+		}
+
+		User existedUser = UserLocalServiceUtil.fetchUserByEmailAddress(companyId, newEmail);
+
+		if (existedUser != null) {
+			result.put("statusCode", 409);
+			result.put("message", "dupplicate email");
+			return result;
+		}
+
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(groupId, "dvcqg", techId);
+
+		if (applicant == null || applicant.getMappingUserId() != user.getUserId()
+				|| !applicant.getContactEmail().equals(oldEmail)) {
+			result.put("statusCode", 401);
+			result.put("message", "does not have permission to update");
+			return result;
+		}
+
+		oldUser.setEmailAddress(newEmail);
+
+		oldUser = UserLocalServiceUtil.updateUser(oldUser);
+
+		applicant.setContactEmail(newEmail);
+
+		applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
+
+		Applicant applicant0 = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicant.getApplicantIdNo());
+
+		if (applicant0 != null) {
+			applicant0.setContactEmail(newEmail);
+			applicant0 = ApplicantLocalServiceUtil.updateApplicant(applicant0);
+		}
+
+		result.put("statusCode", 200);
+		result.put("message", "success");
+
+		return result;
 	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";

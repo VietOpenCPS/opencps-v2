@@ -112,7 +112,7 @@ public class KeyPayTerm {
 	public static final String ORDERNUMBER = "orderNumber";
 	public static final String SENDERNAME = "senderName";
 	public static final String RECEIVERNAME = "receiverName";
-	public static final String RECEIVERADDRESS = " receiverAddress";
+	public static final String RECEIVERADDRESS = "receiverAddress";
 	public static final String RECEIVERTEL = "receiverTel";
 	public static final String RECEIVERPROVINCE = "receiverProvince";
 	public static final String RECEIVERDISTRICT = "receiverDistrict";
