@@ -50,7 +50,15 @@ public class VotingActionsImpl implements VotingActions {
 			if (!"0".equals(classPK)) {
 				// long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				long count = VotingLocalServiceUtil.countVotingByG_Class_Name_PK(groupId, className, classPK);
-				if (count == 0) {
+				long countTemplate = VotingLocalServiceUtil.countVotingByG_Class_Name_PK(groupId, className, "0");
+				System.out.println("============Count Cur=========" + count);
+				System.out.println("============Count Temp=========" + countTemplate);
+				if (count != countTemplate) {
+					// delete old voting
+					List<Voting> votingListOld = VotingLocalServiceUtil.getVotingByG_Class_Name_PK(groupId, className, classPK);
+					for (Voting voting : votingListOld) {
+						VotingLocalServiceUtil.deleteVote(voting.getVotingId(), serviceContext);
+					}
 					// Add new voting with classPK
 					// List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, "0");
 					List<Voting> votingList = VotingLocalServiceUtil.getVotingByG_Class_Name_PK(groupId, className, "0");
