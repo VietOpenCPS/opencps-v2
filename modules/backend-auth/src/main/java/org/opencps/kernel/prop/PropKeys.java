@@ -61,4 +61,6 @@ public class PropKeys {
 	public static final String CAPTCHA_TYPE = "opencps.captcha.type";
 
 	public static final String TIME_STATISTIC_DOSSIER = "opencps.statistic.dossier.time";
+
+	public static final String TIME_SYNC_DOSSIER = "opencps.sync.dossier.time";
 }

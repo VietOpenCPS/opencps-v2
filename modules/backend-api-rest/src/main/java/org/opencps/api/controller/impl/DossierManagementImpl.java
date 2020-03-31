@@ -7218,6 +7218,7 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierInputModel input) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("groupId: "+groupId);
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierPermission dossierPermission = new DossierPermission();
@@ -7246,6 +7247,26 @@ public class DossierManagementImpl implements DossierManagement {
 				oldDossier = DossierLocalServiceUtil.updateDossier(oldDossier);
 				DossierDetailModel result =
 						DossierUtils.mappingForGetDetail(oldDossier, user.getUserId());
+				//Update DVC_QG
+				_log.info("input.getDvcqgIntegration(): "+input.getDvcqgIntegration());
+				if (Validator.isNotNull(input.getDvcqgIntegration()) && input.getDvcqgIntegration()) {
+					//add by TrungNT Fake
+					DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+					String mappingDossierStatus = actionImpl.getMappingStatus(oldDossier.getGroupId(), oldDossier);
+					if(Validator.isNotNull(mappingDossierStatus)) {
+						List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(oldDossier.getGroupId(), ServerConfigTerm.DVCQG_INTEGRATION);
+						for (ServerConfig sc : lstScs) {
+							try {
+								List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(oldDossier.getGroupId(), oldDossier.getDossierId(), sc.getServerNo(), new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+								if (lstQueues == null || lstQueues.isEmpty()) {
+									PublishQueueLocalServiceUtil.updatePublishQueue(oldDossier.getGroupId(), 0, oldDossier.getDossierId(), sc.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
+								}
+							} catch (PortalException e) {
+								_log.debug(e);
+							}
+						}
+					}
+				}
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
