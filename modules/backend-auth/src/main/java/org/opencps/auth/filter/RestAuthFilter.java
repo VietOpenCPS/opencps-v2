@@ -48,6 +48,7 @@ import backend.utils.HttpUtil;
 /**
  * @author Binhth
  */
+/**
 @Component(
 	immediate = true,
 	property = {
@@ -61,6 +62,7 @@ import backend.utils.HttpUtil;
 		"url-pattern=/o/rest/v2_1/*"
 	}, service = Filter.class
 )
+*/
 public class RestAuthFilter implements Filter {
 
 	public final static String P_AUTH = "Token";
