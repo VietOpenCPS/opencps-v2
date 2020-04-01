@@ -188,7 +188,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					lstGroupGovs.add(groupGovAgencyXP.toString());					
 				}
 				for (String groupGovAgencyCode : lstGroupGovs) {
-					_log.debug("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+//					_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
 				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
@@ -684,7 +684,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
 					try {
-						model.setServiceLevel(Integer.parseInt(DossierTerm.SERVICE_LEVEL));
+						model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
 					}
 					catch (Exception e) {
 						_log.debug(e);
