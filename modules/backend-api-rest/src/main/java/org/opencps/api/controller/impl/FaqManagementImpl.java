@@ -34,6 +34,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
+import org.opencps.kernel.prop.PropValues;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
@@ -87,34 +89,51 @@ public class FaqManagementImpl implements FaqManagement {
 		QuestionInputModel input, String jCaptchaResponse) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		
 		try {
-			ImageCaptchaService instance =
-				CaptchaServiceSingleton.getInstance();
-			String captchaId = request.getSession().getId();
-			try {
-				boolean isResponseCorrect =
-					instance.validateResponseForID(captchaId, jCaptchaResponse);
-				if (!isResponseCorrect) {
+			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				ImageCaptchaService instance =
+						CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						boolean isResponseCorrect =
+							instance.validateResponseForID(captchaId, jCaptchaResponse);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
+
+							return Response.status(
+								HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
+									error).build();
+						}
+					}
+					catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(
+							HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
+								error).build();
+					}
+			} else {
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, jCaptchaResponse);
+				
+				if (!isValid) {
 					ErrorMsgModel error = new ErrorMsgModel();
-					error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+					error.setMessage("Captcha incorrect");
 					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-					error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+					error.setDescription("Captcha incorrect");
 
-					return Response.status(
-						HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
-							error).build();
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 				}
-			}
-			catch (CaptchaServiceException e) {
-				_log.debug(e);
-				ErrorMsgModel error = new ErrorMsgModel();
-				error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
-				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-				error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
-
-				return Response.status(
-					HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(
-						error).build();
 			}
 
 			Question question = QuestionLocalServiceUtil.updateQuestion(

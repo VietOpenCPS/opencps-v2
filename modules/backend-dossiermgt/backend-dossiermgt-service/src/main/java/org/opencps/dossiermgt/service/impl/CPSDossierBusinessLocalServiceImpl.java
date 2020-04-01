@@ -2109,9 +2109,12 @@ public class CPSDossierBusinessLocalServiceImpl
 				String current_locale = epaymentConfigJSON.getString("paymentCurrentLocale");
 				String country_code = epaymentConfigJSON.getString("paymentCountryCode");
 				String internal_bank = epaymentConfigJSON.getString("paymentInternalBank");
-
+				
 				String merchant_secure_key = epaymentConfigJSON.getString("paymentMerchantSecureKey");
-
+				String algorithm = KeyPayTerm.VALUE_MD5;
+				if (epaymentConfigJSON.has("paymentHashAlgorithm")) {
+					algorithm = epaymentConfigJSON.getString("paymentHashAlgorithm");
+				}
 				// dossier = _getDossier(dossierId);
 
 				// TODO : update returnURL keyPay
@@ -2125,7 +2128,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
 						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
 						desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,
-						merchant_secure_key);
+						merchant_secure_key, algorithm);
 
 				// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
 

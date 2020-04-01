@@ -89,6 +89,44 @@ public class HashFunction {
 		else
 			return StringPool.BLANK;
 	}
+
+	public String hashAllFields(Map fields, String SECURE_SECRET, String algorithm) {
+		// create a list and sort it
+		List fieldNames = new ArrayList(fields.keySet());
+		Collections.sort(fieldNames);
+
+		// create a buffer for the md5 input and add the secure secret first
+		StringBuffer buf = new StringBuffer();
+		buf.append(SECURE_SECRET);
+
+		// iterate through the list and add the remaining field values
+		Iterator itr = fieldNames.iterator();
+
+		while (itr.hasNext()) {
+			String fieldName = (String) itr.next();
+			String fieldValue = (String) fields.get(fieldName);
+			if ((fieldValue != null) && (fieldValue.length() > 0)) {
+
+				buf.append(fieldValue);
+			}
+		}
+
+		MessageDigest md5 = null;
+		byte[] ba = null;
+		// create the md5 hash and UTF-8 encode it
+		try {
+			md5 = MessageDigest.getInstance(algorithm);
+			ba = md5.digest(buf.toString().getBytes(KeyPayTerm.VALUE_UTF_8));
+		} catch (Exception e) {
+			_log.debug(e);
+			//_log.error(e);
+		} // wont happen
+			// return buf.toString();
+		if (ba != null)
+			return hex(ba);
+		else
+			return StringPool.BLANK;
+	}
 	
 	// HASH SSA
 //	public String hashAllFields(Map fields, String SECURE_SECRET) {
