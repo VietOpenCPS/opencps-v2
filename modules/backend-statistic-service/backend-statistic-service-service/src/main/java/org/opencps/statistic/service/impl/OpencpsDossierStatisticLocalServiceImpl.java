@@ -907,7 +907,10 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 		Date now = new Date();
 //		long dossierStatisticId = 0l;
 		long dossierStatisticId;
-		// _log.debug(dossierStatisticId);
+//		if (Validator.isNotNull(groupGovAgencyCode)) {
+//			 _log.info("SAVE GROUP CREATE UPDATE: " + groupGovAgencyCode);
+//			 _log.info("Found statistic: " + dossierStatistic);
+//		}
 		if (dossierStatistic == null) {
 			dossierStatisticId = counterLocalService.increment(OpencpsDossierStatistic.class.getName());
 			dossierStatistic = opencpsDossierStatisticPersistence.create(dossierStatisticId);

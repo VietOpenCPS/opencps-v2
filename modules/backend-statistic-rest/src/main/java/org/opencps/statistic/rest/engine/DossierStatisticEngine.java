@@ -112,7 +112,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		}
 		long startTime = System.currentTimeMillis();
 		try {
-			_log.debug("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+			_log.info("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			
@@ -188,7 +188,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					lstGroupGovs.add(groupGovAgencyXP.toString());					
 				}
 				for (String groupGovAgencyCode : lstGroupGovs) {
-//					_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+					_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
 				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
@@ -450,7 +450,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
-		_log.debug("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+		_log.info("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningDossier = false;
 	}

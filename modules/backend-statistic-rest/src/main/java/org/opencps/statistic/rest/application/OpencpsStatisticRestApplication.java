@@ -499,6 +499,12 @@ public class OpencpsStatisticRestApplication extends Application {
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
+								else {
+									DossierStatisticData data = new DossierStatisticData();
+									data.setGovAgencyCode(di.getItemCode());
+									data.setGovAgencyName(di.getItemName());
+									statisticResponse.getDossierStatisticData().add(data);
+								}
 							}
 							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
 						}
@@ -529,6 +535,12 @@ public class OpencpsStatisticRestApplication extends Application {
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
+								else {
+									DossierStatisticData data = new DossierStatisticData();
+									data.setGovAgencyCode(di.getItemCode());
+									data.setGovAgencyName(di.getItemName());
+									statisticResponse.getDossierStatisticData().add(data);
+								}								
 							}
 							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
 						}						

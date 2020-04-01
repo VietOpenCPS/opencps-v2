@@ -1211,6 +1211,7 @@ public class StatisticSumYearCalcular {
 		
 		//Each group gov agency
 		for (String gc : lstGroupGovs) {
+			_log.info("Case 9999999");
 			try {
 				dossierStatisticRequest.setDomain(DossierStatisticConstants.TOTAL);
 				dossierStatisticRequest.setGovAgencyCode(DossierStatisticConstants.TOTAL);

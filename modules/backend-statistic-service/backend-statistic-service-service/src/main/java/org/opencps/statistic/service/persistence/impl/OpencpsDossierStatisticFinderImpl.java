@@ -141,10 +141,11 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			if (Validator.isNull(system)) {
 				sql = StringUtil.replace(sql, CONDITION_SYSTEM, CONDITION_SYSTEM_REPLACE);
 			}
-			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
-//			if (Validator.isNull(groupGovAgency)) {
-//				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, CONDITION_GROUP_AGENCY_REPLACE);				
-//			}
+//			sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, StringPool.BLANK);
+
+			if (Validator.isNull(groupGovAgency)) {
+				sql = StringUtil.replace(sql, CONDITION_GROUP_AGENCY, CONDITION_GROUP_AGENCY_REPLACE);				
+			}
 
 			//LOG.info(sql);
 
@@ -178,9 +179,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 			
 			/* add groupAgencyCode */
-//			if (Validator.isNotNull(groupGovAgency)) {
-//				qPos.add(groupGovAgency);
-//			}
+			if (Validator.isNotNull(groupGovAgency)) {
+				qPos.add(groupGovAgency);
+			}
 
 			/* add reporting */
 			//qPos.add(reporting);
@@ -339,7 +340,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 			
 			if (Validator.isNotNull(groupAgencyCode) && !groupAgencyCode.contentEquals(TOTAL)) {
-				LOG.info("SQL: " + sql + ", " + groupAgencyCode);
+//				LOG.info("SQL: " + sql + ", " + groupAgencyCode);
 				qPos.add(groupAgencyCode);
 			}
 
@@ -424,7 +425,7 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			}
 	
 			if (Validator.isNotNull(groupAgencyCode) && !groupAgencyCode.contentEquals(TOTAL)) {
-				LOG.info("SQL year: " + sql + ", " + groupAgencyCode);
+//				LOG.info("SQL year: " + sql + ", " + groupAgencyCode);
 				qPos.add(groupAgencyCode);
 			}
 			
