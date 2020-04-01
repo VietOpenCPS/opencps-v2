@@ -34,7 +34,6 @@ public class StatisticEngineUpdateAction {
 		if (Validator.isNull(payload.getSystem())) {
 			payload.setSystem((String) null);
 		}
-
 //		long dossierStatisticId = 0L;
 //
 //		try {

@@ -7,7 +7,9 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="month" type="int" />
@@ -32,11 +34,21 @@
 		<field name="overdueCount" type="int" />
 		<field name="pausingCount" type="int" />
 		<field name="ontimePercentage" type="int" />
-		<field name="govAgencyCode" type="String" />
-		<field name="groupAgencyCode" type="String" />
-		<field name="govAgencyName" type="String" />
-		<field name="domainCode" type="String" />
-		<field name="domainName" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="groupAgencyCode" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="domainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="domainName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="reporting" type="boolean" />
 		<field name="overtimeInside" type="int" />
 		<field name="overtimeOutside" type="int" />
@@ -59,7 +71,9 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="month" type="int" />
@@ -84,11 +98,21 @@
 		<field name="overdueCount" type="int" />
 		<field name="pausingCount" type="int" />
 		<field name="ontimePercentage" type="int" />
-		<field name="govAgencyCode" type="String" />
-		<field name="groupAgencyCode" type="String" />
-		<field name="govAgencyName" type="String" />
-		<field name="domainCode" type="String" />
-		<field name="domainName" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="groupAgencyCode" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="domainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="domainName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="reporting" type="boolean" />
 		<field name="overtimeInside" type="int" />
 		<field name="overtimeOutside" type="int" />
@@ -111,16 +135,24 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="month" type="int" />
 		<field name="year" type="int" />
-		<field name="govAgencyCode" type="String" />
-		<field name="govAgencyName" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="employeeId" type="long" />
 		<field name="votingCode" type="String" />
-		<field name="votingSubject" type="String" />
+		<field name="votingSubject" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="totalVoted" type="int" />
 		<field name="veryGoodCount" type="int" />
 		<field name="goodCount" type="int" />
@@ -136,17 +168,31 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="month" type="int" />
 		<field name="year" type="int" />
-		<field name="govAgencyCode" type="String" />
-		<field name="govAgencyName" type="String" />
-		<field name="domainCode" type="String" />
-		<field name="domainName" type="String" />
-		<field name="votingCode" type="String" />
-		<field name="votingSubject" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="domainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="domainName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="votingCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="votingSubject" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="totalVoted" type="int" />
 		<field name="veryGoodCount" type="int" />
 		<field name="goodCount" type="int" />
