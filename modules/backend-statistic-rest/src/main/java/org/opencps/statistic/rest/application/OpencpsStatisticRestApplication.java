@@ -499,6 +499,10 @@ public class OpencpsStatisticRestApplication extends Application {
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
+								else {
+									DossierStatisticData data = new DossierStatisticData();
+									statisticResponse.getDossierStatisticData().add(data);
+								}
 							}
 							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
 						}
@@ -529,6 +533,10 @@ public class OpencpsStatisticRestApplication extends Application {
 								if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
 									statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
 								}
+								else {
+									DossierStatisticData data = new DossierStatisticData();
+									statisticResponse.getDossierStatisticData().add(data);
+								}								
 							}
 							statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
 						}						
