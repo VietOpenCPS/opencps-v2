@@ -501,6 +501,8 @@ public class OpencpsStatisticRestApplication extends Application {
 								}
 								else {
 									DossierStatisticData data = new DossierStatisticData();
+									data.setGovAgencyCode(di.getItemCode());
+									data.setGovAgencyName(di.getItemName());
 									statisticResponse.getDossierStatisticData().add(data);
 								}
 							}
@@ -535,6 +537,8 @@ public class OpencpsStatisticRestApplication extends Application {
 								}
 								else {
 									DossierStatisticData data = new DossierStatisticData();
+									data.setGovAgencyCode(di.getItemCode());
+									data.setGovAgencyName(di.getItemName());
 									statisticResponse.getDossierStatisticData().add(data);
 								}								
 							}
