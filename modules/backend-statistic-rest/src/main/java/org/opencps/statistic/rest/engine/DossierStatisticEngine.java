@@ -821,7 +821,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	//Time engine dossier
 	private static int timeStatistic = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
 			? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time"))
-			: 1;
+			: 10;
 	/**
 	   * activate: Called whenever the properties for the component change (ala Config Admin)
 	   * or OSGi is activating the component.
