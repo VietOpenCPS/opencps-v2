@@ -130,6 +130,66 @@ public class KeyPay {
 	}
 
 	/**
+	 * Constructor - Lay cac tham so khi gui don hang sang KeyPay
+	 *
+	 * @param merchant_trans_id
+	 * @param merchant_code
+	 * @param good_code
+	 * @param net_cost
+	 * @param ship_fee
+	 * @param tax
+	 * @param bank_code
+	 * @param service_code
+	 * @param version
+	 * @param command
+	 * @param currency_code
+	 * @param desc_1
+	 * @param desc_2
+	 * @param desc_3
+	 * @param desc_4
+	 * @param desc_5
+	 * @param xml_description
+	 * @param current_locale
+	 * @param country_code
+	 * @param return_url
+	 * @param internal_bank
+	 * @param merchant_secure_key
+	 */
+	public KeyPay(String merchant_trans_id, String merchant_code, String good_code, String net_cost, String ship_fee,
+			String tax, String bank_code, String service_code, String version, String command, String currency_code,
+			String desc_1, String desc_2, String desc_3, String desc_4, String desc_5, String xml_description,
+			String current_locale, String country_code, String return_url, String internal_bank,
+			String merchant_secure_key, String algorithm) {
+
+		this.merchant_trans_id = merchant_trans_id;
+		this.merchant_code = merchant_code;
+		this.good_code = good_code;
+		this.net_cost = net_cost;
+		this.ship_fee = ship_fee;
+		this.tax = tax;
+		this.bank_code = bank_code;
+		this.service_code = service_code;
+		this.version = version;
+		this.command = command;
+		this.currency_code = currency_code;
+		this.desc_1 = desc_1;
+		this.desc_2 = desc_2;
+		this.desc_3 = desc_3;
+		this.desc_4 = desc_4;
+		this.desc_5 = desc_5;
+		this.xml_description = xml_description;
+		this.current_locale = current_locale;
+		this.country_code = country_code;
+		this.return_url = return_url;
+		this.internal_bank = internal_bank;
+		// get merchant key
+		this.merchant_secure_key = merchant_secure_key;
+		// tính secure hash khi gửi đi
+		// this.secure_hash = getSecureHashRequest();
+		this.secure_hash = getSecureHashRequest(algorithm);
+	}
+	
+	/**
 	 * Buid URL to send redirect to KeyPay
 	 *
 	 * @param params
@@ -276,6 +336,33 @@ public class KeyPay {
 		return hf.hashAllFields(fields, merchant_secure_key);
 	}
 
+	/**
+	 * Tinh secure hash khi gui di
+	 *
+	 * @return
+	 */
+	private String getSecureHashRequest(String algorithm) {
+
+		Map<String, String> fields = new HashMap<String, String>();
+
+		fields.put(KeyPayTerm.VERSION, version);
+		fields.put(KeyPayTerm.CURRENT_LOCALE, current_locale);
+		fields.put(KeyPayTerm.COMMAND , command);
+		fields.put(KeyPayTerm.MERCHANT_TRANS_ID, merchant_trans_id);
+		fields.put(KeyPayTerm.MERCHANT_CODE, merchant_code);
+		fields.put(KeyPayTerm.COUNTRY_CODE, country_code);
+		fields.put(KeyPayTerm.GOOD_CODE, good_code);
+		fields.put(KeyPayTerm.NET_COST, net_cost);
+		fields.put(KeyPayTerm.SHIP_FEE, ship_fee);
+		fields.put(KeyPayTerm.TAX, tax);
+		fields.put(KeyPayTerm.SERVICE_CODE, service_code);
+		fields.put(KeyPayTerm.CURRENCY_CODE, currency_code);
+		fields.put(KeyPayTerm.RETURN_URL, return_url);
+
+		HashFunction hf = new HashFunction();
+		return hf.hashAllFields(fields, merchant_secure_key.concat(algorithm));
+	}
+	
 	public static String getSecureHashCodeCheckRequest(KeyPay keyPay) {
 
 		Map<String, String> fields = new HashMap<String, String>();
