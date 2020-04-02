@@ -1240,6 +1240,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (payloadObject.has(DossierTerm.CROSS_DOSSIER)) {
 			newObj.put(DossierTerm.CROSS_DOSSIER, payloadObject.getJSONObject(DossierTerm.CROSS_DOSSIER));
 		}
+
 		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
 		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());

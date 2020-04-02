@@ -137,7 +137,29 @@ public class UsersUserItem {
 
 	@JsonProperty("verification")
 	private String verification = null;
-	
+
+	@JsonProperty("govAgencyCode")
+	private String govAgencyCode = null;
+
+	@JsonProperty("govAgencyName")
+	private String govAgencyName = null;
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
 	public String getVerification() {
 		return verification;
 	}
@@ -980,7 +1002,9 @@ public class UsersUserItem {
 				&& Objects.equals(this.applicantContactEmail, usersUserItem.applicantContactEmail)
 				&& Objects.equals(this.applicantActivationCode, usersUserItem.applicantActivationCode)
 				&& Objects.equals(this.applicantLock, usersUserItem.applicantLock)
-				&& Objects.equals(this.applicantTmpPass, usersUserItem.applicantTmpPass);
+				&& Objects.equals(this.applicantTmpPass, usersUserItem.applicantTmpPass)
+				&& Objects.equals(this.govAgencyCode, usersUserItem.govAgencyCode)
+				&& Objects.equals(this.govAgencyName, usersUserItem.govAgencyName);
 	}
 
 	@Override
@@ -991,7 +1015,8 @@ public class UsersUserItem {
 				employeeFileCerId, employeeFileSignId, applicantName, applicantType, applicantNo, applicantIdNo,
 				applicantIdDate, applicantAddress, applicantCityCode, applicantCityName, applicantDistrictCode,
 				applicantDistrictName, applicantWardCode, applicantWardName, applicantContactName,
-				applicantContactTelNo, applicantContactEmail, applicantActivationCode, applicantLock, applicantTmpPass);
+				applicantContactTelNo, applicantContactEmail, applicantActivationCode, applicantLock, applicantTmpPass,
+				govAgencyCode, govAgencyName);
 	}
 
 	@Override
@@ -1037,6 +1062,8 @@ public class UsersUserItem {
 		sb.append("    applicantActivationCode: ").append(toIndentedString(applicantActivationCode)).append("\n");
 		sb.append("    applicantLock: ").append(toIndentedString(applicantLock)).append("\n");
 		sb.append("    applicantTmpPass: ").append(toIndentedString(applicantTmpPass)).append("\n");
+		sb.append("    govAgencyCode: ").append(toIndentedString(govAgencyCode)).append("\n");
+		sb.append("    govAgencyName: ").append(toIndentedString(govAgencyName)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}

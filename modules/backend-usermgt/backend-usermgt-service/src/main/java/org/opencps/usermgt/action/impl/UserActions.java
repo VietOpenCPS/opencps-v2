@@ -53,10 +53,13 @@ import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.CommonTerm;
-import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.constants.OfficeSiteTerm;
 import org.opencps.usermgt.constants.UserMGTConstants;
 import org.opencps.usermgt.constants.UserTerm;
@@ -72,6 +75,7 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.OfficeSiteLocalServiceUtil;
 import org.opencps.usermgt.service.PreferencesLocalServiceUtil;
+import org.opencps.usermgt.service.util.ConstantUtils;
 
 import backend.auth.api.exception.NotFoundException;
 import backend.auth.api.exception.UnauthenticationException;
@@ -1016,7 +1020,7 @@ public class UserActions implements UserInterface {
 	}
 
 	@Override
-	public String getUserById(long userId) {
+	public String getUserById(long userId, long groupId) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
@@ -1099,7 +1103,27 @@ public class UserActions implements UserInterface {
 							UserTerm.EMPLOYEE_MAIN_JOBPOS_NAME, role.getTitleCurrentValue());
 					}
 				}
-
+				//Add new scope
+				if (Validator.isNotNull(employee.getScope()) && groupId > 0) {
+					DictCollection dict = DictCollectionLocalServiceUtil
+							.fetchByF_dictCollectionCode(ConstantUtils.GOVERNMENT_AGENCY, groupId);
+					if (dict != null) {
+						DictItem item = DictItemLocalServiceUtil.fetchByF_dictItemCode(employee.getScope(), dict.getDictCollectionId(), groupId);
+						if (item != null) {
+							result.put(UserTerm.GOV_AGENCY_CODE, item.getItemCode());
+							result.put(UserTerm.GOV_AGENCY_NAME, item.getItemName());
+						} else {
+							result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+							result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+						}
+					} else {
+						result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+						result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+					}
+				} else {
+					result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+					result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+				}
 			}
 			else {
 
@@ -1140,6 +1164,8 @@ public class UserActions implements UserInterface {
 					result.put(UserTerm.USER_ID, applicant.getMappingUserId());
 					result.put(UserTerm.USER_NAME, applicant.getApplicantName());
 					result.put(UserTerm.MAPPING_USER_ID, applicant.getMappingUserId());
+					result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+					result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
 
 				}
 
