@@ -360,7 +360,7 @@ public class KeyPay {
 		fields.put(KeyPayTerm.RETURN_URL, return_url);
 
 		HashFunction hf = new HashFunction();
-		return hf.hashAllFields(fields, merchant_secure_key.concat(algorithm));
+		return hf.hashAllFields(fields, merchant_secure_key, algorithm);
 	}
 	
 	public static String getSecureHashCodeCheckRequest(KeyPay keyPay) {
