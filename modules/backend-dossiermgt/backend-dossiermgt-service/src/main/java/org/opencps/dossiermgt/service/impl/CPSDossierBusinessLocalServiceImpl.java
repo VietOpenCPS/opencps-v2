@@ -2136,8 +2136,8 @@ public class CPSDossierBusinessLocalServiceImpl
 				StringBuffer param = new StringBuffer();
 				param.append(KeyPayTerm.MERCHANT_CODE_EQ).append(URLEncoder.encode(keypay.getMerchant_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
-				param.append(KeyPayTerm.MERCHANT_SECURE_KEY_EQ).append(URLEncoder.encode(keypay.getMerchant_secure_key(), StandardCharsets.UTF_8.name()))
-						.append(StringPool.AMPERSAND);
+//				param.append(KeyPayTerm.MERCHANT_SECURE_KEY_EQ).append(URLEncoder.encode(keypay.getMerchant_secure_key(), StandardCharsets.UTF_8.name()))
+//						.append(StringPool.AMPERSAND);
 				param.append(KeyPayTerm.BANK_CODE_EQ).append(URLEncoder.encode(keypay.getBank_code(), StandardCharsets.UTF_8.name()))
 						.append(StringPool.AMPERSAND);
 				param.append(KeyPayTerm.INTERNAL_BANK_EQ).append(URLEncoder.encode(keypay.getInternal_bank(), StandardCharsets.UTF_8.name()))

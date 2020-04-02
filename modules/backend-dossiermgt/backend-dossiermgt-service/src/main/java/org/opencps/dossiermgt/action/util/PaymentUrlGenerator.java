@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
@@ -150,7 +151,10 @@ public class PaymentUrlGenerator {
 				String internal_bank = epaymentConfigJSON.getString("paymentInternalBank");
 
 				String merchant_secure_key = epaymentConfigJSON.getString("paymentMerchantSecureKey");
-
+				String algorithm = KeyPayTerm.VALUE_MD5;
+				if (epaymentConfigJSON.has("paymentHashAlgorithm")) {
+					algorithm = epaymentConfigJSON.getString("paymentHashAlgorithm");
+				}
 				// dossier = _getDossier(dossierId);
 
 				// TODO : update returnURL keyPay
@@ -164,15 +168,15 @@ public class PaymentUrlGenerator {
 				KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
 						ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
 						desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,
-						merchant_secure_key);
-
+						merchant_secure_key, algorithm);
+				_log.info("NEW KEYPAY ALGORITHM: " + algorithm + ", " + keypay.getSecure_hash());
 				// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
 
 				StringBuffer param = new StringBuffer();
 				param.append("merchant_code=").append(URLEncoder.encode(keypay.getMerchant_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
-				param.append("merchant_secure_key=").append(URLEncoder.encode(keypay.getMerchant_secure_key(), "UTF-8"))
-						.append(StringPool.AMPERSAND);
+//				param.append("merchant_secure_key=").append(URLEncoder.encode(keypay.getMerchant_secure_key(), "UTF-8"))
+//						.append(StringPool.AMPERSAND);
 				param.append("bank_code=").append(URLEncoder.encode(keypay.getBank_code(), "UTF-8"))
 						.append(StringPool.AMPERSAND);
 				param.append("internal_bank=").append(URLEncoder.encode(keypay.getInternal_bank(), "UTF-8"))
