@@ -61,6 +61,9 @@ import javax.xml.bind.annotation.XmlType;
     "modifiedDate",
     "serviceCode",
     "serviceCodeDVCQG",
+    "serviceNameDVCQG",
+    "mappingClassPK",
+    "synced",
     "serviceName",
     "processText",
     "methodText",
@@ -87,6 +90,7 @@ public class ServiceInfoModel {
     protected String modifiedDate;
     protected String serviceCode;
     protected String serviceCodeDVCQG;
+    protected String serviceNameDVCQG;
     protected String serviceName;
     protected String processText;
     protected String methodText;
@@ -107,6 +111,9 @@ public class ServiceInfoModel {
     public String getActive() {
 		return active;
 	}
+    
+    public Long mappingClassPK;
+    protected Integer synced;
 
 	public void setActive(String active) {
 		this.active = active;
@@ -235,6 +242,30 @@ public class ServiceInfoModel {
         this.serviceCodeDVCQG = value;
     }
 
+    
+    /**
+     * Gets the value of the serviceNameDVCQG property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getServiceNameDVCQG() {
+        return serviceNameDVCQG;
+    }
+
+    /**
+     * Sets the value of the serviceNameDVCQG property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setServiceNameDVCQG(String value) {
+        this.serviceNameDVCQG = value;
+    }
     /**
      * Gets the value of the serviceName property.
      * 
@@ -648,4 +679,19 @@ public class ServiceInfoModel {
         return this.serviceConfigs;
     }
 
+	public Long getMappingClassPK() {
+		return mappingClassPK;
+	}
+
+	public void setMappingClassPK(Long mappingClassPK) {
+		this.mappingClassPK = mappingClassPK;
+	}
+
+	public Integer getSynced() {
+		return synced;
+	}
+
+	public void setSynced(Integer synced) {
+		this.synced = synced;
+	}
 }

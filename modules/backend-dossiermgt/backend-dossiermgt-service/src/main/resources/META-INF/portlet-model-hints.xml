@@ -1393,6 +1393,8 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceCode" type="String" />
 		<field name="serviceCodeDVCQG" type="String" />
+		<field name="serviceNameDVCQG" type="String" />
+		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcess">
 		<field name="uuid" type="String" />

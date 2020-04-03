@@ -133,6 +133,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
+			params.put(ServiceInfoTerm.MAPPING, query.getMapping());
+			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
 
 			Sort[] sorts = null;
 			//			_log.info("sorts: "+query.getSort());
@@ -151,9 +153,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			JSONObject jsonData = actions.getServiceInfos(serviceContext.getUserId(), serviceContext.getCompanyId(),
 					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			_log.info("jsonData.hit: " + jsonData.get("data"));
-			_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> jsonData.getInt(\"total\") "
-					+ jsonData.getInt("total"));
+			
 			results.setTotal(jsonData.getInt("total"));
 			results.getData().addAll(ServiceInfoUtils
 					.mappingToServiceInfoResultModel((List<Document>) jsonData.get("data"), groupId, serviceContext));
@@ -994,6 +994,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public Response getServiceInfoMappingSuggest(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel query, Request requestCC) {

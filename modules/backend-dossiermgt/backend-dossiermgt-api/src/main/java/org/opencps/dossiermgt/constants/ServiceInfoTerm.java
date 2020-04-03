@@ -25,6 +25,10 @@ public class ServiceInfoTerm {
 	public static final String SERVICE_CODE_SEARCH = "serviceCodeSearch";
 	public static final String GOV_AGENCY_TEXT  = "govAgencyText";
 	public static final String SERVICE_CODE_DVCQG = "serviceCodeDVCQG";
+	public static final String SERVICE_NAME_DVCQG = "serviceNameDVCQG";
 	public static final String SERVICE_CODE_DVCQG_SEARCH = "serviceCodeDVCQGSearch";
+	public static final String SYNCED = "synced";
 	public static final String CFG_SERVER_NO = "SERVER_DVC";
+	public static final String MAPPING = "mapping";
+	public static final String MAPPING_CLASSPK = "mappingClassPK";
 }

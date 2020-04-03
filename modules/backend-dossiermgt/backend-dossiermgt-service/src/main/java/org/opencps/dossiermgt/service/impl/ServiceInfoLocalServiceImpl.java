@@ -18,7 +18,6 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -399,7 +398,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
-
+		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
+		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
+		
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -448,6 +449,23 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if(Validator.isNotNull(mapping)) {
+			MultiMatchQuery query = new MultiMatchQuery(mapping);
+
+			query.addFields(ServiceInfoTerm.MAPPING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(synced)) {
+			MultiMatchQuery query = new MultiMatchQuery(synced);
+
+			query.addFields(ServiceInfoTerm.SYNCED);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -535,7 +553,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
-
+		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
+		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -582,6 +601,22 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(public_);
 
 			query.addFields(ServiceInfoTerm.PUBLIC_);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(mapping)) {
+			MultiMatchQuery query = new MultiMatchQuery(mapping);
+
+			query.addFields(ServiceInfoTerm.MAPPING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(synced)) {
+			MultiMatchQuery query = new MultiMatchQuery(synced);
+
+			query.addFields(ServiceInfoTerm.SYNCED);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

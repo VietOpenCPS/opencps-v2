@@ -42,6 +42,8 @@ public class ServiceInfoMappingSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setServiceCode(model.getServiceCode());
 		soapModel.setServiceCodeDVCQG(model.getServiceCodeDVCQG());
+		soapModel.setServiceNameDVCQG(model.getServiceNameDVCQG());
+		soapModel.setSynced(model.getSynced());
 
 		return soapModel;
 	}
@@ -169,6 +171,22 @@ public class ServiceInfoMappingSoap implements Serializable {
 		_serviceCodeDVCQG = serviceCodeDVCQG;
 	}
 
+	public String getServiceNameDVCQG() {
+		return _serviceNameDVCQG;
+	}
+
+	public void setServiceNameDVCQG(String serviceNameDVCQG) {
+		_serviceNameDVCQG = serviceNameDVCQG;
+	}
+
+	public int getSynced() {
+		return _synced;
+	}
+
+	public void setSynced(int synced) {
+		_synced = synced;
+	}
+
 	private long _serviceInfoMappingId;
 	private long _groupId;
 	private long _companyId;
@@ -178,4 +196,6 @@ public class ServiceInfoMappingSoap implements Serializable {
 	private Date _modifiedDate;
 	private String _serviceCode;
 	private String _serviceCodeDVCQG;
+	private String _serviceNameDVCQG;
+	private int _synced;
 }
