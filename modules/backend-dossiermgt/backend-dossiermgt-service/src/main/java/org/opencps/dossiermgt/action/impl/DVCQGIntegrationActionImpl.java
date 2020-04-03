@@ -1739,19 +1739,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (Validator.isNotNull(serviceCode) && Validator.isNotNull(serviceCodeDVCQG)) {
 			try {
-				ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, serviceCodeDVCQG);
-				if(serviceInfoMapping != null) {
-					ServiceInfoMappingLocalServiceUtil.removeServiceInfoMapping(serviceInfoMapping.getServiceInfoMappingId());
+				ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId,
+						serviceCodeDVCQG);
+				if (serviceInfoMapping != null) {
+					ServiceInfoMappingLocalServiceUtil
+							.removeServiceInfoMapping(serviceInfoMapping.getServiceInfoMappingId());
 				}
-				
+
 				serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceCode);
-				
-				if(serviceInfoMapping != null) {
-					ServiceInfoMappingLocalServiceUtil.removeServiceInfoMapping(serviceInfoMapping.getServiceInfoMappingId());
+
+				if (serviceInfoMapping != null) {
+					ServiceInfoMappingLocalServiceUtil
+							.removeServiceInfoMapping(serviceInfoMapping.getServiceInfoMappingId());
 				}
-				
-				serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.addServiceInfoMapping(
-						groupId, serviceContext.getCompanyId(), user.getUserId(), serviceCode, serviceCodeDVCQG,
+
+				serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.addServiceInfoMapping(groupId,
+						serviceContext.getCompanyId(), user.getUserId(), serviceCode, serviceCodeDVCQG,
 						serviceNameDVCQG, 0);
 				result.put("id", serviceInfoMapping.getServiceInfoMappingId());
 				result.put("serviceCode", serviceCode);
@@ -2263,27 +2266,51 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 						ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
 
-						if (serviceInfo == null && type.equalsIgnoreCase("sync")) {
-							continue;
+						if (serviceInfo != null && type.equalsIgnoreCase("sync")) {
+							
+							String serviceCodeDVCQG = StringPool.BLANK;
+							
+							ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceCode);
+							
+							if(serviceInfoMapping == null) {
+								continue;
+							}
+							
+							serviceCodeDVCQG = serviceInfoMapping.getServiceCodeDVCQG();
+							
+							syncServiceInfo(user, groupId, result, config, serviceCodeDVCQG, serviceInfo,
+									collection1.getDictCollectionId(), collection2.getDictCollectionId(), body, accessToken,
+									serviceContext, type);
+							
 						}
 
 						if (type.equals("create")) {
 							serviceInfo = new ServiceInfoImpl();
+							
+							syncServiceInfo(user, groupId, result, config, serviceCode, serviceInfo,
+									collection1.getDictCollectionId(), collection2.getDictCollectionId(), body, accessToken,
+									serviceContext, type);
 						}
 
-						syncServiceInfo(user, groupId, result, config, serviceCodes, serviceInfo,
-								collection1.getDictCollectionId(), collection2.getDictCollectionId(), body, accessToken,
-								serviceContext, type);
+						
 					}
 				} else {
-					List<ServiceInfo> serviceInfos = ServiceInfoLocalServiceUtil.getServiceInfosByGroupId(groupId);
-					if (serviceInfos != null) {
-						for (ServiceInfo serviceInfo : serviceInfos) {
-							syncServiceInfo(user, groupId, result, config, serviceCodes, serviceInfo,
-									collection1.getDictCollectionId(), collection2.getDictCollectionId(), body,
-									accessToken, serviceContext, type);
+					if (type.equals("sync")) {
+						List<ServiceInfo> serviceInfos = ServiceInfoLocalServiceUtil.getServiceInfosByGroupId(groupId);
+						if (serviceInfos != null) {
+							for (ServiceInfo serviceInfo : serviceInfos) {
+								ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceInfo.getServiceCode());
+								
+								if(serviceInfoMapping == null || serviceInfoMapping.getSynced() == 1) {
+									continue;
+								}
+								syncServiceInfo(user, groupId, result, config, serviceInfoMapping.getServiceCodeDVCQG(), serviceInfo,
+										collection1.getDictCollectionId(), collection2.getDictCollectionId(), body,
+										accessToken, serviceContext, type);
+							}
 						}
 					}
+
 				}
 
 			} catch (Exception e) {
@@ -2295,11 +2322,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
+	//TODO
 	private JSONObject syncServiceInfo(User user, long groupId, JSONObject result, JSONObject config,
-			String serviceCode, ServiceInfo serviceInfo, long domainCollectionId, long govAgencyCollectionId,
+			String serviceCodeDVCQG, ServiceInfo serviceInfo, long domainCollectionId, long govAgencyCollectionId,
 			JSONObject body, String accessToken, ServiceContext serviceContext, String type) throws Exception {
 
-		body.put("maTTHC", serviceInfo.getServiceCode());
+		body.put("maTTHC", serviceCodeDVCQG);
 
 		JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
 
@@ -2593,13 +2621,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						}
 					}
 				}
-				result.put(serviceCode, true);
+				result.put(serviceInfo.getServiceCode(), true);
 			} else {
-				result.put(serviceCode, false);
+				result.put(serviceInfo.getServiceCode(), false);
 			}
 
 		} else {
-			result.put(serviceCode, false);
+			result.put(serviceInfo.getServiceCode(), false);
 		}
 
 		return result;
