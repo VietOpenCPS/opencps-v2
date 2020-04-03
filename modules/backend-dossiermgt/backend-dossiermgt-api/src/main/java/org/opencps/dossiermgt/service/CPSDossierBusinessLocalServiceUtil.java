@@ -149,11 +149,12 @@ public class CPSDossierBusinessLocalServiceUtil {
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.model.User user,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
-		org.opencps.dossiermgt.input.model.DossierPublishModel input)
+		long id, org.opencps.dossiermgt.input.model.DossierPublishModel input)
 		throws org.opencps.auth.api.exception.UnauthenticationException,
 			com.liferay.portal.kernel.exception.PortalException, Exception {
 		return getService()
-				   .eparPublish(groupId, company, user, serviceContext, input);
+				   .eparPublish(groupId, company, user, serviceContext, id,
+			input);
 	}
 
 	/**

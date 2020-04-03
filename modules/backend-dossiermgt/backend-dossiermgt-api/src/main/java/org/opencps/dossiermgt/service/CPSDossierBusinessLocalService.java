@@ -128,7 +128,7 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		SystemException.class, PortalException.class, Exception.class}
 	)
 	public Dossier eparPublish(long groupId, Company company, User user,
-		ServiceContext serviceContext,
+		ServiceContext serviceContext, long id,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
 		throws UnauthenticationException, PortalException, Exception;
 

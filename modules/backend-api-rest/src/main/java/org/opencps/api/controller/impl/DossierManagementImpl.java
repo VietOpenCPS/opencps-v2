@@ -7459,7 +7459,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			Dossier dossier =
 				CPSDossierBusinessLocalServiceUtil.eparPublish(
-					groupId, company, user, serviceContext,
+					groupId, company, user, serviceContext, id,
 					DossierUtils.convertFormModelToPublishModel(input));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(

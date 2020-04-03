@@ -7492,7 +7492,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
 	public Dossier eparPublish(long groupId, Company company,
-			User user, ServiceContext serviceContext, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
+			User user, ServiceContext serviceContext, long id, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -7539,16 +7539,9 @@ public class CPSDossierBusinessLocalServiceImpl
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
-			String dossierNo = input.getDossierNo();
 			
 			Dossier oldDossier = null;
-			if (Validator.isNotNull(input.getReferenceUid())) {
-				oldDossier = getDossier(input.getReferenceUid(), groupId);
-			} else {
-			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
-			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-			}
-
+			oldDossier = DossierLocalServiceUtil.fetchDossier(id);
 		if (oldDossier == null || oldDossier.getOriginality() == 0) {
 			Date appIdDate = null;
 			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
