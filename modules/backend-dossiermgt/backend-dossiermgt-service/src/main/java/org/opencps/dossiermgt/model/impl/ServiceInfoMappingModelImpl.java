@@ -73,7 +73,9 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "serviceCode", Types.VARCHAR },
-			{ "serviceCodeDVCQG", Types.VARCHAR }
+			{ "serviceCodeDVCQG", Types.VARCHAR },
+			{ "serviceNameDVCQG", Types.VARCHAR },
+			{ "synced", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -87,9 +89,11 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("serviceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serviceCodeDVCQG", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("serviceNameDVCQG", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("synced", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfomapping (serviceInfoMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(75) null,serviceCodeDVCQG VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfomapping (serviceInfoMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(75) null,serviceCodeDVCQG VARCHAR(75) null,serviceNameDVCQG VARCHAR(75) null,synced INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceinfomapping";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceInfoMapping.serviceInfoMappingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceinfomapping.serviceInfoMappingId ASC";
@@ -158,6 +162,8 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("serviceCode", getServiceCode());
 		attributes.put("serviceCodeDVCQG", getServiceCodeDVCQG());
+		attributes.put("serviceNameDVCQG", getServiceNameDVCQG());
+		attributes.put("synced", getSynced());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -219,6 +225,18 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 
 		if (serviceCodeDVCQG != null) {
 			setServiceCodeDVCQG(serviceCodeDVCQG);
+		}
+
+		String serviceNameDVCQG = (String)attributes.get("serviceNameDVCQG");
+
+		if (serviceNameDVCQG != null) {
+			setServiceNameDVCQG(serviceNameDVCQG);
+		}
+
+		Integer synced = (Integer)attributes.get("synced");
+
+		if (synced != null) {
+			setSynced(synced);
 		}
 	}
 
@@ -381,6 +399,31 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		return GetterUtil.getString(_originalServiceCodeDVCQG);
 	}
 
+	@Override
+	public String getServiceNameDVCQG() {
+		if (_serviceNameDVCQG == null) {
+			return "";
+		}
+		else {
+			return _serviceNameDVCQG;
+		}
+	}
+
+	@Override
+	public void setServiceNameDVCQG(String serviceNameDVCQG) {
+		_serviceNameDVCQG = serviceNameDVCQG;
+	}
+
+	@Override
+	public int getSynced() {
+		return _synced;
+	}
+
+	@Override
+	public void setSynced(int synced) {
+		_synced = synced;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -421,6 +464,8 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		serviceInfoMappingImpl.setModifiedDate(getModifiedDate());
 		serviceInfoMappingImpl.setServiceCode(getServiceCode());
 		serviceInfoMappingImpl.setServiceCodeDVCQG(getServiceCodeDVCQG());
+		serviceInfoMappingImpl.setServiceNameDVCQG(getServiceNameDVCQG());
+		serviceInfoMappingImpl.setSynced(getSynced());
 
 		serviceInfoMappingImpl.resetOriginalValues();
 
@@ -550,12 +595,22 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 			serviceInfoMappingCacheModel.serviceCodeDVCQG = null;
 		}
 
+		serviceInfoMappingCacheModel.serviceNameDVCQG = getServiceNameDVCQG();
+
+		String serviceNameDVCQG = serviceInfoMappingCacheModel.serviceNameDVCQG;
+
+		if ((serviceNameDVCQG != null) && (serviceNameDVCQG.length() == 0)) {
+			serviceInfoMappingCacheModel.serviceNameDVCQG = null;
+		}
+
+		serviceInfoMappingCacheModel.synced = getSynced();
+
 		return serviceInfoMappingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{serviceInfoMappingId=");
 		sb.append(getServiceInfoMappingId());
@@ -575,6 +630,10 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 		sb.append(getServiceCode());
 		sb.append(", serviceCodeDVCQG=");
 		sb.append(getServiceCodeDVCQG());
+		sb.append(", serviceNameDVCQG=");
+		sb.append(getServiceNameDVCQG());
+		sb.append(", synced=");
+		sb.append(getSynced());
 		sb.append("}");
 
 		return sb.toString();
@@ -582,7 +641,7 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ServiceInfoMapping");
@@ -624,6 +683,14 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 			"<column><column-name>serviceCodeDVCQG</column-name><column-value><![CDATA[");
 		sb.append(getServiceCodeDVCQG());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serviceNameDVCQG</column-name><column-value><![CDATA[");
+		sb.append(getServiceNameDVCQG());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>synced</column-name><column-value><![CDATA[");
+		sb.append(getSynced());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -648,6 +715,8 @@ public class ServiceInfoMappingModelImpl extends BaseModelImpl<ServiceInfoMappin
 	private String _originalServiceCode;
 	private String _serviceCodeDVCQG;
 	private String _originalServiceCodeDVCQG;
+	private String _serviceNameDVCQG;
+	private int _synced;
 	private long _columnBitmask;
 	private ServiceInfoMapping _escapedModel;
 }

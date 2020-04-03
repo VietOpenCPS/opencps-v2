@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
 
-<service-builder auto-namespace-tables="false" package-path="org.opencps.datamgt">
+<service-builder auto-namespace-tables="false"
+	package-path="org.opencps.datamgt">
 	<author>khoavu</author>
 	<namespace>DataMgt</namespace>
-	
+
 	<entity name="DictCollection" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictcollection">
 
@@ -28,13 +29,14 @@
 		<column name="dataForm" type="String" />
 
 		<!-- Order -->
-        <column name="status" type="int"></column>
+		<column name="status" type="int"></column>
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
 		<!-- Finder -->
-		<finder return-type="DictCollection" name="F_dictCollectionCode">
+		<finder return-type="DictCollection"
+			name="F_dictCollectionCode">
 			<finder-column name="collectionCode"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
@@ -42,10 +44,11 @@
 		<finder return-type="Collection" name="F_dictCollectionByGroup">
 			<finder-column name="groupId"></finder-column>
 		</finder>
-        <finder name="F_dictCollectionNewerThan" return-type="Collection">
-            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
-            <finder-column name="groupId"></finder-column>
-        </finder>
+		<finder name="F_dictCollectionNewerThan"
+			return-type="Collection">
+			<finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DictItem" uuid="true" local-service="true"
@@ -97,41 +100,43 @@
 			<finder-column name="dictCollectionId"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
-		
-		<finder return-type="DictItem" name="F_dictItemCode_dictCollectionId">
+
+		<finder return-type="DictItem"
+			name="F_dictItemCode_dictCollectionId">
 			<finder-column name="itemCode"></finder-column>
 			<finder-column name="dictCollectionId"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
-		
+
 		<finder return-type="Collection" name="F_parentItemId">
 			<finder-column name="parentItemId"></finder-column>
 		</finder>
-		
+
 		<finder return-type="Collection" name="F_parentItemId_level">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictCollectionId"></finder-column>
 			<finder-column name="parentItemId"></finder-column>
 			<finder-column name="level"></finder-column>
 		</finder>
-		
+
 		<finder return-type="DictItem" name="IC_DCI">
-			<finder-column name="itemCode"/>
-			<finder-column name="dictCollectionId"/>
+			<finder-column name="itemCode" />
+			<finder-column name="dictCollectionId" />
 		</finder>
-        <finder name="F_treeIndex" return-type="Collection">
-            <finder-column name="dictCollectionId"></finder-column>
-            <finder-column name="parentItemId"></finder-column>
-            <finder-column name="treeIndex" comparator="LIKE"></finder-column>
-        </finder>
-        <finder name="F_dictCollectionId_parentItemId" return-type="Collection">
-            <finder-column name="dictCollectionId"></finder-column>
-            <finder-column name="parentItemId"></finder-column>
-        </finder>
-        <finder name="F_dictItemNewerThan" return-type="Collection">
-            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
-            <finder-column name="groupId"></finder-column>
-        </finder>
+		<finder name="F_treeIndex" return-type="Collection">
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="parentItemId"></finder-column>
+			<finder-column name="treeIndex" comparator="LIKE"></finder-column>
+		</finder>
+		<finder name="F_dictCollectionId_parentItemId"
+			return-type="Collection">
+			<finder-column name="dictCollectionId"></finder-column>
+			<finder-column name="parentItemId"></finder-column>
+		</finder>
+		<finder name="F_dictItemNewerThan" return-type="Collection">
+			<finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
@@ -157,7 +162,7 @@
 		<column name="groupName" type="String" />
 		<column name="groupNameEN" type="String" />
 		<column name="groupDescription" type="String" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="dictGroupId" />
@@ -168,25 +173,25 @@
 			<finder-column name="groupCode"></finder-column>
 			<finder-column name="groupId"></finder-column>
 		</finder>
-		
+
 		<!-- Finder -->
 		<finder return-type="DictGroup" name="GC_GI_DCI">
-			<finder-column name="groupCode"/>
-			<finder-column name="groupId"/>
-			<finder-column name="dictCollectionId"/>
+			<finder-column name="groupCode" />
+			<finder-column name="groupId" />
+			<finder-column name="dictCollectionId" />
 		</finder>
-		
+
 		<finder return-type="Collection" name="GID_DC">
-			<finder-column name="dictCollectionId"/>
-			<finder-column name="groupId"/>
+			<finder-column name="dictCollectionId" />
+			<finder-column name="groupId" />
 		</finder>
-        <finder name="F_dictGroupNewerThan" return-type="Collection">
-            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
-            <finder-column name="groupId"></finder-column>
-        </finder>
-		
+		<finder name="F_dictGroupNewerThan" return-type="Collection">
+			<finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
 	</entity>
-	
+
 	<entity name="DictItemGroup" uuid="true" local-service="true"
 		remote-service="false" table="opencps_dictitemgroup">
 
@@ -207,35 +212,36 @@
 
 		<column name="dictGroupId" type="long" />
 		<column name="dictItemId" type="long" />
-		<column name="dictGroupName" type= "String" />
+		<column name="dictGroupName" type="String" />
 
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="dictGroupId" />
 		</order>
 
-		<finder return-type="DictItemGroup" name="F_dictItemId_dictGroupId">
+		<finder return-type="DictItemGroup"
+			name="F_dictItemId_dictGroupId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictGroupId"></finder-column>
 			<finder-column name="dictItemId"></finder-column>
 		</finder>
-		
+
 		<finder return-type="Collection" name="F_dictGroupId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictGroupId"></finder-column>
 		</finder>
-		
+
 		<finder return-type="Collection" name="F_dictItemId">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="dictItemId"></finder-column>
 		</finder>
-        <finder name="F_newerThan" return-type="Collection">
-            <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
-            <finder-column name="groupId"></finder-column>
-        </finder>
-		
+		<finder name="F_newerThan" return-type="Collection">
+			<finder-column name="modifiedDate" comparator="&gt;="></finder-column>
+			<finder-column name="groupId"></finder-column>
+		</finder>
+
 	</entity>
-	
+
 	<entity name="WorkTime" uuid="true" local-service="true"
 		remote-service="false" table="opencps_workTime">
 
@@ -259,7 +265,7 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-		
+
 		<finder return-type="WorkTime" name="F_day">
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="day"></finder-column>
@@ -267,9 +273,9 @@
 		<finder return-type="Collection" name="F_GID">
 			<finder-column name="groupId" />
 		</finder>
-		
+
 	</entity>
-	
+
 	<entity name="Holiday" uuid="true" local-service="true"
 		remote-service="false" table="opencps_holiday">
 
@@ -313,7 +319,7 @@
 		</finder>
 
 	</entity>
-	
+
 	<entity name="Comment" uuid="true" local-service="true"
 		remote-service="false" table="opencps_comment">
 
@@ -341,13 +347,8 @@
 		<column name="upvoteCount" type="int" />
 		<column name="userHasUpvoted" type="String" />
 		<column name="upvotedUsers" type="String" />
+		<column name="opinion" type="boolean"></column>
 
-		<!-- Order -->
-		<order by="asc">
-			<order-column name="modifiedDate" />
-		</order>
-		
-        <column name="opinion" type="boolean"></column>
 		<order by="asc">
 			<order-column name="modifiedDate" />
 		</order>
@@ -356,22 +357,22 @@
 			where=" ( content is not null ) ">
 			<finder-column name="groupId"></finder-column>
 		</finder>
-        <finder name="F_groupId_userId_className_classPK_opinion" return-type="Comment">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="userId"></finder-column>
-            <finder-column name="className"></finder-column>
-            <finder-column name="classPK"></finder-column>
-            <finder-column name="opinion"></finder-column>
-        </finder>
-        <finder name="F_groupId_className_classPK" return-type="Collection">
-            <finder-column name="groupId"></finder-column>
-            <finder-column name="className"></finder-column>
-            <finder-column name="classPK"></finder-column>
-        </finder>
-
-
+		<finder name="F_groupId_userId_className_classPK_opinion"
+			return-type="Comment">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+			<finder-column name="opinion"></finder-column>
+		</finder>
+		<finder name="F_groupId_className_classPK"
+			return-type="Collection">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="className"></finder-column>
+			<finder-column name="classPK"></finder-column>
+		</finder>
 	</entity>
-	
+
 	<entity name="Voting" uuid="true" local-service="true"
 		remote-service="false" table="opencps_voting">
 
@@ -431,9 +432,9 @@
 		</order>
 
 	</entity>
-	
-	<entity name="FileAttach" local-service="true" remote-service="false"
-		table="m_fileattach">
+
+	<entity name="FileAttach" local-service="true"
+		remote-service="false" table="m_fileattach">
 
 		<!-- PK fields -->
 
@@ -462,7 +463,7 @@
 		<column name="sourceUrl" type="String" />
 		<column name="docFileId" type="long" />
 		<!-- Order -->
-        <column name="fileName" type="String"></column>
+		<column name="fileName" type="String"></column>
 
 		<order by="asc">
 			<order-column name="createDate" />
@@ -486,5 +487,36 @@
 		</finder>
 
 	</entity>
-	
+	<entity name="DictItemMapping" local-service="true"
+		remote-service="false" table="opencps_dictItemmapping">
+		<column name="mappingId" type="long" primary="true"></column>
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="itemCode" type="String"></column>
+		<column name="itemCodeDVCQG" type="String"></column>
+		<column name="collectionId" type="long"></column>
+		
+		<finder return-type="DictItemMapping" name="F_GID_IC_CID">
+			<finder-column name="groupId" />
+            <finder-column name="itemCode"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+		</finder>
+		<finder return-type="DictItemMapping" name="F_GID_ICDVCQG_CID">
+			<finder-column name="groupId" />
+            <finder-column name="itemCodeDVCQG"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+		</finder>
+        <finder name="F_GID_CID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+        </finder>
+	</entity>
 </service-builder>

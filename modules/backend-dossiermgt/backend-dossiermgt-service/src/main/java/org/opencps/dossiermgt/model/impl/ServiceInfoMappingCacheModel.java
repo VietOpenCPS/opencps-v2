@@ -65,7 +65,7 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{serviceInfoMappingId=");
 		sb.append(serviceInfoMappingId);
@@ -85,6 +85,10 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 		sb.append(serviceCode);
 		sb.append(", serviceCodeDVCQG=");
 		sb.append(serviceCodeDVCQG);
+		sb.append(", serviceNameDVCQG=");
+		sb.append(serviceNameDVCQG);
+		sb.append(", synced=");
+		sb.append(synced);
 		sb.append("}");
 
 		return sb.toString();
@@ -134,6 +138,15 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 			serviceInfoMappingImpl.setServiceCodeDVCQG(serviceCodeDVCQG);
 		}
 
+		if (serviceNameDVCQG == null) {
+			serviceInfoMappingImpl.setServiceNameDVCQG("");
+		}
+		else {
+			serviceInfoMappingImpl.setServiceNameDVCQG(serviceNameDVCQG);
+		}
+
+		serviceInfoMappingImpl.setSynced(synced);
+
 		serviceInfoMappingImpl.resetOriginalValues();
 
 		return serviceInfoMappingImpl;
@@ -153,6 +166,9 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 		modifiedDate = objectInput.readLong();
 		serviceCode = objectInput.readUTF();
 		serviceCodeDVCQG = objectInput.readUTF();
+		serviceNameDVCQG = objectInput.readUTF();
+
+		synced = objectInput.readInt();
 	}
 
 	@Override
@@ -189,6 +205,15 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 		else {
 			objectOutput.writeUTF(serviceCodeDVCQG);
 		}
+
+		if (serviceNameDVCQG == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(serviceNameDVCQG);
+		}
+
+		objectOutput.writeInt(synced);
 	}
 
 	public long serviceInfoMappingId;
@@ -200,4 +225,6 @@ public class ServiceInfoMappingCacheModel implements CacheModel<ServiceInfoMappi
 	public long modifiedDate;
 	public String serviceCode;
 	public String serviceCodeDVCQG;
+	public String serviceNameDVCQG;
+	public int synced;
 }

@@ -11,10 +11,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplates;
@@ -23,8 +21,6 @@ import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
 import org.opencps.api.serviceinfo.model.ServiceRecentDetailModel;
-import org.opencps.dossiermgt.action.ServiceConfigActions;
-import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -50,6 +46,8 @@ public class ServiceInfoUtils {
 				model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 				model.setServiceCode(doc.get(ServiceInfoTerm.SERVICE_CODE));
 				model.setServiceCodeDVCQG(doc.get(ServiceInfoTerm.SERVICE_CODE_DVCQG));
+				model.setServiceNameDVCQG(doc.get(ServiceInfoTerm.SERVICE_NAME_DVCQG));
+				model.setMappingClassPK(GetterUtil.getLong(doc.get(ServiceInfoTerm.MAPPING_CLASSPK)));
 				model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
 				model.setProcessText(doc.get(ServiceInfoTerm.PROCESS_TEXT));
 				model.setMethodText(doc.get(ServiceInfoTerm.METHOD_TEXT));
@@ -65,6 +63,7 @@ public class ServiceInfoUtils {
 				model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 				model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 				model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
+				model.setSynced(GetterUtil.getInteger(doc.get(ServiceInfoTerm.SYNCED)));
 				//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
 				model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
 				

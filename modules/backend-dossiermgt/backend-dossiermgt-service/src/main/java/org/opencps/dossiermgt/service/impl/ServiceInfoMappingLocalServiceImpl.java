@@ -62,7 +62,7 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 	 */
 
 	public ServiceInfoMapping addServiceInfoMapping(long groupId, long companyId, long userId, String serviceCode,
-			String serviceCodeDVCQG) throws PortalException {
+			String serviceCodeDVCQG, String serviceNameDVCQG, int synced) throws PortalException {
 		long serviceInfoMappingId = counterLocalService.increment(ServiceInfoMappingLocalServiceImpl.class.getName());
 		ServiceInfoMapping serviceInfoMapping = serviceInfoMappingPersistence.create(serviceInfoMappingId);
 		serviceInfoMapping.setGroupId(groupId);
@@ -76,6 +76,8 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 		serviceInfoMapping.setModifiedDate(now);
 		serviceInfoMapping.setServiceCode(serviceCode);
 		serviceInfoMapping.setServiceCodeDVCQG(serviceCodeDVCQG);
+		serviceInfoMapping.setServiceNameDVCQG(serviceNameDVCQG);
+		serviceInfoMapping.setSynced(synced);
 
 		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
 
@@ -114,6 +116,10 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 
 	public ServiceInfoMapping fetchDVCQGServiceCode(long groupId, String serviceCode) {
 		return serviceInfoMappingPersistence.fetchByF_GID_SC(groupId, serviceCode);
+	}
+	
+	public ServiceInfoMapping fetchByGID_SCDVCQG(long groupId, String serviceCodeDVCQG) {
+		return serviceInfoMappingPersistence.fetchByF_GID_SCDVCQG(groupId, serviceCodeDVCQG);
 	}
 
 	// super_admin Generators
@@ -195,6 +201,29 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 		}
 
 		return object;
+	}
+	
+	public boolean removeServiceInfoMapping(long mappingId) {
+		try {
+			
+			Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class.getName());
+			
+			ServiceInfoMapping serviceInfoMapping = serviceInfoMappingPersistence.findByPrimaryKey(mappingId);
+			
+			serviceInfoMappingPersistence.remove(serviceInfoMapping);
+
+			ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(serviceInfoMapping.getGroupId(),
+					serviceInfoMapping.getServiceCode());
+
+			if (indexer != null && serviceInfo != null) {
+
+				indexer.reindex(ServiceInfo.class.getName(), serviceInfo.getServiceInfoId());
+			}
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private Log _log = LogFactoryUtil.getLog(ServiceInfoMappingLocalServiceImpl.class.getName());

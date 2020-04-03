@@ -1,3 +1,16 @@
+create table DictItemMapping (
+	mappingId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	itemCode VARCHAR(75) null,
+	itemCodeDVCQG VARCHAR(75) null,
+	collectionId LONG
+);
+
 create table m_fileattach (
 	fileAttachId LONG not null primary key,
 	groupId LONG,
@@ -38,6 +51,19 @@ create table opencps_comment (
 	userHasUpvoted VARCHAR(75) null,
 	upvotedUsers VARCHAR(75) null,
 	opinion BOOLEAN
+);
+
+create table opencps_dictItemmapping (
+	mappingId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	itemCode VARCHAR(75) null,
+	itemCodeDVCQG VARCHAR(75) null,
+	collectionId LONG
 );
 
 create table opencps_dictcollection (

@@ -75,13 +75,18 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 			String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(serviceCode);
 			
 			document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
-			ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(object.getGroupId(), serviceCode);
-			document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
-			String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
-			document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
+			
 		}
 
+		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(object.getGroupId(), serviceCode);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG() : StringPool.BLANK);
+		String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME, object.getServiceName());
+		document.addTextSortable(ServiceInfoTerm.MAPPING, serviceInfoMapping != null ? "true" : "false");
+		document.addNumberSortable(ServiceInfoTerm.SYNCED, serviceInfoMapping != null ? serviceInfoMapping.getSynced() : 0);
+		document.addNumberSortable(ServiceInfoTerm.MAPPING_CLASSPK, serviceInfoMapping != null ? serviceInfoMapping.getServiceInfoMappingId() : 0);
 		//Convert serviceName
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME_SEARCH, AccentUtils.removeAccent(object.getServiceName()));
 		document.addKeywordSortable(ServiceInfoTerm.PROCESS_TEXT, object.getProcessText());

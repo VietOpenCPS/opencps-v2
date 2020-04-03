@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,7 +24,9 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +56,7 @@ import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.Groups;
 import org.opencps.api.dictcollection.model.DictGroupModel;
-import org.opencps.auth.api.exception.NotFoundException;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
@@ -64,10 +67,13 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.model.DictItemMapping;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -124,20 +130,19 @@ public class DataManagementImpl implements DataManagement {
 
 		DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
 		EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);	
-	    
+		ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+
 		if (Validator.isNotNull(dictCollection)) {
 			DictCollectionModel dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
 				builder = Response.status(200);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
+				cc.setPrivate(true);
 				// return json object after update
 
-				return builder.entity(dictCollectionModel).cacheControl(cc).build();				
-			}
-			else {
+				return builder.entity(dictCollectionModel).cacheControl(cc).build();
+			} else {
 				return builder.entity(dictCollectionModel).build();
 			}
 
@@ -159,10 +164,9 @@ public class DataManagementImpl implements DataManagement {
 			String collectionName = HtmlUtil.escape(input.getCollectionName());
 			String collectionNameEN = HtmlUtil.escape(input.getCollectionNameEN());
 			String description = HtmlUtil.escape(input.getDescription());
-			
+
 			DictCollection dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId,
-					collectionCode, collectionName, collectionNameEN,
-					description, serviceContext);
+					collectionCode, collectionName, collectionNameEN, description, serviceContext);
 
 			// return json object after update
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
@@ -189,12 +193,11 @@ public class DataManagementImpl implements DataManagement {
 			String description = HtmlUtil.escape(input.getDescription());
 
 			String oldCode = HtmlUtil.escape(code);
-			
+
 			_log.info("Update dict collection: " + code);
-			
+
 			DictCollection dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, oldCode,
-					collectionCode, collectionName, collectionNameEN,
-					description, serviceContext);
+					collectionCode, collectionName, collectionNameEN, description, serviceContext);
 
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 
@@ -215,7 +218,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			boolean flag = dictItemDataUtil.deleteDictCollection(code, groupId, serviceContext);
-			
+
 			if (flag) {
 				return Response.status(200).build();
 			} else {
@@ -262,8 +265,7 @@ public class DataManagementImpl implements DataManagement {
 
 	@Override
 	public Response addDataForm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String code, String dataform,
-			long modifiedDateTime) {
+			User user, ServiceContext serviceContext, String code, String dataform, long modifiedDateTime) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 
 		try {
@@ -271,14 +273,15 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			DictCollection oldCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
-			
-			if (modifiedDateTime == 0 || (modifiedDateTime != 0 && oldCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0)) {
+
+			if (modifiedDateTime == 0 || (modifiedDateTime != 0
+					&& oldCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0)) {
 				DictCollection dictCollection = dictItemDataUtil.addDataForm(user.getUserId(), groupId, code, dataform,
 						serviceContext);
 
-				return Response.status(200).entity(dictCollection != null ? dictCollection.getDataForm() : StringPool.BLANK).build();				
-			}
-			else {
+				return Response.status(200)
+						.entity(dictCollection != null ? dictCollection.getDataForm() : StringPool.BLANK).build();
+			} else {
 				throw new DuplicateCategoryException();
 			}
 		} catch (Exception e) {
@@ -333,14 +336,14 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictGroupInputModel input) {
 		Groups dictGroupModel = new Groups();
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 			DictGroup dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, input.getGroupCode(),
 					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
-			
+
 			// return json object after update
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
@@ -356,7 +359,7 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String groupCode, DictGroupInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
@@ -378,14 +381,14 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
-			
-//			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
+
+			//			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
 			boolean flag = dictItemDataUtil.deleteDictgroups(code, groupCode, groupId, serviceContext);
-			
+
 			if (flag) {
 
 				return Response.status(200).build();
@@ -483,41 +486,41 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-//			DictCollection collection = null;
-//			try {
-//				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			DictGroup group = null;
-//			try {
-//				if (collection != null) {
-//					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
-//				}
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			DictItem item = null;
-//
-//			try {
-//				if (collection != null)
-//					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
-//							groupId);
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
-//			DictItemGroup dictItemGroup = null;
-//
-//			try {
-//				if (collection != null && group != null && item != null)
-//					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
-//							group.getDictGroupId(), item.getDictItemId());
-//			} catch (Exception e) {
-//				_log.error(e);
-//			}
+			//			DictCollection collection = null;
+			//			try {
+			//				collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
+			//			} catch (Exception e) {
+			//				_log.error(e);
+			//			}
+			//			DictGroup group = null;
+			//			try {
+			//				if (collection != null) {
+			//					group = DictGroupLocalServiceUtil.getByGC_GI_DCI(groupCode, groupId, collection.getDictCollectionId());					
+			//				}
+			//			} catch (Exception e) {
+			//				_log.error(e);
+			//			}
+			//			DictItem item = null;
+			//
+			//			try {
+			//				if (collection != null)
+			//					item = DictItemLocalServiceUtil.fetchByF_dictItemCode(itemCode, collection.getDictCollectionId(),
+			//							groupId);
+			//			} catch (Exception e) {
+			//				_log.error(e);
+			//			}
+			//			DictItemGroup dictItemGroup = null;
+			//
+			//			try {
+			//				if (collection != null && group != null && item != null)
+			//					dictItemGroup = DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(groupId,
+			//							group.getDictGroupId(), item.getDictItemId());
+			//			} catch (Exception e) {
+			//				_log.error(e);
+			//			}
 			boolean flag = dictItemDataUtil.deleteDictgroupsDictItems(groupId, code, groupCode, itemCode,
 					serviceContext);
-			
+
 			if (flag) {
 
 				return Response.status(HttpURLConnection.HTTP_OK).build();
@@ -571,15 +574,13 @@ public class DataManagementImpl implements DataManagement {
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
 
 			Sort[] sorts = null;
-			
+
 			if (Validator.isNull(query.getSort())) {
-				sorts = new Sort[] {
-						SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable", Sort.INT_TYPE, false) };
+				sorts = new Sort[] { SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable",
+						Sort.INT_TYPE, false) };
 			} else {
-				sorts = new Sort[] {
-					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
 			}
-			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -620,11 +621,9 @@ public class DataManagementImpl implements DataManagement {
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
 			String metaData = HtmlUtil.escape(input.getMetaData());
-			
-			DictItem dictItem = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code,
-					parentItemCode, itemCode, itemName, itemNameEN,
-					itemDescription, sibling, input.getLevel(), metaData,
-					serviceContext);
+
+			DictItem dictItem = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, parentItemCode, itemCode,
+					itemName, itemNameEN, itemDescription, sibling, input.getLevel(), metaData, serviceContext);
 
 			// return json object after update
 			dictItemModel = DataManagementUtils.mapperDictItemModel(dictItem, dictItemDataUtil, user.getUserId(),
@@ -652,7 +651,7 @@ public class DataManagementImpl implements DataManagement {
 					user.getUserId(), company.getCompanyId(), groupId, serviceContext);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(86400);
-			cc.setPrivate(true);	
+			cc.setPrivate(true);
 			return Response.status(200).entity(dictItemModel).cacheControl(cc).build();
 
 		} else {
@@ -684,11 +683,10 @@ public class DataManagementImpl implements DataManagement {
 			String itemDescription = HtmlUtil.escape(input.getItemDescription());
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
-//			String metaData = HtmlUtil.escape(input.getMetaData());
+			//			String metaData = HtmlUtil.escape(input.getMetaData());
 
 			DictItem ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
-					itemCode, newItemCode, itemName, itemNameEN,
-					itemDescription, sibling, parentItemCode);
+					itemCode, newItemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
 
 			if (Validator.isNull(ett)) {
 
@@ -839,7 +837,7 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			String metaData = HtmlUtil.escape(input.getMetaData());
-			
+
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, metaData);
 
@@ -890,38 +888,33 @@ public class DataManagementImpl implements DataManagement {
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
 			String metaData = HtmlUtil.escape(input.getMetaData());
-			
+
 			DictItem ett = null;
 
 			if (oldEtt != null) {
 				if (modifiedDateTime != 0 && oldEtt.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0) {
 					//Update DictItem
 					ett = dictItemDataUtil.updateDictItemByItemCode(user.getUserId(), groupId, serviceContext, code,
-							itemCode, newItemCode, itemName, itemNameEN,
-							itemDescription, sibling, parentItemCode);
-					List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(
-							groupId, ett.getDictItemId());
+							itemCode, newItemCode, itemName, itemNameEN, itemDescription, sibling, parentItemCode);
+					List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(groupId,
+							ett.getDictItemId());
 					if (digList != null && digList.size() > 0) {
-						Indexer<DictItemGroup> indexer = IndexerRegistryUtil
-								.nullSafeGetIndexer(DictItemGroup.class);
+						Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 						for (DictItemGroup dig : digList) {
 							indexer.reindex(dig);
 						}
 					}
-				}
-				else {
+				} else {
 					throw new DuplicateCategoryException();
 				}
 			} else {
 				//Update DictItem
-				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, parentItemCode,
-						itemCode, itemName, itemNameEN, itemDescription,
-						sibling, input.getLevel(), metaData, serviceContext);
-				List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(
-						groupId, ett.getDictItemId());
+				ett = dictItemDataUtil.addDictItems(user.getUserId(), groupId, code, parentItemCode, itemCode, itemName,
+						itemNameEN, itemDescription, sibling, input.getLevel(), metaData, serviceContext);
+				List<DictItemGroup> digList = DictItemGroupLocalServiceUtil.findByF_dictItemId(groupId,
+						ett.getDictItemId());
 				if (digList != null && digList.size() > 0) {
-					Indexer<DictItemGroup> indexer = IndexerRegistryUtil
-							.nullSafeGetIndexer(DictItemGroup.class);
+					Indexer<DictItemGroup> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DictItemGroup.class);
 					for (DictItemGroup dig : digList) {
 						indexer.reindex(dig);
 					}
@@ -981,15 +974,13 @@ public class DataManagementImpl implements DataManagement {
 				if (modifiedDateTime != 0
 						&& oldDictCollection.getModifiedDate().compareTo(new Date(modifiedDateTime)) < 0) {
 					dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, code,
-							collectionCode, collectionName, collectionNameEN,
-							description, serviceContext);
-				}
-				else {
+							collectionCode, collectionName, collectionNameEN, description, serviceContext);
+				} else {
 					throw new DuplicateCategoryException();
 				}
 			} else {
-				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code,
-						collectionName, collectionNameEN, description, serviceContext);
+				dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId, code, collectionName,
+						collectionNameEN, description, serviceContext);
 			}
 
 			dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
@@ -1143,8 +1134,7 @@ public class DataManagementImpl implements DataManagement {
 					dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 							input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(),
 							input.getGroupDescription(), serviceContext);
-				}
-				else {
+				} else {
 					throw new DuplicateCategoryException();
 				}
 			} else {
@@ -1207,7 +1197,7 @@ public class DataManagementImpl implements DataManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		DictGroup dictGroup = dictItemDataUtil.getDictGroupDetail(code, groupCode, groupId);
-		
+
 		if (Validator.isNotNull(dictGroup)) {
 
 			// return json object after update
@@ -1279,8 +1269,8 @@ public class DataManagementImpl implements DataManagement {
 	/** LGSP - START */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Response getDictCollectionLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, DataSearchModel query, String status) {
+	public Response getDictCollectionLGSP(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, DataSearchModel query, String status) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionResults result = new DictCollectionResults();
 
@@ -1301,8 +1291,8 @@ public class DataManagementImpl implements DataManagement {
 			Sort[] sorts = new Sort[] {
 					SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
 
-			JSONObject jsonData = dictItemDataUtil.getDictCollectionLGSP(user.getUserId(), company.getCompanyId(), groupId,
-					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			JSONObject jsonData = dictItemDataUtil.getDictCollectionLGSP(user.getUserId(), company.getCompanyId(),
+					groupId, params, sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			List<DictCollectionShortModel> dictCollectionList = DataManagementUtils
 					.mapperDictCollectionLGSPModelList((List<Document>) jsonData.get("data"));
@@ -1310,7 +1300,6 @@ public class DataManagementImpl implements DataManagement {
 				result.getDictCollectionShortModel().addAll(dictCollectionList);
 				result.setTotal(dictCollectionList.size());
 			}
-			
 
 			return Response.status(200).entity(result).build();
 
@@ -1362,6 +1351,7 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getDictItemsLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
+
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemResults result = new DictItemResults();
 		SearchContext searchContext = new SearchContext();
@@ -1377,7 +1367,8 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code)) groupId = 0;
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code))
+				groupId = 0;
 
 			params.put("groupId", groupId);
 			params.put("keywords", query.getKeywords());
@@ -1400,6 +1391,190 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(200).entity(result).build();
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDictItemMappingSuggest(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, DataSearchModel query,
+			Request requestCC) {
+
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DVCQGIntegrationActionImpl dvcqgIntegrationActionImpl = new DVCQGIntegrationActionImpl();
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code))
+				groupId = 0;
+
+			params.put("groupId", groupId);
+			params.put("keywords", query.getKeywords());
+			params.put("itemLv", query.getLevel());
+			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
+
+			Sort[] sorts = null;
+
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable",
+						Sort.INT_TYPE, false) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+			}
+
+			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			if (_dictItemDVCQGMap == null) {
+
+				_dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+						query.getService());
+
+			}
+
+			List<Document> documents = (List<Document>) jsonData.get("data");
+			long collectionId = 0;
+			if (documents != null) {
+				collectionId = GetterUtil.getLong(documents.get(0).get(DictItemTerm.DICT_COLLECTION_ID));
+			}
+			List<DictItemMapping> dictItemMappings = DictItemMappingLocalServiceUtil.findByF_GID_CID(groupId,
+					collectionId);
+			List<String> mappedCode = new ArrayList<String>();
+
+			if (dictItemMappings != null) {
+				for (DictItemMapping dictItemMapping : dictItemMappings) {
+					mappedCode.add(dictItemMapping.getItemCodeDVCQG());
+				}
+			}
+
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+
+			for (Document document : documents) {
+				JSONObject item = JSONFactoryUtil.createJSONObject();
+				item.put("dictItemId", Long.valueOf(document.get("entryClassPK")));
+
+				item.put("itemCode", document.get(DictItemTerm.ITEM_CODE));
+				item.put("itemName", document.get(DictItemTerm.ITEM_NAME));
+				item.put("itemNameEN", document.get(DictItemTerm.ITEM_NAME_EN));
+				item.put("itemDescription", document.get(DictItemTerm.ITEM_DESCRIPTION));
+				item.put("level", Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+				item.put("sibling", Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+				item.put("treeIndex", document.get(DictItemTerm.TREE_INDEX));
+
+				item.put("createDate", Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE))
+						? APIDateTimeUtils.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE),
+								APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				item.put("modifiedDate",
+						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+
+				JSONArray mapping = dvcqgIntegrationActionImpl.getDictItemSimilarity(groupId, code,
+						document.get(DictItemTerm.ITEM_CODE), document.get(DictItemTerm.ITEM_NAME), _dictItemDVCQGMap,
+						mappedCode);
+				item.put("similarity", mapping);
+				data.put(item);
+			}
+
+			results.put("total", jsonData.getInt("total"));
+			results.put("data", data);
+
+			return Response.status(200).entity(results.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	private static HashMap<String, String> _dictItemDVCQGMap = null;
+
+	@Override
+	public Response doMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
+			String itemCodeDVCQG) {
+		boolean result = false;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			DictCollection collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
+
+			if (collection == null) {
+				result = false;
+			}
+
+			DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
+					collection.getDictCollectionId());
+
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
+
+			dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
+					collection.getDictCollectionId());
+
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
+
+			DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
+					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
+
+			result = true;
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
+
+	@Override
+	public Response doRemoveMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, long mappingId) {
+		boolean result = false;
+
+		try {
+
+			DictItemMappingLocalServiceUtil.deleteDictItemMapping(mappingId);
+
+			result = true;
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String code, DataSearchModel query, Request requestCC) {
+		DVCQGIntegrationActionImpl dvcqgIntegrationActionImpl = new DVCQGIntegrationActionImpl();
+
+		try {
+			JSONObject result = dvcqgIntegrationActionImpl.getDictItemDVCQG(user, serviceContext, query.getService());
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

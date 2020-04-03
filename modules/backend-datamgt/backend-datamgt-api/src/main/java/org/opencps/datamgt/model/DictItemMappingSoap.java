@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.dossiermgt.model;
+package org.opencps.datamgt.model;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -25,32 +25,30 @@ import java.util.List;
 /**
  * This class is used by SOAP remote services.
  *
- * @author huymq
+ * @author khoavu
  * @generated
  */
 @ProviderType
-public class ServiceInfoMappingSoap implements Serializable {
-	public static ServiceInfoMappingSoap toSoapModel(ServiceInfoMapping model) {
-		ServiceInfoMappingSoap soapModel = new ServiceInfoMappingSoap();
+public class DictItemMappingSoap implements Serializable {
+	public static DictItemMappingSoap toSoapModel(DictItemMapping model) {
+		DictItemMappingSoap soapModel = new DictItemMappingSoap();
 
-		soapModel.setServiceInfoMappingId(model.getServiceInfoMappingId());
+		soapModel.setMappingId(model.getMappingId());
 		soapModel.setGroupId(model.getGroupId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setUserId(model.getUserId());
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
-		soapModel.setServiceCode(model.getServiceCode());
-		soapModel.setServiceCodeDVCQG(model.getServiceCodeDVCQG());
-		soapModel.setServiceNameDVCQG(model.getServiceNameDVCQG());
-		soapModel.setSynced(model.getSynced());
+		soapModel.setItemCode(model.getItemCode());
+		soapModel.setItemCodeDVCQG(model.getItemCodeDVCQG());
+		soapModel.setCollectionId(model.getCollectionId());
 
 		return soapModel;
 	}
 
-	public static ServiceInfoMappingSoap[] toSoapModels(
-		ServiceInfoMapping[] models) {
-		ServiceInfoMappingSoap[] soapModels = new ServiceInfoMappingSoap[models.length];
+	public static DictItemMappingSoap[] toSoapModels(DictItemMapping[] models) {
+		DictItemMappingSoap[] soapModels = new DictItemMappingSoap[models.length];
 
 		for (int i = 0; i < models.length; i++) {
 			soapModels[i] = toSoapModel(models[i]);
@@ -59,15 +57,15 @@ public class ServiceInfoMappingSoap implements Serializable {
 		return soapModels;
 	}
 
-	public static ServiceInfoMappingSoap[][] toSoapModels(
-		ServiceInfoMapping[][] models) {
-		ServiceInfoMappingSoap[][] soapModels = null;
+	public static DictItemMappingSoap[][] toSoapModels(
+		DictItemMapping[][] models) {
+		DictItemMappingSoap[][] soapModels = null;
 
 		if (models.length > 0) {
-			soapModels = new ServiceInfoMappingSoap[models.length][models[0].length];
+			soapModels = new DictItemMappingSoap[models.length][models[0].length];
 		}
 		else {
-			soapModels = new ServiceInfoMappingSoap[0][0];
+			soapModels = new DictItemMappingSoap[0][0];
 		}
 
 		for (int i = 0; i < models.length; i++) {
@@ -77,34 +75,34 @@ public class ServiceInfoMappingSoap implements Serializable {
 		return soapModels;
 	}
 
-	public static ServiceInfoMappingSoap[] toSoapModels(
-		List<ServiceInfoMapping> models) {
-		List<ServiceInfoMappingSoap> soapModels = new ArrayList<ServiceInfoMappingSoap>(models.size());
+	public static DictItemMappingSoap[] toSoapModels(
+		List<DictItemMapping> models) {
+		List<DictItemMappingSoap> soapModels = new ArrayList<DictItemMappingSoap>(models.size());
 
-		for (ServiceInfoMapping model : models) {
+		for (DictItemMapping model : models) {
 			soapModels.add(toSoapModel(model));
 		}
 
-		return soapModels.toArray(new ServiceInfoMappingSoap[soapModels.size()]);
+		return soapModels.toArray(new DictItemMappingSoap[soapModels.size()]);
 	}
 
-	public ServiceInfoMappingSoap() {
+	public DictItemMappingSoap() {
 	}
 
 	public long getPrimaryKey() {
-		return _serviceInfoMappingId;
+		return _mappingId;
 	}
 
 	public void setPrimaryKey(long pk) {
-		setServiceInfoMappingId(pk);
+		setMappingId(pk);
 	}
 
-	public long getServiceInfoMappingId() {
-		return _serviceInfoMappingId;
+	public long getMappingId() {
+		return _mappingId;
 	}
 
-	public void setServiceInfoMappingId(long serviceInfoMappingId) {
-		_serviceInfoMappingId = serviceInfoMappingId;
+	public void setMappingId(long mappingId) {
+		_mappingId = mappingId;
 	}
 
 	public long getGroupId() {
@@ -155,47 +153,38 @@ public class ServiceInfoMappingSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
-	public String getServiceCode() {
-		return _serviceCode;
+	public String getItemCode() {
+		return _itemCode;
 	}
 
-	public void setServiceCode(String serviceCode) {
-		_serviceCode = serviceCode;
+	public void setItemCode(String itemCode) {
+		_itemCode = itemCode;
 	}
 
-	public String getServiceCodeDVCQG() {
-		return _serviceCodeDVCQG;
+	public String getItemCodeDVCQG() {
+		return _itemCodeDVCQG;
 	}
 
-	public void setServiceCodeDVCQG(String serviceCodeDVCQG) {
-		_serviceCodeDVCQG = serviceCodeDVCQG;
+	public void setItemCodeDVCQG(String itemCodeDVCQG) {
+		_itemCodeDVCQG = itemCodeDVCQG;
 	}
 
-	public String getServiceNameDVCQG() {
-		return _serviceNameDVCQG;
+	public long getCollectionId() {
+		return _collectionId;
 	}
 
-	public void setServiceNameDVCQG(String serviceNameDVCQG) {
-		_serviceNameDVCQG = serviceNameDVCQG;
+	public void setCollectionId(long collectionId) {
+		_collectionId = collectionId;
 	}
 
-	public int getSynced() {
-		return _synced;
-	}
-
-	public void setSynced(int synced) {
-		_synced = synced;
-	}
-
-	private long _serviceInfoMappingId;
+	private long _mappingId;
 	private long _groupId;
 	private long _companyId;
 	private long _userId;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
-	private String _serviceCode;
-	private String _serviceCodeDVCQG;
-	private String _serviceNameDVCQG;
-	private int _synced;
+	private String _itemCode;
+	private String _itemCodeDVCQG;
+	private long _collectionId;
 }

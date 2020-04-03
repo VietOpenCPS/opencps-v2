@@ -55,6 +55,7 @@ import org.opencps.datamgt.service.persistence.CommentPersistence;
 import org.opencps.datamgt.service.persistence.DictCollectionPersistence;
 import org.opencps.datamgt.service.persistence.DictGroupPersistence;
 import org.opencps.datamgt.service.persistence.DictItemGroupPersistence;
+import org.opencps.datamgt.service.persistence.DictItemMappingPersistence;
 import org.opencps.datamgt.service.persistence.DictItemPersistence;
 import org.opencps.datamgt.service.persistence.FileAttachPersistence;
 import org.opencps.datamgt.service.persistence.HolidayPersistence;
@@ -630,6 +631,44 @@ public abstract class VotingResultLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the dict item mapping local service.
+	 *
+	 * @return the dict item mapping local service
+	 */
+	public org.opencps.datamgt.service.DictItemMappingLocalService getDictItemMappingLocalService() {
+		return dictItemMappingLocalService;
+	}
+
+	/**
+	 * Sets the dict item mapping local service.
+	 *
+	 * @param dictItemMappingLocalService the dict item mapping local service
+	 */
+	public void setDictItemMappingLocalService(
+		org.opencps.datamgt.service.DictItemMappingLocalService dictItemMappingLocalService) {
+		this.dictItemMappingLocalService = dictItemMappingLocalService;
+	}
+
+	/**
+	 * Returns the dict item mapping persistence.
+	 *
+	 * @return the dict item mapping persistence
+	 */
+	public DictItemMappingPersistence getDictItemMappingPersistence() {
+		return dictItemMappingPersistence;
+	}
+
+	/**
+	 * Sets the dict item mapping persistence.
+	 *
+	 * @param dictItemMappingPersistence the dict item mapping persistence
+	 */
+	public void setDictItemMappingPersistence(
+		DictItemMappingPersistence dictItemMappingPersistence) {
+		this.dictItemMappingPersistence = dictItemMappingPersistence;
+	}
+
+	/**
 	 * Returns the file attach local service.
 	 *
 	 * @return the file attach local service
@@ -1001,6 +1040,10 @@ public abstract class VotingResultLocalServiceBaseImpl
 	protected org.opencps.datamgt.service.DictItemGroupLocalService dictItemGroupLocalService;
 	@BeanReference(type = DictItemGroupPersistence.class)
 	protected DictItemGroupPersistence dictItemGroupPersistence;
+	@BeanReference(type = org.opencps.datamgt.service.DictItemMappingLocalService.class)
+	protected org.opencps.datamgt.service.DictItemMappingLocalService dictItemMappingLocalService;
+	@BeanReference(type = DictItemMappingPersistence.class)
+	protected DictItemMappingPersistence dictItemMappingPersistence;
 	@BeanReference(type = org.opencps.datamgt.service.FileAttachLocalService.class)
 	protected org.opencps.datamgt.service.FileAttachLocalService fileAttachLocalService;
 	@BeanReference(type = FileAttachPersistence.class)

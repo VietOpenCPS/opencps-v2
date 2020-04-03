@@ -18,9 +18,9 @@ public interface DVCQGIntegrationAction {
 	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId, String isUpdating);
 	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId);
 	public JSONObject mappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode,
-			String serviceCodeDVCQG);
+			String serviceCodeDVCQG, String serviceNameDVCQG);
 	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext, long id);
-	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes);
+	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes, String type);
 	public JSONObject getSharingQA(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doSyncSharingQA(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data);
