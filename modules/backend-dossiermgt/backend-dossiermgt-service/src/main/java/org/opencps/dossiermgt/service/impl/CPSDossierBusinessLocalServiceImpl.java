@@ -7542,16 +7542,16 @@ public class CPSDossierBusinessLocalServiceImpl
 			
 			Dossier oldDossier = null;
 			oldDossier = DossierLocalServiceUtil.fetchDossier(id);
-		if (oldDossier == null || oldDossier.getOriginality() == 0) {
-			Date appIdDate = null;
-			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-			try {
-				appIdDate = sdf.parse(applicantIdDate);
-			} catch (Exception e) {
-				_log.debug(e);
-			}
+			if (oldDossier != null && oldDossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+				Date appIdDate = null;
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+				try {
+					appIdDate = sdf.parse(applicantIdDate);
+				} catch (Exception e) {
+					_log.debug(e);
+				}
 			
-			Dossier dossier = dossierLocalService.eparPublishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+				Dossier dossier = dossierLocalService.eparPublishDossier(groupId, 0l, oldDossier.getReferenceUid(), counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, appIdDate, address,
 					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
 					contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
