@@ -705,19 +705,18 @@ public class UserManagementImpl implements UserManagement {
 			User user, ServiceContext serviceContext, Request requestCC) {
 		JSONArray dataUser = JSONFactoryUtil.createJSONArray();
 
-
 		try {
 			List<Role> roles = user.getRoles();
 
 			for (Role role : roles) {
 //				String roleName = StringPool.BLANK;
-				String roleName;
+				//String roleName;
 
 				JSONObject result = JSONFactoryUtil.createJSONObject();
 
-				result.put(UserTerm.EMAIL, StringPool.BLANK);
-				result.put(UserTerm.ROLE, StringPool.BLANK);
-				result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, 0);
+				//result.put(UserTerm.EMAIL, StringPool.BLANK);
+				//result.put(UserTerm.ROLE, StringPool.BLANK);
+				//result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, 0);
 
 //				if ("Administrator".equalsIgnoreCase(role.getName())) {
 //					roleName = "Administrator";
@@ -727,10 +726,10 @@ public class UserManagementImpl implements UserManagement {
 //					roleName = "Administrator_data";
 //				}
 				
-				roleName = role.getName();
-
-				result.put(UserTerm.EMAIL, user.getEmailAddress());
-				result.put(UserTerm.ROLE, roleName);
+				//String roleName = role.getName();
+				result.put(UserTerm.EMAIL,
+						Validator.isNotNull(user.getEmailAddress()) ? user.getEmailAddress() : StringPool.BLANK);
+				result.put(UserTerm.ROLE, Validator.isNotNull(role.getName()) ? role.getName() : StringPool.BLANK);
 				result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, user.getStatus());
 
 				dataUser.put(result);

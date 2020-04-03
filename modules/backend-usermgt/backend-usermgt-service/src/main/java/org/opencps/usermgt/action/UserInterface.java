@@ -76,7 +76,7 @@ public interface UserInterface {
 	public String getCertPath(long userId, long companyId, long groupId, ServiceContext serviceContext)
 			throws Exception;
 
-	public String getUserById(long userId);
+	public String getUserById(long userId, long groupId);
 
 	public JSONObject unlockAccount(long userId, long companyId, long groupId, long id, String email, boolean unlocked,
 			ServiceContext serviceContext)

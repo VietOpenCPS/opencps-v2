@@ -3,7 +3,6 @@ package org.opencps.usermgt.constants;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.util.StringPool;
 
 public class UserTerm {
 
@@ -71,6 +70,8 @@ public class UserTerm {
 	public static final String TO_USERS = "toUsers";
 	public static final String ROLE = "role";
 	public static final String DEACTIVE_ACCOUNT_FLAG = "deactiveAccountFlag";
+	public static final String GOV_AGENCY_CODE = "govAgencyCode";
+	public static final String GOV_AGENCY_NAME = "govAgencyName";
 	public static int getUserByIdDefault() {
 
 		return 0;

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.AuthException;
@@ -1106,12 +1107,14 @@ public class RestfulController {
 
 			long userIdPath = Long.valueOf(id);
 			long userId = GetterUtil.getLong(request.getAttribute(WebKeys.USER_ID).toString());
+			long groupId = GetterUtil.getLong(request.getHeader(Field.GROUP_ID));
+			
 			if (userId == 0 || (userId > 0 && userId != userIdPath)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
 			UserActions actions = new UserActions();
 
-			String userData = actions.getUserById(Long.valueOf(id));
+			String userData = actions.getUserById(Long.valueOf(id), groupId);
 
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
