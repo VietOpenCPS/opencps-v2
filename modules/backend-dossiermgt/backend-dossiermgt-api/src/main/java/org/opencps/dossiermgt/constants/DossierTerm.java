@@ -296,4 +296,5 @@ public class DossierTerm {
 	public static final String SERVICE_LEVEL = "serviceLevel";
 	public static final String DOSSIER_COUNTER = "dossierCounter";
 	public static final String DOSSIER_COUNTER_SEARCH = "dossierCounterSearch";
+	public static final String KEY_DVCQG_INTEGRATION = "dvcqgIntegration";
 }

@@ -85,6 +85,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 		attributes.put("fileSignId", getFileSignId());
 		attributes.put("fileCertPath", getFileCertPath());
 		attributes.put("fileSignPath", getFileSignPath());
+		attributes.put("scope", getScope());
 
 		return attributes;
 	}
@@ -245,6 +246,12 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 
 		if (fileSignPath != null) {
 			setFileSignPath(fileSignPath);
+		}
+
+		String scope = (String)attributes.get("scope");
+
+		if (scope != null) {
+			setScope(scope);
 		}
 	}
 
@@ -486,6 +493,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public Date getRecruitDate() {
 		return _employee.getRecruitDate();
+	}
+
+	/**
+	* Returns the scope of this employee.
+	*
+	* @return the scope of this employee
+	*/
+	@Override
+	public String getScope() {
+		return _employee.getScope();
 	}
 
 	/**
@@ -832,6 +849,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public void setRecruitDate(Date recruitDate) {
 		_employee.setRecruitDate(recruitDate);
+	}
+
+	/**
+	* Sets the scope of this employee.
+	*
+	* @param scope the scope of this employee
+	*/
+	@Override
+	public void setScope(String scope) {
+		_employee.setScope(scope);
 	}
 
 	/**

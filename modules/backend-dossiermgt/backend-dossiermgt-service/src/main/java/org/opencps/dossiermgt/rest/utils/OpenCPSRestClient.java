@@ -157,6 +157,7 @@ public class OpenCPSRestClient {
 		InvokeREST callRest = new InvokeREST();
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = OpenCPSConverter.convertInformHttpParams(model);
+		_log.info("params: "+params);
 		ServiceContext context = new ServiceContext();
 		
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.PUT, "application/json",

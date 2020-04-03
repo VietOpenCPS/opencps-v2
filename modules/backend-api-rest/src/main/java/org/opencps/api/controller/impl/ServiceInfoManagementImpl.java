@@ -129,8 +129,20 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 			params.put(Field.KEYWORD_SEARCH, keySearch);
 
-			params.put(ServiceInfoTerm.ADMINISTRATION_CODE, query.getAdministration());
-			params.put(ServiceInfoTerm.DOMAIN_CODE, query.getDomain());
+			//Administration Code
+			String administrationCode = query.getAdministration();
+			String administrationCodeSearch = StringPool.BLANK;
+			if (Validator.isNotNull(administrationCode)) {
+				administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
+			}
+			params.put(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
+			//Domain Code
+			String domainCode = query.getDomain();
+			String domainSearch = StringPool.BLANK;
+			if (Validator.isNotNull(domainCode)) {
+				domainSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+			}
+			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainSearch);
 			params.put(ServiceInfoTerm.MAX_LEVEL, query.getLevel());
 			params.put(ServiceInfoTerm.PUBLIC_, query.getActive());
 			params.put(ServiceInfoTerm.MAPPING, query.getMapping());
