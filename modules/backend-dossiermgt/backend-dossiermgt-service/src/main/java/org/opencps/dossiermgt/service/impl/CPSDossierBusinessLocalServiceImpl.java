@@ -7492,7 +7492,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
 	public Dossier eparPublish(long groupId, Company company,
-			User user, ServiceContext serviceContext, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
+			User user, ServiceContext serviceContext, long id, org.opencps.dossiermgt.input.model.DossierPublishModel input) throws UnauthenticationException, PortalException, Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -7539,26 +7539,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			long processDateLong = GetterUtil.getLong(input.getProcessDate());
 			String submissionNote = input.getSubmissionNote();
 			String lockState = input.getLockState();
-			String dossierNo = input.getDossierNo();
 			
 			Dossier oldDossier = null;
-			if (Validator.isNotNull(input.getReferenceUid())) {
-				oldDossier = getDossier(input.getReferenceUid(), groupId);
-			} else {
-			    oldDossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
-			    referenceUid = DossierNumberGenerator.generateReferenceUID(groupId);
-			}
-
-		if (oldDossier == null || oldDossier.getOriginality() == 0) {
-			Date appIdDate = null;
-			SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-			try {
-				appIdDate = sdf.parse(applicantIdDate);
-			} catch (Exception e) {
-				_log.debug(e);
-			}
+			oldDossier = DossierLocalServiceUtil.fetchDossier(id);
+			if (oldDossier != null && oldDossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
+				Date appIdDate = null;
+				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+				try {
+					appIdDate = sdf.parse(applicantIdDate);
+				} catch (Exception e) {
+					_log.debug(e);
+				}
 			
-			Dossier dossier = dossierLocalService.eparPublishDossier(groupId, 0l, referenceUid, counter, serviceCode, serviceName,
+				Dossier dossier = dossierLocalService.eparPublishDossier(groupId, 0l, oldDossier.getReferenceUid(), counter, serviceCode, serviceName,
 					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, appIdDate, address,
 					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
 					contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
