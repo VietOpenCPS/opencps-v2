@@ -29,9 +29,9 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 
 		try {
 			List<DossierSync> docList = DossierSyncLocalServiceUtil.getDossierSyncList(action, syncType, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
-			}
+//			if (docList != null && docList.size() > 0) {
+//				_log.info("docList:"+docList);
+//			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countDossierSyncList(action, syncType);
@@ -52,9 +52,9 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 
 		try {
 			List<DossierSync> docList = DossierSyncLocalServiceUtil.getDossierSyncByIdList(dossierId, model, actionCodeNo, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
-			}
+//			if (docList != null && docList.size() > 0) {
+//				_log.info("docList:"+docList);
+//			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countDossierSyncByIdList(dossierId, model, actionCodeNo);
@@ -80,9 +80,9 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			List<DossierSync> docList = DossierSyncLocalServiceUtil.findByDossierAndInfoType(groupId, dossier.getReferenceUid(), info, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
-			}
+//			if (docList != null && docList.size() > 0) {
+//				_log.info("docList:"+docList);
+//			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoType(groupId, dossier.getReferenceUid(), info);
@@ -101,9 +101,9 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 
 		try {
 			List<DossierSync> docList = DossierSyncLocalServiceUtil.findForApplicantAndActionCode(groupId, actionCode, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
-			}
+//			if (docList != null && docList.size() > 0) {
+//				_log.info("docList:"+docList);
+//			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countForApplicantAndActionCode(groupId, actionCode);
@@ -127,9 +127,9 @@ public class DossierSyncActionsImpl implements DossierSyncActions{
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			List<DossierSync> docList = DossierSyncLocalServiceUtil.findByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY }, start, end);
-			if (docList != null && docList.size() > 0) {
-				_log.info("docList:"+docList);
-			}
+//			if (docList != null && docList.size() > 0) {
+//				_log.info("docList:"+docList);
+//			}
 			result.put(ConstantUtils.DATA, docList);
 			
 			long total = DossierSyncLocalServiceUtil.countByDossierAndInfoTypeArr(groupId, dossier.getReferenceUid(), new int[] { ActionConfigTerm.INFO_TYPE_INFO, ActionConfigTerm.INFO_TYPE_NOTIFY });
