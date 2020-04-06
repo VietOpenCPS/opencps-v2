@@ -826,7 +826,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					if (answers != null) {
 						for (Answer answer : answers) {
 							if (Validator.isNotNull(answer.getClassName())
-									&& answer.getClassName().equals("dvcqg_answer")) {
+									&& "dvcqg_answer".contentEquals(answer.getClassName())) {
 								traloiids.add(GetterUtil.getLong(answer.getClassPK()));
 							}
 						}
@@ -958,7 +958,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private String getAccessToken(ServerConfig serverConfig) {
 
-		HttpURLConnection conn = null;
+		//HttpURLConnection conn = null;
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -967,11 +967,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return StringPool.BLANK;
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
 		}
+//		finally {
+//			if (conn != null) {
+//				conn.disconnect();
+//			}
+//		}
 	}
 
 	@Override
@@ -993,7 +994,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private JSONArray getAnswer(User user, ServiceContext serviceContext, JSONObject data) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject qajson = JSONFactoryUtil.createJSONObject();
-
+		_log.info("-->>>>>>>> syncAnswer: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);
@@ -1851,7 +1852,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					sb.append(output);
 				}
 
-				System.out.println("response: " + sb.toString());
+				//System.out.println("response: " + sb.toString());
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
 
@@ -2344,7 +2345,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				String tentthc = _tmp.getString("TENTTHC");
 				serviceInfo.setServiceName(tentthc);
 
-				//MATTHC`
+				//MATTHC
 				String matthc = _tmp.getString("MATTHC");
 
 				if (type.equalsIgnoreCase("sync")) {
@@ -2686,7 +2687,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						Question question = QuestionLocalServiceUtil.fetchQuestion(answer.getQuestionId());
 						if (question != null && question.getPublish() == 1
 								&& Validator.isNotNull(question.getClassName())
-								&& question.getClassName().equalsIgnoreCase("dvcqg_question")) {
+								&& "dvcqg_question".contentEquals(question.getClassName())) {
 							item = JSONFactoryUtil.createJSONObject();
 							item.put("HOIDAPID", question.getClassPK());
 							item.put("MADONVI", question.getGovAgencyCode());

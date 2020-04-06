@@ -73,9 +73,7 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE, serviceCode);
 		if (Validator.isNotNull(serviceCode)) {
 			String serviceCodeSearch = SpecialCharacterUtils.splitSpecial(serviceCode);
-			
 			document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
-			
 		}
 
 		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(object.getGroupId(), serviceCode);
@@ -105,6 +103,7 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 			String administrationCodeSearch = SpecialCharacterUtils.splitSpecial(administrationCode);
 			document.addTextSortable(ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH, administrationCodeSearch);
 		}
+
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_NAME, object.getAdministrationName());
 		document.addKeywordSortable(ServiceInfoTerm.ADMINISTRATION_INDEX, object.getAdministrationIndex());
 		

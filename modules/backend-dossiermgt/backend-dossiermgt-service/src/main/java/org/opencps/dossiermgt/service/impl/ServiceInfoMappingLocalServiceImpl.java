@@ -108,12 +108,13 @@ public class ServiceInfoMappingLocalServiceImpl extends ServiceInfoMappingLocalS
 
 				return true;
 			} catch (Exception e) {
+				_log.debug(e);
 				return false;
 			}
 		}
 		return false;
 	}
-
+	
 	public ServiceInfoMapping fetchDVCQGServiceCode(long groupId, String serviceCode) {
 		return serviceInfoMappingPersistence.fetchByF_GID_SC(groupId, serviceCode);
 	}

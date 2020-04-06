@@ -109,13 +109,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		try {
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -149,7 +149,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
 
 			Sort[] sorts = null;
-			//			_log.info("sorts: "+query.getSort());
+//			_log.info("sorts: "+query.getSort());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
@@ -197,7 +197,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//		    builder.cacheControl(cc);
 			//		    
 			//		    return builder.build();
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -208,7 +208,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response addServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = serviceContext.getUserId();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -248,7 +248,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-			return Response.status(200).entity(serviceInfoInput).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 
 		} catch (Exception e) {
 
@@ -265,7 +265,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		ServiceInfoDetailModel results = new ServiceInfoDetailModel();
 
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			ServiceInfo serviceInfo = null;
 
@@ -281,7 +281,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
 
-			EntityTag etag = new EntityTag(String.valueOf((groupId + "_" + id).hashCode()));
+			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
 			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
@@ -304,7 +304,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response updateServiceInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ServiceInfoInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -343,7 +343,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-			return Response.status(200).entity(serviceInfoInput).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 
 		} catch (Exception e) {
 
@@ -376,7 +376,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			if (Validator.isNotNull(serviceInfo)) {
 				serviceInfoInput = ServiceInfoUtils.mappingToServiceInfoInputModel(serviceInfo);
 
-				return Response.status(200).entity(serviceInfoInput).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(serviceInfoInput).build();
 			} else {
 				throw new Exception();
 			}
@@ -391,15 +391,15 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response getFileTemplatesOfServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, FileTemplateSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		FileTemplateResultsModel results = new FileTemplateResultsModel();
 
 		try {
 
 			if (Validator.isNotNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			if (Validator.isNotNull(query.geteForm())) {
@@ -412,7 +412,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results.setTotal(jsonData.getInt("total"));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				JSONObject jsonData = actions.getServiceFileTemplate(groupId, id, query.getStart(), query.getEnd());
 
@@ -421,7 +421,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results.setTotal(jsonData.getInt("total"));
 				results.getData().addAll(ServiceInfoUtils.mappingToFileTemplates(fileTemplates));
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 
 		} catch (Exception e) {
@@ -435,7 +435,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			Locale locale, User user, ServiceContext serviceContext, Attachment file, String id, String fileTemplateNo,
 			String templateName, String fileType, int fileSize, String fileName) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -466,7 +466,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 
@@ -547,7 +547,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 			FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 
@@ -563,7 +563,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
@@ -575,18 +575,18 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			//		    
 			//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-			//				builder = Response.status(200);
+			//				builder = Response.status(HttpURLConnection.HTTP_OK);
 			//				CacheControl cc = new CacheControl();
 			//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
 			//				cc.setPrivate(true);	
 			//				builder.tag(etag);
-			//				return builder.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
+			//				return builder.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
 			//			}
 			//			else {
-			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();				
+			//				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();				
 			//			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -597,7 +597,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
@@ -623,7 +623,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//				cc.setPrivate(true);	
 			//				builder.tag(etag);
 			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -635,7 +635,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search, Request requestCC) {
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
@@ -669,7 +669,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			//				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
 			//			}
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(results)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -705,7 +705,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 		}
 
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -737,7 +737,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 		}
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -768,14 +768,14 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 		}
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
 	public Response getServiceInfoRecently(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, ServiceInfoSearchModel search) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		//String emailLogin = user.getEmailAddress();
 		//DossierActions actions = new DossierActionsImpl();
@@ -863,7 +863,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				}
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -876,7 +876,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 	public Response resolveConflictServiceInfo(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		ServiceInfoActions actions = new ServiceInfoActionsImpl();
 		Indexer<ServiceInfo> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ServiceInfo.class);
@@ -908,7 +908,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 		}
 
-		return Response.status(200).entity("{}").build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity("{}").build();
 	}
 
 	@Override
@@ -917,7 +917,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			Attachment fileScript, Attachment fileReport, String templateName, String strFileEntryId, String eForm,
 			String strFormScriptFileId, String strFormReportFileId, String eFormNoPattern, String eFormNamePattern) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		long userId = serviceContext.getUserId();
 
@@ -944,7 +944,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 					if (handlerScript != null && handlerScript.getInputStream() != null) {
 						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(userId, groupId, 0,
 								handlerScript.getInputStream(), FilenameUtils.getExtension(handlerScript.getName()),
-								handlerScript.getName().substring(handlerScript.getName().lastIndexOf(".") + 1),
+								handlerScript.getName().substring(handlerScript.getName().lastIndexOf(StringPool.PERIOD) + 1),
 								handlerScript.getInputStream().available(), serviceContext);
 						if (fileEntry != null) {
 							formScriptId = fileEntry.getFileEntryId();
@@ -997,9 +997,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				ServiceFileTemplateLocalServiceUtil.updateServiceFileTemplate(serviceFileTemplate);
 				//
 				FileTemplateModel result = ServiceInfoUtils.mappingToFileTemplateModel(serviceFileTemplate);
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			} else {
-				return Response.status(500).entity("Internal Server!!!").build();
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("Internal Server!!!").build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
