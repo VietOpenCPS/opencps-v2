@@ -49,6 +49,9 @@ public class ServiceInfoUtils {
 				model.setCreateDate(doc.get(Field.CREATE_DATE));
 				model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
 				model.setServiceCode(doc.get(ServiceInfoTerm.SERVICE_CODE));
+				model.setServiceCodeDVCQG(doc.get(ServiceInfoTerm.SERVICE_CODE_DVCQG));
+				model.setServiceNameDVCQG(doc.get(ServiceInfoTerm.SERVICE_NAME_DVCQG));
+				model.setMappingClassPK(GetterUtil.getLong(doc.get(ServiceInfoTerm.MAPPING_CLASSPK)));
 				model.setServiceName(doc.get(ServiceInfoTerm.SERVICE_NAME));
 				model.setProcessText(doc.get(ServiceInfoTerm.PROCESS_TEXT));
 				model.setMethodText(doc.get(ServiceInfoTerm.METHOD_TEXT));
@@ -64,6 +67,7 @@ public class ServiceInfoUtils {
 				model.setDomainCode(doc.get(ServiceInfoTerm.DOMAIN_CODE));
 				model.setDomainName(doc.get(ServiceInfoTerm.DOMAIN_NAME));
 				model.setMaxLevel(GetterUtil.getInteger(doc.get(ServiceInfoTerm.MAX_LEVEL)));
+				model.setSynced(GetterUtil.getInteger(doc.get(ServiceInfoTerm.SYNCED)));
 				//model.setPublic(doc.get(ServiceInfoTerm.PUBLIC_));
 				model.setActive(doc.get(ServiceInfoTerm.PUBLIC_));
 				

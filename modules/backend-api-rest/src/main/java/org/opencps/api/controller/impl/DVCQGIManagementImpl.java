@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -22,6 +23,8 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DVCQGIManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
+import org.opencps.usermgt.model.Question;
+import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 
 public class DVCQGIManagementImpl implements DVCQGIManagement {
 
@@ -31,7 +34,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response doSyncDossier(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String strDossierId,
 			String isUpdating) {
-		
+
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		serviceContext.setScopeGroupId(groupId);
@@ -83,7 +86,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setScopeGroupId(groupId);
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
-//			_log.info("Ton ngo khong da dao choi o day1.");
+			_log.info("Ton ngo khong da dao choi o day.");
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
 					JSONFactoryUtil.createJSONObject(body));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
@@ -111,7 +114,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	@Override
 	public Response doMappingServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCode,
-			String serviceCodeDVCQG) {
+			String serviceCodeDVCQG, String serviceNameDVCQG) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		serviceContext.setScopeGroupId(groupId);
@@ -119,7 +122,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		try {
 
 			JSONObject result = actionImpl.mappingServiceInfo(user, groupId, serviceContext, serviceCode,
-					serviceCodeDVCQG);
+					serviceCodeDVCQG, serviceNameDVCQG);
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -146,14 +149,15 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 
 	@Override
 	public Response doSyncServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCodes) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCodes,
+			String type) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		serviceContext.setScopeGroupId(groupId);
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 
-			JSONObject result = actionImpl.syncServiceInfo(user, groupId, serviceContext, serviceCodes);
+			JSONObject result = actionImpl.syncServiceInfo(user, groupId, serviceContext, serviceCodes, type);
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -171,6 +175,19 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 			JSONObject result = actionImpl.getSharingQA(user, serviceContext, JSONFactoryUtil.createJSONObject(body));
+			//kiem tra da dong bo hay chua
+			JSONArray data = result.getJSONArray("result");
+			if (data != null) {
+				for (int i = 0; i < data.length(); i++) {
+					String hoidapid = data.getJSONObject(i).getString("HOIDAPID");
+					Question question = QuestionLocalServiceUtil.fetchByG_CN_CPK(groupId, "dvcqg_question", hoidapid);
+					if (question == null) {
+						data.getJSONObject(i).put("SYNC", false);
+					} else {
+						data.getJSONObject(i).put("SYNC", true);
+					}
+				}
+			}
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -239,6 +256,44 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		try {
 			JSONObject result = actionImpl.doSyncServiceAdministration(user, serviceContext,
 					JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response getServiceInfoDVCQG(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCode,
+			String serviceName) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+			JSONArray data = actionImpl.getServiceInfoDVCQG(user, groupId, serviceContext, serviceCode, serviceName);
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("total", data.length());
+			result.put("data", data);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response getServiceInfoDVCQGDetail(HttpServletRequest request, HttpServletResponse response,
+			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String code) {
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		try {
+
+			JSONObject result = actionImpl.getServiceInfoDVCQGDetail(user, groupId, serviceContext, code);
+
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);

@@ -976,7 +976,9 @@ create table opencps_serviceinfomapping (
 	createDate DATE null,
 	modifiedDate DATE null,
 	serviceCode VARCHAR(128) null,
-	serviceCodeDVCQG VARCHAR(128) null
+	serviceCodeDVCQG VARCHAR(128) null,
+	serviceNameDVCQG VARCHAR(75) null,
+	synced INTEGER
 );
 
 create table opencps_serviceprocess (

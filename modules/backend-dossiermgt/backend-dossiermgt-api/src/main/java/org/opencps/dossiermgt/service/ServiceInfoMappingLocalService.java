@@ -62,7 +62,8 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	 * Never modify or reference this interface directly. Always use {@link ServiceInfoMappingLocalServiceUtil} to access the service info mapping local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.ServiceInfoMappingLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 	public ServiceInfoMapping addServiceInfoMapping(long groupId,
-		long companyId, long userId, String serviceCode, String serviceCodeDVCQG)
+		long companyId, long userId, String serviceCode,
+		String serviceCodeDVCQG, String serviceNameDVCQG, int synced)
 		throws PortalException;
 
 	/**
@@ -179,6 +180,10 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ServiceInfoMapping fetchByGID_SCDVCQG(long groupId,
+		String serviceCodeDVCQG);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceInfoMapping fetchDVCQGServiceCode(long groupId,
 		String serviceCode);
 
@@ -235,6 +240,8 @@ public interface ServiceInfoMappingLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getServiceInfoMappingsCount();
+
+	public boolean removeServiceInfoMapping(long mappingId);
 
 	/**
 	* Updates the service info mapping in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

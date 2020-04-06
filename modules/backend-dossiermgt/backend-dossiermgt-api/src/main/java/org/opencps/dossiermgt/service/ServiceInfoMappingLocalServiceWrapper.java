@@ -37,10 +37,11 @@ public class ServiceInfoMappingLocalServiceWrapper
 	@Override
 	public org.opencps.dossiermgt.model.ServiceInfoMapping addServiceInfoMapping(
 		long groupId, long companyId, long userId, String serviceCode,
-		String serviceCodeDVCQG)
+		String serviceCodeDVCQG, String serviceNameDVCQG, int synced)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _serviceInfoMappingLocalService.addServiceInfoMapping(groupId,
-			companyId, userId, serviceCode, serviceCodeDVCQG);
+			companyId, userId, serviceCode, serviceCodeDVCQG, serviceNameDVCQG,
+			synced);
 	}
 
 	/**
@@ -208,6 +209,13 @@ public class ServiceInfoMappingLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ServiceInfoMapping fetchByGID_SCDVCQG(
+		long groupId, String serviceCodeDVCQG) {
+		return _serviceInfoMappingLocalService.fetchByGID_SCDVCQG(groupId,
+			serviceCodeDVCQG);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ServiceInfoMapping fetchDVCQGServiceCode(
 		long groupId, String serviceCode) {
 		return _serviceInfoMappingLocalService.fetchDVCQGServiceCode(groupId,
@@ -286,6 +294,11 @@ public class ServiceInfoMappingLocalServiceWrapper
 	@Override
 	public int getServiceInfoMappingsCount() {
 		return _serviceInfoMappingLocalService.getServiceInfoMappingsCount();
+	}
+
+	@Override
+	public boolean removeServiceInfoMapping(long mappingId) {
+		return _serviceInfoMappingLocalService.removeServiceInfoMapping(mappingId);
 	}
 
 	/**

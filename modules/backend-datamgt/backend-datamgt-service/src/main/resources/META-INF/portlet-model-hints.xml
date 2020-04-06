@@ -107,6 +107,18 @@
 			<hint name="max-length">255</hint>
 		</field>
 	</model>
+	<model name="org.opencps.datamgt.model.DictItemMapping">
+		<field name="mappingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="itemCode" type="String" />
+		<field name="itemCodeDVCQG" type="String" />
+		<field name="collectionId" type="long" />
+	</model>
 	<model name="org.opencps.datamgt.model.FileAttach">
 		<field name="fileAttachId" type="long" />
 		<field name="groupId" type="long" />

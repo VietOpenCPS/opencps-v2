@@ -122,7 +122,7 @@ public class OpencpsVotingStatisticModelImpl extends BaseModelImpl<OpencpsVoting
 		TABLE_COLUMNS_MAP.put("totalCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_voting_statistic (uuid_ VARCHAR(75) null,votingStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(75) null,domainCode VARCHAR(75) null,domainName VARCHAR(75) null,votingCode VARCHAR(75) null,votingSubject VARCHAR(75) null,totalVoted INTEGER,veryGoodCount INTEGER,goodCount INTEGER,badCount INTEGER,percentVeryGood INTEGER,percentGood INTEGER,percentBad INTEGER,totalCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_voting_statistic (uuid_ VARCHAR(75) null,votingStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,govAgencyCode VARCHAR(255) null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,votingCode VARCHAR(255) null,votingSubject TEXT null,totalVoted INTEGER,veryGoodCount INTEGER,goodCount INTEGER,badCount INTEGER,percentVeryGood INTEGER,percentGood INTEGER,percentBad INTEGER,totalCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_voting_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsVotingStatistic.votingStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_voting_statistic.votingStatisticId ASC";
