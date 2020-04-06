@@ -373,8 +373,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME_SEARCH, ServiceInfoTerm.SERVICE_NAME,
-					ServiceInfoTerm.SERVICE_CODE_SEARCH, ServiceInfoTerm.DOMAIN_CODE_SEARCH,
-					ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH };
+					ServiceInfoTerm.SERVICE_CODE_SEARCH, ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH,
+					ServiceInfoTerm.DOMAIN_CODE_SEARCH, ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -402,7 +402,9 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE_SEARCH));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
-
+		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
+		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
+		
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -444,6 +446,23 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if(Validator.isNotNull(mapping)) {
+			MultiMatchQuery query = new MultiMatchQuery(mapping);
+
+			query.addFields(ServiceInfoTerm.MAPPING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(synced)) {
+			MultiMatchQuery query = new MultiMatchQuery(synced);
+
+			query.addFields(ServiceInfoTerm.SYNCED);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -502,8 +521,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		if (Validator.isNotNull(keywords)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			String[] subQuerieArr = new String[] { ServiceInfoTerm.SERVICE_NAME_SEARCH, ServiceInfoTerm.SERVICE_NAME,
-					ServiceInfoTerm.SERVICE_CODE_SEARCH, ServiceInfoTerm.DOMAIN_CODE_SEARCH,
-					ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH };
+					ServiceInfoTerm.SERVICE_CODE_SEARCH, ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH,
+					ServiceInfoTerm.DOMAIN_CODE_SEARCH, ServiceInfoTerm.ADMINISTRATION_CODE_SEARCH };
 
 			String[] keywordArr = keywords.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -532,7 +551,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		String domain = GetterUtil.getString(params.get(ServiceInfoTerm.DOMAIN_CODE_SEARCH));
 		String level = String.valueOf((params.get(ServiceInfoTerm.MAX_LEVEL)));
 		String public_ = String.valueOf((params.get(ServiceInfoTerm.PUBLIC_)));
-
+		String mapping = String.valueOf((params.get(ServiceInfoTerm.MAPPING)));
+		String synced = String.valueOf((params.get(ServiceInfoTerm.SYNCED)));
 		if (Validator.isNotNull(administration)) {
 			MultiMatchQuery query = new MultiMatchQuery(administration);
 
@@ -579,6 +599,22 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			MultiMatchQuery query = new MultiMatchQuery(public_);
 
 			query.addFields(ServiceInfoTerm.PUBLIC_);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(mapping)) {
+			MultiMatchQuery query = new MultiMatchQuery(mapping);
+
+			query.addFields(ServiceInfoTerm.MAPPING);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
+		if(Validator.isNotNull(synced)) {
+			MultiMatchQuery query = new MultiMatchQuery(synced);
+
+			query.addFields(ServiceInfoTerm.SYNCED);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}

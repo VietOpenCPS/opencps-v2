@@ -67,6 +67,8 @@ public class ServiceInfoMappingWrapper implements ServiceInfoMapping,
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("serviceCode", getServiceCode());
 		attributes.put("serviceCodeDVCQG", getServiceCodeDVCQG());
+		attributes.put("serviceNameDVCQG", getServiceNameDVCQG());
+		attributes.put("synced", getSynced());
 
 		return attributes;
 	}
@@ -125,6 +127,18 @@ public class ServiceInfoMappingWrapper implements ServiceInfoMapping,
 
 		if (serviceCodeDVCQG != null) {
 			setServiceCodeDVCQG(serviceCodeDVCQG);
+		}
+
+		String serviceNameDVCQG = (String)attributes.get("serviceNameDVCQG");
+
+		if (serviceNameDVCQG != null) {
+			setServiceNameDVCQG(serviceNameDVCQG);
+		}
+
+		Integer synced = (Integer)attributes.get("synced");
+
+		if (synced != null) {
+			setSynced(synced);
 		}
 	}
 
@@ -226,6 +240,26 @@ public class ServiceInfoMappingWrapper implements ServiceInfoMapping,
 	@Override
 	public long getServiceInfoMappingId() {
 		return _serviceInfoMapping.getServiceInfoMappingId();
+	}
+
+	/**
+	* Returns the service name dvcqg of this service info mapping.
+	*
+	* @return the service name dvcqg of this service info mapping
+	*/
+	@Override
+	public String getServiceNameDVCQG() {
+		return _serviceInfoMapping.getServiceNameDVCQG();
+	}
+
+	/**
+	* Returns the synced of this service info mapping.
+	*
+	* @return the synced of this service info mapping
+	*/
+	@Override
+	public int getSynced() {
+		return _serviceInfoMapping.getSynced();
 	}
 
 	/**
@@ -392,6 +426,26 @@ public class ServiceInfoMappingWrapper implements ServiceInfoMapping,
 	@Override
 	public void setServiceInfoMappingId(long serviceInfoMappingId) {
 		_serviceInfoMapping.setServiceInfoMappingId(serviceInfoMappingId);
+	}
+
+	/**
+	* Sets the service name dvcqg of this service info mapping.
+	*
+	* @param serviceNameDVCQG the service name dvcqg of this service info mapping
+	*/
+	@Override
+	public void setServiceNameDVCQG(String serviceNameDVCQG) {
+		_serviceInfoMapping.setServiceNameDVCQG(serviceNameDVCQG);
+	}
+
+	/**
+	* Sets the synced of this service info mapping.
+	*
+	* @param synced the synced of this service info mapping
+	*/
+	@Override
+	public void setSynced(int synced) {
+		_serviceInfoMapping.setSynced(synced);
 	}
 
 	/**

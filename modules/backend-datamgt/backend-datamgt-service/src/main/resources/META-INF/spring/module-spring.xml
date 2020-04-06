@@ -15,6 +15,8 @@
 	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemPersistence" parent="basePersistence" />
 	<bean class="org.opencps.datamgt.service.impl.DictItemGroupLocalServiceImpl" id="org.opencps.datamgt.service.DictItemGroupLocalService" />
 	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemGroupPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemGroupPersistence" parent="basePersistence" />
+	<bean class="org.opencps.datamgt.service.impl.DictItemMappingLocalServiceImpl" id="org.opencps.datamgt.service.DictItemMappingLocalService" />
+	<bean class="org.opencps.datamgt.service.persistence.impl.DictItemMappingPersistenceImpl" id="org.opencps.datamgt.service.persistence.DictItemMappingPersistence" parent="basePersistence" />
 	<bean class="org.opencps.datamgt.service.impl.FileAttachLocalServiceImpl" id="org.opencps.datamgt.service.FileAttachLocalService" />
 	<bean class="org.opencps.datamgt.service.persistence.impl.FileAttachPersistenceImpl" id="org.opencps.datamgt.service.persistence.FileAttachPersistence" parent="basePersistence" />
 	<bean class="org.opencps.datamgt.service.impl.HolidayLocalServiceImpl" id="org.opencps.datamgt.service.HolidayLocalService" />

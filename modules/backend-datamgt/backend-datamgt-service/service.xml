@@ -369,4 +369,36 @@
 
 	</entity>
 	
+<entity name="DictItemMapping" local-service="true"
+		remote-service="false" table="opencps_dictItemmapping">
+		<column name="mappingId" type="long" primary="true"></column>
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="itemCode" type="String"></column>
+		<column name="itemCodeDVCQG" type="String"></column>
+		<column name="collectionId" type="long"></column>
+		
+		<finder return-type="DictItemMapping" name="F_GID_IC_CID">
+			<finder-column name="groupId" />
+            <finder-column name="itemCode"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+		</finder>
+		<finder return-type="DictItemMapping" name="F_GID_ICDVCQG_CID">
+			<finder-column name="groupId" />
+            <finder-column name="itemCodeDVCQG"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+		</finder>
+        <finder name="F_GID_CID" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="collectionId"></finder-column>
+        </finder>
+	</entity>
 </service-builder>

@@ -48,19 +48,21 @@ import backend.utils.HttpUtil;
 /**
  * @author Binhth
  */
-//@Component(
-//	immediate = true,
-//	property = {
-//		"servlet-context-name=",
-//		"servlet-filter-name=Rest Auth Filter",
-//		"url-pattern=/o/v1/socket/*",
-//		"url-pattern=/o/v1/opencps/users/*"
-//		,
-//		"url-pattern=/o/v1/opencps/login",
-//		"url-pattern=/o/rest/v2/*",
-//		"url-pattern=/o/rest/v2_1/*"
-//	}, service = Filter.class
-//)
+/**
+@Component(
+	immediate = true,
+	property = {
+		"servlet-context-name=",
+		"servlet-filter-name=Rest Auth Filter",
+		"url-pattern=/o/v1/socket/*",
+		"url-pattern=/o/v1/opencps/users/*"
+		,
+		"url-pattern=/o/v1/opencps/login",
+		"url-pattern=/o/rest/v2/*",
+		"url-pattern=/o/rest/v2_1/*"
+	}, service = Filter.class
+)
+*/
 public class RestAuthFilter implements Filter {
 
 	public final static String P_AUTH = "Token";

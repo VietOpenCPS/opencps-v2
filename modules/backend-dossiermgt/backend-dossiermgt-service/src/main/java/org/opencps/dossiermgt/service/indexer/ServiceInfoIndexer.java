@@ -1,16 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.opencps.dossiermgt.action.util.AccentUtils;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -38,10 +28,11 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 @Component(
@@ -85,7 +76,15 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 			document.addTextSortable(ServiceInfoTerm.SERVICE_CODE_SEARCH, serviceCodeSearch);
 		}
 
+		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(object.getGroupId(), serviceCode);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG() : StringPool.BLANK);
+		String serviceCodeDVCQGSearch = SpecialCharacterUtils.splitSpecial(serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+		document.addKeywordSortable(ServiceInfoTerm.SERVICE_CODE_DVCQG_SEARCH, serviceCodeDVCQGSearch);
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME, object.getServiceName());
+		document.addTextSortable(ServiceInfoTerm.MAPPING, serviceInfoMapping != null ? "true" : "false");
+		document.addNumberSortable(ServiceInfoTerm.SYNCED, serviceInfoMapping != null ? serviceInfoMapping.getSynced() : 0);
+		document.addNumberSortable(ServiceInfoTerm.MAPPING_CLASSPK, serviceInfoMapping != null ? serviceInfoMapping.getServiceInfoMappingId() : 0);
 		//Convert serviceName
 		document.addKeywordSortable(ServiceInfoTerm.SERVICE_NAME_SEARCH, AccentUtils.removeAccent(object.getServiceName()));
 		document.addKeywordSortable(ServiceInfoTerm.PROCESS_TEXT, object.getProcessText());

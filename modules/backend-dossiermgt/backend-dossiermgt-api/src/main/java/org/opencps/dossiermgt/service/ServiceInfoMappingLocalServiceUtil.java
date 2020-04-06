@@ -44,11 +44,11 @@ public class ServiceInfoMappingLocalServiceUtil {
 	 */
 	public static org.opencps.dossiermgt.model.ServiceInfoMapping addServiceInfoMapping(
 		long groupId, long companyId, long userId, String serviceCode,
-		String serviceCodeDVCQG)
+		String serviceCodeDVCQG, String serviceNameDVCQG, int synced)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addServiceInfoMapping(groupId, companyId, userId,
-			serviceCode, serviceCodeDVCQG);
+			serviceCode, serviceCodeDVCQG, serviceNameDVCQG, synced);
 	}
 
 	/**
@@ -199,6 +199,11 @@ public class ServiceInfoMappingLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.ServiceInfoMapping fetchByGID_SCDVCQG(
+		long groupId, String serviceCodeDVCQG) {
+		return getService().fetchByGID_SCDVCQG(groupId, serviceCodeDVCQG);
+	}
+
 	public static org.opencps.dossiermgt.model.ServiceInfoMapping fetchDVCQGServiceCode(
 		long groupId, String serviceCode) {
 		return getService().fetchDVCQGServiceCode(groupId, serviceCode);
@@ -268,6 +273,10 @@ public class ServiceInfoMappingLocalServiceUtil {
 	*/
 	public static int getServiceInfoMappingsCount() {
 		return getService().getServiceInfoMappingsCount();
+	}
+
+	public static boolean removeServiceInfoMapping(long mappingId) {
+		return getService().removeServiceInfoMapping(mappingId);
 	}
 
 	/**

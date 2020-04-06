@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,7 +24,9 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +58,9 @@ import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.datamgt.model.Groups;
 import org.opencps.api.dictcollection.model.DictGroupModel;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.action.DictcollectionInterface;
 import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictGroupTerm;
@@ -63,10 +69,13 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.model.DictItemMapping;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -456,6 +465,16 @@ public class DataManagementImpl implements DataManagement {
 
 			DictItemGroup dictItemGroup = dictItemDataUtil.addDictgroupsDictItems(user.getUserId(), groupId, code,
 					groupCode, itemCode, serviceContext);
+
+			try {
+				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
+
+				DictGroup group = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+
+			} catch (Exception e) {
+				_log.error(e);
+			}
 
 			dictGroupItemModel = DataManagementUtils.mapperDictGroupItemModel(dictItemGroup);
 			dictGroupItemModel.setSelected(Boolean.TRUE);
@@ -963,7 +982,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateOrCreateNewDictCollection(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, DictCollectionInputModel input,
 			long modifiedDateTime) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictCollectionModel dictCollectionModel = new DictCollectionModel();
 
@@ -1012,7 +1030,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response getSyncDictCollections(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1051,7 +1068,6 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getSyncDictItems(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1174,7 +1190,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response getSyncDictgroupsDictItems(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
 			org.opencps.api.datamgtsync.model.DataSearchModel query) {
-		// TODO Auto-generated method stub
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
 
@@ -1213,7 +1228,6 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getDictgroup(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -1416,6 +1430,190 @@ public class DataManagementImpl implements DataManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDictItemMappingSuggest(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, DataSearchModel query,
+			Request requestCC) {
+
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DVCQGIntegrationActionImpl dvcqgIntegrationActionImpl = new DVCQGIntegrationActionImpl();
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(-1);
+
+				query.setEnd(-1);
+
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+			if ("ADMINISTRATIVE_REGION".equalsIgnoreCase(code))
+				groupId = 0;
+
+			params.put("groupId", groupId);
+			params.put("keywords", query.getKeywords());
+			params.put("itemLv", query.getLevel());
+			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
+
+			Sort[] sorts = null;
+
+			if (Validator.isNull(query.getSort())) {
+				sorts = new Sort[] { SortFactoryUtil.create(DictItemTerm.SIBLING_SEARCH + "_Number_sortable",
+						Sort.INT_TYPE, false) };
+			} else {
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE, false) };
+			}
+
+			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+
+			if (_dictItemDVCQGMap == null) {
+
+				_dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+						query.getService());
+
+			}
+
+			List<Document> documents = (List<Document>) jsonData.get("data");
+			long collectionId = 0;
+			if (documents != null) {
+				collectionId = GetterUtil.getLong(documents.get(0).get(DictItemTerm.DICT_COLLECTION_ID));
+			}
+			List<DictItemMapping> dictItemMappings = DictItemMappingLocalServiceUtil.findByF_GID_CID(groupId,
+					collectionId);
+			List<String> mappedCode = new ArrayList<String>();
+
+			if (dictItemMappings != null) {
+				for (DictItemMapping dictItemMapping : dictItemMappings) {
+					mappedCode.add(dictItemMapping.getItemCodeDVCQG());
+				}
+			}
+
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+
+			for (Document document : documents) {
+				JSONObject item = JSONFactoryUtil.createJSONObject();
+				item.put("dictItemId", Long.valueOf(document.get("entryClassPK")));
+
+				item.put("itemCode", document.get(DictItemTerm.ITEM_CODE));
+				item.put("itemName", document.get(DictItemTerm.ITEM_NAME));
+				item.put("itemNameEN", document.get(DictItemTerm.ITEM_NAME_EN));
+				item.put("itemDescription", document.get(DictItemTerm.ITEM_DESCRIPTION));
+				item.put("level", Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+				item.put("sibling", Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+				item.put("treeIndex", document.get(DictItemTerm.TREE_INDEX));
+
+				item.put("createDate", Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE))
+						? APIDateTimeUtils.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE),
+								APIDateTimeUtils._TIMESTAMP)
+						: StringPool.BLANK);
+				item.put("modifiedDate",
+						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+
+				JSONArray mapping = dvcqgIntegrationActionImpl.getDictItemSimilarity(groupId, code,
+						document.get(DictItemTerm.ITEM_CODE), document.get(DictItemTerm.ITEM_NAME), _dictItemDVCQGMap,
+						mappedCode);
+				item.put("similarity", mapping);
+				data.put(item);
+			}
+
+			results.put("total", jsonData.getInt("total"));
+			results.put("data", data);
+
+			return Response.status(200).entity(results.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	private static HashMap<String, String> _dictItemDVCQGMap = null;
+
+	@Override
+	public Response doMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
+			String itemCodeDVCQG) {
+		boolean result = false;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+
+			DictCollection collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(code, groupId);
+
+			if (collection == null) {
+				result = false;
+			}
+
+			DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
+					collection.getDictCollectionId());
+
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
+
+			dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
+					collection.getDictCollectionId());
+
+			if (dictItemMapping != null) {
+				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+			}
+
+			DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
+					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
+
+			result = true;
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
+
+	@Override
+	public Response doRemoveMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String code, long mappingId) {
+		boolean result = false;
+
+		try {
+
+			DictItemMappingLocalServiceUtil.deleteDictItemMapping(mappingId);
+
+			result = true;
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String code, DataSearchModel query, Request requestCC) {
+		DVCQGIntegrationActionImpl dvcqgIntegrationActionImpl = new DVCQGIntegrationActionImpl();
+
+		try {
+			JSONObject result = dvcqgIntegrationActionImpl.getDictItemDVCQG(user, serviceContext, query.getService());
+
+			return Response.status(200).entity(String.valueOf(result)).build();
+		} catch (Exception e) {
+			_log.error(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

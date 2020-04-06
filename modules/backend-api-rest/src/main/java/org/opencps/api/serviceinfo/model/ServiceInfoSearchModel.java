@@ -56,23 +56,28 @@ import javax.xml.bind.annotation.XmlType;
     "order",
     "active",
     "top",
-    "agency"
+    "agency",
+    "mapping",
+    "synced"
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
 	@QueryParam(value = "keyword")
     protected String keyword;
-	@DefaultValue(StringPool.BLANK) @QueryParam(value = "administration")
+	@DefaultValue(StringPool.BLANK)
+	@QueryParam(value = "administration")
     protected String administration;
 	@QueryParam(value = "domain")
     protected String domain;
-	@DefaultValue("0") @QueryParam(value = "level")
+	@DefaultValue("0")
+	@QueryParam(value = "level")
     protected String level;
 	@QueryParam(value = "start")
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
-	@DefaultValue("createDate") @QueryParam("sort")
+	@DefaultValue("createDate")
+	@QueryParam("sort")
     protected String sort;
 	@QueryParam(value = "order")
     protected String order;
@@ -82,6 +87,10 @@ public class ServiceInfoSearchModel {
     protected String top;
 	@QueryParam(value = "agency")
 	protected String agency;
+	@QueryParam(value = "mapping")
+	protected String mapping;
+	@QueryParam(value = "synced")
+	protected String synced;
 	
     public String getAgency() {
 		return agency;
@@ -297,6 +306,22 @@ public class ServiceInfoSearchModel {
 
 	public void setTop(String top) {
 		this.top = top;
+	}
+
+	public String getMapping() {
+		return mapping;
+	}
+
+	public void setMapping(String mapping) {
+		this.mapping = mapping;
+	}
+
+	public String getSynced() {
+		return synced;
+	}
+
+	public void setSynced(String synced) {
+		this.synced = synced;
 	}
 
 }

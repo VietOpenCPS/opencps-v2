@@ -6,6 +6,7 @@
 	<import class="org.opencps.datamgt.model.DictGroup" />
 	<import class="org.opencps.datamgt.model.DictItem" />
 	<import class="org.opencps.datamgt.model.DictItemGroup" />
+	<import class="org.opencps.datamgt.model.DictItemMapping" />
 	<import class="org.opencps.datamgt.model.FileAttach" />
 	<import class="org.opencps.datamgt.model.Holiday" />
 	<import class="org.opencps.datamgt.model.WorkTime" />
@@ -80,6 +81,20 @@
 		<property name="dictGroupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dictItemId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="dictGroupName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.datamgt.model.impl.DictItemMappingImpl" table="opencps_dictItemmapping">
+		<id name="mappingId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="itemCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="itemCodeDVCQG" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="collectionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.datamgt.model.impl.FileAttachImpl" table="m_fileattach">
 		<id name="fileAttachId" type="long">

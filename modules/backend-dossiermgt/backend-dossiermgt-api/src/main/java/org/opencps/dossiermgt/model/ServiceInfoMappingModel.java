@@ -222,6 +222,35 @@ public interface ServiceInfoMappingModel extends BaseModel<ServiceInfoMapping>,
 	 */
 	public void setServiceCodeDVCQG(String serviceCodeDVCQG);
 
+	/**
+	 * Returns the service name dvcqg of this service info mapping.
+	 *
+	 * @return the service name dvcqg of this service info mapping
+	 */
+	@AutoEscape
+	public String getServiceNameDVCQG();
+
+	/**
+	 * Sets the service name dvcqg of this service info mapping.
+	 *
+	 * @param serviceNameDVCQG the service name dvcqg of this service info mapping
+	 */
+	public void setServiceNameDVCQG(String serviceNameDVCQG);
+
+	/**
+	 * Returns the synced of this service info mapping.
+	 *
+	 * @return the synced of this service info mapping
+	 */
+	public int getSynced();
+
+	/**
+	 * Sets the synced of this service info mapping.
+	 *
+	 * @param synced the synced of this service info mapping
+	 */
+	public void setSynced(int synced);
+
 	@Override
 	public boolean isNew();
 

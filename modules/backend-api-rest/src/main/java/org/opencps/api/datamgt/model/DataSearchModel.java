@@ -50,7 +50,8 @@ import javax.xml.bind.annotation.XmlType;
     "sort",
     "order",
     "start",
-    "end"
+    "end",
+    "service"
 })
 @XmlRootElement(name = "DataSearchModel")
 public class DataSearchModel {
@@ -71,6 +72,8 @@ public class DataSearchModel {
     protected int start;
 	@QueryParam(value = "end")
     protected int end;
+	@QueryParam(value = "service")
+	protected String service;
 
     /**
      * Gets the value of the parent property.
@@ -247,5 +250,13 @@ public class DataSearchModel {
     public void setEnd(int value) {
         this.end = value;
     }
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
+	}
 
 }

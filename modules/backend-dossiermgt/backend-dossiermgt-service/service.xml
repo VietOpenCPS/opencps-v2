@@ -2710,6 +2710,8 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
+        <column name="serviceNameDVCQG" type="String"></column>
+        <column name="synced" type="int"></column>
 
 		<finder return-type="ServiceInfoMapping" name="F_GID_SC">
 			<finder-column name="groupId" />

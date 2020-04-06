@@ -3802,7 +3802,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		}
 		
 		//Add by TrungNT - Fix tam theo y/k cua a TrungDK va Duantv 
-		if (dossier.isOnline() && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
+		if (dossier.isOnline() && proAction != null && "listener".equals(proAction.getAutoEvent().toString()) && OpenCPSConfigUtil.isPublishEventEnable()) {
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 		
