@@ -112,11 +112,17 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="itemCode" type="String" />
-		<field name="itemCodeDVCQG" type="String" />
+		<field name="itemCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="itemCodeDVCQG" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="collectionId" type="long" />
 	</model>
 	<model name="org.opencps.datamgt.model.FileAttach">

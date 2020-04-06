@@ -9,18 +9,30 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="src" type="String" />
-		<field name="smsReq" type="String" />
-		<field name="smsReply" type="String" />
-		<field name="dossierNo" type="String" />
-		<field name="applicationName" type="String" />
+		<field name="src" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="smsReq" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="smsReply" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="dossierNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="applicationName" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="reqDate" type="Date" />
 		<field name="replyDate" type="Date" />
 		<field name="status" type="int" />
 		<field name="smsType" type="int" />
 		<field name="lastReplyManualDate" type="Date" />
 		<field name="lastReplyManualUserId" type="long" />
-		<field name="lastReplyManualUserName" type="String" />
+		<field name="lastReplyManualUserName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 	<model name="org.opencps.sms.model.SMSLookUpQueue">
 		<field name="uuid" type="String" />
@@ -30,15 +42,31 @@
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="moid" type="String" />
-		<field name="src" type="String" />
-		<field name="dest" type="String" />
-		<field name="moseq" type="String" />
-		<field name="cmdcode" type="String" />
-		<field name="msgbody" type="String" />
-		<field name="password" type="String" />
+		<field name="moid" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="src" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="dest" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="moseq" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="cmdcode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="msgbody" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="password" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="status" type="int" />
 		<field name="receivedDate" type="Date" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 </model-hints>
