@@ -7073,10 +7073,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setDelegateWardCode(delegateWardCode);
 			if (Validator.isNotNull(delegateWardName))
 				dossier.setDelegateWardName(delegateWardName);
-			if (Validator.isNotNull(durationCount))
-				dossier.setDurationCount(durationCount);
-			if (Validator.isNotNull(durationUnit))
-				dossier.setDurationUnit(durationUnit);
+//			if (Validator.isNotNull(durationCount))
+//				dossier.setDurationCount(durationCount);
+//			if (Validator.isNotNull(durationUnit))
+//				dossier.setDurationUnit(durationUnit);
 			if (Validator.isNotNull(dossierName))
 				dossier.setDossierName(dossierName);
 			if (Validator.isNotNull(processNo))
