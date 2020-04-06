@@ -33,8 +33,11 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			String isUpdating) {
 		
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
 			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
@@ -47,8 +50,11 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response doSyncDossierStatus(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String strDossierId) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
 		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
 			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
@@ -73,6 +79,9 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response getSharingDictCollection(HttpServletRequest request, HttpServletResponse response,
 			HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 //			_log.info("Ton ngo khong da dao choi o day1.");
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
@@ -88,6 +97,9 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 	public Response getSharingData(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
 		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		serviceContext.setScopeGroupId(groupId);
+		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 			JSONObject result = actionImpl.getSharingData(user, serviceContext, JSONFactoryUtil.createJSONObject(body));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();

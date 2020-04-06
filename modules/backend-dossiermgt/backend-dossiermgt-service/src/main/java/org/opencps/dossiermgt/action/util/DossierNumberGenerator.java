@@ -173,7 +173,7 @@ public class DossierNumberGenerator {
 					if (r.toString().equals(codePatternDate)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -538,6 +538,51 @@ public class DossierNumberGenerator {
 		String format = COUNTER_NUMBER_FORMAT + lengthPatern + COUNTER_D;
 
 		return String.format(format, counter); 
+	}
+
+	private static final String PERCENT_ZERO = "%0";
+	private static final String NUMBER_FORMAT = "d";
+
+	private static String counterByNumber(String pattern, String tmp) {
+
+		//long counter = CounterLocalServiceUtil.increment(pattern);
+		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+		String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;
+
+		long _counterNumber = 0;
+		Counter counter = null;
+		_log.info("pattern" + pattern);
+		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
+		if (Validator.isNotNull(counterDetail)) {
+			// create counter config
+			_counterNumber = counterDetail.getCurrentId() + 1;
+			do {
+				counterDetail.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			} while (counter == null);
+
+		} else {
+			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+			// increment CurrentCounter
+			_counterNumber = counterDetail.getCurrentId() + 1;
+			do {
+				counterDetail.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			} while (counter == null);
+		}
+
+		return String.format(format, _counterNumber); 
 	}
 
 	public static String generatePassword(String pattern, int length) {

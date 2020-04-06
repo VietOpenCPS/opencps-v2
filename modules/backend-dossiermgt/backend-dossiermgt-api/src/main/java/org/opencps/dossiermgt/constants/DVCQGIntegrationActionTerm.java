@@ -24,6 +24,11 @@ public class DVCQGIntegrationActionTerm {
 	public static final String LINHVUCTHUCHIEN = "LINHVUCTHUCHIEN";
 	public static final String MALINHVUC = "MALINHVUC";
 	public static final String TENLINHVUC = "TENLINHVUC";
+	//
+	public static final String KEY_TENTTHC = "TenTTHC";
+	public static final String KEY_MALINHVUC = "MaLinhVuc";
+	public static final String KEY_TENLINHVUC = "TenLinhVuc";
+	
 	public static final String SOBIENNHAN = "SoBienNhan";
 	public static final String CHUHOSO = "ChuHoSo";
 	public static final String BUSINESS = "business";
