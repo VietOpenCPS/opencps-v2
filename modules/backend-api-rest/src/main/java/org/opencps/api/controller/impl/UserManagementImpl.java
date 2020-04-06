@@ -374,9 +374,12 @@ public class UserManagementImpl implements UserManagement {
 	public Response getForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String screenname_email, String code, String jCaptchaResponse) {
 		UserInterface actions = new UserActions();
+		
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();
 	        try {
@@ -401,6 +404,22 @@ public class UserManagementImpl implements UserManagement {
 
     			return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 	        }
+			}else {
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+				
+				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, jCaptchaResponse);
+			
+				if (!isValid) {
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage("Captcha incorrect");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Captcha incorrect");
+
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				}
+			}
+			
 			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
 					serviceContext);
 
@@ -766,4 +785,23 @@ public class UserManagementImpl implements UserManagement {
 //	    }
 	}
 
+	public Response unlockAccount(HttpServletRequest request, HttpHeaders header,
+			Company company, Locale locale, User user,
+			ServiceContext serviceContext, long id,
+			String email, boolean unlocked) {
+		
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			UserInterface actions = new UserActions();
+
+			JSONObject result = actions.unlockAccount(user.getUserId(), company.getCompanyId(), groupId, id, email,
+					unlocked, serviceContext);
+
+			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

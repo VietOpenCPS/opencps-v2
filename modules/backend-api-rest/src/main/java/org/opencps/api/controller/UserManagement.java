@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -228,4 +229,14 @@ public interface UserManagement {
 	public Response getUserLoginInfo(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @Context Request requestCC);	
+	
+	@POST
+	@Path("/lockin")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response unlockAccount(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @DefaultValue("0") @FormParam("mappingUserId") long id,
+			@DefaultValue("") @FormParam("mappingUserId") String email,
+			@DefaultValue("true") @FormParam("unlocked") boolean unlocked);
 }

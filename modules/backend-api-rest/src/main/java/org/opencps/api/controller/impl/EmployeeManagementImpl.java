@@ -469,7 +469,29 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
 
-			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeAccountModel).build();
+			return Response.status(200).entity(employeeAccountModel).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response unlockEmployeeAccount(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, boolean unlocked) {
+		EmployeeInterface actions = new EmployeeActions();
+		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+
+			JSONObject jsonObject = actions.unlockEmployeeAccount(user.getUserId(), company.getCompanyId(), groupId, id,
+					unlocked, serviceContext);
+
+			employeeAccountModel = EmployeeUtils.mapperEmployeeAccountModel(jsonObject);
+
+			return Response.status(200).entity(employeeAccountModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
