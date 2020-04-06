@@ -263,7 +263,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		String madoituong = StringPool.BLANK;
-		if(applicant != null && applicant.getMappingClassName() == "dvcqg") {
+		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("MaDoiTuong", madoituong); //ko bb
