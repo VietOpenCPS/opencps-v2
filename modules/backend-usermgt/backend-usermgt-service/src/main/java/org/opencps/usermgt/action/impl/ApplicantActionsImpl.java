@@ -81,11 +81,11 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String password) throws PortalException, SystemException {
+			String contactName, String contactTelNo, String profile, String password) throws PortalException, SystemException {
 
 		Applicant applicant = ApplicantLocalServiceUtil.updateApplication(context, groupId, 0l, applicantName,
 				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode,
-				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, StringPool.BLANK, password);
+				districtName, wardCode, wardName, contactName, contactTelNo, contactEmail, profile, password);
 
 		return applicant;
 	}

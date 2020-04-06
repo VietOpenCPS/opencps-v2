@@ -26,7 +26,7 @@ public interface ApplicantActions {
 	public Applicant register(ServiceContext context, long groupId, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
-			String contactName, String contactTelNo, String password) throws PortalException, SystemException;
+			String contactName, String contactTelNo, String profile, String password) throws PortalException, SystemException;
 
 	public Applicant removeApplicant(ServiceContext context, long applicantId) throws PortalException;
 
