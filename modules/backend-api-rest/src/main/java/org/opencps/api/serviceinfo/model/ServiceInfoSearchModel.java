@@ -43,8 +43,21 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "keyword", "administration", "domain", "level", "start", "end", "sort", "order",
-		"active", "top", "mapping", "synced" })
+@XmlType(name = "", propOrder = {
+    "keyword",
+    "administration",
+    "domain",
+    "level",
+    "start",
+    "end",
+    "sort",
+    "order",
+    "active",
+    "top",
+    "agency",
+    "mapping",
+    "synced"
+})
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
 	@QueryParam(value = "keyword")
