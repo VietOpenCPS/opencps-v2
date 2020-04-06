@@ -83,7 +83,7 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		TABLE_COLUMNS_MAP.put("syncDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_sync_scheduler (uuid_ VARCHAR(75) null,syncSchedulerId LONG not null primary key,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,typeCode VARCHAR(75) null,syncDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_sync_scheduler (uuid_ VARCHAR(75) null,syncSchedulerId LONG not null primary key,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,typeCode VARCHAR(255) null,syncDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_sync_scheduler";
 	public static final String ORDER_BY_JPQL = " ORDER BY syncScheduler.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_sync_scheduler.createDate ASC";

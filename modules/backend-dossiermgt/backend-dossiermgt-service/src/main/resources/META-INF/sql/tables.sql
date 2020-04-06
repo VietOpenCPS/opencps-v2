@@ -232,7 +232,7 @@ create table opencps_dossier (
 	finishDate DATE null,
 	cancellingDate DATE null,
 	correcttingDate DATE null,
-	dossierStatus VARCHAR(75) null,
+	dossierStatus VARCHAR(255) null,
 	dossierStatusText TEXT null,
 	dossierSubStatus VARCHAR(128) null,
 	dossierSubStatusText TEXT null,
@@ -253,7 +253,7 @@ create table opencps_dossier (
 	notification BOOLEAN,
 	online_ BOOLEAN,
 	original BOOLEAN,
-	serverNo VARCHAR(75) null,
+	serverNo VARCHAR(255) null,
 	endorsementDate DATE null,
 	lockState VARCHAR(200) null,
 	originality INTEGER,
@@ -503,7 +503,7 @@ create table opencps_dossierstatusmapping (
 	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	statusCode VARCHAR(75) null,
+	statusCode VARCHAR(255) null,
 	statusCodeDVCQG VARCHAR(128) null,
 	subStatusCode VARCHAR(128) null
 );
@@ -546,7 +546,7 @@ create table opencps_dossiertemplate (
 	description TEXT null,
 	templateNo VARCHAR(255) null,
 	newFormScript TEXT null,
-	formMeta STRING null
+	formMeta TEXT null
 );
 
 create table opencps_dossieruser (
@@ -633,7 +633,7 @@ create table opencps_paymentconfig (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	govAgencyCode VARCHAR(128) null,
@@ -767,7 +767,7 @@ create table opencps_processsequence (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	serviceProcessId LONG,
@@ -854,7 +854,7 @@ create table opencps_registration (
 	contactName VARCHAR(275) null,
 	contactTelNo VARCHAR(275) null,
 	contactEmail VARCHAR(275) null,
-	govAgencyCode VARCHAR(75) null,
+	govAgencyCode VARCHAR(255) null,
 	govAgencyName VARCHAR(275) null,
 	registrationState INTEGER,
 	registrationClass VARCHAR(255) null,
@@ -977,7 +977,7 @@ create table opencps_serviceinfomapping (
 	modifiedDate DATE null,
 	serviceCode VARCHAR(128) null,
 	serviceCodeDVCQG VARCHAR(128) null,
-	serviceNameDVCQG VARCHAR(75) null,
+	serviceNameDVCQG TEXT null,
 	synced INTEGER
 );
 

@@ -100,7 +100,7 @@ public class DossierTemplateModelImpl extends BaseModelImpl<DossierTemplate>
 		TABLE_COLUMNS_MAP.put("formMeta", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossiertemplate (uuid_ VARCHAR(75) null,dossierTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateName STRING null,description TEXT null,templateNo VARCHAR(255) null,newFormScript TEXT null,formMeta STRING null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossiertemplate (uuid_ VARCHAR(75) null,dossierTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateName STRING null,description TEXT null,templateNo VARCHAR(255) null,newFormScript TEXT null,formMeta TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossiertemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierTemplate.dossierTemplateId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossiertemplate.dossierTemplateId ASC";

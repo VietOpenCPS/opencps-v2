@@ -91,7 +91,7 @@ public class DictItemMappingModelImpl extends BaseModelImpl<DictItemMapping>
 		TABLE_COLUMNS_MAP.put("collectionId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dictItemmapping (mappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,itemCode VARCHAR(75) null,itemCodeDVCQG VARCHAR(75) null,collectionId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dictItemmapping (mappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,itemCode VARCHAR(255) null,itemCodeDVCQG VARCHAR(255) null,collectionId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dictItemmapping";
 	public static final String ORDER_BY_JPQL = " ORDER BY dictItemMapping.mappingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dictItemmapping.mappingId ASC";

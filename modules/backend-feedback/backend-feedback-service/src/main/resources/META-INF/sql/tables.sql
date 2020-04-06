@@ -4,20 +4,20 @@ create table opencps_comment (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	className VARCHAR(75) null,
-	classPK VARCHAR(75) null,
-	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
+	className VARCHAR(255) null,
+	classPK VARCHAR(255) null,
+	fullname VARCHAR(1024) null,
+	email VARCHAR(255) null,
 	parent LONG,
-	content VARCHAR(75) null,
+	content TEXT null,
 	fileEntryId LONG,
 	pings VARCHAR(75) null,
 	upvoteCount INTEGER,
-	userHasUpvoted VARCHAR(75) null,
-	upvotedUsers VARCHAR(75) null,
+	userHasUpvoted VARCHAR(255) null,
+	upvotedUsers VARCHAR(255) null,
 	opinion BOOLEAN
 );
 
@@ -30,7 +30,7 @@ create table opencps_evaluation (
 	createDate DATE null,
 	modifiedDate DATE null,
 	employeeId LONG,
-	employeeName VARCHAR(75) null,
+	employeeName VARCHAR(1024) null,
 	score INTEGER
 );
 
@@ -40,16 +40,16 @@ create table opencps_voting (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	className VARCHAR(75) null,
-	classPK VARCHAR(75) null,
-	subject VARCHAR(75) null,
-	choices VARCHAR(75) null,
-	templateNo VARCHAR(75) null,
+	classPK VARCHAR(255) null,
+	subject TEXT null,
+	choices TEXT null,
+	templateNo VARCHAR(255) null,
 	commentable BOOLEAN,
-	votingCode VARCHAR(75) null
+	votingCode VARCHAR(255) null
 );
 
 create table opencps_votingresult (
@@ -58,12 +58,12 @@ create table opencps_votingresult (
 	companyId LONG,
 	groupId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	votingId LONG,
-	fullname VARCHAR(75) null,
-	email VARCHAR(75) null,
-	comment_ VARCHAR(75) null,
-	selected VARCHAR(75) null
+	fullname VARCHAR(1024) null,
+	email VARCHAR(255) null,
+	comment_ TEXT null,
+	selected VARCHAR(1024) null
 );

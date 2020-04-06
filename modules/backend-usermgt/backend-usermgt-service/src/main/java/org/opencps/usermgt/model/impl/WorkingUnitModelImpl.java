@@ -118,7 +118,7 @@ public class WorkingUnitModelImpl extends BaseModelImpl<WorkingUnit>
 		TABLE_COLUMNS_MAP.put("ceremonyDate", Types.TIMESTAMP);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_workingunit (uuid_ VARCHAR(75) null,workingUnitId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(512) null,enName VARCHAR(512) null,govAgencyCode VARCHAR(75) null,parentWorkingUnitId LONG,sibling VARCHAR(75) null,treeIndex VARCHAR(75) null,address TEXT null,telNo VARCHAR(75) null,faxNo VARCHAR(75) null,email VARCHAR(255) null,website VARCHAR(255) null,logoFileEntryId LONG,level INTEGER,ceremonyDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_workingunit (uuid_ VARCHAR(75) null,workingUnitId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(512) null,enName VARCHAR(512) null,govAgencyCode VARCHAR(255) null,parentWorkingUnitId LONG,sibling VARCHAR(255) null,treeIndex VARCHAR(255) null,address TEXT null,telNo VARCHAR(255) null,faxNo VARCHAR(255) null,email VARCHAR(255) null,website VARCHAR(255) null,logoFileEntryId LONG,level INTEGER,ceremonyDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_workingunit";
 	public static final String ORDER_BY_JPQL = " ORDER BY workingUnit.treeIndex ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_workingunit.treeIndex ASC";

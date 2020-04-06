@@ -94,7 +94,7 @@ public class EvaluationModelImpl extends BaseModelImpl<Evaluation>
 		TABLE_COLUMNS_MAP.put("score", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_evaluation (uuid_ VARCHAR(75) null,evaluationId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,employeeId LONG,employeeName VARCHAR(75) null,score INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_evaluation (uuid_ VARCHAR(75) null,evaluationId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,employeeId LONG,employeeName VARCHAR(1024) null,score INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_evaluation";
 	public static final String ORDER_BY_JPQL = " ORDER BY evaluation.evaluationId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_evaluation.evaluationId ASC";

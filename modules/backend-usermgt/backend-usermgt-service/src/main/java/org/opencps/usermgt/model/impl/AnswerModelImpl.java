@@ -98,7 +98,7 @@ public class AnswerModelImpl extends BaseModelImpl<Answer>
 		TABLE_COLUMNS_MAP.put("synced", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_answer (answerId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,questionId LONG,content VARCHAR(75) null,publish INTEGER,className VARCHAR(75) null,classPK VARCHAR(75) null,synced INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_answer (answerId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,questionId LONG,content TEXT null,publish INTEGER,className VARCHAR(255) null,classPK VARCHAR(255) null,synced INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_answer";
 	public static final String ORDER_BY_JPQL = " ORDER BY answer.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_answer.createDate ASC";
