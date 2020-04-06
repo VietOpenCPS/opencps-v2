@@ -67,8 +67,10 @@ import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.opencps.usermgt.model.Answer;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 
 /**
@@ -262,7 +264,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
-		object.put("MaDoiTuong", ""); //ko bb
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
+		String madoituong = StringPool.BLANK;
+		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+			madoituong = applicant.getMappingClassPK();
+		}
+		object.put("MaDoiTuong", madoituong); //ko bb
 		object.put("ThongTinKhac", ""); //ko bb
 		object.put("Email", dossier.getContactEmail());
 		object.put("Fax", dossier.getContactTelNo()); //ko bb
