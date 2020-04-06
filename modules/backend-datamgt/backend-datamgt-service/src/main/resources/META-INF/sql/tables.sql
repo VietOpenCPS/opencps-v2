@@ -45,11 +45,11 @@ create table opencps_dictItemmapping (
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
-	userName VARCHAR(75) null,
+	userName VARCHAR(255) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	itemCode VARCHAR(75) null,
-	itemCodeDVCQG VARCHAR(75) null,
+	itemCode VARCHAR(255) null,
+	itemCodeDVCQG VARCHAR(255) null,
 	collectionId LONG
 );
 

@@ -6,18 +6,18 @@ create table opencps_smsgatewaylog (
 	userId LONG,
 	createDate DATE null,
 	modifiedDate DATE null,
-	src VARCHAR(75) null,
-	smsReq VARCHAR(75) null,
-	smsReply VARCHAR(75) null,
-	dossierNo VARCHAR(75) null,
-	applicationName VARCHAR(75) null,
+	src VARCHAR(255) null,
+	smsReq VARCHAR(255) null,
+	smsReply VARCHAR(255) null,
+	dossierNo VARCHAR(255) null,
+	applicationName VARCHAR(512) null,
 	reqDate DATE null,
 	replyDate DATE null,
 	status INTEGER,
 	smsType INTEGER,
 	lastReplyManualDate DATE null,
 	lastReplyManualUserId LONG,
-	lastReplyManualUserName VARCHAR(75) null
+	lastReplyManualUserName VARCHAR(255) null
 );
 
 create table opencps_smsqueue (
@@ -28,14 +28,14 @@ create table opencps_smsqueue (
 	userId LONG,
 	createDate DATE null,
 	modifiedDate DATE null,
-	moid VARCHAR(75) null,
-	src VARCHAR(75) null,
-	dest VARCHAR(75) null,
-	moseq VARCHAR(75) null,
-	cmdcode VARCHAR(75) null,
-	msgbody VARCHAR(75) null,
-	password_ VARCHAR(75) null,
+	moid VARCHAR(255) null,
+	src VARCHAR(255) null,
+	dest VARCHAR(255) null,
+	moseq VARCHAR(255) null,
+	cmdcode VARCHAR(255) null,
+	msgbody VARCHAR(255) null,
+	password_ VARCHAR(255) null,
 	status INTEGER,
 	receivedDate DATE null,
-	userName VARCHAR(75) null
+	userName VARCHAR(255) null
 );

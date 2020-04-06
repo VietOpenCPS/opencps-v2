@@ -6,14 +6,22 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="questionId" type="long" />
-		<field name="content" type="String" />
+		<field name="content" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
 		<field name="publish" type="int" />
-		<field name="className" type="String" />
-		<field name="classPK" type="String" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="classPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.Applicant">
@@ -30,26 +38,40 @@
 		<field name="applicantName" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="applicantIdType" type="String" />
-		<field name="applicantIdNo" type="String" />
+		<field name="applicantIdType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="applicantIdNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="applicantIdDate" type="Date" />
 		<field name="address" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="cityCode" type="String" />
+		<field name="cityCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="cityName" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="districtCode" type="String" />
+		<field name="districtCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="districtName" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="wardCode" type="String" />
+		<field name="wardCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="wardName" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="contactName" type="String" />
-		<field name="contactTelNo" type="String" />
+		<field name="contactName" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="contactTelNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="contactEmail" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -82,7 +104,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="employeeNo" type="String" />
+		<field name="employeeNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="fullName" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
@@ -91,8 +115,12 @@
 		</field>
 		<field name="gender" type="int" />
 		<field name="birthdate" type="Date" />
-		<field name="telNo" type="String" />
-		<field name="mobile" type="String" />
+		<field name="telNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="mobile" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="email" type="String">
 			<hint name="max-length">512</hint>
 		</field>
@@ -155,7 +183,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="jobPosCode" type="String" />
+		<field name="jobPosCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="title" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -202,8 +232,12 @@
 		<field name="address" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
-		<field name="telNo" type="String" />
-		<field name="faxNo" type="String" />
+		<field name="telNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="faxNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="email" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -249,25 +283,39 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="publish" type="int" />
-		<field name="domainCode" type="String" />
+		<field name="domainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="domainName" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
-		<field name="questionType" type="String" />
-		<field name="subDomainCode" type="String" />
+		<field name="questionType" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="subDomainCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="subDomainName" type="String">
 			<hint name="max-length">1024</hint>
 		</field>
-		<field name="phone" type="String" />
+		<field name="phone" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="address" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="className" type="String" />
-		<field name="classPK" type="String" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="classPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.ResourceRole">
@@ -319,8 +367,12 @@
 		<field name="syncSchedulerId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="className" type="String" />
-		<field name="typeCode" type="String" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="typeCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="syncDate" type="Date" />
 	</model>
 	<model name="org.opencps.usermgt.model.UserLogin">
@@ -334,7 +386,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="sessionId" type="String" />
+		<field name="sessionId" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="hits" type="int" />
 		<field name="logout" type="Date" />
 		<field name="ipAddress" type="String">
@@ -392,15 +446,25 @@
 		<field name="enName" type="String">
 			<hint name="max-length">512</hint>
 		</field>
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="parentWorkingUnitId" type="long" />
-		<field name="sibling" type="String" />
-		<field name="treeIndex" type="String" />
+		<field name="sibling" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="treeIndex" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="address" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="telNo" type="String" />
-		<field name="faxNo" type="String" />
+		<field name="telNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="faxNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="email" type="String">
 			<hint name="max-length">255</hint>
 		</field>

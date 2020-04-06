@@ -111,7 +111,7 @@ public class QuestionModelImpl extends BaseModelImpl<Question>
 		TABLE_COLUMNS_MAP.put("synced", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(75) null,domainName VARCHAR(1024) null,govAgencyCode VARCHAR(75) null,govAgencyName VARCHAR(1024) null,questionType VARCHAR(75) null,subDomainCode VARCHAR(75) null,subDomainName VARCHAR(1024) null,phone VARCHAR(75) null,address TEXT null,className VARCHAR(75) null,classPK VARCHAR(75) null,synced INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_question (questionId LONG not null primary key,companyId LONG,groupId LONG,createDate DATE null,modifiedDate DATE null,fullname VARCHAR(512) null,email VARCHAR(255) null,content TEXT null,publish INTEGER,domainCode VARCHAR(255) null,domainName VARCHAR(1024) null,govAgencyCode VARCHAR(255) null,govAgencyName VARCHAR(1024) null,questionType VARCHAR(255) null,subDomainCode VARCHAR(255) null,subDomainName VARCHAR(1024) null,phone VARCHAR(255) null,address TEXT null,className VARCHAR(255) null,classPK VARCHAR(255) null,synced INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_question";
 	public static final String ORDER_BY_JPQL = " ORDER BY question.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_question.createDate ASC";

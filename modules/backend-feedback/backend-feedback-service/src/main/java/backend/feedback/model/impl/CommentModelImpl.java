@@ -115,7 +115,7 @@ public class CommentModelImpl extends BaseModelImpl<Comment>
 		TABLE_COLUMNS_MAP.put("opinion", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_comment (uuid_ VARCHAR(75) null,commentId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(75) null,classPK VARCHAR(75) null,fullname VARCHAR(75) null,email VARCHAR(75) null,parent LONG,content VARCHAR(75) null,fileEntryId LONG,pings VARCHAR(75) null,upvoteCount INTEGER,userHasUpvoted VARCHAR(75) null,upvotedUsers VARCHAR(75) null,opinion BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_comment (uuid_ VARCHAR(75) null,commentId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,classPK VARCHAR(255) null,fullname VARCHAR(1024) null,email VARCHAR(255) null,parent LONG,content TEXT null,fileEntryId LONG,pings VARCHAR(75) null,upvoteCount INTEGER,userHasUpvoted VARCHAR(255) null,upvotedUsers VARCHAR(255) null,opinion BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_comment";
 	public static final String ORDER_BY_JPQL = " ORDER BY comment.modifiedDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_comment.modifiedDate ASC";

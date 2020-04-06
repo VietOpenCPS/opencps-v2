@@ -7,20 +7,36 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="className" type="String" />
-		<field name="classPK" type="String" />
-		<field name="fullname" type="String" />
-		<field name="email" type="String" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="classPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="fullname" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="email" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="parent" type="long" />
-		<field name="content" type="String" />
+		<field name="content" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
 		<field name="fileEntryId" type="long" />
 		<field name="pings" type="String" />
 		<field name="upvoteCount" type="int" />
-		<field name="userHasUpvoted" type="String" />
-		<field name="upvotedUsers" type="String" />
+		<field name="userHasUpvoted" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="upvotedUsers" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="opinion" type="boolean" />
 	</model>
 	<model name="backend.feedback.model.Evaluation">
@@ -32,7 +48,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="employeeId" type="long" />
-		<field name="employeeName" type="String" />
+		<field name="employeeName" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
 		<field name="score" type="int" />
 	</model>
 	<model name="backend.feedback.model.Voting">
@@ -41,16 +59,28 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="className" type="String" />
-		<field name="classPK" type="String" />
-		<field name="subject" type="String" />
-		<field name="choices" type="String" />
-		<field name="templateNo" type="String" />
+		<field name="classPK" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="subject" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="choices" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="templateNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="commentable" type="boolean" />
-		<field name="votingCode" type="String" />
+		<field name="votingCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 	</model>
 	<model name="backend.feedback.model.VotingResult">
 		<field name="uuid" type="String" />
@@ -58,13 +88,23 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="votingId" type="long" />
-		<field name="fullname" type="String" />
-		<field name="email" type="String" />
-		<field name="comment" type="String" />
-		<field name="selected" type="String" />
+		<field name="fullname" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="email" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="comment" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="selected" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
 	</model>
 </model-hints>

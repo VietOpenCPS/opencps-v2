@@ -421,7 +421,9 @@
 		<field name="finishDate" type="Date" />
 		<field name="cancellingDate" type="Date" />
 		<field name="correcttingDate" type="Date" />
-		<field name="dossierStatus" type="String" />
+		<field name="dossierStatus" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="dossierStatusText" type="String">
 			<hint name="max-length">32767</hint>
 		</field>
@@ -468,7 +470,9 @@
 		<field name="notification" type="boolean" />
 		<field name="online" type="boolean" />
 		<field name="original" type="boolean" />
-		<field name="serverNo" type="String" />
+		<field name="serverNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="endorsementDate" type="Date" />
 		<field name="lockState" type="String">
 			<hint name="max-length">200</hint>
@@ -836,7 +840,9 @@
 		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="statusCode" type="String" />
+		<field name="statusCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="statusCodeDVCQG" type="String">
 			<hint name="max-length">128</hint>
 		</field>
@@ -912,7 +918,7 @@
 			<hint name="max-length">65535</hint>
 		</field>
 		<field name="formMeta" type="String">
-			<hint name="max-length">4000</hint>
+			<hint name="max-length">32767</hint>
 		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierUser">
@@ -1029,7 +1035,9 @@
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="govAgencyCode" type="String">
@@ -1264,7 +1272,9 @@
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="userId" type="long" />
-		<field name="userName" type="String" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="serviceProcessId" type="long" />
@@ -1418,7 +1428,9 @@
 		<field name="contactEmail" type="String">
 			<hint name="max-length">275</hint>
 		</field>
-		<field name="govAgencyCode" type="String" />
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="govAgencyName" type="String">
 			<hint name="max-length">275</hint>
 		</field>
@@ -1647,7 +1659,9 @@
 		<field name="serviceCodeDVCQG" type="String">
 			<hint name="max-length">128</hint>
 		</field>
-		<field name="serviceNameDVCQG" type="String" />
+		<field name="serviceNameDVCQG" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
 		<field name="synced" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceProcess">
