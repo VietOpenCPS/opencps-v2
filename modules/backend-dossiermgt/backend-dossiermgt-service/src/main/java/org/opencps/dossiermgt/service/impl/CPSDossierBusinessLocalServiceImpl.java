@@ -4617,7 +4617,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (Validator.isNotNull(input.getPassword())) {
 			password = input.getPassword();
 		} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-			password = PwdGenerator.getPinNumber();
+			_log.debug("DOSSIER SECRET LENGTH: " + OpenCPSConfigUtil.getDefaultDossierSecretLength());
+			if (OpenCPSConfigUtil.getDefaultDossierSecretLength() > DossierTerm.PIN_LENGTH) {
+				password = PwdGenerator.getPassword(OpenCPSConfigUtil.getDefaultDossierSecretLength(), PwdGenerator.KEY1);
+			}
+			else {
+				password = PwdGenerator.getPinNumber();
+			}
 		}
 
 		String postalCityName = StringPool.BLANK;
@@ -5246,7 +5252,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (Validator.isNotNull(jsonDossier.getString("password"))) {
 				password = jsonDossier.getString("password");
 			} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-				password = PwdGenerator.getPinNumber();
+				if (OpenCPSConfigUtil.getDefaultDossierSecretLength() > DossierTerm.PIN_LENGTH) {
+					password = PwdGenerator.getPassword(OpenCPSConfigUtil.getDefaultDossierSecretLength(), PwdGenerator.KEY1);
+				}
+				else {
+					password = PwdGenerator.getPinNumber();
+				}
 			}
 
 			String postalCityName = StringPool.BLANK;
@@ -5707,7 +5718,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			if (Validator.isNotNull(jsonDossier.getString("password"))) {
 				password = jsonDossier.getString("password");
 			} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-				password = PwdGenerator.getPinNumber();
+				if (OpenCPSConfigUtil.getDefaultDossierSecretLength() > DossierTerm.PIN_LENGTH) {
+					password = PwdGenerator.getPassword(OpenCPSConfigUtil.getDefaultDossierSecretLength(), PwdGenerator.KEY1);
+				}
+				else {
+					password = PwdGenerator.getPinNumber();
+				}
 			}
 
 			String postalCityName = StringPool.BLANK;
@@ -6907,7 +6923,12 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (Validator.isNotNull(input.getPassword())) {
 			password = input.getPassword();
 		} else if (Validator.isNotNull(process.getGeneratePassword()) && process.getGeneratePassword()) {
-			password = PwdGenerator.getPinNumber();
+			if (OpenCPSConfigUtil.getDefaultDossierSecretLength() > DossierTerm.PIN_LENGTH) {
+				password = PwdGenerator.getPassword(OpenCPSConfigUtil.getDefaultDossierSecretLength(), PwdGenerator.KEY1);
+			}
+			else {
+				password = PwdGenerator.getPinNumber();
+			}
 		}
 
 		String postalCityName = StringPool.BLANK;

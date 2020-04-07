@@ -370,5 +370,6 @@ public class DossierTerm {
 	public static final String CROSS_DOSSIER = "crossDossier";
 	public static final String PREFIX_UUID = "xxx-cps-";
 	public static final String NOTARIZATIONS = "notarizations";
-        public static final String KEY_DVCQG_INTEGRATION = "dvcqgIntegration";
+    public static final String KEY_DVCQG_INTEGRATION = "dvcqgIntegration";
+    public static final int PIN_LENGTH = 4;
 }
