@@ -37,7 +37,7 @@ public class OpenCPSConfigUtil {
 	public static final String DEFAULT_PROXY_URL = "http://127.0.0.1:8080";
 	
 	public static final String OPENCPS_DOSSIER_SECRET_LENGTH = "org.opencps.dossier.secret.length";
-	public static final int OPENCPS_DEFAULT_DOSSIER_SECRET_LENGTH = 8;
+	public static final int OPENCPS_DEFAULT_DOSSIER_SECRET_LENGTH = 4;
 	
 	public static final String OPENCPS_MAIL_TO_APPLICANT_FROM = "org.opencps.mailtoapplicant.from";
 	
