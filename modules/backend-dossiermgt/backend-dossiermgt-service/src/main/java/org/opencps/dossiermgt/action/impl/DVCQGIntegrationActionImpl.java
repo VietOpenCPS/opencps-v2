@@ -151,8 +151,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				LoaiDoiTuong = 2;
 			}
 		}
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
+		String madoituong = StringPool.BLANK;
+		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+			madoituong = applicant.getMappingClassPK();
+		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
-		object.put("MaDoiTuong", ""); //ko bb
+		object.put("MaDoiTuong", madoituong); //ko bb
 		object.put("ThongTinKhac", ""); //ko bb
 		object.put("Email", dossier.getContactEmail());
 		object.put("Fax", dossier.getContactTelNo()); //ko bb
@@ -1893,6 +1898,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						continue;
 					}
 					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, serverConfig);
+					_log.debug(synsObject.toJSONString());
 					synsObjects.put(synsObject);
 				}
 			}
