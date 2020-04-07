@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,7 +74,11 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.DLFolderUtil;
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -1364,6 +1369,72 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			JSONObject object = actionsImpl.updateAccountEmail(request, header, company, locale, user, serviceContext, oldEmail, newEmail);
 
 			return Response.status(200).entity(object.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response activeApplicant(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (isAdmin) {
+
+				Applicant applicant = ApplicantLocalServiceUtil.activateApplicant(id, serviceContext);
+
+				ApplicantModel result = ApplicantUtils.mappingToApplicantModel(applicant);
+				
+				Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, NotificationTemplateTerm.APLC_05);
+
+				if (Validator.isNotNull(notiTemplate)) {
+					Date now = new Date();
+			        Calendar cal = Calendar.getInstance();
+			        cal.setTime(now);
+			        if ("minutely".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+					}
+					else if ("hourly".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+					}
+					else {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+					}
+					Date expired = cal.getTime();
+					JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+					payloadObj.put(
+							"Applicant", JSONFactoryUtil.createJSONObject(
+								JSONFactoryUtil.looseSerialize(applicant)));
+					NotificationQueueLocalServiceUtil.addNotificationQueue(
+							user.getUserId(), groupId, 
+							notiTemplate.getNotificationType(), 
+							Applicant.class.getName(), 
+							String.valueOf(applicant.getApplicantId()), 
+							payloadObj.toJSONString(), 
+							user.getFullName(), 
+							applicant.getApplicantName(), 
+							applicant.getMappingUserId(), 
+							applicant.getContactEmail(), 
+							applicant.getContactTelNo(), 
+							now, 
+							expired, 
+							serviceContext);
+				}
+				return Response.status(200).entity(result).build();
+			} else {
+
+				throw new Exception("Permission denied");
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
