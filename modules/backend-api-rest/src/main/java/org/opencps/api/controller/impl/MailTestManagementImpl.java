@@ -62,6 +62,8 @@ public class MailTestManagementImpl implements MailTestManagement {
 				"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
 		props.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
 		props.put("mail.smtp.port", smtpPort); //SMTP Port
+		props.put("mail.smtp.starttls.enable", "false");
+		props.put("mail.smtp.ssl.enable", "false");
 		
 		Authenticator auth = new Authenticator() {
 			//override the getPasswordAuthentication method
