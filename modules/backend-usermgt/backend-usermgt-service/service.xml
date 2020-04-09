@@ -189,6 +189,10 @@
 			<finder-column name="groupId"></finder-column>
             <finder-column name="mappingUserId" comparator="=" arrayable-operator="OR"></finder-column>
 		</finder>
+		
+		<finder return-type="Collection" name="Email">
+			<finder-column name="email"></finder-column>
+		</finder>
 	</entity>
 
 	<entity name="JobPos" uuid="true" local-service="true"

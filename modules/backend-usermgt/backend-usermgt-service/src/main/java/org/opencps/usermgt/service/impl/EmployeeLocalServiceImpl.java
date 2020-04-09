@@ -1233,4 +1233,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		return employeePersistence.findByG_MUSERID(groupId, userIds);
 	}
+	
+	public List<Employee> findByEmail(String email) {
+		return employeePersistence.findByEmail(email);
+	}
 }
