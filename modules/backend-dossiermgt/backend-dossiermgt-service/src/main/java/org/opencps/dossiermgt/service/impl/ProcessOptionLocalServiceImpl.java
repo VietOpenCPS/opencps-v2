@@ -458,4 +458,13 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 	public List<ProcessOption> findByGroup(long groupId) {
 		return processOptionPersistence.findByG(groupId);
 	}
+	
+	public List<ProcessOption> getByServiceConfigId(long serviceConfigId) throws PortalException {
+		return processOptionPersistence.findBySC_ID(serviceConfigId);
+	}
+
+	public int countByServiceConfigId(long serviceConfigId) throws PortalException {
+		return processOptionPersistence.countBySC_ID(serviceConfigId);
+	}
+	
 }
