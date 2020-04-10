@@ -374,13 +374,14 @@ public class CPSDossierBusinessLocalServiceImpl
 					String delegateTelNo = null;
 					String delegateEmail = null;
 					String delegateIdNo = null;
+					delegateIdNo = dossier.getGovAgencyCode();
 					if (wu != null) {
 						delegateName = wu.getName();
 						delegateAddress = wu.getAddress();
 						delegateTelNo = wu.getTelNo();
 						delegateEmail = wu.getEmail();
-						delegateIdNo = wu.getGovAgencyCode();
-
+						//new 3.0 comment
+//						delegateIdNo = wu.getGovAgencyCode();
 					}
 					else if (user != null && employee != null) {
 						delegateName = employee.getFullName();
