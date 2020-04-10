@@ -114,7 +114,7 @@ public class SMSLookUpQueueModelImpl extends BaseModelImpl<SMSLookUpQueue>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_smsqueue (uuid_ VARCHAR(75) null,queueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,moid VARCHAR(75) null,src VARCHAR(75) null,dest VARCHAR(75) null,moseq VARCHAR(75) null,cmdcode VARCHAR(75) null,msgbody VARCHAR(75) null,password_ VARCHAR(75) null,status INTEGER,receivedDate DATE null,userName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_smsqueue (uuid_ VARCHAR(75) null,queueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,moid VARCHAR(255) null,src VARCHAR(255) null,dest VARCHAR(255) null,moseq VARCHAR(255) null,cmdcode VARCHAR(255) null,msgbody VARCHAR(255) null,password_ VARCHAR(255) null,status INTEGER,receivedDate DATE null,userName VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_smsqueue";
 	public static final String ORDER_BY_JPQL = " ORDER BY smsLookUpQueue.receivedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_smsqueue.receivedDate DESC";

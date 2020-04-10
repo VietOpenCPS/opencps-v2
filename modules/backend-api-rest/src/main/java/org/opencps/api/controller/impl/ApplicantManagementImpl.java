@@ -1,5 +1,7 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -10,6 +12,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
@@ -31,11 +35,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -44,6 +52,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
@@ -64,7 +73,12 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.utils.DLFolderUtil;
+import org.opencps.communication.constants.NotificationTemplateTerm;
+import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -138,7 +152,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
-					wardCode, wardName, contactName, contactTelNo,
+					wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
 					input.getPassword());
 			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
@@ -983,7 +997,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
-					wardCode, wardName, contactName, contactTelNo,
+					wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
 					input.getPassword());
 			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
@@ -991,6 +1005,195 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response registerWithIndentify(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String applicantName,
+			String applicantIdType, String applicantIdNo, String applicantIdDate, String contactTelNo,
+			String contactEmail, String password, String jCaptchaResponse,
+			Attachment indentifyNoFFile, Attachment indentifyNoBFile) {
+
+		ApplicantActions actions = new ApplicantActionsImpl();
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		ApplicantModel result = new ApplicantModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+
+		try {
+
+			if (!auth2.checkToken(request, header)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (isAdmin) {
+
+			} else {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".equals(captchaType)) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						_log.info("Check captcha result: " + isResponseCorrect);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
+
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+						}
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+					}
+				} else {
+					ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+					boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
+
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				}
+
+			}
+
+			String profile = StringPool.BLANK;
+			if (Validator.isNotNull(indentifyNoFFile) && Validator.isNotNull(indentifyNoBFile)) {
+				
+				JSONObject profileJson = JSONFactoryUtil.createJSONObject();
+				serviceContext.setAddGroupPermissions(true);
+				serviceContext.setAddGuestPermissions(true);
+				
+				DataHandler dataHandler = indentifyNoFFile.getDataHandler();
+				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
+				InputStream inputStream = dataHandler.getInputStream();
+				int fileSize = inputStream.available();
+				String title = new Date().getTime() + dataHandler.getName();
+				String destination = ApplicantTerm.INDENTIFY_DESTINATION + StringPool.SLASH + applicantIdNo;
+
+				DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
+						StringPool.BLANK, false, serviceContext);
+				FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+						fileType, title, title,
+						StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_F, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_F_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+
+				dataHandler = indentifyNoBFile.getDataHandler();
+				fileType = MimeTypesUtil.getContentType(dataHandler.getName());
+				inputStream = dataHandler.getInputStream();
+				fileSize = inputStream.available();
+				title = new Date().getTime() + dataHandler.getName();
+				fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+						fileType, title, title,
+						StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_B, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_B_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+				profile = profileJson.toString();
+				_log.debug("=================profile============" + profile);
+			}
+			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+					applicantIdNo, applicantIdDate, contactEmail, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, contactTelNo, profile, password);
+			_log.info("Success register applicant: "
+					+ (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail()
+							: "FAILED"));
+			result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateIndentifies(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String applicantId,
+			Attachment indentifyNoFFile, Attachment indentifyNoBFile) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+
+		ApplicantModel result = new ApplicantModel();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+
+			Long id = Long.parseLong(applicantId);
+			Applicant applc = ApplicantLocalServiceUtil.getApplicant(id);
+			JSONObject profileJson = JSONFactoryUtil.createJSONObject(applc.getProfile());
+			String destination = ApplicantTerm.INDENTIFY_DESTINATION + StringPool.SLASH + applc.getApplicantIdNo();
+			DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
+					StringPool.BLANK, false, serviceContext);
+
+			if (Validator.isNotNull(indentifyNoFFile)) {
+
+				serviceContext.setAddGroupPermissions(true);
+				serviceContext.setAddGuestPermissions(true);
+				
+				DataHandler dataHandler = indentifyNoFFile.getDataHandler();
+				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
+				InputStream inputStream = dataHandler.getInputStream();
+				int fileSize = inputStream.available();
+				String title = new Date().getTime() + dataHandler.getName();
+				FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+						fileType, title, title,
+						StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_F, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_F_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+			}
+
+			if (Validator.isNotNull(indentifyNoBFile)) {
+
+				serviceContext.setAddGroupPermissions(true);
+				serviceContext.setAddGuestPermissions(true);
+				
+				DataHandler dataHandler = indentifyNoBFile.getDataHandler();
+				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
+				InputStream inputStream = dataHandler.getInputStream();
+				int fileSize = inputStream.available();
+				String title = new Date().getTime() + dataHandler.getName();
+				FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
+						fileType, title, title,
+						StringPool.BLANK, inputStream, fileSize, serviceContext);
+
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_B, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_B_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+			}
+			System.out.println("=================profile============" + profileJson.toString());
+			Applicant applicant = actions.updateProfile(serviceContext, groupId, id, profileJson.toString());
+			result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(200).entity(result).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
@@ -1166,6 +1369,72 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			JSONObject object = actionsImpl.updateAccountEmail(request, header, company, locale, user, serviceContext, oldEmail, newEmail);
 
 			return Response.status(200).entity(object.toJSONString()).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response activeApplicant(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith("Administrator")) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (isAdmin) {
+
+				Applicant applicant = ApplicantLocalServiceUtil.activateApplicant(id, serviceContext);
+
+				ApplicantModel result = ApplicantUtils.mappingToApplicantModel(applicant);
+				
+				Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, NotificationTemplateTerm.APLC_05);
+
+				if (Validator.isNotNull(notiTemplate)) {
+					Date now = new Date();
+			        Calendar cal = Calendar.getInstance();
+			        cal.setTime(now);
+			        if ("minutely".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+					}
+					else if ("hourly".equals(notiTemplate.getInterval())) {
+				        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
+					}
+					else {
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());										
+					}
+					Date expired = cal.getTime();
+					JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+					payloadObj.put(
+							"Applicant", JSONFactoryUtil.createJSONObject(
+								JSONFactoryUtil.looseSerialize(applicant)));
+					NotificationQueueLocalServiceUtil.addNotificationQueue(
+							user.getUserId(), groupId, 
+							notiTemplate.getNotificationType(), 
+							Applicant.class.getName(), 
+							String.valueOf(applicant.getApplicantId()), 
+							payloadObj.toJSONString(), 
+							user.getFullName(), 
+							applicant.getApplicantName(), 
+							applicant.getMappingUserId(), 
+							applicant.getContactEmail(), 
+							applicant.getContactTelNo(), 
+							now, 
+							expired, 
+							serviceContext);
+				}
+				return Response.status(200).entity(result).build();
+			} else {
+
+				throw new Exception("Permission denied");
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

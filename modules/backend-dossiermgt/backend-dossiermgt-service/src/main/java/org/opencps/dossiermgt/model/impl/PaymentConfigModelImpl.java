@@ -108,7 +108,7 @@ public class PaymentConfigModelImpl extends BaseModelImpl<PaymentConfig>
 		TABLE_COLUMNS_MAP.put("epaymentConfig", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_paymentconfig (uuid_ VARCHAR(75) null,paymentConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(128) null,govAgencyName TEXT null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo TEXT null,invoiceIssueNo TEXT null,invoiceLastNo TEXT null,invoiceForm TEXT null,bankInfo STRING null,epaymentConfig TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_paymentconfig (uuid_ VARCHAR(75) null,paymentConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(128) null,govAgencyName TEXT null,govAgencyTaxNo VARCHAR(75) null,invoiceTemplateNo TEXT null,invoiceIssueNo TEXT null,invoiceLastNo TEXT null,invoiceForm TEXT null,bankInfo STRING null,epaymentConfig TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_paymentconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY paymentConfig.paymentConfigId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_paymentconfig.paymentConfigId ASC";

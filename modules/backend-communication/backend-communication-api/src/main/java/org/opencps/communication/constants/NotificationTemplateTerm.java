@@ -21,6 +21,7 @@ public class NotificationTemplateTerm {
 	public static final String EMPL_02 = "EMPL-02";
 	public static final String EMPL_03 = "EMPL-03";
 	public static final String EMPL_04 = "EMPL-04";
+	public static final String APLC_05 = "APLC-05";
 	
 	public static final String SHARING = "SHARING";
 	public static final String ACTIVITY_01 = "ACTIVITY_01";

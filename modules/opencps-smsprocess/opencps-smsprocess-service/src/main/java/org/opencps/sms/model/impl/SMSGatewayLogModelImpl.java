@@ -118,7 +118,7 @@ public class SMSGatewayLogModelImpl extends BaseModelImpl<SMSGatewayLog>
 		TABLE_COLUMNS_MAP.put("lastReplyManualUserName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_smsgatewaylog (uuid_ VARCHAR(75) null,smsId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,src VARCHAR(75) null,smsReq VARCHAR(75) null,smsReply VARCHAR(75) null,dossierNo VARCHAR(75) null,applicationName VARCHAR(75) null,reqDate DATE null,replyDate DATE null,status INTEGER,smsType INTEGER,lastReplyManualDate DATE null,lastReplyManualUserId LONG,lastReplyManualUserName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_smsgatewaylog (uuid_ VARCHAR(75) null,smsId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,src VARCHAR(255) null,smsReq VARCHAR(255) null,smsReply VARCHAR(255) null,dossierNo VARCHAR(255) null,applicationName VARCHAR(512) null,reqDate DATE null,replyDate DATE null,status INTEGER,smsType INTEGER,lastReplyManualDate DATE null,lastReplyManualUserId LONG,lastReplyManualUserName VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_smsgatewaylog";
 	public static final String ORDER_BY_JPQL = " ORDER BY smsGatewayLog.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_smsgatewaylog.createDate DESC";

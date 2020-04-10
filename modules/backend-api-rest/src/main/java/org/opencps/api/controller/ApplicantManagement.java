@@ -24,6 +24,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.api.usermgt.model.ApplicantInputUpdateModel;
@@ -35,6 +37,7 @@ import org.opencps.exception.model.ExceptionModel;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -233,6 +236,43 @@ public interface ApplicantManagement {
 			@BeanParam ApplicantInputModel input, @FormParam("j_captcha_response") String jCaptchaResponse);	
 
 	@POST
+	@Path("/withindentifies")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Register an applicant", response = ApplicantModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = ApplicantModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response registerWithIndentify(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "applicantName of Applicant", required = true) @Multipart("applicantName") String applicantName,
+			@ApiParam(value = "applicantIdType of Applicant", required = true) @Multipart("applicantIdType") String applicantIdType,
+			@ApiParam(value = "applicantIdNo of Applicant", required = true) @Multipart("applicantIdNo") String applicantIdNo,
+			@ApiParam(value = "applicantIdDate of Applicant", required = true) @Multipart("applicantIdDate") String applicantIdDate,
+			@ApiParam(value = "contactTelNo of Applicant", required = false) @Multipart("contactTelNo") String contactTelNo,
+			@ApiParam(value = "contactEmail of Applicant", required = true) @Multipart("contactEmail") String contactEmail,
+			@ApiParam(value = "password of Applicant", required = true) @Multipart("password") String password,
+			@ApiParam(value = "j_captcha_response of Applicant", required = true) @Multipart("j_captcha_response") String jCaptchaResponse,
+			@ApiParam(value = "Attachment on indentifyNoFFile", required = false) @Multipart("indentifyNoFFile") Attachment indentifyNoFFile,
+			@ApiParam(value = "Attachment on indentifyNoBFile", required = false) @Multipart("indentifyNoBFile") Attachment indentifyNoBFile);	
+
+	@POST
+	@Path("/updateindentifies")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, MediaType.MULTIPART_FORM_DATA })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Update indentify no of an applicant", response = ApplicantModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = ApplicantModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response updateIndentifies(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of Applicant", required = true) @Multipart("applicantId") String applicantId,
+			@ApiParam(value = "Attachment on indentifyNoFFile", required = false) @Multipart("indentifyNoFFile") Attachment indentifyNoFFile,
+			@ApiParam(value = "Attachment on indentifyNoBFile", required = false) @Multipart("indentifyNoBFile") Attachment indentifyNoBFile);	
+
+	@POST
 	@Path("/{id}/account")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -302,4 +342,17 @@ public interface ApplicantManagement {
 	public Response updateEmail(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@FormParam("oldEmail") String oldEmail, @FormParam("newEmail") String newEmail);	
+
+	@POST
+	@Path("/{id}/active")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Register a applicant", response = ApplicantModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant was created", response = ApplicantModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response activeApplicant(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("id") long id);
 }

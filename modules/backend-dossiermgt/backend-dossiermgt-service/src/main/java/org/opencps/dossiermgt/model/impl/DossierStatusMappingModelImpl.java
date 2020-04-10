@@ -91,7 +91,7 @@ public class DossierStatusMappingModelImpl extends BaseModelImpl<DossierStatusMa
 		TABLE_COLUMNS_MAP.put("subStatusCode", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierstatusmapping (dossierStatusMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,statusCode VARCHAR(75) null,statusCodeDVCQG VARCHAR(128) null,subStatusCode VARCHAR(128) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierstatusmapping (dossierStatusMappingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,statusCode VARCHAR(255) null,statusCodeDVCQG VARCHAR(128) null,subStatusCode VARCHAR(128) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierstatusmapping";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierStatusMapping.dossierStatusMappingId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierstatusmapping.dossierStatusMappingId ASC";

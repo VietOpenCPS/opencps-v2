@@ -1,5 +1,6 @@
 package org.opencps.usermgt.scheduler;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -101,7 +102,7 @@ public class UserRegisterUpdateSheduler extends BaseMessageListener {
 				ApplicantActions actions = new ApplicantActionsImpl();
 				actions.register(serviceContext, groupId, applicantName, applicantIdType,
 						applicantIdNo, applicantIdDate, contactEmail, address, cityCode, cityName, districtCode,
-						districtName, wardCode, wardName, contactName, contactTelNo, secret);
+						districtName, wardCode, wardName, contactName, contactTelNo, StringPool.BLANK, secret);
 			}
 		}
 	}
