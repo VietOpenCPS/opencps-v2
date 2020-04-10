@@ -192,7 +192,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternMonth)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -211,7 +211,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternYear)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -230,7 +230,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternService)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + dossier.getServiceCode();
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -252,7 +252,7 @@ public class DossierNumberGenerator {
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + (Validator.isNotNull(govAgencyCode)
 								? govAgencyCode
 								: dossier.getGovAgencyCode());
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
