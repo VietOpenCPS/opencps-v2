@@ -12,10 +12,11 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DossierLocalService;
+import org.opencps.dossiermgt.service.DossierSyncLocalService;
 import org.opencps.dossiermgt.service.ProcessOptionLocalService;
 import org.opencps.dossiermgt.service.ServiceConfigLocalService;
 import org.opencps.dossiermgt.service.ServiceInfoLocalService;
@@ -34,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 	    "osgi.command.function=employee",
 	    "osgi.command.function=dossier",
 	    "osgi.command.function=service",
+	    "osgi.command.function=sync",
 	    "osgi.command.scope=opencps"
 	}, service = Object.class)
 public class GogoShellTool {
@@ -110,10 +112,22 @@ public class GogoShellTool {
 	public void service(@Descriptor("Các thao tác hỗ trợ validate") String command, String ... params) {
 		switch (command) {
 		case "validate":
-			long groupId = Long.valueOf(params[0]);
-			System.out.println("Đang chờ kiểm tra...");
-			serviceValidate(groupId);
-			System.out.println("Kiểm tra đã xong.");
+			if (params.length == 0) {
+				List<Group> groups = _groupLocalService.getGroups(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				for (Group g : groups) {
+					if (g.isSite()) {
+						System.out.println("-----------------------------------------------------------------");
+						serviceValidate(g.getGroupId());			
+						System.out.println("-----------------------------------------------------------------");
+					}
+				}				
+			}
+			else {
+				long groupId = Long.valueOf(params[0]);
+				System.out.println("Đang chờ kiểm tra...");
+				serviceValidate(groupId);
+				System.out.println("Kiểm tra đã xong.");				
+			}
 			break;
 		default:
 			System.out.println("Thao tác không hỗ trợ!!");
@@ -121,8 +135,37 @@ public class GogoShellTool {
 		}
 	}
 	
+	@Descriptor("Công cụ xử lý đồng bộ hồ sơ")
+	public void sync(@Descriptor("Các thao tác hỗ trợ list") String command, String ... params) {
+		switch (command) {
+		case "list":
+			long dossierId = Long.valueOf(params[0]);
+			listSync(dossierId);
+			break;
+		default:
+			System.out.println("Thao tác không hỗ trợ!!");
+			break;	
+		}
+	}
+	
+	private void listSync(long dossierId) {
+		Dossier dossier = _dossierLocalService.fetchDossier(dossierId);
+		if (dossier == null) {
+			System.out.println("Mã ID hồ sơ không tồn tại??");
+			return;
+		}
+		List<DossierSync> lstSyncs = _dossierSyncLocalService.findByG_DID(dossier.getGroupId(), dossierId);
+		System.out.println("|Mã ID\t|Mã hành động\t|Tên hành động\t|Người thực hiện\t|Server đồng bộ\t|Trạng thái\t|Loại đồng bộ");
+		for (DossierSync ds : lstSyncs) {
+			System.out.println("|" + ds.getDossierSyncId() + "\t|" + ds.getActionCode() + "\t|" + ds.getActionName() + "\t|" + ds.getActionUser() + "\t|" + ds.getServerNo() + "\t|" + ds.getState() + "\t|" + ds.getSyncType());
+		}
+	}
+	
 	private void serviceValidate(long groupId) {
+		Group g = _groupLocalService.fetchGroup(groupId);
+		
 		List<ServiceInfo> lstSIs = _serviceInfoLocalService.findByGroup(groupId);
+		boolean check = true;
 		for (ServiceInfo serviceInfo : lstSIs) {
 			List<ServiceConfig> lstScs = _serviceConfigLocalService.getByServiceInfo(groupId, serviceInfo.getServiceInfoId());
 			
@@ -130,13 +173,20 @@ public class GogoShellTool {
 				try {
 					int countOption = _processOptionLocalService.countByServiceConfigId(sc.getServiceConfigId());
 					if (countOption == 0) {
-						System.out.println("|" + serviceInfo.getServiceCode() + "\t|" + serviceInfo.getAdministrationCode() + "\t|" + "Chưa gán quy trình");
+						check = false;
+						System.out.println("|" + serviceInfo.getServiceCode() + "\t|" + serviceInfo.getAdministrationCode() + "\t|" + serviceInfo.getDomainCode() + "\t|" + serviceInfo.getGovAgencyText() + "\t|" + "Chưa gán quy trình");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
 			}
+		}
+		if (!check) {
+			System.out.println("Cấu hình dịch vụ có lỗi trên đơn vị " + g.getName() + " hãy kiểm tra lại");
+		}
+		else {
+			System.out.println("Cấu hình dịch vụ có vẻ ổn trên đơn vị " + g.getName() + "!");			
 		}
 	}
 	
@@ -222,4 +272,7 @@ public class GogoShellTool {
 	
 	@Reference
 	private ProcessOptionLocalService _processOptionLocalService;
+
+	@Reference
+	private DossierSyncLocalService _dossierSyncLocalService;
 }
