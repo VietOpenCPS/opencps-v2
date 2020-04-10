@@ -1,5 +1,6 @@
 package org.opencps.gogoshell.tool.command;
 
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -11,11 +12,17 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.felix.service.command.Descriptor;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -149,9 +156,25 @@ public class GogoShellTool {
 			long dossierId = Long.valueOf(params[0]);
 			listSync(dossierId);
 			break;
+		case "resync":
+			long dossierSyncId = Long.valueOf(params[0]);
+			resync(dossierSyncId);
+			break;
 		default:
 			System.out.println("Thao tác không hỗ trợ!!");
 			break;	
+		}
+	}
+	
+	private void resync(long dossierSyncId) {
+		DossierSync ds = _dossierSyncLocalService.fetchDossierSync(dossierSyncId);
+		if (ds != null) {
+			ds.setState(DossierSyncTerm.STATE_WAITING_SYNC);
+			ds.setRetry(0);
+			_dossierSyncLocalService.updateDossierSync(ds);
+		}
+		else {
+			System.out.println("Đồng bộ mã ID không tồn tại");
 		}
 	}
 	
@@ -174,6 +197,48 @@ public class GogoShellTool {
 	@Descriptor("Công cụ xem chạy lệnh SQL")
 	public void execsql(@Descriptor("Lệnh SQL cần chạy") String sql) {
 		System.out.println("Lệnh SQL \"" + sql + "\"");
+		PreparedStatement ptmt = null;
+		ResultSet rs = null;
+		try (Connection connection = DataAccess.getConnection()) {
+			ptmt = connection.prepareStatement(sql);
+			rs = ptmt.executeQuery();
+			if (rs != null && rs.next()) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				if (rsmd != null) {
+					int columnsNumber = rsmd.getColumnCount();
+					System.out.println("Số cột trong kết quả: " + columnsNumber);
+					StringBuilder columnNames = new StringBuilder();
+					columnNames.append("");
+					for (int i = 1; i <= columnsNumber; i++) {
+						columnNames.append("\t|" + rsmd.getColumnName(i));
+					}
+					System.out.println(columnNames.toString());
+					
+					do {
+						for (int i = 1; i <= columnsNumber; i++) {
+							System.out.print("\t|" + rs.getString(i));
+						}
+						System.out.println();
+					}	
+					while (rs.next());
+				}
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ptmt != null) {
+                    ptmt.close();
+                }
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
+        }
 	}
 	
 	private String getLastNLogLines(String path, int nLines) {
