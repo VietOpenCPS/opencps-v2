@@ -8,8 +8,13 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.felix.service.command.Descriptor;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierSync;
@@ -36,6 +41,8 @@ import org.osgi.service.component.annotations.Reference;
 	    "osgi.command.function=dossier",
 	    "osgi.command.function=service",
 	    "osgi.command.function=sync",
+	    "osgi.command.function=cpslog",
+	    "osgi.command.function=execsql",
 	    "osgi.command.scope=opencps"
 	}, service = Object.class)
 public class GogoShellTool {
@@ -148,6 +155,65 @@ public class GogoShellTool {
 		}
 	}
 	
+	@Descriptor("Công cụ xem log hệ thống")
+	public void cpslog(@Descriptor("Các thao tác hỗ trợ list") String command, 
+			@Descriptor("Đường dẫn đến tệp log") String path, 
+			@Descriptor("Số dòng tính từ cuối tệp cần xem") int line) {
+		String current;
+		try {
+			current = new java.io.File( "." ).getCanonicalPath();
+		    System.out.println("Current dir:" + current);
+		    if (!"".contentEquals(path)) {
+		    	System.out.println(readLastLine(path, line));
+		    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Descriptor("Công cụ xem chạy lệnh SQL")
+	public void execsql(@Descriptor("Lệnh SQL cần chạy") String sql) {
+		System.out.println("Lệnh SQL \"" + sql + "\"");
+	}
+	
+	private String getLastNLogLines(String path, int nLines) {
+		 try (ReversedLinesFileReader object = new ReversedLinesFileReader(new File(path))) {
+		    StringBuilder result = new StringBuilder();
+		    for(int i = 0; i < nLines; i++){
+		        String line = object.readLine();
+		        if(line == null)
+		            break;
+		        result.append(line);
+		        result.append("\n");
+		    }
+		    return result.toString();
+		 } catch (IOException e) {
+			e.printStackTrace();
+		}
+		 
+		 return "";
+	}
+	
+	public static List<String> readLastLine(String path, int numLastLineToRead) {
+
+		List<String> result = new ArrayList<>();
+
+		try (ReversedLinesFileReader reader = new ReversedLinesFileReader(new File(path), StandardCharsets.UTF_8)) {
+
+			String line = "";
+			while ((line = reader.readLine()) != null && result.size() < numLastLineToRead) {
+				result.add(line);
+				result.add("\n");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+
 	private void listSync(long dossierId) {
 		Dossier dossier = _dossierLocalService.fetchDossier(dossierId);
 		if (dossier == null) {
