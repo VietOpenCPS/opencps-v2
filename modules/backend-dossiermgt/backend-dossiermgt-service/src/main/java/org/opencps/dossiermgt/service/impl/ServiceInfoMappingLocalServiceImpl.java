@@ -217,6 +217,7 @@ public class ServiceInfoMappingLocalServiceImpl
 
 			return true;
 		} catch (Exception e) {
+			_log.debug(e);
 			return false;
 		}
 	}

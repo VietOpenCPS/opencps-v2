@@ -1168,7 +1168,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				String serverUrl = StringPool.BLANK;
 				String authStrEnc = StringPool.BLANK;
 
-				String apiUrl = StringPool.BLANK;
+				String apiUrl;// = StringPool.BLANK;
 
 				StringBuilder sb = new StringBuilder();
 

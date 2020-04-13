@@ -7522,7 +7522,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				throw new UnauthenticationException();
 			}
 
-			String referenceUid = input.getReferenceUid();
+//			String referenceUid = input.getReferenceUid();
 			int counter = 0;
 			String serviceCode = input.getServiceCode();
 			String serviceName = input.getServiceName();

@@ -92,7 +92,7 @@ public class FaqManagementImpl implements FaqManagement {
 		String captchaType = PropValues.CAPTCHA_TYPE;
 		
 		try {
-			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+			if (Validator.isNotNull(captchaType) && "jcaptcha".equals(captchaType)) {
 				ImageCaptchaService instance =
 						CaptchaServiceSingleton.getInstance();
 					String captchaId = request.getSession().getId();
