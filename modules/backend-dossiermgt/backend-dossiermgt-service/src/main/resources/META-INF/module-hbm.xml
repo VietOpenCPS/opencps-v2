@@ -2,6 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
+	<import class="org.opencps.dossiermgt.model.AccessToken" />
 	<import class="org.opencps.dossiermgt.model.ActionConfig" />
 	<import class="org.opencps.dossiermgt.model.Booking" />
 	<import class="org.opencps.dossiermgt.model.ConfigCounter" />
@@ -50,6 +51,20 @@
 	<import class="org.opencps.dossiermgt.model.ServiceProcessRole" />
 	<import class="org.opencps.dossiermgt.model.StepConfig" />
 	<import class="org.opencps.dossiermgt.model.UserInfoLog" />
+	<class name="org.opencps.dossiermgt.model.impl.AccessTokenImpl" table="opencps_accesstoken">
+		<id name="accessTokenId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="token" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="expireDate" type="org.hibernate.type.TimestampType" />
+		<property name="className" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ActionConfigImpl" table="opencps_actionconfig">
 		<id name="actionConfigId" type="long">
 			<generator class="assigned" />

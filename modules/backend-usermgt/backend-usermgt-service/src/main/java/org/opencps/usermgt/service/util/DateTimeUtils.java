@@ -39,7 +39,7 @@ public class DateTimeUtils {
 				return output;
 
 			output = sdf.parse(dateString);
-			
+
 		} catch (ParseException e) {
 			_log.error("DateTimeUtils parse string to date error: ");
 			_log.error(e);
@@ -92,6 +92,16 @@ public class DateTimeUtils {
 		calendar.setTime(date);
 
 		return dateFormat.format(calendar.getTime());
+	}
+
+	public static Date increment(Date date, int incrementMinute) {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(date);
+
+		calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + incrementMinute);
+
+		return calendar.getTime();
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DateTimeUtils.class);
