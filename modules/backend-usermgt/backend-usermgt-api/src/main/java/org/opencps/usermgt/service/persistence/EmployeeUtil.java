@@ -2156,6 +2156,158 @@ public class EmployeeUtil {
 	}
 
 	/**
+	* Returns all the employees where email = &#63;.
+	*
+	* @param email the email
+	* @return the matching employees
+	*/
+	public static List<Employee> findByEmail(String email) {
+		return getPersistence().findByEmail(email);
+	}
+
+	/**
+	* Returns a range of all the employees where email = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param email the email
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @return the range of matching employees
+	*/
+	public static List<Employee> findByEmail(String email, int start, int end) {
+		return getPersistence().findByEmail(email, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where email = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param email the email
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByEmail(String email, int start, int end,
+		OrderByComparator<Employee> orderByComparator) {
+		return getPersistence().findByEmail(email, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the employees where email = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link EmployeeModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param email the email
+	* @param start the lower bound of the range of employees
+	* @param end the upper bound of the range of employees (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching employees
+	*/
+	public static List<Employee> findByEmail(String email, int start, int end,
+		OrderByComparator<Employee> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByEmail(email, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first employee in the ordered set where email = &#63;.
+	*
+	* @param email the email
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public static Employee findByEmail_First(String email,
+		OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence().findByEmail_First(email, orderByComparator);
+	}
+
+	/**
+	* Returns the first employee in the ordered set where email = &#63;.
+	*
+	* @param email the email
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public static Employee fetchByEmail_First(String email,
+		OrderByComparator<Employee> orderByComparator) {
+		return getPersistence().fetchByEmail_First(email, orderByComparator);
+	}
+
+	/**
+	* Returns the last employee in the ordered set where email = &#63;.
+	*
+	* @param email the email
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee
+	* @throws NoSuchEmployeeException if a matching employee could not be found
+	*/
+	public static Employee findByEmail_Last(String email,
+		OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence().findByEmail_Last(email, orderByComparator);
+	}
+
+	/**
+	* Returns the last employee in the ordered set where email = &#63;.
+	*
+	* @param email the email
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching employee, or <code>null</code> if a matching employee could not be found
+	*/
+	public static Employee fetchByEmail_Last(String email,
+		OrderByComparator<Employee> orderByComparator) {
+		return getPersistence().fetchByEmail_Last(email, orderByComparator);
+	}
+
+	/**
+	* Returns the employees before and after the current employee in the ordered set where email = &#63;.
+	*
+	* @param employeeId the primary key of the current employee
+	* @param email the email
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next employee
+	* @throws NoSuchEmployeeException if a employee with the primary key could not be found
+	*/
+	public static Employee[] findByEmail_PrevAndNext(long employeeId,
+		String email, OrderByComparator<Employee> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchEmployeeException {
+		return getPersistence()
+				   .findByEmail_PrevAndNext(employeeId, email, orderByComparator);
+	}
+
+	/**
+	* Removes all the employees where email = &#63; from the database.
+	*
+	* @param email the email
+	*/
+	public static void removeByEmail(String email) {
+		getPersistence().removeByEmail(email);
+	}
+
+	/**
+	* Returns the number of employees where email = &#63;.
+	*
+	* @param email the email
+	* @return the number of matching employees
+	*/
+	public static int countByEmail(String email) {
+		return getPersistence().countByEmail(email);
+	}
+
+	/**
 	* Caches the employee in the entity cache if it is enabled.
 	*
 	* @param employee the employee

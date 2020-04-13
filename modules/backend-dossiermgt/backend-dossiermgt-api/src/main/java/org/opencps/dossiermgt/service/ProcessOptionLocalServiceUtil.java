@@ -64,6 +64,11 @@ public class ProcessOptionLocalServiceUtil {
 		return getService().adminProcessDelete(id);
 	}
 
+	public static int countByServiceConfigId(long serviceConfigId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().countByServiceConfigId(serviceConfigId);
+	}
+
 	public static long countLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
@@ -236,6 +241,12 @@ public class ProcessOptionLocalServiceUtil {
 		return getService()
 				   .getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
 			serviceConfigId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.ProcessOption> getByServiceConfigId(
+		long serviceConfigId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getByServiceConfigId(serviceConfigId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.ProcessOption> getByServiceProcessId(

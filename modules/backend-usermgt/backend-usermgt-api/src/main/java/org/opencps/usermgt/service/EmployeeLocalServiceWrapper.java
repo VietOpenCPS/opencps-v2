@@ -283,6 +283,12 @@ public class EmployeeLocalServiceWrapper implements EmployeeLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.Employee> findByEmail(
+		String email) {
+		return _employeeLocalService.findByEmail(email);
+	}
+
+	@Override
 	public java.util.List<org.opencps.usermgt.model.Employee> findByG(
 		long groupId) {
 		return _employeeLocalService.findByG(groupId);

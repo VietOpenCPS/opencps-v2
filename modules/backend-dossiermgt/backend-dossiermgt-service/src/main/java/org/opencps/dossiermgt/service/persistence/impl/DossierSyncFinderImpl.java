@@ -6,6 +6,7 @@ import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.service.persistence.DossierSyncFinder;
 
 import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -201,6 +202,5 @@ public class DossierSyncFinderImpl extends DossierSyncFinderBaseImpl implements 
 		}
 
 		return sb.toString();
-	}
-
+	}	
 }

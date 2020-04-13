@@ -87,6 +87,9 @@ public interface ProcessOptionLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ProcessOption adminProcessDelete(Long id);
 
+	public int countByServiceConfigId(long serviceConfigId)
+		throws PortalException;
+
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
 
@@ -213,6 +216,10 @@ public interface ProcessOptionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessOption getByDTPLNoAndServiceCF(long groupId,
 		String dossierTemplateNo, long serviceConfigId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ProcessOption> getByServiceConfigId(long serviceConfigId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

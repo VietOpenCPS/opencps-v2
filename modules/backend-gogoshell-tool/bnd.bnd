@@ -1,0 +1,7 @@
+Bundle-Name: backend-gogoshell-tool
+Bundle-SymbolicName: org.opencps.gogoshell.tool
+Bundle-Version: 1.0.0
+Export-Package: org.opencps.gogoshell.tool.api
+Import-Package: \
+    org.apache.felix.service.command;status=provisional;version='[0.10,1)',\
+    *
