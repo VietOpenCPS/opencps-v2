@@ -19,4 +19,17 @@ public interface PayGateIntegrationAction {
 	public JSONObject receiveResult(User user, ServiceContext serviceContext, String billcode, String cust_msisdn,
 			String error_code, String merchant_code, String order_id, int payment_status, long trans_amount,
 			String vt_transaction_id, String check_sum);
+
+	public JSONObject searchResult(User user, ServiceContext serviceContext, String order_id, String billcode, String cust_msisdn, long trans_amount);
+
+	public JSONObject mcDoConfirm(User user, ServiceContext serviceContext, String billcode, String merchant_code,
+			String order_id, String check_sum);
+
+	public JSONObject mcReceiveResult(User user, ServiceContext serviceContext, String billcode, String cust_msisdn,
+			String error_code, String merchant_code, String order_id, int payment_status, long trans_amount,
+			String vt_transaction_id, String check_sum);
+
+	public JSONObject mcSearchResult(User user, ServiceContext serviceContext, String order_id, String billcode, String cust_msisdn, long trans_amount);
+
+	public JSONObject dvcReceiveResult(User user, ServiceContext serviceContext, String url, long groupId, String actionCode, String order_id, String username, String pwd);
 }

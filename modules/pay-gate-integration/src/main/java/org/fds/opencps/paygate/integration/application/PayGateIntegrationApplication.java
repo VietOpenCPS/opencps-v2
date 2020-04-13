@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -100,4 +101,88 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
+	@GET
+	@Path("/vtp/search")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response searchResult(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("order_id") String order_id,
+			@FormParam("billcode") String billcode, @FormParam("cust_msisdn") String cust_msisdn,
+			@FormParam("trans_amount") long trans_amount) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.searchResult(user, serviceContext, order_id, billcode, cust_msisdn,
+				trans_amount);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@POST
+	@Path("/vtp/mcpaymentconfirm")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response mcDoConfirm(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("billcode") String billcode,
+			@FormParam("merchant_code") String merchant_code, @FormParam("order_id") String order_id,
+			@FormParam("check_sum") String check_sum) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.mcDoConfirm(user, serviceContext, billcode, merchant_code, order_id, check_sum);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
+	}
+
+	@POST
+	@Path("/vtp/mcreceiveresult")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response mcReceiveResult(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("billcode") String billcode,
+			@FormParam("cust_msisdn") String cust_msisdn, @FormParam("error_code") String error_code,
+			@FormParam("merchant_code") String merchant_code, @FormParam("order_id") String order_id,
+			@FormParam("payment_status") int payment_status, @FormParam("trans_amount") long trans_amount,
+			@FormParam("vt_transaction_id") String vt_transaction_id, @FormParam("check_sum") String check_sum) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.mcReceiveResult(user, serviceContext, billcode, cust_msisdn, error_code,
+				merchant_code, order_id, payment_status, trans_amount, vt_transaction_id, check_sum);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@GET
+	@Path("/vtp/mcsearch")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response mcSearchResult(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("order_id") String order_id,
+			@FormParam("billcode") String billcode, @FormParam("cust_msisdn") String cust_msisdn,
+			@FormParam("trans_amount") long trans_amount) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.mcSearchResult(user, serviceContext, order_id, billcode, cust_msisdn,
+				trans_amount);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@POST
+	@Path("/vtp/dvcreceiveresult")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response dvcReceiveResult(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("url") String url, @FormParam("groupId") long groupId,
+			@FormParam("actionCode") String actionCode, @FormParam("order_id") String order_id,
+			@FormParam("userName") String userName, @FormParam("pwd") String pwd) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.dvcReceiveResult(user, serviceContext, url, groupId, actionCode, order_id, userName, pwd);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
 }
