@@ -37,6 +37,7 @@ public class MailTestManagementImpl implements MailTestManagement {
 			mailMessage.setTo(new InternetAddress(to));
 			mailMessage.setFrom(new InternetAddress(from));
 		} catch (AddressException e) {
+			_log.debug(e);
 		}
 		mailMessage.setBody(body);
 		mailMessage.setHTMLFormat(true);
@@ -105,6 +106,7 @@ public class MailTestManagementImpl implements MailTestManagement {
 	      _log.debug("EMail Sent Successfully!!");
 	    }
 	    catch (Exception e) {
+	    	_log.debug(e);
 	      e.printStackTrace();
 	    }
 	}

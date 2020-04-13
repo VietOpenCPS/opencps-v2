@@ -2,6 +2,8 @@ package org.opencps.gogoshell.tool.command;
 
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
@@ -190,6 +192,7 @@ public class GogoShellTool {
 		    	System.out.println(readLastLine(path, line));
 		    }
 		} catch (IOException e) {
+			_log.debug(e);
 			e.printStackTrace();
 		}
 	}
@@ -197,34 +200,35 @@ public class GogoShellTool {
 	@Descriptor("Công cụ xem chạy lệnh SQL")
 	public void execsql(@Descriptor("Lệnh SQL cần chạy") String sql) {
 		System.out.println("Lệnh SQL \"" + sql + "\"");
-		PreparedStatement ptmt = null;
 		ResultSet rs = null;
 		try (Connection connection = DataAccess.getConnection()) {
-			ptmt = connection.prepareStatement(sql);
-			rs = ptmt.executeQuery();
-			if (rs != null && rs.next()) {
-				ResultSetMetaData rsmd = rs.getMetaData();
-				if (rsmd != null) {
-					int columnsNumber = rsmd.getColumnCount();
-					System.out.println("Số cột trong kết quả: " + columnsNumber);
-					StringBuilder columnNames = new StringBuilder();
-					columnNames.append("");
-					for (int i = 1; i <= columnsNumber; i++) {
-						columnNames.append("\t|" + rsmd.getColumnName(i));
-					}
-					System.out.println(columnNames.toString());
-					
-					do {
+			try (PreparedStatement ptmt = connection.prepareStatement(sql)) {
+				rs = ptmt.executeQuery();
+				if (rs != null && rs.next()) {
+					ResultSetMetaData rsmd = rs.getMetaData();
+					if (rsmd != null) {
+						int columnsNumber = rsmd.getColumnCount();
+						System.out.println("Số cột trong kết quả: " + columnsNumber);
+						StringBuilder columnNames = new StringBuilder();
+						columnNames.append("");
 						for (int i = 1; i <= columnsNumber; i++) {
-							System.out.print("\t|" + rs.getString(i));
+							columnNames.append("\t|" + rsmd.getColumnName(i));
 						}
-						System.out.println();
-					}	
-					while (rs.next());
+						System.out.println(columnNames.toString());
+						
+						do {
+							for (int i = 1; i <= columnsNumber; i++) {
+								System.out.print("\t|" + rs.getString(i));
+							}
+							System.out.println();
+						}	
+						while (rs.next());
+					}
 				}
 			}
 		}
 		catch (SQLException e) {
+			_log.debug(e);
 			e.printStackTrace();
 		}
 		finally {
@@ -232,10 +236,8 @@ public class GogoShellTool {
                 if (rs != null) {
                     rs.close();
                 }
-                if (ptmt != null) {
-                    ptmt.close();
-                }
             } catch (Exception e) {
+            	_log.debug(e);
             	e.printStackTrace();
             }
         }
@@ -253,6 +255,7 @@ public class GogoShellTool {
 		    }
 		    return result.toString();
 		 } catch (IOException e) {
+			 _log.debug(e);
 			e.printStackTrace();
 		}
 		 
@@ -272,6 +275,7 @@ public class GogoShellTool {
 			}
 
 		} catch (IOException e) {
+			_log.debug(e);
 			e.printStackTrace();
 		}
 
@@ -308,6 +312,7 @@ public class GogoShellTool {
 						System.out.println("|" + serviceInfo.getServiceCode() + "\t|" + serviceInfo.getAdministrationCode() + "\t|" + serviceInfo.getDomainCode() + "\t|" + serviceInfo.getGovAgencyText() + "\t|" + "Chưa gán quy trình");
 					}
 				} catch (Exception e) {
+					_log.debug(e);
 					e.printStackTrace();
 				}
 				
@@ -330,6 +335,7 @@ public class GogoShellTool {
 				indexer.reindex(dossier);
 				System.out.println("Đánh chỉ mục hồ sơ thành công");
 			} catch (Exception e) {
+				_log.debug(e);
 				e.printStackTrace();
 			}			
 		}
@@ -351,6 +357,7 @@ public class GogoShellTool {
 		try {
 			_userLocalService.updateStatus(u.getUserId(), 0);
 		} catch (Exception ex) {
+			_log.debug(ex);
 			System.out.println("Lỗi không thể kích hoạt tài khoản cán bộ");
 		}
 		
@@ -370,6 +377,7 @@ public class GogoShellTool {
 		try {
 			_userLocalService.updateStatus(u.getUserId(), 5);
 		} catch (Exception ex) {
+			_log.debug(ex);
 			System.out.println("Lỗi không thể khóa tài khoản cán bộ");
 		}
 		
@@ -406,4 +414,6 @@ public class GogoShellTool {
 
 	@Reference
 	private DossierSyncLocalService _dossierSyncLocalService;
+	
+	private static Log _log = LogFactoryUtil.getLog(GogoShellTool.class);
 }

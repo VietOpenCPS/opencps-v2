@@ -378,7 +378,7 @@ public class UserManagementImpl implements UserManagement {
 		String captchaType = PropValues.CAPTCHA_TYPE;
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		try {
-			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+			if (Validator.isNotNull(captchaType) && "jcaptcha".equals(captchaType)) {
 				
 			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 			String captchaId = request.getSession().getId();

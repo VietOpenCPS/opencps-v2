@@ -163,14 +163,14 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
 				String accessToken = accessTokenInfo.getString("access_token");
-				state = "create";
+				//state = "create";
 				int LoaiTaiKhoan = 0;
 				//String HoChieu = StringPool.BLANK;
-				String SoCMND = StringPool.BLANK;
-				String MaSoThue = StringPool.BLANK;
-				String MaSoDoanhNghiep = StringPool.BLANK;
-				String SoDinhDanh = StringPool.BLANK;
-				String TechID = StringPool.BLANK;
+				String SoCMND;// = StringPool.BLANK;
+				String MaSoThue;// = StringPool.BLANK;
+				String MaSoDoanhNghiep;// = StringPool.BLANK;
+				String SoDinhDanh;// = StringPool.BLANK;
+				String TechID;// = StringPool.BLANK;
 
 				result = invokeUserInfo(user, groupId, serviceContext, accessToken, serverConfig);
 
@@ -248,7 +248,8 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		String encryptData = (result != null && result.length() > 0)
 				? Base64.getEncoder().encodeToString(result.toJSONString().getBytes())
 				: StringPool.BLANK;
-		result.put("encryptData", encryptData);
+		if (result != null)
+			result.put("encryptData", encryptData);
 
 		return result;
 	}
@@ -556,7 +557,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			//_log.info("------------>>> accessToken: " + accessToken + "|state " + state);
 
-			if (state.equalsIgnoreCase("auth") && applicant != null) {
+			if ("auth".equalsIgnoreCase(state) && applicant != null) {
 
 				mappingUserId = applicant.getMappingUserId();
 
@@ -577,7 +578,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
 				session.setAttribute("_ACCESS_TOKEN", accessToken);
 
-			} else if (state.equalsIgnoreCase("mapping")) {
+			} else if ("mapping".equalsIgnoreCase(state)) {
 				mappingUserId = user.getUserId();
 				applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
 				if (applicant == null) {
@@ -594,7 +595,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
 				session.setAttribute("_ACCESS_TOKEN", accessToken);
-			} else if (state.equalsIgnoreCase("create")) {
+			} else if ("create".equalsIgnoreCase(state)) {
 		// ca nhan
 				if (LoaiTaiKhoan == 1) {
 
@@ -605,7 +606,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
 			if (applicant == null) {
-				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+				ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
 		}
 		// doanh nghiep
@@ -616,7 +617,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 					Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
 			if (applicant == null) {
-				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+				ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
 		} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);
@@ -744,7 +745,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		oldUser.setEmailAddress(newEmail);
 
-		oldUser = UserLocalServiceUtil.updateUser(oldUser);
+		UserLocalServiceUtil.updateUser(oldUser);
 
 		applicant.setContactEmail(newEmail);
 
@@ -754,7 +755,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		if (applicant0 != null) {
 			applicant0.setContactEmail(newEmail);
-			applicant0 = ApplicantLocalServiceUtil.updateApplicant(applicant0);
+			ApplicantLocalServiceUtil.updateApplicant(applicant0);
 		}
 
 		result.put("statusCode", 200);

@@ -466,15 +466,15 @@ public class DataManagementImpl implements DataManagement {
 			DictItemGroup dictItemGroup = dictItemDataUtil.addDictgroupsDictItems(user.getUserId(), groupId, code,
 					groupCode, itemCode, serviceContext);
 
-			try {
-				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS);
-
-				DictGroup group = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
-
-			} catch (Exception e) {
-				_log.error(e);
-			}
+//			try {
+//				List<ServerConfig> lstServers = ServerConfigLocalServiceUtil.getServerConfigs(QueryUtil.ALL_POS,
+//						QueryUtil.ALL_POS);
+//
+//				DictGroup group = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(groupCode, groupId);
+//
+//			} catch (Exception e) {
+//				_log.error(e);
+//			}
 
 			dictGroupItemModel = DataManagementUtils.mapperDictGroupItemModel(dictItemGroup);
 			dictGroupItemModel.setSelected(Boolean.TRUE);
@@ -1557,23 +1557,24 @@ public class DataManagementImpl implements DataManagement {
 			if (collection == null) {
 				result = false;
 			}
+			else {
+				DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
+						collection.getDictCollectionId());
 
-			DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
-					collection.getDictCollectionId());
+				if (dictItemMapping != null) {
+					DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+				}
 
-			if (dictItemMapping != null) {
-				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+				dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
+						collection.getDictCollectionId());
+
+				if (dictItemMapping != null) {
+					DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
+				}
+
+				DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
+						user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());				
 			}
-
-			dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId, itemCodeDVCQG,
-					collection.getDictCollectionId());
-
-			if (dictItemMapping != null) {
-				DictItemMappingLocalServiceUtil.deleteDictItemMapping(dictItemMapping);
-			}
-
-			DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
-					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
 
 			result = true;
 
