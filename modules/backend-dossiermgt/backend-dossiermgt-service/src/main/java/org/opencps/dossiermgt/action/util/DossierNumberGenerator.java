@@ -73,6 +73,7 @@ public class DossierNumberGenerator {
 	private static final String CODE_PATTERN_MONTH = "\\{(p+|P+)\\}";
 	private static final String CODE_PATTERN_YEAR = "\\{(q+|Q+)\\}";
 	private static final String CODE_PATTERN_SERVICE = "\\{(r+|R+)\\}";
+	private static final String CODE_PATTERN_SERVICE_DATE = "\\{(k+|K+)\\}";
 	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
 	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
 	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
@@ -120,6 +121,7 @@ public class DossierNumberGenerator {
 			String codePatternMonth = CODE_PATTERN_MONTH;
 			String codePatternYear = CODE_PATTERN_YEAR;
 			String codePatternService = CODE_PATTERN_SERVICE;
+			String codePatternServiceDate = CODE_PATTERN_SERVICE_DATE;
 			String dayPattern = DAY_PATTERN;
 			String monthPattern = MONTH_PATTERN;
 			String yearPattern = YEAR_PATTERN;
@@ -128,7 +130,8 @@ public class DossierNumberGenerator {
 			String extractValuePattern = EXTRACT_VALUE_PATTERN;
 			String datetimePattern = DATETIME_PATTERN;
 			String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
-					codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
+					codePatternServiceDate, codePatternGov, dayPattern, monthPattern, yearPattern,
+					dynamicVariablePattern, datetimePattern };
 
 			Date now = new Date();
 
@@ -192,7 +195,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternMonth)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -211,7 +214,7 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternYear)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -230,7 +233,27 @@ public class DossierNumberGenerator {
 					} else if (r.toString().equals(codePatternService)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + dossier.getServiceCode();
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
+
+						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
+
+						_log.debug("//////////////////////////////////////////////////////////// "
+								+ "|certNumber= " + number);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					} else if (r.toString().equals(codePatternServiceDate)) {
+						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year
+								+ StringPool.POUND + dossier.getServiceCode();
+						String number = counterByNumber(key, tmp);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
 
@@ -252,7 +275,7 @@ public class DossierNumberGenerator {
 						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + (Validator.isNotNull(govAgencyCode)
 								? govAgencyCode
 								: dossier.getGovAgencyCode());
-						String number = countByNumber(key, tmp);
+						String number = counterByNumber(key, tmp);
 
 						//String number = countByInit(govAgencyCode, dossierId, tmp, groupId);
 
