@@ -638,6 +638,12 @@ public class DossierMgtUtils {
 					result = result && checkWaitingOverdueLessThan(splitDuration[1], dossier);
 				}
 			}
+			if (preCondition.contains(DossierTerm.CONTAIN_DURATION_COUNT_GREATER_THAN)) {
+				String[] splitDuration = preCondition.split(StringPool.GREATER_THAN);
+				if (splitDuration.length == 2) {
+					result = result && checkDurationCountGreaterThan(splitDuration[1], dossier);
+				}				
+			}
 			// BA Duan
 			if (preCondition.contains("isRoles=")) {
 				String[] splitDuration = preCondition.split("=");
@@ -959,7 +965,18 @@ public class DossierMgtUtils {
 		
 		return false;
 	}
-	
+
+	private static boolean checkDurationCountGreaterThan(String preCondition, Dossier dossier) {
+		if (dossier.getDurationUnit() == DossierTerm.DURATION_UNIT_DAY) {
+			double durationCount = Double.valueOf(preCondition);
+			if (dossier.getDurationCount() > durationCount) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	//Calculator startDate and endDate
 	public static int minDay(int month, int year) {
 		Calendar cal = Calendar.getInstance();
