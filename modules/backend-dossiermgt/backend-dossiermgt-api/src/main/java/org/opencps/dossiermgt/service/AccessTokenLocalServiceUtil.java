@@ -186,6 +186,10 @@ public class AccessTokenLocalServiceUtil {
 		return getService().fetchAccessToken(accessTokenId);
 	}
 
+	public static void garbageToken() {
+		getService().garbageToken();
+	}
+
 	/**
 	* Returns the access token with the primary key.
 	*

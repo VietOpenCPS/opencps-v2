@@ -17,7 +17,9 @@ package org.opencps.dossiermgt.service.impl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +88,29 @@ public class AccessTokenLocalServiceImpl extends AccessTokenLocalServiceBaseImpl
 		}
 
 		return accessToken;
+	}
+	
+	public void garbageToken() {
+		List<AccessToken> accessTokens = new ArrayList<AccessToken>();
+		Date date = new Date();
+		try {
+			accessTokens = accessTokenPersistence.findAll();
+			
+			if(accessTokens != null) {
+				for(AccessToken accessToken : accessTokens) {
+					if(Validator.isNull(accessToken.getToken()) || accessToken.getExpireDate() == null) {
+						accessTokenPersistence.remove(accessToken);
+					}else {
+						if(date.compareTo(accessToken.getExpireDate()) >= 0) {
+							accessTokenPersistence.remove(accessToken);
+						}
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public List<AccessToken> getAccessTokens(long groupId, String className) {

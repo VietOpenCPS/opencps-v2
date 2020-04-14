@@ -191,6 +191,11 @@ public class AccessTokenLocalServiceWrapper implements AccessTokenLocalService,
 		return _accessTokenLocalService.fetchAccessToken(accessTokenId);
 	}
 
+	@Override
+	public void garbageToken() {
+		_accessTokenLocalService.garbageToken();
+	}
+
 	/**
 	* Returns the access token with the primary key.
 	*

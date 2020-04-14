@@ -171,6 +171,8 @@ public interface AccessTokenLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AccessToken fetchAccessToken(long accessTokenId);
 
+	public void garbageToken();
+
 	/**
 	* Returns the access token with the primary key.
 	*
