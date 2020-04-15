@@ -152,7 +152,7 @@ public class GogoShellTool {
 	}
 	
 	@Descriptor("Công cụ xử lý đồng bộ hồ sơ")
-	public void sync(@Descriptor("Các thao tác hỗ trợ list") String command, String ... params) {
+	public void sync(@Descriptor("Các thao tác hỗ trợ list, resync") String command, String ... params) {
 		switch (command) {
 		case "list":
 			long dossierId = Long.valueOf(params[0]);
