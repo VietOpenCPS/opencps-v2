@@ -1364,16 +1364,34 @@ public class CPSDossierBusinessLocalServiceImpl
         	_log.error(e);
         }
         
+        String notificationType = StringPool.BLANK;
+        String preCondition = StringPool.BLANK;
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			if (actionConfig.getNotificationType().contains(StringPool.AT)) {
+				String[] split = StringUtil.split(actionConfig.getNotificationType(), StringPool.AT);
+				if (split.length == 2) {
+					notificationType = split[0];
+					preCondition = split[1];
+				}
+			}
+			else {
+				notificationType = actionConfig.getNotificationType();
+			}
+			if (Validator.isNotNull(preCondition)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
+					return;
+				}
+			}
+
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE, groupId +StringPool.UNDERLINE+ actionConfig.getNotificationType());
+			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE, groupId +StringPool.UNDERLINE+ notificationType);
 			Notificationtemplate notiTemplate = null;
 //			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			if (notiCache == null) {
-				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, notificationType);
 				if (notiTemplate != null) {
 					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE,
-							groupId +StringPool.UNDERLINE+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+							groupId +StringPool.UNDERLINE+ notificationType, (Serializable) notiTemplate,
 							ttl);
 				}
 			} else {
@@ -1396,7 +1414,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
+				if (notificationType.startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -1421,7 +1439,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								}
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
-										actionConfig.getNotificationType(), 
+										notificationType, 
 										Dossier.class.getName(), 
 										String.valueOf(dossier.getDossierId()), 
 										payloadObj.toJSONString(), 
@@ -1439,10 +1457,10 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
+				else if (notificationType.startsWith(KeyPayTerm.USER)) {
 					
 				}
-				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
+				else if (notificationType.startsWith("EMPL")) {
 					_log.debug("ADD NOTI EMPL");
 					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
 					_log.debug("ADD NOTI LIST DAU: " + lstDaus.size());
@@ -1472,7 +1490,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								_log.debug("BEFORE ADD NOTI EMPLOYEE: " + actionConfig.getNotificationType());
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
-										actionConfig.getNotificationType(), 
+										notificationType, 
 										Dossier.class.getName(), 
 										String.valueOf(dossier.getDossierId()), 
 										payloadObj.toJSONString(), 
@@ -4017,7 +4035,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
+				if (notificationType.startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -4050,7 +4068,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
+				else if (notificationType.startsWith(KeyPayTerm.USER)) {
 					
 				}				
 			}
