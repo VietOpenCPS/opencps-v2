@@ -1367,6 +1367,7 @@ public class CPSDossierBusinessLocalServiceImpl
         String notificationType = StringPool.BLANK;
         String preCondition = StringPool.BLANK;
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			_log.info("NOTIFICATION TYPE: " + actionConfig.getNotificationType());
 			if (actionConfig.getNotificationType().contains(StringPool.AT)) {
 				String[] split = StringUtil.split(actionConfig.getNotificationType(), StringPool.AT);
 				if (split.length == 2) {
@@ -1377,6 +1378,7 @@ public class CPSDossierBusinessLocalServiceImpl
 			else {
 				notificationType = actionConfig.getNotificationType();
 			}
+			_log.info("NOTIFICATION TYPE: " + notificationType + ", CONDITION: " + preCondition);
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
 					return;
