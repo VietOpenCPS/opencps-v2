@@ -92,6 +92,7 @@ public class ServiceInfoIndexer extends BaseIndexer<ServiceInfo> {
 		document.addKeywordSortable(ServiceInfoTerm.DOSSIER_EXT, object.getDossierText());
 		document.addKeywordSortable(ServiceInfoTerm.CONDITION_TEXT, object.getConditionText());
 		document.addKeywordSortable(ServiceInfoTerm.DURATION_TEXT, object.getDurationText());
+		_log.info("ServiceInfo object.getApplicantText() : "+object.getApplicantText());
 		document.addKeywordSortable(ServiceInfoTerm.APPLICANT_TEXT, object.getApplicantText());
 		document.addKeywordSortable(ServiceInfoTerm.RESULT_TEXT, object.getRegularText());
 		document.addKeywordSortable(ServiceInfoTerm.REGULAR_TEXT, object.getRegularText());

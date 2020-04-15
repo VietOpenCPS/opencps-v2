@@ -1,3 +1,16 @@
+create table opencps_accesstoken (
+	accessTokenId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	token VARCHAR(75) null,
+	expireDate DATE null,
+	className VARCHAR(75) null
+);
+
 create table opencps_actionconfig (
 	uuid_ VARCHAR(75) null,
 	actionConfigId LONG not null primary key,
