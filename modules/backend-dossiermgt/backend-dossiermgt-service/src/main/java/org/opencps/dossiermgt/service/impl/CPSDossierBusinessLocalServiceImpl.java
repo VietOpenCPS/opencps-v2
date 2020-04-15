@@ -144,6 +144,7 @@ import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
+import org.opencps.dossiermgt.constants.VTPayTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
@@ -1866,6 +1867,36 @@ public class CPSDossierBusinessLocalServiceImpl
 						paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
 				JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				epaymentProfileJsonNew.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
+				
+				PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
+						dossier.getGovAgencyCode());
+				JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
+
+				_log.debug("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);
+				if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						String mcUrl = schema.getString(VTPayTerm.MC_URL);
+	
+						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
+						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+	
+						epaymentProfileJsonNew.put(VTPayTerm.VTPAY_GENQR, data);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+	
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJsonNew.toJSONString(),
 						context);
 			} catch (IOException e) {
@@ -1944,6 +1975,34 @@ public class CPSDossierBusinessLocalServiceImpl
 				} else {
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 							context);
+				}
+			
+				_log.debug("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);
+				if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						String mcUrl = schema.getString(VTPayTerm.MC_URL);
+	
+						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
+						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+	
+						epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+								context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+	
 				}
 			}
 		return oldPaymentFile;

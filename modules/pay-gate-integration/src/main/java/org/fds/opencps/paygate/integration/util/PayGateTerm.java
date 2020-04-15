@@ -27,4 +27,35 @@ public class PayGateTerm {
 	public static final String TRANS_AMOUNT = "trans_amount";
 	public static final String ERROR_CODE = "error_code";
 	public static final String HEX_FORMAT = "%02x";
+	public static final String RETURN_URL = "return_url";
+	public static final String RETURN_BILL_CODE = "return_bill_code";
+	public static final String RETURN_OTHER_INFO = "return_other_info";
+
+	public static final String URL_SEARCH = "url_search";
+	public static final String CMD_SEARCH = "cmd_search";
+	public static final String VERSION_SEARCH = "version_search";
+	public static final String ENCODING_CHECKSUM = "version_search";
+
+	public static final String CUST_MSISDN = "cust_msisdn";
+	public static final String VT_TRANSACTION_ID = "vt_transaction_id";
+	public static final String PAYMENT_STATUS = "payment_status";
+
+	public static final String ENDPOINT_CONFIRM = "o/pgi/vtp/mcpaymentconfirm";
+	public static final String ENDPOINT_RECEIVER = "o/pgi/vtp/mcreceiveresult";
+	public static final String ENDPOINT_SEARCH = "o/pgi/vtp/mcsearch";
+	public static final String ENDPOINT_DVCRECEIVER = "o/pgi/vtp/dvcreceiveresult";
+
+	public static final String ACTION_IS_ONLINE = "actionIsOnline";
+	public static final String ACTION_IS_NOT_ONLINE = "actionIsNotOnline";
+	public static final String ACTION_CODE = "actionCode";
+	public static final String PAYMENT = "payment";
+	public static final String URL = "url";
+	public static final String USERNAME = "userName";
+	public static final String PWD = "pwd";
+	public static final String ACTION_ENPOINT = "actions";
+	
+	public static String buildPathDoAction (String path, long dossierId) {
+		
+		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
+	};
 }
