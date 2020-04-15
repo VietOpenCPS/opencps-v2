@@ -26,14 +26,11 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -728,6 +725,8 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			result.put("user", JSONFactoryUtil.createJSONObject());
 			return result;
 		}
+		
+		//_log.info(">>>>>>>>>>>> oldEmail " + oldEmail + "| newEmail " + newEmail + "|" + company.getCompanyId());
 
 		updateUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), oldEmail);
 
@@ -736,6 +735,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			result.put("user", JSONFactoryUtil.createJSONObject());
 			return result;
 		}
+		
 		String screenName = newEmail.substring(0, newEmail.lastIndexOf("@"));
 		updateUser.setEmailAddress(newEmail);
 		updateUser.setScreenName(screenName);
@@ -744,10 +744,23 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId());
 		
 		if(applicant != null) {
+			List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(applicant.getApplicantIdNo());
+			if(applicants != null) {
+				for(Applicant applicant2 : applicants) {
+					if(applicant2.getGroupId() == 0) {
+						applicant2.setContactEmail(newEmail);
+						applicant2 = ApplicantLocalServiceUtil.updateApplicant(applicant2);
+						break;
+					}
+				}
+			}
 			applicant.setContactEmail(newEmail);
 			applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
 		}
 		
+		
+		
+	
 		result.put("message", ApplicantTerm.EMAIL_UPDATE_SUCCESS);
 		
 		JSONObject userObj = JSONFactoryUtil.createJSONObject();
