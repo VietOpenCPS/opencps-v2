@@ -90,8 +90,6 @@ import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -105,10 +103,8 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
@@ -119,8 +115,8 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -1228,7 +1224,8 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		//Create notification
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, payloadObject, context);
+			JSONObject notificationPayload = buildNotificationPayload(dossier, payloadObject);
+			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, notificationPayload, context);
 		}
 		
 		//Create subcription
@@ -1258,6 +1255,51 @@ public class CPSDossierBusinessLocalServiceImpl
 //		indexer.reindex(dossier);
 
 		return dossierAction;
+	}
+	
+	private JSONObject buildNotificationPayload(Dossier dossier, JSONObject payloadObject) {
+		JSONObject returnObject;
+		try {
+			returnObject = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
+			if (!returnObject.has(DossierTerm.RECEIVE_DATE)) {
+				if (dossier.getReceiveDate() != null) {
+					returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
+				}
+			}
+			if (!returnObject.has(DossierTerm.DOSSIER_NO)) {
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					returnObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}
+			}
+			int durationUnit = dossier.getDurationUnit();
+			double durationCount = dossier.getDurationCount();
+			String durationText = StringPool.BLANK;
+			if (durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+				durationText = String.valueOf(durationCount);
+			}
+			else if (durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+				durationText = String.valueOf(durationCount * 1.0 / DossierTerm.WORKING_HOUR_PER_DAY);
+			}
+			
+			returnObject.put(DossierTerm.DURATION_TEXT, durationText);
+			if (!returnObject.has(DossierTerm.GOV_AGENCY_NAME)) {
+				returnObject.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			}
+			if (!returnObject.has(DossierTerm.POSTAL_ADDRESS)) {
+				returnObject.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+			}
+			
+			PaymentFile pf = paymentFileLocalService.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			if (pf != null) {
+				if (!returnObject.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
+					returnObject.put(PaymentFileTerm.PAYMENT_AMOUNT, String.valueOf(pf.getPaymentAmount()));
+				}
+			}
+			return returnObject;		
+		} catch (JSONException e) {
+			_log.debug(e);
+			return payloadObject;
+		}	
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
@@ -3922,6 +3964,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        payloadObj = buildNotificationPayload(dossier, payloadObj);
         
         try {		
         	payloadObj.put(
@@ -3939,8 +3982,25 @@ public class CPSDossierBusinessLocalServiceImpl
         	_log.error(e);
         }
 
+        String notificationType = StringPool.BLANK;
+        String preCondition = StringPool.BLANK;
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
-			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (actionConfig.getNotificationType().contains(StringPool.AT)) {
+				String[] split = StringUtil.split(actionConfig.getNotificationType(), StringPool.AT);
+				if (split.length == 2) {
+					notificationType = split[0];
+					preCondition = split[1];
+				}
+			}
+			else {
+				notificationType = actionConfig.getNotificationType();
+			}
+			if (Validator.isNotNull(preCondition)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
+					return;
+				}
+			}
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, notificationType);
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
@@ -3973,7 +4033,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							payloadObj.put("filesAttach", filesAttach);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
-									actionConfig.getNotificationType(), 
+									notificationType, 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
 									payloadObj.toJSONString(), 

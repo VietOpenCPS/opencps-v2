@@ -329,6 +329,7 @@ public class DossierTerm {
 	public static final String CONTAIN_ROLE_CODE = "rolecode=";
 	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
 	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
+	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";
 	public static final String DUE_DATE_NOTIFY = "dueDateNotify";
 	public static final String DUE_DATE_NOTIFY_TYPE = "type";
 	public static final String DUE_DATE_NOTIFY_VALUE = "value";
@@ -372,4 +373,6 @@ public class DossierTerm {
 	public static final String NOTARIZATIONS = "notarizations";
     public static final String KEY_DVCQG_INTEGRATION = "dvcqgIntegration";
     public static final int PIN_LENGTH = 4;
+    public static final String DELEGATE = "delegate";
+    public static final String DURATION_TEXT = "durationText";
 }
