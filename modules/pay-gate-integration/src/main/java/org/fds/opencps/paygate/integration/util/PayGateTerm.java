@@ -48,7 +48,7 @@ public class PayGateTerm {
 	public static final String ACTION_IS_ONLINE = "actionIsOnline";
 	public static final String ACTION_IS_NOT_ONLINE = "actionIsNotOnline";
 	public static final String ACTION_CODE = "actionCode";
-	public static final String PAYLOAD = "payload";
+	public static final String PAYMENT = "payment";
 	public static final String URL = "url";
 	public static final String USERNAME = "userName";
 	public static final String PWD = "pwd";

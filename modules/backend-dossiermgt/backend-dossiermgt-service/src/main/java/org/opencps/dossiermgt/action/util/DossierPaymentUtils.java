@@ -28,9 +28,12 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.VTPayTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -217,6 +220,34 @@ public class DossierPaymentUtils {
 				}
 
 			}
+
+			System.out.println("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);
+			if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+				try {
+					JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+					JSONObject data = JSONFactoryUtil.createJSONObject();
+					String mcUrl = schema.getString(VTPayTerm.MC_URL);
+
+					data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+							schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+					data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+							schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+					data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+							schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+					data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+					data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+					data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
+					data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+
+					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+					actions.updateEProfile(dossierId, paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+							serviceContext);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
 //
 //			// Create paymentfile sync
 //			if (Validator.isNotNull(serverNo)) {
@@ -313,6 +344,9 @@ public class DossierPaymentUtils {
 				paymentMethods.add(PAY_METHOD_KEYPAY);
 			}
 
+			if (_checkcontains(pattern, PAY_METHOD_VIETTEL_PAY)) {
+				paymentMethods.add(PAY_METHOD_VIETTEL_PAY);
+			}
 		}
 
 		return paymentMethods;
@@ -522,6 +556,7 @@ public class DossierPaymentUtils {
 	public static final String PAY_METHOD_BANK = "bank";
 	public static final String PAY_METHOD_KEYPAY = "keypay";
 	public static final String PAY_METHOD_CASH = "cash";
+	public static final String PAY_METHOD_VIETTEL_PAY = "viettelpay";
 	public static final String PAY_AMOUNT_NET = "net";
 	public static final String PAY_AMOUNT_SHIP = "ship";
 	public static final String PAY_AMOUNT_TAX = "tax";
@@ -540,4 +575,5 @@ public class DossierPaymentUtils {
 	public static final String NET_PATTERN = "net=\\[(.*?)\\]";
 	public static final String PATTERN_NAME = "#(.*?)@(.*?) ";
 	public static final String BANK_CASH_PATTERN = "bank cash keypay net=[ payment = 100000]   ship=0 tax=0  $Lệ phí đánh giá COP $";
+
 }

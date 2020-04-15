@@ -153,7 +153,7 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
-	@GET
+	@POST
 	@Path("/vtp/mcsearch")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })

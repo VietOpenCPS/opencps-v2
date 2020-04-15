@@ -46,13 +46,18 @@ import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.VTPayTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -116,8 +121,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String check_sum = searchResult.getString(PayGateTerm.CHECK_SUM);
 		String error_code = searchResult.getString(PayGateTerm.ERROR_CODE);
 		String vt_transaction_id = searchResult.getString(PayGateTerm.VT_TRANSACTION_ID);
-		receiveResult(user, serviceContext, billcode, cust_msisdn, error_code, merchant_code, order_id, payment_status,
-				trans_amount, vt_transaction_id, check_sum);
+		mcReceiveResult(user, serviceContext, billcode, cust_msisdn, error_code, merchant_code, order_id,
+				payment_status, trans_amount, vt_transaction_id, check_sum);
 	}
 
 	public JSONObject callPostAPI(String httpMethod, String accept, String urlPath, HashMap<String, String> properties,
@@ -131,7 +136,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		try {
 
-			response.put("url___", urlPath);
 			URL url = new URL(urlPath);
 
 			conn = (HttpURLConnection) url.openConnection();
@@ -140,7 +144,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			conn.setRequestMethod(httpMethod);
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
-			response.put("url___2", accept);
+
 			conn.setRequestProperty(ConstantUtils.VALUE_ACCEPT, accept);
 
 			if (Validator.isNotNull(username) && Validator.isNotNull(password)) {
@@ -150,7 +154,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				conn.setRequestProperty(ConstantUtils.VALUE_AUTHORIZATION, ConstantUtils.VALUE_BASIC + authStringEnc);
 			}
-			response.put("url___3", 1);
+
 			if (!properties.isEmpty()) {
 				for (Map.Entry m : properties.entrySet()) {
 					conn.setRequestProperty(m.getKey().toString(), m.getValue().toString());
@@ -158,7 +162,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			}
 
 			StringBuilder postData = new StringBuilder();
-			response.put("url___4", accept);
+
 			for (Map.Entry<String, Object> param : params.entrySet()) {
 				if (postData.length() != 0)
 					postData.append(StringPool.AMPERSAND.charAt(0));
@@ -182,9 +186,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			while ((output = br.readLine()) != null) {
 				sb.append(output);
 			}
-			response.put("url___5", sb);
-			JSONFactoryUtil.createJSONObject(sb.toString());
-			//response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+			response = JSONFactoryUtil.createJSONObject(sb.toString());
 
 			conn.disconnect();
 
@@ -260,7 +263,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject doConfirm(User user, ServiceContext serviceContext, String billcode, String merchant_code,
 			String order_id, String check_sum) {
-		System.out.println("=============call to doconfirm===================");
+		_log.info("=============call to doconfirm===================");
 		_log.info("=============call to doconfirm===================");
 		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_CONFIRM;
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -271,20 +274,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		params.put(PayGateTerm.MERCHANT_CODE, merchant_code);
 		params.put(PayGateTerm.ORDER_ID, order_id);
 		params.put(PayGateTerm.CHECK_SUM, check_sum);
-		JSONObject schema = JSONFactoryUtil.createJSONObject();
-		schema.put("lollll", 2);
-		return schema;
-//		return callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, mcUrl, properties, params, StringPool.BLANK,
-//				StringPool.BLANK);
-		
+		return callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, mcUrl, properties, params, StringPool.BLANK,
+				StringPool.BLANK);
+
 	}
 
 	@Override
 	public JSONObject receiveResult(User user, ServiceContext serviceContext, String billcode, String cust_msisdn,
 			String error_code, String merchant_code, String order_id, int payment_status, long trans_amount,
 			String vt_transaction_id, String check_sum) {
-		System.out.println("=============call to rec===================");
-		_log.info("=============call to receiveResult===================");
+		_log.info("=============call to rec===================");
+		_log.info("=============call to receiveResult===================" + billcode);
 		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_RECEIVER;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
@@ -306,7 +306,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject searchResult(User user, ServiceContext serviceContext, String order_id, String billcode,
 			String cust_msisdn, long trans_amount) {
-		System.out.println("=============call to search===================");
+		_log.info("=============call to search===================");
 
 		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_SEARCH;
 		HashMap<String, String> properties = new HashMap<String, String>();
@@ -316,7 +316,18 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		params.put(PayGateTerm.CUST_MSISDN, cust_msisdn);
 		params.put(PayGateTerm.TRANS_AMOUNT, trans_amount);
 		params.put(PayGateTerm.ORDER_ID, order_id);
-		return callPostAPI(HttpMethod.GET, MediaType.APPLICATION_JSON, mcUrl, properties, params, StringPool.BLANK,
+		String q = null;
+		String mcUrl2 = mcUrl;
+		for (Map.Entry<String, Object> param : params.entrySet()) {
+			if (q == null) {
+				q = StringPool.QUESTION;
+			} else {
+				q = StringPool.AMPERSAND;
+			}
+			mcUrl2 += q + param.getKey() + StringPool.EQUAL + param.getValue();
+		}
+		_log.info("=========search mc=====" + mcUrl2);
+		return callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, mcUrl, properties, params, StringPool.BLANK,
 				StringPool.BLANK);
 	}
 
@@ -326,9 +337,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		try {
 
-			System.out.println("=============mcDO confirm========");
+			_log.info("=============mcDO confirm========");
 			_log.info("=============mcDO confir");
-			long dossierId = VTPayTerm.getDossierIdNoByOrderId(order_id);
+			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 			_log.info(dossier);
@@ -381,6 +392,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				mac.init(signingKey);
 				String _tmp_check_sum_encode = toHexString(
 						mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
+				_log.info("checksum==========" + _tmp_check_sum_encode);
 				if (!_tmp_check_sum_encode.equals(check_sum)) {
 					return confirmResponseData(billcode, order_id, merchant_code, check_sum,
 							paymentFile.getPaymentAmount(), PayGateTerm.ERROR_CODE_02);
@@ -406,9 +418,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		try {
 
-			System.out.println("=============call to mc rec===================");
+			_log.info("=============call to mc rec===================" + billcode + cust_msisdn + error_code
+					+ merchant_code + order_id + payment_status + trans_amount + vt_transaction_id + check_sum);
 
-			long dossierId = VTPayTerm.getDossierIdNoByOrderId(order_id);
+			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -426,13 +439,19 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			mac.init(signingKey);
 			String check_sum_encoded = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
 
-			if (PayGateTerm.ERROR_CODE_00.equals(error_code)) {
+			_log.info("payment_status====" + payment_status);
+			_log.info("error_code====" + error_code);
+			_log.info("paymentFile.getPaymentMethod()====" + paymentFile.getPaymentMethod());
+			if (payment_status == 1 && PayGateTerm.ERROR_CODE_00.equals(error_code)
+					&& !PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY.equals(paymentFile.getPaymentMethod())) {
+
 				JSONObject action = JSONFactoryUtil.createJSONObject();
 
 				if (dossier.isOnline()) {
 					// TODO: call api doaction to DVC
 					action = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE);
-					String endPoint = action.getString(PayGateTerm.URL) + PayGateTerm.ENDPOINT_DVCRECEIVER;
+					String endPoint = action.getString(PayGateTerm.URL) + StringPool.SLASH
+							+ PayGateTerm.ENDPOINT_DVCRECEIVER;
 					HashMap<String, String> properties = new HashMap<String, String>();
 					properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 
@@ -441,13 +460,23 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					params.put(PayGateTerm.URL, action.getString(PayGateTerm.URL));
 					params.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 					params.put(PayGateTerm.ORDER_ID, order_id);
+					params.put(PayGateTerm.USERNAME, action.getString(PayGateTerm.USERNAME));
+					params.put(PayGateTerm.PWD, action.getString(PayGateTerm.PWD));
+
 					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 							properties, params, action.getString(PayGateTerm.USERNAME),
 							action.getString(PayGateTerm.PWD));
-					System.out.println("=====resPostDossier=========" + resPostDossier);
+					_log.info("=====resPostDossier=========" + resPostDossier);
 
 				} else {
 					// TODO: call api doaction to MC
+
+					PaymentFileActions actions = new PaymentFileActionsImpl();
+
+					// Change payment Status = 5
+					actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(),
+							paymentFile.getReferenceUid(), StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY,
+							JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 
 					action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
 					HashMap<String, String> properties = new HashMap<String, String>();
@@ -462,8 +491,21 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 							properties, params, action.getString(PayGateTerm.USERNAME),
 							action.getString(PayGateTerm.PWD));
 
-					System.out.println("=====resPostDossier=========" + resPostDossier);
+					_log.info("=====resPostDossier=========" + resPostDossier);
 				}
+			}
+
+			String conf_merchant_code = config.getJSONObject(PayGateTerm.MERCHANT_CODE) != null
+					? config.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.VALUE)
+					: StringPool.BLANK;
+			if (!conf_merchant_code.equals(merchant_code)) {
+				return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_01);
+			}
+
+			String invoiceNo = VTPayTerm.getInvoiceNoByBillCode(billcode);
+			if (!paymentFile.getInvoiceNo().equals(invoiceNo)) {
+				return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
+						PayGateTerm.ERROR_CODE_01);
 			}
 
 			return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_00);
@@ -478,11 +520,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject mcSearchResult(User user, ServiceContext serviceContext, String order_id, String billcode,
 			String cust_msisdn, long trans_amount) {
-		System.out.println("=============call to MCsearch===================");
+		_log.info(
+				"=============call to MCsearch===================" + order_id + billcode + cust_msisdn + trans_amount);
 
 		try {
 
-			long dossierId = VTPayTerm.getDossierIdNoByOrderId(order_id);
+			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -519,7 +562,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			JSONObject searchResult = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, url_search, properties,
 					params, StringPool.BLANK, StringPool.BLANK);
 
-			invokeReceiveResult(user, serviceContext, searchResult, billcode, cust_msisdn, trans_amount);
+			_log.info("searchResult===" + searchResult);
+			// auto update payment status and call next action
+			// invokeReceiveResult(user, serviceContext, searchResult, billcode, cust_msisdn, trans_amount);
 			return searchResult;
 
 		} catch (Exception e) {
@@ -532,11 +577,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public JSONObject dvcReceiveResult(User user, ServiceContext serviceContext, String url, long groupId,
 			String actionCode, String order_id, String username, String pwd) {
 
-		System.out.println("=============call to DVC result===================");
+		_log.info("=============call to DVC result===================" + username + "  " + pwd);
 
 		try {
 
-			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, order_id);
+			String dossierNo = VTPayTerm.getDossierNoByOrderId(order_id);
+			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+			_log.info(groupId + "dossierId=====" + dossier);
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(),
@@ -545,8 +592,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
 			// Change payment Status = 5
-			actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(),
-					paymentFile.getReferenceUid(), StringPool.BLANK, "Keypay",
+			paymentFile = actions.updateFileConfirm(paymentFile.getGroupId(), paymentFile.getDossierId(),
+					paymentFile.getReferenceUid(), StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY,
 					JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
 
 			HashMap<String, String> properties = new HashMap<String, String>();
@@ -556,10 +603,49 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put(PayGateTerm.ACTION_CODE, actionCode);
+
+			JSONObject payment = JSONFactoryUtil.createJSONObject();
+			payment.put(PaymentFileTerm.PAYMENT_REQUEST, 3);
+			payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+			payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+			payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+			payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+			payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+			payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY);
+			params.put(PayGateTerm.PAYMENT, payment.toString());
+
+			long dossierActionId = dossier.getDossierActionId();
+			DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+			long serviceProcessId = dossierAction.getServiceProcessId();
+			String stepCode = dossierAction.getStepCode();
+			if (stepCode != null) {
+
+				List<ProcessAction> processActionList = ProcessActionLocalServiceUtil
+						.getProcessActionByG_SPID_PRESC(groupId, serviceProcessId, stepCode);
+
+				for (ProcessAction processAction : processActionList) {
+
+					_log.info(processAction.getActionCode());
+					_log.info(processAction.getRequestPayment());
+					if (processAction.getActionCode().equals(actionCode)) {
+
+						payment = JSONFactoryUtil.createJSONObject();
+						payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
+						payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+						payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+						payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+						payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+						payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY);
+						params.put(PayGateTerm.PAYMENT, payment.toString());
+					}
+				}
+			}
+
+			_log.info("params============" + params);
 			JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint, properties,
 					params, username, pwd);
 
-			System.out.println("=====resPostDossier=========" + resPostDossier);
+			_log.info("=====resPostDossier=========" + resPostDossier);
 			return resPostDossier;
 
 		} catch (Exception e) {
