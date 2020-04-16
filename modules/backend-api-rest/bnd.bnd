@@ -14,9 +14,9 @@ Include-Resource: \
 	@jcaptcha-2.0-alpha-1-SNAPSHOT.jar,\
 	@jcaptcha-api-1.0.jar,\
 	@filters-2.0.235.jar, \
-	@jackson-annotations-2.9.6.jar,\
-	@jackson-core-2.9.6.jar,\
-	@jackson-databind-2.9.6.jar
+	@jackson-annotations-2.9.8.jar,\
+	@jackson-core-2.9.8.jar,\
+	@jackson-databind-2.9.8.jar
 -includeresource: 
 	@DKDN.GTVT.1.0.jar;lib:=true
 Import-Package: *;resolution:=optional
