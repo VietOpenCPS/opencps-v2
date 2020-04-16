@@ -15,7 +15,8 @@ public class MD5 {
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         log.info("String input secure : " + value);
         final StringBuilder sbMd5Hash = new StringBuilder();
-        final MessageDigest m = MessageDigest.getInstance(KeyPayTerm.SHA_256);
+//        final MessageDigest m = MessageDigest.getInstance(KeyPayTerm.SHA_256);
+        final MessageDigest m = MessageDigest.getInstance(KeyPayTerm.VALUE_MD5);
         m.update(value.getBytes(KeyPayTerm.VALUE_UTF_8));
 
         final byte data[] = m.digest();
