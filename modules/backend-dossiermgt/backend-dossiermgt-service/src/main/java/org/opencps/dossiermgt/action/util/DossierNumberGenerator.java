@@ -132,7 +132,7 @@ public class DossierNumberGenerator {
 			String extractValuePattern = EXTRACT_VALUE_PATTERN;
 			String datetimePattern = DATETIME_PATTERN;
 			String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
-					codePatternServiceDate, codePatternGov, dayPattern, monthPattern, yearPattern,
+					codePatternServiceDate, codePatternGov, codePatternGovDate, dayPattern, monthPattern, yearPattern,
 					dynamicVariablePattern, datetimePattern };
 
 			Date now = new Date();
