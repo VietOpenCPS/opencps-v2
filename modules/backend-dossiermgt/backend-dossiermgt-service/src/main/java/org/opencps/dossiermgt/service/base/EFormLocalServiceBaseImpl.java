@@ -51,6 +51,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.dossiermgt.model.EForm;
 import org.opencps.dossiermgt.service.EFormLocalService;
+import org.opencps.dossiermgt.service.persistence.AccessTokenPersistence;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
@@ -474,6 +475,44 @@ public abstract class EFormLocalServiceBaseImpl extends BaseLocalServiceImpl
 	@Override
 	public EForm updateEForm(EForm eForm) {
 		return eFormPersistence.update(eForm);
+	}
+
+	/**
+	 * Returns the access token local service.
+	 *
+	 * @return the access token local service
+	 */
+	public org.opencps.dossiermgt.service.AccessTokenLocalService getAccessTokenLocalService() {
+		return accessTokenLocalService;
+	}
+
+	/**
+	 * Sets the access token local service.
+	 *
+	 * @param accessTokenLocalService the access token local service
+	 */
+	public void setAccessTokenLocalService(
+		org.opencps.dossiermgt.service.AccessTokenLocalService accessTokenLocalService) {
+		this.accessTokenLocalService = accessTokenLocalService;
+	}
+
+	/**
+	 * Returns the access token persistence.
+	 *
+	 * @return the access token persistence
+	 */
+	public AccessTokenPersistence getAccessTokenPersistence() {
+		return accessTokenPersistence;
+	}
+
+	/**
+	 * Sets the access token persistence.
+	 *
+	 * @param accessTokenPersistence the access token persistence
+	 */
+	public void setAccessTokenPersistence(
+		AccessTokenPersistence accessTokenPersistence) {
+		this.accessTokenPersistence = accessTokenPersistence;
 	}
 
 	/**
@@ -2587,6 +2626,10 @@ public abstract class EFormLocalServiceBaseImpl extends BaseLocalServiceImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.dossiermgt.service.AccessTokenLocalService.class)
+	protected org.opencps.dossiermgt.service.AccessTokenLocalService accessTokenLocalService;
+	@BeanReference(type = AccessTokenPersistence.class)
+	protected AccessTokenPersistence accessTokenPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.ActionConfigLocalService.class)
 	protected org.opencps.dossiermgt.service.ActionConfigLocalService actionConfigLocalService;
 	@BeanReference(type = ActionConfigPersistence.class)

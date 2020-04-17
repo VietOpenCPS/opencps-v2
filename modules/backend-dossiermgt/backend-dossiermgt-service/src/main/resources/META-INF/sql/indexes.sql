@@ -1,3 +1,5 @@
+create index IX_435DDDE1 on opencps_accesstoken (groupId, className[$COLUMN_LENGTH:255$]);
+
 create index IX_29353100 on opencps_actionconfig (groupId, actionCode[$COLUMN_LENGTH:255$]);
 create index IX_1833407B on opencps_actionconfig (groupId, eventType);
 create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], companyId);

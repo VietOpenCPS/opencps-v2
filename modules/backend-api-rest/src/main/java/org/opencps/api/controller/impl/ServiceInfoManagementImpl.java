@@ -310,7 +310,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-
+                        /*
 			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
@@ -321,9 +321,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				builder = Response.ok(results);
 				builder.tag(etag);
 			}
-
+                 
 		    builder.cacheControl(cc);
+                    
 		    return builder.build();
+                    */
+                    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

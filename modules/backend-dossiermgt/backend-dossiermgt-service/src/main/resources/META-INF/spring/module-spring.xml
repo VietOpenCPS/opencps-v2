@@ -7,6 +7,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 >
+	<bean class="org.opencps.dossiermgt.service.impl.AccessTokenLocalServiceImpl" id="org.opencps.dossiermgt.service.AccessTokenLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.AccessTokenPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.AccessTokenPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ActionConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ActionConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ActionConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ActionConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.BookingLocalServiceImpl" id="org.opencps.dossiermgt.service.BookingLocalService" />
