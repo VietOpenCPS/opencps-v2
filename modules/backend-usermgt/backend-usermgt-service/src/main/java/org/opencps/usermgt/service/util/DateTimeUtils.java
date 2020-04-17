@@ -94,5 +94,15 @@ public class DateTimeUtils {
 		return dateFormat.format(calendar.getTime());
 	}
 
+	public static Date increment(Date date, int incrementMinute) {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(date);
+
+		calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + incrementMinute);
+
+		return calendar.getTime();
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(DateTimeUtils.class);
 }

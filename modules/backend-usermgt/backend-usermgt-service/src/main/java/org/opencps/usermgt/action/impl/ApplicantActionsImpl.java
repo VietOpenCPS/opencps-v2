@@ -763,6 +763,16 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId());
 		
 		if(applicant != null) {
+			List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(applicant.getApplicantIdNo());
+			if(applicants != null) {
+				for(Applicant applicant2 : applicants) {
+					if(applicant2.getGroupId() == 0) {
+						applicant2.setContactEmail(newEmail);
+						applicant2 = ApplicantLocalServiceUtil.updateApplicant(applicant2);
+						break;
+					}
+				}
+			}
 			applicant.setContactEmail(newEmail);
 			applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
 		}
