@@ -18,8 +18,9 @@
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>/DocumentPorcessorServlet</welcome-file>
+		<welcome-file>/DVCQGSSOCallbackServlet</welcome-file>
 	</welcome-file-list>
+	
 
 	<security-constraint>
 		<web-resource-collection>
