@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -95,6 +96,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String END = "end";
 
 	private static final String START = "start";
+
+	private static final String SORT = "sort";
+	private static final String SORT_ASC = "asc";
 
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
@@ -246,6 +250,17 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 								disjunction.add(RestrictionsFactoryUtil.eq("groupId", groupId));
 							}
 							dynamicQuery.add(disjunction);
+						}
+
+						if (Validator.isNotNull(message.getString(SORT))
+								&& message.getString(SORT).indexOf(StringPool.UNDERLINE) > 0) {
+							String sortKey = message.getString(SORT).split(StringPool.UNDERLINE)[0];
+							String sortType = message.getString(SORT).split(StringPool.UNDERLINE)[1];
+							if (SORT_ASC.equals(sortType)) {
+								dynamicQuery.addOrder(OrderFactoryUtil.asc(sortKey));
+							} else {
+								dynamicQuery.addOrder(OrderFactoryUtil.desc(sortKey));
+							}
 						}
 	
 						method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod("dynamicQuery",
