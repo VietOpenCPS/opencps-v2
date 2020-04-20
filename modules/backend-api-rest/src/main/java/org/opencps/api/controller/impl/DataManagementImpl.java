@@ -1441,13 +1441,27 @@ public class DataManagementImpl implements DataManagement {
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			
+			HashMap<String, String> _dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+					query.getService());
 
-			if (_dictItemDVCQGMap == null) {
-
-				_dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
-						query.getService());
-
+			/*if(Validator.isNotNull(query.getService()) && query.getService().equals("LayDanhMucLinhVuc")) {
+				if(_domainDictItemDVCQGMap == null) {
+					_domainDictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+							query.getService());
+					_dictItemDVCQGMap = _domainDictItemDVCQGMap;
+				}
 			}
+			
+			if(Validator.isNotNull(query.getService()) && query.getService().equals("LayDanhMucCoQuan")) {
+				if(_govAgencyDictItemDVCQGMap == null) {
+					_govAgencyDictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+							query.getService());
+					_dictItemDVCQGMap = _govAgencyDictItemDVCQGMap;
+				}
+			}
+			*/
+			
 
 			List<Document> documents = (List<Document>) jsonData.get("data");
 			long collectionId = 0;
@@ -1503,7 +1517,9 @@ public class DataManagementImpl implements DataManagement {
 		}
 	}
 
-	private static HashMap<String, String> _dictItemDVCQGMap = null;
+	private static HashMap<String, String> _domainDictItemDVCQGMap = null;
+	private static HashMap<String, String> _govAgencyDictItemDVCQGMap = null;
+	public static String _service = StringPool.BLANK;
 
 	@Override
 	public Response doMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
