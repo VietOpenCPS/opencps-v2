@@ -53,6 +53,7 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.model.AccessToken;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierStatusMapping;
@@ -60,6 +61,7 @@ import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
+import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
@@ -1953,11 +1955,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put("service", "DongBoHoSoMC");
 				result = syncData(serverConfig, body);
 				_log.debug("syncDossierAndDossierStatus " + result.toJSONString());
-				if (result.has("error_code") && "00".equals(result.getString("error_code"))) {
+				if (result.has("error_code") && GetterUtil.getInteger(result.getString("error_code")) == 0) {
 					body = JSONFactoryUtil.createJSONObject();
 					synsObjects = JSONFactoryUtil.createJSONArray();
 					JSONObject _tmp = createSyncDossierStatusBodyRequest(groupId, dossier);
 					synsObjects.put(_tmp);
+					_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
 					body.put("service", "CapNhatTienDoHoSoMC");
 					body.put("data", synsObjects);
 					result = syncData(serverConfig, body);
