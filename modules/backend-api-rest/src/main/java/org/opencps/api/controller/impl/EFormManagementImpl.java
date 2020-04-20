@@ -446,7 +446,7 @@ public class EFormManagementImpl implements EFormManagement{
 					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 							attachmentFilename);
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 					return responseBuilder.build();
 

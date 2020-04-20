@@ -151,7 +151,7 @@ public class CommentManagementImpl implements CommentManagement {
 				String returnFileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
 				
 				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, returnFileName)
-						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+						.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}else{

@@ -116,7 +116,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 
 				String attachmentFilename = String.format(ConstantUtils.ATTACHMENT_FILENAME, fileName);
 				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+						.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {
@@ -295,7 +295,7 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), fileName);
 				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-						.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+						.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {

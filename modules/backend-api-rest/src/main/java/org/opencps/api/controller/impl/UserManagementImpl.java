@@ -84,7 +84,7 @@ public class UserManagementImpl implements UserManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
+					.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
 
 			return responseBuilder.build();
 
@@ -117,7 +117,7 @@ public class UserManagementImpl implements UserManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
+					.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.API_IMAGE_EXTENSION + type);
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -525,7 +525,7 @@ public class UserManagementImpl implements UserManagement {
 			String buildFileName = String.format(MessageUtil.getMessage(ConstantUtils.DATACER_PATH), PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH, employee.getEmail());
 			File targetFile = new File(buildFileName);
 
-			ImageIO.write(image, ConstantUtils.PNG_EXTENSION, targetFile);
+			ImageIO.write(image, ConstantUtils.PNG, targetFile);
 			
 			_log.info("Absolute Path buildFileName " + buildFileName);
 			
@@ -613,14 +613,14 @@ public class UserManagementImpl implements UserManagement {
 
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG_EXTENSION;
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG;
 			File targetFile = new File(buildFileName);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), targetFile.getName());
 			
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
+					.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 			return responseBuilder.build();
 			
@@ -644,14 +644,14 @@ public class UserManagementImpl implements UserManagement {
 
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, id);
 			
-			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG_EXTENSION;
+			String buildFileName = PropsUtil.get(PropsKeys.LIFERAY_HOME) + StringPool.FORWARD_SLASH + ConstantUtils.DATA_CER + employee.getEmail() + StringPool.PERIOD + ConstantUtils.PNG;
 			File targetFile = new File(buildFileName);
 
 			ResponseBuilder responseBuilder = Response.ok((Object) targetFile);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), targetFile.getName());
 			
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_X509);
+					.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_X509);
 
 			return responseBuilder.build();
 

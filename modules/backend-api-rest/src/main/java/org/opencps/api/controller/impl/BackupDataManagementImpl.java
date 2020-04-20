@@ -183,7 +183,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							
 							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 									fileXmlName);
-							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -227,7 +227,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							
 							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 									fileXmlName);
-							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -288,7 +288,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 					
 					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 							fileXmlName);
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 					return responseBuilder.build();
 				}
@@ -466,7 +466,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 						
 						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 								fileXmlName);
-						responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
 
 						return responseBuilder.build();
 					}
@@ -509,7 +509,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							
 							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 									fileXmlName);
-							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -546,7 +546,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							
 							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 									fileXmlName);
-							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -608,7 +608,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 							
 							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 									fileXmlName);
-							responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 							return responseBuilder.build();
 						}
@@ -1183,7 +1183,7 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 			
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 					backupmasterfilename);
-			responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
 
 			return responseBuilder.build();			
 		} catch (Exception e) {

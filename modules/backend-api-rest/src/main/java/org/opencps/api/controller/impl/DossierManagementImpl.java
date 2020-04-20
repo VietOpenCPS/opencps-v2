@@ -821,7 +821,6 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			String agency = query.getAgency();
-			
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
 			if (Validator.isNotNull(serviceCode)) {
@@ -3123,6 +3122,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Dossier dossier = null;
+
 		if (Validator.isNumber(id)) {
 
 			dossier = DossierLocalServiceUtil.fetchDossier(Integer.parseInt(id));
@@ -3322,9 +3322,9 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject payload;
 			try {
 				payload = JSONFactoryUtil.createJSONObject(log.getPayload());
-				if (payload.has(DossierActionTerm.DOSSIER_ACTION_ID)) {
+				if (payload.has(DossierActionTerm.DOSSIERACTION_ID)) {
 					mapFiles.put(
-						payload.getLong(DossierActionTerm.DOSSIER_ACTION_ID),
+						payload.getLong(DossierActionTerm.DOSSIERACTION_ID),
 						payload.getJSONArray(DossierActionTerm.FILES));
 				}
 			}
@@ -3985,7 +3985,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
@@ -3993,7 +3993,7 @@ public class DossierManagementImpl implements DossierManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}
@@ -4050,7 +4050,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
@@ -4058,7 +4058,7 @@ public class DossierManagementImpl implements DossierManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}

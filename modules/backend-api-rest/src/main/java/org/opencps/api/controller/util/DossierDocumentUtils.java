@@ -796,9 +796,9 @@ public class DossierDocumentUtils {
 				JSONObject payload;
 				try {
 					payload = JSONFactoryUtil.createJSONObject(log.getPayload());
-					if (payload.has(DossierActionTerm.DOSSIER_ACTION_ID)) {
+					if (payload.has(DossierActionTerm.DOSSIERACTION_ID)) {
 						mapFiles.put(
-							payload.getLong(DossierActionTerm.DOSSIER_ACTION_ID),
+							payload.getLong(DossierActionTerm.DOSSIERACTION_ID),
 							payload.getJSONArray(DossierActionTerm.FILES));
 					}
 				}

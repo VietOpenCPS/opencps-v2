@@ -161,7 +161,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					JSONObject jsonDataStatusText = getStatusText(model.getGroupId(), DOSSIER_SATUS_DC_CODE, lstProcessSteps.get(0).getDossierStatus(), lstProcessSteps.get(0).getDossierSubStatus());
 					payload.put(DossierTerm.DOSSIER_STATUS_TEXT, jsonDataStatusText != null ? jsonDataStatusText.getString(lstProcessSteps.get(0).getDossierStatus()) : StringPool.BLANK);					
 				}
-				payload.put(DossierActionTerm.DOSSIER_ACTION_ID, model.getDossierActionId());
+				payload.put(DossierActionTerm.DOSSIERACTION_ID, model.getDossierActionId());
 				payload.put(DossierActionTerm.JOB_POS_NAME, jobPosName);
 				payload.put(DossierActionTerm.STEP_NAME, model.getActionName());
 				payload.put(DossierActionTerm.STEP_CODE, model.getStepCode());

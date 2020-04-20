@@ -111,6 +111,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_REQUESTBODYINCORRECT)).build();
 		}
 	}
+
 	@Override
 	public Response doMappingServiceInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String serviceCode,
