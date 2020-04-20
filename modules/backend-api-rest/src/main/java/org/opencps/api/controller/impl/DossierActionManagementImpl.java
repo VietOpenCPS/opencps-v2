@@ -2,6 +2,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -61,7 +63,6 @@ import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessSequence;
 import org.opencps.dossiermgt.model.ProcessStep;
@@ -70,7 +71,6 @@ import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
@@ -92,7 +92,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug("groupId: " + groupId + "| dossierId: " + dossierId);
 
@@ -103,8 +103,8 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			// }
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params =
@@ -428,7 +428,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				result.setTotal(0);
 			}
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -444,15 +444,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug(
 				"groupId: " + groupId + "| dossierId: " + dossierId +
 					"| actionId: " + actionId);
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params =
@@ -477,7 +477,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				sorts, query.getStart(), query.getEnd(), serviceContext);
 
 			DossierDetailNextActionModel result =
-				DossierActionUtils.mappingToDetailNextActions(jsonData);
+				DossierActionUtils.mappingToDetailNextActions(groupId, jsonData);
 			// Check if user is delegate user
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			if (dossier != null) {
@@ -504,7 +504,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				result.setDossierParts(dossierParts);
 			}
 			_log.debug(result);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -520,7 +520,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			_log.debug(
 				"groupId: " + groupId + "| dossierId: " + dossierId +
@@ -566,7 +566,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			else {
 				result.setTotal(0);
 			}
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -586,7 +586,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 		try {
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			Dossier dossier = null;
 			dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -670,10 +670,10 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 					}
 					result.getData().addAll(datas);
 				}
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
-				return Response.status(403).entity(null).build();
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(null).build();
 			}
 		}
 		catch (Exception e) {
@@ -692,7 +692,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		try {
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 			String referenceUid = null;
 			if (dossierId == 0) {
@@ -705,7 +705,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			listContacts = DossierActionUtils.mappingToDoListContacts(
 				(List<Dossier>) jsonData.get("ListContacts"));
 
-			return Response.status(200).entity(listContacts).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(listContacts).build();
 
 		}
 		catch (Exception e) {
@@ -850,7 +850,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			}
 
 			// _log.info("Result: "+ results);
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 		}
 		catch (Exception e) {

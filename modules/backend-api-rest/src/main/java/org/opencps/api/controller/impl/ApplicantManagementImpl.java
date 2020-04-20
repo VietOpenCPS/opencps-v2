@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -45,6 +46,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
@@ -97,7 +99,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -140,7 +142,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							: "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -180,19 +182,19 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new UnauthenticationException();
 			}
 
-			//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
-			//				throw new UnauthorizationException();
-			//			}
+//			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
+//				throw new UnauthorizationException();
+//			}
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
@@ -215,7 +217,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						.addAll(ApplicantUtils.mappingToApplicantResults((List<Document>) jsonData.get("data")));
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -257,7 +259,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -274,7 +276,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantModel results = new ApplicantModel();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -331,7 +333,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -365,7 +367,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -409,7 +411,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -425,7 +427,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
 		Applicant applicant = null;
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -454,7 +456,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				JSONObject result = JSONFactoryUtil.createJSONObject(applicant.getProfile());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -470,7 +472,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		// TODO Auto-generated method stub
 		ApplicantActions actions = new ApplicantActionsImpl();
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 
 			if (!auth.isAuth(serviceContext)) {
@@ -509,7 +511,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				result.put("key", key);
 				result.put("value", input.getValue());
 
-				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} else {
 				throw new UnauthorizationException();
 			}
@@ -563,7 +565,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				results = ApplicantUtils.mappingToApplicantModel(applicant);
 
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 			} else {
 				throw new UnauthorizationException();
@@ -608,14 +610,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			applicant = actions.activationApplicant(serviceContext, applicantId, code);
 
-			//			results = ApplicantUtils.mappingToApplicantModel(applicant);
-
+//			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 
 			resultObj.put("email", applicant.getContactEmail());
 			resultObj.put("token", applicant.getTmpPass());
 
-			return Response.status(200).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -675,7 +677,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	@Override
 	public Response verifyApplicantInfo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String applicantIdNo, String applicantName, String contactName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String apiUrl = "https://api.ngsp.gov.vn/apiCSDLDKDN/1.0/chiTietDoanhNghiep";
 		String access_token = "cd21bef3-e484-3ce9-9045-84c240e9803b";
 
@@ -724,7 +726,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 										+ "Chủ sở hữu doanh nghiệp có thể thông tin chưa chính xác!");
 					}
 				}
-				return Response.status(200).entity(returnObj.toJSONString()).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(returnObj.toJSONString()).build();
 			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -747,7 +749,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		try {
 
-			if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+			if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
 				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 
 				String captchaId = request.getSession().getId();
@@ -760,7 +762,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				if (file.exists()) {
 					BufferedImage challengeImage = instance.getImageChallengeForID(captchaId, Locale.US);
 					try {
-						ImageIO.write(challengeImage, "png", file);
+						ImageIO.write(challengeImage, ConstantUtils.PNG, file);
 
 					} catch (IOException e) {
 						_log.debug(e);
@@ -818,7 +820,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantModel result = new ApplicantModel();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 
@@ -841,7 +843,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (isAdmin) {
 
 			} else {
-				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String captchaId = request.getSession().getId();
 					try {
@@ -913,7 +915,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							: "FAILED"));
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -950,7 +952,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			if (isAdmin) {
 
 			} else {
-				if (Validator.isNotNull(captchaType) && captchaType.equals("jcaptcha")) {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".equals(captchaType)) {
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String captchaId = request.getSession().getId();
 					try {
@@ -1115,7 +1117,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		ApplicantActions actions = new ApplicantActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		EmployeeAccountModel employeeAccountModel = new EmployeeAccountModel();
 
 		try {
@@ -1132,7 +1134,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			} else {
 
-				return Response.status(200).entity(employeeAccountModel).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(employeeAccountModel).build();
 
 			}
 

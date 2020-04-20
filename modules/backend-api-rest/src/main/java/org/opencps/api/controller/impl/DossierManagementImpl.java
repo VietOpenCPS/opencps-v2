@@ -1,4 +1,3 @@
-
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
@@ -66,6 +65,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
@@ -126,10 +126,12 @@ import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
 import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
@@ -201,6 +203,8 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_CORRECTING = "correcting";
 	public static final String RT_SUBMITTING = "submitting";
 
+	public static final String ALL_AGENCY = "all";
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiers(
@@ -236,7 +240,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
 			String agency = query.getAgency();
-			if ("all".equals(agency)) {
+			if (ALL_AGENCY.equals(agency)) {
 				agency = StringPool.BLANK;
 			}
 			if (Validator.isNull(agency)) {
@@ -465,7 +469,7 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!auth2.isAdmin(serviceContext, "admin")) {
 				params.put(DossierTerm.USER_ID, user.getUserId());
 			}
-			params.put("secetKey", query.getSecetKey());
+			params.put(DossierTerm.SECRET_KEY, query.getSecetKey());
 			params.put(DossierTerm.STATE, state);
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
 			params.put(DossierTerm.CERT_NO, certNo);
@@ -600,7 +604,7 @@ public class DossierManagementImpl implements DossierManagement {
 					(List<Document>) jsonData.get("data"), userId,
 					query.getAssigned()));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -619,7 +623,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		// _log.info("userId: "+userId);
 		BackendAuth auth = new BackendAuthImpl();
@@ -677,7 +681,7 @@ public class DossierManagementImpl implements DossierManagement {
 									strSubStatusStep.append(subStatusStep);
 								}
 								else {
-									strSubStatusStep.append("empty");
+									strSubStatusStep.append(DossierTerm.EMPTY);
 								}
 							}
 							else {
@@ -688,7 +692,7 @@ public class DossierManagementImpl implements DossierManagement {
 									strSubStatusStep.append(subStatusStep);
 								}
 								else {
-									strSubStatusStep.append("empty");
+									strSubStatusStep.append(DossierTerm.EMPTY);
 								}
 							}
 						}
@@ -705,28 +709,28 @@ public class DossierManagementImpl implements DossierManagement {
 					for (int i = 0; i < stepArr.length; i++) {
 						if (i == 0) {
 							StringBuilder sbParams = new StringBuilder();
-							if (stepArr[i].contains("x")) {
+							if (stepArr[i].contains(DossierTerm.STEP_X)) {
 								for (int j = 0; j < 9; j++) {
 									if (j == 0) {
 										sbParams.append(
-											userId + "_" +
+											userId + StringPool.UNDERLINE +
 												stepArr[i].replace(
-													"x", String.valueOf(j)) +
-												"_" + assigned);
+													DossierTerm.STEP_X, String.valueOf(j)) +
+												StringPool.UNDERLINE + assigned);
 									}
 									else {
 										sbParams.append(StringPool.COMMA);
 										sbParams.append(
-											userId + "_" +
+											userId + StringPool.UNDERLINE +
 												stepArr[i].replace(
-													"x", String.valueOf(j)) +
-												"_" + assigned);
+													DossierTerm.STEP_X, String.valueOf(j)) +
+												StringPool.UNDERLINE + assigned);
 									}
 								}
 							}
 							else {
 								sbParams.append(
-									userId + "_" + stepArr[i] + "_" + assigned);
+									userId + StringPool.UNDERLINE + stepArr[i] + StringPool.UNDERLINE + assigned);
 							}
 							//
 							strAssignedUserId.append(sbParams.toString());
@@ -735,28 +739,28 @@ public class DossierManagementImpl implements DossierManagement {
 							strAssignedUserId.append(StringPool.COMMA);
 							//
 							StringBuilder sbParams = new StringBuilder();
-							if (stepArr[i].contains("x")) {
+							if (stepArr[i].contains(DossierTerm.STEP_X)) {
 								for (int j = 0; j < 9; j++) {
 									if (j == 0) {
 										sbParams.append(
-											userId + "_" +
+											userId + StringPool.UNDERLINE +
 												stepArr[i].replace(
-													"x", String.valueOf(j)) +
-												"_" + assigned);
+													DossierTerm.STEP_X, String.valueOf(j)) +
+												StringPool.UNDERLINE + assigned);
 									}
 									else {
 										sbParams.append(StringPool.COMMA);
 										sbParams.append(
-											userId + "_" +
+											userId + StringPool.UNDERLINE +
 												stepArr[i].replace(
-													"x", String.valueOf(j)) +
-												"_" + assigned);
+													DossierTerm.STEP_X, String.valueOf(j)) +
+												StringPool.UNDERLINE + assigned);
 									}
 								}
 							}
 							else {
 								sbParams.append(
-									userId + "_" + stepArr[i] + "_" + assigned);
+									userId + StringPool.UNDERLINE + stepArr[i] + StringPool.UNDERLINE + assigned);
 							}
 							//
 							strAssignedUserId.append(sbParams.toString());
@@ -1030,7 +1034,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.setTotal(0);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -1045,7 +1049,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(
 				groupId, company, user, serviceContext,
@@ -1066,9 +1070,9 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String secretKey) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String secretCode =
-			GetterUtil.getString(header.getHeaderString("secretCode"));
+			GetterUtil.getString(header.getHeaderString(DossierTerm.SECRET_CODE));
 		// _log.info("secretCode: "+secretCode);
 		// _log.info("secretKey: "+secretKey);
 		DossierPermission dossierPermission = new DossierPermission();
@@ -1097,7 +1101,7 @@ public class DossierManagementImpl implements DossierManagement {
 						DossierUtils.mappingForGetDetail(
 							dossier, user.getUserId());
 
-					return Response.status(200).entity(result).build();
+					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 				catch (Exception e) {
 					_log.debug(e);
@@ -1117,7 +1121,7 @@ public class DossierManagementImpl implements DossierManagement {
 						DossierUtils.mappingForGetDetail(
 							dossier, user.getUserId());
 
-					return Response.status(200).entity(result).build();
+					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 				catch (Exception e) {
 					_log.debug(e);
@@ -1145,7 +1149,7 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 			}
 
@@ -1163,7 +1167,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		DossierInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierActions actions = new DossierActionsImpl();
@@ -1251,6 +1255,8 @@ public class DossierManagementImpl implements DossierManagement {
 			// true, input.getApplicantNote(),
 			// Integer.valueOf(input.getOriginality()), serviceContext);
 			//
+			_log.debug("UPDATE DOSSIER: " + input.getCityCode());
+			
 			Dossier dossier = actions.initUpdateDossierFull(
 				groupId, id, input.getApplicantName(),
 				input.getApplicantIdType(), input.getApplicantIdNo(),
@@ -1273,7 +1279,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1286,7 +1292,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		// DossierPermission dossierPermission = new DossierPermission();
@@ -1321,7 +1327,7 @@ public class DossierManagementImpl implements DossierManagement {
 					result = DossierUtils.mappingForGetDetail(
 						removeDossier, user.getUserId());
 				}
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
@@ -1338,7 +1344,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -1361,7 +1367,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				cancellingDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1374,7 +1380,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -1397,7 +1403,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				correctingDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1411,7 +1417,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		DossierActions actions = new DossierActionsImpl();
@@ -1435,7 +1441,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				submittedDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -1450,7 +1456,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		// RESET submitting
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// DossierPermission dossierPermission = new DossierPermission();
 		// BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -1463,7 +1469,7 @@ public class DossierManagementImpl implements DossierManagement {
 				groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 				serviceContext);
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				DossierUtils.mappingForGetDetail(
 					dossierResetted, user.getUserId())).build();
 
@@ -1481,7 +1487,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		DoActionModel input, Long dueDate) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		// DossierPermission dossierPermission = new DossierPermission();
 		BackendAuth auth = new BackendAuthImpl();
@@ -1823,7 +1829,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// serviceContext);
 
 			// return
-			// Response.status(200).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
+			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc =
@@ -1846,10 +1852,10 @@ public class DossierManagementImpl implements DossierManagement {
 				// jsonData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID,
 				// dossierDocumentId);
 				// }
-				return Response.status(200).entity(dAction).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 			}
 			else {
-				return Response.status(405).entity(
+				return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
 					"{ \"error\": \"Lỗi xảy ra không thể thực hiện hành động!\" }").build();
 			}
 			// ProcessOption option = getProcessOption(dossier.getServiceCode(),
@@ -2008,10 +2014,10 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			JSONObject result =
 				action.getContacts(groupId, dossierId, referenceUid);
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		}
 		catch (PortalException e) {
 			return BusinessExceptionImpl.processException(e);
@@ -2024,7 +2030,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long dossierId,
 		String referenceUid) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -2041,7 +2047,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2055,7 +2061,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		String dossierno =
 			GetterUtil.getString(header.getHeaderString("dossierno"));
@@ -2082,7 +2088,7 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierLocalServiceUtil.updateDossier(dossier);
 			}
 
-			return Response.status(200).entity("OK").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.DOSSIER_OK).build();
 
 		}
 		catch (Exception e) {
@@ -2103,7 +2109,7 @@ public class DossierManagementImpl implements DossierManagement {
 		String certificateNumber) {
 
 		_log.info("START*********1");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("groupId: " + groupId);
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -2128,14 +2134,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 			JSONObject jsonData = actions.getDossiers(
 				user.getUserId(), company.getCompanyId(), groupId, params,
-				sorts, -1, -1, serviceContext);
+				sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 
 			Document data = ((List<Document>) jsonData.get("data")).get(0);
-			results.put("dossierId", data.get(DossierTerm.DOSSIER_ID));
+			results.put(DossierTerm.DOSSIER_ID, data.get(DossierTerm.DOSSIER_ID));
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(results)).build();
 
 		}
@@ -2151,7 +2157,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long dossierId,
 		String dossierPartNo, DossierMarkInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -2170,7 +2176,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkResultDetailModel result =
 				DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2184,7 +2190,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		long dossierId) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -2206,7 +2212,7 @@ public class DossierManagementImpl implements DossierManagement {
 			result.setTotal(lstDossierMark.size());
 			result.getData().addAll(outputs);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2220,7 +2226,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long dossierId,
 		String dossierPartNo) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -2237,7 +2243,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierMarkResultDetailModel result =
 				DossierMarkUtils.mappingDossierMarkDetailModel(dossierMark);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2251,7 +2257,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String body) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -2284,7 +2290,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				cancellingDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2299,7 +2305,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String body) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -2333,7 +2339,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				correctingDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2348,7 +2354,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String body) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
@@ -2382,7 +2388,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				endorsementDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2404,7 +2410,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long dossierId = GetterUtil.getLong(id);
 
 			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
@@ -2432,7 +2438,7 @@ public class DossierManagementImpl implements DossierManagement {
 				restrictDossier = proStep.getRestrictDossier();
 			}
 
-			return Response.status(200).entity(restrictDossier).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(restrictDossier).build();
 
 		}
 		catch (Exception e) {
@@ -2446,7 +2452,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String body) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -2481,7 +2487,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result = DossierUtils.mappingForGetDetail(
 				cancellingDossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -2521,7 +2527,7 @@ public class DossierManagementImpl implements DossierManagement {
 				pendding = dossierAction.getPending();
 			}
 
-			return Response.status(200).entity(pendding).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(pendding).build();
 
 		}
 		catch (Exception e) {
@@ -2538,7 +2544,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
@@ -2547,7 +2553,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 
-			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+			if (!query.getSecetKey().contentEquals(DossierTerm.OPENCPSV2)) {
 
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
@@ -2561,9 +2567,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
@@ -2586,7 +2592,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			params.put(DossierTerm.OWNER, owner);
 			params.put(DossierTerm.SUBMITTING, submitting);
-			params.put("pendding", pendding);
+			params.put(DossierTerm.PENDING, pendding);
 			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
 
 			Sort[] sorts = new Sort[] {
@@ -2636,7 +2642,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 					jsonDataPending = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupIdCXL,
-						paramPending, sorts, -1, -1, serviceContext);
+						paramPending, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 					_log.info("jsonDataPending: " + jsonDataPending);
 				}
 				if (jsonDataPending != null) {
@@ -2666,7 +2672,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			JSONObject jsonData = actions.getDossiers(
 				user.getUserId(), company.getCompanyId(), groupId, params,
-				sorts, -1, -1, serviceContext);
+				sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, serviceContext);
 
 			if (jsonData == null) {
 				jsonData = JSONFactoryUtil.createJSONObject();
@@ -2679,7 +2685,7 @@ public class DossierManagementImpl implements DossierManagement {
 					(List<Document>) jsonData.get("data"), userId,
 					query.getAssigned()));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -2694,7 +2700,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
@@ -2703,7 +2709,7 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			boolean isCitizen = false;
 
-			if (!query.getSecetKey().contentEquals("OPENCPSV2")) {
+			if (!query.getSecetKey().contentEquals(DossierTerm.OPENCPSV2)) {
 
 				if (!auth.isAuth(serviceContext)) {
 					throw new UnauthenticationException();
@@ -2717,9 +2723,9 @@ public class DossierManagementImpl implements DossierManagement {
 
 			if (query.getEnd() == 0) {
 
-				query.setStart(-1);
+				query.setStart(QueryUtil.ALL_POS);
 
-				query.setEnd(-1);
+				query.setEnd(QueryUtil.ALL_POS);
 
 			}
 
@@ -2834,7 +2840,7 @@ public class DossierManagementImpl implements DossierManagement {
 					(List<Document>) jsonData.get("data"), userId,
 					query.getAssigned()));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -2887,7 +2893,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		reAssign.getToUsers().addAll(lstUsers);
 
-		return Response.status(200).entity(reAssign).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(reAssign).build();
 	}
 
 	@Override
@@ -2896,7 +2902,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long dossierId,
 		String toUsers) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// _log.info("groupId: "+groupId);
 		// _log.info("toUsers: "+toUsers);
 		DossierActionUser oldDau = null;
@@ -2924,8 +2930,8 @@ public class DossierManagementImpl implements DossierManagement {
 							for (int i = 0; i < userArr.length(); i++) {
 								JSONObject jsonUser = userArr.getJSONObject(i);
 								if (jsonUser != null) {
-									userId = jsonUser.getLong("userId");
-									assigned = jsonUser.getInt("assigned");
+									userId = jsonUser.getLong(Field.USER_ID);
+									assigned = jsonUser.getInt(DossierTerm.ASSIGNED);
 									if (assigned > 0) {
 										moderator = 1;
 									}
@@ -3012,7 +3018,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-			return Response.status(200).entity(reAssign).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(reAssign).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -3025,7 +3031,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		Dossier dossier = null;
 
 		if (Validator.isNumber(id)) {
@@ -3098,7 +3104,7 @@ public class DossierManagementImpl implements DossierManagement {
 							dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT))) {
 					DossierMgtUtils.processSyncRollbackDossier(dossier);
 				}
-				return Response.status(200).entity(null).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 			}
 		}
 		
@@ -3110,7 +3116,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		// BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -3158,7 +3164,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			JSONObject result = getDossierProcessSequencesJSON(
 				groupId, dossier, serviceProcess);
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -3192,7 +3198,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 			lstLogs = DossierLogLocalServiceUtil.getByDossierAndType(
-				dossier.getDossierId(), "PROCESS_TYPE", QueryUtil.ALL_POS,
+				dossier.getDossierId(), DossierLogTerm.PROCESS_TYPE, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 		}
 		catch (PortalException e) {
@@ -3204,10 +3210,10 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject payload;
 			try {
 				payload = JSONFactoryUtil.createJSONObject(log.getPayload());
-				if (payload.has("dossierActionId")) {
+				if (payload.has(DossierActionTerm.DOSSIERACTION_ID)) {
 					mapFiles.put(
-						payload.getLong("dossierActionId"),
-						payload.getJSONArray("files"));
+						payload.getLong(DossierActionTerm.DOSSIERACTION_ID),
+						payload.getJSONArray(DossierActionTerm.FILES));
 				}
 			}
 			catch (JSONException e) {
@@ -3220,15 +3226,15 @@ public class DossierManagementImpl implements DossierManagement {
 				groupId, dossier.getDossierId());
 		if (dossierActionListCheck != null &&
 			dossierActionListCheck.size() == 1 &&
-			"400".equals(dossierActionListCheck.get(0).getStepCode())) {
+			DossierActionTerm.DONE_STEP.equals(dossierActionListCheck.get(0).getStepCode())) {
 		}
 		else {
 			for (ProcessSequence ps : lstSequences) {
 				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
-				sequenceObj.put("sequenceNo", ps.getSequenceNo());
-				sequenceObj.put("sequenceName", ps.getSequenceName());
-				sequenceObj.put("sequenceRole", ps.getSequenceRole());
-				sequenceObj.put("durationCount", ps.getDurationCount());
+				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, ps.getSequenceNo());
+				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, ps.getSequenceName());
+				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, ps.getSequenceRole());
+				sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, ps.getDurationCount());
 
 				if (lastDA != null &&
 					lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
@@ -3249,7 +3255,7 @@ public class DossierManagementImpl implements DossierManagement {
 					: null;
 				if (lastAction != null) {
 					sequenceObj.put(
-						"startDate", lastAction.getCreateDate().getTime());
+						ProcessSequenceTerm.START_DATE, lastAction.getCreateDate().getTime());
 				}
 
 				if (lstDossierActions.size() > 0) {
@@ -3276,18 +3282,18 @@ public class DossierManagementImpl implements DossierManagement {
 								JSONObject assignUserObj =
 									JSONFactoryUtil.createJSONObject();
 								lstUsers.add(dau.getUserId());
-								assignUserObj.put("userId", dau.getUserId());
+								assignUserObj.put(Field.USER_ID, dau.getUserId());
 								// TODO: Not update user
 								Employee emp =
 									EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 										groupId, u.getUserId());
 								if (emp != null) {
 									assignUserObj.put(
-										"userName", emp.getFullName());
+										Field.USER_NAME, emp.getFullName());
 								}
 								else {
 									assignUserObj.put(
-										"userName", u.getFullName());
+										Field.USER_NAME, u.getFullName());
 								}
 
 								assignUserArr.put(assignUserObj);
@@ -3300,66 +3306,66 @@ public class DossierManagementImpl implements DossierManagement {
 						JSONObject assignUserObj =
 							JSONFactoryUtil.createJSONObject();
 						lstUsers.add(da.getUserId());
-						assignUserObj.put("userId", da.getUserId());
+						assignUserObj.put(Field.USER_ID, da.getUserId());
 						// TODO: Not update user
 						Employee emp =
 							EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 								groupId, da.getUserId());
 						if (emp != null) {
-							assignUserObj.put("userName", emp.getFullName());
+							assignUserObj.put(Field.USER_NAME, emp.getFullName());
 						}
 						else {
-							assignUserObj.put("userName", da.getUserName());
+							assignUserObj.put(Field.USER_NAME, da.getUserName());
 						}
 
 						assignUserArr.put(assignUserObj);
 					}
 				}
 
-				sequenceObj.put("assignUsers", assignUserArr);
+				sequenceObj.put(DossierActionTerm.ASSIGN_USERS, assignUserArr);
 
 				JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
 				for (DossierAction da : lstDossierActions) {
 					JSONObject actionObj = JSONFactoryUtil.createJSONObject();
 
 					actionObj.put(DossierActionTerm.USER_ID, da.getUserId());
-					actionObj.put("fromStepCode", da.getFromStepCode());
-					actionObj.put("fromStepName", da.getFromStepName());
-					actionObj.put("sequenceNo", da.getSequenceNo());
-					actionObj.put("dossierId", da.getDossierId());
-					actionObj.put("serviceProcessId", da.getServiceProcessId());
-					actionObj.put("previousActionId", da.getPreviousActionId());
-					actionObj.put("actionCode", da.getActionCode());
-					actionObj.put("actionName", da.getActionName());
-					actionObj.put("actionNote", da.getActionNote());
-					actionObj.put("actionUser", da.getActionUser());
-					actionObj.put("actionOverdue", da.getActionOverdue());
-					actionObj.put("payload", da.getPayload());
-					actionObj.put("pending", da.getPending());
-					actionObj.put("rollbackable", da.getRollbackable());
+					actionObj.put(DossierActionTerm.FROM_STEP_CODE, da.getFromStepCode());
+					actionObj.put(DossierActionTerm.FROM_STEP_NAME, da.getFromStepName());
+					actionObj.put(ProcessSequenceTerm.SEQUENCE_NO, da.getSequenceNo());
+					actionObj.put(DossierActionTerm.DOSSIER_ID, da.getDossierId());
+					actionObj.put(DossierActionTerm.SERVICE_PROCESS_ID, da.getServiceProcessId());
+					actionObj.put(DossierActionTerm.PREVIOUS_ACTION_ID, da.getPreviousActionId());
+					actionObj.put(DossierActionTerm.ACTION_CODE, da.getActionCode());
+					actionObj.put(DossierActionTerm.ACTION_NAME, da.getActionName());
+					actionObj.put(DossierActionTerm.ACTION_NOTE, da.getActionNote());
+					actionObj.put(DossierActionTerm.ACTION_USER, da.getActionUser());
+					actionObj.put(DossierActionTerm.ACTION_OVER_DUE, da.getActionOverdue());
+					actionObj.put(DossierActionTerm.PAYLOAD, da.getPayload());
+					actionObj.put(DossierActionTerm.PENDING, da.getPending());
+					actionObj.put(DossierActionTerm.ROLLBACK_ABLE, da.getRollbackable());
 					actionObj.put(
-						"createDate", da.getCreateDate() != null
+						Field.CREATE_DATE, da.getCreateDate() != null
 							? da.getCreateDate().getTime() : 0l);
 					actionObj.put(
-						"modifiedDate", da.getModifiedDate() != null
+						DossierActionTerm.MODIFIED_DATE, da.getModifiedDate() != null
 							? da.getModifiedDate().getTime() : 0l);
 					actionObj.put(
-						"dueDate", da.getDueDate() != null
+						DossierActionTerm.DUE_DATE, da.getDueDate() != null
 							? da.getDueDate().getTime() : 0l);
-					actionObj.put("nextActionId", da.getNextActionId());
-					actionObj.put("state", da.getState());
-					actionObj.put("stepCode", da.getStepCode());
-					actionObj.put("stepName", da.getStepName());
-					actionObj.put("userId", da.getUserId());
+					actionObj.put(DossierActionTerm.NEXT_ACTION_ID, da.getNextActionId());
+					actionObj.put(DossierActionTerm.STATE, da.getState());
+					actionObj.put(DossierActionTerm.STEP_CODE, da.getStepCode());
+					actionObj.put(DossierActionTerm.STEP_NAME, da.getStepName());
+					actionObj.put(Field.USER_ID, da.getUserId());
 					if (mapFiles.containsKey(da.getPreviousActionId())) {
 						actionObj.put(
-							"files", mapFiles.get(da.getPreviousActionId()));
+							DossierActionTerm.FILES, mapFiles.get(da.getPreviousActionId()));
 					}
 					_log.info("Action obj: " + actionObj.toJSONString());
 					actionsArr.put(actionObj);
 				}
 
-				sequenceObj.put("actions", actionsArr);
+				sequenceObj.put(DossierActionTerm.ACTIONS, actionsArr);
 
 				sequenceArr.put(sequenceObj);
 
@@ -3444,7 +3450,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("In dossier file create by eform");
 
 		try {
@@ -3552,7 +3558,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			_log.info("__End bind to dossierFile" + new Date());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -3568,7 +3574,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("In dossier file create");
 
 		try {
@@ -3600,7 +3606,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossierPart.getSampleData(), dossier.getDossierId(),
 				serviceContext);
 
-			return Response.status(200).entity(formData).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(formData).build();
 
 		}
 		catch (Exception e) {
@@ -3632,7 +3638,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
 		// String authorizationHeader =
@@ -3689,7 +3695,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			}
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				dossierArr.toJSONString()).build();
 		}
 		catch (Exception e) {
@@ -3704,7 +3710,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
 		Indexer<Dossier> indexer =
@@ -3778,7 +3784,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 
-		return Response.status(200).entity("{}").build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity("{}").build();
 	}
 
 	@Override
@@ -3787,7 +3793,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierPublishModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			Dossier dossier =
@@ -3814,8 +3820,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-			
-			return Response.status(200).entity(
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 		}
 		catch (Exception e) {
@@ -3828,7 +3834,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			long dossierId = GetterUtil.getLong(id);
@@ -3839,7 +3845,7 @@ public class DossierManagementImpl implements DossierManagement {
 				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 			}
 			Code128 barcode = new Code128();
-			barcode.setFontName("Monospaced");
+			barcode.setFontName(ConstantUtils.MONOSPACED);
 			barcode.setFontSize(16);
 			barcode.setModuleWidth(2);
 			barcode.setBarHeight(50);
@@ -3855,7 +3861,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Java2DRenderer renderer =
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
@@ -3865,7 +3871,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
@@ -3892,7 +3898,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 			long dossierId = GetterUtil.getLong(id);
@@ -3917,7 +3923,7 @@ public class DossierManagementImpl implements DossierManagement {
 			Java2DRenderer renderer =
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(qrcode);
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
@@ -3927,7 +3933,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
@@ -3965,12 +3971,12 @@ public class DossierManagementImpl implements DossierManagement {
 				throw new UnauthenticationException();
 			}
 			if (start == null || start == 0) {
-				start = -1;
-				end = -1;
+				start = QueryUtil.ALL_POS;
+				end = QueryUtil.ALL_POS;
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			JSONObject jsonData = null;
 
 			if (info == null) {
@@ -4011,7 +4017,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.getData().addAll(lstDatas);
 			}
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -4026,7 +4032,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DossierActions actions = new DossierActionsImpl();
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
@@ -4035,8 +4041,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 		try {
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params =
@@ -4067,7 +4073,7 @@ public class DossierManagementImpl implements DossierManagement {
 									strSubStatusStep.append(subStatusStep);
 								}
 								else {
-									strSubStatusStep.append("empty");
+									strSubStatusStep.append(DossierTerm.EMPTY);
 								}
 							}
 							else {
@@ -4078,7 +4084,7 @@ public class DossierManagementImpl implements DossierManagement {
 									strSubStatusStep.append(subStatusStep);
 								}
 								else {
-									strSubStatusStep.append("empty");
+									strSubStatusStep.append(DossierTerm.EMPTY);
 								}
 							}
 						}
@@ -4143,7 +4149,7 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierUtils.mappingForGetPublishList(
 					(List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		}
 		catch (Exception e) {
@@ -4159,7 +4165,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 		}
 
-		return "";
+		return StringPool.BLANK;
 	}
 
 	@Override
@@ -4167,7 +4173,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -4239,16 +4245,16 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 
-					return Response.status(200).entity(
+					return Response.status(HttpURLConnection.HTTP_OK).entity(
 						result.toString()).build();
 				}
 				else {
-					return Response.status(200).entity(
+					return Response.status(HttpURLConnection.HTTP_OK).entity(
 						StringPool.BLANK).build();
 				}
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -4262,7 +4268,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 
@@ -4288,16 +4294,16 @@ public class DossierManagementImpl implements DossierManagement {
 
 				for (User u : lstUsers) {
 					JSONObject userObj = JSONFactoryUtil.createJSONObject();
-					userObj.put("userId", u.getUserId());
-					// userObj.put("userName", u.getFullName());
+					userObj.put(Field.USER_ID, u.getUserId());
+					// userObj.put(Field.USER_NAME, u.getFullName());
 					Employee employee =
 						EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 							dossier.getGroupId(), u.getUserId());
 					if (employee != null) {
-						userObj.put("userName", employee.getFullName());
+						userObj.put(Field.USER_NAME, employee.getFullName());
 					}
 					else {
-						userObj.put("userName", u.getFullName());
+						userObj.put(Field.USER_NAME, u.getFullName());
 					}
 					DossierActionUserPK pk = new DossierActionUserPK();
 					pk.setDossierActionId(dossier.getDossierActionId());
@@ -4306,10 +4312,10 @@ public class DossierManagementImpl implements DossierManagement {
 						DossierActionUserLocalServiceUtil.fetchDossierActionUser(
 							pk);
 					if (dau != null) {
-						userObj.put("assigned", dau.getAssigned());
+						userObj.put(DossierActionUserTerm.ASSIGNED, dau.getAssigned());
 					}
 					else {
-						userObj.put("assigned", 0);
+						userObj.put(DossierActionUserTerm.ASSIGNED, 0);
 					}
 
 					userArr.put(userObj);
@@ -4317,11 +4323,11 @@ public class DossierManagementImpl implements DossierManagement {
 
 				result.put("data", userArr);
 
-				return Response.status(200).entity(
+				return Response.status(HttpURLConnection.HTTP_OK).entity(
 					result.toJSONString()).build();
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -4336,7 +4342,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String assignUsers, Integer delegacy) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		org.opencps.dossiermgt.action.DossierActionUser actions =
 			new DossierActionUserImpl();
@@ -4363,10 +4369,10 @@ public class DossierManagementImpl implements DossierManagement {
 					IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 				indexer.reindex(dossier);
 
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -4380,7 +4386,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
@@ -4391,10 +4397,10 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			if (dossier != null && dossier.getDossierActionId() != 0) {
 				publishEvent(dossier);
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -4433,7 +4439,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
@@ -4631,10 +4637,10 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -4648,7 +4654,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
@@ -4684,7 +4690,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
 			_log.error(e);
@@ -4697,7 +4703,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
@@ -4733,7 +4739,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
 			_log.error(e);
@@ -4746,7 +4752,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -4782,7 +4788,7 @@ public class DossierManagementImpl implements DossierManagement {
 					result = DossierUtils.mappingForGetDetail(
 						removeDossier, user.getUserId());
 				}
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
@@ -4799,7 +4805,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -4837,7 +4843,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			return Response.status(200).entity(StringPool.BLANK).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -4849,7 +4855,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -4905,7 +4911,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				results.getData().add(model);
 			}
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -4917,7 +4923,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -5030,7 +5036,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 			else {
 				return Response.status(HttpServletResponse.SC_FORBIDDEN).entity(
@@ -5077,7 +5083,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String stepCode) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -5238,7 +5244,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -5265,7 +5271,7 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}
 		catch (Exception e) {
@@ -5279,7 +5285,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String strReceiveDate) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
 
@@ -5666,7 +5672,7 @@ public class DossierManagementImpl implements DossierManagement {
 				//
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 			else {
 				return Response.status(500).entity(
@@ -5685,7 +5691,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id,
 		String fromEmailUser, String toEmailUser) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		org.opencps.dossiermgt.action.DossierActionUser actions =
 			new DossierActionUserImpl();
@@ -5775,12 +5781,12 @@ public class DossierManagementImpl implements DossierManagement {
 					IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 				indexer.reindex(dossier);
 
-				return Response.status(200).entity(
+				return Response.status(HttpURLConnection.HTTP_OK).entity(
 					JSONFactoryUtil.looseSerialize(
 						"Phân Quyền thành công!!!")).build();
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 		}
 		catch (Exception e) {
@@ -5795,7 +5801,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		_log.info("START=====");
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -6031,7 +6037,7 @@ public class DossierManagementImpl implements DossierManagement {
 													serviceContext, errorModel);
 
 												return Response.status(
-													200).entity(null).build();
+													HttpURLConnection.HTTP_OK).entity(null).build();
 											}
 										}
 									}
@@ -6041,7 +6047,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
-			return Response.status(500).entity(null).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(null).build();
 		}
 		catch (Exception e) {
 			_log.error(e);
@@ -6055,13 +6061,13 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		String referenceUid) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 		try {
 			Dossier dossier =
 				DossierLocalServiceUtil.getByRef(groupId, referenceUid);
 			if (dossier != null) {
-				jsonData.put("dossierId", dossier.getDossierId());
+				jsonData.put(DossierTerm.DOSSIER_ID, dossier.getDossierId());
 				// Get info group
 				Group group = GroupLocalServiceUtil.getGroup(groupId);
 				jsonData.put(
@@ -6093,7 +6099,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
@@ -6157,11 +6163,11 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			return Response.status(200).entity(results.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 		}
 		catch (Exception e) {
 			_log.info(e);
-			return Response.status(200).entity(results.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
 		}
 	}
 
@@ -6195,7 +6201,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		long groupDossierId, String dossierIds) {
 
-		// long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		// long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			if (dossierIds.contains(StringPool.COMMA)) {
 				String[] dossierArr = dossierIds.split(StringPool.COMMA);
@@ -6216,7 +6222,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 				//
-				return Response.status(200).entity(results).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 			else {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(
@@ -6228,12 +6234,12 @@ public class DossierManagementImpl implements DossierManagement {
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 				//
-				return Response.status(200).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 			}
 		}
 		catch (Exception e) {
 			_log.info(e);
-			return Response.status(500).entity("{error}").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
 		}
 	}
 
@@ -6243,7 +6249,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierMultipleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			_log.info("dossiers: " + input.getDossiers());
 			if (Validator.isNotNull(input.getDossiers())) {
@@ -6305,7 +6311,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierMultipleInputModel input) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			_log.info("dossiers: " + input.getDossiers());
 			// if (Validator.isNotNull(input.getDossiers())) {
@@ -6363,7 +6369,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		DossierSearchModel query) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 			String strReceiveDate = query.getFromReceiveDate();
@@ -6425,7 +6431,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
-		return Response.status(HttpStatus.SC_OK).header("Allow", "").build();
+		return Response.status(HttpStatus.SC_OK).header(HttpHeaders.ALLOW, StringPool.BLANK).build();
 	}
 
 	@Override
@@ -6434,7 +6440,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		String serviceCode, String govAgencyCode, String templateNo) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		ServiceProcess serviceProcess = null;
 		ProcessOption option;
 		try {
@@ -6476,7 +6482,7 @@ public class DossierManagementImpl implements DossierManagement {
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, String id, ServiceContext serviceContext) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -6631,7 +6637,7 @@ public class DossierManagementImpl implements DossierManagement {
 													ProcessStepRoleTerm.ASSIGNED));
 										}
 									}
-									userObj.put("userId", userId);
+									userObj.put(Field.USER_ID, userId);
 									Employee emp =
 										EmployeeLocalServiceUtil.fetchByF_mappingUserId(
 											groupId, userId);
@@ -6787,7 +6793,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			result.put("total", dataFile.length());
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -6823,7 +6829,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			result.put("total", dataFile.length());
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -6846,8 +6852,8 @@ public class DossierManagementImpl implements DossierManagement {
 				ConvertDossierFromV1Dot9Utils.readExcelFileWithHeaderConfig(
 					dataHandle.getInputStream());
 
-			long groupId =
-				GetterUtil.getLong(header.getHeaderString("groupId"));
+//			long groupId =
+//				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			for (int i = 0; i < dataApplicant.length(); i++) {
 
 				try {
@@ -6873,7 +6879,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			result.put("total", dataApplicant.length());
 
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -6898,7 +6904,7 @@ public class DossierManagementImpl implements DossierManagement {
 					actionCode, pathBase, classForName, driverManagerUrl,
 					driverManagerUser, driverManagerPazz, mainQuery,
 					dvcGroupId, groupId, serviceContext));
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -6921,7 +6927,7 @@ public class DossierManagementImpl implements DossierManagement {
 					actionCode, pathBase, classForName, driverManagerUrl,
 					driverManagerUser, driverManagerPazz, mainQuery,
 					dvcGroupId, groupId, serviceContext));
-			return Response.status(200).entity(
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
 		}
 		catch (Exception e) {
@@ -7086,7 +7092,7 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response getMetaDataDetailDossier(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String id, String key) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -7103,22 +7109,22 @@ public class DossierManagementImpl implements DossierManagement {
 							obj = obj.getJSONObject(objectKey);
 						}
 						else {
-							return Response.status(200).entity("").build();
+							return Response.status(HttpURLConnection.HTTP_OK).entity("").build();
 						}
 					}					
 					if (obj != null && obj.has(keys[keys.length - 1])) {
-						return Response.status(200).entity(obj.getString(keys[keys.length - 1])).build();						
+						return Response.status(HttpURLConnection.HTTP_OK).entity(obj.getString(keys[keys.length - 1])).build();						
 					}
 					else {
-						return Response.status(200).entity("").build();						
+						return Response.status(HttpURLConnection.HTTP_OK).entity("").build();						
 					}
 				}
 				else {
-					return Response.status(200).entity("").build();					
+					return Response.status(HttpURLConnection.HTTP_OK).entity("").build();					
 				}
 			}
 			else {
-				return Response.status(200).entity("").build();				
+				return Response.status(HttpURLConnection.HTTP_OK).entity("").build();				
 			}
 		}
 		catch (Exception e) {
@@ -7179,10 +7185,10 @@ public class DossierManagementImpl implements DossierManagement {
 //				dossier.setMetaData(obj.toJSONString());
 //				DossierLocalServiceUtil.updateDossier(dossier);
 //				
-//				return Response.status(200).entity("{ 'ok': true }").build();
+//				return Response.status(HttpURLConnection.HTTP_OK).entity("{ 'ok': true }").build();
 //			}
 //			else {
-//				return Response.status(200).entity("{ 'ok': false }").build();				
+//				return Response.status(HttpURLConnection.HTTP_OK).entity("{ 'ok': false }").build();				
 //			}
 //		}
 //		catch (Exception e) {
@@ -7193,7 +7199,7 @@ public class DossierManagementImpl implements DossierManagement {
 //		}
 		try {
 
-			long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
 			JSONObject obj = JSONFactoryUtil.createJSONObject(metaData);
 			JSONObject metaDataOld = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
@@ -7201,7 +7207,7 @@ public class DossierManagementImpl implements DossierManagement {
 			JSONObject importD = ConvertDossierFromV1Dot9Utils.mergeJSONObject(metaDataOld, obj);
 			dossier.setMetaData(importD.toJSONString());
 			dossier = DossierLocalServiceUtil.updateDossier(dossier);
-			return Response.status(200).entity(dossier.getMetaData()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(dossier.getMetaData()).build();
 
 		} catch (Exception e) {
 

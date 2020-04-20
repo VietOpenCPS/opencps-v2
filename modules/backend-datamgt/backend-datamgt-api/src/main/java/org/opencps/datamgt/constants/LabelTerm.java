@@ -59,6 +59,12 @@ public class LabelTerm {
 	
 	public static final String SCOPE_SORTABLE = "scope_sortable";
 
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
+
 	private long labelId;
 	private long companyId;
 	private long groupId;

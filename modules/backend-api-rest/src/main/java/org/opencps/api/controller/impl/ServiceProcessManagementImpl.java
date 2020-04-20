@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,7 +81,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		ServiceProcessResultsModel results = new ServiceProcessResultsModel();
 
@@ -92,8 +94,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -111,7 +113,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results.getData()
 					.addAll(ServiceProcessUtils.mappingToServiceProcessData((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -125,7 +127,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -174,7 +176,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -200,7 +202,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -213,7 +215,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, ServiceProcessInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -246,7 +248,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -262,7 +264,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 
 		try {
@@ -292,7 +294,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessDetailModel result = ServiceProcessUtils.mappingToDetail(serviceProcess);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -323,7 +325,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results.getData()
 					.addAll(ServiceProcessUtils.mappingToServiceRole((List<ServiceProcessRole>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -336,7 +338,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		//BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -354,7 +356,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -368,7 +370,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		//BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -390,7 +392,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -417,7 +419,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -432,7 +434,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -443,8 +445,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -465,7 +467,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results.getData()
 					.addAll(ServiceProcessUtils.mappingToProcessStepData((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -479,7 +481,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -527,7 +529,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -539,7 +541,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, String code, ProcessStepInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -588,7 +590,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -602,7 +604,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
 		//BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -618,7 +620,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(serviceProcess);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -635,7 +637,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		BackendAuth auth = new BackendAuthImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
 
@@ -659,7 +661,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results.getData()
 					.addAll(ServiceProcessUtils.mappingToStepRole((List<ProcessStepRole>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -672,7 +674,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		//BackendAuth auth = new BackendAuthImpl();
 		try {
@@ -697,7 +699,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -712,7 +714,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -751,7 +753,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -764,7 +766,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String code, long roleid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -797,7 +799,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			RoleInputModel result = ServiceProcessUtils.mappingToServiceRoleInput(role);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -811,7 +813,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -822,8 +824,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			}
 
 			if (query.getEnd() == 0) {
-				query.setStart(-1);
-				query.setEnd(-1);
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
 			}
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -844,7 +846,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			results.getData()
 					.addAll(ServiceProcessUtils.mappingToProcessActionData((List<Document>) jsonData.get("data")));
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -856,7 +858,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, ProcessActionInputModel input) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -924,7 +926,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -939,7 +941,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -983,12 +985,19 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			if (Validator.isNotNull(input.getCreateDossiers())) {
 				processAction.setCreateDossiers(input.getCreateDossiers());
+				//processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			if (Validator.isNotNull(input.getPostAction())) {
+				processAction.setPostAction(input.getPostAction());
+				//processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			if (Validator.isNotNull(input.getCreateDossiers()) || Validator.isNotNull(input.getPostAction())) {
 				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
 			}
 			
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1033,7 +1042,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1046,7 +1055,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext) {
 		
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1077,7 +1086,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessLocalServiceUtil.initServiceProcess(groupId, serviceContext);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1087,7 +1096,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	@Override
 	public Response cloneServiceProcesses(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, long id, String processNo, String processName) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1118,7 +1127,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ServiceProcessLocalServiceUtil.cloneServiceProcess(id, groupId, processNo, processName, serviceContext);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1130,7 +1139,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	public Response getProcessSequences(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1167,7 +1176,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			result.getData().addAll(lstModels);
 			
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
@@ -1177,7 +1186,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	public Response addProcessSequence(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, ProcessSequenceInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1202,7 +1211,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.addProcessSequence(serviceContext.getUserId(), groupId, serviceProcess.getServiceProcessId(), input.getSequenceNo(), input.getSequenceName(), input.getSequenceRole(), input.getDurationCount());
 			
-			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
@@ -1213,7 +1222,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			Locale locale, User user, ServiceContext serviceContext, long id, String sequenceNo,
 			ProcessSequenceInputModel input) {
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1240,7 +1249,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				processSequence = ProcessSequenceLocalServiceUtil.updateProcessSequence(serviceContext.getUserId(), groupId, processSequence.getServiceProcessId(), processSequence.getProcessSequenceId(), sequenceNo, input.getSequenceName(), input.getSequenceRole(), input.getDurationCount());				
 			}
 						
-			return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
@@ -1249,7 +1258,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 	@Override
 	public Response getProcessStep(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1266,7 +1275,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			
 			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
 
-			return Response.status(200).entity(result).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1278,7 +1287,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			User user, ServiceContext serviceContext, long id, long actionid) {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
 		try {
@@ -1296,11 +1305,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				_log.debug(e);
 			}
 			
-			ProcessActionReturnModel results;
 
-			results = ServiceProcessUtils.mappingToActionPOST(processAction);
+			ProcessActionReturnModel results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
-			return Response.status(200).entity(results).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -1313,7 +1321,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 		ServiceProcessActions actions = new ServiceProcessActionsImpl();
 
 		BackendAuth auth = new BackendAuthImpl();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 
@@ -1375,10 +1383,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					}
 					result.append("\n");
 				}
-				return Response.status(200).entity(result.toString()).build();				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();				
 			}
 			else {
-				return Response.status(200).entity(StringPool.BLANK).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(StringPool.BLANK).build();
 			}
 
 		} catch (Exception e) {
@@ -1418,7 +1426,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					processSequence = ProcessSequenceLocalServiceUtil.deleteProcessSequence(processSequence.getProcessSequenceId());
 				}
 							
-				return Response.status(200).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();				
+				return Response.status(HttpURLConnection.HTTP_OK).entity(ProcessSequenceUtils.mappingDetail(processSequence)).build();				
 			}
 			else {
 				throw new NotFoundException("Service process not found");
@@ -1434,7 +1442,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			ProcessSequenceInputModel input) {
 
 		BackendAuth auth = new BackendAuthImpl();
-		//long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -1449,12 +1457,12 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				//
 				ProcessActionLocalServiceUtil.updateProcessAction(action);
 			}
-			return Response.status(200).entity("{Update sucess}").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity("{Update sucess}").build();
 		}catch (Exception e) {
 			_log.error(e);
 		}
 
-		return Response.status(500).entity("{Update error}").build();
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{Update error}").build();
 	}
 
 	@Override
@@ -1475,11 +1483,11 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				//
 				ServiceProcessLocalServiceUtil.updateServiceProcess(process);
 			}
-			return Response.status(200).entity("{Update sucess}").build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity("{Update sucess}").build();
 		}catch (Exception e) {
 			_log.error(e);
 		}
 
-		return Response.status(500).entity("{Update error}").build();
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{Update error}").build();
 	}
 }

@@ -22,4 +22,8 @@ public class ServiceProcessTerm {
 	public static final String SERVER_NAME = "serverName";
 	public static final String PAYMENT_FEE = "paymentFee";
 	public static final String DOSSIER_GROUP_PATTERN = "dossierGroupPattern";
+	
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String SEQUENCE_NAME = "sequenceName";
+	public static final String SEQUENCE_ROLE = "sequenceRole";
 }

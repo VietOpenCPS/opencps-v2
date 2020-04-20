@@ -21,5 +21,8 @@ public class ProcessStepTerm {
 	public static final String EDITABLE = "editable";
 	public static final String LOCK_STATE = "lockState";
 	public static final String CHECK_INPUT = "checkInput";
+	public static final String RESTRICT_DOSSIER = "restrictDossier";
+	public static final String GROUP_NAME = "groupName";
+	public static final String ROLE_AS_STEP = "roleAsStep";
 
 }

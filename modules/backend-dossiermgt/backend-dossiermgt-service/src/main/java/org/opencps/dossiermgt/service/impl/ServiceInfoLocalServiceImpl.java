@@ -813,9 +813,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			object.setDomainIndex(dom.getTreeIndex());
 		}
 
-		serviceInfoPersistence.update(object);
+		return serviceInfoPersistence.update(object);
 
-		return object;
 	}
 
 	public static final String CLASS_NAME = ServiceInfo.class.getName();

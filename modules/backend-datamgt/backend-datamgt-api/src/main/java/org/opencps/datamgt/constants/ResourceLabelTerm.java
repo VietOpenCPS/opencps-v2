@@ -43,6 +43,12 @@ public class ResourceLabelTerm {
 	public static final String CLASS_PK_SORTABLE = "classPK_sortable";
 	
 	public static final String LABEL_ID_SORTABLE = "labelId_Number_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public ResourceLabelTerm() {
 		// TODO Auto-generated constructor stub

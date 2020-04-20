@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -677,7 +678,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 					DictItemGroup dictItemGroup =
 						DictItemGroupLocalServiceUtil.fetchByF_dictItemId_dictGroupId(
 							groupId, dictGroup.getDictGroupId(),
-							Long.valueOf(document.get("entryClassPK")));
+							Long.valueOf(document.get(Field.ENTRY_CLASS_PK)));
 
 					String selected = Boolean.FALSE.toString();
 
