@@ -606,7 +606,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
 			if (applicant == null) {
-				ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
 		}
 		// doanh nghiep
@@ -617,7 +617,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 					Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
 			if (applicant == null) {
-				ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 			}
 		} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);
