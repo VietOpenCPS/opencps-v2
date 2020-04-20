@@ -13,6 +13,7 @@ public class ConstantUtils {
 	public static final String WORD = "word";
 	public static final String XLS = "xls";
 	public static final String XLSX = "xlsx";
+	public static final String PNG = "png";
 	public static final String DOT_XLSX = ".xlsx";
 	public static final String DOT_XLS = ".xls";
 	
@@ -84,7 +85,7 @@ public class ConstantUtils {
 	public static final String TOTAL = "total";
 	public static final String DATA= "data";
 	public static final String CONTENT_TYPE_JSON = "application/json";
-	public static final String CONTENT_TYPE = "Content-Type";
+	//public static final String CONTENT_TYPE = "Content-Type";
 	public static final String CONTENT_LENGTH = "Content-Length";
 	public static final String CONTENT_TYPE_XXX_FORM_URLENCODED = "application/x-www-form-urlencoded";
 	
@@ -94,7 +95,6 @@ public class ConstantUtils {
 	public static final String MONOSPACED = "Monospaced";
 	public static final String BARCODE = "barcode";
 	public static final String BARCODE_FILENAME = "barcode.filename";
-	public static final String PNG_EXTENSION = "png";
 	public static final String MEDIA_TYPE_PNG = "image/png";
 	public static final String MEDIA_TYPE_XML = "application/xml";
 	public static final String MEDIA_TYPE_ZIP = "application/zip";

@@ -574,7 +574,7 @@ public class DossierActionUtils {
 							modelUser = new DossierActionNextActiontoUser();
 							Map<String, Object> attr =
 								user.getModelAttributes();
-							
+
 							moderator = false;
 							assigned = 0;
 							if (attr != null) {

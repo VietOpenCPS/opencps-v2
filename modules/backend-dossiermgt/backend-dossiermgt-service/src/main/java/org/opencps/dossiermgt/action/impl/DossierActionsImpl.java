@@ -1027,9 +1027,8 @@ public class DossierActionsImpl implements DossierActions {
 																false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 																new DossierFileComparator(false, Field.CREATE_DATE,
 																		Date.class));
-//												_log.debug("DELIVERABLE TYPE NOT NULL");
+
 												if (dossierFilesResult != null && !dossierFilesResult.isEmpty()) {
-//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT NOT EMPTY");
 													createFile = JSONFactoryUtil.createJSONObject();
 													createFile = processFileResult(dossierFilesResult, createFile,
 															dossierPart.getPartNo());
@@ -1044,7 +1043,6 @@ public class DossierActionsImpl implements DossierActions {
 													createFile.put(DossierFileTerm.COUNTER, 1);
 													createFile.put(DeliverableTerm.DELIVERABLE_TYPE, deliverableTypeObject != null ? deliverableTypeObject.getTypeCode() : StringPool.BLANK);
 												} else {
-//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT EMPTY");
 													eForm = Validator.isNotNull(dossierPart.getFormScript()) ? true
 															: false;
 													formData = AutoFillFormData.sampleDataBinding(
@@ -1189,7 +1187,7 @@ public class DossierActionsImpl implements DossierActions {
 													counter = (dossierFilesResult != null
 															&& !dossierFilesResult.isEmpty())
 																	? dossierFilesResult.size() : 0;
-//													_log.debug("DELIVERABLE TYPE NOT NULL FILE RESULT RETURN CREATE FILE");
+
 													createFile.put(DossierFileTerm.E_FORM, eForm);
 													createFile.put(DossierFileTerm.DOSSIER_FILE_ID, dossierFileId);
 													createFile.put(DossierFileTerm.FORM_DATA, formData);

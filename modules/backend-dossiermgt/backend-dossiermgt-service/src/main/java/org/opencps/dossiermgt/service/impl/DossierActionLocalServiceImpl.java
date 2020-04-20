@@ -510,9 +510,9 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		DossierAction object = null;
 
-		if (objectData.getLong(DossierActionTerm.DOSSIER_ACTION_ID) > 0) {
+		if (objectData.getLong(DossierActionTerm.DOSSIERACTION_ID) > 0) {
 
-			object = dossierActionPersistence.fetchByPrimaryKey(objectData.getLong(DossierActionTerm.DOSSIER_ACTION_ID));
+			object = dossierActionPersistence.fetchByPrimaryKey(objectData.getLong(DossierActionTerm.DOSSIERACTION_ID));
 
 			object.setModifiedDate(new Date());
 
