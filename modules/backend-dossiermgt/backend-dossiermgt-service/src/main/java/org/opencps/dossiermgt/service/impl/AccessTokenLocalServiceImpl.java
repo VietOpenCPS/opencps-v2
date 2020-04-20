@@ -53,7 +53,7 @@ public class AccessTokenLocalServiceImpl extends AccessTokenLocalServiceBaseImpl
 		AccessToken accessToken = accessTokenPersistence.create(tokenId);
 		Date date = new Date();
 		//increment 10 minutes
-		Date expireDate = DateTimeUtils.increment(date, 10);
+		Date expireDate = DateTimeUtils.increment(date, 5);
 		accessToken.setClassName(className);
 		accessToken.setCompanyId(companyId);
 		accessToken.setCreateDate(date);
