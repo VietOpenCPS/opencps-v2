@@ -75,7 +75,8 @@ import javax.xml.bind.annotation.XmlType;
     "configNote",
     "createDossiers",
     "dossierTemplateNo",
-    "signatureType"
+    "signatureType",
+    "postAction"
 })
 @XmlRootElement(name = "ProcessActionReturnModel")
 public class ProcessActionReturnModel {
@@ -103,8 +104,17 @@ public class ProcessActionReturnModel {
     protected String createDossiers;
     protected String dossierTemplateNo;
     protected String signatureType;
-    
-    public String getConfigNote() {
+    protected String postAction;
+
+    public String getPostAction() {
+		return postAction;
+	}
+
+	public void setPostAction(String postAction) {
+		this.postAction = postAction;
+	}
+
+	public String getConfigNote() {
 		return configNote;
 	}
 

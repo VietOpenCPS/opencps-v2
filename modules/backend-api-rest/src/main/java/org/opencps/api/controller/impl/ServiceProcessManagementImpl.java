@@ -988,6 +988,13 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			if (Validator.isNotNull(input.getCreateDossiers())) {
 				processAction.setCreateDossiers(input.getCreateDossiers());
+				//processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			if (Validator.isNotNull(input.getPostAction())) {
+				processAction.setPostAction(input.getPostAction());
+				//processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
+			}
+			if (Validator.isNotNull(input.getCreateDossiers()) || Validator.isNotNull(input.getPostAction())) {
 				processAction = ProcessActionLocalServiceUtil.updateProcessAction(processAction);
 			}
 			
@@ -1301,9 +1308,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				_log.debug(e);
 			}
 			
-			ProcessActionReturnModel results;
 
-			results = ServiceProcessUtils.mappingToActionPOST(processAction);
+			ProcessActionReturnModel results = ServiceProcessUtils.mappingToActionPOST(processAction);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
