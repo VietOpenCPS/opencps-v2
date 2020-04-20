@@ -6,7 +6,17 @@ public class ConstantUtils {
 	public static final String EXTENTION_JSON = ".json";
 	public static final String EXTENTION_XML = ".xml";
 	public static final String EXTENTION_TXT = ".txt";
-
+	public static final String EXTENTION_ZIP = ".zip";
+	
+	public static final String ZIP = "zip";
+	public static final String XML = "xml";
+	public static final String WORD = "word";
+	public static final String XLS = "xls";
+	public static final String XLSX = "xlsx";
+	public static final String PNG = "png";
+	public static final String DOT_XLSX = ".xlsx";
+	public static final String DOT_XLS = ".xls";
+	
 	//Destination import file
 	public static final String DEST_DIRECTORY = "imported";
 	public static final String SOURCE_DICTS = "/dicts";
@@ -70,4 +80,11 @@ public class ConstantUtils {
 	public static final String HTML_NEW_LINE = "<br/>";
 	public static final String HTML_FOUR_SPACE = "&nbsp;&nbsp;&nbsp;&nbsp";
 	public static final int DEFAULT_FONT_SIZE = 16;
+	//
+	public static final String MONOSPACED = "Monospaced";
+	public static final String BARCODE = "barcode";
+	public static final String API_KEYWORDS_KEY = "keywords";
+	public static final String API_JSON_DATA_ITEMLV = "itemLv";
+	public static final String API_JSON_STATUS = "status";
+	public static final String DOSSIER_OK = "OK";
 }

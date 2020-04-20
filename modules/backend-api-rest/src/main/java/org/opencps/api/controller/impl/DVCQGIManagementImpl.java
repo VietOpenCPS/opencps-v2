@@ -7,9 +7,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +40,10 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		try {
 
 			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating);
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(500).entity("error").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("error").build();
 		}
 	}
 
@@ -55,10 +57,10 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		try {
 
 			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId);
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(500).entity("error").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("error").build();
 		}
 	}
 
@@ -71,7 +73,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		String result = actionImpl.getAccessToken(user, request, response, serviceContext);
 
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 
 	@Override
@@ -85,10 +87,10 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			_log.info("Ton ngo khong da dao choi o day.");
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
 					JSONFactoryUtil.createJSONObject(body));
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(500).entity("request body incorrect").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("request body incorrect").build();
 		}
 	}
 
@@ -101,10 +103,10 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 			JSONObject result = actionImpl.getSharingData(user, serviceContext, JSONFactoryUtil.createJSONObject(body));
-			return Response.status(200).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(500).entity("request body incorrect").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("request body incorrect").build();
 		}
 	}
 

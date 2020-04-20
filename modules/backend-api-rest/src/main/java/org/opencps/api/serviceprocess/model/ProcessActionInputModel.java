@@ -74,7 +74,8 @@ import javax.xml.bind.annotation.XmlType;
     "configNote",
     "dossierTemplateNo",
     "createDossiers",
-    "signatureType"
+    "signatureType",
+    "postAction"
 })
 @XmlRootElement(name = "ProcessActionInputModel")
 public class ProcessActionInputModel {
@@ -125,7 +126,17 @@ public class ProcessActionInputModel {
 	protected String configNote;
 	@FormParam("signatureType")
 	protected String signatureType;
+	@FormParam("postAction")
+	protected String postAction;
 	
+	public String getPostAction() {
+		return postAction;
+	}
+
+	public void setPostAction(String postAction) {
+		this.postAction = postAction;
+	}
+
 	public String getDossierTemplateNo() {
 		return dossierTemplateNo;
 	}

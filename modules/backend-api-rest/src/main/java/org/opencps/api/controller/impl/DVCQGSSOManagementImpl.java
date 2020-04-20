@@ -6,10 +6,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +30,7 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	public Response checkAuth(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, int vnconnect,
 			String currentURL) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 		String endpoint = action.checkAuth(user, groupId, request, serviceContext, vnconnect, currentURL);
 		HttpSession session = request.getSession();
@@ -42,11 +44,11 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	@Override
 	public Response getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String authToken, String state) {
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 		JSONObject result = action.getUserInfo(user, groupId, request, serviceContext, authToken, state);
 
-		return Response.status(200).entity(result.toJSONString()).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 	}
 
 	@Override
@@ -59,18 +61,18 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 			try {
 				result = action.doAuth(user, request, response, serviceContext, userinfo);
-				return Response.status(200).entity(result.toJSONString()).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 			} catch (Exception e) {
 				_log.error(e);
 				result.put("message", "authentication failed");
 				result.put("description", "authentication failed");
-				return Response.status(401).entity(result.toJSONString()).build();
+				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(result.toJSONString()).build();
 			}
 
 		} else {
 			result.put("message", "authentication failed");
 			result.put("description", "can't get user info");
-			return Response.status(401).entity(result.toJSONString()).build();
+			return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(result.toJSONString()).build();
 		}
 
 	}
@@ -79,13 +81,13 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String state, String redirectURL) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
 		String endpoint = action.getAuthURL(user, groupId, request, serviceContext, state, redirectURL);
 
-		return Response.status(200).entity(endpoint).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(endpoint).build();
 	}
 
 	@Override
