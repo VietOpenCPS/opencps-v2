@@ -375,4 +375,7 @@ public class DossierTerm {
     public static final int PIN_LENGTH = 4;
     public static final String DELEGATE = "delegate";
     public static final String DURATION_TEXT = "durationText";
+
+    public static final String VNPOSTAL_STATUS = "vnpostalStatus";
+    public static final String VNPOSTAL_PROFILE = "vnpostalProfile";
 }

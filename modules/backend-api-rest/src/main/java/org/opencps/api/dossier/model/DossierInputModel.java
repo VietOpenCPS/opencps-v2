@@ -257,6 +257,26 @@ public class DossierInputModel {
 	private String dossierCounter;
 	@FormParam(value = "dvcqgIntegration")
 	private Boolean dvcqgIntegration;
+	@FormParam(value = "vnpostalStatus")
+	protected Integer vnpostalStatus;
+	@FormParam(value = "vnpostalProfile")
+	protected String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public Boolean getDvcqgIntegration() {
 		return dvcqgIntegration;

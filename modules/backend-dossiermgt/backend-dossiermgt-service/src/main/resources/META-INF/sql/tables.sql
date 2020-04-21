@@ -279,7 +279,9 @@ create table opencps_dossier (
 	groupDossierId LONG,
 	metaData TEXT null,
 	systemId INTEGER,
-	dossierCounter VARCHAR(128) null
+	dossierCounter VARCHAR(128) null,
+	vnpostalStatus INTEGER,
+	vnpostalProfile TEXT null
 );
 
 create table opencps_dossieraction (

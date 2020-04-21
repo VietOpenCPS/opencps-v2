@@ -832,6 +832,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.DOSSIER_COUNTER_SEARCH, StringPool.BLANK);
 			}
+
+			document.addNumberSortable(DossierTerm.VNPOSTAL_STATUS, object.getVnpostalStatus());
+			document.addTextSortable(DossierTerm.VNPOSTAL_PROFILE, object.getVnpostalProfile());
+
 		} catch (Exception e) {
 			_log.error(e);
 		}

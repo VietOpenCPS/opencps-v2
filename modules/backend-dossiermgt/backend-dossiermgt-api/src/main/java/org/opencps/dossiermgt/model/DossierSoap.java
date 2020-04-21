@@ -131,6 +131,8 @@ public class DossierSoap implements Serializable {
 		soapModel.setMetaData(model.getMetaData());
 		soapModel.setSystemId(model.getSystemId());
 		soapModel.setDossierCounter(model.getDossierCounter());
+		soapModel.setVnpostalStatus(model.getVnpostalStatus());
+		soapModel.setVnpostalProfile(model.getVnpostalProfile());
 
 		return soapModel;
 	}
@@ -983,6 +985,22 @@ public class DossierSoap implements Serializable {
 		_dossierCounter = dossierCounter;
 	}
 
+	public int getVnpostalStatus() {
+		return _vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(int vnpostalStatus) {
+		_vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return _vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		_vnpostalProfile = vnpostalProfile;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1081,4 +1099,6 @@ public class DossierSoap implements Serializable {
 	private String _metaData;
 	private int _systemId;
 	private String _dossierCounter;
+	private int _vnpostalStatus;
+	private String _vnpostalProfile;
 }

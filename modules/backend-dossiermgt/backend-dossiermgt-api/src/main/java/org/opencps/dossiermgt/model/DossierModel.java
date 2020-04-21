@@ -1560,6 +1560,35 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setDossierCounter(String dossierCounter);
 
+	/**
+	 * Returns the vnpostal status of this dossier.
+	 *
+	 * @return the vnpostal status of this dossier
+	 */
+	public int getVnpostalStatus();
+
+	/**
+	 * Sets the vnpostal status of this dossier.
+	 *
+	 * @param vnpostalStatus the vnpostal status of this dossier
+	 */
+	public void setVnpostalStatus(int vnpostalStatus);
+
+	/**
+	 * Returns the vnpostal profile of this dossier.
+	 *
+	 * @return the vnpostal profile of this dossier
+	 */
+	@AutoEscape
+	public String getVnpostalProfile();
+
+	/**
+	 * Sets the vnpostal profile of this dossier.
+	 *
+	 * @param vnpostalProfile the vnpostal profile of this dossier
+	 */
+	public void setVnpostalProfile(String vnpostalProfile);
+
 	@Override
 	public boolean isNew();
 

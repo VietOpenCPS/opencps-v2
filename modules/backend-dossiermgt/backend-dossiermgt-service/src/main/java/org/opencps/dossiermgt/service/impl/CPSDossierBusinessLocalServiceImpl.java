@@ -6948,7 +6948,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
-					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), serviceContext);
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(), serviceContext);
 				
 				return dossier;
 			}

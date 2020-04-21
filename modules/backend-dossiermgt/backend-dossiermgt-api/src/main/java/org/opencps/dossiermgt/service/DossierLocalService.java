@@ -300,6 +300,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVIAPOSTAL(int viaPostal);
 
+	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
+
 	public List<Dossier> findDossierByGroup(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -543,7 +545,8 @@ public interface DossierLocalService extends BaseLocalService,
 		boolean isSameAsApplicant, String delegateName, String delegateIdNo,
 		String delegateTelNo, String delegateEmail, String delegateAddress,
 		String delegateCityCode, String delegateDistrictCode,
-		String delegateWardCode, Long sampleCount, ServiceContext serviceContext);
+		String delegateWardCode, Long sampleCount, Integer vnpostalStatus,
+		String vnpostalProfile, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
@@ -558,6 +561,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateTelNo, String delegateEmail, String delegateAddress,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, String dossierName,
+		Integer vnpostalStatus, String vnpostalProfile,
 		ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -589,7 +593,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateCityCode, String delegateDistrictCode,
 		String delegateWardCode, Long sampleCount, String dossierName,
 		String briefNote, Integer delegateType, String documentNo,
-		Date documentDate, int systemId, ServiceContext serviceContext);
+		Date documentDate, int systemId, Integer vnpostalStatus,
+		String vnpostalProfile, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,
@@ -630,7 +635,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		ServiceContext context) throws PortalException;
+		Integer vnpostalStatus, String vnpostalProfile, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,
@@ -644,7 +650,8 @@ public interface DossierLocalService extends BaseLocalService,
 		Integer durationUnit, Integer sampleCount, Date createDate,
 		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
 		Date releaseDate, Date finishDate, String dossierTemplateNo,
-		String dossierTemplateName, ServiceContext serviceContext);
+		String dossierTemplateName, Integer vnpostalStatus,
+		String vnpostalProfile, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.DELETE)
 	public Dossier removeDossier(long groupId, long dossierId, String refId)
