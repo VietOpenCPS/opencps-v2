@@ -1262,10 +1262,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		JSONObject returnObject;
 		try {
 			returnObject = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
-			if (!returnObject.has(DossierTerm.RECEIVE_DATE)) {
-				if (dossier.getReceiveDate() != null) {
-					returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
-				}
+			_log.debug("=======> BUILD NOTIFICATION QUEUE SMS PAYLOAD");
+			if (dossier.getReceiveDate() != null) {
+				returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
+				_log.debug("=======> BUILD NOTIFICATION QUEUE SMS RECEIVE DATE: " + returnObject.get(DossierTerm.RECEIVE_DATE));
+			}
+			else {
+				returnObject.put(DossierTerm.RECEIVE_DATE, StringPool.BLANK);				
 			}
 			if (!returnObject.has(DossierTerm.DOSSIER_NO)) {
 				if (Validator.isNotNull(dossier.getDossierNo())) {
@@ -1331,11 +1334,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			DossierAction dossierAction, JSONObject payloadObject, ServiceContext context) throws PortalException {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
-        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
+        
         try {
+        	JSONObject dossierObj = JSONFactoryUtil.createJSONObject(
+					JSONFactoryUtil.looseSerialize(dossier));
+        	dossierObj = buildNotificationPayload(dossier, dossierObj);
+        	
         	payloadObj.put(
-					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(dossier)));
+					KeyPayTerm.DOSSIER, dossierObj);
+
+//        	payloadObj.put(
+//					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
+//						JSONFactoryUtil.looseSerialize(dossier)));
         	
         	if (dossierAction != null) {
         		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -4045,10 +4056,13 @@ public class CPSDossierBusinessLocalServiceImpl
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         payloadObj = buildNotificationPayload(dossier, payloadObj);
         
-        try {		
+        try {
+        	JSONObject dossierObj = JSONFactoryUtil.createJSONObject(
+					JSONFactoryUtil.looseSerialize(dossier));
+        	dossierObj = buildNotificationPayload(dossier, dossierObj);
+        	
         	payloadObj.put(
-					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(dossier)));
+					KeyPayTerm.DOSSIER, dossierObj);
         	
         	if (dossierAction != null) {
         		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
