@@ -1,0 +1,12 @@
+Bundle-Name: opencps-esb-api-rest
+Bundle-SymbolicName: opencps.esb.api.rest
+Bundle-Version: 1.0.0
+Liferay-Configuration-Path: /configuration
+-includeresource: @status-transformer-3.0.0.RELEASE.jar;lib:=true,\
+				@iws-sdk-java-2.0.1.RELEASE.jar;lib:=true,\
+				@httpclient-auth-client-1.0.4.RELEASE.jar;lib:=true,\
+				@http-auth-client-1.0.2.RELEASE.jar;lib:=true,\
+				@edxml-transformer-3.0.0.RELEASE.jar;lib:=true,\
+				@base-102-transformer-3.0.0.RELEASE.jar;lib:=true,\
+				@guava-14.0.1.jar;lib:=true,\
+				@guice-3.0.jar;lib:=true,\
