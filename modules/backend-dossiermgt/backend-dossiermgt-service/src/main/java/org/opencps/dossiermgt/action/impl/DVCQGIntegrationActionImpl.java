@@ -1,12 +1,14 @@
 package org.opencps.dossiermgt.action.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -17,6 +19,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -52,19 +56,33 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.DossierFileUtils;
+import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.model.AccessToken;
+import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierStatusMapping;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.model.impl.ServiceInfoImpl;
 import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
@@ -74,6 +92,9 @@ import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+
+import backend.auth.api.exception.ErrorMsgModel;
 
 /**
  * @author trungnt
@@ -2809,6 +2830,282 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_log.error(e);
 			}
 		}
+	}
+
+	@Override
+	public JSONObject doCreateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext,
+			JSONObject data) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		ServerConfig serverConfig = null;
+
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+
+		if (serverConfigs != null && !serverConfigs.isEmpty()) {
+			serverConfig = serverConfigs.get(0);
+		}
+
+		if (serverConfig == null) {
+			return createResponseMessage(result, 404, "error",
+					"Not found server config width protocal: DVCQG_INTEGRATION");
+		}
+
+		if (data == null) {
+			return createResponseMessage(result, 500, "error", "Data empty");
+		}
+
+		String MaSoThue = data.getString("MaSoThue");
+
+		if (Validator.isNull(MaSoThue)) {
+			return createResponseMessage(result, 500, "error", "MaSoThue empty");
+		}
+
+		String techId = StringPool.BLANK;
+
+		JSONObject body = JSONFactoryUtil.createJSONObject();
+		body.put("service", "TraCuuTechID");
+		body.put("provider", "wso2is");
+		body.put("mstorcmnd", MaSoThue);
+
+		JSONObject searchObj = getSharingDictCollection(serverConfig, body);
+
+		_log.debug("Find TechId by MST " + searchObj.toJSONString());
+
+		if (searchObj != null && GetterUtil.getInteger(searchObj.getString("error_code")) == 0) {
+			JSONArray searchResultObj = searchObj.getJSONArray("result");
+			if (searchResultObj == null || searchResultObj.length() == 0) {
+				return createResponseMessage(result, 500, "error", "Can't get techId");
+			}
+			techId = searchResultObj.getJSONObject(0).getString("TECHNICALID");
+			if (Validator.isNull(techId)) {
+				return createResponseMessage(result, 500, "error", "Can't get techId");
+			}
+
+		} else {
+			return createResponseMessage(result, 500, "error", "Can't get techId");
+		}
+
+		String MaHoSo = data.getString("MaHoSo");//bb
+		
+		if(Validator.isNull(MaHoSo)) {
+			return createResponseMessage(result, 500, "error", "MaHoSo empty");
+		}
+		
+		String MaTTHC = data.getString("MaTTHC");//bb
+		ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
+		if (mapping == null) {
+			return createResponseMessage(result, 404, "error", "Not found serviceInfo mapping with: " + MaTTHC);
+		}
+		//String SoVanBan = data.getString("SoVanBan");
+		//String NgayNopHoSo = data.getString("NgayNopHoSo");
+		String TenThuongNhan = data.getString("TenThuongNhan");//bb
+		JSONObject DiaChiDoanhNghiep_obj = data.getJSONObject("DiaChiDoanhNghiep");
+		String MaTinh = StringPool.BLANK;
+		String MaHuyen = StringPool.BLANK;
+		String MaXa = StringPool.BLANK;
+		String DiaChiChiTiet = StringPool.BLANK;
+		if (DiaChiDoanhNghiep_obj != null && DiaChiDoanhNghiep_obj.length() > 0) {
+			MaTinh = DiaChiDoanhNghiep_obj.getString("MaTinh");
+			MaHuyen = DiaChiDoanhNghiep_obj.getString("MaHuyen");
+			MaXa = DiaChiDoanhNghiep_obj.getString("MaXa");
+			DiaChiChiTiet = DiaChiDoanhNghiep_obj.getString("DiaChiChiTiet");
+		}
+
+		String DienThoai = data.getString("DienThoai");
+		//String Fax = data.getString("Fax");
+		String Email = data.getString("Email");
+		String NguoiLienHe = data.getString("NguoiLienHe");
+		//String SoDienThoaiNguoiLienHe = data.getString("SoDienThoaiNguoiLienHe");
+		String TenChuongTrinhKhuyenMai = data.getString("TenChuongTrinhKhuyenMai");
+		//String HinhThucKhuyenMai = data.getString("HinhThucKhuyenMai");
+		//String ThoiGianKhuyenMaiTu = data.getString("ThoiGianKhuyenMaiTu");
+		//String ThoiGianKhuyenMaiDen = data.getString("ThoiGianKhuyenMaiDen");
+		//String HangHoaDichVuKhuyenMai = data.getString("HangHoaDichVuKhuyenMai");
+		//String SoLuongHangHoaDichVu = data.getString("SoLuongHangHoaDichVu");
+		//String KhachHang = data.getString("KhachHang");
+		//String CoCauGiaiThuong = data.getString("CoCauGiaiThuong");
+		//String TongGiaTriHangHoa = data.getString("TongGiaTriHangHoa");
+		//String NoiDungChiTiet = data.getString("NoiDungChiTiet");
+		//String TenCacThuongNhanCungThucHien = data.getString("TenCacThuongNhanCungThucHien");
+		String TenTepDonDangKy = data.getString("TenTepDonDangKy");
+		String TepDonDangKy = data.getString("TepDonDangKy");//base64
+
+		//find applicant
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, MaSoThue);
+
+		if (applicant != null && Validator.isNull(applicant.getMappingClassPK())) {
+			try {
+				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
+						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
+			} catch (Exception e) {
+				_log.error(e);
+				return createResponseMessage(result, 500, "error", "Can't update applicant mappingClassPK");
+			}
+		} else if (applicant == null) {
+
+			try {
+				String cityName = StringPool.BLANK;
+				String districtName = StringPool.BLANK;
+				String wardName = StringPool.BLANK;
+				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L, TenThuongNhan,
+						"business", MaSoThue, DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE),
+						DiaChiChiTiet, MaTinh, cityName, MaHuyen, districtName, MaXa, wardName, NguoiLienHe, DienThoai,
+						Email, StringPool.BLANK, StringPool.BLANK, true);
+
+				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
+						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
+			} catch (Exception e) {
+				_log.error(e);
+				return createResponseMessage(result, 500, "error", "Can't create applicant");
+			}
+		}
+
+		//create dossier
+
+		try {
+			serverConfig = null;
+			ServerConfigLocalServiceUtil.getByProtocol("DVCQG_TTKM");
+
+			if (serverConfigs != null && !serverConfigs.isEmpty()) {
+				serverConfig = serverConfigs.get(0);
+			}
+
+			if (serverConfig == null) {
+				return createResponseMessage(result, 404, "error",
+						"Not found server config width protocal: DVCQG_TTKM");
+			}
+
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			//String serverNo = config.getString("serverNo");
+			String serviceCode = config.getString("serviceCode");
+			String govAgencyCode = config.getString("govAgencyCode");
+			String dossierTemplateNo = config.getString("dossierTemplateNo");
+			String actionCode = config.getString("actionCode");
+
+			ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
+
+			if (actConfig == null) {
+				return createResponseMessage(result, 404, "error", "Not found ActionConfig");
+			}
+
+			DossierInputModel inputModel = new DossierInputModel();
+			inputModel.setServiceCode(serviceCode);
+			inputModel.setGovAgencyCode(govAgencyCode);
+			inputModel.setDossierTemplateNo(dossierTemplateNo);
+			inputModel.setOriginality(String.valueOf(1));
+
+			inputModel.setApplicantName(applicant.getApplicantName());
+			inputModel.setDossierNo(StringPool.BLANK);
+			inputModel.setApplicantIdType(applicant.getApplicantIdType());
+			inputModel.setApplicantIdNo(applicant.getApplicantIdNo());
+			inputModel.setAddress(applicant.getAddress());
+			inputModel.setCityCode(applicant.getCityCode());
+			inputModel.setDistrictCode(applicant.getDistrictCode());
+			inputModel.setWardCode(applicant.getWardCode());
+			inputModel.setContactTelNo(applicant.getContactTelNo());
+			inputModel.setContactEmail(applicant.getContactEmail());
+			inputModel.setDelegateName(applicant.getApplicantName());
+			inputModel.setDelegateIdNo(applicant.getApplicantIdNo());
+			inputModel.setDelegateTelNo(applicant.getContactTelNo());
+			inputModel.setDelegateEmail(applicant.getContactEmail());
+			inputModel.setDelegateAddress(applicant.getAddress());
+
+			inputModel.setDelegateCityCode(applicant.getCityCode());
+			inputModel.setDelegateDistrictCode(applicant.getDistrictCode());
+			inputModel.setDelegateWardCode(applicant.getWardCode());
+			inputModel.setApplicantNote(StringPool.BLANK);
+			inputModel.setSameAsApplicant(false);
+			inputModel.setSampleCount(0L);
+
+			inputModel.setDossierNo(MaHoSo);
+
+			inputModel.setDossierName(TenChuongTrinhKhuyenMai);
+
+			//inputModel.setMetaData(metaData);
+
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
+					inputModel);
+
+			_log.debug(JSONFactoryUtil.looseSerialize(dossier));
+
+			//update file
+			addDossierFileAttachment(groupId, dossier.getDossierId(), dossierTemplateNo, TenTepDonDangKy, TepDonDangKy,
+					serviceContext);
+
+			JSONArray TaiLieuNop_arr = data.getJSONArray("TaiLieuNop");
+			if (TaiLieuNop_arr != null && TaiLieuNop_arr.length() > 0) {
+				for (int i = 0; i < TaiLieuNop_arr.length(); i++) {
+					JSONObject TaiLieuNop_obj = TaiLieuNop_arr.getJSONObject(i);
+					String TenTepDinhKem = TaiLieuNop_obj.getString("TenTepDinhKem");
+					String Base64 = TaiLieuNop_obj.getString("Base64");
+
+					addDossierFileAttachment(groupId, dossier.getDossierId(), dossierTemplateNo, TenTepDinhKem, Base64,
+							serviceContext);
+				}
+			}
+
+			//post action
+
+			DossierActions actions = new DossierActionsImpl();
+			ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
+			ErrorMsgModel errorModel = new ErrorMsgModel();
+			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, null, actionCode,
+					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
+
+			return createResponseMessage(result, 200, "success", "create dossier success");
+
+		} catch (Exception e) {
+			_log.error(e);
+
+			return createResponseMessage(result, 500, "error", "create dossier error");
+		}
 
 	}
+
+	private ProcessOption getProcessOption(String serviceInfoCode, String govAgencyCode, String dossierTemplateNo,
+			long groupId) throws PortalException {
+
+		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(groupId, serviceInfoCode, govAgencyCode);
+		if (config != null) {
+			return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(groupId, dossierTemplateNo,
+					config.getServiceConfigId());
+		} else {
+			return null;
+		}
+	}
+
+	private void addDossierFileAttachment(long groupId, long dossierId, String dossierTemplateNo, String fileName,
+			String base64, ServiceContext serviceContext) throws PortalException, IOException {
+		if (Validator.isNotNull(fileName) && Validator.isNotNull(base64)) {
+			DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(groupId, dossierTemplateNo,
+					"TP99");
+			String fileTemplateNo = StringPool.BLANK;
+			if (dossierPart != null) {
+				fileTemplateNo = dossierPart.getFileTemplateNo();
+			}
+			String referenceUid = StringPool.BLANK;
+			File file = DossierFileUtils.base64ToFile(fileName, base64);
+			InputStream inputStream = DossierFileUtils.fileToInputStream(file);
+			JSONObject fileMetadata = DossierFileUtils.getFileMetadata(file);
+			if (inputStream != null) {
+				DossierFile dossierFile = DossierFileLocalServiceUtil.addDossierFile(groupId, dossierId, referenceUid,
+						dossierTemplateNo, "TP99", fileTemplateNo, fileName, fileName, fileMetadata.getLong("fileSize"),
+						inputStream, fileMetadata.getString("mimeType"), String.valueOf(false), serviceContext);
+
+				_log.debug("Attachment dossierFile " + fileName + " " + JSONFactoryUtil.looseSerialize(dossierFile));
+			}
+
+		}
+	}
+
+	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
+		object.put("status", status);
+		object.put("message", message);
+		object.put("description", desc);
+		return object;
+	}
+
+	private String _DEFAULT_CLASS_NAME = "dvcqg";
 }
