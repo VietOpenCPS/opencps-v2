@@ -90,8 +90,6 @@ import org.opencps.adminconfig.service.DynamicReportLocalServiceUtil;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -105,10 +103,8 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.model.Holiday;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.datamgt.service.HolidayLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
@@ -119,8 +115,8 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DocumentTypeNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -148,6 +144,7 @@ import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
+import org.opencps.dossiermgt.constants.VTPayTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
@@ -374,13 +371,14 @@ public class CPSDossierBusinessLocalServiceImpl
 					String delegateTelNo = null;
 					String delegateEmail = null;
 					String delegateIdNo = null;
+					delegateIdNo = dossier.getGovAgencyCode();
 					if (wu != null) {
 						delegateName = wu.getName();
 						delegateAddress = wu.getAddress();
 						delegateTelNo = wu.getTelNo();
 						delegateEmail = wu.getEmail();
-						delegateIdNo = wu.getGovAgencyCode();
-
+						//new 3.0 comment
+//						delegateIdNo = wu.getGovAgencyCode();
 					}
 					else if (user != null && employee != null) {
 						delegateName = employee.getFullName();
@@ -1227,7 +1225,8 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		//Create notification
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, payloadObject, context);
+			JSONObject notificationPayload = buildNotificationPayload(dossier, payloadObject);
+			createNotificationQueue(user, groupId, dossier, proAction, actionConfig, dossierAction, notificationPayload, context);
 		}
 		
 		//Create subcription
@@ -1257,6 +1256,51 @@ public class CPSDossierBusinessLocalServiceImpl
 //		indexer.reindex(dossier);
 
 		return dossierAction;
+	}
+	
+	private JSONObject buildNotificationPayload(Dossier dossier, JSONObject payloadObject) {
+		JSONObject returnObject;
+		try {
+			returnObject = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
+			if (!returnObject.has(DossierTerm.RECEIVE_DATE)) {
+				if (dossier.getReceiveDate() != null) {
+					returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
+				}
+			}
+			if (!returnObject.has(DossierTerm.DOSSIER_NO)) {
+				if (Validator.isNotNull(dossier.getDossierNo())) {
+					returnObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
+				}
+			}
+			int durationUnit = dossier.getDurationUnit();
+			double durationCount = dossier.getDurationCount();
+			String durationText = StringPool.BLANK;
+			if (durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+				durationText = String.valueOf(durationCount);
+			}
+			else if (durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+				durationText = String.valueOf(durationCount * 1.0 / DossierTerm.WORKING_HOUR_PER_DAY);
+			}
+			
+			returnObject.put(DossierTerm.DURATION_TEXT, durationText);
+			if (!returnObject.has(DossierTerm.GOV_AGENCY_NAME)) {
+				returnObject.put(DossierTerm.GOV_AGENCY_NAME, dossier.getGovAgencyName());
+			}
+			if (!returnObject.has(DossierTerm.POSTAL_ADDRESS)) {
+				returnObject.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
+			}
+			
+			PaymentFile pf = paymentFileLocalService.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			if (pf != null) {
+				if (!returnObject.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
+					returnObject.put(PaymentFileTerm.PAYMENT_AMOUNT, String.valueOf(pf.getPaymentAmount()));
+				}
+			}
+			return returnObject;		
+		} catch (JSONException e) {
+			_log.debug(e);
+			return payloadObject;
+		}	
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={SystemException.class, PortalException.class, Exception.class })
@@ -1321,16 +1365,36 @@ public class CPSDossierBusinessLocalServiceImpl
         	_log.error(e);
         }
         
+        String notificationType = StringPool.BLANK;
+        String preCondition = StringPool.BLANK;
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
+			_log.info("NOTIFICATION TYPE: " + actionConfig.getNotificationType());
+			if (actionConfig.getNotificationType().contains(StringPool.AT)) {
+				String[] split = StringUtil.split(actionConfig.getNotificationType(), StringPool.AT);
+				if (split.length == 2) {
+					notificationType = split[0];
+					preCondition = split[1];
+				}
+			}
+			else {
+				notificationType = actionConfig.getNotificationType();
+			}
+			_log.info("NOTIFICATION TYPE: " + notificationType + ", CONDITION: " + preCondition);
+			if (Validator.isNotNull(preCondition)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
+					return;
+				}
+			}
+
 //			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE, groupId +StringPool.UNDERLINE+ actionConfig.getNotificationType());
+			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE, groupId +StringPool.UNDERLINE+ notificationType);
 			Notificationtemplate notiTemplate = null;
 //			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
 			if (notiCache == null) {
-				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, notificationType);
 				if (notiTemplate != null) {
 					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE,
-							groupId +StringPool.UNDERLINE+ actionConfig.getNotificationType(), (Serializable) notiTemplate,
+							groupId +StringPool.UNDERLINE+ notificationType, (Serializable) notiTemplate,
 							ttl);
 				}
 			} else {
@@ -1353,7 +1417,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
+				if (notificationType.startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -1378,7 +1442,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								}
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
-										actionConfig.getNotificationType(), 
+										notificationType, 
 										Dossier.class.getName(), 
 										String.valueOf(dossier.getDossierId()), 
 										payloadObj.toJSONString(), 
@@ -1396,10 +1460,10 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
+				else if (notificationType.startsWith(KeyPayTerm.USER)) {
 					
 				}
-				else if (actionConfig.getNotificationType().startsWith("EMPL")) {
+				else if (notificationType.startsWith("EMPL")) {
 					_log.debug("ADD NOTI EMPL");
 					List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil.getByDossierAndStepCode(dossier.getDossierId(), dossierAction.getStepCode());
 					_log.debug("ADD NOTI LIST DAU: " + lstDaus.size());
@@ -1429,7 +1493,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								_log.debug("BEFORE ADD NOTI EMPLOYEE: " + actionConfig.getNotificationType());
 								NotificationQueueLocalServiceUtil.addNotificationQueue(
 										user.getUserId(), groupId, 
-										actionConfig.getNotificationType(), 
+										notificationType, 
 										Dossier.class.getName(), 
 										String.valueOf(dossier.getDossierId()), 
 										payloadObj.toJSONString(), 
@@ -1803,6 +1867,36 @@ public class CPSDossierBusinessLocalServiceImpl
 						paymentFile.getPaymentFileId(), paymentFee, dossier.getDossierId());
 				JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				epaymentProfileJsonNew.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
+				
+				PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
+						dossier.getGovAgencyCode());
+				JSONObject epaymentConfigJSON = paymentConfig != null ? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig()) : JSONFactoryUtil.createJSONObject();
+
+				_log.debug("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);
+				if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						String mcUrl = schema.getString(VTPayTerm.MC_URL);
+	
+						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
+						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+	
+						epaymentProfileJsonNew.put(VTPayTerm.VTPAY_GENQR, data);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+	
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJsonNew.toJSONString(),
 						context);
 			} catch (IOException e) {
@@ -1881,6 +1975,34 @@ public class CPSDossierBusinessLocalServiceImpl
 				} else {
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
 							context);
+				}
+			
+				_log.debug("==========VTPayTerm.VTP_CONFIG========"+epaymentConfigJSON);
+				if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+					try {
+						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+						JSONObject data = JSONFactoryUtil.createJSONObject();
+						String mcUrl = schema.getString(VTPayTerm.MC_URL);
+	
+						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
+						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+								schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+	
+						epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+						paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(), epaymentProfileJSON.toJSONString(),
+								context);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+	
 				}
 			}
 		return oldPaymentFile;
@@ -3921,6 +4043,7 @@ public class CPSDossierBusinessLocalServiceImpl
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        payloadObj = buildNotificationPayload(dossier, payloadObj);
         
         try {		
         	payloadObj.put(
@@ -3938,8 +4061,25 @@ public class CPSDossierBusinessLocalServiceImpl
         	_log.error(e);
         }
 
+        String notificationType = StringPool.BLANK;
+        String preCondition = StringPool.BLANK;
 		if (actionConfig != null && Validator.isNotNull(actionConfig.getNotificationType())) {
-			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (actionConfig.getNotificationType().contains(StringPool.AT)) {
+				String[] split = StringUtil.split(actionConfig.getNotificationType(), StringPool.AT);
+				if (split.length == 2) {
+					notificationType = split[0];
+					preCondition = split[1];
+				}
+			}
+			else {
+				notificationType = actionConfig.getNotificationType();
+			}
+			if (Validator.isNotNull(preCondition)) {
+				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
+					return;
+				}
+			}
+			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, notificationType);
 			Date now = new Date();
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(now);
@@ -3956,7 +4096,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 				Date expired = cal.getTime();
 
-				if (actionConfig.getNotificationType().startsWith(KeyPayTerm.APLC)) {
+				if (notificationType.startsWith(KeyPayTerm.APLC)) {
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_MOTCUA
 							|| dossier.getOriginality() == DossierTerm.ORIGINALITY_LIENTHONG) {
 						try {
@@ -3972,7 +4112,7 @@ public class CPSDossierBusinessLocalServiceImpl
 							payloadObj.put("filesAttach", filesAttach);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(
 									userId, groupId, 
-									actionConfig.getNotificationType(), 
+									notificationType, 
 									Dossier.class.getName(), 
 									String.valueOf(dossier.getDossierId()), 
 									payloadObj.toJSONString(), 
@@ -3989,7 +4129,7 @@ public class CPSDossierBusinessLocalServiceImpl
 						}
 					}
 				}
-				else if (actionConfig.getNotificationType().startsWith(KeyPayTerm.USER)) {
+				else if (notificationType.startsWith(KeyPayTerm.USER)) {
 					
 				}				
 			}
@@ -7521,7 +7661,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				throw new UnauthenticationException();
 			}
 
-			String referenceUid = input.getReferenceUid();
+//			String referenceUid = input.getReferenceUid();
 			int counter = 0;
 			String serviceCode = input.getServiceCode();
 			String serviceName = input.getServiceName();

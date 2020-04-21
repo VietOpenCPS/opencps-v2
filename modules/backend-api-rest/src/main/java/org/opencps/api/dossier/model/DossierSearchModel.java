@@ -126,7 +126,8 @@ import javax.xml.bind.annotation.XmlType;
     "toBacklogDate",
     "backlog",
     "assignedUserIdSearch",
-    "dossierCounter"
+    "dossierCounter",
+    "delegate"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -264,7 +265,17 @@ public class DossierSearchModel {
     protected String fromDueDate;
     @QueryParam(value = "toDueDate")
     protected String toDueDate;
+    @QueryParam(value = "delegate")
+    protected String delegate;
     
+	public String getDelegate() {
+		return delegate;
+	}
+
+	public void setDelegate(String delegate) {
+		this.delegate = delegate;
+	}
+
 	public String getFromDueDate() {
 		return fromDueDate;
 	}

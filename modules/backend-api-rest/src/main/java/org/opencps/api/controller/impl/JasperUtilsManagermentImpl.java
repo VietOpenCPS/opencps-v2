@@ -91,7 +91,7 @@ public class JasperUtilsManagermentImpl implements JasperUtilsManagerment {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
 
 				Date dateEnd1 = new Date();
 				_log.info(

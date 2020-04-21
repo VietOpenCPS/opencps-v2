@@ -377,6 +377,20 @@ public class KeyPay {
 
 	}
 
+	public static String getSecureHashCodeCheckRequest(KeyPay keyPay, String algorithm) {
+
+		Map<String, String> fields = new HashMap<String, String>();
+
+		fields.put(KeyPayTerm.TRANS_ID, keyPay.getTrans_id());
+		fields.put(KeyPayTerm.MERCHANT_TRANS_ID, keyPay.getMerchant_trans_id());
+		fields.put(KeyPayTerm.MERCHANT_CODE, keyPay.getMerchant_code());
+		fields.put(KeyPayTerm.GOOD_CODE, keyPay.getGood_code());
+
+		HashFunction hf = new HashFunction();
+		return hf.hashAllFields(fields, keyPay.getMerchant_secure_key(), algorithm);
+
+	}
+	
 	/**
 	 * Kiem tra secure hash co dung khong
 	 *

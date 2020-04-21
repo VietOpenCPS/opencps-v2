@@ -156,6 +156,5 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	
 	public List<DossierSync> findByStates(int[] states, Integer start, Integer end) {
 		return dossierSyncPersistence.findBySTS(states, start, end);
-	}
-	
+	}	
 }

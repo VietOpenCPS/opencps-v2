@@ -35,7 +35,13 @@ public class SendSMSTerm {
 	public static final String COMMAND_CODE = "commandCode";
 	public static final String CONTENT_TYPE = "contentType";
 	public static final String COUNTRY_CODE = "countryCode";
-
+	public static final String VIETTEL_SERVICE_ID = "viettelServiceID";
+	public static final String MOBIFONE_SERVICE_ID = "mobifoneServiceID";
+	public static final String VINAPHONE_SERVICE_ID = "vinaphoneServiceID";
+	public static final String GMOBILE_SERVICE_ID = "gmobileServiceID";
+	public static final String VIETNAMOBILE_SERVICE_ID = "vietnamobileServiceID";
+	public static final String SFONE_SERVICE_ID = "sfoneServiceID";
+	
 	/** Key by BCT **/
 	/**
 	 * Configs fields

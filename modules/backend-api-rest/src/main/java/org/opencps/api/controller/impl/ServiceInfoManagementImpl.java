@@ -310,7 +310,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			} else {
 				results = ServiceInfoUtils.mappingToServiceInfoDetailModel(serviceInfo);
 			}
-
+                        /*
 			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
 		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
 			CacheControl cc = new CacheControl();
@@ -321,9 +321,12 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				builder = Response.ok(results);
 				builder.tag(etag);
 			}
-
+                 
 		    builder.cacheControl(cc);
+                    
 		    return builder.build();
+                    */
+                    return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
@@ -546,7 +549,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename);
-			responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 
@@ -1168,7 +1171,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				String serverUrl = StringPool.BLANK;
 				String authStrEnc = StringPool.BLANK;
 
-				String apiUrl = StringPool.BLANK;
+				String apiUrl;// = StringPool.BLANK;
 
 				StringBuilder sb = new StringBuilder();
 

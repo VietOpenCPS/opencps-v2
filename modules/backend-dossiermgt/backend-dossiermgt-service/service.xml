@@ -2814,6 +2814,35 @@
 
 	</entity>
 		
+
+  <entity local-service="true" remote-service="false"
+		name="AccessToken" table="opencps_accesstoken">
+				<!-- PK fields -->
+
+		<column name="accessTokenId" primary="true" type="long"></column>
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long"></column>
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long"></column>
+		<column name="userId" type="long"></column>
+		<column name="userName" type="String"></column>
+		<column name="createDate" type="Date"></column>
+		<column name="modifiedDate" type="Date"></column>
+        <column name="token" type="String"></column>
+        <column name="expireDate" type="Date"></column>
+        <column name="className" type="String"></column>
+        <order by="desc">
+            <order-column name="expireDate" order-by="desc"></order-column>
+        </order>
+        <finder name="F_GID_ClassName" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="className"></finder-column>
+        </finder>
+  </entity>
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

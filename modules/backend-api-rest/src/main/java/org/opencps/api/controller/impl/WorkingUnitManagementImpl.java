@@ -225,7 +225,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			ResponseBuilder responseBuilder = Response.ok((Object) file);
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileNameRespone);
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+					.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 		} catch (Exception e) {
@@ -258,7 +258,7 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			
 			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileName);
 			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename)
-					.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+					.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 			return responseBuilder.build();
 

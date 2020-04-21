@@ -72,7 +72,7 @@ public class ApplicantUtils {
 //			mappingUser.setLocking(user.getLockout());
 //		}
 //		model.setMappingUser(mappingUser);
-		
+
 		return model;
 	}
 

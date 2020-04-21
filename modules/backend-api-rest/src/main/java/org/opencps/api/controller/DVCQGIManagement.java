@@ -81,7 +81,7 @@ public interface DVCQGIManagement {
 	public Response getSharingData(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, String body);
-	
+
 	@POST
 	@Path("/mappingserviceinfo")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })

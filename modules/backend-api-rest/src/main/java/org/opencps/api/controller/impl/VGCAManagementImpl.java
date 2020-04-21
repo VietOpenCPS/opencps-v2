@@ -102,7 +102,7 @@ public class VGCAManagementImpl implements VGCAManagement {
 					result.put(ConstantUtils.VGCA_FILENAME, fileName);
 					if (fileEntry != null) {
 						fileServerObj.put(ConstantUtils.VGCA_FILEENTRYID, fileEntry.getFileEntryId());
-						String urlPath = String.format(MessageUtil.getMessage(ConstantUtils.VGCA_URL_PATH), url.getProtocol(), host, url.getPort(), fileName);
+						String urlPath = String.format(MessageUtil.getMessage(ConstantUtils.VGCA_URL_PATH), url.getProtocol(), host, (url.getPort() == -1 ? 80 : url.getPort()), fileName);
 						
 						fileServerObj.put(ConstantUtils.VGCA_URL, urlPath);
 						result.put(ConstantUtils.VGCA_FILESERVER, fileServerObj.toJSONString());

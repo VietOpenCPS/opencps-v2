@@ -37,6 +37,7 @@ public class MailTestManagementImpl implements MailTestManagement {
 			mailMessage.setTo(new InternetAddress(to));
 			mailMessage.setFrom(new InternetAddress(from));
 		} catch (AddressException e) {
+			_log.debug(e);
 		}
 		mailMessage.setBody(body);
 		mailMessage.setHTMLFormat(true);
@@ -62,6 +63,8 @@ public class MailTestManagementImpl implements MailTestManagement {
 				"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
 		props.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
 		props.put("mail.smtp.port", smtpPort); //SMTP Port
+		props.put("mail.smtp.starttls.enable", "false");
+		props.put("mail.smtp.ssl.enable", "false");
 		
 		Authenticator auth = new Authenticator() {
 			//override the getPasswordAuthentication method
@@ -103,6 +106,7 @@ public class MailTestManagementImpl implements MailTestManagement {
 	      _log.debug("EMail Sent Successfully!!");
 	    }
 	    catch (Exception e) {
+	    	_log.debug(e);
 	      e.printStackTrace();
 	    }
 	}

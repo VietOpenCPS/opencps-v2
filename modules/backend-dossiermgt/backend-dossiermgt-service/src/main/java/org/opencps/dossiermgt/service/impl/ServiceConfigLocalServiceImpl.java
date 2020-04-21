@@ -41,9 +41,11 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -335,13 +337,28 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
 
 		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
-
+		String serviceConfigId = String.valueOf(params.get(ServiceConfigTerm.SERVICECONFIG_ID));
+		
 		if (Validator.isNotNull(level)) {
-			MultiMatchQuery query = new MultiMatchQuery(level);
+			if (level.contains(StringPool.COMMA)) {
+				String[] levelArr = StringUtil.split(level, StringPool.COMMA);
+				BooleanQuery levelQuery = new BooleanQueryImpl();
+				for (String filterLevel: levelArr) {
+					MultiMatchQuery query = new MultiMatchQuery(filterLevel);
 
-			query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
+					query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+					levelQuery.add(query, BooleanClauseOccur.SHOULD);									
+				}
+				booleanQuery.add(levelQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(level);
+
+				query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);				
+			}
 		}
 
 		if (Validator.isNotNull(agency)) {
@@ -381,6 +398,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			MultiMatchQuery query = new MultiMatchQuery(Boolean.toString(true));
 
 			query.addFields(ServiceConfigTerm.FOR_CITIZEN);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(serviceConfigId)) {
+			MultiMatchQuery query = new MultiMatchQuery(serviceConfigId);
+
+			query.addFields(ServiceConfigTerm.SERVICECONFIG_ID);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -443,13 +468,28 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		String domain = String.valueOf((params.get(ServiceConfigTerm.DOMAIN_CODE)));
 
 		String applicant = String.valueOf((params.get(ServiceConfigTerm.APPICATION_TYPE)));
+		String serviceConfigId = String.valueOf(params.get(ServiceConfigTerm.SERVICECONFIG_ID));
 
 		if (Validator.isNotNull(level)) {
-			MultiMatchQuery query = new MultiMatchQuery(level);
+			if (level.contains(StringPool.COMMA)) {
+				String[] levelArr = StringUtil.split(level, StringPool.COMMA);
+				BooleanQuery levelQuery = new BooleanQueryImpl();
+				for (String filterLevel: levelArr) {
+					MultiMatchQuery query = new MultiMatchQuery(filterLevel);
 
-			query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
+					query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+					levelQuery.add(query, BooleanClauseOccur.SHOULD);									
+				}
+				booleanQuery.add(levelQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(level);
+
+				query.addFields(ServiceConfigTerm.SERVICE_LEVEL);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);				
+			}
 		}
 
 		if (Validator.isNotNull(agency)) {
@@ -493,6 +533,14 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(serviceConfigId)) {
+			MultiMatchQuery query = new MultiMatchQuery(serviceConfigId);
+
+			query.addFields(ServiceConfigTerm.SERVICECONFIG_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);

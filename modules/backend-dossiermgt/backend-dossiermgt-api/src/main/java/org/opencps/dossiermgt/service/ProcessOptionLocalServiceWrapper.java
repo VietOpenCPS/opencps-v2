@@ -59,6 +59,12 @@ public class ProcessOptionLocalServiceWrapper
 	}
 
 	@Override
+	public int countByServiceConfigId(long serviceConfigId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _processOptionLocalService.countByServiceConfigId(serviceConfigId);
+	}
+
+	@Override
 	public long countLucene(java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.SearchContext searchContext)
 		throws com.liferay.portal.kernel.search.ParseException,
@@ -249,6 +255,13 @@ public class ProcessOptionLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processOptionLocalService.getByDTPLNoAndServiceCF(groupId,
 			dossierTemplateNo, serviceConfigId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ProcessOption> getByServiceConfigId(
+		long serviceConfigId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _processOptionLocalService.getByServiceConfigId(serviceConfigId);
 	}
 
 	@Override

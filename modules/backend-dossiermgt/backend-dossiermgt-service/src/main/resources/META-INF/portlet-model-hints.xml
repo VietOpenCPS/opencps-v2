@@ -1,6 +1,24 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<model name="org.opencps.dossiermgt.model.AccessToken">
+		<field name="accessTokenId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="token" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="expireDate" type="Date" />
+		<field name="className" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+	</model>
 	<model name="org.opencps.dossiermgt.model.ActionConfig">
 		<field name="uuid" type="String" />
 		<field name="actionConfigId" type="long" />

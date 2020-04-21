@@ -273,6 +273,11 @@ public class EmployeeLocalServiceUtil {
 		return getService().fetchEmployeeByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.usermgt.model.Employee> findByEmail(
+		String email) {
+		return getService().findByEmail(email);
+	}
+
 	public static java.util.List<org.opencps.usermgt.model.Employee> findByG(
 		long groupId) {
 		return getService().findByG(groupId);

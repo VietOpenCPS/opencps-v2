@@ -105,7 +105,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
 			        _log.debug("BASIC AUTHEN: " + authStrEnc);
 			        if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
-				        conn.setRequestProperty(ConstantUtils.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
+				        conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
 						conn.setRequestProperty(ConstantUtils.CONTENT_LENGTH, StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
 
 						conn.setUseCaches(false);

@@ -281,7 +281,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -594,7 +594,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_ZIP);
 
 				return responseBuilder.build();
 			}
@@ -847,7 +847,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			}
@@ -1313,7 +1313,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					inlineFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 				responseBuilder.header(ConstantUtils.CONTENT_LENGTH, file.length());
 
 				return responseBuilder.build();

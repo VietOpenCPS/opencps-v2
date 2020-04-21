@@ -2861,7 +2861,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
 			? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
 		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
-
+		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
+		
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2903,6 +2904,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
+			delegate,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3048,7 +3050,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
 			? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
 		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
-
+		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
+		
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3087,6 +3090,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
+			delegate,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3216,6 +3220,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long groupDossierId, String assignedUserId, String assignedUserIdSearch, Integer delegateType,
 		String documentNo, String documentDate, String strSystemId,
 		Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
+		String delegate,
 		BooleanQuery booleanQuery)
 		throws ParseException {
 
@@ -4487,6 +4492,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(delegate)) {
+			String[] lstDelegateIdNo = StringUtil.split(delegate);
+
+			if (lstDelegateIdNo != null && lstDelegateIdNo.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstDelegateIdNo.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstDelegateIdNo[i]);
+					query.addField(DossierTerm.DELEGATE_ID_NO);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(delegate);
+				query.addFields(DossierTerm.DELEGATE_ID_NO);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+		
 		return booleanQuery;
 	}
 
