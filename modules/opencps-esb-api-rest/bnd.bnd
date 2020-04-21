@@ -9,4 +9,8 @@ Liferay-Configuration-Path: /configuration
 				@edxml-transformer-3.0.0.RELEASE.jar;lib:=true,\
 				@base-102-transformer-3.0.0.RELEASE.jar;lib:=true,\
 				@guava-14.0.1.jar;lib:=true,\
-				@guice-3.0.jar;lib:=true,\
+				@guice-4.2.1.jar;lib:=true,\
+				@httpcore-4.3.1.jar
+Import-Package: *;resolution:=optional				
+Export-Package: \
+	org.apache.http.*

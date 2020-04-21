@@ -40,11 +40,11 @@ dependencies {
 	compileOnly name: 'http-auth-client-1.0.2.RELEASE'
 	compileOnly name: 'edxml-transformer-3.0.0.RELEASE'
 	compileOnly name: 'base-102-transformer-3.0.0.RELEASE'
-	compileInclude name: 'guice-3.0', transitive:false
+	//compileInclude name: 'guice-3.0', transitive:false
 	// https://mvnrepository.com/artifact/com.google.inject/guice
 	//compile group: 'com.google.inject', name: 'guice', version: '2.0'
 	compileOnly name: 'guava-14.0.1'
-
+	compile group: 'com.google.inject', name: 'guice', version: '4.2.1', transitive: false
 }
 repositories {
 	flatDir {
