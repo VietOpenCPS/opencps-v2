@@ -30,6 +30,7 @@ import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.datamgt.action.FileAttachInterface;
+import org.opencps.datamgt.constants.FileAttachTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.datamgt.utils.DateTimeUtils;
@@ -88,17 +89,17 @@ public class FileAttachActions implements FileAttachInterface {
 
 			for (DLFileVersion dlFileVersion : fileVersions) {
 				JSONObject version = JSONFactoryUtil.createJSONObject();
-				version.put("fileEntryId", dlFileVersion.getFileEntryId());
-				version.put("createdDate",
+				version.put(FileAttachTerm.FILE_ENTRY_ID, dlFileVersion.getFileEntryId());
+				version.put(FileAttachTerm.CREATED_DATE,
 						DateTimeUtils.convertDateToString(dlFileVersion.getCreateDate(), DateTimeUtils._TIMESTAMP));
-				version.put("userId", dlFileVersion.getUserId());
-				version.put("userName", dlFileVersion.getUserName());
-				version.put("version", dlFileVersion.getVersion());
+				version.put(FileAttachTerm.USER_ID, dlFileVersion.getUserId());
+				version.put(FileAttachTerm.USER_NAME, dlFileVersion.getUserName());
+				version.put(FileAttachTerm.VERSION, dlFileVersion.getVersion());
 				versions.put(version);
 			}
 
-			result.put("versions", versions);
-			result.put("fileName", fileAttach.getFileName());
+			result.put(FileAttachTerm.VERSIONS, versions);
+			result.put(FileAttachTerm.FILE_NAME, fileAttach.getFileName());
 		}
 
 		return result;

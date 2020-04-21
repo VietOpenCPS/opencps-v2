@@ -49,6 +49,7 @@ public class DictItemTerm {
 	public static final String ITEM_NAME_EN = "itemNameEN";
 	
 	public static final String ITEM_DESCRIPTION = "itemDescription";
+	public static final String DESCRIPTION = "description";
 	
 	public static final String PARENT_ITEM_ID = "parentItemId";
 	
@@ -112,6 +113,12 @@ public class DictItemTerm {
 	public static final String LEVEL_SORTABLE = "level_sortable";
 	
 	public static final String META_DATA_SORTABLE = "metaData_sortable";
+
+	public static final String KEYWORDS = "keywords";
+	public static final String PARAMS = "params";
+	public static final String ITEM_LV = "itemLv";
+	public static final String PAGINATION_TYPE = "paginationType";
+	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 	
 	public DictItemTerm() {
 

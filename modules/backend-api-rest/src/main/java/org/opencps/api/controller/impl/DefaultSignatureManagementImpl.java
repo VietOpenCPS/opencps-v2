@@ -214,7 +214,7 @@ public class DefaultSignatureManagementImpl
 			result.put("msg", "fileEntryId");
 		}
 
-		return Response.status(200).entity(
+		return Response.status(HttpURLConnection.HTTP_OK).entity(
 			JSONFactoryUtil.looseSerialize(result)).build();
 
 	}

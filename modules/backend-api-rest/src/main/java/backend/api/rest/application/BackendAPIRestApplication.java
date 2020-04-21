@@ -36,6 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.cxf.transport.http.Headers;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
@@ -268,7 +269,7 @@ public class BackendAPIRestApplication extends Application {
 
 		try {
 			Code128 barcode = new Code128();
-			barcode.setFontName("Monospaced");
+			barcode.setFontName(ConstantUtils.MONOSPACED);
 			barcode.setFontSize(
 				Validator.isNotNull(font)
 					? Integer.valueOf(font) : ConstantUtils.DEFAULT_FONT_SIZE);
@@ -293,7 +294,7 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(barcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
@@ -302,14 +303,14 @@ public class BackendAPIRestApplication extends Application {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
 					"Content-Disposition",
 					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
 
 				return responseBuilder.build();
 			}
@@ -357,7 +358,7 @@ public class BackendAPIRestApplication extends Application {
 				new Java2DRenderer(g2d, 1, Color.WHITE, Color.BLACK);
 			renderer.render(qrcode);
 			String uuid = UUID.randomUUID().toString();
-			File destDir = new File("barcode");
+			File destDir = new File(ConstantUtils.BARCODE);
 			if (!destDir.exists()) {
 				destDir.mkdir();
 			}
@@ -366,14 +367,14 @@ public class BackendAPIRestApplication extends Application {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, "png", file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
 				responseBuilder.header(
 					"Content-Disposition",
 					"attachment; filename=\"" + file.getName() + "\"");
-				responseBuilder.header("Content-Type", "image/png");
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, "image/png");
 
 				return responseBuilder.build();
 			}
@@ -466,7 +467,7 @@ public class BackendAPIRestApplication extends Application {
 		@PathParam("className") String className) {
 
 		CountEntity result = new CountEntity();
-		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long countDatabase = 0;
 		long countLucene = 0;
 
@@ -513,7 +514,7 @@ public class BackendAPIRestApplication extends Application {
 		result.setDatabase(countDatabase);
 		result.setLucene(countLucene);
 
-		return Response.status(200).entity(result).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 	@Context
 	private UriInfo uriInfo;

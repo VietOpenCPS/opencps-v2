@@ -113,16 +113,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private static JSONArray _serviceInfoDVCQG = JSONFactoryUtil.createJSONArray();
 
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
-
+	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
+	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
+	
 	private String convertDate2String(Date date) {
 
-		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat("yyyyMMddHHmmss");
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(LUCENE_DATE_FORMAT);
 
 		if (Validator.isNull(date)) {
 			return StringPool.BLANK;
 		}
 
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone("Asia/Ho_Chi_Minh"));
+		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(HCM_TIMEZONE));
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -141,7 +143,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
 		}
-		_log.info("-------------->>>> " + _mServiceCode + "|" + _oServiceCode + "|" + groupId);
+		_log.info("-------------->>>> " + _mServiceCode +  StringPool.PIPE + _oServiceCode +  StringPool.PIPE + groupId);
 
 		object.put("MaHoSo", dossier.getDossierNo());
 		object.put("MaTTHC", _mServiceCode);
@@ -170,13 +172,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("ChuHoSo", dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals("business")) {
+			if ("business".equals(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		String madoituong = StringPool.BLANK;
-		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
@@ -284,14 +286,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("ChuHoSo", dossier.getContactName()); //ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
-			if (dossier.getApplicantIdType().equals("business")) {
+			if ("business".equals(dossier.getApplicantIdType())) {
 				LoaiDoiTuong = 2;
 			}
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		String madoituong = StringPool.BLANK;
-		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("MaDoiTuong", madoituong); //ko bb
@@ -1192,9 +1194,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				for (int i = 0; i < result.length(); i++) {
 					item = result.getJSONObject(i);
-					if (service.equals("LayDanhMucLinhVuc")) {
+					if ("LayDanhMucLinhVuc".equals(service)) {
 						dictItemDVCQGMap.put(item.getString("MALINHVUC"), item.getString("TENLINHVUC"));
-					} else if (service.equals("LayDanhMucCoQuan")) {
+					} else if ("LayDanhMucCoQuan".equals(service)) {
 						dictItemDVCQGMap.put(item.getString("MADONVI"), item.getString("TENDONVI"));
 					}
 
@@ -1219,11 +1221,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				for (int i = 0; i < result.length(); i++) {
 					JSONObject dataRow = JSONFactoryUtil.createJSONObject();
 					item = result.getJSONObject(i);
-					if (service.equals("LayDanhMucLinhVuc")) {
+					if ("LayDanhMucLinhVuc".equals(service)) {
 						dataRow.put("itemCodeDVCQG", item.getString("MALINHVUC"));
 						dataRow.put("itemNameDVCQG", item.getString("TENLINHVUC"));
 						data.put(dataRow);
-					} else if (service.equals("LayDanhMucCoQuan")) {
+					} else if ("LayDanhMucCoQuan".equals(service)) {
 
 						dataRow.put("itemCodeDVCQG", item.getString("MADONVI"));
 						dataRow.put("itemNameDVCQG", item.getString("TENDONVI"));
@@ -2346,7 +2348,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 						}
 
-						if (type.equals("create")) {
+						if ("create".equals(type)) {
 							serviceInfo = new ServiceInfoImpl();
 
 							JSONObject response = syncServiceInfo(user, groupId, config, serviceCode, serviceInfo,
@@ -2358,7 +2360,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 					}
 				} else {
-					if (type.equals("sync")) {
+					if ("sync".equals(type)) {
 						List<ServiceInfo> serviceInfos = ServiceInfoLocalServiceUtil.getServiceInfosByGroupId(groupId);
 						if (serviceInfos != null) {
 							for (ServiceInfo serviceInfo : serviceInfos) {
@@ -2419,7 +2421,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				//MATTHC
 				String matthc = _tmp.getString("MATTHC");
 
-				if (type.equalsIgnoreCase("sync")) {
+				if ("sync".equalsIgnoreCase(type)) {
 					ServiceInfoMapping infoMapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId,
 							matthc);
 					if (infoMapping == null || Validator.isNull(infoMapping.getServiceCode())) {
@@ -2463,7 +2465,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 				}
 
-				if (type.equalsIgnoreCase("sync")) {
+				if ("sync".equalsIgnoreCase(type)) {
 					DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId,
 							malinhvuc, domainCollectionId);
 					malinhvuc = dictItemMapping != null ? dictItemMapping.getItemCode() : StringPool.BLANK;
@@ -2481,7 +2483,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				String macoquancongbo = _tmp.getString("MACOQUANCONGBO");
 				String tencoquancongbo = StringPool.BLANK;
 
-				if (type.equalsIgnoreCase("sync")) {
+				if ("sync".equalsIgnoreCase(type)) {
 					DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_ICDVCQG_CID(groupId,
 							macoquancongbo, govAgencyCollectionId);
 					macoquancongbo = dictItemMapping != null ? dictItemMapping.getItemCode() : StringPool.BLANK;

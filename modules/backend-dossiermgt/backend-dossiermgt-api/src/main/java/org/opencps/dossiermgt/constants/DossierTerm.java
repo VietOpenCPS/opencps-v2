@@ -106,6 +106,9 @@ public class DossierTerm {
 
 	public static final String FROM_RECEIVEDATE = "fromReceiveDate";
 	public static final String TO_RECEIVEDATE = "toReceiveDate";
+	public static final String FROM_DUEDATE = "fromDueDate";
+	public static final String TO_DUEDATE = "toDueDate";
+
 	public static final String CERT_NO = "so_chung_chi";
 	public static final String FROM_CERT_DATE = "tu_ngay_ky_cc";
 	public static final String TO_CERT_DATE = "den_ngay_ky_cc";
@@ -180,12 +183,21 @@ public class DossierTerm {
 	
 	public static final String DOSSIER_MARKS = "dossierMarks";
 	public static final String REGISTER_BOOK_CODE = "registerBookCode";
+	public static final String REGISTER_BOOK_NAME = "registerBookName";
+	public static final String DOSSIER_REGISTER = "dossierRegister";
+	public static final String SEQUENCE_NO = "sequenceNo";
+	public static final String SEQUENCE_NAME = "sequenceName";
 	public static final String SEQUENCE_ROLE = "sequenceRole";
 	public static final String NEXT_SEQUENCE_ROLE = "nextSequenceRole";
+	public static final String NEXT_SEQUENCE_NO = "nextSequenceNo";
+	public static final String NEXT_SEQUENCE_NAME = "nextSequenceName";
+	public static final String NEXT_CREATE_DATE = "nextCreateDate";
 	public static final String ACTION_USER = "actionUser";
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
+	public static final String PROCESS_SEQUENCE_ARR = "processSequenceArr";
 
+	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
@@ -219,6 +231,7 @@ public class DossierTerm {
 	public static final String DOSSIER_NAME = "dossierName";
 	public static final String DOSSIER_NAME_SEARCH = "dossierNameSearch";
 	public static final String ORIGIN_DOSSIER_NO = "originDossierNo";
+	public static final String ORIGINAL = "original";
 	//
 	public static final String FROM_FINISH_DATE = "fromFinishDate";
 	public static final String TO_FINISH_DATE = "toFinishDate";
@@ -229,6 +242,7 @@ public class DossierTerm {
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
 	public static final String ORIGIN = "origin";
 	//
+	public static final String ACTION_CODE_GOTO = "9999";
 	public static final int CONSTANT_INDEX_ORIGINALITY = 99;
 	public static final String DATE_OPTION = "dateOption";
 	//Constant dateOption
@@ -249,6 +263,9 @@ public class DossierTerm {
 	
 	public static final String LGSP_DOSSIER_DESTINATION = "lgsp/dossier/in/destination";
 	public static final String ORIGIN_DOSSIER_NO_SEARCH = "originDossierNoSearch";
+	
+	public static final String VNPOST_DOSSIER_DESTINATION = "vnpost/dossier/in/destination";
+	public static final String KYSO_ENGINE_OUT_DESTINATION = "kyso/engine/out/destination";
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
@@ -279,7 +296,40 @@ public class DossierTerm {
 	
 	public static final String PAUSE_LOCK_STATE_TERM = "LOCK";
 	public static final String SYSTEM_ID = "systemId";
-	
+	public static final String DOSSIER_FIELD = "fields";
+	public static final String DOSSIER_FIELD_NAME = "fieldName";
+	public static final String DOSSIER_VALUE = "value";
+	public static final String PRECONDITION_SUBMIT = "submit";
+	public static final String PRECONDITION_TIMER = "timer";
+	public static final String PRECONDITION_LISTENER = "listener";
+	public static final String PRECONDITION_SPECIAL = "special";
+	public static final String KEY_DOSSIER_STATUS = "dossierStatus";
+	public static final String KEY_DOSSIER_SUB_STATUS = "dossierSubStatus";
+	public static final String KEY_DOSSIER_LEVEL = "level";
+	public static final String KEY_DOSSIER_STATUS_NAME = "statusName";
+	public static final String KEY_SPECIAL_STATUS = "specialStatus";
+	public static final String KEY_TIMMER = "timmer";
+	public static final String STATUS_TEXT = "statusText";
+	public static final String START_DATE = "startDate";
+	public static final String OVERDUE_TEXT = "overdueText";
+	public static final String PAY_OK = "payok";
+	public static final String PAY_NOT_OK = "paynotok";
+	public static final String ONLINE_TRUE = "online=true";
+	public static final String ONLINE_FALSE = "online=false";
+	public static final String CONTAIN_SERVICE = "service=";
+	public static final String CONTAIN_NOT_SERVICE_CODE = "notservicecode=";
+	public static final String CONTAIN_AGENCY = "agency=";
+	public static final String CONTAIN_NOT_AGENCY_CODE = "notagencycode=";
+	public static final String CONTAIN_TEMPLATE = "template=";
+	public static final String CONTAIN_ORIGINAL = "originality=";
+	public static final String CONTAIN_STEP_DONE = "stepdone=";
+	public static final String CONTAIN_STEP_NOT_DONE = "stepnotdone=";
+	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
+	public static final String CONTAIN_ROLE_DONE = "roledone=";
+	public static final String CONTAIN_ROLE_CODE = "rolecode=";
+	public static final String CONTAIN_WAITING_OVERDUE_THAN = "waiting_overdue>";
+	public static final String CONTAIN_WAITING_OVERDUE_LESS = "waiting_overdue<=";
+	public static final String CONTAIN_DURATION_COUNT_GREATER_THAN = "durationCount>";
 	public static final String DUE_DATE_NOTIFY = "dueDateNotify";
 	public static final String DUE_DATE_NOTIFY_TYPE = "type";
 	public static final String DUE_DATE_NOTIFY_VALUE = "value";
@@ -293,8 +343,36 @@ public class DossierTerm {
 	
 	public static final String SMS_NOTIFY = "smsNotify";
 	public static final String EMAIL_NOTIFY = "emailNotify";
+	
 	public static final String SERVICE_LEVEL = "serviceLevel";
 	public static final String DOSSIER_COUNTER = "dossierCounter";
 	public static final String DOSSIER_COUNTER_SEARCH = "dossierCounterSearch";
+	public static final int MAX_DOSSIER_WITHOUT_VERIFICATION = 3;
+	
+	public static final String UNDUE_TIME = "undueTime";
+	public static final String SEQUENCES = "sequences";
+	public static final String NUMBER_SORT_ABLE = "Number_sortable";
+	public static final String TREE_INDEX_SORT_ABLE = "treeIndex_sortable";
+	public static final String REPORT_TYPE = "reportType";
+	
+	public static final String STEP_X = "x";
+	public static final String RECEIVE = "receive";
+	public static final String OVERDUE = "overdue";
+	public static final String RELEASE = "release";
+	public static final String CANCELLING = "cancelling";
+	public static final String CORRECTING = "corecting";
+	public static final String EMPTY = "empty";
+	public static final String DOSSIER_CTN = "CTN";
+	public static final String OPENCPSV2 = "OPENCPSV2";
+	public static final String PENDING = "pendding";
+	public static final String WAITING = "waiting";
+	public static final String STEP_DONE_CODE = "400";
+	
+	public static final String CROSS_DOSSIER = "crossDossier";
+	public static final String PREFIX_UUID = "xxx-cps-";
+	public static final String NOTARIZATIONS = "notarizations";
 	public static final String KEY_DVCQG_INTEGRATION = "dvcqgIntegration";
+    public static final int PIN_LENGTH = 4;
+    public static final String DELEGATE = "delegate";
+    public static final String DURATION_TEXT = "durationText";
 }

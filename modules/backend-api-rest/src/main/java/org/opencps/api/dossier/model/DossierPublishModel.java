@@ -8,6 +8,7 @@
 
 package org.opencps.api.dossier.model;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -254,7 +255,9 @@ public class DossierPublishModel {
 	@FormParam(value = "processNo")
 	protected String processNo;
 	@FormParam(value = "durationCount")
+	@DefaultValue("0")
 	protected Double durationCount;
+	@DefaultValue("0")
 	@FormParam(value = "durationUnit")
 	protected Integer durationUnit;
 	@FormParam(value = "sampleCount")
