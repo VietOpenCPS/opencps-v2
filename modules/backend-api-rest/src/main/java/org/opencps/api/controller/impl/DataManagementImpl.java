@@ -103,7 +103,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put(ConstantUtils.API_GROUPID_KEY, String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(ConstantUtils.API_STATUS_KEY, status);
 
@@ -134,8 +134,8 @@ public class DataManagementImpl implements DataManagement {
 
 		DictCollection dictCollection = dictItemDataUtil.getDictCollectionDetail(code, groupId);
 		EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-	    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);	
-	    
+		ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+
 		if (Validator.isNotNull(dictCollection)) {
 			DictCollectionModel dictCollectionModel = DataManagementUtils.mapperDictCollectionModel(dictCollection);
 			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
@@ -145,9 +145,8 @@ public class DataManagementImpl implements DataManagement {
 				cc.setPrivate(true);	
 				// return json object after update
 
-				return builder.entity(dictCollectionModel).cacheControl(cc).build();				
-			}
-			else {
+				return builder.entity(dictCollectionModel).cacheControl(cc).build();
+			} else {
 				return builder.entity(dictCollectionModel).build();
 			}
 
@@ -169,7 +168,7 @@ public class DataManagementImpl implements DataManagement {
 			String collectionName = HtmlUtil.escape(input.getCollectionName());
 			String collectionNameEN = HtmlUtil.escape(input.getCollectionNameEN());
 			String description = HtmlUtil.escape(input.getDescription());
-			
+
 			DictCollection dictCollection = dictItemDataUtil.addDictCollection(user.getUserId(), groupId,
 					collectionCode, collectionName, collectionNameEN,
 					description, serviceContext);
@@ -199,9 +198,9 @@ public class DataManagementImpl implements DataManagement {
 			String description = HtmlUtil.escape(input.getDescription());
 
 			String oldCode = HtmlUtil.escape(code);
-			
+
 			_log.info("Update dict collection: " + code);
-			
+
 			DictCollection dictCollection = dictItemDataUtil.updateDictCollection(user.getUserId(), groupId, oldCode,
 					collectionCode, collectionName, collectionNameEN,
 					description, serviceContext);
@@ -225,7 +224,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			boolean flag = dictItemDataUtil.deleteDictCollection(code, groupId, serviceContext);
-						
+
 			if (flag) {
 				return Response.status(HttpURLConnection.HTTP_OK).build();
 			} else {
@@ -318,7 +317,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put(ConstantUtils.API_GROUPID_KEY, String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
 
@@ -345,14 +344,14 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, DictGroupInputModel input) {
 		Groups dictGroupModel = new Groups();
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			DictGroup dictGroup = dictItemDataUtil.addDictgroups(user.getUserId(), groupId, code, input.getGroupCode(),
 					input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(), serviceContext);
-			
+
 			// return json object after update
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
@@ -368,7 +367,7 @@ public class DataManagementImpl implements DataManagement {
 			User user, ServiceContext serviceContext, String code, String groupCode, DictGroupInputModel input) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		Groups dictGroupModel = new Groups();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -376,7 +375,7 @@ public class DataManagementImpl implements DataManagement {
 			DictGroup dictGroup = dictItemDataUtil.updateDictgroups(user.getUserId(), groupId, code, groupCode,
 					input.getGroupCode(), input.getGroupName(), input.getGroupNameEN(), input.getGroupDescription(),
 					serviceContext);
-			
+
 			dictGroupModel = DataManagementUtils.mapperGroups(dictGroup);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dictGroupModel).build();
@@ -390,14 +389,14 @@ public class DataManagementImpl implements DataManagement {
 	public Response deleteDictgroups(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, String groupCode) {
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
-		
+
 		try {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			
 //			boolean flag = dictItemDataUtil.deleteDictgroups(groupCode, groupId, serviceContext);
 			boolean flag = dictItemDataUtil.deleteDictgroups(code, groupCode, groupId, serviceContext);
-						
+
 			if (flag) {
 
 				return Response.status(HttpURLConnection.HTTP_OK).build();
@@ -529,7 +528,7 @@ public class DataManagementImpl implements DataManagement {
 //			}
 			boolean flag = dictItemDataUtil.deleteDictgroupsDictItems(groupId, code, groupCode, itemCode,
 					serviceContext);
-			
+
 			if (flag) {
 
 				return Response.status(HttpURLConnection.HTTP_OK).build();
@@ -578,14 +577,14 @@ public class DataManagementImpl implements DataManagement {
 			if (ADMINISTRATIVE_REGION.equalsIgnoreCase(code))
 				groupId = 0;
 
-			params.put(ConstantUtils.API_GROUPID_KEY, groupId);
+			params.put(Field.GROUP_ID, groupId);
 			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(ConstantUtils.API_JSON_DATA_ITEMLV, query.getLevel());
 			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, code);
 
 			Sort[] sorts = null;
-			
+
 			if (Validator.isNull(query.getSort())) {
 				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DictItemTerm.SIBLING_SEARCH);
 				
@@ -669,7 +668,7 @@ public class DataManagementImpl implements DataManagement {
 					user.getUserId(), company.getCompanyId(), groupId, serviceContext);
 			CacheControl cc = new CacheControl();
 			cc.setMaxAge(86400);
-			cc.setPrivate(true);	
+			cc.setPrivate(true);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(dictItemModel).cacheControl(cc).build();
 
 		} else {
@@ -821,8 +820,6 @@ public class DataManagementImpl implements DataManagement {
 				value = jsonMetaData.getString(key);
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 				_log.error(e);
 			}
 
@@ -845,7 +842,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateMetaDataOfDictItem(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -859,10 +855,10 @@ public class DataManagementImpl implements DataManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			String metaData = HtmlUtil.escape(input.getMetaData());
-			
+
 			DictItem ett = dictItemDataUtil.updateMetaDataByItemCode(user.getUserId(), groupId, serviceContext, code,
 					itemCode, metaData);
-						
+
 			if (Validator.isNull(ett)) {
 
 				ErrorMsg error = new ErrorMsg();
@@ -888,7 +884,6 @@ public class DataManagementImpl implements DataManagement {
 	public Response updateOrCreateNewDictItemByItemCode(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String code, String itemCode,
 			DictItemInputModel input, long modifiedDateTime) {
-		// TODO Auto-generated method stub
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemModel dictItemModel = new DictItemModel();
 
@@ -911,7 +906,7 @@ public class DataManagementImpl implements DataManagement {
 			String parentItemCode = HtmlUtil.escape(input.getParentItemCode());
 			String sibling = input.getSibling();
 			String metaData = HtmlUtil.escape(input.getMetaData());
-			
+
 			DictItem ett = null;
 
 			if (oldEtt != null) {
@@ -1232,7 +1227,7 @@ public class DataManagementImpl implements DataManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		DictGroup dictGroup = dictItemDataUtil.getDictGroupDetail(code, groupCode, groupId);
-		
+
 		if (Validator.isNotNull(dictGroup)) {
 
 			// return json object after update
@@ -1337,7 +1332,6 @@ public class DataManagementImpl implements DataManagement {
 				result.getDictCollectionShortModel().addAll(dictCollectionList);
 				result.setTotal(dictCollectionList.size());
 			}
-			
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -1365,7 +1359,7 @@ public class DataManagementImpl implements DataManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
-			params.put(ConstantUtils.API_GROUPID_KEY, String.valueOf(groupId));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
 			params.put(DictGroupTerm.DICT_COLLECTION_CODE, code);
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
@@ -1390,6 +1384,7 @@ public class DataManagementImpl implements DataManagement {
 	@Override
 	public Response getDictItemsLGSP(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String code, DataSearchModel query) {
+
 		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
 		DictItemResults result = new DictItemResults();
 		SearchContext searchContext = new SearchContext();
@@ -1480,13 +1475,27 @@ public class DataManagementImpl implements DataManagement {
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
 					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			
+			HashMap<String, String> _dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+					query.getService());
 
-			if (_dictItemDVCQGMap == null) {
-
-				_dictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
-						query.getService());
-
+			/*if(Validator.isNotNull(query.getService()) && query.getService().equals("LayDanhMucLinhVuc")) {
+				if(_domainDictItemDVCQGMap == null) {
+					_domainDictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+							query.getService());
+					_dictItemDVCQGMap = _domainDictItemDVCQGMap;
+				}
 			}
+			
+			if(Validator.isNotNull(query.getService()) && query.getService().equals("LayDanhMucCoQuan")) {
+				if(_govAgencyDictItemDVCQGMap == null) {
+					_govAgencyDictItemDVCQGMap = dvcqgIntegrationActionImpl.getDictItemDVCQGMap(user, serviceContext,
+						query.getService());
+					_dictItemDVCQGMap = _govAgencyDictItemDVCQGMap;
+				}
+			}
+			*/
+			
 
 			List<Document> documents = (List<Document>) jsonData.get("data");
 			long collectionId = 0;
@@ -1542,7 +1551,9 @@ public class DataManagementImpl implements DataManagement {
 		}
 	}
 
-	private static HashMap<String, String> _dictItemDVCQGMap = null;
+	private static HashMap<String, String> _domainDictItemDVCQGMap = null;
+	private static HashMap<String, String> _govAgencyDictItemDVCQGMap = null;
+	public static String _service = StringPool.BLANK;
 
 	@Override
 	public Response doMappingDictItemDVCQG(HttpServletRequest request, HttpHeaders header, Company company,
@@ -1557,7 +1568,7 @@ public class DataManagementImpl implements DataManagement {
 			if (collection == null) {
 				result = false;
 			}
-			else {
+
 				DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
 						collection.getDictCollectionId());
 
@@ -1573,8 +1584,7 @@ public class DataManagementImpl implements DataManagement {
 				}
 
 				DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
-						user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());				
-			}
+					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
 
 			result = true;
 

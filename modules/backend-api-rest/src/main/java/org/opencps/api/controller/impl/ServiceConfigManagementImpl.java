@@ -122,6 +122,8 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
+			params.put(ServiceConfigTerm.SERVICECONFIG_ID, query.getServiceConfigId());
+			
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(querySort, Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
@@ -1020,10 +1022,10 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
 				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, attachmentFilename);
 				if (ConstantUtils.WORD.equals(reportType)) {
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_MSWORD);
 				}
 				else {
-					responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);					
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);					
 				}
 
 				return responseBuilder.build();

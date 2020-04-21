@@ -378,7 +378,7 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 				String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
 				responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 						attachmentFilename);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, fileEntry.getMimeType());
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
 			} else {

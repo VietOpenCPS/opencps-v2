@@ -1460,7 +1460,33 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 				//
 				ProcessActionLocalServiceUtil.updateProcessAction(action);
 			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.SERVICE_PROCESS_UPDATESUCCESS).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity("{Update sucess}").build();
+		}catch (Exception e) {
+			_log.error(e);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{Update error}").build();
+	}
+
+	@Override
+	public Response updateCounterCode(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, ServiceProcessInputModel input) {
+		BackendAuth auth = new BackendAuthImpl();
+		
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			String counterCode = input.getCounterCode();
+			//
+			ServiceProcess process = ServiceProcessLocalServiceUtil.fetchServiceProcess(id);
+			if (process != null && Validator.isNotNull(process)) {
+				process.setCounterCode(counterCode);
+				//
+				ServiceProcessLocalServiceUtil.updateServiceProcess(process);
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity("{Update sucess}").build();
 		}catch (Exception e) {
 			_log.error(e);
 		}

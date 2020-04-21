@@ -4,20 +4,6 @@ package backend.api.rest.application;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -50,6 +36,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.cxf.transport.http.Headers;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantManagementImpl;
@@ -135,6 +122,21 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
+import org.springframework.web.bind.annotation.RequestHeader;
+
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -319,7 +321,7 @@ public class BackendAPIRestApplication extends Application {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 
@@ -328,7 +330,7 @@ public class BackendAPIRestApplication extends Application {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					fileName);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}
@@ -386,7 +388,7 @@ public class BackendAPIRestApplication extends Application {
 				file.createNewFile();
 			}
 			if (file.exists()) {
-				ImageIO.write(image, ConstantUtils.PNG_EXTENSION, file);
+				ImageIO.write(image, ConstantUtils.PNG, file);
 				// String fileType = Files.probeContentType(file.toPath());
 				ResponseBuilder responseBuilder = Response.ok((Object) file);
 				String fileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
@@ -394,7 +396,7 @@ public class BackendAPIRestApplication extends Application {
 				responseBuilder.header(
 					ConstantUtils.CONTENT_DISPOSITION,
 					fileName);
-				responseBuilder.header(ConstantUtils.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
+				responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PNG);
 
 				return responseBuilder.build();
 			}
