@@ -66,28 +66,21 @@ public class VNPostManagementImpl implements VNPostManagement {
 		}
 	}
 
-	public VNPostServerConfigModel getServerConfig(long groupId, String protocol) {
+	public VNPostServerConfigModel getServerConfig(long groupId, String serverNo, String protocol) {
 		VNPostServerConfigModel config = null;
 
-		List<ServerConfig> lstsc = ServerConfigLocalServiceUtil.getByProtocol(groupId, protocol);
-		// _log.info("lstsc ========= " + JSONFactoryUtil.looseSerialize(lstsc));
-		if (lstsc == null) {
-			return null;
-		} else {
-			try {
-				for (ServerConfig sc : lstsc) {
-					VNPostServerConfigModel check = fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
-					// _log.info("check ============ " + JSONFactoryUtil.looseSerialize(check));
-					if (check.getActive()) {
-						config = check;
-					}
-				}
-				return config;
-			} catch (JSONException e) {
-				// e.printStackTrace();
-				_log.error(e);
-				return null;
+		try {
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, serverNo, protocol);
+			VNPostServerConfigModel check = fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
+			// _log.info("check ============ " + JSONFactoryUtil.looseSerialize(check));
+			if (check.getActive()) {
+				config = check;
 			}
+			return config;
+		} catch (JSONException e) {
+			// e.printStackTrace();
+			_log.error(e);
+			return null;
 		}
 
 	}
@@ -97,7 +90,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 			User user, ServiceContext serviceContext, VNPostInputModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		//_log.info("sendPostalRequest groupId ============= " + groupId);
 		//_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
 
@@ -128,7 +122,45 @@ public class VNPostManagementImpl implements VNPostManagement {
 		}
 	}
 	
-	
+	@Override
+	public Response sendCollectionVNPostalRequest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, VNPostInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+
+		if (config == null) {
+			return null;
+		} else {
+			try {
+				MToken token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
+
+				_log.info(token);
+				_log.info("input============" + input);
+				_log.info("config============" + config);
+				String receiverName = input.getGovAgencyName();
+				String receiverAddress = config.getSenderAddress();
+				String receiverTel = config.getSenderTel();
+				int receiverProvince = config.getSenderProvince();
+				int receiverDistrict = config.getSenderDistrict();
+				String receiverEmail = config.getSenderEmail();
+
+				MOrder order = new MOrder(config.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),
+						input.getSenderProvince(), input.getSenderDistrict(), input.getSenderAddress(),
+						input.getSenderName(), input.getSenderEmail(), input.getSenderTel(), input.getSenderDesc(),
+						input.getDescription(), receiverName, receiverAddress, receiverTel, receiverProvince,
+						receiverDistrict, receiverEmail);
+
+				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
+						token.getTokenType(), order);
+				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
+			} catch (Exception e) {
+				_log.error(e);
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(e).build();
+			}
+		}
+	}
 
 	private JSONObject getOrder(String apiGetToken, String customerKey, String secretKey, String apiGetOrderTracking,
 			int pagesize, String lastId, String orderNumber) {
@@ -192,7 +224,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 		// String secret_key = "kFqNeYCoLtr4MMSnfRcXQwhIO3Aa";
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		// _log.info("groupId = =========" + groupId);
-		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 
 		try {
 
@@ -217,7 +250,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 			User user, ServiceContext serviceContext, VNPostCancelOrderModel input) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		VNPostServerConfigModel config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
+		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
 		// _log.info("config ============= " + JSONFactoryUtil.looseSerialize(config));
 
 		// String tokenUrl = "https://api.mitc.vn/token";

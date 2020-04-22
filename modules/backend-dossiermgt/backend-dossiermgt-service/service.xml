@@ -579,6 +579,8 @@
 		<column name="metaData" type="String" />
 		<column name="systemId" type="int" />
 		<column name="dossierCounter" type="String" />
+		<column name="vnpostalStatus" type="int" />
+		<column name="vnpostalProfile" type="String" />
 		
 		<!-- Order -->
 		
@@ -766,6 +768,11 @@
             <finder-column name="userId"></finder-column>
             <finder-column name="dossierStatus"></finder-column>
         </finder>
+
+		<finder return-type="Collection" name="G_VNP_STT">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="vnpostalStatus" />
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

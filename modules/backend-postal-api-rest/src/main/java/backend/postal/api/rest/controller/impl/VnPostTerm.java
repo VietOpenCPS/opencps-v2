@@ -52,4 +52,8 @@ public class VnPostTerm {
 	
 	public static final String STATUS_CODE = "statusCode";
 	public static final String STATUS_MESSAGE = "statusMessage";
+	
+	public static String getVNPostServerNo(String govAgencyCode) {
+		return "VNPOST_" + govAgencyCode;
+	}
 }

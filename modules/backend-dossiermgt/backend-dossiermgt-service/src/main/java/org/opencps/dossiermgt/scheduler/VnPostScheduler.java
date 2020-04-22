@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
@@ -69,6 +70,7 @@ public class VnPostScheduler extends BaseMessageListener {
 				params.put("pageSize", "50");	//Mã khách hàng do VNPOST cung cấp
 				params.put("lastId", "000000000000000000000000");
 				params.put("orderNumber", dossier.getDossierNo());
+				params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossier.getGovAgencyCode());
 				
 				JSONObject resDossierSearch = rest.callPostAPI(0l, HttpMethods.POST, "application/json",
 						RESTFulConfiguration.SERVER_PATH_BASE, VNPOST_GETORDERTRACKING, RESTFulConfiguration.SERVER_USER,

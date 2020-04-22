@@ -12,6 +12,7 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
@@ -53,6 +54,9 @@ public class VnpostEvent implements MessageListener {
 		Map<String, Object> params = new HashMap<>();
 		String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
 		_log.info("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
+		params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
+		params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
+		params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO));
 		params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
 		params.put(KeyPayTerm.SENDERNAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
 		params.put(KeyPayTerm.RECEIVERNAME, dossierObj.getString(DossierTerm.DELEGATE_NAME)); 

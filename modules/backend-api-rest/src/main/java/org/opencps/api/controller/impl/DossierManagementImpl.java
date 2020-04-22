@@ -574,6 +574,10 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(originDossierId))
 				params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
 
+			if (Validator.isNotNull(query.getVnpostalStatus())) {
+				params.put(DossierTerm.VNPOSTAL_STATUS, query.getVnpostalStatus());
+			}
+
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
@@ -1038,6 +1042,11 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
+			Integer vnpostalStatus = query.getVnpostalStatus();
+			if (vnpostalStatus != null) {
+				params.put(DossierTerm.VNPOSTAL_STATUS, vnpostalStatus);
+			}
+
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
@@ -1361,7 +1370,8 @@ public class DossierManagementImpl implements DossierManagement {
 				input.getDelegateCityCode(), input.getDelegateDistrictCode(),
 				input.getDelegateWardCode(), input.getSampleCount(),
 				input.getDossierName(), input.getBriefNote(), delegateType,
-				documentNo, documentDate, systemId, serviceContext);
+				documentNo, documentDate, systemId, input.getVnpostalStatus(),
+				input.getVnpostalProfile(), serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());

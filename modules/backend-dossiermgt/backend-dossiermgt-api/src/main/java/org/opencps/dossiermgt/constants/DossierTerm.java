@@ -266,6 +266,7 @@ public class DossierTerm {
 	
 	public static final String VNPOST_DOSSIER_DESTINATION = "vnpost/dossier/in/destination";
 	public static final String KYSO_ENGINE_OUT_DESTINATION = "kyso/engine/out/destination";
+	public static final String COLLECTION_VNPOST_DOSSIER_DESTINATION = "collectvnpost/dossier/in/destination";
 	//STATISTIC
 	public static final String BE_TIME = "betimes";
 	public static final String OVER_TIME = "overtime";
@@ -375,4 +376,7 @@ public class DossierTerm {
     public static final int PIN_LENGTH = 4;
     public static final String DELEGATE = "delegate";
     public static final String DURATION_TEXT = "durationText";
+
+    public static final String VNPOSTAL_STATUS = "vnpostalStatus";
+    public static final String VNPOSTAL_PROFILE = "vnpostalProfile";
 }

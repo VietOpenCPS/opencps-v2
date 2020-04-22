@@ -146,6 +146,7 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.constants.VTPayTerm;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
@@ -1216,9 +1217,16 @@ public class CPSDossierBusinessLocalServiceImpl
 			}
 			
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
-			if (proAction.getPreCondition().toLowerCase().contains("sendviapostal=1")) {
+			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
 				vnpostEvent(dossier, dossierAction.getDossierActionId());
 			}		
+			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {
+				collectVnpostEvent(dossier, dossierAction.getDossierActionId());
+			}
+			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_REC_COLLECTION_VNPOST)
+					&& dossier.getVnpostalStatus() == VnpostCollectionTerm.VNPOSTAL_STAUS_2) {
+				dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_3);
+			}
 		}
 		else {
 			
@@ -3621,6 +3629,16 @@ public class CPSDossierBusinessLocalServiceImpl
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		
 		MessageBusUtil.sendMessage(DossierTerm.VNPOST_DOSSIER_DESTINATION, message);		
+	}
+	
+	private void collectVnpostEvent(Dossier dossier, long dossierActionId) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
+		
+		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);		
 	}
 	
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
@@ -6993,7 +7011,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
-					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), serviceContext);
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(), serviceContext);
 				
 				return dossier;
 			}

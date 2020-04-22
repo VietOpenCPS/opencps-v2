@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(197);
+		StringBundler sb = new StringBundler(201);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -262,6 +262,10 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(systemId);
 		sb.append(", dossierCounter=");
 		sb.append(dossierCounter);
+		sb.append(", vnpostalStatus=");
+		sb.append(vnpostalStatus);
+		sb.append(", vnpostalProfile=");
+		sb.append(vnpostalProfile);
 		sb.append("}");
 
 		return sb.toString();
@@ -846,6 +850,15 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setDossierCounter(dossierCounter);
 		}
 
+		dossierImpl.setVnpostalStatus(vnpostalStatus);
+
+		if (vnpostalProfile == null) {
+			dossierImpl.setVnpostalProfile("");
+		}
+		else {
+			dossierImpl.setVnpostalProfile(vnpostalProfile);
+		}
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -971,6 +984,9 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 		systemId = objectInput.readInt();
 		dossierCounter = objectInput.readUTF();
+
+		vnpostalStatus = objectInput.readInt();
+		vnpostalProfile = objectInput.readUTF();
 	}
 
 	@Override
@@ -1481,6 +1497,15 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		else {
 			objectOutput.writeUTF(dossierCounter);
 		}
+
+		objectOutput.writeInt(vnpostalStatus);
+
+		if (vnpostalProfile == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(vnpostalProfile);
+		}
 	}
 
 	public String uuid;
@@ -1581,4 +1606,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String metaData;
 	public int systemId;
 	public String dossierCounter;
+	public int vnpostalStatus;
+	public String vnpostalProfile;
 }

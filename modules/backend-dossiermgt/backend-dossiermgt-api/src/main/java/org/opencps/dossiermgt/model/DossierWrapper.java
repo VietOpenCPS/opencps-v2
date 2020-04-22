@@ -157,6 +157,8 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("metaData", getMetaData());
 		attributes.put("systemId", getSystemId());
 		attributes.put("dossierCounter", getDossierCounter());
+		attributes.put("vnpostalStatus", getVnpostalStatus());
+		attributes.put("vnpostalProfile", getVnpostalProfile());
 
 		return attributes;
 	}
@@ -753,6 +755,18 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (dossierCounter != null) {
 			setDossierCounter(dossierCounter);
+		}
+
+		Integer vnpostalStatus = (Integer)attributes.get("vnpostalStatus");
+
+		if (vnpostalStatus != null) {
+			setVnpostalStatus(vnpostalStatus);
+		}
+
+		String vnpostalProfile = (String)attributes.get("vnpostalProfile");
+
+		if (vnpostalProfile != null) {
+			setVnpostalProfile(vnpostalProfile);
 		}
 	}
 
@@ -1754,6 +1768,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public int getViaPostal() {
 		return _dossier.getViaPostal();
+	}
+
+	/**
+	* Returns the vnpostal profile of this dossier.
+	*
+	* @return the vnpostal profile of this dossier
+	*/
+	@Override
+	public String getVnpostalProfile() {
+		return _dossier.getVnpostalProfile();
+	}
+
+	/**
+	* Returns the vnpostal status of this dossier.
+	*
+	* @return the vnpostal status of this dossier
+	*/
+	@Override
+	public int getVnpostalStatus() {
+		return _dossier.getVnpostalStatus();
 	}
 
 	/**
@@ -2850,6 +2884,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setViaPostal(int viaPostal) {
 		_dossier.setViaPostal(viaPostal);
+	}
+
+	/**
+	* Sets the vnpostal profile of this dossier.
+	*
+	* @param vnpostalProfile the vnpostal profile of this dossier
+	*/
+	@Override
+	public void setVnpostalProfile(String vnpostalProfile) {
+		_dossier.setVnpostalProfile(vnpostalProfile);
+	}
+
+	/**
+	* Sets the vnpostal status of this dossier.
+	*
+	* @param vnpostalStatus the vnpostal status of this dossier
+	*/
+	@Override
+	public void setVnpostalStatus(int vnpostalStatus) {
+		_dossier.setVnpostalStatus(vnpostalStatus);
 	}
 
 	/**

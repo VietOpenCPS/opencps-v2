@@ -91,6 +91,9 @@
 	<bean id="vnpost.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
 		<property name="name" value="vnpost/dossier/in/destination" />
 	</bean>
+	<bean id="collectvnpost.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
+		<property name="name" value="collectvnpost/dossier/in/destination" />
+	</bean>
 	<bean id="lgsp.dossier.in.destination" class="com.liferay.portal.kernel.messaging.SerialDestination">
 		<property name="name" value="lgsp/dossier/in/destination" />
 	</bean>

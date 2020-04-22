@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VNPostGetOrderModel", propOrder = { "customerCode", "orderNumber" })
+@XmlType(name = "VNPostGetOrderModel", propOrder = { "customerCode", "orderNumber", "govAgencyCode" })
 public class VNPostCancelOrderModel {
 	
 	@FormParam(value = "customerCode")
@@ -14,6 +14,17 @@ public class VNPostCancelOrderModel {
 	
 	@FormParam(value = "orderNumber")
 	private String orderNumber;
+
+	@FormParam(value = "govAgencyCode")
+	private String govAgencyCode;
+	
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
 
 	public String getCustomerCode() {
 		return customerCode;

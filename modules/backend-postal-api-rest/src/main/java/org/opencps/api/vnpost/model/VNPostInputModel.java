@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "VNPostInputModel", propOrder = { "customerCode", "orderNumber", "codAmount",
 		"senderProvince", "senderDistrict", "senderAddress", "senderName", "senderEmail", "senderTel", "senderDesc",
 		"description", "receiverName", "receiverAddress", "receiverTel", "receiverProvince", "receiverDistrict",
-		"receiverEmail" })
+		"receiverEmail", "govAgencyCode", "govAgencyName" })
 public class VNPostInputModel {
 	@FormParam(value = "customerCode")
 	private String customerCode; // Có Mã khách hàng do VNPost cung cấp
@@ -49,6 +49,28 @@ public class VNPostInputModel {
 									// do VNPost cung cấp)
 	@FormParam(value = "receiverEmail")
 	private String receiverEmail; // Không Email người / cơ quan nhận
+
+	@FormParam(value = "govAgencyCode")
+	private String govAgencyCode; 
+
+	@FormParam(value = "govAgencyName")
+	private String govAgencyName; 
+
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
 
 	/**
 	 * @return the customerCode

@@ -267,7 +267,26 @@ public class DossierSearchModel {
     protected String toDueDate;
     @QueryParam(value = "delegate")
     protected String delegate;
-    
+    @QueryParam(value = "toBacklogDate")
+    protected String toBacklogDate;
+    @QueryParam(value = "backlog")
+    protected int backlog;
+    @QueryParam(value = "assignedUserId")
+    protected String assignedUserIdSearch;
+    @QueryParam(value = "dossierCounter")
+    protected String dossierCounter;
+
+    @QueryParam(value = "vnpostalStatus")
+    protected Integer vnpostalStatus;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
 	public String getDelegate() {
 		return delegate;
 	}
@@ -299,14 +318,6 @@ public class DossierSearchModel {
 	public void setUndueTime(String undueTime) {
 		this.undueTime = undueTime;
 	}
-    @QueryParam(value = "toBacklogDate")
-    protected String toBacklogDate;
-    @QueryParam(value = "backlog")
-    protected int backlog;
-    @QueryParam(value = "assignedUserId")
-    protected String assignedUserIdSearch;
-    @QueryParam(value = "dossierCounter")
-    protected String dossierCounter;
 
 	public String getDossierCounter() {
 		return dossierCounter;

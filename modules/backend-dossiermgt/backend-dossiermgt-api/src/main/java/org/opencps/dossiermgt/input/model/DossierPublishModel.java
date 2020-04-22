@@ -79,6 +79,24 @@ public class DossierPublishModel {
 	protected String dossierName;
 	protected String metaData;
 	protected String dossierCounter;
+	protected Integer vnpostalStatus;
+	protected String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;
