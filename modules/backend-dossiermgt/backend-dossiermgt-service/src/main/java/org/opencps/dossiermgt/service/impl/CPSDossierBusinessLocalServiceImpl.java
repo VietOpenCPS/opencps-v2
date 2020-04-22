@@ -123,6 +123,7 @@ import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.KeyPay;
+import org.opencps.dossiermgt.action.util.NotificationUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
@@ -1270,10 +1271,13 @@ public class CPSDossierBusinessLocalServiceImpl
 		JSONObject returnObject;
 		try {
 			returnObject = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
-			if (!returnObject.has(DossierTerm.RECEIVE_DATE)) {
-				if (dossier.getReceiveDate() != null) {
-					returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
-				}
+			_log.debug("=======> BUILD NOTIFICATION QUEUE SMS PAYLOAD");
+			if (dossier.getReceiveDate() != null) {
+				returnObject.put(DossierTerm.RECEIVE_DATE, APIDateTimeUtils.convertDateToString(dossier.getReceiveDate(), APIDateTimeUtils._NORMAL_DATE_TIME));
+				_log.debug("=======> BUILD NOTIFICATION QUEUE SMS RECEIVE DATE: " + returnObject.get(DossierTerm.RECEIVE_DATE));
+			}
+			else {
+				returnObject.put(DossierTerm.RECEIVE_DATE, StringPool.BLANK);				
 			}
 			if (!returnObject.has(DossierTerm.DOSSIER_NO)) {
 				if (Validator.isNotNull(dossier.getDossierNo())) {
@@ -1339,11 +1343,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			DossierAction dossierAction, JSONObject payloadObject, ServiceContext context) throws PortalException {
 //		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 //		User u = UserLocalServiceUtil.fetchUser(userId);
-        JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
+        JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payloadObject.toJSONString());
+        
         try {
+        	JSONObject dossierObj = JSONFactoryUtil.createJSONObject(
+					JSONFactoryUtil.looseSerialize(dossier));
+        	dossierObj = buildNotificationPayload(dossier, dossierObj);
+        	
         	payloadObj.put(
-					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(dossier)));
+					KeyPayTerm.DOSSIER, dossierObj);
+
+//        	payloadObj.put(
+//					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
+//						JSONFactoryUtil.looseSerialize(dossier)));
         	
         	if (dossierAction != null) {
         		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -1388,9 +1400,24 @@ public class CPSDossierBusinessLocalServiceImpl
 				notificationType = actionConfig.getNotificationType();
 			}
 			_log.info("NOTIFICATION TYPE: " + notificationType + ", CONDITION: " + preCondition);
+			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
+			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
+			boolean isSendNotiSMS = true;
+			boolean isSendNotiEmail = true;
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
-					return;
+					if (isSendSMS) {
+						isSendNotiSMS = false;
+						isSendNotiEmail = true;
+					}
+					else {
+						isSendNotiSMS = false;
+						isSendNotiEmail = false;
+					}
+				}
+				else {
+					isSendNotiSMS = isSendSMS;
+					isSendNotiEmail = isSendEmail;
 				}
 			}
 
@@ -1457,8 +1484,8 @@ public class CPSDossierBusinessLocalServiceImpl
 										fromFullName, 
 										dossier.getApplicantName(), 
 										foundApplicant.getMappingUserId(), 
-										dossier.getContactEmail(), 
-										dossier.getContactTelNo(), 
+										isSendNotiEmail ? dossier.getContactEmail() : StringPool.BLANK, 
+										isSendNotiSMS ? dossier.getContactTelNo() : StringPool.BLANK, 
 										now, 
 										expired, 
 										context);								
@@ -4063,10 +4090,13 @@ public class CPSDossierBusinessLocalServiceImpl
         JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
         payloadObj = buildNotificationPayload(dossier, payloadObj);
         
-        try {		
+        try {
+        	JSONObject dossierObj = JSONFactoryUtil.createJSONObject(
+					JSONFactoryUtil.looseSerialize(dossier));
+        	dossierObj = buildNotificationPayload(dossier, dossierObj);
+        	
         	payloadObj.put(
-					KeyPayTerm.DOSSIER, JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(dossier)));
+					KeyPayTerm.DOSSIER, dossierObj);
         	
         	if (dossierAction != null) {
         		payloadObj.put(DossierActionTerm.ACTION_CODE, dossierAction.getActionCode());
@@ -4092,9 +4122,24 @@ public class CPSDossierBusinessLocalServiceImpl
 			else {
 				notificationType = actionConfig.getNotificationType();
 			}
+			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
+			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
+			boolean isSendNotiSMS = true;
+			boolean isSendNotiEmail = true;
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition } , dossier, null)) {
-					return;
+					if (isSendSMS) {
+						isSendNotiSMS = false;
+						isSendNotiEmail = true;
+					}
+					else {
+						isSendNotiSMS = false;
+						isSendNotiEmail = false;
+					}
+				}
+				else {
+					isSendNotiSMS = isSendSMS;
+					isSendNotiEmail = isSendEmail;
 				}
 			}
 			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, notificationType);
@@ -4137,8 +4182,8 @@ public class CPSDossierBusinessLocalServiceImpl
 									fromFullName, 
 									dossier.getApplicantName(), 
 									toUserId, 
-									contactEmail, 
-									telNo, 
+									isSendNotiEmail ? contactEmail : StringPool.BLANK, 
+									isSendNotiSMS ? telNo : StringPool.BLANK, 
 									now, 
 									expired, 
 									context);

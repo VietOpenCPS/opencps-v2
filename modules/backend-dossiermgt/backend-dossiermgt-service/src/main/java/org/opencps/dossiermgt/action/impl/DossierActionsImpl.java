@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +32,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.cache.actions.CacheActions;
@@ -43,7 +41,6 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
-import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
@@ -56,7 +53,6 @@ import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.constants.CInvoiceTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -95,6 +91,7 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalService;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
@@ -113,10 +110,18 @@ import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import backend.auth.api.exception.ErrorMsgModel;
 import backend.auth.api.exception.NotFoundException;
 
+@Component(
+	immediate = true,
+	property = {
+	},
+	service = DossierActions.class
+)
 public class DossierActionsImpl implements DossierActions {
 
 	public static final String SPECIAL_ACTION = "1100";
@@ -135,7 +140,7 @@ public class DossierActionsImpl implements DossierActions {
 	
 	CacheActions cache = new CacheActionsImpl();
 	long ttl = OpenCPSConfigUtil.getCacheTTL();
-	
+		
 	@Override
 	public JSONObject getDossiers(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, int start, int end, ServiceContext serviceContext) {
