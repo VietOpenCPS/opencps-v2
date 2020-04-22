@@ -65,10 +65,10 @@ dependencies {
     //compile group: 'log4j', name: 'log4j', version: '1.2.17'
 	//compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
 	//compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
-	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.9.5'
-	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.9.5'
-	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.9.5'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
+	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.9.8'
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.9.8'
+	compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.9.8'
     
 	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 	compileOnly group: 'com.liferay', name: 'com.liferay.oauth2.provider.scope.api', version: '1.0.2'
