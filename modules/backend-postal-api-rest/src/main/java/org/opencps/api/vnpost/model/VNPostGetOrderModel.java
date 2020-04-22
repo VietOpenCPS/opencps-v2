@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VNPostGetOrderModel", propOrder = { "pageSize", "lastId" })
+@XmlType(name = "VNPostGetOrderModel", propOrder = { "pageSize", "lastId", "orderNumber", "govAgencyCode" })
 public class VNPostGetOrderModel {
 	@FormParam(value = "pageSize")
 	private Integer pageSize; // số bản ghi cần lấy (tương đương số lượng bản ghi lớn nhất sẽ trả về). Giá trị pagesize lớn nhất là 1000.
@@ -17,6 +17,17 @@ public class VNPostGetOrderModel {
 	@FormParam(value = "orderNumber")
 	private String orderNumber;
 	
+	@FormParam(value = "govAgencyCode")
+	private String govAgencyCode;
+	
+	public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
 	public String getOrderNumber() {
 		return orderNumber;
 	}

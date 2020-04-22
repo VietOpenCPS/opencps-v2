@@ -644,15 +644,14 @@ public class DueDateUtils {
 	private void _setWorkTimes() {
 
 		this.workTimes = WorkTimeLocalServiceUtil.getByGroupId(this.groupId);
-
-		_log.info("==================workTimes=========" + this.workTimes);
+		_log.debug("==================workTimes=========" + this.workTimes);
 	}
 
 	private void _setHolidays(Date startDate) {
 
 		this.holidays =
 			HolidayLocalServiceUtil.getHolidayGtThan(this.groupId, startDate);
-		_log.info("==================holidays=========" + this.holidays);
+		_log.debug("==================holidays=========" + this.holidays);
 	}
 
 	private void _setHourTimeWorking(Date date) {

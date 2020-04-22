@@ -181,6 +181,8 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.DOSSIER_NAME, dossier.getDossierName());
 		obj.put(DossierTerm.ORIGIN_DOSSIER_ID, dossier.getOriginDossierId());
 		obj.put(DossierTerm.ORIGIN_DOSSIER_NO, dossier.getOriginDossierNo());
+		obj.put(DossierTerm.VNPOSTAL_STATUS, dossier.getVnpostalStatus());
+		obj.put(DossierTerm.VNPOSTAL_PROFILE, dossier.getVnpostalProfile());
 		
 		return obj;
 	}
