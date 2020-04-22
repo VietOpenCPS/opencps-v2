@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 
+import javax.mail.internet.InternetAddress;
+
 import org.opencps.kernel.message.MBMessageEntry;
 import org.osgi.service.component.annotations.Component;
 
@@ -30,24 +32,32 @@ public class MBEmailSenderImpl implements MBEmailSender {
 
 		if (messageEntry != null && messageEntry.isSendEmail() && messageEntry.getToAddress().length > 0) {
 //			_log.debug("===SEND_MAIL_TO_ADD=======" + messageEntry.getToAddress()[0].getAddress());
-			MailMessage mailMessage = new MailMessage();
-			mailMessage.setSubject(messageEntry.getEmailSubject());
-			mailMessage.setTo(messageEntry.getToAddress());
-			mailMessage.setBody(messageEntry.getEmailBody());
-			mailMessage.setHTMLFormat(true);
-//			_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
-//			_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
-			String smtpUser = PrefsPropsUtil.getString(
-					PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
-					StringPool.BLANK);
-			if (Validator.isNotNull(smtpUser)) {
-				messageEntry.getFrom().setAddress(smtpUser);				
-				mailMessage.setFrom(messageEntry.getFrom());
-//				_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
-				// mailMessage.addFileAttachment(file);
+			boolean needSendEmail = false;
+			for (InternetAddress address : messageEntry.getToAddress()) {
+				if (Validator.isNotNull(address.getAddress())) {
+					needSendEmail = true;
+					break;
+				}
 			}
-			MailServiceUtil.sendEmail(mailMessage);
-
+			if (needSendEmail) {
+				MailMessage mailMessage = new MailMessage();
+				mailMessage.setSubject(messageEntry.getEmailSubject());
+				mailMessage.setTo(messageEntry.getToAddress());
+				mailMessage.setBody(messageEntry.getEmailBody());
+				mailMessage.setHTMLFormat(true);
+//				_log.debug("messageEntry FROM1: " + messageEntry.getFrom().getAddress());
+//				_log.debug("mailMessage FROM1: " + mailMessage.getFrom().getAddress());
+				String smtpUser = PrefsPropsUtil.getString(
+						PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
+						StringPool.BLANK);
+				if (Validator.isNotNull(smtpUser)) {
+					messageEntry.getFrom().setAddress(smtpUser);				
+					mailMessage.setFrom(messageEntry.getFrom());
+//					_log.debug("SEND EMAIL FROM2: " + messageEntry.getFrom());
+					// mailMessage.addFileAttachment(file);
+				}
+				MailServiceUtil.sendEmail(mailMessage);				
+			}
 		}
 
 
