@@ -120,7 +120,9 @@ import javax.xml.bind.annotation.XmlType;
 	"documentDate",
 	"systemId",
 	"dossierCounter",
-	"dvcqgIntegration"
+	"dvcqgIntegration",
+	"vnpostalStatus",
+	"vnpostalProfile"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
