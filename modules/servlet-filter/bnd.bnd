@@ -1,0 +1,4 @@
+Bundle-Name: opencps-filter
+Bundle-SymbolicName: org.opencps.servlet.filter
+Bundle-Version: 1.0.0
+-sources: true

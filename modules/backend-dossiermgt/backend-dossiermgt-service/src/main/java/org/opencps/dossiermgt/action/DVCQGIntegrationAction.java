@@ -1,6 +1,7 @@
 package org.opencps.dossiermgt.action;
 
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -26,6 +27,7 @@ public interface DVCQGIntegrationAction {
 	public JSONObject doSyncServiceDomain(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doSyncGovernmentAgency(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data);
+	public JSONObject doCreateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data);
 	//public JSONObject doSyncAnsewer(User user, ServiceContext serviceContext, JSONObject data);
 	//public JSONObject searchDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 	//public boolean checkExistDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
