@@ -499,13 +499,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					? config.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.VALUE)
 					: StringPool.BLANK;
 			if (!conf_merchant_code.equals(merchant_code)) {
-				return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_01);
+				return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_01);
 			}
 
 			String invoiceNo = VTPayTerm.getInvoiceNoByBillCode(billcode);
 			if (!paymentFile.getInvoiceNo().equals(invoiceNo)) {
-				return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
-						PayGateTerm.ERROR_CODE_01);
+				return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_01);
 			}
 
 			return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_00);
@@ -554,11 +553,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					schema.getJSONObject(PayGateTerm.CMD_SEARCH).getString(PayGateTerm.VALUE));
 			params.put(schema.getJSONObject(PayGateTerm.VERSION_SEARCH).getString(PayGateTerm.KEY),
 					schema.getJSONObject(PayGateTerm.VERSION_SEARCH).getString(PayGateTerm.VALUE));
-			params.put(schema.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.KEY),
+			params.put(PayGateTerm.MERCHANT_CODE,
 					schema.getJSONObject(PayGateTerm.MERCHANT_CODE).getString(PayGateTerm.VALUE));
-			params.put(schema.getJSONObject(PayGateTerm.ORDER_ID).getString(PayGateTerm.KEY), order_id);
+			params.put(PayGateTerm.ORDER_ID, order_id);
 			params.put(PayGateTerm.CHECK_SUM, check_sum_encoded);
 
+			_log.info(_tmp_check_sum);
+			_log.info(params);
 			JSONObject searchResult = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, url_search, properties,
 					params, StringPool.BLANK, StringPool.BLANK);
 

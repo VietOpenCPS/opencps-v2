@@ -140,6 +140,7 @@ import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -1330,6 +1331,12 @@ public class DossierManagementImpl implements DossierManagement {
 				Validator.isNotNull(input.getDocumentDate())) {
 				documentDate = new Date(input.getDocumentDate());
 			}
+
+			String vnpostalProfile = input.getVnpostalProfile();
+			Integer vnpostalStatus = input.getVnpostalStatus();
+			if (Validator.isNotNull(vnpostalProfile) && Validator.isNull(vnpostalStatus)) {
+				vnpostalStatus = VnpostCollectionTerm.VNPOSTAL_STAUS_1;
+			}
 			//
 			int systemId =
 				input.getSystemId() != null ? input.getSystemId() : 0;
@@ -1370,8 +1377,8 @@ public class DossierManagementImpl implements DossierManagement {
 				input.getDelegateCityCode(), input.getDelegateDistrictCode(),
 				input.getDelegateWardCode(), input.getSampleCount(),
 				input.getDossierName(), input.getBriefNote(), delegateType,
-				documentNo, documentDate, systemId, input.getVnpostalStatus(),
-				input.getVnpostalProfile(), serviceContext);
+				documentNo, documentDate, systemId, vnpostalStatus,
+				vnpostalProfile, serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
