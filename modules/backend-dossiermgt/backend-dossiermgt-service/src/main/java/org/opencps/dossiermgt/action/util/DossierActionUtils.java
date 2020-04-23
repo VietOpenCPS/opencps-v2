@@ -69,6 +69,11 @@ public class DossierActionUtils {
 			payloadObject.put(DossierTerm.RELEASE_DATE, dossier.getReleaseDate().getTime());
 		}
 		
+		if (Validator.isNotNull(dossier.getDossierCounter()) && bResult != null && 
+				bResult.containsKey(DossierTerm.DOSSIER_COUNTER) &&
+				bResult.get(DossierTerm.DOSSIER_COUNTER)) {
+			payloadObject.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+		}
 		return payloadObject;
 	}
 }

@@ -824,6 +824,10 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.META_DATA)) {
 			model.setMetaData(jsonObj.getString(DossierTerm.META_DATA));
 		}
+
+		if (jsonObj.has(DossierTerm.DOSSIER_COUNTER)) {
+			model.setDossierCounter(jsonObj.getString(DossierTerm.DOSSIER_COUNTER));
+		}
 		
 		return model;
 	}	
