@@ -118,6 +118,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 			params.put(ServiceConfigTerm.SERVICE_CODE, service);
 			params.put(ServiceConfigTerm.DOMAIN_CODE, domain);
 			params.put(ServiceConfigTerm.APPICATION_TYPE, applicant);
+			params.put(ServiceConfigTerm.SERVICECONFIG_ID, query.getServiceConfigId());
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
