@@ -222,7 +222,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 
 			Role adminRole = RoleLocalServiceUtil.getRole(
-				context.getCompanyId(), ConfigProps.get(ConfigConstants.ROLE_APPLICANT));
+				context.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
 
 			List<User> adminUsers = userLocalService.getRoleUsers(adminRole.getRoleId());
 

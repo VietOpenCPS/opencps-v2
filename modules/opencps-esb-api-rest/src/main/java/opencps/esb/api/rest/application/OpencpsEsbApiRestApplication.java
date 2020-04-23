@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
+import org.opencps.esb.api.controller.impl.ESBEgovManagementImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
@@ -38,13 +39,14 @@ public class OpencpsEsbApiRestApplication extends Application {
 	public Set<Object> getSingletons() {
 		Set<Object> singletons = new HashSet<Object>();
 		
+		
+		singletons.add(new ESBEgovManagementImpl());
+		singletons.add(this);
+		
 		singletons.add(_serviceContextProvider);
 		singletons.add(_companyContextProvider);
 		singletons.add(_localeContextProvider);
 		singletons.add(_userContextProvider);
-		
-		
-		singletons.add(this);
 		
 		return singletons;
 	}
