@@ -686,12 +686,12 @@ public class CPSDossierBusinessLocalServiceImpl
 						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
 					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
-							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+							dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionConfig.getInfoType() == 2 ? actionNote : StringPool.BLANK,
 							syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), serverNo, state);				
 				}
 				else {
 					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid, syncRefUid,
-						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionNote,
+						dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(), actionUser, actionConfig.getInfoType() == 2 ? actionNote : StringPool.BLANK,
 						syncType, actionConfig.getInfoType(), payloadObject.toJSONString(), dossier.getServerNo(), state);
 				}
 				//Gửi thông tin hồ sơ để tra cứu
@@ -732,12 +732,12 @@ public class CPSDossierBusinessLocalServiceImpl
 					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
 					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
 							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
-							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							actionUser, actionConfig.getInfoType() == 2 ? actionNote : StringPool.BLANK, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 							serverNo, state);
 				} else {
 					dossierSyncLocalService.updateDossierSync(groupId, userId, dossier.getDossierId(), dossierRefUid,
 							syncRefUid, dossierAction.getPrimaryKey(), actionCode, proAction.getActionName(),
-							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
+							actionUser, actionConfig.getInfoType() == 2 ? actionNote : StringPool.BLANK, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 							dossier.getServerNo(), state);
 				}
 			}
@@ -1214,7 +1214,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		ActionConfig actionConfig = null;
 		actionConfig = actionConfigLocalService.getByCode(groupId, actionCode);
-
+		_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> actionConfig.getInsideProcess() " + actionConfig.getInsideProcess());
 		if (actionConfig != null && !actionConfig.getInsideProcess()) {
 
 			dossierAction = doActionOutsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode, actionUser, actionNote, payload, assignUsers, payment, syncType, context);			

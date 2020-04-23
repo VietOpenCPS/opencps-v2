@@ -14,6 +14,8 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.portal.kernel.util.OrderByComparator;
+
 import java.util.Date;
 import java.util.List;
 
@@ -119,6 +121,10 @@ public class DossierSyncLocalServiceImpl extends DossierSyncLocalServiceBaseImpl
 	
 	public List<DossierSync> findByDossierAndInfoTypeArr(long groupId, String dossierRefUid, int[] infoType, int start, int end) {
 		return dossierSyncPersistence.findByDRID_IT(groupId, dossierRefUid, infoType, start, end);
+	}
+	
+	public List<DossierSync> findByDossierAndInfoTypeArr(long groupId, String dossierRefUid, int[] infoType, int start, int end, OrderByComparator<DossierSync> orderByComparator) {
+		return dossierSyncPersistence.findByDRID_IT(groupId, dossierRefUid, infoType, start, end, orderByComparator);
 	}
 	
 	public long countByDossierAndInfoTypeArr(long groupId, String dossierRefUid, int infoType[]) {

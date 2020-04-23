@@ -240,6 +240,14 @@ public class DossierSyncLocalServiceUtil {
 			infoType, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByDossierAndInfoTypeArr(
+		long groupId, String dossierRefUid, int[] infoType, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.dossiermgt.model.DossierSync> orderByComparator) {
+		return getService()
+				   .findByDossierAndInfoTypeArr(groupId, dossierRefUid,
+			infoType, start, end, orderByComparator);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierSync> findByG_DID(
 		long groupId, long dossierId) {
 		return getService().findByG_DID(groupId, dossierId);

@@ -1542,8 +1542,11 @@ public class DossierManagementImpl implements DossierManagement {
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (insideProcess) {
+							_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>1");
 							if (dossier.getDossierActionId() == 0) {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>2");
 								if (option != null) {
+									_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>3");
 									long serviceProcessId =
 										option.getServiceProcessId();
 									ProcessAction proAction =
@@ -1552,6 +1555,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>4");
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -1566,15 +1570,18 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5");
 										// TODO: Error
 									}
 								}
 							}
 							else {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>6");
 								DossierAction dossierAction =
 									DossierActionLocalServiceUtil.fetchDossierAction(
 										dossier.getDossierActionId());
 								if (dossierAction != null) {
+									_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>7");
 									long serviceProcessId =
 										dossierAction.getServiceProcessId();
 									DossierTemplate dossierTemplate =
@@ -1593,6 +1600,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>8");
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -1607,6 +1615,7 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>9");
 										// TODO: Error
 									}
 								}
@@ -1712,6 +1721,7 @@ public class DossierManagementImpl implements DossierManagement {
 							// }
 						}
 						else {
+							_log.debug("===========>>>>>>>>>>>>>>>>>>>>>> action here1");
 							dossierResult = actions.doAction(
 								groupId, userId, dossier, option, null,
 								actionCode, actionUser, input.getActionNote(),
@@ -1789,9 +1799,11 @@ public class DossierManagementImpl implements DossierManagement {
 						// }
 					}
 					else {
+						_log.debug("===========>>>>>>>>>>>>>>>>>>>>>> action here2");
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (option != null) {
+							_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
 							long serviceProcessId =
 								option.getServiceProcessId();
 							ProcessAction proAction =
@@ -1799,6 +1811,7 @@ public class DossierManagementImpl implements DossierManagement {
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>12");
 								dossierResult = actions.doAction(
 									groupId, userId, dossier, option, proAction,
 									actionCode, actionUser,
@@ -1807,6 +1820,7 @@ public class DossierManagementImpl implements DossierManagement {
 									0, serviceContext, errorModel);
 							}
 							else {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>12a");
 								// TODO: Error
 							}
 
