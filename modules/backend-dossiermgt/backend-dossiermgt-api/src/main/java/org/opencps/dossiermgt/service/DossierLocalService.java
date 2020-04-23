@@ -595,7 +595,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		ServiceContext context) throws PortalException;
+		String dossierCounter, ServiceContext context)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier publishImportDossier(long groupId, long dossierId,
