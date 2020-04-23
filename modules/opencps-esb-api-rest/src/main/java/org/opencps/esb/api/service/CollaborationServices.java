@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.inet.api.iws.services.agency.AgencyServiceAsync;
 import com.inet.api.iws.services.knobstick.KnobstickServiceAsync;
 import com.inet.api.iws.services.slot.SlotServiceAsync;
-import com.inet.api.iws.services.sts.SecurityTokenService;
 import com.inet.api.iws.services.sts.SecurityTokenServiceAsync;
 
 /**
