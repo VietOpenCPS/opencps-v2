@@ -127,7 +127,9 @@ import javax.xml.bind.annotation.XmlType;
     "originality",
     "dossierName",
     "originDossierNo",
-    "serverNo"
+    "serverNo",
+    "vnpostalStatus",
+    "vnpostalProfile"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -179,8 +181,27 @@ public class DossierInputModel {
     protected String dossierName;
     protected String originDossierNo;
     protected String serverNo;
+    
+    protected Integer vnpostalStatus;
+    protected String vnpostalProfile;
 
-    /**
+    public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return

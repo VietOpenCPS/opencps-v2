@@ -171,7 +171,9 @@ import javax.xml.bind.annotation.XmlType;
     "dossierName",
     "originDossierNo",
     "serverNo",
-    "metaData"
+    "metaData",
+    "vnpostalStatus",
+    "vnpostalProfile"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -245,8 +247,26 @@ public class DossierDetailModel {
     protected String originDossierNo;
     protected String serverNo;
     protected String metaData;
+    protected Integer vnpostalStatus;
+    protected String vnpostalProfile;
 
-    /**
+    public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
+
+	/**
      * Gets the value of the dossierId property.
      * 
      * @return

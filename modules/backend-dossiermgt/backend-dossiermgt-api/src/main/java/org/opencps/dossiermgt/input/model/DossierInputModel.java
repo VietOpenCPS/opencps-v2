@@ -74,6 +74,24 @@ public class DossierInputModel {
 	private Integer delegateType;
 	private int systemId;
 	private String dossierCounter;
+	private Integer vnpostalStatus;
+	private String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;

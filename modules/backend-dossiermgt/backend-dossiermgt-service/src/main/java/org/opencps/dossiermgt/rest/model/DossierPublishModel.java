@@ -189,7 +189,9 @@ import javax.xml.bind.annotation.XmlType;
     "durationUnit",
     "sampleCount",
     "metaData",
-    "dossierCounter"
+    "dossierCounter",
+    "vnpostalStatus",
+    "vnpostalProfile"
 })
 @XmlRootElement(name = "DossierPublishModel")
 public class DossierPublishModel {
@@ -272,8 +274,26 @@ public class DossierPublishModel {
     protected Long sampleCount;
     protected String metaData;
     protected String dossierCounter;
+    protected Integer vnpostalStatus;
+    protected String vnpostalProfile;
+    
+    public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
 
-    /**
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
+
+	/**
      * Gets the value of the dossierId property.
      * 
      * @return
