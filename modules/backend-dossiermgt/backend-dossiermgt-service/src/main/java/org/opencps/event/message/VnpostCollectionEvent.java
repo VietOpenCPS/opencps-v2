@@ -31,7 +31,6 @@ public class VnpostCollectionEvent implements MessageListener {
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
-			_log.info("=========VnpostCollectionEvent======RUNNNNNNNN=========");
 			_doReceiveRequest(message);
 		} catch (Exception e) {
 			_log.error("Unable to process message " + message, e);
@@ -78,9 +77,9 @@ public class VnpostCollectionEvent implements MessageListener {
 		
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 				VnpostCollectionTerm.VNPOST_BASE_PATH, "", "", properties, params, context);
-		System.out.println("===========" + baseUrl + "      " + VnpostCollectionTerm.VNPOST_BASE_PATH);
-		_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
-		_log.info(params);
+		_log.debug("baseUrl: " + baseUrl + "      " + VnpostCollectionTerm.VNPOST_BASE_PATH);
+		_log.debug("Call post API SEND VNPOST result: " + resultObj.toJSONString());
+		_log.debug(params);
 		if(resultObj != null) {
 			dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_2);
 

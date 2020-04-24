@@ -3637,7 +3637,7 @@ public class CPSDossierBusinessLocalServiceImpl
 
 		message.put(ConstantUtils.MSG_ENG, msgData);
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
-		
+		_log.info("=============create collectVnpostEvent============");
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);		
 	}
 	
@@ -4992,7 +4992,12 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
-			
+			if (Validator.isNotNull(input.getVnpostalStatus())) {
+				dossier.setVnpostalStatus(input.getVnpostalStatus());
+			}
+			if (Validator.isNotNull(input.getVnpostalProfile())) {
+				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
@@ -5329,6 +5334,12 @@ public class CPSDossierBusinessLocalServiceImpl
 			_log.debug("CREATE DOSSIER 6: " + (System.currentTimeMillis() - start) + " ms");
 			//Add to dossier user based on service process role
 			createDossierUsers(groupId, dossier, process, lstProcessRoles);
+			if (Validator.isNotNull(input.getVnpostalStatus())) {
+				dossier.setVnpostalStatus(input.getVnpostalStatus());
+			}
+			if (Validator.isNotNull(input.getVnpostalProfile())) {
+				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}

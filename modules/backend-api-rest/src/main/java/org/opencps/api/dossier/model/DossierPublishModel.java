@@ -122,7 +122,9 @@ import javax.xml.bind.annotation.XmlType;
 	"sampleCount",
 	"dossierName",
 	"mataData",
-	"dossierCounter"
+	"dossierCounter",
+	"vnpostalStatus",
+	"vnpostalProfile"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -268,6 +270,26 @@ public class DossierPublishModel {
 	protected String metaData;
 	@FormParam(value = "dossierCounter")
 	protected String dossierCounter;
+	@FormParam(value = "vnpostalStatus")
+	protected Integer vnpostalStatus;
+	@FormParam(value = "vnpostalProfile")
+	protected String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;

@@ -158,6 +158,13 @@ public class OpenCPSConverter {
 	    	params.put(DossierTerm.SERVER_NO, model.getServerNo());
 	    }
 	    
+	    if (Validator.isNotNull(model.getVnpostalStatus())) {
+	    	params.put(DossierTerm.VNPOSTAL_STATUS, model.getVnpostalStatus());
+	    }
+	    if (Validator.isNotNull(model.getVnpostalProfile())) {
+	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
+	    }
+	    
 	    return params;
 	}
 	
@@ -338,6 +345,13 @@ public class OpenCPSConverter {
 	    	params.put(DossierTerm.DOSSIER_NAME, model.getDossierName());
 	    }
 	    
+	    if (Validator.isNotNull(model.getVnpostalStatus())) {
+	    	params.put(DossierTerm.VNPOSTAL_STATUS, model.getVnpostalStatus());
+	    }
+	    if (Validator.isNotNull(model.getVnpostalProfile())) {
+	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
+	    }
+	    
 	    return params;
 	}	
 	
@@ -458,6 +472,13 @@ public class OpenCPSConverter {
 	    	params.put(DossierTerm.LOCK_STATE, model.getLockState());
 	    }
 	    
+	    if (Validator.isNotNull(model.getVnpostalStatus())) {
+	    	params.put(DossierTerm.VNPOSTAL_STATUS, model.getVnpostalStatus());
+	    }
+	    if (Validator.isNotNull(model.getVnpostalProfile())) {
+	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
+	    }
+	    
 	    return params;
 	}	
 	
@@ -571,6 +592,13 @@ public class OpenCPSConverter {
 		}
 		if (jsonObj.has(DossierTerm.NOTIFICATION)) {
 			model.setNotification(jsonObj.getString(DossierTerm.NOTIFICATION));
+		}
+		
+		if (jsonObj.has(DossierTerm.VNPOSTAL_STATUS)) {
+			model.setVnpostalStatus(jsonObj.getInt(DossierTerm.VNPOSTAL_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
+			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
 		}
 
 		return model;
@@ -826,6 +854,14 @@ public class OpenCPSConverter {
 			model.setMetaData(jsonObj.getString(DossierTerm.META_DATA));
 		}
 		
+		if (jsonObj.has(DossierTerm.VNPOSTAL_STATUS)) {
+			model.setVnpostalStatus(jsonObj.getInt(DossierTerm.VNPOSTAL_STATUS));
+		}
+		
+		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
+			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
+		}
+		
 		return model;
 	}	
 	
@@ -972,6 +1008,13 @@ public class OpenCPSConverter {
 			model.setMetaData(jsonObj.getString(DossierTerm.META_DATA));
 		}
 
+		if (jsonObj.has(DossierTerm.VNPOSTAL_STATUS)) {
+			model.setVnpostalStatus(jsonObj.getInt(DossierTerm.VNPOSTAL_STATUS));
+		}
+		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
+			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
+		}
+
 		return model;
 	}	
 	
@@ -1061,6 +1104,13 @@ public class OpenCPSConverter {
 				model.setServerNo(dossier.getServerNo());				
 			}
 		}
+		if (Validator.isNotNull(dossier.getVnpostalStatus())) {
+			model.setVnpostalStatus(dossier.getVnpostalStatus());
+		}
+		if (Validator.isNotNull(dossier.getVnpostalProfile())) {
+			model.setVnpostalProfile(dossier.getVnpostalProfile());
+		}
+
 		return model;
 	}
 	
@@ -1386,6 +1436,8 @@ public class OpenCPSConverter {
 		result.put(ConverterTerm.DOCFEES, docFeesArr);
 		result.put(ConverterTerm.ORGANINCHARGEIDLEVEL1, model.getGovAgencyCode());
 		result.put(ConverterTerm.ORGANINCHARGENAME, model.getGovAgencyName());
+		result.put(DossierTerm.VNPOSTAL_STATUS, model.getVnpostalStatus());
+		result.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
 		System.out.println("LGSP SYNC DOCUMENT");
 		return result;
 	}
@@ -1535,6 +1587,7 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getDueDate())) {
 	    	params.put(DossierTerm.DUE_DATE, model.getDueDate());
 	    }
+		params.put(DossierTerm.KEY_DVCQG_INTEGRATION, model.isDvcqgIntegration());
 		params.put(DossierTerm.KEY_DVCQG_INTEGRATION, model.isDvcqgIntegration());
 		
 	    return params;
