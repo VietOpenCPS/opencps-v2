@@ -375,6 +375,41 @@
 		</field>
 		<field name="syncDate" type="Date" />
 	</model>
+	<model name="org.opencps.usermgt.model.TrackClient">
+		<field name="uuid" type="String" />
+		<field name="trackClientId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="sessionId" type="String" />
+		<field name="url" type="String" />
+		<field name="year" type="int" />
+		<field name="month" type="int" />
+		<field name="day" type="int" />
+		<field name="visitDate" type="Date" />
+		<field name="leaveDate" type="Date" />
+		<field name="clientIP" type="String" />
+		<field name="macAddress" type="String" />
+		<field name="region" type="String" />
+		<field name="timeOnPage" type="long" />
+		<field name="desktop" type="boolean" />
+		<field name="mobile" type="boolean" />
+		<field name="tablet" type="boolean" />
+	</model>
+	<model name="org.opencps.usermgt.model.TrackClientStatistic">
+		<field name="uuid" type="String" />
+		<field name="trackClientStatisticId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="url" type="String" />
+		<field name="year" type="int" />
+		<field name="month" type="int" />
+		<field name="day" type="int" />
+		<field name="region" type="String" />
+		<field name="desktop" type="boolean" />
+		<field name="mobile" type="boolean" />
+		<field name="tablet" type="boolean" />
+		<field name="total" type="long" />
+	</model>
 	<model name="org.opencps.usermgt.model.UserLogin">
 		<field name="uuid" type="String" />
 		<field name="userLoginId" type="long" />

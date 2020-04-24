@@ -65,6 +65,8 @@ import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
 import org.opencps.usermgt.service.persistence.SyncSchedulerPersistence;
+import org.opencps.usermgt.service.persistence.TrackClientPersistence;
+import org.opencps.usermgt.service.persistence.TrackClientStatisticPersistence;
 import org.opencps.usermgt.service.persistence.UserLoginPersistence;
 import org.opencps.usermgt.service.persistence.UserTrackPathPersistence;
 import org.opencps.usermgt.service.persistence.VisibilityPersistence;
@@ -958,6 +960,82 @@ public abstract class ResourceUserLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the track client local service.
+	 *
+	 * @return the track client local service
+	 */
+	public org.opencps.usermgt.service.TrackClientLocalService getTrackClientLocalService() {
+		return trackClientLocalService;
+	}
+
+	/**
+	 * Sets the track client local service.
+	 *
+	 * @param trackClientLocalService the track client local service
+	 */
+	public void setTrackClientLocalService(
+		org.opencps.usermgt.service.TrackClientLocalService trackClientLocalService) {
+		this.trackClientLocalService = trackClientLocalService;
+	}
+
+	/**
+	 * Returns the track client persistence.
+	 *
+	 * @return the track client persistence
+	 */
+	public TrackClientPersistence getTrackClientPersistence() {
+		return trackClientPersistence;
+	}
+
+	/**
+	 * Sets the track client persistence.
+	 *
+	 * @param trackClientPersistence the track client persistence
+	 */
+	public void setTrackClientPersistence(
+		TrackClientPersistence trackClientPersistence) {
+		this.trackClientPersistence = trackClientPersistence;
+	}
+
+	/**
+	 * Returns the track client statistic local service.
+	 *
+	 * @return the track client statistic local service
+	 */
+	public org.opencps.usermgt.service.TrackClientStatisticLocalService getTrackClientStatisticLocalService() {
+		return trackClientStatisticLocalService;
+	}
+
+	/**
+	 * Sets the track client statistic local service.
+	 *
+	 * @param trackClientStatisticLocalService the track client statistic local service
+	 */
+	public void setTrackClientStatisticLocalService(
+		org.opencps.usermgt.service.TrackClientStatisticLocalService trackClientStatisticLocalService) {
+		this.trackClientStatisticLocalService = trackClientStatisticLocalService;
+	}
+
+	/**
+	 * Returns the track client statistic persistence.
+	 *
+	 * @return the track client statistic persistence
+	 */
+	public TrackClientStatisticPersistence getTrackClientStatisticPersistence() {
+		return trackClientStatisticPersistence;
+	}
+
+	/**
+	 * Sets the track client statistic persistence.
+	 *
+	 * @param trackClientStatisticPersistence the track client statistic persistence
+	 */
+	public void setTrackClientStatisticPersistence(
+		TrackClientStatisticPersistence trackClientStatisticPersistence) {
+		this.trackClientStatisticPersistence = trackClientStatisticPersistence;
+	}
+
+	/**
 	 * Returns the user login local service.
 	 *
 	 * @return the user login local service
@@ -1328,6 +1406,14 @@ public abstract class ResourceUserLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.SyncSchedulerLocalService syncSchedulerLocalService;
 	@BeanReference(type = SyncSchedulerPersistence.class)
 	protected SyncSchedulerPersistence syncSchedulerPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.TrackClientLocalService.class)
+	protected org.opencps.usermgt.service.TrackClientLocalService trackClientLocalService;
+	@BeanReference(type = TrackClientPersistence.class)
+	protected TrackClientPersistence trackClientPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.TrackClientStatisticLocalService.class)
+	protected org.opencps.usermgt.service.TrackClientStatisticLocalService trackClientStatisticLocalService;
+	@BeanReference(type = TrackClientStatisticPersistence.class)
+	protected TrackClientStatisticPersistence trackClientStatisticPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.UserLoginLocalService.class)
 	protected org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService;
 	@BeanReference(type = UserLoginPersistence.class)

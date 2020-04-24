@@ -6,6 +6,8 @@ Liferay-Service: true
 
 -includeresource: \
 	@simplecaptcha-1.2.1.jar;lib:=true,\
+	@geoip2-2.12.0.jar;lib=true,\
+	@maxmind-db-1.2.2.jar;lib=true
 	
 Import-Package: *;resolution:=optional
 
@@ -14,6 +16,8 @@ Export-Package: \
 	org.opencps.usermgt.action.impl,\
 	org.opencps.usermgt.constants,\
 	org.opencps.usermgt.service.util,\
-	org.opencps.usermgt.utils
+	org.opencps.usermgt.utils,\
+	com.maxmind.geoip2.*,\
+	com.maxmind.db.*
 Require-Capability: osgi.contract; filter:="(&(osgi.contract=JavaJAXRS)(version=2))"
 -sources: true

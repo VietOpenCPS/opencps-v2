@@ -67,6 +67,10 @@ create index IX_2247AC10 on opencps_sync_scheduler (className[$COLUMN_LENGTH:255
 create index IX_4F2917EE on opencps_sync_scheduler (className[$COLUMN_LENGTH:255$], typeCode[$COLUMN_LENGTH:255$]);
 create index IX_9290C4D4 on opencps_sync_scheduler (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_D692EFEC on opencps_track_client (uuid_[$COLUMN_LENGTH:75$]);
+
+create index IX_7281E1BB on opencps_track_client_statistic (uuid_[$COLUMN_LENGTH:75$]);
+
 create index IX_BFD53D86 on opencps_userlogin (userId, sessionId[$COLUMN_LENGTH:255$]);
 create index IX_26EF75D5 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_10156D97 on opencps_userlogin (uuid_[$COLUMN_LENGTH:75$], groupId);
