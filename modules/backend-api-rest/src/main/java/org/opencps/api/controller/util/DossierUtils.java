@@ -1451,6 +1451,8 @@ public class DossierUtils {
 		model.setDocumentDate(input.getDocumentDate());
 		model.setSystemId(input.getSystemId() != null ? input.getSystemId() : 0);
 		model.setDossierCounter(input.getDossierCounter());
+		model.setVnpostalStatus(input.getVnpostalStatus());
+		model.setVnpostalProfile(input.getVnpostalProfile());
 
 		return model;
 	}
