@@ -36,22 +36,24 @@ public class OpenCPSTraceAction extends Action {
 		String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
 		String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-		System.out.println("Session ID: " + sessionId + ", url: " + completeUrl + ", IP: " + HttpUtil.getPublicIP(request));
-        try {
+        String clientIP = HttpUtil.getPublicIP(request);
+        String cityName = StringPool.BLANK;
+        
+		try {
 //        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
 			File database = new File(UserMgtConfigUtil.getGeoDBPath());
 			File curDir = new File(".");
 			System.out.println(curDir.getAbsolutePath());
 			DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
-			InetAddress ipAddress = InetAddress.getByName("119.17.200.7");
+			InetAddress ipAddress = InetAddress.getByName(clientIP);
 	        CityResponse cityResponse = dbReader.city(ipAddress);
 	         
-	        String cityName = cityResponse.getCity().getName();
+	        cityName = cityResponse.getCity().getName();
 	        String latitude = 
 	        		cityResponse.getLocation().getLatitude().toString();
 	        String longitude = 
 	        		cityResponse.getLocation().getLongitude().toString();
-	        System.out.println("City name: " + cityName);
+	        
 		} catch (IOException e) {
 			e.printStackTrace();
 			_log.debug(e);
@@ -60,6 +62,10 @@ public class OpenCPSTraceAction extends Action {
 			_log.debug(e);
 		}
         
+		if (UserMgtConfigUtil.isTrackClientEnable()) {
+			
+		}
+		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
 			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
 

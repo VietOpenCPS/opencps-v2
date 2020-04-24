@@ -253,6 +253,17 @@ public class TrackClientLocalServiceUtil {
 		return getService().updateTrackClient(trackClient);
 	}
 
+	public static org.opencps.usermgt.model.TrackClient updateUserTrackPath(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, long timeOnPage,
+		boolean desktop, boolean mobile, boolean tablet) {
+		return getService()
+				   .updateUserTrackPath(trackClientId, sessionId, url, year,
+			month, day, visitDate, leaveDate, clientIP, macAddress, region,
+			timeOnPage, desktop, mobile, tablet);
+	}
+
 	public static TrackClientLocalService getService() {
 		return _serviceTracker.getService();
 	}

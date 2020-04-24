@@ -14,6 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+
+import org.opencps.usermgt.model.TrackClient;
 import org.opencps.usermgt.service.base.TrackClientLocalServiceBaseImpl;
 
 /**
@@ -36,4 +39,36 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.TrackClientLocalServiceUtil} to access the track client local service.
 	 */
+	public TrackClient updateUserTrackPath(long trackClientId, String sessionId, String url, int year, int month, int day, Date visitDate, Date leaveDate, String clientIP,
+			String macAddress, String region, long timeOnPage, boolean desktop, boolean mobile, boolean tablet) {
+		TrackClient trackClient = null;
+		if (trackClientId == 0) {
+			trackClientId = counterLocalService.increment(TrackClient.class.getName());
+			trackClient = trackClientPersistence.create(trackClientId);
+		}
+		else {
+			trackClient = trackClientPersistence.fetchByPrimaryKey(trackClientId);
+		}
+		
+		if (trackClient != null) {
+			trackClient.setSessionId(sessionId);
+			trackClient.setUrl(url);
+			trackClient.setYear(year);
+			trackClient.setMonth(month);
+			trackClient.setDay(day);
+			trackClient.setVisitDate(visitDate);
+			trackClient.setLeaveDate(leaveDate);
+			trackClient.setClientIP(clientIP);
+			trackClient.setMacAddress(macAddress);
+			trackClient.setRegion(region);
+			trackClient.setTimeOnPage(timeOnPage);
+			trackClient.setDesktop(desktop);
+			trackClient.setMobile(mobile);
+			trackClient.setTablet(tablet);
+			
+			trackClient = trackClientPersistence.update(trackClient);
+		}
+		
+		return trackClient;
+	}
 }

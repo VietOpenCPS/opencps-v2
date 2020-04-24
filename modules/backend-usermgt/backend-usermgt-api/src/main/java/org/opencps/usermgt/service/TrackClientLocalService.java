@@ -36,6 +36,7 @@ import org.opencps.usermgt.model.TrackClient;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -227,4 +228,10 @@ public interface TrackClientLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public TrackClient updateTrackClient(TrackClient trackClient);
+
+	public TrackClient updateUserTrackPath(long trackClientId,
+		String sessionId, String url, int year, int month, int day,
+		Date visitDate, Date leaveDate, String clientIP, String macAddress,
+		String region, long timeOnPage, boolean desktop, boolean mobile,
+		boolean tablet);
 }

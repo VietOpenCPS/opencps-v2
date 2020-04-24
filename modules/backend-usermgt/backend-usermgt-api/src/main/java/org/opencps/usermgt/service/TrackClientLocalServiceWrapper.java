@@ -265,6 +265,17 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.TrackClient updateUserTrackPath(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, long timeOnPage,
+		boolean desktop, boolean mobile, boolean tablet) {
+		return _trackClientLocalService.updateUserTrackPath(trackClientId,
+			sessionId, url, year, month, day, visitDate, leaveDate, clientIP,
+			macAddress, region, timeOnPage, desktop, mobile, tablet);
+	}
+
+	@Override
 	public TrackClientLocalService getWrappedService() {
 		return _trackClientLocalService;
 	}
