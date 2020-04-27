@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
+import org.opencps.api.constants.SystemManagementConstants;
 import org.opencps.api.controller.StatisticManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.StatisticUtils;
@@ -64,13 +65,17 @@ import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.StepConfigTerm;
 import org.opencps.dossiermgt.model.MenuConfig;
+import org.opencps.dossiermgt.model.MenuRole;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.MenuConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.MenuRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
@@ -193,7 +198,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			boolean isAdmin = false;
 			List<Role> roles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+			long[] menuConfigArr = null;
 			if (roles != null && roles.size() > 0) {
+				int length = roles.size();
+				long[] roleIds = new long[length];
 				for (Role role : roles) {
 					// LamTV_Fix sonarqube
 					if (ConstantUtils.ROLE_ADMIN.equals(role.getName())) {
@@ -203,6 +211,43 @@ public class StatisticManagementImpl implements StatisticManagement {
 					if (ConstantUtils.ROLE_ADMIN_DATA.equals(role.getName())) {
 						isAdmin = true;
 						break;
+					}
+				}
+				//
+				for (int i = 0; i < length; i++) {
+					roleIds[i] = roles.get(i).getRoleId();
+				}
+				
+				List<MenuRole> meunuRoleList = MenuRoleLocalServiceUtil.getByRoles(roleIds);
+//				Map<Long , Long> mapMenuRole = new HashMap<>();
+				List<Long> menuConfigList = new ArrayList<>();
+				for (MenuRole menuRole : meunuRoleList) {
+					if (menuConfigList.size() > 0 && menuConfigList.contains(menuRole.getMenuConfigId())) {
+						continue;
+					} else {
+						menuConfigList.add(menuRole.getMenuConfigId());
+					}
+				}
+				//
+				menuConfigArr = new long[menuConfigList.size()];
+				for (int i = 0; i < menuConfigList.size(); i++) {
+					menuConfigArr[i] = menuConfigList.get(i);
+				}
+				//_log.info("menuConfigList: "+JSONFactoryUtil.looseSerialize(menuConfigList));
+			}
+			//Applicant
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			if (applicant != null) {
+				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, SystemManagementConstants.APPLICANT);
+				if (job != null) {
+					List<MenuRole> lstMenuRoles = MenuRoleLocalServiceUtil.getByRoleId(job.getMappingRoleId());
+					if (lstMenuRoles != null && lstMenuRoles.size() > 0) {
+						int length = lstMenuRoles.size();
+						menuConfigArr = new long[length];
+						for (int i = 0; i < length; i++) {
+							MenuRole menu = lstMenuRoles.get(i);
+							menuConfigArr[i] = menu.getMenuConfigId();
+						}
 					}
 				}
 			}
@@ -222,11 +267,8 @@ public class StatisticManagementImpl implements StatisticManagement {
 			if (isAdmin) {
 			}
 			else {
-				//???
-				if (!ownerBoolean) {
-					String permission = user.getUserId() + StringPool.UNDERLINE + ConstantUtils.PERMISSION_WRITE;
-					params.put(DossierTerm.MAPPING_PERMISSION, permission);					
-				}
+				String permission = user.getUserId() + StringPool.UNDERLINE + ConstantUtils.PERMISSION_WRITE;
+				params.put(DossierTerm.MAPPING_PERMISSION, permission);
 			}
 			if (Validator.isNotNull(query.getAgency())) {
 				
@@ -238,7 +280,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				}
 			}
 			String stepCode = query.getStep();
-//			_log.info("STEPCODE: "+stepCode);
+			//_log.info("STEPCODE: "+stepCode);
 			if (Validator.isNotNull(stepCode)) {
 				String[] stepArr = stepCode.split(StringPool.COMMA);
 				if (stepArr != null && stepArr.length > 0) {
@@ -276,113 +318,172 @@ public class StatisticManagementImpl implements StatisticManagement {
 					}
 				}
 			} else {
-				//List<StepConfig> stepList = StepConfigLocalServiceUtil.getStepByGroupId(groupId);
-//				if (stepList != null && stepList.size() > 0) {
-//					_log.debug("length: "+stepList.size());
-//					for (StepConfig step: stepList) {
-//						params.put(DossierTerm.STATUS, step.getDossierStatus());
-//						params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-//						
-//						//Process MenuConfig
-//						String menuGroup = step.getMenuGroup();
-//						if (Validator.isNotNull(menuGroup)) {
-//							MenuConfig menu = MenuConfigLocalServiceUtil.getByG_MENU(groupId, menuGroup);
-//							if (menu != null) {
-//								String queryParams = menu.getQueryParams();
-//								if (Validator.isNotNull(queryParams)) {
-//									params = processAddQueryParams(queryParams, user.getUserId(), step.getStepCode(), params);
-//								}
-//							}
-//						}
-//						//System.out.println("params: "+params);
-////						_log.info("DossierStatus: "+step.getDossierStatus());
-//						long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-//								null, serviceContext);
-////						_log.info("count: "+count);
-//						JSONObject statistic = JSONFactoryUtil.createJSONObject();
-//						statistic.put("stepCode", step.getStepCode());
-//						statistic.put("stepName", step.getStepName());
-//						statistic.put("dossierStatus", step.getDossierStatus());
-//						statistic.put("dossierSubStatus", step.getDossierSubStatus());
-//						statistic.put("totalCount", count);
-//						total += count;
-//						statistics.put(statistic);
-//					}
-//				}
-				//
-				List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-				if (menuList != null && menuList.size() > 0) {
-					for (MenuConfig menuConfig : menuList) {
-						
-						String queryParams = menuConfig.getQueryParams();
-						if (Validator.isNotNull(queryParams)) {
-							int length = queryParams.lastIndexOf(StringPool.QUESTION);
-							if (length > 0) {
-								String subQuery = queryParams.substring(length + 1);
-								String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split(StringPool.AMPERSAND) : null;
-								for (String param : elementParams) {
-									if (Validator.isNotNull(param) && param.contains(STEP_EQUAL)) {
-										String[] paramSplit = param.split(StringPool.EQUAL);
-										if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
-											long totalGroup = 0;
-											String[] splitStep = paramSplit[1].split(StringPool.COMMA);
-											for (String strStep : splitStep) {
-												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
-												if (step != null) {
-													//
-													params.put(DossierTerm.STATUS, step.getDossierStatus());
-													params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-													
-													params = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), params);
-													//
-													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-															null, serviceContext);
-//													_log.info("count: "+count);
-													if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
-														JSONObject statistic = JSONFactoryUtil.createJSONObject();
-														statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
-														statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
-														statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
-														statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
-														statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
-														statistic.put(StepConfigTerm.TOTAL_COUNT, count);
-														statistics.put(statistic);
+				if (isAdmin) {
+					List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+					if (menuList != null && menuList.size() > 0) {
+						for (MenuConfig menuConfig : menuList) {
+							
+							String queryParams = menuConfig.getQueryParams();
+							LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
+							if (Validator.isNotNull(queryParams)) {
+								int length = queryParams.lastIndexOf(StringPool.QUESTION);
+								if (length > 0) {
+									String subQuery = queryParams.substring(length + 1);
+									String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split(StringPool.AMPERSAND) : null;
+									for (String param : elementParams) {
+										if (Validator.isNotNull(param) && param.contains(STEP_EQUAL)) {
+											String[] paramSplit = param.split(StringPool.EQUAL);
+											if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
+												long totalGroup = 0;
+												String[] splitStep = paramSplit[1].split(StringPool.COMMA);
+												for (String strStep : splitStep) {
+													StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
+													if (step != null) {
+														//
+														paramMenuDetail.putAll(params);
+														paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+														paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+														
+														paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+														//
+														long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+																null, serviceContext);
+//														_log.info("count: "+count);
+														if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
+															JSONObject statistic = JSONFactoryUtil.createJSONObject();
+															statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+															statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+															statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+															statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+															statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+															statistic.put(StepConfigTerm.TOTAL_COUNT, count);
+															statistics.put(statistic);
+														}
+														
+														total += count;
+														totalGroup += count;
 													}
+												}
+												//
+												JSONObject statistic = JSONFactoryUtil.createJSONObject();
+												statistic.put(StepConfigTerm.STEP_CODE, paramSplit[1]);
+												statistic.put(StepConfigTerm.STEP_NAME, "");
+												statistic.put(StepConfigTerm.DOSSIER_STATUS, "");
+												statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, "");
+												statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+												statistic.put(StepConfigTerm.TOTAL_COUNT, totalGroup);
+												statistics.put(statistic);
+												_log.info("=============statistic222222222===========" + statistic);
+											} else {
+												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
+												//
+												if (step != null) {
+													paramMenuDetail.putAll(params);
+													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
 													
+													paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+													//
+													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+															null, serviceContext);
+													JSONObject statistic = JSONFactoryUtil.createJSONObject();
+													statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+													statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+													statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+													statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+													statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+													statistic.put(StepConfigTerm.TOTAL_COUNT, count);
 													total += count;
-													totalGroup += count;
+													statistics.put(statistic);
 												}
 											}
-											//
-											JSONObject statistic = JSONFactoryUtil.createJSONObject();
-											statistic.put(StepConfigTerm.STEP_CODE, paramSplit[1]);
-											statistic.put(StepConfigTerm.STEP_NAME, StringPool.BLANK);
-											statistic.put(StepConfigTerm.DOSSIER_STATUS, StringPool.BLANK);
-											statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, StringPool.BLANK);
-											statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
-											statistic.put(StepConfigTerm.TOTAL_COUNT, totalGroup);
-											statistics.put(statistic);
-										} else {
-											StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
-											//
-											if (step != null) {
-												params.put(DossierTerm.STATUS, step.getDossierStatus());
-												params.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
-												
-												params = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), params);
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {
+					List<MenuConfig> menuList = MenuConfigLocalServiceUtil.getByMenus(menuConfigArr);
+					if (menuList != null && menuList.size() > 0) {
+						for (MenuConfig menuConfig : menuList) {
+							String queryParams = menuConfig.getQueryParams();
+							LinkedHashMap<String, Object> paramMenuDetail = new LinkedHashMap<String, Object>();
+							if (Validator.isNotNull(queryParams)) {
+								int length = queryParams.lastIndexOf(StringPool.QUESTION);
+								if (length > 0) {
+									String subQuery = queryParams.substring(length + 1);
+									String[] elementParams = Validator.isNotNull(subQuery) ? subQuery.split(StringPool.AMPERSAND) : null;
+									for (String param : elementParams) {
+										if (Validator.isNotNull(param) && param.contains(STEP_EQUAL)) {
+											String[] paramSplit = param.split(StringPool.EQUAL);
+											if (Validator.isNotNull(paramSplit[1]) && paramSplit[1].contains(StringPool.COMMA)) {
+												long totalGroup = 0;
+												String[] splitStep = paramSplit[1].split(StringPool.COMMA);
+												for (String strStep : splitStep) {
+													StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, strStep);
+													if (step != null) {
+														//
+														paramMenuDetail.putAll(params);
+														paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+														paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+														
+														paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+														//
+														long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+																null, serviceContext);
+//														_log.info("count: "+count);
+														if (Validator.isNotNull(step.getMenuGroup()) && step.getMenuGroup().contains(menuConfig.getMenuGroup())) {
+															JSONObject statistic = JSONFactoryUtil.createJSONObject();
+															statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+															statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+															statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+															statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+															statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+															statistic.put(StepConfigTerm.TOTAL_COUNT, count);
+															statistics.put(statistic);
+															
+														}
+														
+														total += count;
+														totalGroup += count;
+													}
+												}
 												//
-												long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, params,
-														null, serviceContext);
-//												_log.info("count: "+count);
 												JSONObject statistic = JSONFactoryUtil.createJSONObject();
-												statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
-												statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
-												statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
-												statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+												statistic.put(StepConfigTerm.STEP_CODE, paramSplit[1]);
+												statistic.put(StepConfigTerm.STEP_NAME, StringPool.BLANK);
+												statistic.put(StepConfigTerm.DOSSIER_STATUS, StringPool.BLANK);
+												statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, StringPool.BLANK);
 												statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
-												statistic.put(StepConfigTerm.TOTAL_COUNT, count);
-												total += count;
+												statistic.put(StepConfigTerm.TOTAL_COUNT, totalGroup);
 												statistics.put(statistic);
+											} else {
+												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
+												//_log.info("paramSplit[1]: "+paramSplit[1]);
+												//
+												if (step != null) {
+													paramMenuDetail.putAll(params);
+													paramMenuDetail.put(DossierTerm.STATUS, step.getDossierStatus());
+													paramMenuDetail.put(DossierTerm.SUBSTATUS, step.getDossierSubStatus());
+													
+													//_log.info("paramMenuDetail1: "+paramMenuDetail);
+													paramMenuDetail = processAddQueryParams(subQuery, user.getUserId(), step.getStepCode(), paramMenuDetail);
+													//
+													//_log.info("paramMenuDetail12: "+paramMenuDetail);
+													long count = actions.countTodoTest(user.getUserId(), company.getCompanyId(), groupId, paramMenuDetail,
+															null, serviceContext);
+													//_log.info("count: "+count);
+													JSONObject statistic = JSONFactoryUtil.createJSONObject();
+													statistic.put(StepConfigTerm.STEP_CODE, step.getStepCode());
+													statistic.put(StepConfigTerm.STEP_NAME, step.getStepName());
+													statistic.put(StepConfigTerm.DOSSIER_STATUS, step.getDossierStatus());
+													statistic.put(StepConfigTerm.DOSSIER_SUB_STATUS, step.getDossierSubStatus());
+													statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
+													statistic.put(StepConfigTerm.TOTAL_COUNT, count);
+													total += count;
+													statistics.put(statistic);
+												}
 											}
 										}
 									}

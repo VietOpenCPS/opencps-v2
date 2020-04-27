@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -104,8 +107,7 @@ public class NewsBroadManagementImpl implements NewsBroadManagement{
 			NewsBoardActions actions = new NewsBoardActionsImpl();
 
 			String newsTitle = Validator.isNotNull(input.getNewsTitle()) ? input.getNewsTitle() : StringPool.BLANK;
-			String newsContent = Validator.isNotNull(input.getNewsContent()) ? input.getNewsContent()
-					: StringPool.BLANK;
+			String newsContent = Validator.isNotNull(input.getNewsContent()) ? input.getNewsContent() : StringPool.BLANK;
 			int newsStatus = input.getNewsStatus();
 
 

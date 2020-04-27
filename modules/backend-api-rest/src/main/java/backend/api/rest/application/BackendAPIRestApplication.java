@@ -4,6 +4,20 @@ package backend.api.rest.application;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -36,7 +50,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.cxf.transport.http.Headers;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.impl.AdminConfigManagementImpl;
 import org.opencps.api.controller.impl.ApplicantDataManagementImpl;
@@ -73,6 +86,7 @@ import org.opencps.api.controller.impl.JobposManagementImpl;
 import org.opencps.api.controller.impl.MailTestManagementImpl;
 import org.opencps.api.controller.impl.MenuConfigManagementImpl;
 import org.opencps.api.controller.impl.MenuRoleManagementImpl;
+import org.opencps.api.controller.impl.NewsBroadManagementImpl;
 import org.opencps.api.controller.impl.NotarizationManagementImpl;
 import org.opencps.api.controller.impl.NotificationManagementImpl;
 import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
@@ -117,28 +131,12 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
-import org.opencps.dossiermgt.action.impl.NewsBoardActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -155,12 +153,11 @@ import uk.org.okapibarcode.output.Java2DRenderer;
 }, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
-	private static Log _log =
-		LogFactoryUtil.getLog(BackendAPIRestApplication.class);
+	private static final Log _log = LogFactoryUtil.getLog(BackendAPIRestApplication.class);
 
 	public Set<Object> getSingletons() {
 
-		Set<Object> singletons = new HashSet<Object>();
+		Set<Object> singletons = new HashSet<>();
 
 		// add REST endpoints (resources)
 		singletons.add(new ApplicantManagementImpl());
@@ -241,7 +238,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ReportRoleManagementImpl());
 		
 		singletons.add(new OAIManagementImpl());
-		singletons.add(new NewsBoardActionsImpl());
+		singletons.add(new NewsBroadManagementImpl());
 
 		//Applicant Data
 		singletons.add(new ApplicantDataManagementImpl());
