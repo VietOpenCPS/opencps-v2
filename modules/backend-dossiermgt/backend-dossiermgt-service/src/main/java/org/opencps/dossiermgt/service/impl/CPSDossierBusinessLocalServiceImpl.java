@@ -213,6 +213,7 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
@@ -3029,10 +3030,14 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
 			for (DossierFile df : lstFiles) {
+				//GS. Ta Tuan Anh
 				if (!df.getRemoved()) {
 					df.setOriginal(true);
 				}
 				dossierFileLocalService.updateDossierFile(df);
+				
+				//GS. DuanTV ApplicantData
+				
 			}
 		}
 		

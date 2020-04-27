@@ -18,6 +18,9 @@ create index IX_EE04E01F on opencps_applicant (mappingUserId);
 create index IX_58078059 on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_35F6491B on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_14A28584 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_49569D06 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_370E9375 on opencps_employee (email[$COLUMN_LENGTH:512$]);
 create index IX_A8503959 on opencps_employee (groupId, email[$COLUMN_LENGTH:512$]);
 create index IX_FFD92AB0 on opencps_employee (groupId, employeeId);

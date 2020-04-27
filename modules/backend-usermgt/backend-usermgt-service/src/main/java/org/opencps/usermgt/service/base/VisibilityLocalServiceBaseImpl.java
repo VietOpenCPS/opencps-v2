@@ -52,6 +52,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.usermgt.model.Visibility;
 import org.opencps.usermgt.service.VisibilityLocalService;
 import org.opencps.usermgt.service.persistence.AnswerPersistence;
+import org.opencps.usermgt.service.persistence.ApplicantDataPersistence;
 import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.persistence.EmployeeJobPosPersistence;
 import org.opencps.usermgt.service.persistence.EmployeePersistence;
@@ -523,6 +524,44 @@ public abstract class VisibilityLocalServiceBaseImpl
 	public void setApplicantPersistence(
 		ApplicantPersistence applicantPersistence) {
 		this.applicantPersistence = applicantPersistence;
+	}
+
+	/**
+	 * Returns the applicant data local service.
+	 *
+	 * @return the applicant data local service
+	 */
+	public org.opencps.usermgt.service.ApplicantDataLocalService getApplicantDataLocalService() {
+		return applicantDataLocalService;
+	}
+
+	/**
+	 * Sets the applicant data local service.
+	 *
+	 * @param applicantDataLocalService the applicant data local service
+	 */
+	public void setApplicantDataLocalService(
+		org.opencps.usermgt.service.ApplicantDataLocalService applicantDataLocalService) {
+		this.applicantDataLocalService = applicantDataLocalService;
+	}
+
+	/**
+	 * Returns the applicant data persistence.
+	 *
+	 * @return the applicant data persistence
+	 */
+	public ApplicantDataPersistence getApplicantDataPersistence() {
+		return applicantDataPersistence;
+	}
+
+	/**
+	 * Sets the applicant data persistence.
+	 *
+	 * @param applicantDataPersistence the applicant data persistence
+	 */
+	public void setApplicantDataPersistence(
+		ApplicantDataPersistence applicantDataPersistence) {
+		this.applicantDataPersistence = applicantDataPersistence;
 	}
 
 	/**
@@ -1359,6 +1398,10 @@ public abstract class VisibilityLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.ApplicantLocalService applicantLocalService;
 	@BeanReference(type = ApplicantPersistence.class)
 	protected ApplicantPersistence applicantPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.ApplicantDataLocalService.class)
+	protected org.opencps.usermgt.service.ApplicantDataLocalService applicantDataLocalService;
+	@BeanReference(type = ApplicantDataPersistence.class)
+	protected ApplicantDataPersistence applicantDataPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.EmployeeLocalService.class)
 	protected org.opencps.usermgt.service.EmployeeLocalService employeeLocalService;
 	@BeanReference(type = EmployeePersistence.class)

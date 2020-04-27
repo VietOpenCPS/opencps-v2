@@ -74,4 +74,43 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		
 		return trackClient;
 	}
+	
+	public TrackClient updateTrackClient(long trackClientId, String sessionId, String url, int year, int month, int day, Date visitDate, Date leaveDate, String clientIP,
+			String macAddress, String region, String nation, String latitude, String longitude, long timeOnPage, boolean desktop, boolean mobile, 
+			boolean tablet, long userId, String userName) {
+		TrackClient trackClient = null;
+		if (trackClientId == 0) {
+			trackClientId = counterLocalService.increment(TrackClient.class.getName());
+			trackClient = trackClientPersistence.create(trackClientId);
+		}
+		else {
+			trackClient = trackClientPersistence.fetchByPrimaryKey(trackClientId);
+		}
+		
+		if (trackClient != null) {
+			trackClient.setSessionId(sessionId);
+			trackClient.setUrl(url);
+			trackClient.setYear(year);
+			trackClient.setMonth(month);
+			trackClient.setDay(day);
+			trackClient.setVisitDate(visitDate);
+			trackClient.setLeaveDate(leaveDate);
+			trackClient.setClientIP(clientIP);
+			trackClient.setMacAddress(macAddress);
+			trackClient.setRegion(region);
+			trackClient.setNation(nation);
+			trackClient.setLatitude(latitude);
+			trackClient.setLongitude(longitude);
+			trackClient.setTimeOnPage(timeOnPage);
+			trackClient.setDesktop(desktop);
+			trackClient.setMobile(mobile);
+			trackClient.setTablet(tablet);
+			trackClient.setUserId(userId);
+			trackClient.setUserName(userName);
+			
+			trackClient = trackClientPersistence.update(trackClient);
+		}
+		
+		return trackClient;
+	}	
 }

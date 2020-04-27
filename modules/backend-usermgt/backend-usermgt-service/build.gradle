@@ -29,6 +29,7 @@ dependencies {
 	compileInclude name : "simplecaptcha-1.2.1", transitive:false
 	compile group: 'com.maxmind.geoip2', name: 'geoip2', version: '2.12.0'
 	compile group: 'com.maxmind.db', name: 'maxmind-db', version: '1.2.2'
+	compile group: 'org.springframework.mobile', name: 'spring-mobile-device', version: '1.1.5.RELEASE'
 }
 
 repositories {

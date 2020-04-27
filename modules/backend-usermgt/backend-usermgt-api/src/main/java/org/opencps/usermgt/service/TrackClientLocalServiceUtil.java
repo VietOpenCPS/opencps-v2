@@ -254,6 +254,19 @@ public class TrackClientLocalServiceUtil {
 			nation, latitude, longitude, timeOnPage, desktop, mobile, tablet);
 	}
 
+	public static org.opencps.usermgt.model.TrackClient updateTrackClient(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, String nation,
+		String latitude, String longitude, long timeOnPage, boolean desktop,
+		boolean mobile, boolean tablet, long userId, String userName) {
+		return getService()
+				   .updateTrackClient(trackClientId, sessionId, url, year,
+			month, day, visitDate, leaveDate, clientIP, macAddress, region,
+			nation, latitude, longitude, timeOnPage, desktop, mobile, tablet,
+			userId, userName);
+	}
+
 	/**
 	* Updates the track client in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
