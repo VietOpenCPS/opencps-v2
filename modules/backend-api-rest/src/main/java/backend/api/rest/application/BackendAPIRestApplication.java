@@ -495,30 +495,3 @@ public class BackendAPIRestApplication extends Application {
 	private ServiceContextProvider _serviceContextProvider;
 
 }
-interface StaticsticManagement2
-{
-	@GET
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
-	@ApiOperation(value = "Get a detail applicant", response = ApplicantModel.class)
-	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a applicant", response = ApplicantModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-
-	public Response getApplicantDetail(@Context HttpServletRequest request, @Context HttpHeaders header,
-		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext, @PathParam("id") long id);
-}
-
-class StaticsticManagement2Impl implements StaticsticManagement2
-{
-
-	@Override
-	public Response getApplicantDetail(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,
-		User user,ServiceContext serviceContext,long id)
-	{
-		return null;
-	}
-}
