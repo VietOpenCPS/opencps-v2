@@ -220,6 +220,12 @@ public interface TrackClientLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getTrackClientsCount();
 
+	public TrackClient updateTrackClient(long trackClientId, String sessionId,
+		String url, int year, int month, int day, Date visitDate,
+		Date leaveDate, String clientIP, String macAddress, String region,
+		String nation, String latitude, String longitude, long timeOnPage,
+		boolean desktop, boolean mobile, boolean tablet);
+
 	/**
 	* Updates the track client in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -228,10 +234,4 @@ public interface TrackClientLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public TrackClient updateTrackClient(TrackClient trackClient);
-
-	public TrackClient updateUserTrackPath(long trackClientId,
-		String sessionId, String url, int year, int month, int day,
-		Date visitDate, Date leaveDate, String clientIP, String macAddress,
-		String region, long timeOnPage, boolean desktop, boolean mobile,
-		boolean tablet);
 }

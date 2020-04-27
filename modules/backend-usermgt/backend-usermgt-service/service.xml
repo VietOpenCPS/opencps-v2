@@ -837,6 +837,9 @@
 		<column name="clientIP" type="String" />
 		<column name="macAddress" type="String" />
 		<column name="region" type="String" />
+		<column name="nation" type="String" />
+		<column name="latitude" type="String" />
+		<column name="longitude" type="String" />
 		<column name="timeOnPage" type="long" />
 		<column name="desktop" type="boolean" />
 		<column name="mobile" type="boolean" />

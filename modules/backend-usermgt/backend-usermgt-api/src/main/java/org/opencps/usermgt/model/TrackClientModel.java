@@ -265,6 +265,51 @@ public interface TrackClientModel extends BaseModel<TrackClient> {
 	public void setRegion(String region);
 
 	/**
+	 * Returns the nation of this track client.
+	 *
+	 * @return the nation of this track client
+	 */
+	@AutoEscape
+	public String getNation();
+
+	/**
+	 * Sets the nation of this track client.
+	 *
+	 * @param nation the nation of this track client
+	 */
+	public void setNation(String nation);
+
+	/**
+	 * Returns the latitude of this track client.
+	 *
+	 * @return the latitude of this track client
+	 */
+	@AutoEscape
+	public String getLatitude();
+
+	/**
+	 * Sets the latitude of this track client.
+	 *
+	 * @param latitude the latitude of this track client
+	 */
+	public void setLatitude(String latitude);
+
+	/**
+	 * Returns the longitude of this track client.
+	 *
+	 * @return the longitude of this track client
+	 */
+	@AutoEscape
+	public String getLongitude();
+
+	/**
+	 * Sets the longitude of this track client.
+	 *
+	 * @param longitude the longitude of this track client
+	 */
+	public void setLongitude(String longitude);
+
+	/**
 	 * Returns the time on page of this track client.
 	 *
 	 * @return the time on page of this track client

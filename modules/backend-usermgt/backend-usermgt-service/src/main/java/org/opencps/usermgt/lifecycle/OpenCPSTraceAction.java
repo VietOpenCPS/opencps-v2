@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import org.opencps.usermgt.action.util.HttpUtil;
 import org.opencps.usermgt.action.util.UserMgtConfigUtil;
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.UserLogin;
+import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.UserTrackPathLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -38,6 +40,8 @@ public class OpenCPSTraceAction extends Action {
 		String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
         String clientIP = HttpUtil.getPublicIP(request);
         String cityName = StringPool.BLANK;
+        String latitude = StringPool.BLANK;
+        String longitude = StringPool.BLANK;
         
 		try {
 //        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
@@ -49,9 +53,9 @@ public class OpenCPSTraceAction extends Action {
 	        CityResponse cityResponse = dbReader.city(ipAddress);
 	         
 	        cityName = cityResponse.getCity().getName();
-	        String latitude = 
+	        latitude = 
 	        		cityResponse.getLocation().getLatitude().toString();
-	        String longitude = 
+	        longitude = 
 	        		cityResponse.getLocation().getLongitude().toString();
 	        
 		} catch (IOException e) {
@@ -61,9 +65,14 @@ public class OpenCPSTraceAction extends Action {
 			e.printStackTrace();
 			_log.debug(e);
 		}
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        Date now = new Date();
         
 		if (UserMgtConfigUtil.isTrackClientEnable()) {
-			
+			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, true, false, false);
 		}
 		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {

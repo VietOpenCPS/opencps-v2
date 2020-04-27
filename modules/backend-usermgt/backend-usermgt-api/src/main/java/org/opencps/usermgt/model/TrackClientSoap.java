@@ -47,6 +47,9 @@ public class TrackClientSoap implements Serializable {
 		soapModel.setClientIP(model.getClientIP());
 		soapModel.setMacAddress(model.getMacAddress());
 		soapModel.setRegion(model.getRegion());
+		soapModel.setNation(model.getNation());
+		soapModel.setLatitude(model.getLatitude());
+		soapModel.setLongitude(model.getLongitude());
 		soapModel.setTimeOnPage(model.getTimeOnPage());
 		soapModel.setDesktop(model.isDesktop());
 		soapModel.setMobile(model.isMobile());
@@ -215,6 +218,30 @@ public class TrackClientSoap implements Serializable {
 		_region = region;
 	}
 
+	public String getNation() {
+		return _nation;
+	}
+
+	public void setNation(String nation) {
+		_nation = nation;
+	}
+
+	public String getLatitude() {
+		return _latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		_latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return _longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		_longitude = longitude;
+	}
+
 	public long getTimeOnPage() {
 		return _timeOnPage;
 	}
@@ -273,6 +300,9 @@ public class TrackClientSoap implements Serializable {
 	private String _clientIP;
 	private String _macAddress;
 	private String _region;
+	private String _nation;
+	private String _latitude;
+	private String _longitude;
 	private long _timeOnPage;
 	private boolean _desktop;
 	private boolean _mobile;

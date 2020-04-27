@@ -39,8 +39,8 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.TrackClientLocalServiceUtil} to access the track client local service.
 	 */
-	public TrackClient updateUserTrackPath(long trackClientId, String sessionId, String url, int year, int month, int day, Date visitDate, Date leaveDate, String clientIP,
-			String macAddress, String region, long timeOnPage, boolean desktop, boolean mobile, boolean tablet) {
+	public TrackClient updateTrackClient(long trackClientId, String sessionId, String url, int year, int month, int day, Date visitDate, Date leaveDate, String clientIP,
+			String macAddress, String region, String nation, String latitude, String longitude, long timeOnPage, boolean desktop, boolean mobile, boolean tablet) {
 		TrackClient trackClient = null;
 		if (trackClientId == 0) {
 			trackClientId = counterLocalService.increment(TrackClient.class.getName());
@@ -61,6 +61,9 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 			trackClient.setClientIP(clientIP);
 			trackClient.setMacAddress(macAddress);
 			trackClient.setRegion(region);
+			trackClient.setNation(nation);
+			trackClient.setLatitude(latitude);
+			trackClient.setLongitude(longitude);
 			trackClient.setTimeOnPage(timeOnPage);
 			trackClient.setDesktop(desktop);
 			trackClient.setMobile(mobile);

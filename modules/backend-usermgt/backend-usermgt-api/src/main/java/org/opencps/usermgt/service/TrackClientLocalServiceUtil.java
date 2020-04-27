@@ -242,6 +242,18 @@ public class TrackClientLocalServiceUtil {
 		return getService().getTrackClientsCount();
 	}
 
+	public static org.opencps.usermgt.model.TrackClient updateTrackClient(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, String nation,
+		String latitude, String longitude, long timeOnPage, boolean desktop,
+		boolean mobile, boolean tablet) {
+		return getService()
+				   .updateTrackClient(trackClientId, sessionId, url, year,
+			month, day, visitDate, leaveDate, clientIP, macAddress, region,
+			nation, latitude, longitude, timeOnPage, desktop, mobile, tablet);
+	}
+
 	/**
 	* Updates the track client in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -251,17 +263,6 @@ public class TrackClientLocalServiceUtil {
 	public static org.opencps.usermgt.model.TrackClient updateTrackClient(
 		org.opencps.usermgt.model.TrackClient trackClient) {
 		return getService().updateTrackClient(trackClient);
-	}
-
-	public static org.opencps.usermgt.model.TrackClient updateUserTrackPath(
-		long trackClientId, String sessionId, String url, int year, int month,
-		int day, java.util.Date visitDate, java.util.Date leaveDate,
-		String clientIP, String macAddress, String region, long timeOnPage,
-		boolean desktop, boolean mobile, boolean tablet) {
-		return getService()
-				   .updateUserTrackPath(trackClientId, sessionId, url, year,
-			month, day, visitDate, leaveDate, clientIP, macAddress, region,
-			timeOnPage, desktop, mobile, tablet);
 	}
 
 	public static TrackClientLocalService getService() {

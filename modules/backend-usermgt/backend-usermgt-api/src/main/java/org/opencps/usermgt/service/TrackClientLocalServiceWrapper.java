@@ -252,6 +252,19 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 		return _trackClientLocalService.getTrackClientsCount();
 	}
 
+	@Override
+	public org.opencps.usermgt.model.TrackClient updateTrackClient(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, String nation,
+		String latitude, String longitude, long timeOnPage, boolean desktop,
+		boolean mobile, boolean tablet) {
+		return _trackClientLocalService.updateTrackClient(trackClientId,
+			sessionId, url, year, month, day, visitDate, leaveDate, clientIP,
+			macAddress, region, nation, latitude, longitude, timeOnPage,
+			desktop, mobile, tablet);
+	}
+
 	/**
 	* Updates the track client in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -262,17 +275,6 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	public org.opencps.usermgt.model.TrackClient updateTrackClient(
 		org.opencps.usermgt.model.TrackClient trackClient) {
 		return _trackClientLocalService.updateTrackClient(trackClient);
-	}
-
-	@Override
-	public org.opencps.usermgt.model.TrackClient updateUserTrackPath(
-		long trackClientId, String sessionId, String url, int year, int month,
-		int day, java.util.Date visitDate, java.util.Date leaveDate,
-		String clientIP, String macAddress, String region, long timeOnPage,
-		boolean desktop, boolean mobile, boolean tablet) {
-		return _trackClientLocalService.updateUserTrackPath(trackClientId,
-			sessionId, url, year, month, day, visitDate, leaveDate, clientIP,
-			macAddress, region, timeOnPage, desktop, mobile, tablet);
 	}
 
 	@Override

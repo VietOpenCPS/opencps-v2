@@ -72,6 +72,9 @@ public class TrackClientWrapper implements TrackClient,
 		attributes.put("clientIP", getClientIP());
 		attributes.put("macAddress", getMacAddress());
 		attributes.put("region", getRegion());
+		attributes.put("nation", getNation());
+		attributes.put("latitude", getLatitude());
+		attributes.put("longitude", getLongitude());
 		attributes.put("timeOnPage", getTimeOnPage());
 		attributes.put("desktop", isDesktop());
 		attributes.put("mobile", isMobile());
@@ -166,6 +169,24 @@ public class TrackClientWrapper implements TrackClient,
 			setRegion(region);
 		}
 
+		String nation = (String)attributes.get("nation");
+
+		if (nation != null) {
+			setNation(nation);
+		}
+
+		String latitude = (String)attributes.get("latitude");
+
+		if (latitude != null) {
+			setLatitude(latitude);
+		}
+
+		String longitude = (String)attributes.get("longitude");
+
+		if (longitude != null) {
+			setLongitude(longitude);
+		}
+
 		Long timeOnPage = (Long)attributes.get("timeOnPage");
 
 		if (timeOnPage != null) {
@@ -247,6 +268,16 @@ public class TrackClientWrapper implements TrackClient,
 	}
 
 	/**
+	* Returns the latitude of this track client.
+	*
+	* @return the latitude of this track client
+	*/
+	@Override
+	public String getLatitude() {
+		return _trackClient.getLatitude();
+	}
+
+	/**
 	* Returns the leave date of this track client.
 	*
 	* @return the leave date of this track client
@@ -254,6 +285,16 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public Date getLeaveDate() {
 		return _trackClient.getLeaveDate();
+	}
+
+	/**
+	* Returns the longitude of this track client.
+	*
+	* @return the longitude of this track client
+	*/
+	@Override
+	public String getLongitude() {
+		return _trackClient.getLongitude();
 	}
 
 	/**
@@ -294,6 +335,16 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public int getMonth() {
 		return _trackClient.getMonth();
+	}
+
+	/**
+	* Returns the nation of this track client.
+	*
+	* @return the nation of this track client
+	*/
+	@Override
+	public String getNation() {
+		return _trackClient.getNation();
 	}
 
 	/**
@@ -518,6 +569,16 @@ public class TrackClientWrapper implements TrackClient,
 	}
 
 	/**
+	* Sets the latitude of this track client.
+	*
+	* @param latitude the latitude of this track client
+	*/
+	@Override
+	public void setLatitude(String latitude) {
+		_trackClient.setLatitude(latitude);
+	}
+
+	/**
 	* Sets the leave date of this track client.
 	*
 	* @param leaveDate the leave date of this track client
@@ -525,6 +586,16 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public void setLeaveDate(Date leaveDate) {
 		_trackClient.setLeaveDate(leaveDate);
+	}
+
+	/**
+	* Sets the longitude of this track client.
+	*
+	* @param longitude the longitude of this track client
+	*/
+	@Override
+	public void setLongitude(String longitude) {
+		_trackClient.setLongitude(longitude);
 	}
 
 	/**
@@ -565,6 +636,16 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public void setMonth(int month) {
 		_trackClient.setMonth(month);
+	}
+
+	/**
+	* Sets the nation of this track client.
+	*
+	* @param nation the nation of this track client
+	*/
+	@Override
+	public void setNation(String nation) {
+		_trackClient.setNation(nation);
 	}
 
 	@Override

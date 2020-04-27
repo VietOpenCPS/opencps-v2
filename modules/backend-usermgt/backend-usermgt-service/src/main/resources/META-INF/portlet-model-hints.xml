@@ -380,16 +380,35 @@
 		<field name="trackClientId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="sessionId" type="String" />
-		<field name="url" type="String" />
+		<field name="sessionId" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="url" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />
 		<field name="day" type="int" />
 		<field name="visitDate" type="Date" />
 		<field name="leaveDate" type="Date" />
-		<field name="clientIP" type="String" />
-		<field name="macAddress" type="String" />
-		<field name="region" type="String" />
+		<field name="clientIP" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="macAddress" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="region" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="nation" type="String">
+			<hint name="max-length">512</hint>
+		</field>
+		<field name="latitude" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="longitude" type="String">
+			<hint name="max-length">128</hint>
+		</field>
 		<field name="timeOnPage" type="long" />
 		<field name="desktop" type="boolean" />
 		<field name="mobile" type="boolean" />
@@ -400,11 +419,15 @@
 		<field name="trackClientStatisticId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="url" type="String" />
+		<field name="url" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />
 		<field name="day" type="int" />
-		<field name="region" type="String" />
+		<field name="region" type="String">
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="desktop" type="boolean" />
 		<field name="mobile" type="boolean" />
 		<field name="tablet" type="boolean" />

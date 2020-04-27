@@ -77,6 +77,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 			{ "clientIP", Types.VARCHAR },
 			{ "macAddress", Types.VARCHAR },
 			{ "region", Types.VARCHAR },
+			{ "nation", Types.VARCHAR },
+			{ "latitude", Types.VARCHAR },
+			{ "longitude", Types.VARCHAR },
 			{ "timeOnPage", Types.BIGINT },
 			{ "desktop", Types.BOOLEAN },
 			{ "mobile", Types.BOOLEAN },
@@ -99,13 +102,16 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		TABLE_COLUMNS_MAP.put("clientIP", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("macAddress", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("region", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("nation", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("latitude", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("longitude", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("timeOnPage", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("desktop", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("mobile", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("tablet", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(75) null,url VARCHAR(75) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(75) null,macAddress VARCHAR(75) null,region VARCHAR(75) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(512) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_track_client";
 	public static final String ORDER_BY_JPQL = " ORDER BY trackClient.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client.createDate ASC";
@@ -177,6 +183,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		attributes.put("clientIP", getClientIP());
 		attributes.put("macAddress", getMacAddress());
 		attributes.put("region", getRegion());
+		attributes.put("nation", getNation());
+		attributes.put("latitude", getLatitude());
+		attributes.put("longitude", getLongitude());
 		attributes.put("timeOnPage", getTimeOnPage());
 		attributes.put("desktop", isDesktop());
 		attributes.put("mobile", isMobile());
@@ -272,6 +281,24 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 		if (region != null) {
 			setRegion(region);
+		}
+
+		String nation = (String)attributes.get("nation");
+
+		if (nation != null) {
+			setNation(nation);
+		}
+
+		String latitude = (String)attributes.get("latitude");
+
+		if (latitude != null) {
+			setLatitude(latitude);
+		}
+
+		String longitude = (String)attributes.get("longitude");
+
+		if (longitude != null) {
+			setLongitude(longitude);
 		}
 
 		Long timeOnPage = (Long)attributes.get("timeOnPage");
@@ -486,6 +513,51 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	}
 
 	@Override
+	public String getNation() {
+		if (_nation == null) {
+			return "";
+		}
+		else {
+			return _nation;
+		}
+	}
+
+	@Override
+	public void setNation(String nation) {
+		_nation = nation;
+	}
+
+	@Override
+	public String getLatitude() {
+		if (_latitude == null) {
+			return "";
+		}
+		else {
+			return _latitude;
+		}
+	}
+
+	@Override
+	public void setLatitude(String latitude) {
+		_latitude = latitude;
+	}
+
+	@Override
+	public String getLongitude() {
+		if (_longitude == null) {
+			return "";
+		}
+		else {
+			return _longitude;
+		}
+	}
+
+	@Override
+	public void setLongitude(String longitude) {
+		_longitude = longitude;
+	}
+
+	@Override
 	public long getTimeOnPage() {
 		return _timeOnPage;
 	}
@@ -585,6 +657,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		trackClientImpl.setClientIP(getClientIP());
 		trackClientImpl.setMacAddress(getMacAddress());
 		trackClientImpl.setRegion(getRegion());
+		trackClientImpl.setNation(getNation());
+		trackClientImpl.setLatitude(getLatitude());
+		trackClientImpl.setLongitude(getLongitude());
 		trackClientImpl.setTimeOnPage(getTimeOnPage());
 		trackClientImpl.setDesktop(isDesktop());
 		trackClientImpl.setMobile(isMobile());
@@ -752,6 +827,30 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 			trackClientCacheModel.region = null;
 		}
 
+		trackClientCacheModel.nation = getNation();
+
+		String nation = trackClientCacheModel.nation;
+
+		if ((nation != null) && (nation.length() == 0)) {
+			trackClientCacheModel.nation = null;
+		}
+
+		trackClientCacheModel.latitude = getLatitude();
+
+		String latitude = trackClientCacheModel.latitude;
+
+		if ((latitude != null) && (latitude.length() == 0)) {
+			trackClientCacheModel.latitude = null;
+		}
+
+		trackClientCacheModel.longitude = getLongitude();
+
+		String longitude = trackClientCacheModel.longitude;
+
+		if ((longitude != null) && (longitude.length() == 0)) {
+			trackClientCacheModel.longitude = null;
+		}
+
 		trackClientCacheModel.timeOnPage = getTimeOnPage();
 
 		trackClientCacheModel.desktop = isDesktop();
@@ -765,7 +864,7 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -795,6 +894,12 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		sb.append(getMacAddress());
 		sb.append(", region=");
 		sb.append(getRegion());
+		sb.append(", nation=");
+		sb.append(getNation());
+		sb.append(", latitude=");
+		sb.append(getLatitude());
+		sb.append(", longitude=");
+		sb.append(getLongitude());
 		sb.append(", timeOnPage=");
 		sb.append(getTimeOnPage());
 		sb.append(", desktop=");
@@ -810,7 +915,7 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(67);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.TrackClient");
@@ -873,6 +978,18 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		sb.append(getRegion());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>nation</column-name><column-value><![CDATA[");
+		sb.append(getNation());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>latitude</column-name><column-value><![CDATA[");
+		sb.append(getLatitude());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>longitude</column-name><column-value><![CDATA[");
+		sb.append(getLongitude());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>timeOnPage</column-name><column-value><![CDATA[");
 		sb.append(getTimeOnPage());
 		sb.append("]]></column-value></column>");
@@ -914,6 +1031,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	private String _clientIP;
 	private String _macAddress;
 	private String _region;
+	private String _nation;
+	private String _latitude;
+	private String _longitude;
 	private long _timeOnPage;
 	private boolean _desktop;
 	private boolean _mobile;

@@ -65,7 +65,7 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -95,6 +95,12 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		sb.append(macAddress);
 		sb.append(", region=");
 		sb.append(region);
+		sb.append(", nation=");
+		sb.append(nation);
+		sb.append(", latitude=");
+		sb.append(latitude);
+		sb.append(", longitude=");
+		sb.append(longitude);
 		sb.append(", timeOnPage=");
 		sb.append(timeOnPage);
 		sb.append(", desktop=");
@@ -188,6 +194,27 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 			trackClientImpl.setRegion(region);
 		}
 
+		if (nation == null) {
+			trackClientImpl.setNation("");
+		}
+		else {
+			trackClientImpl.setNation(nation);
+		}
+
+		if (latitude == null) {
+			trackClientImpl.setLatitude("");
+		}
+		else {
+			trackClientImpl.setLatitude(latitude);
+		}
+
+		if (longitude == null) {
+			trackClientImpl.setLongitude("");
+		}
+		else {
+			trackClientImpl.setLongitude(longitude);
+		}
+
 		trackClientImpl.setTimeOnPage(timeOnPage);
 		trackClientImpl.setDesktop(desktop);
 		trackClientImpl.setMobile(mobile);
@@ -218,6 +245,9 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		clientIP = objectInput.readUTF();
 		macAddress = objectInput.readUTF();
 		region = objectInput.readUTF();
+		nation = objectInput.readUTF();
+		latitude = objectInput.readUTF();
+		longitude = objectInput.readUTF();
 
 		timeOnPage = objectInput.readLong();
 
@@ -285,6 +315,27 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 			objectOutput.writeUTF(region);
 		}
 
+		if (nation == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(nation);
+		}
+
+		if (latitude == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(latitude);
+		}
+
+		if (longitude == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(longitude);
+		}
+
 		objectOutput.writeLong(timeOnPage);
 
 		objectOutput.writeBoolean(desktop);
@@ -308,6 +359,9 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 	public String clientIP;
 	public String macAddress;
 	public String region;
+	public String nation;
+	public String latitude;
+	public String longitude;
 	public long timeOnPage;
 	public boolean desktop;
 	public boolean mobile;

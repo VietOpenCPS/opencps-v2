@@ -288,6 +288,9 @@
 		<property name="clientIP" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="macAddress" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="region" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="nation" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="latitude" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="longitude" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="timeOnPage" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="desktop" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="mobile" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
