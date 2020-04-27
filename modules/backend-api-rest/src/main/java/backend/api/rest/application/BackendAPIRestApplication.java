@@ -116,6 +116,7 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
+import org.opencps.dossiermgt.action.impl.NewsBoardActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -239,7 +240,8 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ReportRoleManagementImpl());
 		
 		singletons.add(new OAIManagementImpl());
-		
+		singletons.add(new NewsBoardActionsImpl());
+
 		singletons.add(this);
 
 		// add service provider

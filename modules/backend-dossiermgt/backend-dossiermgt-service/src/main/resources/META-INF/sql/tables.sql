@@ -620,6 +620,20 @@ create table opencps_menurole (
 	roleId LONG
 );
 
+create table opencps_newsboard (
+	uuid_ VARCHAR(75) null,
+	newBoardId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	newsTitle VARCHAR(75) null,
+	newsContent VARCHAR(75) null,
+	newsStatus INTEGER
+);
+
 create table opencps_notarization (
 	notarizationId LONG not null primary key,
 	groupId LONG,

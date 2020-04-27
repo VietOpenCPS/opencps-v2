@@ -2850,6 +2850,40 @@
             <finder-column name="className"></finder-column>
         </finder>
   </entity>
+<entity name="NewsBoard" table="opencps_newsboard"
+		local-service="true" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+		<column name="newBoardId" primary="true" type="long" />
+
+		<!-- Group instance -->
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="newsTitle" type="String" />
+ 		<column name="newsContent" type="String" />
+ 		<column name="newsStatus" type="int" />
+
+		<!-- Order -->
+		<order by="desc">
+			<order-column name="createDate"></order-column>
+		</order>
+		<finder return-type="Collection" name="F_GID">
+			<finder-column name="groupId" />
+		</finder>
+<!-- 		<finder name="DossierId" return-type="PaymentFile"> -->
+<!-- 			<finder-column name="groupId" /> -->
+<!-- 			<finder-column name="dossierId" /> -->
+<!-- 		</finder> -->
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>
