@@ -876,8 +876,11 @@
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-        <finder name="U_D_M_T" return-type="TrackClientStatistic">
+        <finder name="U_Y_M_D_D_M_T" return-type="TrackClientStatistic">
             <finder-column name="url"></finder-column>
+            <finder-column name="year"></finder-column>
+            <finder-column name="month"></finder-column>
+            <finder-column name="day"></finder-column>
             <finder-column name="desktop"></finder-column>
             <finder-column name="mobile"></finder-column>
             <finder-column name="tablet"></finder-column>

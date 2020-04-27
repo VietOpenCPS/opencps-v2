@@ -13,7 +13,6 @@ import com.maxmind.geoip2.model.CityResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +25,7 @@ import org.opencps.usermgt.action.util.UserMgtConfigUtil;
 import org.opencps.usermgt.constants.CommonTerm;
 import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
+import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.UserTrackPathLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
@@ -73,6 +73,7 @@ public class OpenCPSTraceAction extends Action {
         
 		if (UserMgtConfigUtil.isTrackClientEnable()) {
 			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, true, false, false);
+			TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl, year, month, day, cityName, true, false, false);
 		}
 		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {

@@ -111,12 +111,15 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.TrackClientStatistic"),
 			true);
-	public static final long DESKTOP_COLUMN_BITMASK = 1L;
-	public static final long MOBILE_COLUMN_BITMASK = 2L;
-	public static final long TABLET_COLUMN_BITMASK = 4L;
-	public static final long URL_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
+	public static final long DAY_COLUMN_BITMASK = 1L;
+	public static final long DESKTOP_COLUMN_BITMASK = 2L;
+	public static final long MOBILE_COLUMN_BITMASK = 4L;
+	public static final long MONTH_COLUMN_BITMASK = 8L;
+	public static final long TABLET_COLUMN_BITMASK = 16L;
+	public static final long URL_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long YEAR_COLUMN_BITMASK = 128L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.TrackClientStatistic"));
 
@@ -352,7 +355,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setYear(int year) {
+		_columnBitmask |= YEAR_COLUMN_BITMASK;
+
+		if (!_setOriginalYear) {
+			_setOriginalYear = true;
+
+			_originalYear = _year;
+		}
+
 		_year = year;
+	}
+
+	public int getOriginalYear() {
+		return _originalYear;
 	}
 
 	@Override
@@ -362,7 +377,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setMonth(int month) {
+		_columnBitmask |= MONTH_COLUMN_BITMASK;
+
+		if (!_setOriginalMonth) {
+			_setOriginalMonth = true;
+
+			_originalMonth = _month;
+		}
+
 		_month = month;
+	}
+
+	public int getOriginalMonth() {
+		return _originalMonth;
 	}
 
 	@Override
@@ -372,7 +399,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setDay(int day) {
+		_columnBitmask |= DAY_COLUMN_BITMASK;
+
+		if (!_setOriginalDay) {
+			_setOriginalDay = true;
+
+			_originalDay = _day;
+		}
+
 		_day = day;
+	}
+
+	public int getOriginalDay() {
+		return _originalDay;
 	}
 
 	@Override
@@ -592,6 +631,18 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 		trackClientStatisticModelImpl._originalUrl = trackClientStatisticModelImpl._url;
 
+		trackClientStatisticModelImpl._originalYear = trackClientStatisticModelImpl._year;
+
+		trackClientStatisticModelImpl._setOriginalYear = false;
+
+		trackClientStatisticModelImpl._originalMonth = trackClientStatisticModelImpl._month;
+
+		trackClientStatisticModelImpl._setOriginalMonth = false;
+
+		trackClientStatisticModelImpl._originalDay = trackClientStatisticModelImpl._day;
+
+		trackClientStatisticModelImpl._setOriginalDay = false;
+
 		trackClientStatisticModelImpl._originalDesktop = trackClientStatisticModelImpl._desktop;
 
 		trackClientStatisticModelImpl._setOriginalDesktop = false;
@@ -786,8 +837,14 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 	private String _url;
 	private String _originalUrl;
 	private int _year;
+	private int _originalYear;
+	private boolean _setOriginalYear;
 	private int _month;
+	private int _originalMonth;
+	private boolean _setOriginalMonth;
 	private int _day;
+	private int _originalDay;
+	private boolean _setOriginalDay;
 	private String _region;
 	private boolean _desktop;
 	private boolean _originalDesktop;

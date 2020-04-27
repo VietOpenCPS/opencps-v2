@@ -174,68 +174,84 @@ public interface TrackClientStatisticPersistence extends BasePersistence<TrackCl
 	public int countByUuid(String uuid);
 
 	/**
-	* Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or throws a {@link NoSuchTrackClientStatisticException} if it could not be found.
+	* Returns the track client statistic where url = &#63; and year = &#63; and month = &#63; and day = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or throws a {@link NoSuchTrackClientStatisticException} if it could not be found.
 	*
 	* @param url the url
+	* @param year the year
+	* @param month the month
+	* @param day the day
 	* @param desktop the desktop
 	* @param mobile the mobile
 	* @param tablet the tablet
 	* @return the matching track client statistic
 	* @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
 	*/
-	public TrackClientStatistic findByU_D_M_T(String url, boolean desktop,
-		boolean mobile, boolean tablet)
+	public TrackClientStatistic findByU_Y_M_D_D_M_T(String url, int year,
+		int month, int day, boolean desktop, boolean mobile, boolean tablet)
 		throws NoSuchTrackClientStatisticException;
 
 	/**
-	* Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	* Returns the track client statistic where url = &#63; and year = &#63; and month = &#63; and day = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	*
 	* @param url the url
+	* @param year the year
+	* @param month the month
+	* @param day the day
 	* @param desktop the desktop
 	* @param mobile the mobile
 	* @param tablet the tablet
 	* @return the matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
 	*/
-	public TrackClientStatistic fetchByU_D_M_T(String url, boolean desktop,
-		boolean mobile, boolean tablet);
+	public TrackClientStatistic fetchByU_Y_M_D_D_M_T(String url, int year,
+		int month, int day, boolean desktop, boolean mobile, boolean tablet);
 
 	/**
-	* Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	* Returns the track client statistic where url = &#63; and year = &#63; and month = &#63; and day = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	*
 	* @param url the url
+	* @param year the year
+	* @param month the month
+	* @param day the day
 	* @param desktop the desktop
 	* @param mobile the mobile
 	* @param tablet the tablet
 	* @param retrieveFromCache whether to retrieve from the finder cache
 	* @return the matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
 	*/
-	public TrackClientStatistic fetchByU_D_M_T(String url, boolean desktop,
-		boolean mobile, boolean tablet, boolean retrieveFromCache);
+	public TrackClientStatistic fetchByU_Y_M_D_D_M_T(String url, int year,
+		int month, int day, boolean desktop, boolean mobile, boolean tablet,
+		boolean retrieveFromCache);
 
 	/**
-	* Removes the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; from the database.
+	* Removes the track client statistic where url = &#63; and year = &#63; and month = &#63; and day = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; from the database.
 	*
 	* @param url the url
+	* @param year the year
+	* @param month the month
+	* @param day the day
 	* @param desktop the desktop
 	* @param mobile the mobile
 	* @param tablet the tablet
 	* @return the track client statistic that was removed
 	*/
-	public TrackClientStatistic removeByU_D_M_T(String url, boolean desktop,
-		boolean mobile, boolean tablet)
+	public TrackClientStatistic removeByU_Y_M_D_D_M_T(String url, int year,
+		int month, int day, boolean desktop, boolean mobile, boolean tablet)
 		throws NoSuchTrackClientStatisticException;
 
 	/**
-	* Returns the number of track client statistics where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	* Returns the number of track client statistics where url = &#63; and year = &#63; and month = &#63; and day = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
 	*
 	* @param url the url
+	* @param year the year
+	* @param month the month
+	* @param day the day
 	* @param desktop the desktop
 	* @param mobile the mobile
 	* @param tablet the tablet
 	* @return the number of matching track client statistics
 	*/
-	public int countByU_D_M_T(String url, boolean desktop, boolean mobile,
-		boolean tablet);
+	public int countByU_Y_M_D_D_M_T(String url, int year, int month, int day,
+		boolean desktop, boolean mobile, boolean tablet);
 
 	/**
 	* Caches the track client statistic in the entity cache if it is enabled.

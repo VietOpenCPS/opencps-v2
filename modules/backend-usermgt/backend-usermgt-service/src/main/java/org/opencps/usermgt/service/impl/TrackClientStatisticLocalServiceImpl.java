@@ -83,21 +83,73 @@ public class TrackClientStatisticLocalServiceImpl
 			int day,
 			String region,
 			boolean desktop, boolean mobile, boolean tablet) {
-		TrackClientStatistic trackClientStatistic = trackClientStatisticPersistence.fetchByU_D_M_T(url, desktop, mobile, tablet);
-		if (trackClientStatistic == null) {
-			long trackClientStatisticId = counterLocalService.increment(TrackClientStatistic.class.getName());
-			trackClientStatistic = trackClientStatisticPersistence.create(trackClientStatisticId);
+		//By day
+		TrackClientStatistic trackClientStatisticDay = trackClientStatisticPersistence.fetchByU_Y_M_D_D_M_T(url, year, month, day, desktop, mobile, tablet);
+		if (trackClientStatisticDay == null) {
+			long trackClientStatisticDayId = counterLocalService.increment(TrackClientStatistic.class.getName());
+			trackClientStatisticDay = trackClientStatisticPersistence.create(trackClientStatisticDayId);
 			
-			trackClientStatistic.setTotal(1);
-			trackClientStatistic.setUrl(url);
-			trackClientStatistic.setYear(year);
-			trackClientStatistic.setMonth(month);
-			trackClientStatistic.setDay(day);
-			trackClientStatistic.setDesktop(desktop);
-			trackClientStatistic.setMobile(mobile);
-			trackClientStatistic.setTablet(tablet);
+			trackClientStatisticDay.setTotal(1);
+			trackClientStatisticDay.setUrl(url);
+			trackClientStatisticDay.setYear(year);
+			trackClientStatisticDay.setMonth(month);
+			trackClientStatisticDay.setDay(day);
+			trackClientStatisticDay.setDesktop(desktop);
+			trackClientStatisticDay.setMobile(mobile);
+			trackClientStatisticDay.setTablet(tablet);
 			
-			trackClientStatisticPersistence.update(trackClientStatistic);
+			trackClientStatisticPersistence.update(trackClientStatisticDay);
+		}
+		else {
+			trackClientStatisticDay.setTotal(trackClientStatisticDay.getTotal() + 1);
+			
+			trackClientStatisticPersistence.update(trackClientStatisticDay);
+		}
+		
+		//By month
+		TrackClientStatistic trackClientStatisticMonth = trackClientStatisticPersistence.fetchByU_Y_M_D_D_M_T(url, year, month, 0, desktop, mobile, tablet);
+		if (trackClientStatisticMonth == null) {
+			long trackClientStatisticMonthId = counterLocalService.increment(TrackClientStatistic.class.getName());
+			trackClientStatisticMonth = trackClientStatisticPersistence.create(trackClientStatisticMonthId);
+			
+			trackClientStatisticMonth.setTotal(1);
+			trackClientStatisticMonth.setUrl(url);
+			trackClientStatisticMonth.setYear(year);
+			trackClientStatisticMonth.setMonth(month);
+			trackClientStatisticMonth.setDay(0);
+			trackClientStatisticMonth.setDesktop(desktop);
+			trackClientStatisticMonth.setMobile(mobile);
+			trackClientStatisticMonth.setTablet(tablet);
+			
+			trackClientStatisticPersistence.update(trackClientStatisticMonth);
+		}
+		else {
+			trackClientStatisticMonth.setTotal(trackClientStatisticMonth.getTotal() + 1);
+			
+			trackClientStatisticPersistence.update(trackClientStatisticMonth);
+		}
+		
+		//By year
+		TrackClientStatistic trackClientStatisticYear = trackClientStatisticPersistence.fetchByU_Y_M_D_D_M_T(url, year, 0, 0, desktop, mobile, tablet);
+		if (trackClientStatisticYear == null) {
+			long trackClientStatisticYearId = counterLocalService.increment(TrackClientStatistic.class.getName());
+			trackClientStatisticYear = trackClientStatisticPersistence.create(trackClientStatisticYearId);
+			
+			trackClientStatisticYear.setTotal(1);
+			trackClientStatisticYear.setUrl(url);
+			trackClientStatisticYear.setYear(year);
+			trackClientStatisticYear.setMonth(0);
+			trackClientStatisticYear.setDay(0);
+			trackClientStatisticYear.setDesktop(desktop);
+			trackClientStatisticYear.setMobile(mobile);
+			trackClientStatisticYear.setTablet(tablet);
+			
+			trackClientStatisticPersistence.update(trackClientStatisticYear);
+		}
+		else {
+			trackClientStatisticYear.setTotal(trackClientStatisticYear.getTotal() + 1);
+			
+			trackClientStatisticPersistence.update(trackClientStatisticYear);
 		}
 	}		
 }
