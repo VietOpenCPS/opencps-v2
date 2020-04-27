@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -54,6 +56,9 @@ import ws.bulkSms.impl.Result;
 @Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseMessageListener {
 	private volatile boolean isRunning = false;
+	private static boolean flagJobMail = Validator.isNotNull(PropsUtil.get("opencps.notify.job.mail"))
+			? GetterUtil.getBoolean(PropsUtil.get("opencps.notify.job.mail"))
+			: false;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -99,6 +104,43 @@ public class OneMinute extends BaseMessageListener {
 								serviceContext);
 						_log.debug("messageEntry: "+messageEntry);
 
+						if (flagJobMail && notificationtemplate.getSendEmail()) {
+							//Process send SMS
+							Result resultSendSMS = new Result("Success", new Long(1));
+							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
+
+								if (NotificationType.BOOKING_01.equalsIgnoreCase(messageEntry.getNotificationType())) {
+									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+									JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
+									if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
+										resultSendSMS.setMessage("Success");
+										resultSendSMS.setResult(1L);
+									}
+								} else {
+									//Send viettel
+									resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+										messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+								}
+								_log.debug("END SEND SMS");
+							}
+
+							if(messageEntry.isSendNotify() || messageEntry.isSendZalo()){
+								_log.debug("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
+								MBNotificationSenderFactoryUtil.send(
+									messageEntry, messageEntry.getClassName(),
+									serviceContext);
+							}
+							/* Remove queue when send SMS success Or telNo is null
+							 * 
+							 * If Send SMS error, continue until expiredDate 
+							 * */
+							_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
+							Date now = new Date();
+							notificationQueue.setExpireDate(now);
+							notificationQueue.setModifiedDate(now);
+							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+						} else {
 						//Process send SMS
 						Result resultSendSMS = new Result("Success", new Long(1));
 						if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
@@ -153,6 +195,7 @@ public class OneMinute extends BaseMessageListener {
 							notificationQueue.setExpireDate(notificationQueue.getCreateDate());
 							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 						}
+					}
 					}
 					catch (Exception e) {
 						_log.error("Can't send message from queue " + e);
