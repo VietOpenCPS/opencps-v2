@@ -235,6 +235,46 @@ create table opencps_sync_scheduler (
 	syncDate DATE null
 );
 
+create table opencps_track_client (
+	uuid_ VARCHAR(75) null,
+	trackClientId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	sessionId VARCHAR(128) null,
+	url VARCHAR(512) null,
+	year INTEGER,
+	month INTEGER,
+	day INTEGER,
+	visitDate DATE null,
+	leaveDate DATE null,
+	clientIP VARCHAR(128) null,
+	macAddress VARCHAR(128) null,
+	region VARCHAR(512) null,
+	nation VARCHAR(512) null,
+	latitude VARCHAR(128) null,
+	longitude VARCHAR(128) null,
+	timeOnPage LONG,
+	desktop BOOLEAN,
+	mobile BOOLEAN,
+	tablet BOOLEAN
+);
+
+create table opencps_track_client_statistic (
+	uuid_ VARCHAR(75) null,
+	trackClientStatisticId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	url VARCHAR(512) null,
+	year INTEGER,
+	month INTEGER,
+	day INTEGER,
+	region VARCHAR(512) null,
+	desktop BOOLEAN,
+	mobile BOOLEAN,
+	tablet BOOLEAN,
+	total LONG
+);
+
 create table opencps_userlogin (
 	uuid_ VARCHAR(75) null,
 	userLoginId LONG not null primary key,
