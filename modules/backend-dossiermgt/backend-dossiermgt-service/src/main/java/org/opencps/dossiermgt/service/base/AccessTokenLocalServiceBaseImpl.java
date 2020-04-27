@@ -75,6 +75,7 @@ import org.opencps.dossiermgt.service.persistence.DossierUserPersistence;
 import org.opencps.dossiermgt.service.persistence.EFormPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.MenuRolePersistence;
+import org.opencps.dossiermgt.service.persistence.NewsBoardPersistence;
 import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
 import org.opencps.dossiermgt.service.persistence.NotarizationPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
@@ -1484,6 +1485,44 @@ public abstract class AccessTokenLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the news board local service.
+	 *
+	 * @return the news board local service
+	 */
+	public org.opencps.dossiermgt.service.NewsBoardLocalService getNewsBoardLocalService() {
+		return newsBoardLocalService;
+	}
+
+	/**
+	 * Sets the news board local service.
+	 *
+	 * @param newsBoardLocalService the news board local service
+	 */
+	public void setNewsBoardLocalService(
+		org.opencps.dossiermgt.service.NewsBoardLocalService newsBoardLocalService) {
+		this.newsBoardLocalService = newsBoardLocalService;
+	}
+
+	/**
+	 * Returns the news board persistence.
+	 *
+	 * @return the news board persistence
+	 */
+	public NewsBoardPersistence getNewsBoardPersistence() {
+		return newsBoardPersistence;
+	}
+
+	/**
+	 * Sets the news board persistence.
+	 *
+	 * @param newsBoardPersistence the news board persistence
+	 */
+	public void setNewsBoardPersistence(
+		NewsBoardPersistence newsBoardPersistence) {
+		this.newsBoardPersistence = newsBoardPersistence;
+	}
+
+	/**
 	 * Returns the notarization local service.
 	 *
 	 * @return the notarization local service
@@ -2638,6 +2677,10 @@ public abstract class AccessTokenLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.MenuRoleLocalService menuRoleLocalService;
 	@BeanReference(type = MenuRolePersistence.class)
 	protected MenuRolePersistence menuRolePersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.NewsBoardLocalService.class)
+	protected org.opencps.dossiermgt.service.NewsBoardLocalService newsBoardLocalService;
+	@BeanReference(type = NewsBoardPersistence.class)
+	protected NewsBoardPersistence newsBoardPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.NotarizationLocalService.class)
 	protected org.opencps.dossiermgt.service.NotarizationLocalService notarizationLocalService;
 	@BeanReference(type = NotarizationPersistence.class)
