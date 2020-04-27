@@ -1022,6 +1022,19 @@
 		<field name="menuConfigId" type="long" />
 		<field name="roleId" type="long" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.NewsBoard">
+		<field name="uuid" type="String" />
+		<field name="newBoardId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="newsTitle" type="String" />
+		<field name="newsContent" type="String" />
+		<field name="newsStatus" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.Notarization">
 		<field name="notarizationId" type="long" />
 		<field name="groupId" type="long" />

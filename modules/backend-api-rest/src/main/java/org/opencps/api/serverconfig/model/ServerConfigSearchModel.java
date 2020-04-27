@@ -64,7 +64,9 @@ import javax.xml.bind.annotation.XmlType;
     "noiSinh",
     "flagSearch",
     "className",
-    "classPK"
+    "classPK",
+    "_dossierId",
+    "_dossierCounter"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -116,6 +118,10 @@ public class ServerConfigSearchModel {
     protected String className;
 	@QueryParam("classPK")
     protected String classPK;
+	@QueryParam("_dossierId")
+    protected String _dossierId;
+	@QueryParam("_dossierCounter")
+    protected String _dossierCounter;
 
     /**
      * Gets the value of the keyword property.
@@ -387,6 +393,22 @@ public class ServerConfigSearchModel {
 
 	public void setClassPK(String classPK) {
 		this.classPK = classPK;
+	}
+
+	public String get_dossierId() {
+		return _dossierId;
+	}
+
+	public void set_dossierId(String _dossierId) {
+		this._dossierId = _dossierId;
+	}
+
+	public String get_dossierCounter() {
+		return _dossierCounter;
+	}
+
+	public void set_dossierCounter(String _dossierCounter) {
+		this._dossierCounter = _dossierCounter;
 	}
 
 }

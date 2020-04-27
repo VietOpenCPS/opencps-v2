@@ -426,6 +426,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String flagSearch = query.getFlagSearch();
 			String classNameInput = query.getClassName();
 			String classPKInput = query.getClassPK();
+			String dossierId = query.get_dossierId();
+			String dossierCounter = query.get_dossierCounter();
 			System.out.println("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -497,6 +499,12 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								}
 								if (urlGet.contains("{flagSearch}")) {
 									urlGet = urlGet.replace("{flagSearch}", Validator.isNotNull(flagSearch) ? URLEncoder.encode(String.valueOf(flagSearch), "UTF-8") : StringPool.BLANK);
+								}
+								if (urlGet.contains("{_dossierId}")) {
+									urlGet = urlGet.replace("{_dossierId}", Validator.isNotNull(dossierId) ? dossierId : "0");
+								}
+								if (urlGet.contains("{_dossierCounter}")) {
+									urlGet = urlGet.replace("{_dossierCounter}", Validator.isNotNull(dossierCounter) ? dossierCounter : StringPool.BLANK);
 								}
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
@@ -575,8 +583,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							//
 							long groupIdUpdate = 0;
 							String authStrEnc = StringPool.BLANK;
-							String classNameUpdate;// = StringPool.BLANK;
-							String classPKUpdate;// = StringPool.BLANK;
+							String classNameUpdate = StringPool.BLANK;
+							String classPKUpdate = StringPool.BLANK;
 							//
 							String params = jsonConfig.getString("params");
 							System.out.println("params: "+params);

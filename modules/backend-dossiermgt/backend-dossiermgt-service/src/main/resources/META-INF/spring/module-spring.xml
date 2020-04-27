@@ -66,6 +66,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.MenuRoleLocalServiceImpl" id="org.opencps.dossiermgt.service.MenuRoleLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuRolePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.NewsBoardLocalServiceImpl" id="org.opencps.dossiermgt.service.NewsBoardLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.NewsBoardPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.NewsBoardPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.NotarizationLocalServiceImpl" id="org.opencps.dossiermgt.service.NotarizationLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.NotarizationPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.NotarizationPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.NotarizationFinderImpl" id="org.opencps.dossiermgt.service.persistence.NotarizationFinder" parent="basePersistence" />
