@@ -255,6 +255,21 @@ public class TrackClientStatisticLocalServiceWrapper
 		return _trackClientStatisticLocalService.getTrackClientStatisticsCount();
 	}
 
+	@Override
+	public void updateStatisticTotal(String url, int year, int month, int day,
+		String region, boolean desktop, boolean mobile, boolean tablet) {
+		_trackClientStatisticLocalService.updateStatisticTotal(url, year,
+			month, day, region, desktop, mobile, tablet);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.TrackClientStatistic updateTrackClientStatistic(
+		long trackClientStatisticId, String url, int year, int month, int day,
+		String region, boolean desktop, boolean mobile, boolean tablet) {
+		return _trackClientStatisticLocalService.updateTrackClientStatistic(trackClientStatisticId,
+			url, year, month, day, region, desktop, mobile, tablet);
+	}
+
 	/**
 	* Updates the track client statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

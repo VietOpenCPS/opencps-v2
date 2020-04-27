@@ -69,6 +69,7 @@ create index IX_9290C4D4 on opencps_sync_scheduler (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_D692EFEC on opencps_track_client (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_C238356 on opencps_track_client_statistic (url[$COLUMN_LENGTH:512$], desktop, mobile, tablet);
 create index IX_7281E1BB on opencps_track_client_statistic (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_BFD53D86 on opencps_userlogin (userId, sessionId[$COLUMN_LENGTH:255$]);

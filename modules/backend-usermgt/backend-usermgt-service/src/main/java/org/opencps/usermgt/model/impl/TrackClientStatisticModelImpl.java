@@ -111,8 +111,12 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.TrackClientStatistic"),
 			true);
-	public static final long UUID_COLUMN_BITMASK = 1L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
+	public static final long DESKTOP_COLUMN_BITMASK = 1L;
+	public static final long MOBILE_COLUMN_BITMASK = 2L;
+	public static final long TABLET_COLUMN_BITMASK = 4L;
+	public static final long URL_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.TrackClientStatistic"));
 
@@ -328,7 +332,17 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setUrl(String url) {
+		_columnBitmask |= URL_COLUMN_BITMASK;
+
+		if (_originalUrl == null) {
+			_originalUrl = _url;
+		}
+
 		_url = url;
+	}
+
+	public String getOriginalUrl() {
+		return GetterUtil.getString(_originalUrl);
 	}
 
 	@Override
@@ -388,7 +402,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setDesktop(boolean desktop) {
+		_columnBitmask |= DESKTOP_COLUMN_BITMASK;
+
+		if (!_setOriginalDesktop) {
+			_setOriginalDesktop = true;
+
+			_originalDesktop = _desktop;
+		}
+
 		_desktop = desktop;
+	}
+
+	public boolean getOriginalDesktop() {
+		return _originalDesktop;
 	}
 
 	@Override
@@ -403,7 +429,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setMobile(boolean mobile) {
+		_columnBitmask |= MOBILE_COLUMN_BITMASK;
+
+		if (!_setOriginalMobile) {
+			_setOriginalMobile = true;
+
+			_originalMobile = _mobile;
+		}
+
 		_mobile = mobile;
+	}
+
+	public boolean getOriginalMobile() {
+		return _originalMobile;
 	}
 
 	@Override
@@ -418,7 +456,19 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 
 	@Override
 	public void setTablet(boolean tablet) {
+		_columnBitmask |= TABLET_COLUMN_BITMASK;
+
+		if (!_setOriginalTablet) {
+			_setOriginalTablet = true;
+
+			_originalTablet = _tablet;
+		}
+
 		_tablet = tablet;
+	}
+
+	public boolean getOriginalTablet() {
+		return _originalTablet;
 	}
 
 	@Override
@@ -539,6 +589,20 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 		trackClientStatisticModelImpl._originalUuid = trackClientStatisticModelImpl._uuid;
 
 		trackClientStatisticModelImpl._setModifiedDate = false;
+
+		trackClientStatisticModelImpl._originalUrl = trackClientStatisticModelImpl._url;
+
+		trackClientStatisticModelImpl._originalDesktop = trackClientStatisticModelImpl._desktop;
+
+		trackClientStatisticModelImpl._setOriginalDesktop = false;
+
+		trackClientStatisticModelImpl._originalMobile = trackClientStatisticModelImpl._mobile;
+
+		trackClientStatisticModelImpl._setOriginalMobile = false;
+
+		trackClientStatisticModelImpl._originalTablet = trackClientStatisticModelImpl._tablet;
+
+		trackClientStatisticModelImpl._setOriginalTablet = false;
 
 		trackClientStatisticModelImpl._columnBitmask = 0;
 	}
@@ -720,13 +784,20 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _url;
+	private String _originalUrl;
 	private int _year;
 	private int _month;
 	private int _day;
 	private String _region;
 	private boolean _desktop;
+	private boolean _originalDesktop;
+	private boolean _setOriginalDesktop;
 	private boolean _mobile;
+	private boolean _originalMobile;
+	private boolean _setOriginalMobile;
 	private boolean _tablet;
+	private boolean _originalTablet;
+	private boolean _setOriginalTablet;
 	private long _total;
 	private long _columnBitmask;
 	private TrackClientStatistic _escapedModel;

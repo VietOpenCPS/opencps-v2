@@ -224,6 +224,13 @@ public interface TrackClientStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getTrackClientStatisticsCount();
 
+	public void updateStatisticTotal(String url, int year, int month, int day,
+		String region, boolean desktop, boolean mobile, boolean tablet);
+
+	public TrackClientStatistic updateTrackClientStatistic(
+		long trackClientStatisticId, String url, int year, int month, int day,
+		String region, boolean desktop, boolean mobile, boolean tablet);
+
 	/**
 	* Updates the track client statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

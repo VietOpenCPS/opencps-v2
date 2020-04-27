@@ -14,6 +14,9 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Date;
+
+import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.base.TrackClientStatisticLocalServiceBaseImpl;
 
 /**
@@ -37,4 +40,64 @@ public class TrackClientStatisticLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil} to access the track client statistic local service.
 	 */
+	public TrackClientStatistic updateTrackClientStatistic(
+			long trackClientStatisticId,
+			String url,
+			int year,
+			int month,
+			int day,
+			String region,
+			boolean desktop, boolean mobile, boolean tablet) {
+		TrackClientStatistic trackClientStatistic = null;
+		Date now = new Date();
+		if (trackClientStatisticId == 0) {
+			trackClientStatisticId = counterLocalService.increment(TrackClientStatistic.class.getName());
+			trackClientStatistic = trackClientStatisticPersistence.create(trackClientStatisticId);
+			
+			trackClientStatistic.setCreateDate(now);
+		}
+		else {
+			trackClientStatistic = trackClientStatisticPersistence.fetchByPrimaryKey(trackClientStatisticId);
+		}
+		
+		if (trackClientStatistic != null) {
+			trackClientStatistic.setModifiedDate(now);
+			trackClientStatistic.setUrl(url);
+			trackClientStatistic.setYear(year);
+			trackClientStatistic.setMonth(month);
+			trackClientStatistic.setDay(day);
+			trackClientStatistic.setRegion(region);
+			trackClientStatistic.setDesktop(desktop);
+			trackClientStatistic.setMobile(mobile);
+			trackClientStatistic.setTablet(tablet);
+			trackClientStatistic = trackClientStatisticPersistence.update(trackClientStatistic);
+		}
+		
+		return trackClientStatistic;
+	}	
+	
+	public void updateStatisticTotal(
+			String url,
+			int year,
+			int month,
+			int day,
+			String region,
+			boolean desktop, boolean mobile, boolean tablet) {
+		TrackClientStatistic trackClientStatistic = trackClientStatisticPersistence.fetchByU_D_M_T(url, desktop, mobile, tablet);
+		if (trackClientStatistic == null) {
+			long trackClientStatisticId = counterLocalService.increment(TrackClientStatistic.class.getName());
+			trackClientStatistic = trackClientStatisticPersistence.create(trackClientStatisticId);
+			
+			trackClientStatistic.setTotal(1);
+			trackClientStatistic.setUrl(url);
+			trackClientStatistic.setYear(year);
+			trackClientStatistic.setMonth(month);
+			trackClientStatistic.setDay(day);
+			trackClientStatistic.setDesktop(desktop);
+			trackClientStatistic.setMobile(mobile);
+			trackClientStatistic.setTablet(tablet);
+			
+			trackClientStatisticPersistence.update(trackClientStatistic);
+		}
+	}		
 }

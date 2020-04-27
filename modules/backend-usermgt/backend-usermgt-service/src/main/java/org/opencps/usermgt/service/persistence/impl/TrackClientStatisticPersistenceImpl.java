@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -644,6 +645,316 @@ public class TrackClientStatisticPersistenceImpl extends BasePersistenceImpl<Tra
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "trackClientStatistic.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "trackClientStatistic.uuid = ?";
 	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(trackClientStatistic.uuid IS NULL OR trackClientStatistic.uuid = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_U_D_M_T = new FinderPath(TrackClientStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientStatisticModelImpl.FINDER_CACHE_ENABLED,
+			TrackClientStatisticImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByU_D_M_T",
+			new String[] {
+				String.class.getName(), Boolean.class.getName(),
+				Boolean.class.getName(), Boolean.class.getName()
+			},
+			TrackClientStatisticModelImpl.URL_COLUMN_BITMASK |
+			TrackClientStatisticModelImpl.DESKTOP_COLUMN_BITMASK |
+			TrackClientStatisticModelImpl.MOBILE_COLUMN_BITMASK |
+			TrackClientStatisticModelImpl.TABLET_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_U_D_M_T = new FinderPath(TrackClientStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_D_M_T",
+			new String[] {
+				String.class.getName(), Boolean.class.getName(),
+				Boolean.class.getName(), Boolean.class.getName()
+			});
+
+	/**
+	 * Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or throws a {@link NoSuchTrackClientStatisticException} if it could not be found.
+	 *
+	 * @param url the url
+	 * @param desktop the desktop
+	 * @param mobile the mobile
+	 * @param tablet the tablet
+	 * @return the matching track client statistic
+	 * @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
+	 */
+	@Override
+	public TrackClientStatistic findByU_D_M_T(String url, boolean desktop,
+		boolean mobile, boolean tablet)
+		throws NoSuchTrackClientStatisticException {
+		TrackClientStatistic trackClientStatistic = fetchByU_D_M_T(url,
+				desktop, mobile, tablet);
+
+		if (trackClientStatistic == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("url=");
+			msg.append(url);
+
+			msg.append(", desktop=");
+			msg.append(desktop);
+
+			msg.append(", mobile=");
+			msg.append(mobile);
+
+			msg.append(", tablet=");
+			msg.append(tablet);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchTrackClientStatisticException(msg.toString());
+		}
+
+		return trackClientStatistic;
+	}
+
+	/**
+	 * Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param url the url
+	 * @param desktop the desktop
+	 * @param mobile the mobile
+	 * @param tablet the tablet
+	 * @return the matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	 */
+	@Override
+	public TrackClientStatistic fetchByU_D_M_T(String url, boolean desktop,
+		boolean mobile, boolean tablet) {
+		return fetchByU_D_M_T(url, desktop, mobile, tablet, true);
+	}
+
+	/**
+	 * Returns the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param url the url
+	 * @param desktop the desktop
+	 * @param mobile the mobile
+	 * @param tablet the tablet
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	 */
+	@Override
+	public TrackClientStatistic fetchByU_D_M_T(String url, boolean desktop,
+		boolean mobile, boolean tablet, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { url, desktop, mobile, tablet };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_U_D_M_T,
+					finderArgs, this);
+		}
+
+		if (result instanceof TrackClientStatistic) {
+			TrackClientStatistic trackClientStatistic = (TrackClientStatistic)result;
+
+			if (!Objects.equals(url, trackClientStatistic.getUrl()) ||
+					(desktop != trackClientStatistic.isDesktop()) ||
+					(mobile != trackClientStatistic.isMobile()) ||
+					(tablet != trackClientStatistic.isTablet())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_TRACKCLIENTSTATISTIC_WHERE);
+
+			boolean bindUrl = false;
+
+			if (url == null) {
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_1);
+			}
+			else if (url.equals("")) {
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_3);
+			}
+			else {
+				bindUrl = true;
+
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_2);
+			}
+
+			query.append(_FINDER_COLUMN_U_D_M_T_DESKTOP_2);
+
+			query.append(_FINDER_COLUMN_U_D_M_T_MOBILE_2);
+
+			query.append(_FINDER_COLUMN_U_D_M_T_TABLET_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindUrl) {
+					qPos.add(url);
+				}
+
+				qPos.add(desktop);
+
+				qPos.add(mobile);
+
+				qPos.add(tablet);
+
+				List<TrackClientStatistic> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_U_D_M_T,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"TrackClientStatisticPersistenceImpl.fetchByU_D_M_T(String, boolean, boolean, boolean, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					TrackClientStatistic trackClientStatistic = list.get(0);
+
+					result = trackClientStatistic;
+
+					cacheResult(trackClientStatistic);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_U_D_M_T,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (TrackClientStatistic)result;
+		}
+	}
+
+	/**
+	 * Removes the track client statistic where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; from the database.
+	 *
+	 * @param url the url
+	 * @param desktop the desktop
+	 * @param mobile the mobile
+	 * @param tablet the tablet
+	 * @return the track client statistic that was removed
+	 */
+	@Override
+	public TrackClientStatistic removeByU_D_M_T(String url, boolean desktop,
+		boolean mobile, boolean tablet)
+		throws NoSuchTrackClientStatisticException {
+		TrackClientStatistic trackClientStatistic = findByU_D_M_T(url, desktop,
+				mobile, tablet);
+
+		return remove(trackClientStatistic);
+	}
+
+	/**
+	 * Returns the number of track client statistics where url = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	 *
+	 * @param url the url
+	 * @param desktop the desktop
+	 * @param mobile the mobile
+	 * @param tablet the tablet
+	 * @return the number of matching track client statistics
+	 */
+	@Override
+	public int countByU_D_M_T(String url, boolean desktop, boolean mobile,
+		boolean tablet) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_U_D_M_T;
+
+		Object[] finderArgs = new Object[] { url, desktop, mobile, tablet };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_TRACKCLIENTSTATISTIC_WHERE);
+
+			boolean bindUrl = false;
+
+			if (url == null) {
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_1);
+			}
+			else if (url.equals("")) {
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_3);
+			}
+			else {
+				bindUrl = true;
+
+				query.append(_FINDER_COLUMN_U_D_M_T_URL_2);
+			}
+
+			query.append(_FINDER_COLUMN_U_D_M_T_DESKTOP_2);
+
+			query.append(_FINDER_COLUMN_U_D_M_T_MOBILE_2);
+
+			query.append(_FINDER_COLUMN_U_D_M_T_TABLET_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindUrl) {
+					qPos.add(url);
+				}
+
+				qPos.add(desktop);
+
+				qPos.add(mobile);
+
+				qPos.add(tablet);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_U_D_M_T_URL_1 = "trackClientStatistic.url IS NULL AND ";
+	private static final String _FINDER_COLUMN_U_D_M_T_URL_2 = "trackClientStatistic.url = ? AND ";
+	private static final String _FINDER_COLUMN_U_D_M_T_URL_3 = "(trackClientStatistic.url IS NULL OR trackClientStatistic.url = '') AND ";
+	private static final String _FINDER_COLUMN_U_D_M_T_DESKTOP_2 = "trackClientStatistic.desktop = ? AND ";
+	private static final String _FINDER_COLUMN_U_D_M_T_MOBILE_2 = "trackClientStatistic.mobile = ? AND ";
+	private static final String _FINDER_COLUMN_U_D_M_T_TABLET_2 = "trackClientStatistic.tablet = ?";
 
 	public TrackClientStatisticPersistenceImpl() {
 		setModelClass(TrackClientStatistic.class);
@@ -677,6 +988,12 @@ public class TrackClientStatisticPersistenceImpl extends BasePersistenceImpl<Tra
 		entityCache.putResult(TrackClientStatisticModelImpl.ENTITY_CACHE_ENABLED,
 			TrackClientStatisticImpl.class,
 			trackClientStatistic.getPrimaryKey(), trackClientStatistic);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_D_M_T,
+			new Object[] {
+				trackClientStatistic.getUrl(), trackClientStatistic.isDesktop(),
+				trackClientStatistic.isMobile(), trackClientStatistic.isTablet()
+			}, trackClientStatistic);
 
 		trackClientStatistic.resetOriginalValues();
 	}
@@ -731,6 +1048,9 @@ public class TrackClientStatisticPersistenceImpl extends BasePersistenceImpl<Tra
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache((TrackClientStatisticModelImpl)trackClientStatistic,
+			true);
 	}
 
 	@Override
@@ -742,6 +1062,53 @@ public class TrackClientStatisticPersistenceImpl extends BasePersistenceImpl<Tra
 			entityCache.removeResult(TrackClientStatisticModelImpl.ENTITY_CACHE_ENABLED,
 				TrackClientStatisticImpl.class,
 				trackClientStatistic.getPrimaryKey());
+
+			clearUniqueFindersCache((TrackClientStatisticModelImpl)trackClientStatistic,
+				true);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		TrackClientStatisticModelImpl trackClientStatisticModelImpl) {
+		Object[] args = new Object[] {
+				trackClientStatisticModelImpl.getUrl(),
+				trackClientStatisticModelImpl.isDesktop(),
+				trackClientStatisticModelImpl.isMobile(),
+				trackClientStatisticModelImpl.isTablet()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_U_D_M_T, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_D_M_T, args,
+			trackClientStatisticModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		TrackClientStatisticModelImpl trackClientStatisticModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					trackClientStatisticModelImpl.getUrl(),
+					trackClientStatisticModelImpl.isDesktop(),
+					trackClientStatisticModelImpl.isMobile(),
+					trackClientStatisticModelImpl.isTablet()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_D_M_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_D_M_T, args);
+		}
+
+		if ((trackClientStatisticModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_U_D_M_T.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					trackClientStatisticModelImpl.getOriginalUrl(),
+					trackClientStatisticModelImpl.getOriginalDesktop(),
+					trackClientStatisticModelImpl.getOriginalMobile(),
+					trackClientStatisticModelImpl.getOriginalTablet()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_D_M_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_D_M_T, args);
 		}
 	}
 
@@ -963,6 +1330,9 @@ public class TrackClientStatisticPersistenceImpl extends BasePersistenceImpl<Tra
 		entityCache.putResult(TrackClientStatisticModelImpl.ENTITY_CACHE_ENABLED,
 			TrackClientStatisticImpl.class,
 			trackClientStatistic.getPrimaryKey(), trackClientStatistic, false);
+
+		clearUniqueFindersCache(trackClientStatisticModelImpl, false);
+		cacheUniqueFindersCache(trackClientStatisticModelImpl);
 
 		trackClientStatistic.resetOriginalValues();
 
