@@ -36,76 +36,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.cxf.transport.http.Headers;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.opencps.api.constants.ConstantUtils;
-import org.opencps.api.controller.impl.AdminConfigManagementImpl;
-import org.opencps.api.controller.impl.ApplicantManagementImpl;
-import org.opencps.api.controller.impl.BackupDataManagementImpl;
-import org.opencps.api.controller.impl.BookingManagementImpl;
-import org.opencps.api.controller.impl.CacheTestManagementImpl;
-import org.opencps.api.controller.impl.CertNumberManagementImpl;
-import org.opencps.api.controller.impl.CommentManagementImpl;
-import org.opencps.api.controller.impl.ConfigCounterManagementImpl;
-import org.opencps.api.controller.impl.DVCQGIManagementImpl;
-import org.opencps.api.controller.impl.DVCQGSSOManagementImpl;
-import org.opencps.api.controller.impl.DataManagementImpl;
-import org.opencps.api.controller.impl.DefaultSignatureManagementImpl;
-import org.opencps.api.controller.impl.DeliverableTypesManagementImpl;
-import org.opencps.api.controller.impl.DeliverablesLogManagementImpl;
-import org.opencps.api.controller.impl.DeliverablesManagementImpl;
-import org.opencps.api.controller.impl.DossierActionManagementImpl;
-import org.opencps.api.controller.impl.DossierActionUserManagementImpl;
-import org.opencps.api.controller.impl.DossierDocumentManagementImpl;
-import org.opencps.api.controller.impl.DossierFileManagementImpl;
-import org.opencps.api.controller.impl.DossierLogManagementImpl;
-import org.opencps.api.controller.impl.DossierManagementImpl;
-import org.opencps.api.controller.impl.DossierSyncManagementImpl;
-import org.opencps.api.controller.impl.DossierTemplateManagementImpl;
-import org.opencps.api.controller.impl.EFormManagementImpl;
-import org.opencps.api.controller.impl.EmployeeManagementImpl;
-import org.opencps.api.controller.impl.FaqManagementImpl;
-import org.opencps.api.controller.impl.FileAttachManagementImpl;
-import org.opencps.api.controller.impl.HolidayManagementImpl;
-import org.opencps.api.controller.impl.ImportDataManagementImpl;
-import org.opencps.api.controller.impl.JasperUtilsManagermentImpl;
-import org.opencps.api.controller.impl.JobposManagementImpl;
-import org.opencps.api.controller.impl.MailTestManagementImpl;
-import org.opencps.api.controller.impl.MenuConfigManagementImpl;
-import org.opencps.api.controller.impl.MenuRoleManagementImpl;
-import org.opencps.api.controller.impl.NotarizationManagementImpl;
-import org.opencps.api.controller.impl.NotificationManagementImpl;
-import org.opencps.api.controller.impl.NotificationQueueManagementImpl;
-import org.opencps.api.controller.impl.NotificationTemplateImpl;
-import org.opencps.api.controller.impl.NotificationTypeManagementImpl;
-import org.opencps.api.controller.impl.OAIManagementImpl;
-import org.opencps.api.controller.impl.OfficeSiteManagementImpl;
-import org.opencps.api.controller.impl.OneGateControllerImpl;
-import org.opencps.api.controller.impl.PaymentConfigManagementImpl;
-import org.opencps.api.controller.impl.PaymentFileManagementImpl;
-import org.opencps.api.controller.impl.ProcessPluginManagementImpl;
-import org.opencps.api.controller.impl.ProxyManagementImpl;
-import org.opencps.api.controller.impl.RegistrationFormManagementImpl;
-import org.opencps.api.controller.impl.RegistrationLogManagementImpl;
-import org.opencps.api.controller.impl.RegistrationManagementImpl;
-import org.opencps.api.controller.impl.RegistrationTemplatesManagementImpl;
-import org.opencps.api.controller.impl.ReportRoleManagementImpl;
-import org.opencps.api.controller.impl.SMSManagementImpl;
-import org.opencps.api.controller.impl.ServerConfigManagementImpl;
-import org.opencps.api.controller.impl.ServiceConfigManagementImpl;
-import org.opencps.api.controller.impl.ServiceInfoManagementImpl;
-import org.opencps.api.controller.impl.ServiceProcessManagementImpl;
-import org.opencps.api.controller.impl.SignatureManagementImpl;
-import org.opencps.api.controller.impl.StatisticManagementImpl;
-import org.opencps.api.controller.impl.SystemManagementImpl;
-import org.opencps.api.controller.impl.UserInfoLogManagementImpl;
-import org.opencps.api.controller.impl.UserManagementImpl;
-import org.opencps.api.controller.impl.VGCAManagementImpl;
-import org.opencps.api.controller.impl.VotingManagementImpl;
-import org.opencps.api.controller.impl.WorkTimeManagementImpl;
-import org.opencps.api.controller.impl.WorkingUnitManagementImpl;
+import org.opencps.api.controller.impl.*;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.filter.KeyGenerator;
 import org.opencps.api.filter.OpenCPSKeyGenerator;
+import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -116,14 +55,13 @@ import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierTemplateActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
-import org.opencps.dossiermgt.action.impl.NewsBoardActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.exception.model.ExceptionModel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -154,12 +92,11 @@ import uk.org.okapibarcode.output.Java2DRenderer;
 }, service = Application.class)
 public class BackendAPIRestApplication extends Application {
 
-	private static Log _log =
-		LogFactoryUtil.getLog(BackendAPIRestApplication.class);
+	private static final Log _log = LogFactoryUtil.getLog(BackendAPIRestApplication.class);
 
 	public Set<Object> getSingletons() {
 
-		Set<Object> singletons = new HashSet<Object>();
+		Set<Object> singletons = new HashSet<>();
 
 		// add REST endpoints (resources)
 		singletons.add(new ApplicantManagementImpl());
@@ -240,7 +177,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ReportRoleManagementImpl());
 		
 		singletons.add(new OAIManagementImpl());
-		singletons.add(new NewsBoardActionsImpl());
+		singletons.add(new NewsBroadManagementImpl());
 
 		singletons.add(this);
 
