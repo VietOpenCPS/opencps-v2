@@ -1098,7 +1098,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 				profileJson.put(ApplicantTerm.INDENTIFY_NO, fileEntry.getFileEntryId());
 				profileJson.put(ApplicantTerm.INDENTIFY_NO_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
-
+				profile = profileJson.toString();
 			}
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, applicantIdDate, contactEmail, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
