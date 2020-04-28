@@ -13,6 +13,7 @@
 			<xsd:element name="fileNo" type="xsd:string" />
 			<xsd:element name="fileName" type="xsd:string" />
 			<xsd:element name="fileEntryId" type="xsd:long" />
+			<xsd:element name="filePath" type="xsd:string" />
 			<xsd:element name="metadata" type="xsd:string" />
 			<xsd:element name="status" type="xsd:int" />
 			<xsd:element name="applicantIdNo" type="xsd:string" />
@@ -67,6 +68,9 @@
 				<!-- default -->
 				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
 				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="fileNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="status" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantDataType" type="xsd:string" minOccurs="0" />
 				<xsd:element name="start" type="xsd:int" minOccurs="0" />
 				<xsd:element name="end" type="xsd:int" minOccurs="0" />
 				<xsd:element name="sort" type="xsd:string" minOccurs="0" />

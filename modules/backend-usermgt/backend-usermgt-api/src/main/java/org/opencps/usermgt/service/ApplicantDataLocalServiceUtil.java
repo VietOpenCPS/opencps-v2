@@ -357,6 +357,18 @@ public class ApplicantDataLocalServiceUtil {
 	}
 
 	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(
+		long groupId, long applicantDataId, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName,
+		java.io.InputStream inputStream,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateApplicantData(groupId, applicantDataId, fileNo,
+			fileName, applicantIdNo, sourceFileName, inputStream, serviceContext);
+	}
+
+	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(
 		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
 		long applicantDataId, String fileTemplateNo, String fileNo,
 		String fileName, long fileEntryId, String metadata, int status,

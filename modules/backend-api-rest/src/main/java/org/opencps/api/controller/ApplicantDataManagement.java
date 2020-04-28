@@ -13,6 +13,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,9 +24,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.opencps.api.applicantdata.model.ApplicantDataModel;
 import org.opencps.api.applicantdata.model.ApplicantDataResultsModel;
 import org.opencps.api.applicantdata.model.ApplicantDataSearchModel;
-import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import io.swagger.annotations.Api;
@@ -54,7 +55,7 @@ public interface ApplicantDataManagement {
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
 	})
-	@ApiOperation(value = "addApplicantData", response = DossierFileModel.class)
+	@ApiOperation(value = "addApplicantData", response = ApplicantDataModel.class)
 	@ApiResponses(value = {
 		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the ApplicantDataModel was updated", response = ApplicantDataResultsModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
@@ -91,4 +92,26 @@ public interface ApplicantDataManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id);
 	
+	@PUT
+	@Path("/{id}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Update applicant data by Id)")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the applicant data"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response updateApplicantData(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id,
+		@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);
 }

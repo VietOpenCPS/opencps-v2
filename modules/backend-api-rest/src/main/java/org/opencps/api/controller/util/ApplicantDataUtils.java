@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.opencps.api.applicantdata.model.ApplicantDataDetailModel;
 import org.opencps.api.applicantdata.model.ApplicantDataModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.kernel.util.FileUploadUtil;
 import org.opencps.usermgt.constants.ApplicantDataTerm;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.ApplicantData;
@@ -35,7 +38,7 @@ public class ApplicantDataUtils {
     	return model;
     }
     
-	public static List<ApplicantDataModel> mappingToApplicantDataResults(List<Document> documents) {
+	public static List<ApplicantDataModel> mappingToApplicantDataResults(List<Document> documents, HttpServletRequest request) {
 
 		List<ApplicantDataModel> data = new ArrayList<ApplicantDataModel>();
 
@@ -66,6 +69,10 @@ public class ApplicantDataUtils {
 				model.setModifiedDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			} else {
 				model.setModifiedDate(doc.get(ApplicantDataTerm.MODIFIED_DATE));
+			}
+			if (Validator.isNotNull(doc.get(ApplicantDataTerm.FILE_ENTRY_ID))) {
+				String filePath = FileUploadUtil.getFileEntryPreviewPath(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)), request);
+				model.setFilePath(filePath);				
 			}
 			
 			data.add(model);

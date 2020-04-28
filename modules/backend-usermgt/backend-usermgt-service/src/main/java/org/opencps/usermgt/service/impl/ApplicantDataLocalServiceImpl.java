@@ -219,6 +219,63 @@ public class ApplicantDataLocalServiceImpl
 		return applicantData;
 	}
 	
+	@Indexable(type = IndexableType.REINDEX)
+	public ApplicantData updateApplicantData(long groupId, 
+			long applicantDataId,
+			String fileNo,
+			String fileName,
+			String applicantIdNo,
+			String sourceFileName, InputStream inputStream,
+			ServiceContext serviceContext) throws PortalException, SystemException {
+		ApplicantData applicantData = null;
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(serviceContext.getUserId());
+		
+		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
+		applicantData.setModifiedDate(now);
+		applicantData.setCreateDate(now);
+		applicantData.setCompanyId(serviceContext.getCompanyId());
+		applicantData.setGroupId(groupId);
+		applicantData.setUserId(auditUser.getUserId());
+		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileNo(fileNo);
+		applicantData.setFileName(fileName);
+		applicantData.setApplicantIdNo(applicantIdNo);
+		applicantData.setStatus(1);
+		applicantData.setApplicantDataType(0);
+		
+		if (applicantData.getFileEntryId() != 0) {
+			DLAppLocalServiceUtil.deleteFileEntry(applicantData.getFileEntryId());
+		}
+		
+		long fileEntryId = 0;
+		if (inputStream != null) {
+			try {
+				FileEntry fileEntry = uploadApplicantDataFile(serviceContext.getUserId(), groupId, inputStream, sourceFileName, StringPool.BLANK,
+					0, serviceContext);
+
+				if (fileEntry != null) {
+					fileEntryId = fileEntry.getFileEntryId();
+				}
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+		}
+
+		if (fileEntryId != 0) {
+			applicantData.setFileEntryId(fileEntryId);
+		}
+		if (Validator.isNull(fileName) && !Validator.isNotNull(sourceFileName)) {
+			applicantData.setFileName(sourceFileName);
+		}
+		
+		applicantData = applicantDataPersistence.update(applicantData);
+		
+		return applicantData;
+	}
+	
 	private String getFileName(String sourceFileName) {
 		String ext = FileUtil.getExtension(sourceFileName);
 		
@@ -403,6 +460,10 @@ public class ApplicantDataLocalServiceImpl
 	
 	private void processSearchParams(LinkedHashMap<String, Object> params, BooleanQuery booleanQuery) throws ParseException {
 		String applicantIdNo = String.valueOf(params.get(ApplicantDataTerm.APPLICANT_ID_NO));
+		String fileNo = String.valueOf(params.get(ApplicantDataTerm.FILE_NO));
+		String status = String.valueOf(params.get(ApplicantDataTerm.STATUS));
+		String applicantDataType = String.valueOf(params.get(ApplicantDataTerm.APPLICANT_DATA_TYPE));
+		
 		if (Validator.isNotNull(applicantIdNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
 
@@ -410,6 +471,27 @@ public class ApplicantDataLocalServiceImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		if (Validator.isNotNull(fileNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(fileNo);
+
+			query.addFields(ApplicantDataTerm.FILE_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
+		if (Validator.isNotNull(status)) {
+			MultiMatchQuery query = new MultiMatchQuery(status);
+
+			query.addFields(ApplicantDataTerm.STATUS);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
+		if (Validator.isNotNull(applicantDataType)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantDataType);
+
+			query.addFields(ApplicantDataTerm.APPLICANT_DATA_TYPE);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}		
 	}
 	
 	private static final String FOLDER_NAME_APPLICANT_DATA_FILE = "PAYMENT_FILE";

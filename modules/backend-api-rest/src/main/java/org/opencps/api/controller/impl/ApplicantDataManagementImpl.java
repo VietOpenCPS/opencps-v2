@@ -122,7 +122,7 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
-				results.getData().addAll(ApplicantDataUtils.mappingToApplicantDataResults((List<Document>) jsonData.get(ConstantUtils.DATA)));
+				results.getData().addAll(ApplicantDataUtils.mappingToApplicantDataResults((List<Document>) jsonData.get(ConstantUtils.DATA), request));
 			}
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
@@ -130,6 +130,24 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
+	}
+
+	@Override
+	public Response updateApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, Attachment file, String fileNo, String fileName,
+			String applicantIdNo) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
+		ApplicantData applicantData = null;
+		
+		try {
+			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }
