@@ -65,9 +65,7 @@ public class ApplicantTerm {
 	public static final String EMAIL_UPDATE_SUCCESS = "email-update-success";
 	
 	public static final String INDENTIFY_DESTINATION = "applicant-indentify";
-	public static final String INDENTIFY_NO_F = "indentifyNoFFile";
-	public static final String INDENTIFY_NO_F_URL = "indentifyNoFFileUrl";
-	public static final String INDENTIFY_NO_B = "indentifyNoBFile";
-	public static final String INDENTIFY_NO_B_URL = "indentifyNoBFileUrl";
+	public static final String INDENTIFY_NO = "indentifyNoFFile";
+	public static final String INDENTIFY_NO_URL = "indentifyNoFFileUrl";
 	public static final String DOC_URL = "documents/"; 
 }
