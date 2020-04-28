@@ -518,6 +518,10 @@ public class DossierUtils {
 			if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
 				model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
 			}
+			if (Validator.isNotNull(doc.get(DossierTerm.VNPOSTAL_STATUS))) {
+				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.VNPOSTAL_STATUS)));
+				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
+			}
 			ouputs.add(model);
 		}
 
@@ -858,6 +862,11 @@ public class DossierUtils {
 			}
 			model.setAssigned(GetterUtil.getInteger(doc.get(DossierTerm.ASSIGNED)));
 
+			if (Validator.isNotNull(doc.get(DossierTerm.VNPOSTAL_STATUS))) {
+				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.VNPOSTAL_STATUS)));
+				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
+			}
+
 			ouputs.add(model);
 		}
 //		_log.info("ouputs: "+ouputs.size());
@@ -1050,6 +1059,8 @@ public class DossierUtils {
 		model.setServerNo(input.getServerNo());
 		model.setSystemId(input.getSystemId());
 		model.setDossierCounter(input.getDossierCounter());
+		model.setVnpostalStatus(input.getVnpostalStatus());
+		model.setVnpostalProfile(input.getVnpostalProfile());
 
 		return model;
 	}
@@ -1545,6 +1556,8 @@ public class DossierUtils {
 		model.setWardName(input.getWardName());
 		model.setMetaData(input.getMetaData());
 		model.setDossierCounter(input.getDossierCounter());
+		model.setVnpostalStatus(input.getVnpostalStatus());
+		model.setVnpostalProfile(input.getVnpostalProfile());
 		
 		return model;
 	}
