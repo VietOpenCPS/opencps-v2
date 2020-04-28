@@ -19,10 +19,8 @@ import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.usermgt.constants.ApplicantDataTerm;
-import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 @Component(
@@ -30,7 +28,7 @@ import org.osgi.service.component.annotations.Component;
 	service = BaseIndexer.class
 )
 public class ApplicantDataIndexer extends BaseIndexer<ApplicantData> {
-	public static final String CLASS_NAME = Applicant.class.getName();
+	public static final String CLASS_NAME = ApplicantData.class.getName();
 
 	@Override
 	public String getClassName() {
@@ -60,7 +58,7 @@ public class ApplicantDataIndexer extends BaseIndexer<ApplicantData> {
 		document.addTextSortable(ApplicantDataTerm.FILE_TEMPLATE_NO, object.getFileTemplateNo());
 		document.addTextSortable(ApplicantDataTerm.FILE_NO, object.getFileNo());
 		document.addTextSortable(ApplicantDataTerm.FILE_NAME, object.getFileName());
-		document.addNumber(ApplicantDataTerm.FILE_ENTRY_ID, object.getFileTemplateNo());
+		document.addNumber(ApplicantDataTerm.FILE_ENTRY_ID, object.getFileEntryId());
 		document.addTextSortable(ApplicantDataTerm.META_DATA, object.getMetadata());
 		document.addNumber(ApplicantDataTerm.STATUS, object.getStatus());
 		document.addTextSortable(ApplicantDataTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
@@ -92,7 +90,7 @@ public class ApplicantDataIndexer extends BaseIndexer<ApplicantData> {
 	}
 
 	protected void reindex(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ApplicantLocalServiceUtil
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = ApplicantDataLocalServiceUtil
 				.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setCompanyId(companyId);

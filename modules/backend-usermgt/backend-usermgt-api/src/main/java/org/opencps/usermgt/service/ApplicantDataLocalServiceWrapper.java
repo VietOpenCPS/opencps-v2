@@ -46,6 +46,14 @@ public class ApplicantDataLocalServiceWrapper
 		return _applicantDataLocalService.addApplicantData(applicantData);
 	}
 
+	@Override
+	public long countLucene(java.util.LinkedHashMap<String, Object> params,
+		com.liferay.portal.kernel.search.SearchContext searchContext)
+		throws com.liferay.portal.kernel.search.ParseException,
+			com.liferay.portal.kernel.search.SearchException {
+		return _applicantDataLocalService.countLucene(params, searchContext);
+	}
+
 	/**
 	* Creates a new applicant data with the primary key. Does not add the applicant data to the database.
 	*
@@ -343,6 +351,17 @@ public class ApplicantDataLocalServiceWrapper
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _applicantDataLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.Hits searchLucene(
+		java.util.LinkedHashMap<String, Object> params,
+		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
+		com.liferay.portal.kernel.search.SearchContext searchContext)
+		throws com.liferay.portal.kernel.search.ParseException,
+			com.liferay.portal.kernel.search.SearchException {
+		return _applicantDataLocalService.searchLucene(params, sorts, start,
+			end, searchContext);
 	}
 
 	/**

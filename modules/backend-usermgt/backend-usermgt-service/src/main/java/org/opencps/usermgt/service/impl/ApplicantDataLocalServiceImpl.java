@@ -23,8 +23,21 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -37,8 +50,11 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import org.opencps.auth.utils.DLFolderUtil;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.usermgt.constants.ApplicantDataTerm;
 import org.opencps.usermgt.exception.NoSuchApplicantDataException;
 import org.opencps.usermgt.model.ApplicantData;
 import org.opencps.usermgt.service.base.ApplicantDataLocalServiceBaseImpl;
@@ -197,6 +213,9 @@ public class ApplicantDataLocalServiceImpl
 		if (Validator.isNull(fileName) && !Validator.isNotNull(sourceFileName)) {
 			applicantData.setFileName(sourceFileName);
 		}
+		
+		applicantData = applicantDataPersistence.update(applicantData);
+		
 		return applicantData;
 	}
 	
@@ -268,6 +287,131 @@ public class ApplicantDataLocalServiceImpl
 		return fileEntry;
 	}
 
+	@SuppressWarnings("deprecation")
+	public Hits searchLucene(LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(ApplicantDataTerm.GROUP_ID);
+		
+		Indexer<ApplicantData> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(ApplicantData.class);
+
+		searchContext.addFullQueryEntryClassName(ApplicantData.class.getName());
+		searchContext.setEntryClassNames(new String[] { ApplicantData.class.getName() });
+		searchContext.setAttribute(ApplicantDataTerm.PAGINATION_TYPE, ApplicantDataTerm.REGULAR);
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(
+					ApplicantDataTerm.FILE_NAME);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+		
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(ApplicantDataTerm.GROUP_ID);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		processSearchParams(params, booleanQuery);
+		
+		booleanQuery.addRequiredTerm(
+			Field.ENTRY_CLASS_NAME, ApplicantData.class.getName());
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+	}
+
+	@SuppressWarnings("deprecation")
+	public long countLucene(LinkedHashMap<String, Object> params, SearchContext searchContext)
+			throws ParseException, SearchException {
+
+		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+		String groupId = (String) params.get(Field.GROUP_ID);
+
+		Indexer<ApplicantData> indexer = IndexerRegistryUtil.nullSafeGetIndexer(ApplicantData.class);
+
+		searchContext.addFullQueryEntryClassName(ApplicantData.class.getName());
+		searchContext.setEntryClassNames(new String[] {
+			ApplicantData.class.getName()
+		});
+		searchContext.setAttribute(ApplicantDataTerm.PAGINATION_TYPE, ConfigConstants.PAGINATION_TYPE_REGULAR);
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		if (Validator.isNotNull(keywords)) {
+
+			String[] keyword = keywords.split(StringPool.SPACE);
+
+			for (String string : keyword) {
+
+				MultiMatchQuery query = new MultiMatchQuery(string);
+
+				query.addFields(
+					ApplicantDataTerm.FILE_NAME);
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+			}
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(groupId);
+
+			query.addFields(ApplicantDataTerm.GROUP_ID);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		processSearchParams(params, booleanQuery);
+		
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, ApplicantData.class.getName());
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+	}
+	
+	private void processSearchParams(LinkedHashMap<String, Object> params, BooleanQuery booleanQuery) throws ParseException {
+		String applicantIdNo = String.valueOf(params.get(ApplicantDataTerm.APPLICANT_ID_NO));
+		if (Validator.isNotNull(applicantIdNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
+
+			query.addFields(ApplicantDataTerm.APPLICANT_ID_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+	}
+	
 	private static final String FOLDER_NAME_APPLICANT_DATA_FILE = "PAYMENT_FILE";
 
 	private static Log _log =

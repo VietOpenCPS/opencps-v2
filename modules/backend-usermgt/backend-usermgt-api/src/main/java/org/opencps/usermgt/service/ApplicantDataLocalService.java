@@ -26,8 +26,13 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.ParseException;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -41,6 +46,7 @@ import org.opencps.usermgt.model.ApplicantData;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -74,6 +80,9 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData addApplicantData(ApplicantData applicantData);
+
+	public long countLucene(LinkedHashMap<String, Object> params,
+		SearchContext searchContext) throws ParseException, SearchException;
 
 	/**
 	* Creates a new applicant data with the primary key. Does not add the applicant data to the database.
@@ -288,6 +297,11 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Hits searchLucene(LinkedHashMap<String, Object> params,
+		Sort[] sorts, int start, int end, SearchContext searchContext)
+		throws ParseException, SearchException;
 
 	/**
 	* Updates the applicant data in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
