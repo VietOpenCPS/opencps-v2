@@ -927,7 +927,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			User user, ServiceContext serviceContext, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String contactTelNo,
 			String contactEmail, String password, String jCaptchaResponse,
-			Attachment indentifyNoFFile, Attachment indentifyNoBFile) {
+			Attachment indentifyNoFile) {
 
 		ApplicantActions actions = new ApplicantActionsImpl();
 		String captchaType = PropValues.CAPTCHA_TYPE;
@@ -995,13 +995,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			}
 
 			String profile = StringPool.BLANK;
-			if (Validator.isNotNull(indentifyNoFFile) && Validator.isNotNull(indentifyNoBFile)) {
+			if (Validator.isNotNull(indentifyNoFile)) {
 				
 				JSONObject profileJson = JSONFactoryUtil.createJSONObject();
 				serviceContext.setAddGroupPermissions(true);
 				serviceContext.setAddGuestPermissions(true);
 				
-				DataHandler dataHandler = indentifyNoFFile.getDataHandler();
+				DataHandler dataHandler = indentifyNoFile.getDataHandler();
 				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
 				InputStream inputStream = dataHandler.getInputStream();
 				int fileSize = inputStream.available();
@@ -1014,22 +1014,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						fileType, title, title,
 						StringPool.BLANK, inputStream, fileSize, serviceContext);
 
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_F, fileEntry.getFileEntryId());
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_F_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 
-				dataHandler = indentifyNoBFile.getDataHandler();
-				fileType = MimeTypesUtil.getContentType(dataHandler.getName());
-				inputStream = dataHandler.getInputStream();
-				fileSize = inputStream.available();
-				title = new Date().getTime() + dataHandler.getName();
-				fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
-						fileType, title, title,
-						StringPool.BLANK, inputStream, fileSize, serviceContext);
-
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_B, fileEntry.getFileEntryId());
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_B_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
-				profile = profileJson.toString();
-				_log.debug("=================profile============" + profile);
 			}
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, applicantIdDate, contactEmail, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
@@ -1049,7 +1036,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	@Override
 	public Response updateIndentifies(HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext, String applicantId,
-			Attachment indentifyNoFFile, Attachment indentifyNoBFile) {
+			Attachment indentifyNoFile) {
 		ApplicantActions actions = new ApplicantActionsImpl();
 
 		ApplicantModel result = new ApplicantModel();
@@ -1064,12 +1051,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			DLFolder dlFolder = DLFolderUtil.getTargetFolder(user.getUserId(), groupId, groupId, false, 0, destination,
 					StringPool.BLANK, false, serviceContext);
 
-			if (Validator.isNotNull(indentifyNoFFile)) {
+			if (Validator.isNotNull(indentifyNoFile)) {
 
 				serviceContext.setAddGroupPermissions(true);
 				serviceContext.setAddGuestPermissions(true);
 				
-				DataHandler dataHandler = indentifyNoFFile.getDataHandler();
+				DataHandler dataHandler = indentifyNoFile.getDataHandler();
 				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
 				InputStream inputStream = dataHandler.getInputStream();
 				int fileSize = inputStream.available();
@@ -1078,28 +1065,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						fileType, title, title,
 						StringPool.BLANK, inputStream, fileSize, serviceContext);
 
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_F, fileEntry.getFileEntryId());
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_F_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO, fileEntry.getFileEntryId());
+				profileJson.put(ApplicantTerm.INDENTIFY_NO_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 			}
-
-			if (Validator.isNotNull(indentifyNoBFile)) {
-
-				serviceContext.setAddGroupPermissions(true);
-				serviceContext.setAddGuestPermissions(true);
-				
-				DataHandler dataHandler = indentifyNoBFile.getDataHandler();
-				String fileType = MimeTypesUtil.getContentType(dataHandler.getName());
-				InputStream inputStream = dataHandler.getInputStream();
-				int fileSize = inputStream.available();
-				String title = new Date().getTime() + dataHandler.getName();
-				FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(user.getUserId(), groupId, dlFolder.getFolderId(), title,
-						fileType, title, title,
-						StringPool.BLANK, inputStream, fileSize, serviceContext);
-
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_B, fileEntry.getFileEntryId());
-				profileJson.put(ApplicantTerm.INDENTIFY_NO_B_URL, ApplicantTerm.DOC_URL + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
-			}
-			System.out.println("=================profile============" + profileJson.toString());
 			Applicant applicant = actions.updateProfile(serviceContext, groupId, id, profileJson.toString());
 			result = ApplicantUtils.mappingToApplicantModel(applicant);
 
@@ -1200,7 +1168,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
-			System.out.println("==========GOOO==========="+id);
 			List<Role> userRoles = user.getRoles();
 			boolean isAdmin = false;
 			for (Role r : userRoles) {
@@ -1209,7 +1176,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					break;
 				}
 			}
-			System.out.println("==========admin==========="+isAdmin);
 			if (isAdmin) {
 
 				Applicant applicant = ApplicantLocalServiceUtil.activateApplicant(id, serviceContext);
