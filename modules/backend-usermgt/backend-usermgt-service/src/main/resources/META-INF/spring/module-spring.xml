@@ -11,6 +11,8 @@
 	<bean class="org.opencps.usermgt.service.persistence.impl.AnswerPersistenceImpl" id="org.opencps.usermgt.service.persistence.AnswerPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.ApplicantLocalServiceImpl" id="org.opencps.usermgt.service.ApplicantLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.ApplicantPersistenceImpl" id="org.opencps.usermgt.service.persistence.ApplicantPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.impl.ApplicantDataLocalServiceImpl" id="org.opencps.usermgt.service.ApplicantDataLocalService" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.ApplicantDataPersistenceImpl" id="org.opencps.usermgt.service.persistence.ApplicantDataPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.EmployeeLocalServiceImpl" id="org.opencps.usermgt.service.EmployeeLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.EmployeePersistenceImpl" id="org.opencps.usermgt.service.persistence.EmployeePersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.EmployeeJobPosLocalServiceImpl" id="org.opencps.usermgt.service.EmployeeJobPosLocalService" />

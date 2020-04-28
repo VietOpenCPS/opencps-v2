@@ -386,6 +386,49 @@ public interface TrackClientModel extends BaseModel<TrackClient> {
 	 */
 	public void setTablet(boolean tablet);
 
+	/**
+	 * Returns the user ID of this track client.
+	 *
+	 * @return the user ID of this track client
+	 */
+	public long getUserId();
+
+	/**
+	 * Sets the user ID of this track client.
+	 *
+	 * @param userId the user ID of this track client
+	 */
+	public void setUserId(long userId);
+
+	/**
+	 * Returns the user uuid of this track client.
+	 *
+	 * @return the user uuid of this track client
+	 */
+	public String getUserUuid();
+
+	/**
+	 * Sets the user uuid of this track client.
+	 *
+	 * @param userUuid the user uuid of this track client
+	 */
+	public void setUserUuid(String userUuid);
+
+	/**
+	 * Returns the user name of this track client.
+	 *
+	 * @return the user name of this track client
+	 */
+	@AutoEscape
+	public String getUserName();
+
+	/**
+	 * Sets the user name of this track client.
+	 *
+	 * @param userName the user name of this track client
+	 */
+	public void setUserName(String userName);
+
 	@Override
 	public boolean isNew();
 

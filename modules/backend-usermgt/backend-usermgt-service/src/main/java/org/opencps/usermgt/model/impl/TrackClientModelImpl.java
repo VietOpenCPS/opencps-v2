@@ -20,10 +20,13 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -83,7 +86,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 			{ "timeOnPage", Types.BIGINT },
 			{ "desktop", Types.BOOLEAN },
 			{ "mobile", Types.BOOLEAN },
-			{ "tablet", Types.BOOLEAN }
+			{ "tablet", Types.BOOLEAN },
+			{ "userId", Types.BIGINT },
+			{ "userName", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -109,9 +114,11 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		TABLE_COLUMNS_MAP.put("desktop", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("mobile", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("tablet", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(512) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(512) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,userId LONG,userName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_track_client";
 	public static final String ORDER_BY_JPQL = " ORDER BY trackClient.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client.createDate ASC";
@@ -190,6 +197,8 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		attributes.put("desktop", isDesktop());
 		attributes.put("mobile", isMobile());
 		attributes.put("tablet", isTablet());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -323,6 +332,18 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 		if (tablet != null) {
 			setTablet(tablet);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
 		}
 	}
 
@@ -612,6 +633,47 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		_tablet = tablet;
 	}
 
+	@Override
+	public long getUserId() {
+		return _userId;
+	}
+
+	@Override
+	public void setUserId(long userId) {
+		_userId = userId;
+	}
+
+	@Override
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException pe) {
+			return "";
+		}
+	}
+
+	@Override
+	public void setUserUuid(String userUuid) {
+	}
+
+	@Override
+	public String getUserName() {
+		if (_userName == null) {
+			return "";
+		}
+		else {
+			return _userName;
+		}
+	}
+
+	@Override
+	public void setUserName(String userName) {
+		_userName = userName;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -664,6 +726,8 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		trackClientImpl.setDesktop(isDesktop());
 		trackClientImpl.setMobile(isMobile());
 		trackClientImpl.setTablet(isTablet());
+		trackClientImpl.setUserId(getUserId());
+		trackClientImpl.setUserName(getUserName());
 
 		trackClientImpl.resetOriginalValues();
 
@@ -859,12 +923,22 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 		trackClientCacheModel.tablet = isTablet();
 
+		trackClientCacheModel.userId = getUserId();
+
+		trackClientCacheModel.userName = getUserName();
+
+		String userName = trackClientCacheModel.userName;
+
+		if ((userName != null) && (userName.length() == 0)) {
+			trackClientCacheModel.userName = null;
+		}
+
 		return trackClientCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -908,6 +982,10 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		sb.append(isMobile());
 		sb.append(", tablet=");
 		sb.append(isTablet());
+		sb.append(", userId=");
+		sb.append(getUserId());
+		sb.append(", userName=");
+		sb.append(getUserName());
 		sb.append("}");
 
 		return sb.toString();
@@ -915,7 +993,7 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.TrackClient");
@@ -1005,6 +1083,14 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 			"<column><column-name>tablet</column-name><column-value><![CDATA[");
 		sb.append(isTablet());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>userId</column-name><column-value><![CDATA[");
+		sb.append(getUserId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>userName</column-name><column-value><![CDATA[");
+		sb.append(getUserName());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1038,6 +1124,8 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	private boolean _desktop;
 	private boolean _mobile;
 	private boolean _tablet;
+	private long _userId;
+	private String _userName;
 	private long _columnBitmask;
 	private TrackClient _escapedModel;
 }
