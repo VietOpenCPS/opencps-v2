@@ -254,8 +254,7 @@ public interface ApplicantManagement {
 			@ApiParam(value = "contactEmail of Applicant", required = true) @Multipart("contactEmail") String contactEmail,
 			@ApiParam(value = "password of Applicant", required = true) @Multipart("password") String password,
 			@ApiParam(value = "j_captcha_response of Applicant", required = true) @Multipart("j_captcha_response") String jCaptchaResponse,
-			@ApiParam(value = "Attachment on indentifyNoFFile", required = false) @Multipart("indentifyNoFFile") Attachment indentifyNoFFile,
-			@ApiParam(value = "Attachment on indentifyNoBFile", required = false) @Multipart("indentifyNoBFile") Attachment indentifyNoBFile);	
+			@ApiParam(value = "Attachment on indentifyNoFile", required = false) @Multipart("indentifyNoFile") Attachment indentifyNoFFile);	
 
 	@POST
 	@Path("/updateindentifies")
@@ -269,8 +268,7 @@ public interface ApplicantManagement {
 	public Response updateIndentifies(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id of Applicant", required = true) @Multipart("applicantId") String applicantId,
-			@ApiParam(value = "Attachment on indentifyNoFFile", required = false) @Multipart("indentifyNoFFile") Attachment indentifyNoFFile,
-			@ApiParam(value = "Attachment on indentifyNoBFile", required = false) @Multipart("indentifyNoBFile") Attachment indentifyNoBFile);	
+			@ApiParam(value = "Attachment on indentifyNoFile", required = false) @Multipart("indentifyNoFile") Attachment indentifyNoFile);	
 
 	@POST
 	@Path("/{id}/account")
