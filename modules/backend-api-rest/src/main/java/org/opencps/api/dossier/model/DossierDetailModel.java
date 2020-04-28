@@ -202,7 +202,9 @@ import javax.xml.bind.annotation.XmlType;
     "serverNo",
     "systemId",
     "groupId",
-    "dossierCounter"
+    "dossierCounter",
+    "vnpostalStatus",
+    "vnpostalProfile"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -312,6 +314,24 @@ public class DossierDetailModel {
 	protected int systemId;
 	protected Long groupId;
 	protected String dossierCounter;
+	protected Integer vnpostalStatus;
+	protected String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;
