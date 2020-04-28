@@ -54,6 +54,8 @@ public class TrackClientSoap implements Serializable {
 		soapModel.setDesktop(model.isDesktop());
 		soapModel.setMobile(model.isMobile());
 		soapModel.setTablet(model.isTablet());
+		soapModel.setUserId(model.getUserId());
+		soapModel.setUserName(model.getUserName());
 
 		return soapModel;
 	}
@@ -286,6 +288,22 @@ public class TrackClientSoap implements Serializable {
 		_tablet = tablet;
 	}
 
+	public long getUserId() {
+		return _userId;
+	}
+
+	public void setUserId(long userId) {
+		_userId = userId;
+	}
+
+	public String getUserName() {
+		return _userName;
+	}
+
+	public void setUserName(String userName) {
+		_userName = userName;
+	}
+
 	private String _uuid;
 	private long _trackClientId;
 	private Date _createDate;
@@ -307,4 +325,6 @@ public class TrackClientSoap implements Serializable {
 	private boolean _desktop;
 	private boolean _mobile;
 	private boolean _tablet;
+	private long _userId;
+	private String _userName;
 }

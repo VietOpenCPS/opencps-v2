@@ -29,12 +29,15 @@ import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.UserTrackPathLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceResolver;
+import org.springframework.mobile.device.LiteDeviceResolver;
 
 @Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
 public class OpenCPSTraceAction extends Action {
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        System.out.println("### Start Post Trace Action ######################");
+        _log.info("### Start Post Trace Action ######################");
 		String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
 		String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
@@ -42,12 +45,28 @@ public class OpenCPSTraceAction extends Action {
         String cityName = StringPool.BLANK;
         String latitude = StringPool.BLANK;
         String longitude = StringPool.BLANK;
+        boolean isMobile = false;
+        boolean isDesktop = false;
+        boolean isTablet = false;
+        DeviceResolver resolver = new LiteDeviceResolver();
+        
+        Device currentDevice = resolver.resolveDevice(request);
+        if(currentDevice.isMobile()) { 
+        	/* Mobile */ 
+        	isMobile = true;
+        }
+        if(currentDevice.isTablet()) { 
+        	/* Tablet */ 
+        	isTablet = true;
+        }
+        if(currentDevice.isNormal()) { 
+        	/* Desktop */ 
+        	isDesktop = true;
+        }
         
 		try {
 //        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
 			File database = new File(UserMgtConfigUtil.getGeoDBPath());
-			File curDir = new File(".");
-			System.out.println(curDir.getAbsolutePath());
 			DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
 			InetAddress ipAddress = InetAddress.getByName(clientIP);
 	        CityResponse cityResponse = dbReader.city(ipAddress);
@@ -59,10 +78,8 @@ public class OpenCPSTraceAction extends Action {
 	        		cityResponse.getLocation().getLongitude().toString();
 	        
 		} catch (IOException e) {
-			e.printStackTrace();
 			_log.debug(e);
 		} catch (GeoIp2Exception e) {
-			e.printStackTrace();
 			_log.debug(e);
 		}
         Calendar c = Calendar.getInstance();
@@ -72,8 +89,8 @@ public class OpenCPSTraceAction extends Action {
         Date now = new Date();
         
 		if (UserMgtConfigUtil.isTrackClientEnable()) {
-			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, true, false, false);
-			TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl, year, month, day, cityName, true, false, false);
+			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, isDesktop, isMobile, isTablet);
+			TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl, year, month, day, cityName, isDesktop, isMobile, isTablet);
 		}
 		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
@@ -96,7 +113,7 @@ public class OpenCPSTraceAction extends Action {
 				_log.debug(e);
 			}
 		}
-        System.out.println("### End Post Trace Action ######################");
+        _log.info("### End Post Trace Action ######################");
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(OpenCPSTraceAction.class);

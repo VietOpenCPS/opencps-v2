@@ -5,6 +5,6 @@
         <priority value="DEBUG" />
     </category>
     <category name="org.opencps.usermgt">
-        <priority value="DEBUG" />
+        <priority value="INFO" />
     </category>
 </log4j:configuration>

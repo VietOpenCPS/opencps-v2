@@ -79,6 +79,8 @@ public class TrackClientWrapper implements TrackClient,
 		attributes.put("desktop", isDesktop());
 		attributes.put("mobile", isMobile());
 		attributes.put("tablet", isTablet());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
 
 		return attributes;
 	}
@@ -209,6 +211,18 @@ public class TrackClientWrapper implements TrackClient,
 
 		if (tablet != null) {
 			setTablet(tablet);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
 		}
 	}
 
@@ -420,6 +434,36 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public String getUrl() {
 		return _trackClient.getUrl();
+	}
+
+	/**
+	* Returns the user ID of this track client.
+	*
+	* @return the user ID of this track client
+	*/
+	@Override
+	public long getUserId() {
+		return _trackClient.getUserId();
+	}
+
+	/**
+	* Returns the user name of this track client.
+	*
+	* @return the user name of this track client
+	*/
+	@Override
+	public String getUserName() {
+		return _trackClient.getUserName();
+	}
+
+	/**
+	* Returns the user uuid of this track client.
+	*
+	* @return the user uuid of this track client
+	*/
+	@Override
+	public String getUserUuid() {
+		return _trackClient.getUserUuid();
 	}
 
 	/**
@@ -726,6 +770,36 @@ public class TrackClientWrapper implements TrackClient,
 	@Override
 	public void setUrl(String url) {
 		_trackClient.setUrl(url);
+	}
+
+	/**
+	* Sets the user ID of this track client.
+	*
+	* @param userId the user ID of this track client
+	*/
+	@Override
+	public void setUserId(long userId) {
+		_trackClient.setUserId(userId);
+	}
+
+	/**
+	* Sets the user name of this track client.
+	*
+	* @param userName the user name of this track client
+	*/
+	@Override
+	public void setUserName(String userName) {
+		_trackClient.setUserName(userName);
+	}
+
+	/**
+	* Sets the user uuid of this track client.
+	*
+	* @param userUuid the user uuid of this track client
+	*/
+	@Override
+	public void setUserUuid(String userUuid) {
+		_trackClient.setUserUuid(userUuid);
 	}
 
 	/**

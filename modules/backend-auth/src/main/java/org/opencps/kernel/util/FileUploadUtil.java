@@ -3,7 +3,9 @@ package org.opencps.kernel.util;
 
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -11,12 +13,16 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
 
 import backend.utils.DLFolderUtil;
 
@@ -146,5 +152,29 @@ public class FileUploadUtil {
 		PermissionChecker checker = PermissionCheckerFactoryUtil.create(user);
 		PermissionThreadLocal.setPermissionChecker(checker);
 
+	}
+	
+	public static String getFileEntryPreviewPath(long fileEntryId) {
+		FileEntry fileEntry;
+		try {
+			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+			String fileName = "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH + fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle();
+			return fileName;
+		} catch (PortalException e) {
+		}
+		
+		return StringPool.BLANK;
+	}
+
+	public static String getFileEntryPreviewPath(long fileEntryId, HttpServletRequest request) {
+		FileEntry fileEntry;
+		try {
+			fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+			String fileName = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+			return fileName;
+		} catch (PortalException e) {
+		}
+		
+		return StringPool.BLANK;
 	}
 }

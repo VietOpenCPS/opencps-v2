@@ -3,6 +3,9 @@ package org.opencps.dossiermgt.constants;
 public class VnpostCollectionTerm {
 
 	public static final String VNPOST_BASE_PATH = "postal/collectvnpost";
+	public static final String VNPOST_INFO = "vnpostInfo";
+	public static final String VNPOST_RESULT = "result";
+
 	public static final Integer VNPOSTAL_STAUS_0 = 0; // không sử dụng dịch vụ
 	public static final Integer VNPOSTAL_STAUS_1 = 1; // đăng ký sử dụng dịch vụ
 	public static final Integer VNPOSTAL_STAUS_2 = 2; // Đang đi gom hồ sơ

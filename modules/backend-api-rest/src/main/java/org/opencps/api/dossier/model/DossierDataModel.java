@@ -208,7 +208,9 @@ import javax.xml.bind.annotation.XmlType;
     "timeOverdueText",
     "systemId",
     "serviceLevel",
-    "dossierCounter"
+    "dossierCounter",
+    "vnpostalStatus",
+    "vnpostalProfile"
 })
 public class DossierDataModel {
 
@@ -323,6 +325,24 @@ public class DossierDataModel {
     protected Integer systemId;
     protected int serviceLevel;
     protected String dossierCounter;
+    protected Integer vnpostalStatus;
+    protected String vnpostalProfile;
+
+	public Integer getVnpostalStatus() {
+		return vnpostalStatus;
+	}
+
+	public void setVnpostalStatus(Integer vnpostalStatus) {
+		this.vnpostalStatus = vnpostalStatus;
+	}
+
+	public String getVnpostalProfile() {
+		return vnpostalProfile;
+	}
+
+	public void setVnpostalProfile(String vnpostalProfile) {
+		this.vnpostalProfile = vnpostalProfile;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;

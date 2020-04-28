@@ -226,6 +226,13 @@ public interface TrackClientLocalService extends BaseLocalService,
 		String nation, String latitude, String longitude, long timeOnPage,
 		boolean desktop, boolean mobile, boolean tablet);
 
+	public TrackClient updateTrackClient(long trackClientId, String sessionId,
+		String url, int year, int month, int day, Date visitDate,
+		Date leaveDate, String clientIP, String macAddress, String region,
+		String nation, String latitude, String longitude, long timeOnPage,
+		boolean desktop, boolean mobile, boolean tablet, long userId,
+		String userName);
+
 	/**
 	* Updates the track client in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

@@ -2,7 +2,6 @@ package org.opencps.event.message;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -14,7 +13,9 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
@@ -27,7 +28,7 @@ import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 public class VnpostCollectionEvent implements MessageListener {
-	
+
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
@@ -36,7 +37,7 @@ public class VnpostCollectionEvent implements MessageListener {
 			_log.error("Unable to process message " + message, e);
 		}
 	}
-	
+
 	private void _doReceiveRequest(Message message) throws PortalException {
 
 		JSONObject dossierObj = (JSONObject) message.get(DossierTerm.CONSTANT_DOSSIER);
@@ -47,8 +48,7 @@ public class VnpostCollectionEvent implements MessageListener {
 		String refId = dossierObj.getString(DossierTerm.REFERENCE_UID);
 		if (dossierId != 0) {
 			dossier = DossierLocalServiceUtil.getDossier(dossierId);
-		}
-		else {
+		} else {
 			dossier = DossierLocalServiceUtil.getByRef(groupId, refId);
 		}
 		if (dossier.getVnpostalStatus() != 1) {
@@ -60,29 +60,45 @@ public class VnpostCollectionEvent implements MessageListener {
 		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
-		params.put(VnpostCollectionTerm.ORDER_NUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO) + StringPool.DOUBLE_UNDERLINE + Math.random());
+		params.put(VnpostCollectionTerm.ORDER_NUMBER,
+				dossierObj.getString(DossierTerm.DOSSIER_NO) + StringPool.DOUBLE_UNDERLINE + Math.random());
 		params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
 		params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
 		params.put(VnpostCollectionTerm.COD_AMOUNT, 0);
-		params.put(VnpostCollectionTerm.SENDER_PROVINCE, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_CITY_CODE));
-		params.put(VnpostCollectionTerm.SENDER_DISTRICT, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_DISTRICT_CODE));
+		params.put(VnpostCollectionTerm.SENDER_PROVINCE,
+				vnpostProfile.getString(VnpostCollectionTerm.PROFILE_CITY_CODE));
+		params.put(VnpostCollectionTerm.SENDER_DISTRICT,
+				vnpostProfile.getString(VnpostCollectionTerm.PROFILE_DISTRICT_CODE));
 		params.put(VnpostCollectionTerm.SENDER_ADDRESS, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_ADDRESS));
 		params.put(VnpostCollectionTerm.SENDER_NAME, dossierObj.getString(DossierTerm.DELEGATE_NAME));
 		params.put(VnpostCollectionTerm.SENDER_MAIL, dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
 		params.put(VnpostCollectionTerm.SENDER_TEL, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_TEL_NO));
 		params.put(VnpostCollectionTerm.SENDER_DESC, dossierObj.getString(DossierTerm.APPLICANT_NAME));
-		params.put(VnpostCollectionTerm.DESCRIPTION, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_SERVICE_NAME));
-		
+		params.put(VnpostCollectionTerm.DESCRIPTION,
+				vnpostProfile.getString(VnpostCollectionTerm.PROFILE_SERVICE_NAME));
+
 		ServiceContext context = null;
-		
+
 		JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 				VnpostCollectionTerm.VNPOST_BASE_PATH, "", "", properties, params, context);
 		_log.debug("baseUrl: " + baseUrl + "      " + VnpostCollectionTerm.VNPOST_BASE_PATH);
 		_log.debug("Call post API SEND VNPOST result: " + resultObj.toJSONString());
 		_log.debug(params);
-		if(resultObj != null) {
+		if (resultObj != null) {
 			dossier.setVnpostalStatus(VnpostCollectionTerm.VNPOSTAL_STAUS_2);
-
+			vnpostProfile.put(VnpostCollectionTerm.VNPOST_RESULT, resultObj);
+			@SuppressWarnings("rawtypes")
+			Set set = params.entrySet();
+			@SuppressWarnings("rawtypes")
+			Iterator iterator = set.iterator();
+			JSONObject vnpostInfo = JSONFactoryUtil.createJSONObject();
+			while (iterator.hasNext()) {
+				@SuppressWarnings("rawtypes")
+				Map.Entry mentry = (Map.Entry) iterator.next();
+				vnpostInfo.put(String.valueOf(mentry.getKey()), mentry.getValue());
+			}
+			vnpostProfile.put(VnpostCollectionTerm.VNPOST_INFO, vnpostInfo);
+			dossier.setVnpostalProfile(vnpostProfile.toString());
 			DossierLocalServiceUtil.updateDossier(dossier);
 		}
 	}

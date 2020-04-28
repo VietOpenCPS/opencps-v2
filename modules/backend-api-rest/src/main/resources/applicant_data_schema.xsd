@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:complexType name="ApplicantDataModel">
+		<xsd:sequence>
+			<xsd:element name="applicantDataId" type="xsd:long" />
+			<xsd:element name="groupId" type="xsd:long" />
+			<xsd:element name="userId" type="xsd:long" />
+			<xsd:element name="createDate" type="xsd:string" />
+			<xsd:element name="modifiedDate" type="xsd:string" />
+			<xsd:element name="userName" type="xsd:string" />
+			<xsd:element name="fileTemplateNo" type="xsd:string" />
+			<xsd:element name="fileNo" type="xsd:string" />
+			<xsd:element name="fileName" type="xsd:string" />
+			<xsd:element name="fileEntryId" type="xsd:long" />
+			<xsd:element name="filePath" type="xsd:string" />
+			<xsd:element name="metadata" type="xsd:string" />
+			<xsd:element name="status" type="xsd:int" />
+			<xsd:element name="applicantIdNo" type="xsd:string" />
+			<xsd:element name="applicantDataType" type="xsd:int" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="ApplicantDataDetailModel">
+		<xsd:complexType>
+			<xsd:sequence>
+			<xsd:element name="applicantDataId" type="xsd:long" />
+			<xsd:element name="groupId" type="xsd:long" />
+			<xsd:element name="userId" type="xsd:long" />
+			<xsd:element name="createDate" type="xsd:string" />
+			<xsd:element name="modifiedDate" type="xsd:string" />
+			<xsd:element name="userName" type="xsd:string" />
+			<xsd:element name="fileTemplateNo" type="xsd:string" />
+			<xsd:element name="fileNo" type="xsd:string" />
+			<xsd:element name="fileName" type="xsd:string" />
+			<xsd:element name="fileEntryId" type="xsd:long" />
+			<xsd:element name="metadata" type="xsd:string" />
+			<xsd:element name="status" type="xsd:int" />
+			<xsd:element name="applicantIdNo" type="xsd:string" />
+			<xsd:element name="applicantDataType" type="xsd:int" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="ApplicantDataInputModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fileNo" type="xsd:string" minOccurs="1" />
+				<xsd:element name="fileName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="ApplicantDataResultsModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="total" type="xsd:int" minOccurs="0" />
+				<xsd:element name="data" type="ApplicantDataModel"
+					minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="ApplicantDataSearchModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<!-- default -->
+				<xsd:element name="keyword" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="fileNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="status" type="xsd:string" minOccurs="0" />
+				<xsd:element name="applicantDataType" type="xsd:string" minOccurs="0" />
+				<xsd:element name="start" type="xsd:int" minOccurs="0" />
+				<xsd:element name="end" type="xsd:int" minOccurs="0" />
+				<xsd:element name="sort" type="xsd:string" minOccurs="0" />
+				<xsd:element name="order" type="xsd:string" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

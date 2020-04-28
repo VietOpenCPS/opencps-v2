@@ -815,7 +815,31 @@
 		</finder>
 		
 	</entity>
-	
+
+	<entity name="ApplicantData" uuid="true" local-service="true"
+		remote-service="false" table="opencps_applicant_data">
+		<!-- PK fields -->
+		<column name="applicantDataId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="companyId" type="long"/>
+		<column name="groupId" type="long"/>
+		<column name="userId" type="long"/>
+		<column name="userName" type="String"/>
+		
+		<column name="fileTemplateNo" type="String"/>
+		<column name="fileNo" type="String"/>
+		<column name="fileName" type="String"/>
+		<column name="fileEntryId" type="long"/>
+		<column name="metadata" type="String"/>
+		<column name="status" type="int"/>
+		<column name="applicantIdNo" type="String"/>
+		<column name="applicantDataType" type="int"/>
+		
+	</entity>
+		
 	<entity name="TrackClient" uuid="true" local-service="true"
 		remote-service="false" table="opencps_track_client">
 
@@ -844,6 +868,8 @@
 		<column name="desktop" type="boolean" />
 		<column name="mobile" type="boolean" />
 		<column name="tablet" type="boolean" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
 		
 		<!-- Order -->
 		<order by="asc">

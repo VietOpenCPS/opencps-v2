@@ -65,7 +65,7 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -109,6 +109,10 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		sb.append(mobile);
 		sb.append(", tablet=");
 		sb.append(tablet);
+		sb.append(", userId=");
+		sb.append(userId);
+		sb.append(", userName=");
+		sb.append(userName);
 		sb.append("}");
 
 		return sb.toString();
@@ -219,6 +223,14 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		trackClientImpl.setDesktop(desktop);
 		trackClientImpl.setMobile(mobile);
 		trackClientImpl.setTablet(tablet);
+		trackClientImpl.setUserId(userId);
+
+		if (userName == null) {
+			trackClientImpl.setUserName("");
+		}
+		else {
+			trackClientImpl.setUserName(userName);
+		}
 
 		trackClientImpl.resetOriginalValues();
 
@@ -256,6 +268,9 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		mobile = objectInput.readBoolean();
 
 		tablet = objectInput.readBoolean();
+
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
 	}
 
 	@Override
@@ -343,6 +358,15 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 		objectOutput.writeBoolean(mobile);
 
 		objectOutput.writeBoolean(tablet);
+
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
 	}
 
 	public String uuid;
@@ -366,4 +390,6 @@ public class TrackClientCacheModel implements CacheModel<TrackClient>,
 	public boolean desktop;
 	public boolean mobile;
 	public boolean tablet;
+	public long userId;
+	public String userName;
 }

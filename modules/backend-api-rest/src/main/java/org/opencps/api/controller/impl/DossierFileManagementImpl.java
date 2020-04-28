@@ -196,7 +196,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
