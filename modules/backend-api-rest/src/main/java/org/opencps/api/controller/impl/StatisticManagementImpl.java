@@ -373,7 +373,6 @@ public class StatisticManagementImpl implements StatisticManagement {
 												statistic.put(StepConfigTerm.MENU_GROUP, menuConfig.getMenuGroup());
 												statistic.put(StepConfigTerm.TOTAL_COUNT, totalGroup);
 												statistics.put(statistic);
-												_log.info("=============statistic222222222===========" + statistic);
 											} else {
 												StepConfig step = StepConfigLocalServiceUtil.getByCode(groupId, paramSplit[1]);
 												//
