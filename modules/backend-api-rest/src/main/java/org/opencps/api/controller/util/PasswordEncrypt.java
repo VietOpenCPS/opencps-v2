@@ -11,7 +11,7 @@ import java.security.spec.KeySpec;
 public class PasswordEncrypt {
 
 	/** Password encryption secret key */
-	private static final String ENCRYPTION_SECRET_KEY = "DLDC!@#DVC2020@@@";
+	private static final String ENCRYPTION_SECRET_KEY = "DT-2020";
 
 	/** Password encryption algorithm */
 	private static final String ENCRYPTION_ALGORITHM = "AES";

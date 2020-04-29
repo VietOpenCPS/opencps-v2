@@ -56,6 +56,9 @@ public interface ApplicantActions {
 
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException;
+
+	public Applicant activationLGSPApplicant(ServiceContext context, long applicantId, String activationCode)
+			throws PortalException;
 	
 	public Applicant lockApplicant(ServiceContext context, long applicantId)
 			throws PortalException;
@@ -82,4 +85,5 @@ public String getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, C
 	public Applicant verifyApplicant(long applicantId) throws PortalException;
 	public JSONObject updateAccountEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String oldEmail, String newEmail);
+
 }
