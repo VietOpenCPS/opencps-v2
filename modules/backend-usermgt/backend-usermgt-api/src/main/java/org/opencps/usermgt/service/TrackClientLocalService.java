@@ -169,6 +169,21 @@ public interface TrackClientLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public TrackClient fetchTrackClient(long trackClientId);
 
+	public List<TrackClient> findByS(String sessionId, int start, int end);
+
+	public List<TrackClient> findByS(String sessionId, int start, int end,
+		OrderByComparator<TrackClient> orderBy);
+
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate);
+
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate,
+		int start, int end);
+
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate);
+
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
+		int start, int end);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

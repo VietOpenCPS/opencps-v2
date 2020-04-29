@@ -428,7 +428,7 @@ public class DossierActionsImpl implements DossierActions {
 //		String auto = GetterUtil.getString(params.get(DossierActionTerm.AUTO));
 //		_log.info("auto =: " + auto);
 		long dossierId = GetterUtil.getLong(params.get(DossierTerm.DOSSIER_ID));
-//		_log.info("dossierId =: " + dossierId);
+		_log.debug("dossierId =: " + dossierId);
 
 		DossierAction dossierAction = null;
 		List<ProcessAction> processActionList = null;
@@ -445,7 +445,7 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 		
-//		_log.info("dossier: "+dossier);
+		_log.debug("dossier: "+dossier);
 		try {
 			if (dossier != null) {
 				long serviceProcessId = 0;
@@ -486,8 +486,8 @@ public class DossierActionsImpl implements DossierActions {
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
-					// _log.info("User id: " + userId);
-//					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
+					 _log.debug("User id: " + userId);
+					 _log.debug("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
@@ -496,6 +496,7 @@ public class DossierActionsImpl implements DossierActions {
 						}
 					}
 					if (dActionUser != null) {
+						 _log.debug("Dossier action user :" + dActionUser.getAssigned() + ", " + dossierAction.getPending());
 						int assign = dActionUser.getAssigned();
 						if (assign == 1 && !pending)
 							enable = 1;
@@ -517,7 +518,7 @@ public class DossierActionsImpl implements DossierActions {
 							enable = 1;
 						}
 					}
-					// _log.info("Enable: " + enable);
+					 _log.debug("Enable: " + enable);
 					processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
 							serviceProcessId, stepCode);
 					// _log.info("processActionList:
