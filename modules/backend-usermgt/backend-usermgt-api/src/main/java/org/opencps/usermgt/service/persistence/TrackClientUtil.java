@@ -27,6 +27,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -264,6 +265,512 @@ public class TrackClientUtil {
 	*/
 	public static int countByUuid(String uuid) {
 		return getPersistence().countByUuid(uuid);
+	}
+
+	/**
+	* Returns all the track clients where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @return the matching track clients
+	*/
+	public static List<TrackClient> findByS(String sessionId) {
+		return getPersistence().findByS(sessionId);
+	}
+
+	/**
+	* Returns a range of all the track clients where sessionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @return the range of matching track clients
+	*/
+	public static List<TrackClient> findByS(String sessionId, int start, int end) {
+		return getPersistence().findByS(sessionId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS(String sessionId, int start,
+		int end, OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence().findByS(sessionId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS(String sessionId, int start,
+		int end, OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByS(sessionId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_First(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence().findByS_First(sessionId, orderByComparator);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_First(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence().fetchByS_First(sessionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_Last(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence().findByS_Last(sessionId, orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_Last(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence().fetchByS_Last(sessionId, orderByComparator);
+	}
+
+	/**
+	* Returns the track clients before and after the current track client in the ordered set where sessionId = &#63;.
+	*
+	* @param trackClientId the primary key of the current track client
+	* @param sessionId the session ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next track client
+	* @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	*/
+	public static TrackClient[] findByS_PrevAndNext(long trackClientId,
+		String sessionId, OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_PrevAndNext(trackClientId, sessionId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the track clients where sessionId = &#63; from the database.
+	*
+	* @param sessionId the session ID
+	*/
+	public static void removeByS(String sessionId) {
+		getPersistence().removeByS(sessionId);
+	}
+
+	/**
+	* Returns the number of track clients where sessionId = &#63;.
+	*
+	* @param sessionId the session ID
+	* @return the number of matching track clients
+	*/
+	public static int countByS(String sessionId) {
+		return getPersistence().countByS(sessionId);
+	}
+
+	/**
+	* Returns all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @return the matching track clients
+	*/
+	public static List<TrackClient> findByS_NULL_L(String sessionId,
+		Date leaveDate) {
+		return getPersistence().findByS_NULL_L(sessionId, leaveDate);
+	}
+
+	/**
+	* Returns a range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @return the range of matching track clients
+	*/
+	public static List<TrackClient> findByS_NULL_L(String sessionId,
+		Date leaveDate, int start, int end) {
+		return getPersistence().findByS_NULL_L(sessionId, leaveDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS_NULL_L(String sessionId,
+		Date leaveDate, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .findByS_NULL_L(sessionId, leaveDate, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS_NULL_L(String sessionId,
+		Date leaveDate, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByS_NULL_L(sessionId, leaveDate, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_NULL_L_First(String sessionId,
+		Date leaveDate, OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_NULL_L_First(sessionId, leaveDate, orderByComparator);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_NULL_L_First(String sessionId,
+		Date leaveDate, OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .fetchByS_NULL_L_First(sessionId, leaveDate,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_NULL_L_Last(String sessionId,
+		Date leaveDate, OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_NULL_L_Last(sessionId, leaveDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_NULL_L_Last(String sessionId,
+		Date leaveDate, OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .fetchByS_NULL_L_Last(sessionId, leaveDate, orderByComparator);
+	}
+
+	/**
+	* Returns the track clients before and after the current track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param trackClientId the primary key of the current track client
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next track client
+	* @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	*/
+	public static TrackClient[] findByS_NULL_L_PrevAndNext(long trackClientId,
+		String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_NULL_L_PrevAndNext(trackClientId, sessionId,
+			leaveDate, orderByComparator);
+	}
+
+	/**
+	* Removes all the track clients where sessionId = &#63; and leaveDate = &#63; from the database.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	*/
+	public static void removeByS_NULL_L(String sessionId, Date leaveDate) {
+		getPersistence().removeByS_NULL_L(sessionId, leaveDate);
+	}
+
+	/**
+	* Returns the number of track clients where sessionId = &#63; and leaveDate = &#63;.
+	*
+	* @param sessionId the session ID
+	* @param leaveDate the leave date
+	* @return the number of matching track clients
+	*/
+	public static int countByS_NULL_L(String sessionId, Date leaveDate) {
+		return getPersistence().countByS_NULL_L(sessionId, leaveDate);
+	}
+
+	/**
+	* Returns all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @return the matching track clients
+	*/
+	public static List<TrackClient> findByS_LVD(String sessionId, Date visitDate) {
+		return getPersistence().findByS_LVD(sessionId, visitDate);
+	}
+
+	/**
+	* Returns a range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @return the range of matching track clients
+	*/
+	public static List<TrackClient> findByS_LVD(String sessionId,
+		Date visitDate, int start, int end) {
+		return getPersistence().findByS_LVD(sessionId, visitDate, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS_LVD(String sessionId,
+		Date visitDate, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .findByS_LVD(sessionId, visitDate, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param start the lower bound of the range of track clients
+	* @param end the upper bound of the range of track clients (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching track clients
+	*/
+	public static List<TrackClient> findByS_LVD(String sessionId,
+		Date visitDate, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByS_LVD(sessionId, visitDate, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_LVD_First(String sessionId,
+		Date visitDate, OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_LVD_First(sessionId, visitDate, orderByComparator);
+	}
+
+	/**
+	* Returns the first track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_LVD_First(String sessionId,
+		Date visitDate, OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .fetchByS_LVD_First(sessionId, visitDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client
+	* @throws NoSuchTrackClientException if a matching track client could not be found
+	*/
+	public static TrackClient findByS_LVD_Last(String sessionId,
+		Date visitDate, OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_LVD_Last(sessionId, visitDate, orderByComparator);
+	}
+
+	/**
+	* Returns the last track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	*/
+	public static TrackClient fetchByS_LVD_Last(String sessionId,
+		Date visitDate, OrderByComparator<TrackClient> orderByComparator) {
+		return getPersistence()
+				   .fetchByS_LVD_Last(sessionId, visitDate, orderByComparator);
+	}
+
+	/**
+	* Returns the track clients before and after the current track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param trackClientId the primary key of the current track client
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next track client
+	* @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	*/
+	public static TrackClient[] findByS_LVD_PrevAndNext(long trackClientId,
+		String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchTrackClientException {
+		return getPersistence()
+				   .findByS_LVD_PrevAndNext(trackClientId, sessionId,
+			visitDate, orderByComparator);
+	}
+
+	/**
+	* Removes all the track clients where sessionId = &#63; and visitDate &lt; &#63; from the database.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	*/
+	public static void removeByS_LVD(String sessionId, Date visitDate) {
+		getPersistence().removeByS_LVD(sessionId, visitDate);
+	}
+
+	/**
+	* Returns the number of track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	*
+	* @param sessionId the session ID
+	* @param visitDate the visit date
+	* @return the number of matching track clients
+	*/
+	public static int countByS_LVD(String sessionId, Date visitDate) {
+		return getPersistence().countByS_LVD(sessionId, visitDate);
 	}
 
 	/**

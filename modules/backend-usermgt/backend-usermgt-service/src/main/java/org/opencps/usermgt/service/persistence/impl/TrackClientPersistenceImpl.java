@@ -47,6 +47,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.sql.Timestamp;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,7 +107,7 @@ public class TrackClientPersistenceImpl extends BasePersistenceImpl<TrackClient>
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
 			new String[] { String.class.getName() },
 			TrackClientModelImpl.UUID_COLUMN_BITMASK |
-			TrackClientModelImpl.CREATEDATE_COLUMN_BITMASK);
+			TrackClientModelImpl.VISITDATE_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
 			TrackClientModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
@@ -635,6 +637,1780 @@ public class TrackClientPersistenceImpl extends BasePersistenceImpl<TrackClient>
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "trackClient.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "trackClient.uuid = ?";
 	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(trackClient.uuid IS NULL OR trackClient.uuid = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_S = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, TrackClientImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, TrackClientImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByS",
+			new String[] { String.class.getName() },
+			TrackClientModelImpl.SESSIONID_COLUMN_BITMASK |
+			TrackClientModelImpl.VISITDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_S = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByS",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns all the track clients where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @return the matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS(String sessionId) {
+		return findByS(sessionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the track clients where sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @return the range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS(String sessionId, int start, int end) {
+		return findByS(sessionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS(String sessionId, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator) {
+		return findByS(sessionId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS(String sessionId, int start, int end,
+		OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S;
+			finderArgs = new Object[] { sessionId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_S;
+			finderArgs = new Object[] { sessionId, start, end, orderByComparator };
+		}
+
+		List<TrackClient> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<TrackClient>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (TrackClient trackClient : list) {
+					if (!Objects.equals(sessionId, trackClient.getSessionId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_SESSIONID_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				if (!pagination) {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_First(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_First(sessionId, orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_First(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator) {
+		List<TrackClient> list = findByS(sessionId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_Last(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_Last(sessionId, orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_Last(String sessionId,
+		OrderByComparator<TrackClient> orderByComparator) {
+		int count = countByS(sessionId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<TrackClient> list = findByS(sessionId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the track clients before and after the current track client in the ordered set where sessionId = &#63;.
+	 *
+	 * @param trackClientId the primary key of the current track client
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next track client
+	 * @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	 */
+	@Override
+	public TrackClient[] findByS_PrevAndNext(long trackClientId,
+		String sessionId, OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = findByPrimaryKey(trackClientId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			TrackClient[] array = new TrackClientImpl[3];
+
+			array[0] = getByS_PrevAndNext(session, trackClient, sessionId,
+					orderByComparator, true);
+
+			array[1] = trackClient;
+
+			array[2] = getByS_PrevAndNext(session, trackClient, sessionId,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected TrackClient getByS_PrevAndNext(Session session,
+		TrackClient trackClient, String sessionId,
+		OrderByComparator<TrackClient> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+		boolean bindSessionId = false;
+
+		if (sessionId == null) {
+			query.append(_FINDER_COLUMN_S_SESSIONID_1);
+		}
+		else if (sessionId.equals("")) {
+			query.append(_FINDER_COLUMN_S_SESSIONID_3);
+		}
+		else {
+			bindSessionId = true;
+
+			query.append(_FINDER_COLUMN_S_SESSIONID_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindSessionId) {
+			qPos.add(sessionId);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(trackClient);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<TrackClient> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the track clients where sessionId = &#63; from the database.
+	 *
+	 * @param sessionId the session ID
+	 */
+	@Override
+	public void removeByS(String sessionId) {
+		for (TrackClient trackClient : findByS(sessionId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(trackClient);
+		}
+	}
+
+	/**
+	 * Returns the number of track clients where sessionId = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @return the number of matching track clients
+	 */
+	@Override
+	public int countByS(String sessionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_S;
+
+		Object[] finderArgs = new Object[] { sessionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_SESSIONID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_S_SESSIONID_1 = "trackClient.sessionId IS NULL";
+	private static final String _FINDER_COLUMN_S_SESSIONID_2 = "trackClient.sessionId = ?";
+	private static final String _FINDER_COLUMN_S_SESSIONID_3 = "(trackClient.sessionId IS NULL OR trackClient.sessionId = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_S_NULL_L = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, TrackClientImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_NULL_L",
+			new String[] {
+				String.class.getName(), Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L =
+		new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, TrackClientImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByS_NULL_L",
+			new String[] { String.class.getName(), Date.class.getName() },
+			TrackClientModelImpl.SESSIONID_COLUMN_BITMASK |
+			TrackClientModelImpl.LEAVEDATE_COLUMN_BITMASK |
+			TrackClientModelImpl.VISITDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_S_NULL_L = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByS_NULL_L",
+			new String[] { String.class.getName(), Date.class.getName() });
+
+	/**
+	 * Returns all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @return the matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate) {
+		return findByS_NULL_L(sessionId, leaveDate, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @return the range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
+		int start, int end) {
+		return findByS_NULL_L(sessionId, leaveDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
+		int start, int end, OrderByComparator<TrackClient> orderByComparator) {
+		return findByS_NULL_L(sessionId, leaveDate, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
+		int start, int end, OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L;
+			finderArgs = new Object[] { sessionId, _getTime(leaveDate) };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_S_NULL_L;
+			finderArgs = new Object[] {
+					sessionId, _getTime(leaveDate),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<TrackClient> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<TrackClient>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (TrackClient trackClient : list) {
+					if (!Objects.equals(sessionId, trackClient.getSessionId()) ||
+							!Objects.equals(leaveDate,
+								trackClient.getLeaveDate())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_2);
+			}
+
+			boolean bindLeaveDate = false;
+
+			if (leaveDate == null) {
+				query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_1);
+			}
+			else {
+				bindLeaveDate = true;
+
+				query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				if (bindLeaveDate) {
+					qPos.add(new Timestamp(leaveDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_NULL_L_First(String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_NULL_L_First(sessionId, leaveDate,
+				orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append(", leaveDate=");
+		msg.append(leaveDate);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_NULL_L_First(String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator) {
+		List<TrackClient> list = findByS_NULL_L(sessionId, leaveDate, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_NULL_L_Last(String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_NULL_L_Last(sessionId, leaveDate,
+				orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append(", leaveDate=");
+		msg.append(leaveDate);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_NULL_L_Last(String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator) {
+		int count = countByS_NULL_L(sessionId, leaveDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<TrackClient> list = findByS_NULL_L(sessionId, leaveDate,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the track clients before and after the current track client in the ordered set where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param trackClientId the primary key of the current track client
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next track client
+	 * @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	 */
+	@Override
+	public TrackClient[] findByS_NULL_L_PrevAndNext(long trackClientId,
+		String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = findByPrimaryKey(trackClientId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			TrackClient[] array = new TrackClientImpl[3];
+
+			array[0] = getByS_NULL_L_PrevAndNext(session, trackClient,
+					sessionId, leaveDate, orderByComparator, true);
+
+			array[1] = trackClient;
+
+			array[2] = getByS_NULL_L_PrevAndNext(session, trackClient,
+					sessionId, leaveDate, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected TrackClient getByS_NULL_L_PrevAndNext(Session session,
+		TrackClient trackClient, String sessionId, Date leaveDate,
+		OrderByComparator<TrackClient> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+		boolean bindSessionId = false;
+
+		if (sessionId == null) {
+			query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_1);
+		}
+		else if (sessionId.equals("")) {
+			query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_3);
+		}
+		else {
+			bindSessionId = true;
+
+			query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_2);
+		}
+
+		boolean bindLeaveDate = false;
+
+		if (leaveDate == null) {
+			query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_1);
+		}
+		else {
+			bindLeaveDate = true;
+
+			query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindSessionId) {
+			qPos.add(sessionId);
+		}
+
+		if (bindLeaveDate) {
+			qPos.add(new Timestamp(leaveDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(trackClient);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<TrackClient> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the track clients where sessionId = &#63; and leaveDate = &#63; from the database.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 */
+	@Override
+	public void removeByS_NULL_L(String sessionId, Date leaveDate) {
+		for (TrackClient trackClient : findByS_NULL_L(sessionId, leaveDate,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(trackClient);
+		}
+	}
+
+	/**
+	 * Returns the number of track clients where sessionId = &#63; and leaveDate = &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param leaveDate the leave date
+	 * @return the number of matching track clients
+	 */
+	@Override
+	public int countByS_NULL_L(String sessionId, Date leaveDate) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_S_NULL_L;
+
+		Object[] finderArgs = new Object[] { sessionId, _getTime(leaveDate) };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_NULL_L_SESSIONID_2);
+			}
+
+			boolean bindLeaveDate = false;
+
+			if (leaveDate == null) {
+				query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_1);
+			}
+			else {
+				bindLeaveDate = true;
+
+				query.append(_FINDER_COLUMN_S_NULL_L_LEAVEDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				if (bindLeaveDate) {
+					qPos.add(new Timestamp(leaveDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_S_NULL_L_SESSIONID_1 = "trackClient.sessionId IS NULL AND ";
+	private static final String _FINDER_COLUMN_S_NULL_L_SESSIONID_2 = "trackClient.sessionId = ? AND ";
+	private static final String _FINDER_COLUMN_S_NULL_L_SESSIONID_3 = "(trackClient.sessionId IS NULL OR trackClient.sessionId = '') AND ";
+	private static final String _FINDER_COLUMN_S_NULL_L_LEAVEDATE_1 = "trackClient.leaveDate IS NULL AND trackClient.leaveDate IS NULL";
+	private static final String _FINDER_COLUMN_S_NULL_L_LEAVEDATE_2 = "trackClient.leaveDate = ? AND trackClient.leaveDate IS NULL";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_S_LVD = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, TrackClientImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_LVD",
+			new String[] {
+				String.class.getName(), Date.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_S_LVD = new FinderPath(TrackClientModelImpl.ENTITY_CACHE_ENABLED,
+			TrackClientModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByS_LVD",
+			new String[] { String.class.getName(), Date.class.getName() });
+
+	/**
+	 * Returns all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @return the matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate) {
+		return findByS_LVD(sessionId, visitDate, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @return the range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate,
+		int start, int end) {
+		return findByS_LVD(sessionId, visitDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate,
+		int start, int end, OrderByComparator<TrackClient> orderByComparator) {
+		return findByS_LVD(sessionId, visitDate, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param start the lower bound of the range of track clients
+	 * @param end the upper bound of the range of track clients (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching track clients
+	 */
+	@Override
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate,
+		int start, int end, OrderByComparator<TrackClient> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_S_LVD;
+		finderArgs = new Object[] {
+				sessionId, _getTime(visitDate),
+				
+				start, end, orderByComparator
+			};
+
+		List<TrackClient> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<TrackClient>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (TrackClient trackClient : list) {
+					if (!Objects.equals(sessionId, trackClient.getSessionId()) ||
+							(visitDate.getTime() <= trackClient.getVisitDate()
+																   .getTime())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_2);
+			}
+
+			boolean bindVisitDate = false;
+
+			if (visitDate == null) {
+				query.append(_FINDER_COLUMN_S_LVD_VISITDATE_1);
+			}
+			else {
+				bindVisitDate = true;
+
+				query.append(_FINDER_COLUMN_S_LVD_VISITDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				if (bindVisitDate) {
+					qPos.add(new Timestamp(visitDate.getTime()));
+				}
+
+				if (!pagination) {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<TrackClient>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_LVD_First(String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_LVD_First(sessionId, visitDate,
+				orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append(", visitDate=");
+		msg.append(visitDate);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the first track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_LVD_First(String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator) {
+		List<TrackClient> list = findByS_LVD(sessionId, visitDate, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client
+	 * @throws NoSuchTrackClientException if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient findByS_LVD_Last(String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = fetchByS_LVD_Last(sessionId, visitDate,
+				orderByComparator);
+
+		if (trackClient != null) {
+			return trackClient;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("sessionId=");
+		msg.append(sessionId);
+
+		msg.append(", visitDate=");
+		msg.append(visitDate);
+
+		msg.append("}");
+
+		throw new NoSuchTrackClientException(msg.toString());
+	}
+
+	/**
+	 * Returns the last track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching track client, or <code>null</code> if a matching track client could not be found
+	 */
+	@Override
+	public TrackClient fetchByS_LVD_Last(String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator) {
+		int count = countByS_LVD(sessionId, visitDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<TrackClient> list = findByS_LVD(sessionId, visitDate, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the track clients before and after the current track client in the ordered set where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param trackClientId the primary key of the current track client
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next track client
+	 * @throws NoSuchTrackClientException if a track client with the primary key could not be found
+	 */
+	@Override
+	public TrackClient[] findByS_LVD_PrevAndNext(long trackClientId,
+		String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator)
+		throws NoSuchTrackClientException {
+		TrackClient trackClient = findByPrimaryKey(trackClientId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			TrackClient[] array = new TrackClientImpl[3];
+
+			array[0] = getByS_LVD_PrevAndNext(session, trackClient, sessionId,
+					visitDate, orderByComparator, true);
+
+			array[1] = trackClient;
+
+			array[2] = getByS_LVD_PrevAndNext(session, trackClient, sessionId,
+					visitDate, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected TrackClient getByS_LVD_PrevAndNext(Session session,
+		TrackClient trackClient, String sessionId, Date visitDate,
+		OrderByComparator<TrackClient> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_TRACKCLIENT_WHERE);
+
+		boolean bindSessionId = false;
+
+		if (sessionId == null) {
+			query.append(_FINDER_COLUMN_S_LVD_SESSIONID_1);
+		}
+		else if (sessionId.equals("")) {
+			query.append(_FINDER_COLUMN_S_LVD_SESSIONID_3);
+		}
+		else {
+			bindSessionId = true;
+
+			query.append(_FINDER_COLUMN_S_LVD_SESSIONID_2);
+		}
+
+		boolean bindVisitDate = false;
+
+		if (visitDate == null) {
+			query.append(_FINDER_COLUMN_S_LVD_VISITDATE_1);
+		}
+		else {
+			bindVisitDate = true;
+
+			query.append(_FINDER_COLUMN_S_LVD_VISITDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(TrackClientModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindSessionId) {
+			qPos.add(sessionId);
+		}
+
+		if (bindVisitDate) {
+			qPos.add(new Timestamp(visitDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(trackClient);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<TrackClient> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the track clients where sessionId = &#63; and visitDate &lt; &#63; from the database.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 */
+	@Override
+	public void removeByS_LVD(String sessionId, Date visitDate) {
+		for (TrackClient trackClient : findByS_LVD(sessionId, visitDate,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(trackClient);
+		}
+	}
+
+	/**
+	 * Returns the number of track clients where sessionId = &#63; and visitDate &lt; &#63;.
+	 *
+	 * @param sessionId the session ID
+	 * @param visitDate the visit date
+	 * @return the number of matching track clients
+	 */
+	@Override
+	public int countByS_LVD(String sessionId, Date visitDate) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_S_LVD;
+
+		Object[] finderArgs = new Object[] { sessionId, _getTime(visitDate) };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_TRACKCLIENT_WHERE);
+
+			boolean bindSessionId = false;
+
+			if (sessionId == null) {
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_1);
+			}
+			else if (sessionId.equals("")) {
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_3);
+			}
+			else {
+				bindSessionId = true;
+
+				query.append(_FINDER_COLUMN_S_LVD_SESSIONID_2);
+			}
+
+			boolean bindVisitDate = false;
+
+			if (visitDate == null) {
+				query.append(_FINDER_COLUMN_S_LVD_VISITDATE_1);
+			}
+			else {
+				bindVisitDate = true;
+
+				query.append(_FINDER_COLUMN_S_LVD_VISITDATE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindSessionId) {
+					qPos.add(sessionId);
+				}
+
+				if (bindVisitDate) {
+					qPos.add(new Timestamp(visitDate.getTime()));
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_S_LVD_SESSIONID_1 = "trackClient.sessionId IS NULL AND ";
+	private static final String _FINDER_COLUMN_S_LVD_SESSIONID_2 = "trackClient.sessionId = ? AND ";
+	private static final String _FINDER_COLUMN_S_LVD_SESSIONID_3 = "(trackClient.sessionId IS NULL OR trackClient.sessionId = '') AND ";
+	private static final String _FINDER_COLUMN_S_LVD_VISITDATE_1 = "trackClient.visitDate IS NULL";
+	private static final String _FINDER_COLUMN_S_LVD_VISITDATE_2 = "trackClient.visitDate < ?";
 
 	public TrackClientPersistenceImpl() {
 		setModelClass(TrackClient.class);
@@ -920,6 +2696,21 @@ public class TrackClientPersistenceImpl extends BasePersistenceImpl<TrackClient>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
 				args);
 
+			args = new Object[] { trackClientModelImpl.getSessionId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S,
+				args);
+
+			args = new Object[] {
+					trackClientModelImpl.getSessionId(),
+					trackClientModelImpl.getLeaveDate()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_S_NULL_L, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -940,6 +2731,44 @@ public class TrackClientPersistenceImpl extends BasePersistenceImpl<TrackClient>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+					args);
+			}
+
+			if ((trackClientModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						trackClientModelImpl.getOriginalSessionId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_S, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S,
+					args);
+
+				args = new Object[] { trackClientModelImpl.getSessionId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_S, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S,
+					args);
+			}
+
+			if ((trackClientModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						trackClientModelImpl.getOriginalSessionId(),
+						trackClientModelImpl.getOriginalLeaveDate()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_S_NULL_L, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L,
+					args);
+
+				args = new Object[] {
+						trackClientModelImpl.getSessionId(),
+						trackClientModelImpl.getLeaveDate()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_S_NULL_L, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_S_NULL_L,
 					args);
 			}
 		}
@@ -1361,6 +3190,15 @@ public class TrackClientPersistenceImpl extends BasePersistenceImpl<TrackClient>
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_TRACKCLIENT = "SELECT trackClient FROM TrackClient trackClient";
 	private static final String _SQL_SELECT_TRACKCLIENT_WHERE_PKS_IN = "SELECT trackClient FROM TrackClient trackClient WHERE trackClientId IN (";
 	private static final String _SQL_SELECT_TRACKCLIENT_WHERE = "SELECT trackClient FROM TrackClient trackClient WHERE ";

@@ -118,10 +118,10 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(512) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,userId LONG,userName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(1024) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,userId LONG,userName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_track_client";
-	public static final String ORDER_BY_JPQL = " ORDER BY trackClient.createDate ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client.createDate ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY trackClient.visitDate DESC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client.visitDate DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -134,8 +134,10 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.TrackClient"),
 			true);
-	public static final long UUID_COLUMN_BITMASK = 1L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
+	public static final long LEAVEDATE_COLUMN_BITMASK = 1L;
+	public static final long SESSIONID_COLUMN_BITMASK = 2L;
+	public static final long UUID_COLUMN_BITMASK = 4L;
+	public static final long VISITDATE_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.TrackClient"));
 
@@ -387,8 +389,6 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public void setCreateDate(Date createDate) {
-		_columnBitmask = -1L;
-
 		_createDate = createDate;
 	}
 
@@ -420,7 +420,17 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public void setSessionId(String sessionId) {
+		_columnBitmask |= SESSIONID_COLUMN_BITMASK;
+
+		if (_originalSessionId == null) {
+			_originalSessionId = _sessionId;
+		}
+
 		_sessionId = sessionId;
+	}
+
+	public String getOriginalSessionId() {
+		return GetterUtil.getString(_originalSessionId);
 	}
 
 	@Override
@@ -475,7 +485,17 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public void setVisitDate(Date visitDate) {
+		_columnBitmask = -1L;
+
+		if (_originalVisitDate == null) {
+			_originalVisitDate = _visitDate;
+		}
+
 		_visitDate = visitDate;
+	}
+
+	public Date getOriginalVisitDate() {
+		return _originalVisitDate;
 	}
 
 	@Override
@@ -485,7 +505,17 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 
 	@Override
 	public void setLeaveDate(Date leaveDate) {
+		_columnBitmask |= LEAVEDATE_COLUMN_BITMASK;
+
+		if (_originalLeaveDate == null) {
+			_originalLeaveDate = _leaveDate;
+		}
+
 		_leaveDate = leaveDate;
+	}
+
+	public Date getOriginalLeaveDate() {
+		return _originalLeaveDate;
 	}
 
 	@Override
@@ -738,7 +768,9 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	public int compareTo(TrackClient trackClient) {
 		int value = 0;
 
-		value = DateUtil.compareTo(getCreateDate(), trackClient.getCreateDate());
+		value = DateUtil.compareTo(getVisitDate(), trackClient.getVisitDate());
+
+		value = value * -1;
 
 		if (value != 0) {
 			return value;
@@ -791,6 +823,12 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		trackClientModelImpl._originalUuid = trackClientModelImpl._uuid;
 
 		trackClientModelImpl._setModifiedDate = false;
+
+		trackClientModelImpl._originalSessionId = trackClientModelImpl._sessionId;
+
+		trackClientModelImpl._originalVisitDate = trackClientModelImpl._visitDate;
+
+		trackClientModelImpl._originalLeaveDate = trackClientModelImpl._leaveDate;
 
 		trackClientModelImpl._columnBitmask = 0;
 	}
@@ -1108,12 +1146,15 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _sessionId;
+	private String _originalSessionId;
 	private String _url;
 	private int _year;
 	private int _month;
 	private int _day;
 	private Date _visitDate;
+	private Date _originalVisitDate;
 	private Date _leaveDate;
+	private Date _originalLeaveDate;
 	private String _clientIP;
 	private String _macAddress;
 	private String _region;

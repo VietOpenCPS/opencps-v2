@@ -1215,11 +1215,19 @@ public class DossierUtils {
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
 			String preStepCode;
+			String curStepCode = StringPool.BLANK;
+			if (dossier.getDossierActionId() > 0) {
+				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				if (curAction != null) {
+					curStepCode = curAction.getStepCode();
+				}
+			}
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
 				_log.debug("LamTV_preStepCode: "+preStepCode);
-
+				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 //				_log.info("LamTV_ProcessStep: "+step);
 

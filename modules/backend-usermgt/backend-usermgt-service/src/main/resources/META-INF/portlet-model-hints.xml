@@ -414,7 +414,7 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="url" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">1024</hint>
 		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />
@@ -452,7 +452,7 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="url" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">1024</hint>
 		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />
