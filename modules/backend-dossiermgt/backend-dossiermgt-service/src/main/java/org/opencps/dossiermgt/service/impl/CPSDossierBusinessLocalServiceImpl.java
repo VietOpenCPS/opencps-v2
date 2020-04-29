@@ -3760,11 +3760,19 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			String dossierSubStatus = Validator.isNull(dossier.getDossierSubStatus()) ? StringPool.BLANK
 					: dossier.getDossierSubStatus();
-
+			String curStepCode = StringPool.BLANK;
+			if (dossier.getDossierActionId() > 0) {
+				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				if (curAction != null) {
+					curStepCode = curAction.getStepCode();
+				}
+			}
+			
 			for (ProcessAction act : actions) {
 
 				String preStepCode = act.getPreStepCode();
-
+				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				
 				ProcessStep step = processStepLocalService.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 
 				String subStepStatus = StringPool.BLANK;
@@ -4338,7 +4346,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		model.setDelegacy(delegacy);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		//_log.debug("Employee : " + employee);
+		_log.debug("Employee : " + employee);
+		_log.debug("ADD DOSSIER ACTION USER ASSIGNED : " + stepCode);
+
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
@@ -4439,6 +4449,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					}
 //				}
 //			}
+			_log.debug("DOSSIER ACTION ASSIGNED USER: " + dau);
 			if (dau == null) {
 				dossierActionUserLocalService.addDossierActionUser(model);		
 			}
@@ -7626,11 +7637,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
 			String preStepCode;
+			String curStepCode = StringPool.BLANK;
+			if (dossier.getDossierActionId() > 0) {
+				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				if (curAction != null) {
+					curStepCode = curAction.getStepCode();
+				}
+			}
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
 				//_log.debug("LamTV_preStepCode: "+preStepCode);
-
+				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 //				_log.info("LamTV_ProcessStep: "+step);
 
