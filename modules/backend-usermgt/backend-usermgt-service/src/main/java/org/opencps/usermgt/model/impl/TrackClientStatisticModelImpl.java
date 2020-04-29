@@ -95,7 +95,7 @@ public class TrackClientStatisticModelImpl extends BaseModelImpl<TrackClientStat
 		TABLE_COLUMNS_MAP.put("total", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_track_client_statistic (uuid_ VARCHAR(75) null,trackClientStatisticId LONG not null primary key,createDate DATE null,modifiedDate DATE null,url VARCHAR(1024) null,year INTEGER,month INTEGER,day INTEGER,region VARCHAR(512) null,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,total LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_track_client_statistic (uuid_ VARCHAR(75) null,trackClientStatisticId LONG not null primary key,createDate DATE null,modifiedDate DATE null,url VARCHAR(2048) null,year INTEGER,month INTEGER,day INTEGER,region VARCHAR(512) null,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,total LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_track_client_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY trackClientStatistic.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client_statistic.createDate ASC";

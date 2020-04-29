@@ -118,7 +118,7 @@ public class TrackClientModelImpl extends BaseModelImpl<TrackClient>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(1024) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,userId LONG,userName VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_track_client (uuid_ VARCHAR(75) null,trackClientId LONG not null primary key,createDate DATE null,modifiedDate DATE null,sessionId VARCHAR(128) null,url VARCHAR(2048) null,year INTEGER,month INTEGER,day INTEGER,visitDate DATE null,leaveDate DATE null,clientIP VARCHAR(128) null,macAddress VARCHAR(128) null,region VARCHAR(512) null,nation VARCHAR(512) null,latitude VARCHAR(128) null,longitude VARCHAR(128) null,timeOnPage LONG,desktop BOOLEAN,mobile BOOLEAN,tablet BOOLEAN,userId LONG,userName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_track_client";
 	public static final String ORDER_BY_JPQL = " ORDER BY trackClient.visitDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_track_client.visitDate DESC";
