@@ -1096,6 +1096,9 @@ public class CPSDossierBusinessLocalServiceImpl
 											if (apiUrl.contains("{_dossierId}")) {
 												apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossierId));
 											}
+											if (apiUrl.contains("{_dossierCounter}")) {
+												apiUrl = apiUrl.replace("{_dossierCounter}", String.valueOf(dossier.getDossierCounter()));
+											}
 										}
 										if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
 											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
