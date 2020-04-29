@@ -474,15 +474,15 @@ public class DossierActionsImpl implements DossierActions {
 				}
 
 				if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
-					_log.info("==============>>>>> dossierActionId " + dossierActionId + "|" + stepCode + "|" + serviceProcessId);
+					_log.debug("dossierActionId " + dossierActionId + "|" + stepCode + "|" + serviceProcessId);
 					DossierActionUser dActionUser = DossierActionUserLocalServiceUtil
 							.getByDossierAndUser(dossierActionId, userId);
 					// _log.info("User id: " + userId);
 //					 _log.info("Dossier action user :" + JSONFactoryUtil.looseSerialize(dActionUser));
 					// GS.AnhTT_Process
 					int enable = 2;
-					_log.info("==============>>>>> Nextaction " + dossier.getUserId() + "|" + userId + "|" + pending);
-					_log.info("==============>>>>> dossier.getOriginality() " + dossier.getOriginality());
+					_log.debug("Nextaction " + dossier.getUserId() + "|" + userId + "|" + pending);
+					_log.debug("dossier.getOriginality() " + dossier.getOriginality());
 					if (dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 						if (dossier.getUserId() == userId && !pending) {
 							enable = 1;
@@ -490,7 +490,7 @@ public class DossierActionsImpl implements DossierActions {
 					}
 					if (dActionUser != null) {
 						int assign = dActionUser.getAssigned();
-						_log.info("==============>>>>> assign " + assign);
+						_log.debug("assign " + assign);
 						if (assign == 1 && !pending)
 							enable = 1;
 					}
