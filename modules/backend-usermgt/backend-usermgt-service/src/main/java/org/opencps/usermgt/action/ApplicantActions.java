@@ -56,6 +56,9 @@ public interface ApplicantActions {
 
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException;
+
+	public Applicant activationLGSPApplicant(ServiceContext context, long applicantId, String activationCode)
+			throws PortalException;
 	
 	public Applicant lockApplicant(ServiceContext context, long applicantId)
 			throws PortalException;

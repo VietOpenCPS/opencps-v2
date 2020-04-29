@@ -366,4 +366,17 @@ public interface ApplicantManagement {
 	public Response registerLGSPWithCaptcha(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@BeanParam ApplicantInputModel input, @FormParam("j_captcha_response") String jCaptchaResponse);
+
+	@GET
+	@Path("/{id}/lgsp/activate/{code}")
+	@Produces("text/plain")
+	@ApiOperation(value = "Get the profile of applicant", response = JSONObject.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the profile of applicant", response = JSONObject.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response activateLGSPApplicant(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("id") long id, @PathParam("code") String code);
 }
