@@ -921,9 +921,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Thiết lập quyền thao tác hồ sơ
 
 		int allowAssignUser = proAction.getAllowAssignUser();
+		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
-			if (Validator.isNotNull(assignUsers)) {
-				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+			if (Validator.isNotNull(assignUsers) && assignedUsersArray.length() > 0) {
+//				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 				assignDossierActionUser(dossier, allowAssignUser,
 					dossierAction, userId, groupId, proAction.getAssignUserId(),
 					assignedUsersArray);

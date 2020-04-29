@@ -1126,7 +1126,9 @@ public class OpenCPSConverter {
 //			e.printStackTrace();
 			_log.error(e);
 		}
-	    params.put(ExecuteOneActionTerm.ASSIGN_USERS, assignUserArrs.toJSONString());
+		if (assignUserArrs.length() > 0) {
+		    params.put(ExecuteOneActionTerm.ASSIGN_USERS, assignUserArrs.toJSONString());			
+		}
 	    params.put(ExecuteOneActionTerm.PAYLOAD, model.getPayload());
 	    
 	    return params;
