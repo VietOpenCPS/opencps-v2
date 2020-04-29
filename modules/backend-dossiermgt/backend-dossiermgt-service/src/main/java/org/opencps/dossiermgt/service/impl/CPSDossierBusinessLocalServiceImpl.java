@@ -179,7 +179,6 @@ import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DynamicReportLocalServiceUtil;
@@ -571,11 +570,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Create DossierSync
 		String dossierRefUid = dossier.getReferenceUid();
 		String syncRefUid = UUID.randomUUID().toString();
-		
+
 		if (syncType > 0) {
-		
+
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
-			
+
 			//If state = 1 set pending dossier
 			if (state == DossierSyncTerm.STATE_WAITING_SYNC) {
 				if (dossierAction != null) {
@@ -594,9 +593,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			JSONArray dossierFilesArr = JSONFactoryUtil.createJSONArray();
 			List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
 
-		
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST) {
-			
+
 				if (dossier.getOriginDossierId() == 0) {
 					if (lstFiles.size() > 0) {
 						for (DossierFile df : lstFiles) {
@@ -642,7 +640,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			} else {
 				//Sync result files
-			
+
 				if (Validator.isNotNull(dossier.getDossierNo())) {
 					payloadObject.put(DossierTerm.DOSSIER_NO, dossier.getDossierNo());
 				}
@@ -654,7 +652,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_REQUEST
 					|| actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM) {
 
-				
 				//payloadObject.put(DossierTerm.CONSTANT_DOSSIER_FILES, dossierFilesArr);
 				payloadObject.put("dossierFiles", dossierFilesArr);
 
@@ -1147,9 +1144,67 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						backCurStep.getLockState(), dossier.getDossierNote(), context);
 
 				//?
-				dossier.setDossierActionId(previousAction.getPreviousActionId());
+				//dossier.setDossierActionId(previousAction.getPreviousActionId());
+				//dossierLocalService.updateDossier(dossier);
 
+				//Add by Trungnt
+
+				/*dossierAction = createActionAndAssignUser(groupId, userId, backCurStep, actionConfig, dossierAction,
+						previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
+						paymentFee, serviceProcess, option, flagChanged, dateOption, context);*/
+
+				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+
+				int actionOverdue = getActionDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
+						proAction.getProcessActionId());
+
+				ProcessStep curStep = processStepLocalService.fetchBySC_GID(dossierAction.getStepCode(), groupId,
+						serviceProcessId);
+
+				int state = DossierActionTerm.STATE_WAITING_PROCESSING;
+				int eventStatus = (actionConfig != null
+						? (actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_NOT_SENT
+								? DossierActionTerm.EVENT_STATUS_NOT_CREATED
+								: DossierActionTerm.EVENT_STATUS_WAIT_SENDING)
+						: DossierActionTerm.EVENT_STATUS_NOT_CREATED);
+
+				boolean rollbackable = false;
+				if (actionConfig != null) {
+					if (actionConfig.getRollbackable()) {
+						rollbackable = true;
+					} else {
+					}
+				} else {
+					if (proAction.isRollbackable()) {
+						rollbackable = true;
+					} else {
+					}
+				}
+
+				_log.debug("groupId=" + groupId + "|dossierId=" + dossier.getDossierId() + "|serviceProcessId="
+						+ serviceProcess.getServiceProcessId() + "|dossierActionId=" + dossier.getDossierActionId()
+						+ "|fromStepCode=" + previousAction.getStepCode() + "|fromStepName="
+						+ previousAction.getStepName() + "|fromSequenceNo= " + dossierAction.getSequenceNo()
+						+ "|actionCode=" + actionCode + "|actionUser=" + actionUser + "|actionName="
+						+ proAction.getActionName() + "|actionNote=" + actionNote + "|actionOverdue=" + actionOverdue
+						+ "|stepCode=" + postStepCode + "|stepName=" + backCurStep.getStepName() + "|sequenceNo="
+						+ backCurStep.getSequenceNo() + "|nextactionId=" + "|stepInstruction="
+						+ previousAction.getStepInstruction() + "|previousAction=" + previousAction.getDossierActionId()
+						+ "|dossier.getDossierActionId=" + dossier.getDossierActionId()
+						+ "|proAction.getAllowAssignUser()=" + proAction.getAllowAssignUser());
+
+				DossierAction newAction = dossierActionLocalService.updateDossierAction(groupId, 0,
+						dossier.getDossierId(), serviceProcess.getServiceProcessId(), dossier.getDossierActionId(),
+						previousAction.getStepCode(), previousAction.getStepName(), dossierAction.getSequenceNo(),
+						actionCode, actionUser, proAction.getActionName(), actionNote, actionOverdue, postStepCode,
+						backCurStep.getStepName(), backCurStep.getSequenceNo(), null, 0l, payload,
+						previousAction.getStepInstruction(), state, eventStatus, rollbackable, context);
+
+				dossier.setDossierActionId(newAction.getDossierActionId());
 				dossierLocalService.updateDossier(dossier);
+				//update
+				dossierAction.setNextActionId(newAction.getDossierActionId());
+				dossierActionLocalService.updateDossierAction(dossierAction);
 
 				// chỉ cán bộ thao tác trước đó có moderator = 1
 				List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil
@@ -1165,30 +1220,28 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 				}
 
-				//add by TrungNT add dossierAction
+				ProcessAction processAction = processActionLocalService.fetchBySPID_AC(serviceProcessId,
+						newAction.getActionCode());
 
-				ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
+				_log.debug("|processAction.getPostStepCode()=" + processAction.getPostStepCode()
+						+ "|processAction.getActionCode()=" + processAction.getActionCode()
+						+ "|processAction.getProcessActionId()=" + processAction.getProcessActionId() + "|"
+						+ processAction.getAllowAssignUser() + "|" + processAction.getAssignUserId());
 
-				if (curStep != null) {
-					
-					_log.info("==============>>>>>>>>>>>>>>>>>>>>>>>>>>>> proAction1 " + proAction.getProcessActionId());
+				int allowAssignUser = processAction.getAllowAssignUser();
 
-					DossierLogLocalServiceUtil.addDossierLog(groupId, dossierId, actionUser, actionNote, "PROCESS_TYPE",
-							payload.toString(), context);
-
-					//ProcessSequence processSequence = ProcessSequenceLocalServiceUtil.addProcessSequence(userId, groupId, serviceProcessId, sequenceNo, input.getSequenceName(), input.getSequenceRole(), serviceProcess.getDurationCount());
-				}
-				
-				dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
+				//thiet lap phan quyen cho user
+				initDossierActionUser(newAction.getStepCode(), newAction.getServiceProcessId(), dossier, processAction,
+						allowAssignUser, newAction, userId, groupId, allowAssignUser);
 
 				if (syncType == 2) {
 					//Tạo thông tin đồng bộ hồ sơ
-					createDossierSync(groupId, userId, actionConfig, proAction, dossierAction, dossier, syncType,
+					createDossierSync(groupId, userId, actionConfig, proAction, newAction, dossier, syncType,
 							option, payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess,
 							context);
 				}
 
-				return previousAction;
+				return newAction;
 			}
 
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
@@ -1258,7 +1311,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return dossierAction;
 	}
 
-	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
 	public DossierAction doAction(long groupId, long userId, Dossier dossier, ProcessOption option,
@@ -4083,6 +4135,86 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 	}
 
+	public void initDossierActionUser(String stepCode, long serviceProcessId, Dossier dossier,
+			ProcessAction processAction, int allowAssignUser, DossierAction dossierAction, long userId, long groupId,
+			long assignUserId) throws PortalException {
+		// Delete record in dossierActionUser
+		List<org.opencps.dossiermgt.model.DossierActionUser> dossierActionUser = dossierActionUserLocalService
+				.getListUser(dossierAction.getDossierActionId());
+		if (dossierActionUser != null && dossierActionUser.size() > 0) {
+			dossierActionUserLocalService.deleteByDossierAction(dossierAction.getDossierActionId());
+		}
+
+		// Get ProcessStep
+		ProcessStep processStep = processStepLocalService.fetchBySC_GID(stepCode, groupId, serviceProcessId);
+
+		long processStepId = processStep.getProcessStepId();
+		int assigned;
+
+		// Get List ProcessStepRole
+		List<ProcessStepRole> listProcessStepRole = processStepRoleLocalService.findByP_S_ID(processStepId);
+		ProcessStepRole processStepRole = null;
+		List<DossierAction> lstStepActions = dossierActionLocalService.getByDID_FSC_NOT_DAI(dossier.getDossierId(),
+				stepCode, dossierAction.getDossierActionId());
+		if (listProcessStepRole.size() != 0) {
+			for (int i = 0; i < listProcessStepRole.size(); i++) {
+				processStepRole = listProcessStepRole.get(i);
+				long roleId = processStepRole.getRoleId();
+				boolean moderator = processStepRole.getModerator();
+				int mod = 0;
+				if (moderator) {
+					mod = 1;
+				}
+				// Get list user
+				List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
+				for (User user : users) {
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+							user.getUserId());
+					//_log.debug("Employee : " + employee);
+					if (employee != null && employee.getWorkingStatus() == 1) {
+						List<DossierAction> lstDoneActions = dossierActionLocalService
+								.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
+						if (!lstStepActions.isEmpty()) {
+							if (!lstDoneActions.isEmpty())
+								mod = 1;
+							else
+								mod = 0;
+						}
+						if (moderator) {
+							assigned = DossierActionUserTerm.ASSIGNED_TH;
+						} else {
+							assigned = DossierActionUserTerm.NOT_ASSIGNED;
+						}
+
+						updateDossierUser(dossier, processStepRole, user);
+						List<DossierActionUser> lstDau = dossierActionUserLocalService
+								.getByDossierUserAndStepCode(dossier.getDossierId(), user.getUserId(), stepCode);
+						DossierActionUser lastDau = (lstDau.size() > 0 ? lstDau.get(0) : null);
+						for (DossierActionUser dau : lstDau) {
+							if (dau.getDossierActionId() > lastDau.getDossierActionId()) {
+								lastDau = dau;
+							}
+						}
+
+						if (lastDau != null) {
+							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+									user.getUserId(), dossierAction.getDossierActionId(), lastDau.getModerator(), false,
+									stepCode, dossier.getDossierId(), lastDau.getAssigned(), lastDau.getDelegacy());
+						} else {
+							addDossierActionUserByAssigned(groupId, processAction.getAllowAssignUser(),
+									user.getUserId(), dossierAction.getDossierActionId(), mod, false, stepCode,
+									dossier.getDossierId(), assigned, 0);
+						}
+					}
+				}
+			}
+		} else {
+			//Get role from service process
+			initDossierActionUserByServiceProcessRole(dossier, allowAssignUser, dossierAction, userId, groupId,
+					assignUserId);
+		}
+	}
+
 	public void initDossierActionUser(ProcessAction processAction, Dossier dossier, int allowAssignUser,
 			DossierAction dossierAction, long userId, long groupId, long assignUserId) throws PortalException {
 		// Delete record in dossierActionUser
@@ -4091,7 +4223,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (dossierActionUser != null && dossierActionUser.size() > 0) {
 			dossierActionUserLocalService.deleteByDossierAction(dossierAction.getDossierActionId());
 		}
-		_log.info("========initDossierActionUser " + dossierAction.getServiceProcessId() + "|"
+		_log.debug("========initDossierActionUser " + dossierAction.getServiceProcessId() + "|"
 				+ processAction.getPostStepCode() + "|" + groupId + "|" + processAction.getActionCode() + "|"
 				+ processAction.getProcessActionId());
 		long serviceProcessId = dossierAction.getServiceProcessId();
