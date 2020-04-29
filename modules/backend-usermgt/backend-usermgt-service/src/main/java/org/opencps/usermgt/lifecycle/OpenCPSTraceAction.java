@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.opencps.usermgt.action.util.HttpUtil;
 import org.opencps.usermgt.action.util.UserMgtConfigUtil;
 import org.opencps.usermgt.constants.CommonTerm;
+import org.opencps.usermgt.model.TrackClient;
 import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
@@ -89,6 +91,10 @@ public class OpenCPSTraceAction extends Action {
         Date now = new Date();
         
 		if (UserMgtConfigUtil.isTrackClientEnable()) {
+			List<TrackClient> lstPrevs = TrackClientLocalServiceUtil.findByS(sessionId, 0, 1);
+			if (lstPrevs.size() == 1) {
+				
+			}
 			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, isDesktop, isMobile, isTablet);
 			TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl, year, month, day, cityName, isDesktop, isMobile, isTablet);
 		}
