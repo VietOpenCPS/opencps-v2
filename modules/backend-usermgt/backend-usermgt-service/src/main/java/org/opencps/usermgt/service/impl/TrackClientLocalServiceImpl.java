@@ -14,7 +14,10 @@
 
 package org.opencps.usermgt.service.impl;
 
+import com.liferay.portal.kernel.util.OrderByComparator;
+
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.usermgt.model.TrackClient;
 import org.opencps.usermgt.service.base.TrackClientLocalServiceBaseImpl;
@@ -113,4 +116,28 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		
 		return trackClient;
 	}	
+	
+	public List<TrackClient> findByS(String sessionId, int start, int end, OrderByComparator<TrackClient> orderBy) {
+		return trackClientPersistence.findByS(sessionId, start, end, orderBy);
+	}
+
+	public List<TrackClient> findByS(String sessionId, int start, int end) {
+		return trackClientPersistence.findByS(sessionId, start, end);
+	}
+	
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate, int start, int end) {
+		return trackClientPersistence.findByS_NULL_L(sessionId, leaveDate);
+	}
+	
+	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate) {
+		return trackClientPersistence.findByS_NULL_L(sessionId, leaveDate);
+	}
+	
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate) {
+		return trackClientPersistence.findByS_LVD(sessionId, visitDate);
+	}
+
+	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate, int start, int end) {
+		return trackClientPersistence.findByS_LVD(sessionId, visitDate, start, end);
+	}
 }
