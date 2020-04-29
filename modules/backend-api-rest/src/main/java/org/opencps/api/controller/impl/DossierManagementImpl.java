@@ -1517,33 +1517,41 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.debug(
 				"LamTV-Call in groupId: " + groupId + "|dossierId: " + id +
 					" |userId: " + userId);
-
+			_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>1");
 			if (dossier != null) {
+				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>2");
 				_log.debug(
 					"Dossier: " + dossier + ", action code: " +
 						input.getActionCode());
 				if (Validator.isNotNull(dueDate)) {
+					_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>3");
 					DossierLocalServiceUtil.updateDueDate(
 						groupId, dossier.getDossierId(),
 						dossier.getReferenceUid(), new Date(dueDate),
 						serviceContext);
 				}
 				String actionCode = input.getActionCode();
+				_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>4 "+ actionCode);
 				if (Validator.isNotNull(actionCode)) {
 					ActionConfig actConfig =
 						ActionConfigLocalServiceUtil.getByCode(
 							groupId, actionCode);
+					_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>5");
 					_log.debug("Action config: " + actConfig);
 					String serviceCode = dossier.getServiceCode();
 					String govAgencyCode = dossier.getGovAgencyCode();
 					String dossierTempNo = dossier.getDossierTemplateNo();
 					if (actConfig != null) {
+						_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>6");
 						boolean insideProcess = actConfig.getInsideProcess();
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (insideProcess) {
+							_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>7");
 							if (dossier.getDossierActionId() == 0) {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>8");
 								if (option != null) {
+									_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>9");
 									long serviceProcessId =
 										option.getServiceProcessId();
 									ProcessAction proAction =
@@ -1552,6 +1560,7 @@ public class DossierManagementImpl implements DossierManagement {
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>10");
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -1566,15 +1575,18 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>11");
 										// TODO: Error
 									}
 								}
 							}
 							else {
+								_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>12");
 								DossierAction dossierAction =
 									DossierActionLocalServiceUtil.fetchDossierAction(
 										dossier.getDossierActionId());
 								if (dossierAction != null) {
+									_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>13");
 									long serviceProcessId =
 										dossierAction.getServiceProcessId();
 									DossierTemplate dossierTemplate =
@@ -1586,13 +1598,14 @@ public class DossierManagementImpl implements DossierManagement {
 										ProcessOptionLocalServiceUtil.fetchBySP_DT(
 											serviceProcessId,
 											dossierTemplate.getDossierTemplateId());
-
+									_log.info("" + groupId + "|" + actionCode + "|" + serviceProcessId);
 									ProcessAction proAction =
 										DossierUtils.getProcessAction(
 											user,
 											groupId, dossier, actionCode,
 											serviceProcessId);
 									if (proAction != null) {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>14");
 										_log.debug(
 											"DO ACTION: " +
 												proAction.getActionCode());
@@ -1607,6 +1620,7 @@ public class DossierManagementImpl implements DossierManagement {
 											serviceContext, errorModel);
 									}
 									else {
+										_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>15");
 										// TODO: Error
 									}
 								}
@@ -1712,6 +1726,7 @@ public class DossierManagementImpl implements DossierManagement {
 							// }
 						}
 						else {
+							_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>16");
 							dossierResult = actions.doAction(
 								groupId, userId, dossier, option, null,
 								actionCode, actionUser, input.getActionNote(),
@@ -1789,9 +1804,11 @@ public class DossierManagementImpl implements DossierManagement {
 						// }
 					}
 					else {
+						_log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>17");
 						ProcessOption option = DossierUtils.getProcessOption(
 							serviceCode, govAgencyCode, dossierTempNo, groupId);
 						if (option != null) {
+							
 							long serviceProcessId =
 								option.getServiceProcessId();
 							ProcessAction proAction =
@@ -1799,6 +1816,7 @@ public class DossierManagementImpl implements DossierManagement {
 									groupId, dossier, actionCode,
 									serviceProcessId);
 							if (proAction != null) {
+								
 								dossierResult = actions.doAction(
 									groupId, userId, dossier, option, proAction,
 									actionCode, actionUser,
@@ -1807,6 +1825,7 @@ public class DossierManagementImpl implements DossierManagement {
 									0, serviceContext, errorModel);
 							}
 							else {
+								
 								// TODO: Error
 							}
 
@@ -3179,6 +3198,8 @@ public class DossierManagementImpl implements DossierManagement {
 		List<ProcessSequence> lstSequences =
 			ProcessSequenceLocalServiceUtil.getByServiceProcess(
 				groupId, serviceProcess.getServiceProcessId());
+		
+		_log.info("==========================>>>>>>>>>>>>>> serviceProcess.getServiceProcessId() " + serviceProcess.getServiceProcessId());
 
 		result.put(
 			ServiceProcessTerm.PROCESS_NO, serviceProcess.getProcessNo());
@@ -3227,17 +3248,21 @@ public class DossierManagementImpl implements DossierManagement {
 		if (dossierActionListCheck != null &&
 			dossierActionListCheck.size() == 1 &&
 			DossierActionTerm.DONE_STEP.equals(dossierActionListCheck.get(0).getStepCode())) {
+			_log.info("=====================================>>>>1");
 		}
 		else {
+			_log.info("=====================================>>>>2");
 			for (ProcessSequence ps : lstSequences) {
+				_log.info("=====================================>>>>2.A " + ps.getSequenceName() + "|" + ps.getSequenceNo());
 				JSONObject sequenceObj = JSONFactoryUtil.createJSONObject();
 				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NO, ps.getSequenceNo());
 				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_NAME, ps.getSequenceName());
 				sequenceObj.put(ProcessSequenceTerm.SEQUENCE_ROLE, ps.getSequenceRole());
 				sequenceObj.put(ProcessSequenceTerm.DURATION_COUNT, ps.getDurationCount());
-
+				
 				if (lastDA != null &&
 					lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+					_log.info("=====================================>>>>3");
 					sequenceObj.put(
 						"statusText",
 						"Đang thực hiện: " + lastDA.getStepName());
@@ -3254,11 +3279,13 @@ public class DossierManagementImpl implements DossierManagement {
 						lstPrevDossierActions.size() - 1)
 					: null;
 				if (lastAction != null) {
+					_log.info("=====================================>>>>4");
 					sequenceObj.put(
 						ProcessSequenceTerm.START_DATE, lastAction.getCreateDate().getTime());
 				}
 
 				if (lstDossierActions.size() > 0) {
+					_log.info("=====================================>>>>5");
 					DossierAction lastDASequence =
 						lstDossierActions.get(lstDossierActions.size() - 1);
 					if (lastDASequence.getActionOverdue() != 0) {
@@ -3273,12 +3300,16 @@ public class DossierManagementImpl implements DossierManagement {
 				List<Long> lstUsers = new ArrayList<>();
 
 				if (lastDA.getSequenceNo().equals(ps.getSequenceNo())) {
+					_log.info("=====================================>>>>6");
 					for (DossierActionUser dau : lstDus) {
+						_log.info("=====================================>>>>7");
 						User u =
 							UserLocalServiceUtil.fetchUser(dau.getUserId());
 						if (u != null) {
+							_log.info("=====================================>>>>8");
 							if (!lstUsers.contains(dau.getUserId()) &&
 								dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+								_log.info("=====================================>>>>9");
 								JSONObject assignUserObj =
 									JSONFactoryUtil.createJSONObject();
 								lstUsers.add(dau.getUserId());
@@ -3302,7 +3333,9 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 				for (DossierAction da : lstDossierActions) {
+					_log.info("=====================================>>>>10");
 					if (!lstUsers.contains(da.getUserId())) {
+						_log.info("=====================================>>>>11");
 						JSONObject assignUserObj =
 							JSONFactoryUtil.createJSONObject();
 						lstUsers.add(da.getUserId());
@@ -3326,6 +3359,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				JSONArray actionsArr = JSONFactoryUtil.createJSONArray();
 				for (DossierAction da : lstDossierActions) {
+					_log.info("=====================================>>>>12");
 					JSONObject actionObj = JSONFactoryUtil.createJSONObject();
 
 					actionObj.put(DossierActionTerm.USER_ID, da.getUserId());

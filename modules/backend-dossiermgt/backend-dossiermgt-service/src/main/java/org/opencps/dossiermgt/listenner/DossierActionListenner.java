@@ -116,7 +116,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					List<DossierLog> dossierLogs = DossierLogLocalServiceUtil.getByDossierAndType(dossierId,
 							DossierFileListenerMessageKeys.DOSSIER_LOG_CREATE_TYPE, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS);
-
+					
 					for (DossierLog log : dossierLogs) {
 						long dossierFileId = 0;
 
@@ -170,8 +170,9 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						.getByNameActionNo(model.getServiceProcessId(), model.getActionCode(), model.getActionName());
 
 				boolean ok = true;
-
+				
 				if (Validator.isNotNull(processAction)) {
+					
 					if ((processAction.getPreCondition().contains("cancelling")
 							&& processAction.getAutoEvent().contains("timmer"))
 							|| (processAction.getPreCondition().contains("correcting")
@@ -179,7 +180,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 							|| (processAction.getPreCondition().contains("submitting"))
 									&& processAction.getAutoEvent().contains("timmer")) {
 						ok = false;
-
+						
 					}
 				}
 
@@ -187,6 +188,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 						|| processAction.getPreCondition().contains("reject_correcting")
 						|| processAction.getPreCondition().contains("reject_submitting"))) {
 					ok = false;
+					
 				}
 
 				if (ok) {
@@ -198,9 +200,11 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 					DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(),
 							userNameLog, content, "PROCESS_TYPE", payload.toString(),
 							serviceContext);
+					
 				}
 
 			} catch (SystemException | PortalException e) {
+				
 				_log.debug(e);
 			}
 		}
@@ -213,7 +217,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 			ServiceContext serviceContext = new ServiceContext();
 			serviceContext.setCompanyId(model.getCompanyId());
 			serviceContext.setUserId(model.getUserId());
-
+			
 			try {
 				String userNameLog = StringPool.BLANK;
 				if (userId > 0) {
@@ -222,6 +226,7 @@ public class DossierActionListenner extends BaseModelListener<DossierAction> {
 				}
 				DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), userNameLog,
 						content, notificationType, payload, serviceContext);
+				
 			} catch (SystemException | PortalException e) {
 				_log.debug(e);
 			}

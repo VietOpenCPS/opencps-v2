@@ -200,6 +200,10 @@ public interface DossierSyncLocalService extends BaseLocalService,
 	public List<DossierSync> findByDossierAndInfoTypeArr(long groupId,
 		String dossierRefUid, int[] infoType, int start, int end);
 
+	public List<DossierSync> findByDossierAndInfoTypeArr(long groupId,
+		String dossierRefUid, int[] infoType, int start, int end,
+		OrderByComparator<DossierSync> orderByComparator);
+
 	public List<DossierSync> findByG_DID(long groupId, long dossierId);
 
 	public List<DossierSync> findByG_DID_ST(long groupId, long dossierId,
