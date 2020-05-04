@@ -42,6 +42,19 @@ public class TrackClientStatisticLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.usermgt.service.impl.TrackClientStatisticLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static java.util.List<org.opencps.usermgt.model.TrackClientStatistic> accessStatisticsURL(
+		int day, int month, int year) {
+		return getService().accessStatisticsURL(day, month, year);
+	}
+
+	public static com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForAllYear() {
+		return getService().accessStatisticsURLForAllYear();
+	}
+
+	public static com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForPeriod(
+		String startDay, String endDay) {
+		return getService().accessStatisticsURLForPeriod(startDay, endDay);
+	}
 
 	/**
 	* Adds the track client statistic to the database. Also notifies the appropriate model listeners.

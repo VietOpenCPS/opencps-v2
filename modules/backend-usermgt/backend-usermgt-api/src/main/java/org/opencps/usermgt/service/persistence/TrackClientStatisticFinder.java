@@ -26,4 +26,15 @@ public interface TrackClientStatisticFinder {
 		String startDay, String endDay);
 
 	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findAllYear();
+
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findURLAllYear();
+
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findAccessURLAllYear(
+		String url);
+
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findURLPeriod(
+		String startDay, String endDay);
+
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findAccessURLPeriod(
+		String startDay, String endDay, String url);
 }
