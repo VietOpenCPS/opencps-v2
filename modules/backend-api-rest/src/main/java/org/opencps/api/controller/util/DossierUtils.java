@@ -374,10 +374,18 @@ public class DossierUtils {
 				}
 			}
 
-			model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-			model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
-			model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
-			model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
+			if (doc.hasField(DossierTerm.FINISH_DATE)) {
+				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));				
+			}
+			if (doc.hasField(DossierTerm.RELEASE_DATE)) {
+				model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));				
+			}
+			if (doc.hasField(DossierTerm.CANCELLING_DATE)) {
+				model.setCancellingDate(doc.get(DossierTerm.CANCELLING_DATE));
+			}
+			if (doc.hasField(DossierTerm.CORRECTING_DATE)) {
+				model.setCorrectingDate(doc.get(DossierTerm.CORRECTING_DATE));
+			}
 			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
 			model.setDossierStatusText(doc.get(DossierTerm.DOSSIER_STATUS_TEXT));
 			model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
