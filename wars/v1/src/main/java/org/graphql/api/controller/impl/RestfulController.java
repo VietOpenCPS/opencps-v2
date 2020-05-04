@@ -380,10 +380,12 @@ public class RestfulController {
 			if (Validator.isNotNull(loginMax)) {
 				max = Integer.parseInt(loginMax);
 			}
+
 			if (checkUserId != -1) {
 				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
-				
-				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
+
+				if (checkUser != null && checkUser.getFailedLoginAttempts() >= max) {
+
 					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 					String jCaptchaResponse = request.getParameter("j_captcha_response");
 					String captchaId = request.getSession().getId();
@@ -399,15 +401,17 @@ public class RestfulController {
 						return "captcha";
 					}
 				}
-				else {
+				else if (checkUser != null && checkUser.getStatus() == WorkflowConstants.STATUS_PENDING) {
 					response.setStatus(HttpServletResponse.SC_OK);
-					return "";
+					return "pending";
 				}
 			}
 			else {
+
 				try {
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
+
 					if (checkUser != null && checkUser.getFailedLoginAttempts() >= max) {
 						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 						String jCaptchaResponse = request.getParameter("j_captcha_response");
@@ -424,7 +428,11 @@ public class RestfulController {
 							response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 				        	return "captcha";
 				        }				
-					}		
+					}
+					else if (checkUser != null && checkUser.getStatus() == WorkflowConstants.STATUS_PENDING) {
+						response.setStatus(HttpServletResponse.SC_OK);
+						return "pending";
+					}
 				} catch (PortalException e) {
 					_log.debug(e);
 				}				
