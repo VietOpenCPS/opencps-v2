@@ -46,6 +46,22 @@ public class TrackClientStatisticLocalServiceWrapper
 		return _trackClientStatisticLocalService.addTrackClientStatistic(trackClientStatistic);
 	}
 
+	@Override
+	public long countAccess(int day, int month, int year) {
+		return _trackClientStatisticLocalService.countAccess(day, month, year);
+	}
+
+	@Override
+	public long countAccessAllYear() {
+		return _trackClientStatisticLocalService.countAccessAllYear();
+	}
+
+	@Override
+	public long countAccessPeriod(String startDay, String endDay) {
+		return _trackClientStatisticLocalService.countAccessPeriod(startDay,
+			endDay);
+	}
+
 	/**
 	* Creates a new track client statistic with the primary key. Does not add the track client statistic to the database.
 	*

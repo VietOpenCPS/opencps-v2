@@ -15,6 +15,7 @@
 package org.opencps.usermgt.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.base.TrackClientStatisticLocalServiceBaseImpl;
@@ -151,5 +152,41 @@ public class TrackClientStatisticLocalServiceImpl
 			
 			trackClientStatisticPersistence.update(trackClientStatisticYear);
 		}
-	}		
+	}
+	public long countAccess(int day,int month, int year)
+	{
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticPersistence.findByD_M_Y(day, month, year);
+		long count=0;
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics)
+		{
+			count = count + trackClientStatistic.getTotal();
+		}
+		return count;
+	}
+
+	public long countAccessPeriod(String startDay, String endDay)
+	{
+		long count = 0;
+		List<TrackClientStatistic> l = trackClientStatisticFinder.findPeriod(startDay, endDay);
+		for (int i = 0; i < l.size(); i++)
+		{
+			count = count + l.get(i).getTotal();
+		}
+		return count;
+	}
+
+	public long countAccessAllYear()
+	{
+		//sử dụng nếu muốn thống kê theo từng năm
+		//Map<Integer,Long> map = new HashMap<>();
+		List<org.opencps.usermgt.model.TrackClientStatistic> l = trackClientStatisticFinder.findAllYear();
+		long count = 0 ;
+		for (int i = 0; i < l.size(); i++)
+		{
+			count = count + l.get(i).getTotal();
+			//sử dụng nếu muốn thống kê theo từng năm
+			//map.put(l.get(i).getYear(),l.get(i).getTotal());
+		}
+		return count;
+	}
 }

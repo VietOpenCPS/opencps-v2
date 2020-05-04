@@ -54,6 +54,18 @@ public class TrackClientStatisticLocalServiceUtil {
 		return getService().addTrackClientStatistic(trackClientStatistic);
 	}
 
+	public static long countAccess(int day, int month, int year) {
+		return getService().countAccess(day, month, year);
+	}
+
+	public static long countAccessAllYear() {
+		return getService().countAccessAllYear();
+	}
+
+	public static long countAccessPeriod(String startDay, String endDay) {
+		return getService().countAccessPeriod(startDay, endDay);
+	}
+
 	/**
 	* Creates a new track client statistic with the primary key. Does not add the track client statistic to the database.
 	*

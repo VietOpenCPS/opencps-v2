@@ -242,7 +242,8 @@ public class BackendAPIRestApplication extends Application {
 
 		//Applicant Data
 		singletons.add(new ApplicantDataManagementImpl());
-		
+
+		singletons.add(new AccessStatisticsManagementImpl());
 		singletons.add(this);
 
 		// add service provider

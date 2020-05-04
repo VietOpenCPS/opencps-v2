@@ -20,4 +20,23 @@
 			OFFSET ?
 		]]>
 	</sql>
+
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findPeriod">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+		]]>
+	</sql>
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAllYear">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day = 0 AND o.month = 0
+			ORDER BY o.year ASC
+		]]>
+	</sql>
 </custom-sql>

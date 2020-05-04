@@ -887,9 +887,9 @@
             <finder-column name="visitDate" comparator="&lt;"></finder-column>
         </finder>		
 	</entity>
-	
+
 	<entity name="TrackClientStatistic" uuid="true" local-service="true"
-		remote-service="false" table="opencps_track_client_statistic">
+			remote-service="false" table="opencps_track_client_statistic">
 
 		<!-- PK fields -->
 		<column name="trackClientStatisticId" type="long" primary="true" />
@@ -908,20 +908,25 @@
 		<column name="mobile" type="boolean" />
 		<column name="tablet" type="boolean" />
 		<column name="total" type="long" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
 		</order>
-        <finder name="U_Y_M_D_D_M_T" return-type="TrackClientStatistic">
-            <finder-column name="url"></finder-column>
-            <finder-column name="year"></finder-column>
-            <finder-column name="month"></finder-column>
-            <finder-column name="day"></finder-column>
-            <finder-column name="desktop"></finder-column>
-            <finder-column name="mobile"></finder-column>
-            <finder-column name="tablet"></finder-column>
-        </finder>		
+		<finder name="U_Y_M_D_D_M_T" return-type="TrackClientStatistic">
+			<finder-column name="url"></finder-column>
+			<finder-column name="year"></finder-column>
+			<finder-column name="month"></finder-column>
+			<finder-column name="day"></finder-column>
+			<finder-column name="desktop"></finder-column>
+			<finder-column name="mobile"></finder-column>
+			<finder-column name="tablet"></finder-column>
+		</finder>
+		<finder name="D_M_Y" return-type="Collection">
+			<finder-column name="day"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+		</finder>
 	</entity>
 	
 	<exceptions>
