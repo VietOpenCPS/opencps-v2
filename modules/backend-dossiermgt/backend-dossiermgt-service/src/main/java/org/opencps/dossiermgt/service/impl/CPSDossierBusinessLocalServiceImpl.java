@@ -730,6 +730,13 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 	//			_log.info("Flag changed: " + flagChanged);
 				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				//Always inform due date
+				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && Validator.isNotNull(dossier.getDueDate())) {
+					payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+				}
+				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && Validator.isNotNull(dossier.getReceiveDate())) {
+					payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
+				}
 				if (Validator.isNotNull(dossier.getServerNo())
 						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
@@ -2582,6 +2589,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				
 				dossier.setReceiveDate(now);
 				bResult.put(DossierTerm.RECEIVE_DATE, true);
 
