@@ -8,10 +8,8 @@ import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+
 import org.opencps.usermgt.model.impl.TrackClientStatisticImpl;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
 

@@ -16,7 +16,6 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 	public long getAccessStatistics(int day, int month, int yaer)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccess(day, month, yaer);
-
 	}
 
 	@Override
