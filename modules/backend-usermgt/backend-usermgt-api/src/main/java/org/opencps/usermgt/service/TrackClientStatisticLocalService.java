@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -60,6 +61,13 @@ public interface TrackClientStatisticLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link TrackClientStatisticLocalServiceUtil} to access the track client statistic local service. Add custom service methods to {@link org.opencps.usermgt.service.impl.TrackClientStatisticLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public List<TrackClientStatistic> accessStatisticsURL(int day, int month,
+		int year);
+
+	public JSONObject accessStatisticsURLForAllYear();
+
+	public JSONObject accessStatisticsURLForPeriod(String startDay,
+		String endDay);
 
 	/**
 	* Adds the track client statistic to the database. Also notifies the appropriate model listeners.

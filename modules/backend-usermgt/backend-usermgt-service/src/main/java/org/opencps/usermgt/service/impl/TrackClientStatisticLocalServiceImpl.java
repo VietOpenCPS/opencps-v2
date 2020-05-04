@@ -17,6 +17,9 @@ package org.opencps.usermgt.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.base.TrackClientStatisticLocalServiceBaseImpl;
 
@@ -188,5 +191,56 @@ public class TrackClientStatisticLocalServiceImpl
 			//map.put(l.get(i).getYear(),l.get(i).getTotal());
 		}
 		return count;
+	}
+
+	public List<TrackClientStatistic> accessStatisticsURL(int day,int month, int year)
+	{
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticPersistence.findByD_M_Y(day, month, year);
+		return trackClientStatistics;
+	}
+	public JSONObject accessStatisticsURLForAllYear()
+	{
+		JSONArray  jsonArray = JSONFactoryUtil.createJSONArray();
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findURLAllYear();
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics )
+		{
+			long count =0;
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLAllYear(trackClientStatistic.getUrl());
+			for (int i = 0; i < list.size(); i++)
+			{
+				count = count + list.get(i).getTotal();
+			}
+			jsonObject.put("value", count);
+			jsonObject.put("url",trackClientStatistic.getUrl());
+			jsonArray.put(jsonObject);
+
+		}
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("accessStatisticsURL", jsonArray);
+		return result;
+	}
+
+	public JSONObject accessStatisticsURLForPeriod(String startDay, String endDay)
+	{
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findURLPeriod(startDay,endDay);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics )
+		{
+			long count =0;
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLPeriod(startDay,endDay,trackClientStatistic.getUrl());
+			for (int i = 0; i < list.size(); i++)
+			{
+				count = count + list.get(i).getTotal();
+			}
+			jsonObject.put("value", count);
+			jsonObject.put("url",trackClientStatistic.getUrl());
+			jsonArray.put(jsonObject);
+
+		}
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("accessStatisticsURL", jsonArray);
+		return result;
 	}
 }

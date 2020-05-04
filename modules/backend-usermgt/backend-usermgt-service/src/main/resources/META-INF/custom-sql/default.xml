@@ -20,7 +20,7 @@
 			OFFSET ?
 		]]>
 	</sql>
-
+	<!--tìm số lượng truy cập trong một khoảng thời gian -->
 	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findPeriod">
 		<![CDATA[
 			SELECT 	o.*
@@ -30,12 +30,60 @@
 				AND o.createDate BETWEEN ? AND ?
 		]]>
 	</sql>
+
+	<!-- tìm các url xuất hiện trong khoảng thời gian -->
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLPeriod">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+			GROUP BY o.url
+		]]>
+	</sql>
+	<!-- tìm số lượng truy cập vào url xuất hiện trong khoảng thời gian -->
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLPeriod">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+				AND o.url = ?
+		]]>
+	</sql>
+
+
+	<!--Tìm số lượng truy cập trong tất cả các năm -->
 	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAllYear">
 		<![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
 				o.day = 0 AND o.month = 0
+			ORDER BY o.year ASC
+		]]>
+	</sql>
+	<!-- tìm các url xuất hiện trong tất cả các năm -->
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLAllYear">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+					o.day = 0 AND o.month = 0
+			GROUP BY o.url
+			ORDER BY o.year ASC
+		]]>
+	</sql>
+	<!-- tìm số lượng truy cập vào url xuất hiện trong tất cả các năm -->
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLAllYear">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+					o.day = 0 AND o.month = 0
+					AND o.url = ?
 			ORDER BY o.year ASC
 		]]>
 	</sql>

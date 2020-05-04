@@ -57,5 +57,40 @@ public interface AccessStatisticsManagement
 		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext, @BeanParam
 		AccessStatistics accessStatistics);
 
+	@GET
+	@Path("/url/day")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getAccessStatisticsURLForDay(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext, @BeanParam
+		AccessStatistics accessStatistics);
+
+	@GET
+	@Path("/url/period")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getAccessStatisticsURLForPeriod(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext,@QueryParam(value = "startDay") String startDay,@QueryParam(value = "endDay") String endDay );
+
+	@GET
+	@Path("/url/month")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getAccessStatisticsURLForMonth(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext, @BeanParam
+		AccessStatistics accessStatistics);
+
+	@GET
+	@Path("/url/year")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getAccessStatisticsURLForYear(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext, @BeanParam
+		AccessStatistics accessStatistics);
+
+	@GET
+	@Path("/url/allyear")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getAccessStatisticsURLForAllYear(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext, @BeanParam
+		AccessStatistics accessStatistics);
+
+
 
 }

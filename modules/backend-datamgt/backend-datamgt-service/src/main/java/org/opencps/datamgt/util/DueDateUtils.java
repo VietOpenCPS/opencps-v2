@@ -824,12 +824,14 @@ public class DueDateUtils {
 		return StringPool.BLANK.equals(time) ? " 0 ngày " : time;
 	}
 
-	public long getOverDueTypeDay() {
+	public long getOverDueTypeDay()
+	{
 
 		return countNextWorkDay;
 	}
 
-	public long getOverDueTypeHour() {
+	public long getOverDueTypeHour()
+	{
 
 		return countNextWorkDayTime / 100;
 	}

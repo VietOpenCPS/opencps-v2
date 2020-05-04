@@ -34,6 +34,25 @@ public class TrackClientStatisticLocalServiceWrapper
 		_trackClientStatisticLocalService = trackClientStatisticLocalService;
 	}
 
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> accessStatisticsURL(
+		int day, int month, int year) {
+		return _trackClientStatisticLocalService.accessStatisticsURL(day,
+			month, year);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForAllYear() {
+		return _trackClientStatisticLocalService.accessStatisticsURLForAllYear();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForPeriod(
+		String startDay, String endDay) {
+		return _trackClientStatisticLocalService.accessStatisticsURLForPeriod(startDay,
+			endDay);
+	}
+
 	/**
 	* Adds the track client statistic to the database. Also notifies the appropriate model listeners.
 	*

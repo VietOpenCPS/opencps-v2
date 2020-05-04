@@ -80,4 +80,56 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		jsonObject.put("value" , value);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
+
+	@Override public Response getAccessStatisticsURLForDay(HttpServletRequest request,HttpHeaders header,Company company,
+		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
+	{
+		int day = accessStatistics.getDay();
+		int month =accessStatistics.getMonth();
+		int year = accessStatistics.getYear();
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = actions.getAccessStatisticsURL(day,month,year);
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
+
+	@Override
+	public Response getAccessStatisticsURLForPeriod(HttpServletRequest request,HttpHeaders header,Company company,
+		Locale locale,User user,ServiceContext serviceContext,String startDay,String endDay)
+	{
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = ((AccessStatisticsActionsImpl) actions).getAccessStatisticsURLForPeriod();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
+
+	@Override
+	public Response getAccessStatisticsURLForMonth(HttpServletRequest request,HttpHeaders header,Company company,
+		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
+	{
+		int day = 0;
+		int month =accessStatistics.getMonth();
+		int year = accessStatistics.getYear();
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = actions.getAccessStatisticsURL(day,month,year);
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
+
+	@Override public Response getAccessStatisticsURLForYear(HttpServletRequest request,HttpHeaders header,Company company,
+		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
+	{
+		int day = 0;
+		int month =0;
+		int year = accessStatistics.getYear();
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = actions.getAccessStatisticsURL(day,month,year);
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
+
+	@Override
+	public Response getAccessStatisticsURLForAllYear(HttpServletRequest request,HttpHeaders header,Company company,
+		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
+	{
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = ((AccessStatisticsActionsImpl) actions).getAccessStatisticsURLForAllYear();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
 }
