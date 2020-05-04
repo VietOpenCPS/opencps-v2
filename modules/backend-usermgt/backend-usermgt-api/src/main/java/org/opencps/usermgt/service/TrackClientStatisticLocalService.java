@@ -71,6 +71,12 @@ public interface TrackClientStatisticLocalService extends BaseLocalService,
 	public TrackClientStatistic addTrackClientStatistic(
 		TrackClientStatistic trackClientStatistic);
 
+	public long countAccess(int day, int month, int year);
+
+	public long countAccessAllYear();
+
+	public long countAccessPeriod(String startDay, String endDay);
+
 	/**
 	* Creates a new track client statistic with the primary key. Does not add the track client statistic to the database.
 	*
