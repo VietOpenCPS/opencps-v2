@@ -191,7 +191,7 @@ public class OneDay extends BaseMessageListener {
 		_schedulerEntryImpl =
 			new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(
-			_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+			_schedulerEntryImpl, StorageType.PERSISTED);
 
 		// _schedulerEntryImpl.setTrigger(jobTrigger);
 
