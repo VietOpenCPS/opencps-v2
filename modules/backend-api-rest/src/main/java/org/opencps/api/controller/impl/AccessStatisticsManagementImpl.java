@@ -1,6 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -28,7 +27,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatistics(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatisticsForDay(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
 	@Override public Response getAccessStatisticsForPeriod(HttpServletRequest request,HttpHeaders header,Company company,
@@ -49,7 +48,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatisticsForPeriod(startDay,endDay);
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
 	@Override public Response getAccessStatisticsForMonth(HttpServletRequest request,HttpHeaders header,Company company,
@@ -59,7 +58,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatisticsForMonth(accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
 	@Override public Response getAccessStatisticsForYear(HttpServletRequest request,HttpHeaders header,Company company,
@@ -69,7 +68,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatisticsForYear(accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
 	@Override public Response getAccessStatisticsForAllYear(HttpServletRequest request,HttpHeaders header,Company company,
@@ -79,6 +78,6 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		long value =actions.getAccessStatisticsForAllYear();
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("value" , value);
-		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 }

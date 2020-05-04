@@ -33,3 +33,5 @@ gradle-local.properties
 
 **/**/.settings
 gradle.properties
+/modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/service/persistence/impl/TrackClientStatisticFinderImpl.java
+/modules/backend-usermgt/backend-usermgt-service/src/main/java/org/opencps/usermgt/service/persistence/impl/TrackClientStatisticFinderBaseImpl.java
