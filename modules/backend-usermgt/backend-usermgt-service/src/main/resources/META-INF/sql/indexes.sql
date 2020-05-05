@@ -18,6 +18,9 @@ create index IX_EE04E01F on opencps_applicant (mappingUserId);
 create index IX_58078059 on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_35F6491B on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_14A28584 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_49569D06 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_370E9375 on opencps_employee (email[$COLUMN_LENGTH:512$]);
 create index IX_A8503959 on opencps_employee (groupId, email[$COLUMN_LENGTH:512$]);
 create index IX_FFD92AB0 on opencps_employee (groupId, employeeId);
@@ -67,10 +70,12 @@ create index IX_2247AC10 on opencps_sync_scheduler (className[$COLUMN_LENGTH:255
 create index IX_4F2917EE on opencps_sync_scheduler (className[$COLUMN_LENGTH:255$], typeCode[$COLUMN_LENGTH:255$]);
 create index IX_9290C4D4 on opencps_sync_scheduler (uuid_[$COLUMN_LENGTH:75$]);
 
+create index IX_6B3973DC on opencps_track_client (sessionId[$COLUMN_LENGTH:128$], leaveDate);
+create index IX_4D2C3370 on opencps_track_client (sessionId[$COLUMN_LENGTH:128$], visitDate);
 create index IX_D692EFEC on opencps_track_client (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_C238356 on opencps_track_client_statistic (url[$COLUMN_LENGTH:512$], desktop, mobile, tablet);
-create index IX_68556269 on opencps_track_client_statistic (url[$COLUMN_LENGTH:512$], year, month, day, desktop, mobile, tablet);
+create index IX_C238356 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], desktop, mobile, tablet);
+create index IX_68556269 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], year, month, day, desktop, mobile, tablet);
 create index IX_7281E1BB on opencps_track_client_statistic (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_BFD53D86 on opencps_userlogin (userId, sessionId[$COLUMN_LENGTH:255$]);

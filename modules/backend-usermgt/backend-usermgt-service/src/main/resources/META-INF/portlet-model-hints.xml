@@ -93,6 +93,36 @@
 			<hint name="max-length">255</hint>
 		</field>
 	</model>
+	<model name="org.opencps.usermgt.model.ApplicantData">
+		<field name="uuid" type="String" />
+		<field name="applicantDataId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="fileTemplateNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="fileNo" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="fileName" type="String">
+			<hint name="max-length">1024</hint>
+		</field>
+		<field name="fileEntryId" type="long" />
+		<field name="metadata" type="String">
+			<hint name="max-length">65535</hint>
+		</field>
+		<field name="status" type="int" />
+		<field name="applicantIdNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="applicantDataType" type="int" />
+	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
 		<field name="employeeId" type="long" />
@@ -384,7 +414,7 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="url" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">2048</hint>
 		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />
@@ -413,6 +443,8 @@
 		<field name="desktop" type="boolean" />
 		<field name="mobile" type="boolean" />
 		<field name="tablet" type="boolean" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
 	</model>
 	<model name="org.opencps.usermgt.model.TrackClientStatistic">
 		<field name="uuid" type="String" />
@@ -420,7 +452,7 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="url" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">2048</hint>
 		</field>
 		<field name="year" type="int" />
 		<field name="month" type="int" />

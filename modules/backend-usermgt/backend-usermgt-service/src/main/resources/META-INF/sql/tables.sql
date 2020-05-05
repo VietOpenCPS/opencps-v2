@@ -61,6 +61,25 @@ create table opencps_applicant (
 	mappingClassPK VARCHAR(255) null
 );
 
+create table opencps_applicant_data (
+	uuid_ VARCHAR(75) null,
+	applicantDataId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	fileTemplateNo VARCHAR(255) null,
+	fileNo VARCHAR(255) null,
+	fileName VARCHAR(1024) null,
+	fileEntryId LONG,
+	metadata TEXT null,
+	status INTEGER,
+	applicantIdNo VARCHAR(128) null,
+	applicantDataType INTEGER
+);
+
 create table opencps_employee (
 	uuid_ VARCHAR(75) null,
 	employeeId LONG not null primary key,
@@ -241,7 +260,7 @@ create table opencps_track_client (
 	createDate DATE null,
 	modifiedDate DATE null,
 	sessionId VARCHAR(128) null,
-	url VARCHAR(512) null,
+	url VARCHAR(2048) null,
 	year INTEGER,
 	month INTEGER,
 	day INTEGER,
@@ -256,7 +275,9 @@ create table opencps_track_client (
 	timeOnPage LONG,
 	desktop BOOLEAN,
 	mobile BOOLEAN,
-	tablet BOOLEAN
+	tablet BOOLEAN,
+	userId LONG,
+	userName VARCHAR(75) null
 );
 
 create table opencps_track_client_statistic (
@@ -264,7 +285,7 @@ create table opencps_track_client_statistic (
 	trackClientStatisticId LONG not null primary key,
 	createDate DATE null,
 	modifiedDate DATE null,
-	url VARCHAR(512) null,
+	url VARCHAR(2048) null,
 	year INTEGER,
 	month INTEGER,
 	day INTEGER,

@@ -185,6 +185,45 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS(
+		String sessionId, int start, int end) {
+		return _trackClientLocalService.findByS(sessionId, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS(
+		String sessionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<org.opencps.usermgt.model.TrackClient> orderBy) {
+		return _trackClientLocalService.findByS(sessionId, start, end, orderBy);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS_LVD(
+		String sessionId, java.util.Date visitDate) {
+		return _trackClientLocalService.findByS_LVD(sessionId, visitDate);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS_LVD(
+		String sessionId, java.util.Date visitDate, int start, int end) {
+		return _trackClientLocalService.findByS_LVD(sessionId, visitDate,
+			start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS_NULL_L(
+		String sessionId, java.util.Date leaveDate) {
+		return _trackClientLocalService.findByS_NULL_L(sessionId, leaveDate);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClient> findByS_NULL_L(
+		String sessionId, java.util.Date leaveDate, int start, int end) {
+		return _trackClientLocalService.findByS_NULL_L(sessionId, leaveDate,
+			start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _trackClientLocalService.getActionableDynamicQuery();
 	}
@@ -263,6 +302,19 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 			sessionId, url, year, month, day, visitDate, leaveDate, clientIP,
 			macAddress, region, nation, latitude, longitude, timeOnPage,
 			desktop, mobile, tablet);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.TrackClient updateTrackClient(
+		long trackClientId, String sessionId, String url, int year, int month,
+		int day, java.util.Date visitDate, java.util.Date leaveDate,
+		String clientIP, String macAddress, String region, String nation,
+		String latitude, String longitude, long timeOnPage, boolean desktop,
+		boolean mobile, boolean tablet, long userId, String userName) {
+		return _trackClientLocalService.updateTrackClient(trackClientId,
+			sessionId, url, year, month, day, visitDate, leaveDate, clientIP,
+			macAddress, region, nation, latitude, longitude, timeOnPage,
+			desktop, mobile, tablet, userId, userName);
 	}
 
 	/**

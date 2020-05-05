@@ -32,21 +32,33 @@ import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -60,6 +72,7 @@ import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.NGSPRestClient;
+import org.opencps.api.controller.util.PasswordEncrypt;
 import org.opencps.api.employee.model.EmployeeAccountInputModel;
 import org.opencps.api.employee.model.EmployeeAccountModel;
 import org.opencps.api.usermgt.model.ApplicantInputModel;
@@ -88,6 +101,7 @@ import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -1406,4 +1420,588 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 	}
 
+	@Override
+	public Response registerLGSPWithCaptcha(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ApplicantInputModel input,
+			String jCaptchaResponse) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		ApplicantModel result = new ApplicantModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+
+
+		try {
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
+			
+			if (!auth2.checkToken(request, header)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
+					isAdmin = true;
+					break;
+				}
+			}
+			if (isAdmin) {
+				
+			}
+			else {
+				if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
+					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+					String captchaId = request.getSession().getId();
+					try {
+						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+						_log.info("Check captcha result: " + isResponseCorrect);
+						if (!isResponseCorrect) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
+
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+						}
+					} catch (CaptchaServiceException e) {
+						_log.debug(e);
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+					}
+				} else {
+					ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+					boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+							serviceContext, jCaptchaResponse);
+
+					if (!isValid) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage("Captcha incorrect");
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription("Captcha incorrect");
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				}
+			}
+			String applicantName = HtmlUtil.escape(input.getApplicantName());
+			String applicantIdType = HtmlUtil.escape(input.getApplicantIdType());
+			String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
+			String address = HtmlUtil.escape(input.getAddress());
+			String cityCode = HtmlUtil.escape(input.getCityCode());
+			String districtCode = HtmlUtil.escape(input.getDistrictCode());
+			String wardCode = HtmlUtil.escape(input.getWardCode());
+			String contactName = HtmlUtil.escape(input.getContactName());
+			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
+			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+
+			if (Validator.isNotNull(input.getCityCode())) {
+				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+			}
+			if (Validator.isNotNull(input.getDistrictCode())) {
+				districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+			}
+			if (Validator.isNotNull(input.getWardCode())) {
+				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+			}
+
+			//
+			// Create a trust manager that does not validate certificate chains
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {
+				}
+				public void checkServerTrusted(X509Certificate[] certs, String authType) {
+				}
+			} };
+			// Install the all-trusting trust manager
+			try {
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch (Exception e) {
+			}
+
+			String clientId = "yPTWeD3FuqgYku7SvNJ5VuylmY0a";
+			String clientSecret = "lEti1opjJtLecmHcdGf9ogat0SUa";
+			String grantType = "client_credentials";
+			String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
+			String strProfile = StringPool.BLANK;
+			try {
+				/** Get Token */
+				String urlToken = "https://lgsp.dongthap.gov.vn/token";
+
+				StringBuilder sbToken = new StringBuilder();
+				URL urlVal = new URL(urlToken);
+				StringBuilder postData = new StringBuilder();
+				//
+				postData.append("client_id");
+				postData.append(StringPool.EQUAL);
+				postData.append(clientId);
+				//
+				postData.append(StringPool.AMPERSAND);
+				postData.append("client_secret");
+				postData.append(StringPool.EQUAL);
+				postData.append(clientSecret);
+				//
+				postData.append(StringPool.AMPERSAND);
+				postData.append("grant_type");
+				postData.append(StringPool.EQUAL);
+				postData.append(grantType);
+
+				java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlVal.openConnection();
+				conToken.setRequestMethod("POST");
+				conToken.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+				conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
+				conToken.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+						StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+
+				conToken.setUseCaches(false);
+				conToken.setDoInput(true);
+				conToken.setDoOutput(true);
+				_log.debug("POST DATA: " + postData.toString());
+				OutputStream osToken = conToken.getOutputStream();
+				osToken.write(postData.toString().getBytes());
+				osToken.close();
+
+				BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+
+				int cpToken;
+				while ((cpToken = brfToken.read()) != -1) {
+					sbToken.append((char) cpToken);
+				}
+				_log.debug("RESULT PROXY: " + sbToken.toString());
+				if (Validator.isNotNull(sbToken.toString())) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+					//
+					if (jsonToken.has("access_token") && jsonToken.has("token_type")
+							&& Validator.isNotNull(jsonToken.getString("access_token"))
+							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+						String accessToken = jsonToken.getString("access_token");
+						String tokenType = jsonToken.getString("token_type");
+						
+						_log.info("accessToken: " + accessToken);
+						_log.info("tokenType: " + tokenType);
+
+						// Dang ky tk cong dan
+						if ("citizen".equalsIgnoreCase(applicantIdType)) {
+							//
+							String urlRegister = endPoitBaseUrl + "/congdan/dangky";
+							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+
+							StringBuilder sbReg = new StringBuilder();
+							try {
+								URL urlValRegister = new URL(urlRegister);
+
+								StringBuilder postDataReg = new StringBuilder();
+
+								JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+								jsonBody.put("email", contactEmail);
+								jsonBody.put("soCMND", applicantIdNo);
+								jsonBody.put("ngaySinh", "1990-12-01");
+								jsonBody.put("gioiTinh", 0);
+								jsonBody.put("moTaDiaChiThuongTru", "");
+								jsonBody.put("tinhThuongTruId", 0);
+								jsonBody.put("huyenThuongTruId", 0);
+								jsonBody.put("xaThuongTruId", 0);
+								jsonBody.put("dienThoai", contactTelNo);
+								jsonBody.put("ho", "Trần");
+								jsonBody.put("dem", "Văn");
+								jsonBody.put("ten", applicantName);
+								
+								
+//								postDataReg.append("email");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(contactEmail);
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("soCMND");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(applicantIdNo);
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("ngaySinh");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append("1990-12-01");
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("gioiTinh");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(0);
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("moTaDiaChiThuongTru");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append("");
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("tinhThuongTruId");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(0);
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("huyenThuongTruId");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(0);
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("xaThuongTruId");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(0);
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("dienThoai");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(contactTelNo);
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("ho");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append("");
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("dem");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append("");
+//								//
+//								postDataReg.append(StringPool.AMPERSAND);
+//								postDataReg.append("ten");
+//								postDataReg.append(StringPool.EQUAL);
+//								postDataReg.append(applicantName);
+
+								java.net.HttpURLConnection conReg = (java.net.HttpURLConnection) urlValRegister
+										.openConnection();
+								conReg.setRequestMethod("POST");
+								conReg.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+								conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+								conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+								_log.debug("BASIC AUTHEN: " + authStrEnc);
+								conReg.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+										StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+								conReg.setUseCaches(false);
+								conReg.setDoInput(true);
+								conReg.setDoOutput(true);
+								_log.debug("POST DATA: " + jsonBody.toString());
+								OutputStream osReg = conReg.getOutputStream();
+								osReg.write(jsonBody.toString().getBytes());
+								osReg.close();
+
+								BufferedReader brfReg = new BufferedReader(
+										new InputStreamReader(conReg.getInputStream()));
+
+								int cpReg;
+								while ((cpReg = brfReg.read()) != -1) {
+									sbReg.append((char) cpReg);
+								}
+								_log.info("RESULT PROXY: " + sbReg.toString());
+								//
+								if (Validator.isNotNull(sbReg.toString())) {
+									//
+									_log.error("sbReg:"+ sbReg.toString());
+									JSONObject jsonReg = JSONFactoryUtil.createJSONObject(sbReg.toString());
+									if (jsonReg.has("message") && jsonReg.has("error_code")
+											&& Validator.isNotNull(jsonReg.get("message"))
+											&& Validator.isNotNull(jsonReg.get("error_code"))) {
+										String message = jsonReg.getString("message");
+										int errorCode = jsonReg.getInt("error_code");
+										
+										if (errorCode == 0) {
+											JSONObject jsonMessage = JSONFactoryUtil.createJSONObject(message);
+											//
+											String maXacNhan = jsonMessage.getString("maXacNhan");
+											String matKhau = jsonMessage.getString("matKhau");
+											String taiKhoan = jsonMessage.getString("taiKhoan");
+											// Them 1 cot luu pass vs activeCode vào profile
+											JSONObject jsonProfile = JSONFactoryUtil.createJSONObject();
+											jsonProfile.put("maXacNhan", maXacNhan);
+											jsonProfile.put("matKhau", matKhau);
+											jsonProfile.put("taiKhoan", taiKhoan);
+											//
+											_log.error("maXacNhan:"+ maXacNhan);
+											_log.error("matKhau:"+ matKhau);
+											strProfile = jsonProfile.toJSONString();
+										}
+									}
+								}
+							} catch (IOException e) {
+								_log.error(e);
+								_log.debug("Something went wrong while reading/writing in stream!!");
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				_log.error(e);
+				_log.debug("Something went wrong while reading/writing in stream!!");
+			}
+
+
+			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
+					cityCode, cityName, districtCode, districtName,
+					wardCode, wardName, contactName, contactTelNo, strProfile,
+					input.getPassword());
+			_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+			result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response activateLGSPApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String code) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+
+		long applicantId = 0;
+		Applicant aplc = ApplicantLocalServiceUtil.fetchApplicant(id);
+
+		if (aplc != null) {
+			applicantId = id;
+		} else {
+			aplc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+			if (aplc != null) {
+				applicantId = aplc.getApplicantId();
+			}
+		}
+
+		//Active LGSP and change pass
+		if (aplc != null) {
+			// Create a trust manager that does not validate certificate chains
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {
+				}
+				public void checkServerTrusted(X509Certificate[] certs, String authType) {
+				}
+			} };
+			// Install the all-trusting trust manager
+			try {
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch (Exception e) {
+			}
+	
+			String clientId = "yPTWeD3FuqgYku7SvNJ5VuylmY0a";
+			String clientSecret = "lEti1opjJtLecmHcdGf9ogat0SUa";
+			String grantType = "client_credentials";
+			String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
+			try {
+				/** Get Token */
+				String urlToken = "https://lgsp.dongthap.gov.vn/token";
+	
+				StringBuilder sbToken = new StringBuilder();
+				URL urlVal = new URL(urlToken);
+				StringBuilder postData = new StringBuilder();
+				//
+				postData.append("client_id");
+				postData.append(StringPool.EQUAL);
+				postData.append(clientId);
+				//
+				postData.append(StringPool.AMPERSAND);
+				postData.append("client_secret");
+				postData.append(StringPool.EQUAL);
+				postData.append(clientSecret);
+				//
+				postData.append(StringPool.AMPERSAND);
+				postData.append("grant_type");
+				postData.append(StringPool.EQUAL);
+				postData.append(grantType);
+	
+				java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlVal.openConnection();
+				conToken.setRequestMethod("POST");
+				conToken.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+				conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
+				conToken.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+						StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+	
+				conToken.setUseCaches(false);
+				conToken.setDoInput(true);
+				conToken.setDoOutput(true);
+				_log.debug("POST DATA: " + postData.toString());
+				OutputStream osToken = conToken.getOutputStream();
+				osToken.write(postData.toString().getBytes());
+				osToken.close();
+	
+				BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+	
+				int cpToken;
+				while ((cpToken = brfToken.read()) != -1) {
+					sbToken.append((char) cpToken);
+				}
+				_log.debug("RESULT PROXY: " + sbToken.toString());
+				if (Validator.isNotNull(sbToken.toString())) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+					//
+					if (jsonToken.has("access_token") && jsonToken.has("token_type")
+							&& Validator.isNotNull(jsonToken.getString("access_token"))
+							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+						String accessToken = jsonToken.getString("access_token");
+						String tokenType = jsonToken.getString("token_type");
+						
+						_log.info("accessToken: " + accessToken);
+						_log.info("tokenType: " + tokenType);
+	
+						// Dang ky tk cong dan
+						String profile = aplc.getProfile();
+						String maXacNhan = StringPool.BLANK;
+						String matKhau = StringPool.BLANK;
+						if (Validator.isNotNull(profile)) {
+							JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(profile);
+							//
+							if (jsonProfile.has("maXacNhan") && jsonProfile.has("matKhau") &&
+									Validator.isNotNull(jsonProfile.getString("maXacNhan"))
+									&& Validator.isNotNull(jsonProfile.getString("matKhau"))) {
+								maXacNhan = jsonProfile.getString("maXacNhan");
+								matKhau = jsonProfile.getString("matKhau");
+								
+							}
+						}
+							//
+							String urlActive = endPoitBaseUrl + "/congdan/kichhoat" + StringPool.FORWARD_SLASH + maXacNhan;
+							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+	
+							StringBuilder sbActive = new StringBuilder();
+							try {
+								URL urlValActive = new URL(urlActive);
+	
+								java.net.HttpURLConnection conActive = (java.net.HttpURLConnection) urlValActive
+										.openConnection();
+								conActive.setRequestMethod("POST");
+								conActive.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+								conActive.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+								conActive.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+								_log.debug("BASIC AUTHEN: " + authStrEnc);
+	
+								BufferedReader brfAc = new BufferedReader(
+										new InputStreamReader(conActive.getInputStream()));
+	
+								int cpActive;
+								while ((cpActive = brfAc.read()) != -1) {
+									sbActive.append((char) cpActive);
+								}
+								_log.info("RESULT PROXY: " + sbActive.toString());
+								//
+								if (Validator.isNotNull(sbActive.toString())) {
+									//
+									_log.error("sbActive:"+ sbActive.toString());
+									JSONObject jsonActive = JSONFactoryUtil.createJSONObject(sbActive.toString());
+									if (jsonActive.has("message") && jsonActive.has("error_code")
+											&& Validator.isNotNull(jsonActive.get("message"))
+											&& Validator.isNotNull(jsonActive.get("error_code"))) {
+										int errorCode = jsonActive.getInt("error_code");
+										if (errorCode == 0) {
+											//
+											String oldSecrect = PasswordEncrypt.encrypt(matKhau);
+											String newSecrect = PasswordEncrypt.encrypt(aplc.getTmpPass());
+											
+											_log.info("oldSecrect: " + oldSecrect);
+											_log.info("newSecrect: " + newSecrect);
+											//
+											String urlChange = endPoitBaseUrl + "/doimatkhau";
+					
+											StringBuilder sbChange = new StringBuilder();
+											try {
+												URL urlValChange = new URL(urlChange);
+					
+												JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+												jsonBody.put("matKhauCu", oldSecrect);
+												jsonBody.put("matKhauMoi", newSecrect);
+												jsonBody.put("email", aplc.getContactEmail());
+
+												java.net.HttpURLConnection conChange = (java.net.HttpURLConnection) urlValChange
+														.openConnection();
+												conChange.setRequestMethod("POST");
+												conChange.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+												conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+												conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+												_log.info("BASIC AUTHEN: " + authStrEnc);
+												conChange.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+														StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+												conChange.setUseCaches(false);
+												conChange.setDoInput(true);
+												conChange.setDoOutput(true);
+												_log.info("POST DATA: " + jsonBody.toString());
+												OutputStream osChange = conChange.getOutputStream();
+												osChange.write(jsonBody.toString().getBytes());
+												osChange.close();
+
+												BufferedReader brfChange = new BufferedReader(
+														new InputStreamReader(conChange.getInputStream()));
+					
+												int cpChange;
+												while ((cpChange = brfChange.read()) != -1) {
+													sbChange.append((char) cpChange);
+												}
+												_log.info("RESULT PROXY: " + sbChange.toString());
+												//
+												if (Validator.isNotNull(sbChange.toString())) {
+													//
+													JSONObject jsonChange = JSONFactoryUtil.createJSONObject(sbChange.toString());
+													if (jsonChange.has("message") && jsonChange.has("error_code")
+															&& Validator.isNotNull(jsonChange.get("message"))
+															&& Validator.isNotNull(jsonChange.get("error_code"))) {
+														int errorCodeChange = jsonChange.getInt("error_code");
+														if (errorCodeChange == 0) {
+															//
+															
+														}
+													}
+												}
+											} catch (IOException e) {
+												_log.error(e);
+												_log.debug("Something went wrong while reading/writing in stream!!");
+												return BusinessExceptionImpl.processException(e);
+											}
+										} else {
+											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
+										}
+									}
+								} else {
+									return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
+								}
+							} catch (IOException e) {
+								_log.error(e);
+								_log.debug("Something went wrong while reading/writing in stream!!");
+								return BusinessExceptionImpl.processException(e);
+							}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+				_log.debug("Something went wrong while reading/writing in stream!!");
+				return BusinessExceptionImpl.processException(e);
+			}
+		}
+		Applicant applicant = null;
+		try {
+
+			applicant = actions.activationLGSPApplicant(serviceContext, applicantId, code);
+
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			
+			resultObj.put(ConstantUtils.MAIL_AD, applicant.getContactEmail());
+			resultObj.put(ConstantUtils.TOKEN, applicant.getTmpPass());
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

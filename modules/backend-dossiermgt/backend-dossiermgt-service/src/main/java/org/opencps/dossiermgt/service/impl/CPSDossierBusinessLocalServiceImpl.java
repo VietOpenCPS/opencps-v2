@@ -213,6 +213,7 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
+import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
@@ -729,6 +730,13 @@ public class CPSDossierBusinessLocalServiceImpl
 				
 	//			_log.info("Flag changed: " + flagChanged);
 				payloadObject = DossierActionUtils.buildChangedPayload(payloadObject, flagChanged, dossier);
+				//Always inform due date
+				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && Validator.isNotNull(dossier.getDueDate())) {
+					payloadObject.put(DossierTerm.DUE_DATE, dossier.getDueDate().getTime());
+				}
+				if (actionConfig.getSyncType() == DossierSyncTerm.SYNCTYPE_INFORM && Validator.isNotNull(dossier.getReceiveDate())) {
+					payloadObject.put(DossierTerm.RECEIVE_DATE, dossier.getReceiveDate().getTime());
+				}
 				if (Validator.isNotNull(dossier.getServerNo())
 						&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 					String serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
@@ -920,9 +928,10 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Thiết lập quyền thao tác hồ sơ
 
 		int allowAssignUser = proAction.getAllowAssignUser();
+		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
-			if (Validator.isNotNull(assignUsers)) {
-				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
+			if (Validator.isNotNull(assignUsers) && assignedUsersArray.length() > 0) {
+//				JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 				assignDossierActionUser(dossier, allowAssignUser,
 					dossierAction, userId, groupId, proAction.getAssignUserId(),
 					assignedUsersArray);
@@ -1093,6 +1102,9 @@ public class CPSDossierBusinessLocalServiceImpl
 											apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
 											if (apiUrl.contains("{_dossierId}")) {
 												apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossierId));
+											}
+											if (apiUrl.contains("{_dossierCounter}")) {
+												apiUrl = apiUrl.replace("{_dossierCounter}", String.valueOf(dossier.getDossierCounter()));
 											}
 										}
 										if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
@@ -2577,6 +2589,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				&& dossier.getReceiveDate() == null) {
 //			try {
 //				DossierLocalServiceUtil.updateReceivingDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), now, context);
+				
 				dossier.setReceiveDate(now);
 				bResult.put(DossierTerm.RECEIVE_DATE, true);
 
@@ -3029,10 +3042,14 @@ public class CPSDossierBusinessLocalServiceImpl
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
 			for (DossierFile df : lstFiles) {
+				//GS. Ta Tuan Anh
 				if (!df.getRemoved()) {
 					df.setOriginal(true);
 				}
 				dossierFileLocalService.updateDossierFile(df);
+				
+				//GS. DuanTV ApplicantData
+				
 			}
 		}
 		
@@ -3755,11 +3772,19 @@ public class CPSDossierBusinessLocalServiceImpl
 
 			String dossierSubStatus = Validator.isNull(dossier.getDossierSubStatus()) ? StringPool.BLANK
 					: dossier.getDossierSubStatus();
-
+			String curStepCode = StringPool.BLANK;
+			if (dossier.getDossierActionId() > 0) {
+				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				if (curAction != null) {
+					curStepCode = curAction.getStepCode();
+				}
+			}
+			
 			for (ProcessAction act : actions) {
 
 				String preStepCode = act.getPreStepCode();
-
+				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				
 				ProcessStep step = processStepLocalService.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 
 				String subStepStatus = StringPool.BLANK;
@@ -4333,7 +4358,9 @@ public class CPSDossierBusinessLocalServiceImpl
 		model.setDelegacy(delegacy);
 		//Check employee is exits and wokingStatus
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		//_log.debug("Employee : " + employee);
+		_log.debug("Employee : " + employee);
+		_log.debug("ADD DOSSIER ACTION USER ASSIGNED : " + stepCode);
+
 		if (employee != null && employee.getWorkingStatus() == 1) {
 
 			DossierActionUserPK pk = new DossierActionUserPK(dossierActionId, userId);
@@ -4434,6 +4461,7 @@ public class CPSDossierBusinessLocalServiceImpl
 //					}
 //				}
 //			}
+			_log.debug("DOSSIER ACTION ASSIGNED USER: " + dau);
 			if (dau == null) {
 				dossierActionUserLocalService.addDossierActionUser(model);		
 			}
@@ -7621,11 +7649,19 @@ public class CPSDossierBusinessLocalServiceImpl
 			String dossierStatus = dossier.getDossierStatus();
 			String dossierSubStatus = dossier.getDossierSubStatus();
 			String preStepCode;
+			String curStepCode = StringPool.BLANK;
+			if (dossier.getDossierActionId() > 0) {
+				DossierAction curAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
+				if (curAction != null) {
+					curStepCode = curAction.getStepCode();
+				}
+			}
 			for (ProcessAction act : actions) {
 
 				preStepCode = act.getPreStepCode();
 				//_log.debug("LamTV_preStepCode: "+preStepCode);
-
+				if (Validator.isNotNull(curStepCode) && !preStepCode.contentEquals(curStepCode)) continue;
+				
 				ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(preStepCode, groupId, serviceProcessId);
 //				_log.info("LamTV_ProcessStep: "+step);
 
