@@ -264,6 +264,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		      _schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
+		isRunning = false;
 	}
 
 	/**
