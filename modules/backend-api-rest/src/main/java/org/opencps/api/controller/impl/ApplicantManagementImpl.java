@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -1604,8 +1605,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							try {
 								URL urlValRegister = new URL(urlRegister);
 
-								StringBuilder postDataReg = new StringBuilder();
-
 								JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 								jsonBody.put("email", contactEmail);
 								jsonBody.put("soCMND", applicantIdNo);
@@ -1616,65 +1615,38 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 								jsonBody.put("huyenThuongTruId", 0);
 								jsonBody.put("xaThuongTruId", 0);
 								jsonBody.put("dienThoai", contactTelNo);
-								jsonBody.put("ho", "Trần");
-								jsonBody.put("dem", "Văn");
-								jsonBody.put("ten", applicantName);
+								//
+								if (Validator.isNotNull(applicantName)) {
+									String[] splitAppName = applicantName.split("\\s+");
+									int lengthAppName = splitAppName.length;
+									if (lengthAppName > 3) {
+										jsonBody.put("ho", splitAppName[0]);
+										jsonBody.put("ten", splitAppName[lengthAppName - 1]);
+										String tenDem = StringPool.BLANK;
+										for (int i = 1; i < splitAppName.length - 1; i++) {
+											if (i == 1) {
+												tenDem += splitAppName[1];
+											} else {
+												tenDem += StringPool.SPACE + splitAppName[i];
+											}
+										}
+										jsonBody.put("dem", tenDem);
+									} else if (lengthAppName == 3) {
+										jsonBody.put("ho", splitAppName[0]);
+										jsonBody.put("dem", splitAppName[1]);
+										jsonBody.put("ten", splitAppName[2]);
+									} else if (lengthAppName == 2) {
+										jsonBody.put("ho", "Công dân");
+										jsonBody.put("dem", splitAppName[1]);
+										jsonBody.put("ten", splitAppName[2]);
+									} else {
+										jsonBody.put("ho", "Công");
+										jsonBody.put("dem", "dân");
+										jsonBody.put("ten", splitAppName[2]);
+									}
+								}
 								
 								
-//								postDataReg.append("email");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(contactEmail);
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("soCMND");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(applicantIdNo);
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("ngaySinh");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append("1990-12-01");
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("gioiTinh");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(0);
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("moTaDiaChiThuongTru");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append("");
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("tinhThuongTruId");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(0);
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("huyenThuongTruId");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(0);
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("xaThuongTruId");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(0);
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("dienThoai");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(contactTelNo);
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("ho");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append("");
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("dem");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append("");
-//								//
-//								postDataReg.append(StringPool.AMPERSAND);
-//								postDataReg.append("ten");
-//								postDataReg.append(StringPool.EQUAL);
-//								postDataReg.append(applicantName);
 
 								java.net.HttpURLConnection conReg = (java.net.HttpURLConnection) urlValRegister
 										.openConnection();
@@ -1728,8 +1700,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 											_log.error("maXacNhan:"+ maXacNhan);
 											_log.error("matKhau:"+ matKhau);
 											strProfile = jsonProfile.toJSONString();
+										} else {
+											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
 										}
+									} else {
+										return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
 									}
+								} else {
+									return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
 								}
 							} catch (IOException e) {
 								_log.error(e);
@@ -1756,6 +1734,44 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	public static void main(String[] args) {
+		
+		String myStr = "Hello planet earth, pou are a great planet.";
+		System.out.println(myStr.indexOf("planet"));
+		System.out.println(myStr.indexOf("p"));
+		String[] test19 = myStr.split("\\s+", 3);
+		for (String string : test19) {
+			System.out.println("test19: " + string);
+		}
+		String aaa = "Nguyễn  Văn Hi A";
+		String bbb = "Nguyễn Văn Hi A";
+		String ccc = "Nguyễn Văn A";
+		String ddd = "Trần A";
+		String eee = "dâda";
+		
+		String[] test = aaa.split("\\s+");
+		for (String string : test) {
+			System.out.println("test: "+string);
+		}
+		
+		String[] test1 = bbb.split(" ");
+		for (String string : test1) {
+			System.out.println("test1: "+string);
+		}
+		String[] test2 = ccc.split(" ");
+		for (String string : test2) {
+			System.out.println("test2: "+string);
+		}
+		String[] test3 = ddd.split(" ");
+		for (String string : test3) {
+			System.out.println("test3: "+string);
+		}
+		String[] test4 = eee.split(" ");
+		for (String string : test4) {
+			System.out.println("test4: "+string);
 		}
 	}
 

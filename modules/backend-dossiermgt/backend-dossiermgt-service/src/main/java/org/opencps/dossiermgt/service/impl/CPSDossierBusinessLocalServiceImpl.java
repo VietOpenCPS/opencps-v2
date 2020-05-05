@@ -1110,7 +1110,11 @@ public class CPSDossierBusinessLocalServiceImpl
 										}
 
 										if (HttpMethods.GET.equals(method)) {
-											urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+											if (Validator.isNotNull(postData.toString())) {
+												urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+											} else {
+												urlVal = new URL(apiUrl);
+											}
 										} else {
 											urlVal = new URL(apiUrl);
 										}
