@@ -66,7 +66,7 @@ public class TrackClientStatisticLocalServiceWrapper
 	}
 
 	@Override
-	public long countAccess(int day, int month, int year) {
+	public java.util.Map<String, Long> countAccess(int day, int month, int year) {
 		return _trackClientStatisticLocalService.countAccess(day, month, year);
 	}
 
@@ -76,7 +76,8 @@ public class TrackClientStatisticLocalServiceWrapper
 	}
 
 	@Override
-	public long countAccessPeriod(String startDay, String endDay) {
+	public java.util.Map<String, Long> countAccessPeriod(String startDay,
+		String endDay) {
 		return _trackClientStatisticLocalService.countAccessPeriod(startDay,
 			endDay);
 	}

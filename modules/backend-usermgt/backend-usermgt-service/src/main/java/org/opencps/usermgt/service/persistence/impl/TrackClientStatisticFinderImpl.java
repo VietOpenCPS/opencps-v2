@@ -8,9 +8,6 @@ import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.usermgt.model.impl.TrackClientStatisticImpl;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
@@ -151,6 +148,34 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 			queryPos.add(startDay);
 			queryPos.add(endDay);
 			queryPos.add(url);
+			return (List<org.opencps.usermgt.model.TrackClientStatistic>) QueryUtil.list(query,getDialect(),0,10000);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+
+	@Override
+	public List<org.opencps.usermgt.model.TrackClientStatistic> findAccessPeriodDesktopMobileTablet(String startDay, String endDay,boolean desktop,boolean mobile , boolean tablet)
+	{
+		Session session = null;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),TrackClientStatisticFinder.class.getName()+".findAccessPeriodDesktopMobileTablet");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+			query.addEntity("TrackClientStatistic",TrackClientStatisticImpl.class);
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(startDay);
+			queryPos.add(endDay);
+			queryPos.add(desktop);
+			queryPos.add(mobile);
+			queryPos.add(tablet);
 			return (List<org.opencps.usermgt.model.TrackClientStatistic>) QueryUtil.list(query,getDialect(),0,10000);
 		}
 		catch (Exception e)

@@ -8,37 +8,38 @@ import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
 
 import java.util.List;
+import java.util.Map;
 
 public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 {
 
 	@Override
-	public long getAccessStatistics(int day, int month, int yaer)
+	public Map<String, Long> getAccessStatistics(int day, int month, int yaer)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccess(day, month, yaer);
 
 	}
 
 	@Override
-	public long getAccessStatisticsForDay(int day, int month, int yaer)
+	public Map<String, Long> getAccessStatisticsForDay(int day, int month, int yaer)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccess(day, month, yaer);
 	}
 
 	@Override
-	public long getAccessStatisticsForPeriod(String  startDay, String endDay)
+	public Map<String, Long> getAccessStatisticsForPeriod(String  startDay, String endDay)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccessPeriod(startDay,endDay);
 	}
 
 	@Override
-	public long getAccessStatisticsForMonth( int month, int yaer)
+	public Map<String, Long> getAccessStatisticsForMonth( int month, int yaer)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccess(0,month, yaer);
 	}
 
 	@Override
-	public long getAccessStatisticsForYear( int yaer)
+	public Map<String, Long> getAccessStatisticsForYear( int yaer)
 	{
 		return TrackClientStatisticLocalServiceUtil.countAccess(0,0, yaer);
 	}

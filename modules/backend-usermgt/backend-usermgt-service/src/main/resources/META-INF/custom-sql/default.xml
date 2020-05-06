@@ -87,4 +87,18 @@
 			ORDER BY o.year ASC
 		]]>
 	</sql>
+
+
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessPeriodDesktopMobileTablet">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+				AND o.desktop = ?
+				AND o.mobile = ?
+				AND o.tablet = ?
+		]]>
+	</sql>
 </custom-sql>

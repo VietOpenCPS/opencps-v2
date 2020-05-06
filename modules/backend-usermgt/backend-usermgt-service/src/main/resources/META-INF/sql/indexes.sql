@@ -74,7 +74,7 @@ create index IX_6B3973DC on opencps_track_client (sessionId[$COLUMN_LENGTH:128$]
 create index IX_4D2C3370 on opencps_track_client (sessionId[$COLUMN_LENGTH:128$], visitDate);
 create index IX_D692EFEC on opencps_track_client (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_27EFC6E on opencps_track_client_statistic (day, month, year);
+create index IX_8E58C98E on opencps_track_client_statistic (day, month, year, desktop, mobile, tablet);
 create index IX_C238356 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], desktop, mobile, tablet);
 create index IX_68556269 on opencps_track_client_statistic (url[$COLUMN_LENGTH:2048$], year, month, day, desktop, mobile, tablet);
 create index IX_7281E1BB on opencps_track_client_statistic (uuid_[$COLUMN_LENGTH:75$]);

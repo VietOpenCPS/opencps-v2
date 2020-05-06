@@ -38,6 +38,7 @@ import org.opencps.usermgt.model.TrackClientStatistic;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for TrackClientStatistic. Methods of this
@@ -79,11 +80,11 @@ public interface TrackClientStatisticLocalService extends BaseLocalService,
 	public TrackClientStatistic addTrackClientStatistic(
 		TrackClientStatistic trackClientStatistic);
 
-	public long countAccess(int day, int month, int year);
+	public Map<String, Long> countAccess(int day, int month, int year);
 
 	public long countAccessAllYear();
 
-	public long countAccessPeriod(String startDay, String endDay);
+	public Map<String, Long> countAccessPeriod(String startDay, String endDay);
 
 	/**
 	* Creates a new track client statistic with the primary key. Does not add the track client statistic to the database.

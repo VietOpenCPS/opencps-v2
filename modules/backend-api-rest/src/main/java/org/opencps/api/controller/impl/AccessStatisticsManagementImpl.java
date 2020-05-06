@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
+import java.util.Map;
 
 public class AccessStatisticsManagementImpl implements AccessStatisticsManagement
 {
@@ -24,9 +25,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatistics(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
+		Map<String,Long>  result=actions.getAccessStatistics(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("accessStatistics" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -35,9 +36,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatisticsForDay(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
+		Map<String,Long>  result=actions.getAccessStatisticsForDay(accessStatistics.getDay(),accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("accessStatistics" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -45,9 +46,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,String startDay,String endDay)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatisticsForPeriod(startDay,endDay);
+		Map<String,Long> result=actions.getAccessStatisticsForPeriod(startDay,endDay);
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("accessStatistics" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -55,9 +56,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatisticsForMonth(accessStatistics.getMonth(),accessStatistics.getYear());
+		Map<String,Long>  result=actions.getAccessStatisticsForMonth(accessStatistics.getMonth(),accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("accessStatistics" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -65,9 +66,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatisticsForYear(accessStatistics.getYear());
+		Map<String,Long>  result=actions.getAccessStatisticsForYear(accessStatistics.getYear());
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("accessStatistics" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -75,9 +76,9 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		long value =actions.getAccessStatisticsForAllYear();
+		Long  result=actions.getAccessStatisticsForAllYear();
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("value" , value);
+		jsonObject.put("result" , result);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 

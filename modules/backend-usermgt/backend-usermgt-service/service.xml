@@ -927,6 +927,14 @@
 			<finder-column name="month"/>
 			<finder-column name="year"/>
 		</finder>
+		<finder name="D_M_Y_D_M_T" return-type="Collection">
+			<finder-column name="day"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="desktop"></finder-column>
+			<finder-column name="mobile"></finder-column>
+			<finder-column name="tablet"></finder-column>
+		</finder>
 	</entity>
 	
 	<exceptions>

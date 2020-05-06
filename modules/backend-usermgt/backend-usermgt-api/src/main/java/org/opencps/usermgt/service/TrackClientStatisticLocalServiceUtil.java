@@ -67,7 +67,8 @@ public class TrackClientStatisticLocalServiceUtil {
 		return getService().addTrackClientStatistic(trackClientStatistic);
 	}
 
-	public static long countAccess(int day, int month, int year) {
+	public static java.util.Map<String, Long> countAccess(int day, int month,
+		int year) {
 		return getService().countAccess(day, month, year);
 	}
 
@@ -75,7 +76,8 @@ public class TrackClientStatisticLocalServiceUtil {
 		return getService().countAccessAllYear();
 	}
 
-	public static long countAccessPeriod(String startDay, String endDay) {
+	public static java.util.Map<String, Long> countAccessPeriod(
+		String startDay, String endDay) {
 		return getService().countAccessPeriod(startDay, endDay);
 	}
 

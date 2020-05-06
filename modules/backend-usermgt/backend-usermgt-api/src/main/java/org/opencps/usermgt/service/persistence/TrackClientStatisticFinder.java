@@ -37,4 +37,8 @@ public interface TrackClientStatisticFinder {
 
 	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findAccessURLPeriod(
 		String startDay, String endDay, String url);
+
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> findAccessPeriodDesktopMobileTablet(
+		String startDay, String endDay, boolean desktop, boolean mobile,
+		boolean tablet);
 }
