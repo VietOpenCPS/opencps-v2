@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
+import com.liferay.portal.kernel.search.Field;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -353,6 +354,7 @@ public class RestfulController {
 							response.setStatus(HttpServletResponse.SC_OK);
 							return "pending";
 						} else {
+							response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
 							response.setStatus(HttpServletResponse.SC_OK);
 							return "ok";
 						}
@@ -372,54 +374,39 @@ public class RestfulController {
 			if (Validator.isNotNull(loginMax)) {
 				max = Integer.parseInt(loginMax);
 			}
+			User checkUser = null;
 			if (checkUserId != -1) {
-				User checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
-				
-				if (checkUser != null && checkUser.getFailedLoginAttempts() >= 5) {
-					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String jCaptchaResponse = request.getParameter("j_captcha_response");
-					String captchaId = request.getSession().getId();
-					try {
-						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
-						if (!isResponseCorrect) {
-							response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-							return "captcha";
-						}
-					} catch (CaptchaServiceException e) {
-						_log.debug(e);
-						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-						return "captcha";
-					}
-				}
-				else {
-					response.setStatus(HttpServletResponse.SC_OK);
-					return "";
-				}
+				checkUser = UserLocalServiceUtil.fetchUser(checkUserId);
 			}
 			else {
 				try {
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-					User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
-					if (checkUser != null && checkUser.getFailedLoginAttempts() >= max) {
-						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-						String jCaptchaResponse = request.getParameter("j_captcha_response");
-						String captchaId = request.getSession().getId();
-				        try {
-				        	boolean isResponseCorrect = instance.validateResponseForID(captchaId,
-				        			jCaptchaResponse);
-				        	if (!isResponseCorrect) {
-				        		response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-				        		return "captcha";
-				        	}
-				        } catch (CaptchaServiceException e) {
-				        	_log.debug(e);
-							response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
-				        	return "captcha";
-				        }				
-					}		
+					checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
 				} catch (PortalException e) {
 					_log.debug(e);
-				}				
+				}
+			}
+			
+			if (checkUser != null && checkUser.getFailedLoginAttempts() >= max) {
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+				String jCaptchaResponse = request.getParameter("j_captcha_response");
+				String captchaId = request.getSession().getId();
+				try {
+					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+					if (!isResponseCorrect) {
+						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+						return "captcha";
+					}
+				} catch (CaptchaServiceException e) {
+					_log.debug(e);
+					response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+					return "captcha";
+				}
+			}
+			else if (checkUser != null && checkUser.getStatus() == WorkflowConstants.STATUS_PENDING) {
+				response.setHeader(Field.USER_ID, String.valueOf(checkUser.getUserId()));
+				response.setStatus(HttpServletResponse.SC_OK);
+				return "pending";
 			}
 		}
 		catch (PortalException pe) {
