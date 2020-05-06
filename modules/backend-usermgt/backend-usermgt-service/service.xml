@@ -885,7 +885,7 @@
         <finder name="S_LVD" return-type="Collection">
             <finder-column name="sessionId"></finder-column>
             <finder-column name="visitDate" comparator="&lt;"></finder-column>
-        </finder>		
+        </finder>
 	</entity>
 
 	<entity name="TrackClientStatistic" uuid="true" local-service="true"
