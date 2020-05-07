@@ -254,6 +254,360 @@ public interface TrackClientStatisticPersistence extends BasePersistence<TrackCl
 		boolean desktop, boolean mobile, boolean tablet);
 
 	/**
+	* Returns all the track client statistics where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @return the matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y(int day, int month,
+		int year);
+
+	/**
+	* Returns a range of all the track client statistics where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @return the range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y(int day, int month,
+		int year, int start, int end);
+
+	/**
+	* Returns an ordered range of all the track client statistics where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y(int day, int month,
+		int year, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the track client statistics where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y(int day, int month,
+		int year, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client statistic
+	* @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic findByD_M_Y_First(int day, int month, int year,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Returns the first track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic fetchByD_M_Y_First(int day, int month,
+		int year,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns the last track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client statistic
+	* @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic findByD_M_Y_Last(int day, int month, int year,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Returns the last track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic fetchByD_M_Y_Last(int day, int month, int year,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns the track client statistics before and after the current track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param trackClientStatisticId the primary key of the current track client statistic
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next track client statistic
+	* @throws NoSuchTrackClientStatisticException if a track client statistic with the primary key could not be found
+	*/
+	public TrackClientStatistic[] findByD_M_Y_PrevAndNext(
+		long trackClientStatisticId, int day, int month, int year,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Removes all the track client statistics where day = &#63; and month = &#63; and year = &#63; from the database.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	*/
+	public void removeByD_M_Y(int day, int month, int year);
+
+	/**
+	* Returns the number of track client statistics where day = &#63; and month = &#63; and year = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @return the number of matching track client statistics
+	*/
+	public int countByD_M_Y(int day, int month, int year);
+
+	/**
+	* Returns all the track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @return the matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y_D_M_T(int day,
+		int month, int year, boolean desktop, boolean mobile, boolean tablet);
+
+	/**
+	* Returns a range of all the track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @return the range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y_D_M_T(int day,
+		int month, int year, boolean desktop, boolean mobile, boolean tablet,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y_D_M_T(int day,
+		int month, int year, boolean desktop, boolean mobile, boolean tablet,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link TrackClientStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param start the lower bound of the range of track client statistics
+	* @param end the upper bound of the range of track client statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching track client statistics
+	*/
+	public java.util.List<TrackClientStatistic> findByD_M_Y_D_M_T(int day,
+		int month, int year, boolean desktop, boolean mobile, boolean tablet,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client statistic
+	* @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic findByD_M_Y_D_M_T_First(int day, int month,
+		int year, boolean desktop, boolean mobile, boolean tablet,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Returns the first track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic fetchByD_M_Y_D_M_T_First(int day, int month,
+		int year, boolean desktop, boolean mobile, boolean tablet,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns the last track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client statistic
+	* @throws NoSuchTrackClientStatisticException if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic findByD_M_Y_D_M_T_Last(int day, int month,
+		int year, boolean desktop, boolean mobile, boolean tablet,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Returns the last track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching track client statistic, or <code>null</code> if a matching track client statistic could not be found
+	*/
+	public TrackClientStatistic fetchByD_M_Y_D_M_T_Last(int day, int month,
+		int year, boolean desktop, boolean mobile, boolean tablet,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator);
+
+	/**
+	* Returns the track client statistics before and after the current track client statistic in the ordered set where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param trackClientStatisticId the primary key of the current track client statistic
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next track client statistic
+	* @throws NoSuchTrackClientStatisticException if a track client statistic with the primary key could not be found
+	*/
+	public TrackClientStatistic[] findByD_M_Y_D_M_T_PrevAndNext(
+		long trackClientStatisticId, int day, int month, int year,
+		boolean desktop, boolean mobile, boolean tablet,
+		com.liferay.portal.kernel.util.OrderByComparator<TrackClientStatistic> orderByComparator)
+		throws NoSuchTrackClientStatisticException;
+
+	/**
+	* Removes all the track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63; from the database.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	*/
+	public void removeByD_M_Y_D_M_T(int day, int month, int year,
+		boolean desktop, boolean mobile, boolean tablet);
+
+	/**
+	* Returns the number of track client statistics where day = &#63; and month = &#63; and year = &#63; and desktop = &#63; and mobile = &#63; and tablet = &#63;.
+	*
+	* @param day the day
+	* @param month the month
+	* @param year the year
+	* @param desktop the desktop
+	* @param mobile the mobile
+	* @param tablet the tablet
+	* @return the number of matching track client statistics
+	*/
+	public int countByD_M_Y_D_M_T(int day, int month, int year,
+		boolean desktop, boolean mobile, boolean tablet);
+
+	/**
 	* Caches the track client statistic in the entity cache if it is enabled.
 	*
 	* @param trackClientStatistic the track client statistic
