@@ -15,7 +15,13 @@
 package org.opencps.usermgt.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.base.TrackClientStatisticLocalServiceBaseImpl;
 
@@ -151,5 +157,135 @@ public class TrackClientStatisticLocalServiceImpl
 			
 			trackClientStatisticPersistence.update(trackClientStatisticYear);
 		}
-	}		
+	}
+	public Map<String,Long> countAccess(int day,int month, int year)
+	{
+		Map<String,Long> result = new HashMap<>();
+		long count=0;
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticPersistence.findByD_M_Y(day, month, year);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics)
+			count = count + trackClientStatistic.getTotal();
+		result.put("total",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsDesktop = trackClientStatisticPersistence.findByD_M_Y_D_M_T(day,month,year,true,false,false);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsDesktop)
+			count = count + trackClientStatistic.getTotal();
+		result.put("desktop",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsMobile = trackClientStatisticPersistence.findByD_M_Y_D_M_T(day,month,year,false,true,false);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsMobile)
+			count = count + trackClientStatistic.getTotal();
+		result.put("mobile",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsTablet = trackClientStatisticPersistence.findByD_M_Y_D_M_T(day,month,year,false,true,false);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsTablet)
+			count = count + trackClientStatistic.getTotal();
+		result.put("tablet",count);
+
+
+		return result;
+	}
+
+	public Map<String, Long> countAccessPeriod(String startDay, String endDay)
+	{
+		Map<String,Long> result = new HashMap<>();
+		long count = 0;
+
+
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findPeriod(startDay, endDay);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics)
+			count = count + trackClientStatistic.getTotal();
+		result.put("total",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsDesktop = trackClientStatisticFinder.findAccessPeriodDesktopMobileTablet(startDay,endDay,true , false , false);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsDesktop)
+			count = count + trackClientStatistic.getTotal();
+		result.put("desktop",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsMobile = trackClientStatisticFinder.findAccessPeriodDesktopMobileTablet(startDay,endDay,false , true , false);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsMobile)
+			count = count + trackClientStatistic.getTotal();
+		result.put("mobile",count);
+
+		count=0;
+		List<TrackClientStatistic> trackClientStatisticsTablet = trackClientStatisticFinder.findAccessPeriodDesktopMobileTablet(startDay,endDay,false , false , true);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsTablet)
+			count = count + trackClientStatistic.getTotal();
+		result.put("tablet",count);
+
+
+
+		return result;
+	}
+
+	public long countAccessAllYear()
+	{
+		//sử dụng nếu muốn thống kê theo từng năm
+		//Map<Integer,Long> map = new HashMap<>();
+		List<org.opencps.usermgt.model.TrackClientStatistic> l = trackClientStatisticFinder.findAllYear();
+		long count = 0 ;
+		for (int i = 0; i < l.size(); i++)
+		{
+			count = count + l.get(i).getTotal();
+			//sử dụng nếu muốn thống kê theo từng năm
+			//map.put(l.get(i).getYear(),l.get(i).getTotal());
+		}
+		return count;
+	}
+
+	public List<TrackClientStatistic> accessStatisticsURL(int day,int month, int year)
+	{
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticPersistence.findByD_M_Y(day, month, year);
+		return trackClientStatistics;
+	}
+	public JSONObject accessStatisticsURLForAllYear()
+	{
+		JSONArray  jsonArray = JSONFactoryUtil.createJSONArray();
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findURLAllYear();
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics )
+		{
+			long count =0;
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLAllYear(trackClientStatistic.getUrl());
+			for (int i = 0; i < list.size(); i++)
+			{
+				count = count + list.get(i).getTotal();
+			}
+			jsonObject.put("value", count);
+			jsonObject.put("url",trackClientStatistic.getUrl());
+			jsonArray.put(jsonObject);
+
+		}
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("accessStatisticsURL", jsonArray);
+		return result;
+	}
+
+	public JSONObject accessStatisticsURLForPeriod(String startDay, String endDay)
+	{
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findURLPeriod(startDay,endDay);
+		for (TrackClientStatistic trackClientStatistic: trackClientStatistics )
+		{
+			long count =0;
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLPeriod(startDay,endDay,trackClientStatistic.getUrl());
+			for (int i = 0; i < list.size(); i++)
+			{
+				count = count + list.get(i).getTotal();
+			}
+			jsonObject.put("value", count);
+			jsonObject.put("url",trackClientStatistic.getUrl());
+			jsonArray.put(jsonObject);
+
+		}
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("accessStatisticsURL", jsonArray);
+		return result;
+	}
 }
