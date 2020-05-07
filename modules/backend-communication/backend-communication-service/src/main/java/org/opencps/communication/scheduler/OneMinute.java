@@ -53,7 +53,7 @@ import ws.bulkSms.impl.Result;
 /**
  * @author trungnt
  */
-@Component(immediate = true, service = OneMinute.class)
+//@Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static boolean flagJobMail = Validator.isNotNull(PropsUtil.get("opencps.notify.job.mail"))

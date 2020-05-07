@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = Daily.class)
+//@Component(immediate = true, service = Daily.class)
 public class Daily extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	
