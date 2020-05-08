@@ -168,6 +168,7 @@ public class ApplicantDataLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData createApplicantData(long groupId, 
+			String fileTemplateNo,
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
@@ -186,6 +187,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
@@ -222,6 +224,7 @@ public class ApplicantDataLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId, 
 			long applicantDataId,
+			String fileTemplateNo,
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
@@ -239,6 +242,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);

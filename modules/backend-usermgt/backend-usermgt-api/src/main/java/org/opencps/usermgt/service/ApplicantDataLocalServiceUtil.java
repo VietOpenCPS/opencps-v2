@@ -74,14 +74,15 @@ public class ApplicantDataLocalServiceUtil {
 	}
 
 	public static org.opencps.usermgt.model.ApplicantData createApplicantData(
-		long groupId, String fileNo, String fileName, String applicantIdNo,
-		String sourceFileName, java.io.InputStream inputStream,
+		long groupId, String fileTemplateNo, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName,
+		java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .createApplicantData(groupId, fileNo, fileName,
-			applicantIdNo, sourceFileName, inputStream, serviceContext);
+				   .createApplicantData(groupId, fileTemplateNo, fileNo,
+			fileName, applicantIdNo, sourceFileName, inputStream, serviceContext);
 	}
 
 	public static org.opencps.usermgt.model.ApplicantData createApplicantData(
@@ -357,15 +358,16 @@ public class ApplicantDataLocalServiceUtil {
 	}
 
 	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(
-		long groupId, long applicantDataId, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName,
-		java.io.InputStream inputStream,
+		long groupId, long applicantDataId, String fileTemplateNo,
+		String fileNo, String fileName, String applicantIdNo,
+		String sourceFileName, java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
-				   .updateApplicantData(groupId, applicantDataId, fileNo,
-			fileName, applicantIdNo, sourceFileName, inputStream, serviceContext);
+				   .updateApplicantData(groupId, applicantDataId,
+			fileTemplateNo, fileNo, fileName, applicantIdNo, sourceFileName,
+			inputStream, serviceContext);
 	}
 
 	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(

@@ -67,6 +67,7 @@ public interface ApplicantDataManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
 		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);
@@ -111,6 +112,7 @@ public interface ApplicantDataManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id,
 		@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
 		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);

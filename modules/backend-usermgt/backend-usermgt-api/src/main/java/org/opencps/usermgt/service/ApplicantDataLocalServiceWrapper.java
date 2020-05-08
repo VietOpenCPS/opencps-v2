@@ -68,13 +68,15 @@ public class ApplicantDataLocalServiceWrapper
 
 	@Override
 	public org.opencps.usermgt.model.ApplicantData createApplicantData(
-		long groupId, String fileNo, String fileName, String applicantIdNo,
-		String sourceFileName, java.io.InputStream inputStream,
+		long groupId, String fileTemplateNo, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName,
+		java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return _applicantDataLocalService.createApplicantData(groupId, fileNo,
-			fileName, applicantIdNo, sourceFileName, inputStream, serviceContext);
+		return _applicantDataLocalService.createApplicantData(groupId,
+			fileTemplateNo, fileNo, fileName, applicantIdNo, sourceFileName,
+			inputStream, serviceContext);
 	}
 
 	@Override
@@ -378,15 +380,15 @@ public class ApplicantDataLocalServiceWrapper
 
 	@Override
 	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
-		long groupId, long applicantDataId, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName,
-		java.io.InputStream inputStream,
+		long groupId, long applicantDataId, String fileTemplateNo,
+		String fileNo, String fileName, String applicantIdNo,
+		String sourceFileName, java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _applicantDataLocalService.updateApplicantData(groupId,
-			applicantDataId, fileNo, fileName, applicantIdNo, sourceFileName,
-			inputStream, serviceContext);
+			applicantDataId, fileTemplateNo, fileNo, fileName, applicantIdNo,
+			sourceFileName, inputStream, serviceContext);
 	}
 
 	@Override

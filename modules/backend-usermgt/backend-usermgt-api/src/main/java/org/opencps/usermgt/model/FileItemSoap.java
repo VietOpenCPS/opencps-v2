@@ -29,12 +29,12 @@ import java.util.List;
  * @generated
  */
 @ProviderType
-public class ApplicantDataSoap implements Serializable {
-	public static ApplicantDataSoap toSoapModel(ApplicantData model) {
-		ApplicantDataSoap soapModel = new ApplicantDataSoap();
+public class FileItemSoap implements Serializable {
+	public static FileItemSoap toSoapModel(FileItem model) {
+		FileItemSoap soapModel = new FileItemSoap();
 
 		soapModel.setUuid(model.getUuid());
-		soapModel.setApplicantDataId(model.getApplicantDataId());
+		soapModel.setFileItemId(model.getFileItemId());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setCompanyId(model.getCompanyId());
@@ -42,21 +42,17 @@ public class ApplicantDataSoap implements Serializable {
 		soapModel.setUserId(model.getUserId());
 		soapModel.setUserName(model.getUserName());
 		soapModel.setFileTemplateNo(model.getFileTemplateNo());
-		soapModel.setFileNo(model.getFileNo());
-		soapModel.setFileName(model.getFileName());
-		soapModel.setFileEntryId(model.getFileEntryId());
-		soapModel.setMetadata(model.getMetadata());
+		soapModel.setName(model.getName());
 		soapModel.setStatus(model.getStatus());
-		soapModel.setApplicantIdNo(model.getApplicantIdNo());
-		soapModel.setApplicantDataType(model.getApplicantDataType());
-		soapModel.setDossierNo(model.getDossierNo());
+		soapModel.setSize(model.getSize());
+		soapModel.setFileType(model.getFileType());
 		soapModel.setLog(model.getLog());
 
 		return soapModel;
 	}
 
-	public static ApplicantDataSoap[] toSoapModels(ApplicantData[] models) {
-		ApplicantDataSoap[] soapModels = new ApplicantDataSoap[models.length];
+	public static FileItemSoap[] toSoapModels(FileItem[] models) {
+		FileItemSoap[] soapModels = new FileItemSoap[models.length];
 
 		for (int i = 0; i < models.length; i++) {
 			soapModels[i] = toSoapModel(models[i]);
@@ -65,14 +61,14 @@ public class ApplicantDataSoap implements Serializable {
 		return soapModels;
 	}
 
-	public static ApplicantDataSoap[][] toSoapModels(ApplicantData[][] models) {
-		ApplicantDataSoap[][] soapModels = null;
+	public static FileItemSoap[][] toSoapModels(FileItem[][] models) {
+		FileItemSoap[][] soapModels = null;
 
 		if (models.length > 0) {
-			soapModels = new ApplicantDataSoap[models.length][models[0].length];
+			soapModels = new FileItemSoap[models.length][models[0].length];
 		}
 		else {
-			soapModels = new ApplicantDataSoap[0][0];
+			soapModels = new FileItemSoap[0][0];
 		}
 
 		for (int i = 0; i < models.length; i++) {
@@ -82,25 +78,25 @@ public class ApplicantDataSoap implements Serializable {
 		return soapModels;
 	}
 
-	public static ApplicantDataSoap[] toSoapModels(List<ApplicantData> models) {
-		List<ApplicantDataSoap> soapModels = new ArrayList<ApplicantDataSoap>(models.size());
+	public static FileItemSoap[] toSoapModels(List<FileItem> models) {
+		List<FileItemSoap> soapModels = new ArrayList<FileItemSoap>(models.size());
 
-		for (ApplicantData model : models) {
+		for (FileItem model : models) {
 			soapModels.add(toSoapModel(model));
 		}
 
-		return soapModels.toArray(new ApplicantDataSoap[soapModels.size()]);
+		return soapModels.toArray(new FileItemSoap[soapModels.size()]);
 	}
 
-	public ApplicantDataSoap() {
+	public FileItemSoap() {
 	}
 
 	public long getPrimaryKey() {
-		return _applicantDataId;
+		return _fileItemId;
 	}
 
 	public void setPrimaryKey(long pk) {
-		setApplicantDataId(pk);
+		setFileItemId(pk);
 	}
 
 	public String getUuid() {
@@ -111,12 +107,12 @@ public class ApplicantDataSoap implements Serializable {
 		_uuid = uuid;
 	}
 
-	public long getApplicantDataId() {
-		return _applicantDataId;
+	public long getFileItemId() {
+		return _fileItemId;
 	}
 
-	public void setApplicantDataId(long applicantDataId) {
-		_applicantDataId = applicantDataId;
+	public void setFileItemId(long fileItemId) {
+		_fileItemId = fileItemId;
 	}
 
 	public Date getCreateDate() {
@@ -175,36 +171,12 @@ public class ApplicantDataSoap implements Serializable {
 		_fileTemplateNo = fileTemplateNo;
 	}
 
-	public String getFileNo() {
-		return _fileNo;
+	public String getName() {
+		return _name;
 	}
 
-	public void setFileNo(String fileNo) {
-		_fileNo = fileNo;
-	}
-
-	public String getFileName() {
-		return _fileName;
-	}
-
-	public void setFileName(String fileName) {
-		_fileName = fileName;
-	}
-
-	public long getFileEntryId() {
-		return _fileEntryId;
-	}
-
-	public void setFileEntryId(long fileEntryId) {
-		_fileEntryId = fileEntryId;
-	}
-
-	public String getMetadata() {
-		return _metadata;
-	}
-
-	public void setMetadata(String metadata) {
-		_metadata = metadata;
+	public void setName(String name) {
+		_name = name;
 	}
 
 	public int getStatus() {
@@ -215,28 +187,20 @@ public class ApplicantDataSoap implements Serializable {
 		_status = status;
 	}
 
-	public String getApplicantIdNo() {
-		return _applicantIdNo;
+	public int getSize() {
+		return _size;
 	}
 
-	public void setApplicantIdNo(String applicantIdNo) {
-		_applicantIdNo = applicantIdNo;
+	public void setSize(int size) {
+		_size = size;
 	}
 
-	public int getApplicantDataType() {
-		return _applicantDataType;
+	public String getFileType() {
+		return _fileType;
 	}
 
-	public void setApplicantDataType(int applicantDataType) {
-		_applicantDataType = applicantDataType;
-	}
-
-	public String getDossierNo() {
-		return _dossierNo;
-	}
-
-	public void setDossierNo(String dossierNo) {
-		_dossierNo = dossierNo;
+	public void setFileType(String fileType) {
+		_fileType = fileType;
 	}
 
 	public String getLog() {
@@ -248,7 +212,7 @@ public class ApplicantDataSoap implements Serializable {
 	}
 
 	private String _uuid;
-	private long _applicantDataId;
+	private long _fileItemId;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _companyId;
@@ -256,13 +220,9 @@ public class ApplicantDataSoap implements Serializable {
 	private long _userId;
 	private String _userName;
 	private String _fileTemplateNo;
-	private String _fileNo;
-	private String _fileName;
-	private long _fileEntryId;
-	private String _metadata;
+	private String _name;
 	private int _status;
-	private String _applicantIdNo;
-	private int _applicantDataType;
-	private String _dossierNo;
+	private int _size;
+	private String _fileType;
 	private String _log;
 }

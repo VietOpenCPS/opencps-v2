@@ -44,14 +44,14 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 
 	@Override
 	public Response addApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, Attachment file, String fileNo, String fileName,
+			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
-			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
@@ -134,14 +134,14 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 
 	@Override
 	public Response updateApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, long id, Attachment file, String fileNo, String fileName,
+			User user, ServiceContext serviceContext, long id, Attachment file, String fileTemplateNo, String fileNo, String fileName,
 			String applicantIdNo) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
-			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();

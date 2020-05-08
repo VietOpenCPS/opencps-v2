@@ -77,7 +77,9 @@ create table opencps_applicant_data (
 	metadata TEXT null,
 	status INTEGER,
 	applicantIdNo VARCHAR(128) null,
-	applicantDataType INTEGER
+	applicantDataType INTEGER,
+	dossierNo VARCHAR(128) null,
+	log_ TEXT null
 );
 
 create table opencps_employee (
@@ -122,6 +124,23 @@ create table opencps_employee_jobpos (
 	employeeId LONG,
 	jobPostId LONG,
 	workingUnitId LONG
+);
+
+create table opencps_fileitem (
+	uuid_ VARCHAR(75) null,
+	fileItemId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	companyId LONG,
+	groupId LONG,
+	userId LONG,
+	userName VARCHAR(255) null,
+	fileTemplateNo VARCHAR(128) null,
+	name TEXT null,
+	status INTEGER,
+	size_ INTEGER,
+	fileType VARCHAR(128) null,
+	log_ TEXT null
 );
 
 create table opencps_hmacauth (

@@ -94,10 +94,10 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	public ApplicantData createApplicantData(long applicantDataId);
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ApplicantData createApplicantData(long groupId, String fileNo,
-		String fileName, String applicantIdNo, String sourceFileName,
-		InputStream inputStream, ServiceContext serviceContext)
-		throws PortalException, SystemException;
+	public ApplicantData createApplicantData(long groupId,
+		String fileTemplateNo, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName, InputStream inputStream,
+		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData createApplicantData(ServiceContext context,
@@ -314,9 +314,10 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId,
-		long applicantDataId, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName, InputStream inputStream,
-		ServiceContext serviceContext) throws PortalException, SystemException;
+		long applicantDataId, String fileTemplateNo, String fileNo,
+		String fileName, String applicantIdNo, String sourceFileName,
+		InputStream inputStream, ServiceContext serviceContext)
+		throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ServiceContext context,

@@ -56,6 +56,7 @@ import org.opencps.usermgt.service.persistence.ApplicantDataPersistence;
 import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.persistence.EmployeeJobPosPersistence;
 import org.opencps.usermgt.service.persistence.EmployeePersistence;
+import org.opencps.usermgt.service.persistence.FileItemPersistence;
 import org.opencps.usermgt.service.persistence.HmacAuthenPersistence;
 import org.opencps.usermgt.service.persistence.JobPosPersistence;
 import org.opencps.usermgt.service.persistence.JobPosWorkPersistence;
@@ -635,6 +636,43 @@ public abstract class UserLoginLocalServiceBaseImpl extends BaseLocalServiceImpl
 	public void setEmployeeJobPosPersistence(
 		EmployeeJobPosPersistence employeeJobPosPersistence) {
 		this.employeeJobPosPersistence = employeeJobPosPersistence;
+	}
+
+	/**
+	 * Returns the file item local service.
+	 *
+	 * @return the file item local service
+	 */
+	public org.opencps.usermgt.service.FileItemLocalService getFileItemLocalService() {
+		return fileItemLocalService;
+	}
+
+	/**
+	 * Sets the file item local service.
+	 *
+	 * @param fileItemLocalService the file item local service
+	 */
+	public void setFileItemLocalService(
+		org.opencps.usermgt.service.FileItemLocalService fileItemLocalService) {
+		this.fileItemLocalService = fileItemLocalService;
+	}
+
+	/**
+	 * Returns the file item persistence.
+	 *
+	 * @return the file item persistence
+	 */
+	public FileItemPersistence getFileItemPersistence() {
+		return fileItemPersistence;
+	}
+
+	/**
+	 * Sets the file item persistence.
+	 *
+	 * @param fileItemPersistence the file item persistence
+	 */
+	public void setFileItemPersistence(FileItemPersistence fileItemPersistence) {
+		this.fileItemPersistence = fileItemPersistence;
 	}
 
 	/**
@@ -1427,6 +1465,10 @@ public abstract class UserLoginLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.EmployeeJobPosLocalService employeeJobPosLocalService;
 	@BeanReference(type = EmployeeJobPosPersistence.class)
 	protected EmployeeJobPosPersistence employeeJobPosPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.FileItemLocalService.class)
+	protected org.opencps.usermgt.service.FileItemLocalService fileItemLocalService;
+	@BeanReference(type = FileItemPersistence.class)
+	protected FileItemPersistence fileItemPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.HmacAuthenLocalService.class)
 	protected org.opencps.usermgt.service.HmacAuthenLocalService hmacAuthenLocalService;
 	@BeanReference(type = HmacAuthenPersistence.class)
