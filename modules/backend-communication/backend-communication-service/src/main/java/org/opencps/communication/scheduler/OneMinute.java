@@ -53,7 +53,7 @@ import ws.bulkSms.impl.Result;
 /**
  * @author trungnt
  */
-//@Component(immediate = true, service = OneMinute.class)
+@Component(immediate = true, service = OneMinute.class)
 public class OneMinute extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static boolean flagJobMail = Validator.isNotNull(PropsUtil.get("opencps.notify.job.mail"))
@@ -230,7 +230,7 @@ public class OneMinute extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 

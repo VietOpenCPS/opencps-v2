@@ -58,7 +58,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-//@Component(immediate = true, service = VotingStatisticScheduler.class)
+@Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);

@@ -30,6 +30,7 @@ import org.opencps.usermgt.model.SyncScheduler;
 import org.opencps.usermgt.scheduler.utils.AdministrativeRegionUtils;
 import org.opencps.usermgt.service.SyncSchedulerLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;

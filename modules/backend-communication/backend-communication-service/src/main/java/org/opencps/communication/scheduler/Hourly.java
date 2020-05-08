@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-//@Component(immediate = true, service = Hourly.class)
+@Component(immediate = true, service = Hourly.class)
 public class Hourly extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	

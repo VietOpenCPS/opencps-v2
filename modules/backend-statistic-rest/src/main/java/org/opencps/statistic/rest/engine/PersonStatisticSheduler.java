@@ -54,7 +54,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-//@Component(immediate = true, service = PersonStatisticSheduler.class)
+@Component(immediate = true, service = PersonStatisticSheduler.class)
 public class PersonStatisticSheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	//private final static Logger LOG = LoggerFactory.getLogger(PersonStatisticSheduler.class);
