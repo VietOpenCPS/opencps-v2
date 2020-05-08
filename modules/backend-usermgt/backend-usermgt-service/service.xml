@@ -839,6 +839,12 @@
 		<column name="applicantDataType" type="int"/>
 		<column name="dossierNo" type="String"/>
 		<column name="log" type="String"/>
+        <finder name="G_DN_FTN_AIN" return-type="ApplicantData">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierNo"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="applicantIdNo"></finder-column>
+        </finder>
 	</entity>
 		
 	<entity name="TrackClient" uuid="true" local-service="true"
@@ -957,6 +963,14 @@
 		<column name="size" type="int"/>
 		<column name="fileType" type="String"/>
 		<column name="log" type="String"/>
+        <finder name="G_FTN" return-type="FileItem">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+        </finder>
+        <finder name="G_FTNS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="fileTemplateNo" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 	</entity>
 		
 	<exceptions>

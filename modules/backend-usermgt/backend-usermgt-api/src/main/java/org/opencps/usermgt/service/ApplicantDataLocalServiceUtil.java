@@ -42,6 +42,10 @@ public class ApplicantDataLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link org.opencps.usermgt.service.impl.ApplicantDataLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static org.opencps.usermgt.model.ApplicantData active(
+		long applicantDataId) {
+		return getService().active(applicantDataId);
+	}
 
 	/**
 	* Adds the applicant data to the database. Also notifies the appropriate model listeners.
@@ -226,6 +230,14 @@ public class ApplicantDataLocalServiceUtil {
 		return getService().fetchApplicantDataByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.usermgt.model.ApplicantData findByG_DN_FTN_AIN(
+		long groupId, String dossierNo, String fileTemplateNo,
+		String applicantIdNo) {
+		return getService()
+				   .findByG_DN_FTN_AIN(groupId, dossierNo, fileTemplateNo,
+			applicantIdNo);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
@@ -336,6 +348,11 @@ public class ApplicantDataLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static org.opencps.usermgt.model.ApplicantData inActive(
+		long applicantDataId) {
+		return getService().inActive(applicantDataId);
+	}
+
 	public static com.liferay.portal.kernel.search.Hits searchLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
@@ -381,6 +398,19 @@ public class ApplicantDataLocalServiceUtil {
 				   .updateApplicantData(context, groupId, applicantDataId,
 			fileTemplateNo, fileNo, fileName, fileEntryId, metadata, status,
 			applicantIdNo, applicantDataType);
+	}
+
+	public static org.opencps.usermgt.model.ApplicantData updateApplicantData(
+		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
+		String fileTemplateNo, String fileName, long fileEntryId,
+		String metadata, int status, String applicantIdNo,
+		int applicantDataType, String dossierNo, String log)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .updateApplicantData(context, groupId, fileTemplateNo,
+			fileName, fileEntryId, metadata, status, applicantIdNo,
+			applicantDataType, dossierNo, log);
 	}
 
 	public static ApplicantDataLocalService getService() {

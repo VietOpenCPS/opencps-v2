@@ -19,4 +19,6 @@ public class ApplicantDataTerm {
 	public static final String TOTAL = "total";
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String REGULAR = "regular";
+	public static final int STATUS_ACTIVE = 1;
+	public static final int STATUS_INACTIVE = 0;
 }

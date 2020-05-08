@@ -496,6 +496,336 @@ public class FileItemUtil {
 	}
 
 	/**
+	* Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchFileItemException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the matching file item
+	* @throws NoSuchFileItemException if a matching file item could not be found
+	*/
+	public static FileItem findByG_FTN(long groupId, String fileTemplateNo)
+		throws org.opencps.usermgt.exception.NoSuchFileItemException {
+		return getPersistence().findByG_FTN(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the matching file item, or <code>null</code> if a matching file item could not be found
+	*/
+	public static FileItem fetchByG_FTN(long groupId, String fileTemplateNo) {
+		return getPersistence().fetchByG_FTN(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching file item, or <code>null</code> if a matching file item could not be found
+	*/
+	public static FileItem fetchByG_FTN(long groupId, String fileTemplateNo,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByG_FTN(groupId, fileTemplateNo, retrieveFromCache);
+	}
+
+	/**
+	* Removes the file item where groupId = &#63; and fileTemplateNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the file item that was removed
+	*/
+	public static FileItem removeByG_FTN(long groupId, String fileTemplateNo)
+		throws org.opencps.usermgt.exception.NoSuchFileItemException {
+		return getPersistence().removeByG_FTN(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns the number of file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the number of matching file items
+	*/
+	public static int countByG_FTN(long groupId, String fileTemplateNo) {
+		return getPersistence().countByG_FTN(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String fileTemplateNo) {
+		return getPersistence().findByG_FTNS(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns a range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @return the range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String fileTemplateNo, int start, int end) {
+		return getPersistence().findByG_FTNS(groupId, fileTemplateNo, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String fileTemplateNo, int start, int end,
+		OrderByComparator<FileItem> orderByComparator) {
+		return getPersistence()
+				   .findByG_FTNS(groupId, fileTemplateNo, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String fileTemplateNo, int start, int end,
+		OrderByComparator<FileItem> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_FTNS(groupId, fileTemplateNo, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching file item
+	* @throws NoSuchFileItemException if a matching file item could not be found
+	*/
+	public static FileItem findByG_FTNS_First(long groupId,
+		String fileTemplateNo, OrderByComparator<FileItem> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchFileItemException {
+		return getPersistence()
+				   .findByG_FTNS_First(groupId, fileTemplateNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching file item, or <code>null</code> if a matching file item could not be found
+	*/
+	public static FileItem fetchByG_FTNS_First(long groupId,
+		String fileTemplateNo, OrderByComparator<FileItem> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_FTNS_First(groupId, fileTemplateNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching file item
+	* @throws NoSuchFileItemException if a matching file item could not be found
+	*/
+	public static FileItem findByG_FTNS_Last(long groupId,
+		String fileTemplateNo, OrderByComparator<FileItem> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchFileItemException {
+		return getPersistence()
+				   .findByG_FTNS_Last(groupId, fileTemplateNo, orderByComparator);
+	}
+
+	/**
+	* Returns the last file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching file item, or <code>null</code> if a matching file item could not be found
+	*/
+	public static FileItem fetchByG_FTNS_Last(long groupId,
+		String fileTemplateNo, OrderByComparator<FileItem> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_FTNS_Last(groupId, fileTemplateNo,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the file items before and after the current file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param fileItemId the primary key of the current file item
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next file item
+	* @throws NoSuchFileItemException if a file item with the primary key could not be found
+	*/
+	public static FileItem[] findByG_FTNS_PrevAndNext(long fileItemId,
+		long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchFileItemException {
+		return getPersistence()
+				   .findByG_FTNS_PrevAndNext(fileItemId, groupId,
+			fileTemplateNo, orderByComparator);
+	}
+
+	/**
+	* Returns all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNos the file template nos
+	* @return the matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String[] fileTemplateNos) {
+		return getPersistence().findByG_FTNS(groupId, fileTemplateNos);
+	}
+
+	/**
+	* Returns a range of all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNos the file template nos
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @return the range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String[] fileTemplateNos, int start, int end) {
+		return getPersistence()
+				   .findByG_FTNS(groupId, fileTemplateNos, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNos the file template nos
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String[] fileTemplateNos, int start, int end,
+		OrderByComparator<FileItem> orderByComparator) {
+		return getPersistence()
+				   .findByG_FTNS(groupId, fileTemplateNos, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @param start the lower bound of the range of file items
+	* @param end the upper bound of the range of file items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching file items
+	*/
+	public static List<FileItem> findByG_FTNS(long groupId,
+		String[] fileTemplateNos, int start, int end,
+		OrderByComparator<FileItem> orderByComparator, boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_FTNS(groupId, fileTemplateNos, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Removes all the file items where groupId = &#63; and fileTemplateNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	*/
+	public static void removeByG_FTNS(long groupId, String fileTemplateNo) {
+		getPersistence().removeByG_FTNS(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns the number of file items where groupId = &#63; and fileTemplateNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNo the file template no
+	* @return the number of matching file items
+	*/
+	public static int countByG_FTNS(long groupId, String fileTemplateNo) {
+		return getPersistence().countByG_FTNS(groupId, fileTemplateNo);
+	}
+
+	/**
+	* Returns the number of file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param fileTemplateNos the file template nos
+	* @return the number of matching file items
+	*/
+	public static int countByG_FTNS(long groupId, String[] fileTemplateNos) {
+		return getPersistence().countByG_FTNS(groupId, fileTemplateNos);
+	}
+
+	/**
 	* Caches the file item in the entity cache if it is enabled.
 	*
 	* @param fileItem the file item

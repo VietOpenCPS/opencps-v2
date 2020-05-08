@@ -213,6 +213,16 @@ public class FileItemLocalServiceUtil {
 		return getService().fetchFileItemByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static org.opencps.usermgt.model.FileItem findByG_FTN(long groupId,
+		String fileTemplateNo) {
+		return getService().findByG_FTN(groupId, fileTemplateNo);
+	}
+
+	public static java.util.List<org.opencps.usermgt.model.FileItem> findByG_FTNS(
+		long groupId, String[] fileTemplateNos) {
+		return getService().findByG_FTNS(groupId, fileTemplateNos);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

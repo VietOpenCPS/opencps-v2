@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.FileItemTerm;
@@ -188,6 +189,14 @@ public class FileItemLocalServiceImpl extends FileItemLocalServiceBaseImpl {
 		return object;
 	}
 
+	public FileItem findByG_FTN(long groupId, String fileTemplateNo) {
+		return fileItemPersistence.fetchByG_FTN(groupId, fileTemplateNo);
+	}
+
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos) {
+		return fileItemPersistence.findByG_FTNS(groupId, fileTemplateNos);
+	}
+	
 	private static Log _log =
 			LogFactoryUtil.getLog(FileItemLocalServiceImpl.class);
 	public FileItem fetchFileItem(long fileItemId) {

@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -1474,6 +1475,383 @@ public class ApplicantDataPersistenceImpl extends BasePersistenceImpl<ApplicantD
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "applicantData.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(applicantData.uuid IS NULL OR applicantData.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "applicantData.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_DN_FTN_AIN = new FinderPath(ApplicantDataModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantDataModelImpl.FINDER_CACHE_ENABLED,
+			ApplicantDataImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByG_DN_FTN_AIN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			ApplicantDataModelImpl.GROUPID_COLUMN_BITMASK |
+			ApplicantDataModelImpl.DOSSIERNO_COLUMN_BITMASK |
+			ApplicantDataModelImpl.FILETEMPLATENO_COLUMN_BITMASK |
+			ApplicantDataModelImpl.APPLICANTIDNO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_DN_FTN_AIN = new FinderPath(ApplicantDataModelImpl.ENTITY_CACHE_ENABLED,
+			ApplicantDataModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_DN_FTN_AIN",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or throws a {@link NoSuchApplicantDataException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param fileTemplateNo the file template no
+	 * @param applicantIdNo the applicant ID no
+	 * @return the matching applicant data
+	 * @throws NoSuchApplicantDataException if a matching applicant data could not be found
+	 */
+	@Override
+	public ApplicantData findByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo)
+		throws NoSuchApplicantDataException {
+		ApplicantData applicantData = fetchByG_DN_FTN_AIN(groupId, dossierNo,
+				fileTemplateNo, applicantIdNo);
+
+		if (applicantData == null) {
+			StringBundler msg = new StringBundler(10);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", dossierNo=");
+			msg.append(dossierNo);
+
+			msg.append(", fileTemplateNo=");
+			msg.append(fileTemplateNo);
+
+			msg.append(", applicantIdNo=");
+			msg.append(applicantIdNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchApplicantDataException(msg.toString());
+		}
+
+		return applicantData;
+	}
+
+	/**
+	 * Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param fileTemplateNo the file template no
+	 * @param applicantIdNo the applicant ID no
+	 * @return the matching applicant data, or <code>null</code> if a matching applicant data could not be found
+	 */
+	@Override
+	public ApplicantData fetchByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo) {
+		return fetchByG_DN_FTN_AIN(groupId, dossierNo, fileTemplateNo,
+			applicantIdNo, true);
+	}
+
+	/**
+	 * Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param fileTemplateNo the file template no
+	 * @param applicantIdNo the applicant ID no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching applicant data, or <code>null</code> if a matching applicant data could not be found
+	 */
+	@Override
+	public ApplicantData fetchByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				groupId, dossierNo, fileTemplateNo, applicantIdNo
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN,
+					finderArgs, this);
+		}
+
+		if (result instanceof ApplicantData) {
+			ApplicantData applicantData = (ApplicantData)result;
+
+			if ((groupId != applicantData.getGroupId()) ||
+					!Objects.equals(dossierNo, applicantData.getDossierNo()) ||
+					!Objects.equals(fileTemplateNo,
+						applicantData.getFileTemplateNo()) ||
+					!Objects.equals(applicantIdNo,
+						applicantData.getApplicantIdNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(6);
+
+			query.append(_SQL_SELECT_APPLICANTDATA_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DN_FTN_AIN_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_2);
+			}
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_2);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				List<ApplicantData> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ApplicantDataPersistenceImpl.fetchByG_DN_FTN_AIN(long, String, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ApplicantData applicantData = list.get(0);
+
+					result = applicantData;
+
+					cacheResult(applicantData);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ApplicantData)result;
+		}
+	}
+
+	/**
+	 * Removes the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param fileTemplateNo the file template no
+	 * @param applicantIdNo the applicant ID no
+	 * @return the applicant data that was removed
+	 */
+	@Override
+	public ApplicantData removeByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo)
+		throws NoSuchApplicantDataException {
+		ApplicantData applicantData = findByG_DN_FTN_AIN(groupId, dossierNo,
+				fileTemplateNo, applicantIdNo);
+
+		return remove(applicantData);
+	}
+
+	/**
+	 * Returns the number of applicant datas where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param dossierNo the dossier no
+	 * @param fileTemplateNo the file template no
+	 * @param applicantIdNo the applicant ID no
+	 * @return the number of matching applicant datas
+	 */
+	@Override
+	public int countByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_DN_FTN_AIN;
+
+		Object[] finderArgs = new Object[] {
+				groupId, dossierNo, fileTemplateNo, applicantIdNo
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_APPLICANTDATA_WHERE);
+
+			query.append(_FINDER_COLUMN_G_DN_FTN_AIN_GROUPID_2);
+
+			boolean bindDossierNo = false;
+
+			if (dossierNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_1);
+			}
+			else if (dossierNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_3);
+			}
+			else {
+				bindDossierNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_2);
+			}
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_2);
+			}
+
+			boolean bindApplicantIdNo = false;
+
+			if (applicantIdNo == null) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_1);
+			}
+			else if (applicantIdNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_3);
+			}
+			else {
+				bindApplicantIdNo = true;
+
+				query.append(_FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindDossierNo) {
+					qPos.add(dossierNo);
+				}
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				if (bindApplicantIdNo) {
+					qPos.add(applicantIdNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_GROUPID_2 = "applicantData.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_1 = "applicantData.dossierNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_2 = "applicantData.dossierNo = ? AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_DOSSIERNO_3 = "(applicantData.dossierNo IS NULL OR applicantData.dossierNo = '') AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_1 = "applicantData.fileTemplateNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_2 = "applicantData.fileTemplateNo = ? AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_FILETEMPLATENO_3 = "(applicantData.fileTemplateNo IS NULL OR applicantData.fileTemplateNo = '') AND ";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_1 = "applicantData.applicantIdNo IS NULL";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_2 = "applicantData.applicantIdNo = ?";
+	private static final String _FINDER_COLUMN_G_DN_FTN_AIN_APPLICANTIDNO_3 = "(applicantData.applicantIdNo IS NULL OR applicantData.applicantIdNo = '')";
 
 	public ApplicantDataPersistenceImpl() {
 		setModelClass(ApplicantData.class);
@@ -1512,6 +1890,13 @@ public class ApplicantDataPersistenceImpl extends BasePersistenceImpl<ApplicantD
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { applicantData.getUuid(), applicantData.getGroupId() },
 			applicantData);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN,
+			new Object[] {
+				applicantData.getGroupId(), applicantData.getDossierNo(),
+				applicantData.getFileTemplateNo(),
+				applicantData.getApplicantIdNo()
+			}, applicantData);
 
 		applicantData.resetOriginalValues();
 	}
@@ -1593,6 +1978,18 @@ public class ApplicantDataPersistenceImpl extends BasePersistenceImpl<ApplicantD
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			applicantDataModelImpl, false);
+
+		args = new Object[] {
+				applicantDataModelImpl.getGroupId(),
+				applicantDataModelImpl.getDossierNo(),
+				applicantDataModelImpl.getFileTemplateNo(),
+				applicantDataModelImpl.getApplicantIdNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_DN_FTN_AIN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN, args,
+			applicantDataModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1616,6 +2013,31 @@ public class ApplicantDataPersistenceImpl extends BasePersistenceImpl<ApplicantD
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					applicantDataModelImpl.getGroupId(),
+					applicantDataModelImpl.getDossierNo(),
+					applicantDataModelImpl.getFileTemplateNo(),
+					applicantDataModelImpl.getApplicantIdNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DN_FTN_AIN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN, args);
+		}
+
+		if ((applicantDataModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_DN_FTN_AIN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					applicantDataModelImpl.getOriginalGroupId(),
+					applicantDataModelImpl.getOriginalDossierNo(),
+					applicantDataModelImpl.getOriginalFileTemplateNo(),
+					applicantDataModelImpl.getOriginalApplicantIdNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_DN_FTN_AIN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_DN_FTN_AIN, args);
 		}
 	}
 

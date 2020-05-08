@@ -126,10 +126,13 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.ApplicantData"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long APPLICANTDATAID_COLUMN_BITMASK = 8L;
+	public static final long APPLICANTIDNO_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 4L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long APPLICANTDATAID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.ApplicantData"));
 
@@ -462,7 +465,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public void setFileTemplateNo(String fileTemplateNo) {
+		_columnBitmask |= FILETEMPLATENO_COLUMN_BITMASK;
+
+		if (_originalFileTemplateNo == null) {
+			_originalFileTemplateNo = _fileTemplateNo;
+		}
+
 		_fileTemplateNo = fileTemplateNo;
+	}
+
+	public String getOriginalFileTemplateNo() {
+		return GetterUtil.getString(_originalFileTemplateNo);
 	}
 
 	@Override
@@ -542,7 +555,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public void setApplicantIdNo(String applicantIdNo) {
+		_columnBitmask |= APPLICANTIDNO_COLUMN_BITMASK;
+
+		if (_originalApplicantIdNo == null) {
+			_originalApplicantIdNo = _applicantIdNo;
+		}
+
 		_applicantIdNo = applicantIdNo;
+	}
+
+	public String getOriginalApplicantIdNo() {
+		return GetterUtil.getString(_originalApplicantIdNo);
 	}
 
 	@Override
@@ -567,7 +590,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public void setDossierNo(String dossierNo) {
+		_columnBitmask |= DOSSIERNO_COLUMN_BITMASK;
+
+		if (_originalDossierNo == null) {
+			_originalDossierNo = _dossierNo;
+		}
+
 		_dossierNo = dossierNo;
+	}
+
+	public String getOriginalDossierNo() {
+		return GetterUtil.getString(_originalDossierNo);
 	}
 
 	@Override
@@ -713,6 +746,12 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		applicantDataModelImpl._originalGroupId = applicantDataModelImpl._groupId;
 
 		applicantDataModelImpl._setOriginalGroupId = false;
+
+		applicantDataModelImpl._originalFileTemplateNo = applicantDataModelImpl._fileTemplateNo;
+
+		applicantDataModelImpl._originalApplicantIdNo = applicantDataModelImpl._applicantIdNo;
+
+		applicantDataModelImpl._originalDossierNo = applicantDataModelImpl._dossierNo;
 
 		applicantDataModelImpl._columnBitmask = 0;
 	}
@@ -978,14 +1017,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 	private long _userId;
 	private String _userName;
 	private String _fileTemplateNo;
+	private String _originalFileTemplateNo;
 	private String _fileNo;
 	private String _fileName;
 	private long _fileEntryId;
 	private String _metadata;
 	private int _status;
 	private String _applicantIdNo;
+	private String _originalApplicantIdNo;
 	private int _applicantDataType;
 	private String _dossierNo;
+	private String _originalDossierNo;
 	private String _log;
 	private long _columnBitmask;
 	private ApplicantData _escapedModel;

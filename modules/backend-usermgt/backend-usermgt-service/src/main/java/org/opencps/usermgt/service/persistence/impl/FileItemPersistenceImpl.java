@@ -30,10 +30,12 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -49,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1467,6 +1470,1173 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "fileItem.uuid = ? AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(fileItem.uuid IS NULL OR fileItem.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "fileItem.companyId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_FTN = new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, FileItemImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByG_FTN",
+			new String[] { Long.class.getName(), String.class.getName() },
+			FileItemModelImpl.GROUPID_COLUMN_BITMASK |
+			FileItemModelImpl.FILETEMPLATENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_FTN = new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_FTN",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or throws a {@link NoSuchFileItemException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the matching file item
+	 * @throws NoSuchFileItemException if a matching file item could not be found
+	 */
+	@Override
+	public FileItem findByG_FTN(long groupId, String fileTemplateNo)
+		throws NoSuchFileItemException {
+		FileItem fileItem = fetchByG_FTN(groupId, fileTemplateNo);
+
+		if (fileItem == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", fileTemplateNo=");
+			msg.append(fileTemplateNo);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchFileItemException(msg.toString());
+		}
+
+		return fileItem;
+	}
+
+	/**
+	 * Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the matching file item, or <code>null</code> if a matching file item could not be found
+	 */
+	@Override
+	public FileItem fetchByG_FTN(long groupId, String fileTemplateNo) {
+		return fetchByG_FTN(groupId, fileTemplateNo, true);
+	}
+
+	/**
+	 * Returns the file item where groupId = &#63; and fileTemplateNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching file item, or <code>null</code> if a matching file item could not be found
+	 */
+	@Override
+	public FileItem fetchByG_FTN(long groupId, String fileTemplateNo,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, fileTemplateNo };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_FTN,
+					finderArgs, this);
+		}
+
+		if (result instanceof FileItem) {
+			FileItem fileItem = (FileItem)result;
+
+			if ((groupId != fileItem.getGroupId()) ||
+					!Objects.equals(fileTemplateNo, fileItem.getFileTemplateNo())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTN_GROUPID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				List<FileItem> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_FTN,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"FileItemPersistenceImpl.fetchByG_FTN(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					FileItem fileItem = list.get(0);
+
+					result = fileItem;
+
+					cacheResult(fileItem);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_FTN, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (FileItem)result;
+		}
+	}
+
+	/**
+	 * Removes the file item where groupId = &#63; and fileTemplateNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the file item that was removed
+	 */
+	@Override
+	public FileItem removeByG_FTN(long groupId, String fileTemplateNo)
+		throws NoSuchFileItemException {
+		FileItem fileItem = findByG_FTN(groupId, fileTemplateNo);
+
+		return remove(fileItem);
+	}
+
+	/**
+	 * Returns the number of file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the number of matching file items
+	 */
+	@Override
+	public int countByG_FTN(long groupId, String fileTemplateNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_FTN;
+
+		Object[] finderArgs = new Object[] { groupId, fileTemplateNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTN_GROUPID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_FTN_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_FTN_GROUPID_2 = "fileItem.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_FTN_FILETEMPLATENO_1 = "fileItem.fileTemplateNo IS NULL";
+	private static final String _FINDER_COLUMN_G_FTN_FILETEMPLATENO_2 = "fileItem.fileTemplateNo = ?";
+	private static final String _FINDER_COLUMN_G_FTN_FILETEMPLATENO_3 = "(fileItem.fileTemplateNo IS NULL OR fileItem.fileTemplateNo = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_FTNS = new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, FileItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_FTNS",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS =
+		new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, FileItemImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_FTNS",
+			new String[] { Long.class.getName(), String.class.getName() },
+			FileItemModelImpl.GROUPID_COLUMN_BITMASK |
+			FileItemModelImpl.FILETEMPLATENO_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_FTNS = new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_FTNS",
+			new String[] { Long.class.getName(), String.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_FTNS = new FinderPath(FileItemModelImpl.ENTITY_CACHE_ENABLED,
+			FileItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_FTNS",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String fileTemplateNo) {
+		return findByG_FTNS(groupId, fileTemplateNo, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @return the range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String fileTemplateNo,
+		int start, int end) {
+		return findByG_FTNS(groupId, fileTemplateNo, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String fileTemplateNo,
+		int start, int end, OrderByComparator<FileItem> orderByComparator) {
+		return findByG_FTNS(groupId, fileTemplateNo, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String fileTemplateNo,
+		int start, int end, OrderByComparator<FileItem> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS;
+			finderArgs = new Object[] { groupId, fileTemplateNo };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_FTNS;
+			finderArgs = new Object[] {
+					groupId, fileTemplateNo,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<FileItem> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<FileItem>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (FileItem fileItem : list) {
+					if ((groupId != fileItem.getGroupId()) ||
+							!Objects.equals(fileTemplateNo,
+								fileItem.getFileTemplateNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTNS_GROUPID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(FileItemModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				if (!pagination) {
+					list = (List<FileItem>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<FileItem>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching file item
+	 * @throws NoSuchFileItemException if a matching file item could not be found
+	 */
+	@Override
+	public FileItem findByG_FTNS_First(long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator)
+		throws NoSuchFileItemException {
+		FileItem fileItem = fetchByG_FTNS_First(groupId, fileTemplateNo,
+				orderByComparator);
+
+		if (fileItem != null) {
+			return fileItem;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append("}");
+
+		throw new NoSuchFileItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the first file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching file item, or <code>null</code> if a matching file item could not be found
+	 */
+	@Override
+	public FileItem fetchByG_FTNS_First(long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator) {
+		List<FileItem> list = findByG_FTNS(groupId, fileTemplateNo, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching file item
+	 * @throws NoSuchFileItemException if a matching file item could not be found
+	 */
+	@Override
+	public FileItem findByG_FTNS_Last(long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator)
+		throws NoSuchFileItemException {
+		FileItem fileItem = fetchByG_FTNS_Last(groupId, fileTemplateNo,
+				orderByComparator);
+
+		if (fileItem != null) {
+			return fileItem;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", fileTemplateNo=");
+		msg.append(fileTemplateNo);
+
+		msg.append("}");
+
+		throw new NoSuchFileItemException(msg.toString());
+	}
+
+	/**
+	 * Returns the last file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching file item, or <code>null</code> if a matching file item could not be found
+	 */
+	@Override
+	public FileItem fetchByG_FTNS_Last(long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator) {
+		int count = countByG_FTNS(groupId, fileTemplateNo);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<FileItem> list = findByG_FTNS(groupId, fileTemplateNo, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the file items before and after the current file item in the ordered set where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param fileItemId the primary key of the current file item
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next file item
+	 * @throws NoSuchFileItemException if a file item with the primary key could not be found
+	 */
+	@Override
+	public FileItem[] findByG_FTNS_PrevAndNext(long fileItemId, long groupId,
+		String fileTemplateNo, OrderByComparator<FileItem> orderByComparator)
+		throws NoSuchFileItemException {
+		FileItem fileItem = findByPrimaryKey(fileItemId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			FileItem[] array = new FileItemImpl[3];
+
+			array[0] = getByG_FTNS_PrevAndNext(session, fileItem, groupId,
+					fileTemplateNo, orderByComparator, true);
+
+			array[1] = fileItem;
+
+			array[2] = getByG_FTNS_PrevAndNext(session, fileItem, groupId,
+					fileTemplateNo, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected FileItem getByG_FTNS_PrevAndNext(Session session,
+		FileItem fileItem, long groupId, String fileTemplateNo,
+		OrderByComparator<FileItem> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_FILEITEM_WHERE);
+
+		query.append(_FINDER_COLUMN_G_FTNS_GROUPID_2);
+
+		boolean bindFileTemplateNo = false;
+
+		if (fileTemplateNo == null) {
+			query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1);
+		}
+		else if (fileTemplateNo.equals("")) {
+			query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3);
+		}
+		else {
+			bindFileTemplateNo = true;
+
+			query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(FileItemModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindFileTemplateNo) {
+			qPos.add(fileTemplateNo);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(fileItem);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<FileItem> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNos the file template nos
+	 * @return the matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos) {
+		return findByG_FTNS(groupId, fileTemplateNos, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNos the file template nos
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @return the range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos,
+		int start, int end) {
+		return findByG_FTNS(groupId, fileTemplateNos, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNos the file template nos
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos,
+		int start, int end, OrderByComparator<FileItem> orderByComparator) {
+		return findByG_FTNS(groupId, fileTemplateNos, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the file items where groupId = &#63; and fileTemplateNo = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link FileItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @param start the lower bound of the range of file items
+	 * @param end the upper bound of the range of file items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching file items
+	 */
+	@Override
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos,
+		int start, int end, OrderByComparator<FileItem> orderByComparator,
+		boolean retrieveFromCache) {
+		if (fileTemplateNos == null) {
+			fileTemplateNos = new String[0];
+		}
+		else if (fileTemplateNos.length > 1) {
+			fileTemplateNos = ArrayUtil.distinct(fileTemplateNos,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(fileTemplateNos, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (fileTemplateNos.length == 1) {
+			return findByG_FTNS(groupId, fileTemplateNos[0], start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { groupId, StringUtil.merge(fileTemplateNos) };
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(fileTemplateNos),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<FileItem> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<FileItem>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_FTNS,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (FileItem fileItem : list) {
+					if ((groupId != fileItem.getGroupId()) ||
+							!ArrayUtil.contains(fileTemplateNos,
+								fileItem.getFileTemplateNo())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTNS_GROUPID_2);
+
+			if (fileTemplateNos.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < fileTemplateNos.length; i++) {
+					String fileTemplateNo = fileTemplateNos[i];
+
+					if (fileTemplateNo == null) {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1);
+					}
+					else if (fileTemplateNo.equals("")) {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2);
+					}
+
+					if ((i + 1) < fileTemplateNos.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(FileItemModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				for (String fileTemplateNo : fileTemplateNos) {
+					if ((fileTemplateNo != null) && !fileTemplateNo.isEmpty()) {
+						qPos.add(fileTemplateNo);
+					}
+				}
+
+				if (!pagination) {
+					list = (List<FileItem>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<FileItem>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_FTNS,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_FTNS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the file items where groupId = &#63; and fileTemplateNo = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 */
+	@Override
+	public void removeByG_FTNS(long groupId, String fileTemplateNo) {
+		for (FileItem fileItem : findByG_FTNS(groupId, fileTemplateNo,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(fileItem);
+		}
+	}
+
+	/**
+	 * Returns the number of file items where groupId = &#63; and fileTemplateNo = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNo the file template no
+	 * @return the number of matching file items
+	 */
+	@Override
+	public int countByG_FTNS(long groupId, String fileTemplateNo) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_FTNS;
+
+		Object[] finderArgs = new Object[] { groupId, fileTemplateNo };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTNS_GROUPID_2);
+
+			boolean bindFileTemplateNo = false;
+
+			if (fileTemplateNo == null) {
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1);
+			}
+			else if (fileTemplateNo.equals("")) {
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3);
+			}
+			else {
+				bindFileTemplateNo = true;
+
+				query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindFileTemplateNo) {
+					qPos.add(fileTemplateNo);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of file items where groupId = &#63; and fileTemplateNo = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param fileTemplateNos the file template nos
+	 * @return the number of matching file items
+	 */
+	@Override
+	public int countByG_FTNS(long groupId, String[] fileTemplateNos) {
+		if (fileTemplateNos == null) {
+			fileTemplateNos = new String[0];
+		}
+		else if (fileTemplateNos.length > 1) {
+			fileTemplateNos = ArrayUtil.distinct(fileTemplateNos,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(fileTemplateNos, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(fileTemplateNos)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_FTNS,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_FILEITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_G_FTNS_GROUPID_2);
+
+			if (fileTemplateNos.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < fileTemplateNos.length; i++) {
+					String fileTemplateNo = fileTemplateNos[i];
+
+					if (fileTemplateNo == null) {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1);
+					}
+					else if (fileTemplateNo.equals("")) {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2);
+					}
+
+					if ((i + 1) < fileTemplateNos.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				for (String fileTemplateNo : fileTemplateNos) {
+					if ((fileTemplateNo != null) && !fileTemplateNo.isEmpty()) {
+						qPos.add(fileTemplateNo);
+					}
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_FTNS,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_FTNS,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_FTNS_GROUPID_2 = "fileItem.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_FTNS_FILETEMPLATENO_1 = "fileItem.fileTemplateNo IS NULL";
+	private static final String _FINDER_COLUMN_G_FTNS_FILETEMPLATENO_2 = "fileItem.fileTemplateNo = ?";
+	private static final String _FINDER_COLUMN_G_FTNS_FILETEMPLATENO_3 = "(fileItem.fileTemplateNo IS NULL OR fileItem.fileTemplateNo = '')";
 
 	public FileItemPersistenceImpl() {
 		setModelClass(FileItem.class);
@@ -1504,6 +2674,10 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
 			new Object[] { fileItem.getUuid(), fileItem.getGroupId() }, fileItem);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_FTN,
+			new Object[] { fileItem.getGroupId(), fileItem.getFileTemplateNo() },
+			fileItem);
 
 		fileItem.resetOriginalValues();
 	}
@@ -1582,6 +2756,16 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
 			fileItemModelImpl, false);
+
+		args = new Object[] {
+				fileItemModelImpl.getGroupId(),
+				fileItemModelImpl.getFileTemplateNo()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_FTN, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_FTN, args,
+			fileItemModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -1604,6 +2788,27 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					fileItemModelImpl.getGroupId(),
+					fileItemModelImpl.getFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_FTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_FTN, args);
+		}
+
+		if ((fileItemModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_FTN.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					fileItemModelImpl.getOriginalGroupId(),
+					fileItemModelImpl.getOriginalFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_FTN, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_FTN, args);
 		}
 	}
 
@@ -1804,6 +3009,15 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
 				args);
 
+			args = new Object[] {
+					fileItemModelImpl.getGroupId(),
+					fileItemModelImpl.getFileTemplateNo()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_FTNS, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -1843,6 +3057,27 @@ public class FileItemPersistenceImpl extends BasePersistenceImpl<FileItem>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((fileItemModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						fileItemModelImpl.getOriginalGroupId(),
+						fileItemModelImpl.getOriginalFileTemplateNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_FTNS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS,
+					args);
+
+				args = new Object[] {
+						fileItemModelImpl.getGroupId(),
+						fileItemModelImpl.getFileTemplateNo()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_FTNS, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_FTNS,
 					args);
 			}
 		}

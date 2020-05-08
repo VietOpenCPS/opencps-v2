@@ -119,9 +119,10 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.FileItem"),
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long FILEITEMID_COLUMN_BITMASK = 8L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 2L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
+	public static final long FILEITEMID_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.FileItem"));
 
@@ -426,7 +427,17 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 
 	@Override
 	public void setFileTemplateNo(String fileTemplateNo) {
+		_columnBitmask |= FILETEMPLATENO_COLUMN_BITMASK;
+
+		if (_originalFileTemplateNo == null) {
+			_originalFileTemplateNo = _fileTemplateNo;
+		}
+
 		_fileTemplateNo = fileTemplateNo;
+	}
+
+	public String getOriginalFileTemplateNo() {
+		return GetterUtil.getString(_originalFileTemplateNo);
 	}
 
 	@Override
@@ -618,6 +629,8 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 		fileItemModelImpl._originalGroupId = fileItemModelImpl._groupId;
 
 		fileItemModelImpl._setOriginalGroupId = false;
+
+		fileItemModelImpl._originalFileTemplateNo = fileItemModelImpl._fileTemplateNo;
 
 		fileItemModelImpl._columnBitmask = 0;
 	}
@@ -833,6 +846,7 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 	private long _userId;
 	private String _userName;
 	private String _fileTemplateNo;
+	private String _originalFileTemplateNo;
 	private String _name;
 	private int _status;
 	private int _size;

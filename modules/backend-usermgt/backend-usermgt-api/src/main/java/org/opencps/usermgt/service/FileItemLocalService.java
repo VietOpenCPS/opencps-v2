@@ -191,6 +191,10 @@ public interface FileItemLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FileItem fetchFileItemByUuidAndGroupId(String uuid, long groupId);
 
+	public FileItem findByG_FTN(long groupId, String fileTemplateNo);
+
+	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
