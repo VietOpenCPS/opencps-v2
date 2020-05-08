@@ -150,4 +150,34 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		}
 	}
 
+	@Override
+	public Response activeApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id) {
+		ApplicantData applicantData = null;
+		
+		try {
+			applicantData = ApplicantDataLocalServiceUtil.active(id);
+			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response inactiveApplicantData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		ApplicantData applicantData = null;
+		
+		try {
+			applicantData = ApplicantDataLocalServiceUtil.inActive(id);
+			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 }

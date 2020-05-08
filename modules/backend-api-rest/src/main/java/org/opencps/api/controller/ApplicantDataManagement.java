@@ -116,4 +116,34 @@ public interface ApplicantDataManagement {
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
 		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);
+	
+	@POST
+	@Path("/{id}/active")
+	@ApiOperation(value = "Active applicant data by Id)")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the applicant data"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response activeApplicantData(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id);
+
+	@POST
+	@Path("/{id}/inactive")
+	@ApiOperation(value = "Inactive applicant data by Id)")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the applicant data"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response inactiveApplicantData(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id);
 }
