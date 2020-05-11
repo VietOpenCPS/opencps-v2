@@ -82,6 +82,7 @@ public class OneMinute extends BaseMessageListener {
 		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
 				.findByF_LessThan_ExpireDate(new Date());
 
+		_log.info("notificationQueues check SIZE: "+notificationQueues.size());
 		if (notificationQueues != null) {
 	
 			_log.info("notificationQueues SIZE: "+notificationQueues.size());
