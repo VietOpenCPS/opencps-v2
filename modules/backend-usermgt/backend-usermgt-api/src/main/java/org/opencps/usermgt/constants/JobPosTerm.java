@@ -65,6 +65,8 @@ public class JobPosTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
+	public static final String GLOBAL_PREFIX = "GLOBAL_";
+	
 	private long jobPosId;
 
 	private long groupId;

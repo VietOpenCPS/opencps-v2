@@ -472,9 +472,20 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 
 			Map<Locale, String> titleMap = new HashMap<>();
 			titleMap.put(Locale.getDefault(), title);
-
-			Role role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-					role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
+			String globalRoleName = jobPosCode.startsWith(JobPosTerm.GLOBAL_PREFIX) ? jobPosCode : StringPool.BLANK;
+			Role role = null;
+			
+			if (Validator.isNotNull(globalRoleName)) {
+				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), globalRoleName);
+				if (role == null) {
+					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+							globalRoleName, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);
+				}
+			}
+			else {
+				role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+						role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);				
+			}
 
 			// Audit fields
 			jobPos.setUserId(user.getUserId());
@@ -488,7 +499,7 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 			jobPos.setJobPosCode(jobPosCode);
 			jobPos.setTitle(title);
 			jobPos.setDescription(description);
-			jobPos.setMappingRoleId(role.getRoleId());
+			jobPos.setMappingRoleId(role != null ? role.getRoleId() : 0);
 		}
 
 		jobPosPersistence.update(jobPos);
