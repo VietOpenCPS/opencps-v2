@@ -1200,7 +1200,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			userLocalService.deleteGroupUser(object.getGroupId(), object.getMappingUserId());
 		}
 		else if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
-			userLocalService.addGroupUser(object.getGroupId(), object.getMappingUserId());
+			if (object.getMappingUserId() > 0) {
+				User u = userLocalService.fetchUser(object.getMappingUserId());
+				if (u != null) {
+					userLocalService.addGroupUser(object.getGroupId(), object.getMappingUserId());
+				}
+			}
 		}
 		return employeePersistence.update(object);
 
