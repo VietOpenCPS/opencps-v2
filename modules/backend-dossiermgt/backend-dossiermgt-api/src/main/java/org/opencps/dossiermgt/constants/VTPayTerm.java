@@ -33,15 +33,23 @@ public class VTPayTerm {
 	public static final String MC_URL = "mc_url";
 	public static final String DVC_URL = "dvc_url";
 	
-	public static final String createBillCode (String mcUrl, String invoiceNo) {
-		return mcUrl + "___" + invoiceNo;
+	public static final String createBillCode (String govAgencyCode, String invoiceNo) {
+		String billcode =  govAgencyCode + "___" + invoiceNo;
+		if (billcode.length() >= 20) {
+			return billcode.substring(0, 20);
+		} else {
+			return billcode;
+		}
 	}
 	public static final String createOrderId (long dossierId, String dossierNo) {
-		return dossierId + "___" + dossierNo;
+		String orderId = dossierId + "___" + dossierNo;
+		if (orderId.length() >= 20) {
+			return orderId.substring(0, 20);
+		} else {
+			return orderId;
+		}
 	}
-	public static final String getMcUrlByBillCode (String billcode) {
-		return billcode.split("___")[0];
-	}
+
 	public static final String getInvoiceNoByBillCode (String billcode) {
 		return billcode.split("___")[1];
 	}

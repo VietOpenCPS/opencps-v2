@@ -1928,7 +1928,6 @@ public class CPSDossierBusinessLocalServiceImpl
 					try {
 						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
 						JSONObject data = JSONFactoryUtil.createJSONObject();
-						String mcUrl = schema.getString(VTPayTerm.MC_URL);
 	
 						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
 								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
@@ -1936,7 +1935,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
 						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
 								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
-						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(dossier.getGovAgencyCode(), paymentFile.getInvoiceNo()));
 						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
 						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
 						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
@@ -2033,7 +2032,6 @@ public class CPSDossierBusinessLocalServiceImpl
 					try {
 						JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
 						JSONObject data = JSONFactoryUtil.createJSONObject();
-						String mcUrl = schema.getString(VTPayTerm.MC_URL);
 	
 						data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
 								schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
@@ -2041,7 +2039,7 @@ public class CPSDossierBusinessLocalServiceImpl
 								schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
 						data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
 								schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
-						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(mcUrl, paymentFile.getInvoiceNo()));
+						data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY), VTPayTerm.createBillCode(dossier.getGovAgencyCode(), paymentFile.getInvoiceNo()));
 						data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY), VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
 						data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY), paymentFile.getPaymentAmount());
 						data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
