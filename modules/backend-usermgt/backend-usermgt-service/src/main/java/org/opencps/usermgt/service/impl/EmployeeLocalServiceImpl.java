@@ -1196,13 +1196,15 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		// }
 		// }
 		// _log.info("user: "+JSONFactoryUtil.looseSerialize(user));
-		if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
-			userLocalService.deleteGroupUser(object.getGroupId(), object.getMappingUserId());
-		}
-		else if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
-			if (object.getMappingUserId() > 0) {
-				User u = userLocalService.fetchUser(object.getMappingUserId());
-				if (u != null) {
+		User u = userLocalService.fetchUser(object.getMappingUserId());
+		if (u != null) {
+			if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_RETIRED) {
+				if (object.getMappingUserId() > 0) {
+					userLocalService.deleteGroupUser(object.getGroupId(), object.getMappingUserId());
+				}
+			}
+			else if (object.getWorkingStatus() == EmployeeTerm.WORKING_STATUS_WORKED) {
+				if (object.getMappingUserId() > 0) {
 					userLocalService.addGroupUser(object.getGroupId(), object.getMappingUserId());
 				}
 			}
