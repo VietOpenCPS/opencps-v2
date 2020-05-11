@@ -368,6 +368,70 @@ public interface ApplicantDataPersistence extends BasePersistence<ApplicantData>
 	public int countByUuid_C(String uuid, long companyId);
 
 	/**
+	* Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or throws a {@link NoSuchApplicantDataException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param fileTemplateNo the file template no
+	* @param applicantIdNo the applicant ID no
+	* @return the matching applicant data
+	* @throws NoSuchApplicantDataException if a matching applicant data could not be found
+	*/
+	public ApplicantData findByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo)
+		throws NoSuchApplicantDataException;
+
+	/**
+	* Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param fileTemplateNo the file template no
+	* @param applicantIdNo the applicant ID no
+	* @return the matching applicant data, or <code>null</code> if a matching applicant data could not be found
+	*/
+	public ApplicantData fetchByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo);
+
+	/**
+	* Returns the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param fileTemplateNo the file template no
+	* @param applicantIdNo the applicant ID no
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching applicant data, or <code>null</code> if a matching applicant data could not be found
+	*/
+	public ApplicantData fetchByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo, boolean retrieveFromCache);
+
+	/**
+	* Removes the applicant data where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param fileTemplateNo the file template no
+	* @param applicantIdNo the applicant ID no
+	* @return the applicant data that was removed
+	*/
+	public ApplicantData removeByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo)
+		throws NoSuchApplicantDataException;
+
+	/**
+	* Returns the number of applicant datas where groupId = &#63; and dossierNo = &#63; and fileTemplateNo = &#63; and applicantIdNo = &#63;.
+	*
+	* @param groupId the group ID
+	* @param dossierNo the dossier no
+	* @param fileTemplateNo the file template no
+	* @param applicantIdNo the applicant ID no
+	* @return the number of matching applicant datas
+	*/
+	public int countByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo);
+
+	/**
 	* Caches the applicant data in the entity cache if it is enabled.
 	*
 	* @param applicantData the applicant data

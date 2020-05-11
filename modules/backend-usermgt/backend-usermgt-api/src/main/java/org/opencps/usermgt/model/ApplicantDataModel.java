@@ -327,6 +327,36 @@ public interface ApplicantDataModel extends BaseModel<ApplicantData>,
 	 */
 	public void setApplicantDataType(int applicantDataType);
 
+	/**
+	 * Returns the dossier no of this applicant data.
+	 *
+	 * @return the dossier no of this applicant data
+	 */
+	@AutoEscape
+	public String getDossierNo();
+
+	/**
+	 * Sets the dossier no of this applicant data.
+	 *
+	 * @param dossierNo the dossier no of this applicant data
+	 */
+	public void setDossierNo(String dossierNo);
+
+	/**
+	 * Returns the log of this applicant data.
+	 *
+	 * @return the log of this applicant data
+	 */
+	@AutoEscape
+	public String getLog();
+
+	/**
+	 * Sets the log of this applicant data.
+	 *
+	 * @param log the log of this applicant data
+	 */
+	public void setLog(String log);
+
 	@Override
 	public boolean isNew();
 

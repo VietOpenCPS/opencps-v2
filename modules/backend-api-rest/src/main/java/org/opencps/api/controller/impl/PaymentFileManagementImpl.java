@@ -40,6 +40,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
@@ -378,8 +379,10 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-		long dossierId = GetterUtil.getLong(id);
+//		long dossierId = GetterUtil.getLong(id);
 
+		DossierUtils.getDossier(id, groupId);
+		
 		// TODO get Dossier by referenceUid if dossierId = 0
 		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
 
@@ -396,14 +399,20 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 			PaymentFileActions action = new PaymentFileActionsImpl();
+			Dossier dossier = DossierUtils.getDossier(id, groupId);
 
-			PaymentFile paymentFile = action.updateFileConfirm(groupId, dossierId, referenceUid/*, confirmNote,
-					paymentMethod, confirmPayload*/,StringPool.BLANK, StringPool.BLANK,StringPool.BLANK, dataHandler != null ? dataHandler.getName() : StringPool.BLANK, 0L,
-					dataHandler != null ? dataHandler.getInputStream() : null, serviceContext);
+			if (dossier != null) {
+				PaymentFile paymentFile = action.updateFileConfirm(groupId, dossier.getDossierId(), referenceUid/*, confirmNote,
+						paymentMethod, confirmPayload*/,StringPool.BLANK, StringPool.BLANK,StringPool.BLANK, dataHandler != null ? dataHandler.getName() : StringPool.BLANK, 0L,
+						dataHandler != null ? dataHandler.getInputStream() : null, serviceContext);
 
-			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+				PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
-			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();				
+			}
+			else {
+				return Response.status(HttpURLConnection.HTTP_OK).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

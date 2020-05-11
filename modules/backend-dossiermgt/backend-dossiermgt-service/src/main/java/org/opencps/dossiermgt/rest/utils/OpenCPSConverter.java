@@ -43,6 +43,7 @@ import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.PaymentFileModel;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
 import org.opencps.dossiermgt.rest.model.DossierDocumentModel;
 import org.opencps.dossiermgt.rest.model.DossierFileModel;
@@ -1028,6 +1029,16 @@ public class OpenCPSConverter {
 		return model;
 	}		
 	
+	public static PaymentFileInputModel convertPaymentConfirmFile(JSONObject jsonObj) {
+		PaymentFileInputModel model = new PaymentFileInputModel();
+	
+		if (jsonObj.has(PaymentFileTerm.REFERENCE_UID)) {
+			model.setReferenceUid(jsonObj.getString(PaymentFileTerm.REFERENCE_UID));
+		}
+		
+		return model;
+	}		
+
 	public static DossierInputModel convertDossierToInputModel(Dossier dossier, DossierSync dossierSync) {
 		DossierInputModel model = new DossierInputModel();
 		model.setReferenceUid(dossier.getReferenceUid());

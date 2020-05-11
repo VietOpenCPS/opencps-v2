@@ -2,6 +2,10 @@ Bundle-Name: backend-gogoshell-tool
 Bundle-SymbolicName: org.opencps.gogoshell.tool
 Bundle-Version: 1.0.0
 Export-Package: org.opencps.gogoshell.tool.api
+Include-Resource: \
+	@stringtemplate-3.2.jar
 Import-Package: \
     org.apache.felix.service.command;status=provisional;version='[0.10,1)',\
-    *
+    *;resolution:=optional
+Export-Package: \
+	org.antlr.stringtemplate.*

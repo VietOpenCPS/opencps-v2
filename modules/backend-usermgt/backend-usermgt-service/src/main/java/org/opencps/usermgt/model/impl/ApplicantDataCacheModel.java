@@ -65,7 +65,7 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -99,6 +99,10 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 		sb.append(applicantIdNo);
 		sb.append(", applicantDataType=");
 		sb.append(applicantDataType);
+		sb.append(", dossierNo=");
+		sb.append(dossierNo);
+		sb.append(", log=");
+		sb.append(log);
 		sb.append("}");
 
 		return sb.toString();
@@ -183,6 +187,20 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 
 		applicantDataImpl.setApplicantDataType(applicantDataType);
 
+		if (dossierNo == null) {
+			applicantDataImpl.setDossierNo("");
+		}
+		else {
+			applicantDataImpl.setDossierNo(dossierNo);
+		}
+
+		if (log == null) {
+			applicantDataImpl.setLog("");
+		}
+		else {
+			applicantDataImpl.setLog(log);
+		}
+
 		applicantDataImpl.resetOriginalValues();
 
 		return applicantDataImpl;
@@ -213,6 +231,8 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 		applicantIdNo = objectInput.readUTF();
 
 		applicantDataType = objectInput.readInt();
+		dossierNo = objectInput.readUTF();
+		log = objectInput.readUTF();
 	}
 
 	@Override
@@ -282,6 +302,20 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 		}
 
 		objectOutput.writeInt(applicantDataType);
+
+		if (dossierNo == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(dossierNo);
+		}
+
+		if (log == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(log);
+		}
 	}
 
 	public String uuid;
@@ -300,4 +334,6 @@ public class ApplicantDataCacheModel implements CacheModel<ApplicantData>,
 	public int status;
 	public String applicantIdNo;
 	public int applicantDataType;
+	public String dossierNo;
+	public String log;
 }

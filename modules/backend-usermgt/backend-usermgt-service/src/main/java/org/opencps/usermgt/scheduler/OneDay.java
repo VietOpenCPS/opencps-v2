@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(immediate = true, service = OneDay.class)
+//@Component(immediate = true, service = OneDay.class)
 public class OneDay extends BaseMessageListener {
 
 	private volatile boolean isRunning = false;
@@ -191,7 +191,7 @@ public class OneDay extends BaseMessageListener {
 		_schedulerEntryImpl =
 			new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(
-			_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+			_schedulerEntryImpl, StorageType.PERSISTED);
 
 		// _schedulerEntryImpl.setTrigger(jobTrigger);
 

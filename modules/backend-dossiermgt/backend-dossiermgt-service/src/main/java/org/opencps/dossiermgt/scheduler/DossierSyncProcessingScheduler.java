@@ -28,7 +28,6 @@ import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.processor.IMessageProcessor;
 import org.opencps.dossiermgt.processor.MessageProcessor;
 import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.kernel.prop.PropValues;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -82,7 +81,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSyncDossier, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
@@ -108,6 +107,7 @@ public class DossierSyncProcessingScheduler extends BaseMessageListener {
 		      _schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
+		isRunning = false;
 	}
 
 	/**

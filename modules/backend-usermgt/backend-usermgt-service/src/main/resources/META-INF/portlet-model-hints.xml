@@ -122,6 +122,12 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="applicantDataType" type="int" />
+		<field name="dossierNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="log" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
 	</model>
 	<model name="org.opencps.usermgt.model.Employee">
 		<field name="uuid" type="String" />
@@ -186,6 +192,32 @@
 		<field name="employeeId" type="long" />
 		<field name="jobPostId" type="long" />
 		<field name="workingUnitId" type="long" />
+	</model>
+	<model name="org.opencps.usermgt.model.FileItem">
+		<field name="uuid" type="String" />
+		<field name="fileItemId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="companyId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="fileTemplateNo" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="name" type="String">
+			<hint name="max-length">4096</hint>
+		</field>
+		<field name="status" type="int" />
+		<field name="size" type="int" />
+		<field name="fileType" type="String">
+			<hint name="max-length">128</hint>
+		</field>
+		<field name="log" type="String">
+			<hint name="max-length">32767</hint>
+		</field>
 	</model>
 	<model name="org.opencps.usermgt.model.HmacAuthen">
 		<field name="hmacAuthId" type="long" />
