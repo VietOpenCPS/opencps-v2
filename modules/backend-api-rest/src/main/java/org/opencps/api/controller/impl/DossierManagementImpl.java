@@ -3833,7 +3833,7 @@ public class DossierManagementImpl implements DossierManagement {
 					groupId, company, user, serviceContext,
 					DossierUtils.convertFormModelToPublishModel(input));
 			//add by TrungNT
-			if(dossier.getOriginality() == 0) {
+			if(dossier.getOriginality() == 0 & 2 != input.getSystemId()) {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				String mappingDossierStatus = actionImpl.getMappingStatus(dossier.getGroupId(), dossier);
 				if(Validator.isNotNull(mappingDossierStatus)) {

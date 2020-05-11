@@ -38,6 +38,22 @@
 				<xsd:element name="contactTelNo" type="xsd:string" minOccurs="0" />
 				<xsd:element name="contactEmail" type="xsd:string" minOccurs="0" />
 				<xsd:element name="online" type="xsd:string" minOccurs="0" />
+
+				<xsd:element name="cityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="districtName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="systemId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="dossierActionId" type="xsd:int" minOccurs="0" />
+				<xsd:element name="delegateName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateIdNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateTelNo" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateEmail" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateAddress" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateCityName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateDistrictName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="delegateWardName" type="xsd:string" minOccurs="0" />
+				<xsd:element name="durationCount" type="xsd:double" minOccurs="0" />
+				<xsd:element name="durationUnit" type="xsd:int" minOccurs="0" />
+				<xsd:element name="dossierName" type="xsd:string" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>

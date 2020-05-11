@@ -122,7 +122,8 @@ import javax.xml.bind.annotation.XmlType;
 	"sampleCount",
 	"dossierName",
 	"mataData",
-	"dossierCounter"
+	"dossierCounter",
+	"systemId"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -268,6 +269,17 @@ public class DossierPublishModel {
 	protected String metaData;
 	@FormParam(value = "dossierCounter")
 	protected String dossierCounter;
+	@DefaultValue("0")
+	@FormParam(value = "systemId")
+	protected Integer systemId;
+
+	public Integer getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(Integer systemId) {
+		this.systemId = systemId;
+	}
 
 	public String getDossierCounter() {
 		return dossierCounter;
