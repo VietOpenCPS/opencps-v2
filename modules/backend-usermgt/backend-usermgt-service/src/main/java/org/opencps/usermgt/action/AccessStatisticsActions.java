@@ -24,4 +24,6 @@ public interface AccessStatisticsActions
 	JSONObject getAccessStatisticsURLForAllYear();
 
 	JSONObject getAccessStatisticsURLForPeriod();
+
+	JSONObject getOnline();
 }

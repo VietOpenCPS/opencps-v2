@@ -212,12 +212,21 @@ public class TrackClientLocalServiceUtil {
 		return getService().findByS_NULL_L(sessionId, leaveDate, start, end);
 	}
 
+	public static org.opencps.usermgt.model.TrackClient findPreviousPage(
+		String sessionId) {
+		return getService().findPreviousPage(sessionId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
+	}
+
+	public static java.util.List getOnline() {
+		return getService().getOnline();
 	}
 
 	/**

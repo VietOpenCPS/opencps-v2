@@ -59,6 +59,7 @@ import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
 import org.opencps.usermgt.service.persistence.SyncSchedulerPersistence;
+import org.opencps.usermgt.service.persistence.TrackClientFinder;
 import org.opencps.usermgt.service.persistence.TrackClientPersistence;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticPersistence;
@@ -922,6 +923,24 @@ public abstract class TrackClientLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the track client finder.
+	 *
+	 * @return the track client finder
+	 */
+	public TrackClientFinder getTrackClientFinder() {
+		return trackClientFinder;
+	}
+
+	/**
+	 * Sets the track client finder.
+	 *
+	 * @param trackClientFinder the track client finder
+	 */
+	public void setTrackClientFinder(TrackClientFinder trackClientFinder) {
+		this.trackClientFinder = trackClientFinder;
+	}
+
+	/**
 	 * Returns the track client statistic local service.
 	 *
 	 * @return the track client statistic local service
@@ -1357,6 +1376,8 @@ public abstract class TrackClientLocalServiceBaseImpl
 	protected TrackClientLocalService trackClientLocalService;
 	@BeanReference(type = TrackClientPersistence.class)
 	protected TrackClientPersistence trackClientPersistence;
+	@BeanReference(type = TrackClientFinder.class)
+	protected TrackClientFinder trackClientFinder;
 	@BeanReference(type = org.opencps.usermgt.service.TrackClientStatisticLocalService.class)
 	protected org.opencps.usermgt.service.TrackClientStatisticLocalService trackClientStatisticLocalService;
 	@BeanReference(type = TrackClientStatisticPersistence.class)

@@ -38,6 +38,7 @@
 	<bean class="org.opencps.usermgt.service.persistence.impl.SyncSchedulerPersistenceImpl" id="org.opencps.usermgt.service.persistence.SyncSchedulerPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.TrackClientLocalServiceImpl" id="org.opencps.usermgt.service.TrackClientLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.TrackClientPersistenceImpl" id="org.opencps.usermgt.service.persistence.TrackClientPersistence" parent="basePersistence" />
+	<bean class="org.opencps.usermgt.service.persistence.impl.TrackClientFinderImpl" id="org.opencps.usermgt.service.persistence.TrackClientFinder" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.impl.TrackClientStatisticLocalServiceImpl" id="org.opencps.usermgt.service.TrackClientStatisticLocalService" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.TrackClientStatisticPersistenceImpl" id="org.opencps.usermgt.service.persistence.TrackClientStatisticPersistence" parent="basePersistence" />
 	<bean class="org.opencps.usermgt.service.persistence.impl.TrackClientStatisticFinderImpl" id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder" parent="basePersistence" />

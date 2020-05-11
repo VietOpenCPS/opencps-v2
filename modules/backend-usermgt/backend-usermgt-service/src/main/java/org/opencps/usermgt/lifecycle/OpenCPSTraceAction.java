@@ -91,12 +91,30 @@ public class OpenCPSTraceAction extends Action {
         Date now = new Date();
         
 		if (UserMgtConfigUtil.isTrackClientEnable()) {
-			List<TrackClient> lstPrevs = TrackClientLocalServiceUtil.findByS(sessionId, 0, 1);
-			if (lstPrevs.size() == 1) {
-				
+			TrackClient previousPage = TrackClientLocalServiceUtil.findPreviousPage(sessionId);
+			if (previousPage != null && previousPage.getUrl().equals(completeUrl))
+			{
+					long timeOnPage = now.getTime() - previousPage.getVisitDate().getTime();
+					previousPage.setLeaveDate(now);
+					previousPage.setTimeOnPage(timeOnPage);
+
+					TrackClientLocalServiceUtil.updateTrackClient(previousPage);
 			}
-			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, isDesktop, isMobile, isTablet);
-			TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl, year, month, day, cityName, isDesktop, isMobile, isTablet);
+			else
+			{
+				if (previousPage != null)
+				{
+					long timeOnPage = now.getTime() - previousPage.getVisitDate().getTime();
+					previousPage.setLeaveDate(now);
+					previousPage.setTimeOnPage(timeOnPage);
+
+					TrackClientLocalServiceUtil.updateTrackClient(previousPage);
+				}
+				TrackClientLocalServiceUtil
+					.updateTrackClient(0,sessionId,completeUrl,year,month,day,now,now,clientIP,StringPool.BLANK,cityName,
+						StringPool.BLANK,latitude,longitude,0,isDesktop,isMobile,isTablet);
+				TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl,year,month,day,cityName,isDesktop,isMobile,isTablet);
+			}
 		}
 		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
