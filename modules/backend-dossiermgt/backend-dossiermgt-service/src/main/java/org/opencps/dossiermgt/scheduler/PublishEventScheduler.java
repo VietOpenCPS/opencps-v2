@@ -235,10 +235,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5, TimeUnit.SECOND);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 45, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
@@ -264,6 +264,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		      _schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
+		isRunning = false;
 	}
 
 	/**

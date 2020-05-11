@@ -837,7 +837,14 @@
 		<column name="status" type="int"/>
 		<column name="applicantIdNo" type="String"/>
 		<column name="applicantDataType" type="int"/>
-		
+		<column name="dossierNo" type="String"/>
+		<column name="log" type="String"/>
+        <finder name="G_DN_FTN_AIN" return-type="ApplicantData">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="dossierNo"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+            <finder-column name="applicantIdNo"></finder-column>
+        </finder>
 	</entity>
 		
 	<entity name="TrackClient" uuid="true" local-service="true"
@@ -937,6 +944,35 @@
 		</finder>
 	</entity>
 	
+	<entity name="FileItem" uuid="true" local-service="true"
+		remote-service="false" table="opencps_fileitem">
+		<!-- PK fields -->
+		<column name="fileItemId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="companyId" type="long"/>
+		<column name="groupId" type="long"/>
+		<column name="userId" type="long"/>
+		<column name="userName" type="String"/>
+		
+		<column name="fileTemplateNo" type="String"/>
+		<column name="name" type="String"/>
+		<column name="status" type="int"/>
+		<column name="size" type="int"/>
+		<column name="fileType" type="String"/>
+		<column name="log" type="String"/>
+        <finder name="G_FTN" return-type="FileItem">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="fileTemplateNo"></finder-column>
+        </finder>
+        <finder name="G_FTNS" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="fileTemplateNo" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
+	</entity>
+		
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

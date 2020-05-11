@@ -150,6 +150,48 @@ public class ApplicantDataLocalServiceImpl
 		return applicantData;
 	}
 	
+	@Indexable(type = IndexableType.REINDEX)
+	public ApplicantData updateApplicantData(ServiceContext context, long groupId, 
+			String fileTemplateNo,
+			String fileName,
+			long fileEntryId,
+			String metadata,
+			int status,
+			String applicantIdNo,
+			int applicantDataType,
+			String dossierNo,
+			String log) throws PortalException, SystemException {
+		ApplicantData applicantData = null;
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
+		applicantData = applicantDataPersistence.fetchByG_DN_FTN_AIN(groupId, dossierNo, fileTemplateNo, applicantIdNo);
+		
+		if (applicantData == null) {
+			long applicantDataId = counterLocalService.increment(ApplicantData.class.getName());
+			
+			applicantData = applicantDataPersistence.create(applicantDataId);
+		}
+		
+		applicantData.setModifiedDate(now);
+		applicantData.setCreateDate(now);
+		applicantData.setCompanyId(context.getCompanyId());
+		applicantData.setGroupId(groupId);
+		applicantData.setUserId(auditUser.getUserId());
+		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
+		applicantData.setFileName(fileName);
+		applicantData.setFileEntryId(fileEntryId);
+		applicantData.setMetadata(metadata);
+		applicantData.setStatus(status);
+		applicantData.setApplicantIdNo(applicantIdNo);
+		applicantData.setApplicantDataType(applicantDataType);
+		applicantData.setDossierNo(dossierNo);
+		applicantData.setLog(log);
+		
+		return applicantData;
+	}
+	
 	public ApplicantData fetchApplicantData(long applicantDataId) {
 		return applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
 	}
@@ -168,6 +210,7 @@ public class ApplicantDataLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData createApplicantData(long groupId, 
+			String fileTemplateNo,
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
@@ -186,6 +229,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
@@ -222,6 +266,7 @@ public class ApplicantDataLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId, 
 			long applicantDataId,
+			String fileTemplateNo,
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
@@ -239,6 +284,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
 		applicantData.setUserName(auditUser.getScreenName());
+		applicantData.setFileTemplateNo(fileTemplateNo);
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
@@ -492,6 +538,22 @@ public class ApplicantDataLocalServiceImpl
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);			
 		}		
+	}
+	
+	public ApplicantData active(long applicantDataId) {
+		ApplicantData applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
+		applicantData.setStatus(ApplicantDataTerm.STATUS_ACTIVE);
+		return applicantDataPersistence.update(applicantData);
+	}
+	
+	public ApplicantData inActive(long applicantDataId) {
+		ApplicantData applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
+		applicantData.setStatus(ApplicantDataTerm.STATUS_INACTIVE);
+		return applicantDataPersistence.update(applicantData);
+	}
+
+	public ApplicantData findByG_DN_FTN_AIN(long groupId, String dossierNo, String fileTemplateNo, String applicantIdNo) {
+		return applicantDataPersistence.fetchByG_DN_FTN_AIN(groupId, dossierNo, fileTemplateNo, applicantIdNo);
 	}
 	
 	private static final String FOLDER_NAME_APPLICANT_DATA_FILE = "PAYMENT_FILE";

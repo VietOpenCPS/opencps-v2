@@ -207,16 +207,19 @@ import org.opencps.dossiermgt.service.base.CPSDossierBusinessLocalServiceBaseImp
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierUserPK;
 import org.opencps.dossiermgt.service.persistence.ServiceProcessRolePK;
+import org.opencps.usermgt.constants.ApplicantDataTerm;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
+import org.opencps.usermgt.model.FileItem;
 import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.ApplicantDataLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.FileItemLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 
@@ -3045,6 +3048,8 @@ public class CPSDossierBusinessLocalServiceImpl
 		//Check if dossier is done
 		if (DossierTerm.DOSSIER_STATUS_DONE.equals(curStatus)) {
 			List<DossierFile> lstFiles = dossierFileLocalService.getAllDossierFile(dossier.getDossierId());
+			int countTemplateNo = 0;
+			
 			for (DossierFile df : lstFiles) {
 				//GS. Ta Tuan Anh
 				if (!df.getRemoved()) {
@@ -3053,7 +3058,40 @@ public class CPSDossierBusinessLocalServiceImpl
 				dossierFileLocalService.updateDossierFile(df);
 				
 				//GS. DuanTV ApplicantData
-				
+				if (Validator.isNotNull(df.getFileTemplateNo())) {
+					countTemplateNo++;
+				}
+			}
+			String[] fileTemplateNos = new String[countTemplateNo];
+			DossierFile[] files = new DossierFile[countTemplateNo];
+			
+			int count = 0;
+			for (DossierFile df : lstFiles) {
+				if (Validator.isNotNull(df.getFileTemplateNo())) {
+					files[count] = df;
+					fileTemplateNos[count++] = df.getFileTemplateNo();					
+				}
+			}
+			
+			List<FileItem> lstFileItems = FileItemLocalServiceUtil.findByG_FTNS(dossier.getGroupId(), fileTemplateNos);
+			for (int i = 0; i < lstFileItems.size(); i++) {
+				FileItem item = lstFileItems.get(i);
+				try {
+					ApplicantDataLocalServiceUtil.updateApplicantData(context, dossier.getGroupId(), 
+							item.getFileTemplateNo(),
+							files[i].getDisplayName(),
+							files[i].getFileEntryId(),
+							StringPool.BLANK,
+							ApplicantDataTerm.STATUS_ACTIVE,
+							dossier.getApplicantIdNo(),
+							1,
+							dossier.getDossierNo(),
+							StringPool.BLANK);
+				} catch (SystemException e) {
+					_log.debug(e);
+				} catch (PortalException e) {
+					_log.debug(e);
+				}
 			}
 		}
 		

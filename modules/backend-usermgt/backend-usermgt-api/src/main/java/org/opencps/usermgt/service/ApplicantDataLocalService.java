@@ -71,6 +71,7 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link ApplicantDataLocalServiceUtil} to access the applicant data local service. Add custom service methods to {@link org.opencps.usermgt.service.impl.ApplicantDataLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public ApplicantData active(long applicantDataId);
 
 	/**
 	* Adds the applicant data to the database. Also notifies the appropriate model listeners.
@@ -94,10 +95,10 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	public ApplicantData createApplicantData(long applicantDataId);
 
 	@Indexable(type = IndexableType.REINDEX)
-	public ApplicantData createApplicantData(long groupId, String fileNo,
-		String fileName, String applicantIdNo, String sourceFileName,
-		InputStream inputStream, ServiceContext serviceContext)
-		throws PortalException, SystemException;
+	public ApplicantData createApplicantData(long groupId,
+		String fileTemplateNo, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName, InputStream inputStream,
+		ServiceContext serviceContext) throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData createApplicantData(ServiceContext context,
@@ -205,6 +206,9 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	public ApplicantData fetchApplicantDataByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public ApplicantData findByG_DN_FTN_AIN(long groupId, String dossierNo,
+		String fileTemplateNo, String applicantIdNo);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -298,6 +302,8 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public ApplicantData inActive(long applicantDataId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits searchLucene(LinkedHashMap<String, Object> params,
 		Sort[] sorts, int start, int end, SearchContext searchContext)
@@ -314,14 +320,22 @@ public interface ApplicantDataLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(long groupId,
-		long applicantDataId, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName, InputStream inputStream,
-		ServiceContext serviceContext) throws PortalException, SystemException;
+		long applicantDataId, String fileTemplateNo, String fileNo,
+		String fileName, String applicantIdNo, String sourceFileName,
+		InputStream inputStream, ServiceContext serviceContext)
+		throws PortalException, SystemException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ApplicantData updateApplicantData(ServiceContext context,
 		long groupId, long applicantDataId, String fileTemplateNo,
 		String fileNo, String fileName, long fileEntryId, String metadata,
 		int status, String applicantIdNo, int applicantDataType)
+		throws PortalException, SystemException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ApplicantData updateApplicantData(ServiceContext context,
+		long groupId, String fileTemplateNo, String fileName, long fileEntryId,
+		String metadata, int status, String applicantIdNo,
+		int applicantDataType, String dossierNo, String log)
 		throws PortalException, SystemException;
 }

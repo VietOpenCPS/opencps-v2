@@ -6,6 +6,12 @@ dependencies {
     compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.runtime", version: "1.0.6"
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     
+	compileInclude group: "de.vandermeer", name: "asciitable", version: "0.3.2"
+	compileInclude group: "org.fusesource.jansi", name: "jansi", version: "1.16"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.string", version: "3.0.0"
+	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
+	compile group: 'org.antlr', name: 'stringtemplate', version: '3.2'
+    
     compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-service")
 	

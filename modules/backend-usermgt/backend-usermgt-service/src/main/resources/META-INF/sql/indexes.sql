@@ -18,6 +18,7 @@ create index IX_EE04E01F on opencps_applicant (mappingUserId);
 create index IX_58078059 on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_35F6491B on opencps_applicant (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_7160D281 on opencps_applicant_data (groupId, dossierNo[$COLUMN_LENGTH:128$], fileTemplateNo[$COLUMN_LENGTH:255$], applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_14A28584 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_49569D06 on opencps_applicant_data (uuid_[$COLUMN_LENGTH:75$], groupId);
 
@@ -37,6 +38,11 @@ create index IX_DCBDEC9 on opencps_employee_jobpos (groupId, jobPostId);
 create index IX_F9CB80BF on opencps_employee_jobpos (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_E16B2B01 on opencps_employee_jobpos (uuid_[$COLUMN_LENGTH:75$], groupId);
 create index IX_B6CA9215 on opencps_employee_jobpos (workingUnitId);
+
+create index IX_8ADED1C3 on opencps_fileitem (fileTemplateNo[$COLUMN_LENGTH:128$]);
+create index IX_A082263D on opencps_fileitem (groupId, fileTemplateNo[$COLUMN_LENGTH:128$]);
+create index IX_E9DD878C on opencps_fileitem (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_37FA810E on opencps_fileitem (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_A68549C2 on opencps_jobpos (groupId, jobPosCode[$COLUMN_LENGTH:255$]);
 create index IX_3D2FB230 on opencps_jobpos (groupId, jobPosId);

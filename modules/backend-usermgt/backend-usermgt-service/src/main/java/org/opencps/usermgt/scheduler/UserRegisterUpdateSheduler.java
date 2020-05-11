@@ -30,6 +30,7 @@ import org.opencps.usermgt.model.SyncScheduler;
 import org.opencps.usermgt.scheduler.utils.AdministrativeRegionUtils;
 import org.opencps.usermgt.service.SyncSchedulerLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -120,7 +121,7 @@ public class UserRegisterUpdateSheduler extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
