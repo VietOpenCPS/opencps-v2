@@ -1,9 +1,20 @@
 package org.fds.opencps.paygate.integration.util;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+
 public class PayGateTerm {
+
+	private static Log _log = LogFactoryUtil.getLog(PayGateTerm.class.getName());
 	public static final String ATTACHMENT_FILENAME_FORMAT = "attachment; filename=\"%s\"";
 	public static final String PNG_TYPE = "image/png";
-	
+
 	public static final String VTP_PROTOCOL = "VTP_QRCODE";
 	public static final String PRIORITY = "priority";
 	public static final String KEY = "key";
@@ -50,12 +61,25 @@ public class PayGateTerm {
 	public static final String ACTION_CODE = "actionCode";
 	public static final String PAYMENT = "payment";
 	public static final String URL = "url";
+	public static final String MC_URL = "mcUrl";
 	public static final String USERNAME = "userName";
 	public static final String PWD = "pwd";
 	public static final String ACTION_ENPOINT = "actions";
-	
-	public static String buildPathDoAction (String path, long dossierId) {
-		
+
+	public static String buildPathDoAction(String path, long dossierId) {
+
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
 	};
+
+	public static final String getMcUrlByBillCode (String billcode) {
+		try {
+			String govAgencyCode = billcode.split("___")[0];
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode("SERVER_" + govAgencyCode);
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			return config.getString(MC_URL);
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return StringPool.BLANK;
+	}
 }
