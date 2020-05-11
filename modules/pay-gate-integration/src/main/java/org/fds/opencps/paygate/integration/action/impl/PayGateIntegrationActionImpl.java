@@ -111,20 +111,21 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		return result;
 	}
 
-	private void invokeReceiveResult(User user, ServiceContext serviceContext, JSONObject searchResult, String billcode,
-			String cust_msisdn, long trans_amount) {
+//	private void invokeReceiveResult(User user, ServiceContext serviceContext, JSONObject searchResult, String billcode,
+//			String cust_msisdn, long trans_amount) {
+//
+//		String merchant_code = searchResult.getString(PayGateTerm.MERCHANT_CODE);
+//		String order_id = searchResult.getString(PayGateTerm.ORDER_ID);
+//		int payment_status = searchResult.getInt(PayGateTerm.PAYMENT_STATUS);
+//		String version = searchResult.getString(PayGateTerm.VERSION);
+//		String check_sum = searchResult.getString(PayGateTerm.CHECK_SUM);
+//		String error_code = searchResult.getString(PayGateTerm.ERROR_CODE);
+//		String vt_transaction_id = searchResult.getString(PayGateTerm.VT_TRANSACTION_ID);
+//		mcReceiveResult(user, serviceContext, billcode, cust_msisdn, error_code, merchant_code, order_id,
+//				payment_status, trans_amount, vt_transaction_id, check_sum);
+//	}
 
-		String merchant_code = searchResult.getString(PayGateTerm.MERCHANT_CODE);
-		String order_id = searchResult.getString(PayGateTerm.ORDER_ID);
-		int payment_status = searchResult.getInt(PayGateTerm.PAYMENT_STATUS);
-		String version = searchResult.getString(PayGateTerm.VERSION);
-		String check_sum = searchResult.getString(PayGateTerm.CHECK_SUM);
-		String error_code = searchResult.getString(PayGateTerm.ERROR_CODE);
-		String vt_transaction_id = searchResult.getString(PayGateTerm.VT_TRANSACTION_ID);
-		mcReceiveResult(user, serviceContext, billcode, cust_msisdn, error_code, merchant_code, order_id,
-				payment_status, trans_amount, vt_transaction_id, check_sum);
-	}
-
+	@SuppressWarnings("rawtypes")
 	public JSONObject callPostAPI(String httpMethod, String accept, String urlPath, HashMap<String, String> properties,
 			Map<String, Object> params, String username, String password) {
 
@@ -265,7 +266,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String order_id, String check_sum) {
 		_log.info("=============call to doconfirm===================");
 		_log.info("=============call to doconfirm===================");
-		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_CONFIRM;
+		String mcUrl = PayGateTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_CONFIRM;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 
@@ -285,7 +286,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String vt_transaction_id, String check_sum) {
 		_log.info("=============call to rec===================");
 		_log.info("=============call to receiveResult===================" + billcode);
-		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_RECEIVER;
+		String mcUrl = PayGateTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_RECEIVER;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 
@@ -308,7 +309,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String cust_msisdn, long trans_amount) {
 		_log.info("=============call to search===================");
 
-		String mcUrl = VTPayTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_SEARCH;
+		String mcUrl = PayGateTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_SEARCH;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 
@@ -338,11 +339,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		try {
 
 			_log.info("=============mcDO confirm========");
-			_log.info("=============mcDO confir");
 			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-			_log.info(dossier);
+			_log.debug(dossier);
 
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -373,18 +373,19 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 			}
 
+
 			if (!conf_merchant_code.equals(merchant_code)) {
 				return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_01);
 			}
 
 			String invoiceNo = VTPayTerm.getInvoiceNoByBillCode(billcode);
-			if (!paymentFile.getInvoiceNo().equals(invoiceNo)) {
+			if (paymentFile.getInvoiceNo().indexOf(invoiceNo) < 0) {
 				return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
 						PayGateTerm.ERROR_CODE_01);
 			}
 
-			String _tmp_check_sum = access_code + paymentFile.getInvoiceNo() + merchant_code + order_id
-					+ paymentFile.getPaymentAmount();
+			String _tmp_check_sum = access_code + billcode + merchant_code +
+					order_id + paymentFile.getPaymentAmount();
 
 			try {
 				SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
@@ -503,7 +504,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			}
 
 			String invoiceNo = VTPayTerm.getInvoiceNoByBillCode(billcode);
-			if (!paymentFile.getInvoiceNo().equals(invoiceNo)) {
+			if (paymentFile.getInvoiceNo().indexOf(invoiceNo) < 0) {
 				return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_01);
 			}
 
@@ -565,7 +566,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			_log.info("searchResult===" + searchResult);
 			// auto update payment status and call next action
-			// invokeReceiveResult(user, serviceContext, searchResult, billcode, cust_msisdn, trans_amount);
+			// invokeReceiveResult(user, serviceContext, searchResult, billcode,
+			// cust_msisdn, trans_amount);
 			return searchResult;
 
 		} catch (Exception e) {
@@ -585,8 +587,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String dossierNo = VTPayTerm.getDossierNoByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
 			_log.info(groupId + "dossierId=====" + dossier);
-			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
-					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
+//			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
+//					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(),
 					dossier.getDossierId());
 
