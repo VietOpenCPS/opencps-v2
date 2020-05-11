@@ -3,11 +3,11 @@ package org.opencps.usermgt.service.persistence.impl;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.model.TrackClient;
 import org.opencps.usermgt.model.impl.TrackClientImpl;
-import org.opencps.usermgt.model.impl.TrackClientStatisticImpl;
 import org.opencps.usermgt.service.persistence.TrackClientFinder;
-import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
+
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 	@Override
 	public List<TrackClient> findPreviousPage(String sessionId)
 	{
-		Session session = null;
+		Session session ;
 		try
 		{
 			session = openSession();
@@ -32,7 +32,7 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 			queryPos.add(sessionId);
 			queryPos.add(sessionId);
 
-			return (List<org.opencps.usermgt.model.TrackClient>) QueryUtil.list(query,getDialect(),0,10000);
+			return (List<TrackClient>) QueryUtil.list(query,getDialect(),0,10000);
 		}
 		catch (Exception e)
 		{
@@ -43,11 +43,12 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 	}
 
 	@Override
-	public List getOnline()
+	public List<Object[]> getOnline()
 	{
-		Session session = null;
+		Session session ;
 		try
 		{
+			int reducedTime= ConfigConstants.OPENCPS_DEFAULT_TIME_ONLINE_REDUCED;
 			session = openSession();
 			String SQL = _customSQL
 				.get(getClass(),TrackClientFinder.class.getName() + ".getOnline");
@@ -56,6 +57,10 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 
 			query.addScalar("user",Type.INTEGER);
 			query.addScalar("guest", Type.INTEGER);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(reducedTime);
+			queryPos.add(reducedTime);
 
 			return (List<Object[]>) query.list();
 		}

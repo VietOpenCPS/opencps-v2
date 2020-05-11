@@ -1,14 +1,13 @@
 package org.opencps.usermgt.action.impl;
 
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import org.opencps.usermgt.action.AccessStatisticsActions;
 import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
-import org.opencps.usermgt.service.persistence.TrackClientStatisticUtil;
+
 
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 
 	public JSONObject getOnline()
 	{
-		List<Object[]> list = TrackClientLocalServiceUtil.getOnline();
+		List<Object[]> list = (List<Object[]>) TrackClientLocalServiceUtil.getOnline();
 		if (list.size()==1)
 		{
 				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -93,7 +92,6 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 				jsonObject.put("user" ,user );
 				jsonObject.put("guest", guest);
 
-				jsonObject.toString();
 				return jsonObject;
 		}
 		return null;

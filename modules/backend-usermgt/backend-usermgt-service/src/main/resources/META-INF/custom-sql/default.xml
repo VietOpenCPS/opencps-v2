@@ -127,7 +127,7 @@
               WHERE user.leaveDate = (SELECT MAX(leaveDate)
                                       FROM opencps_track_client
                                       WHERE userId = user.userId)) as o
-        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL -5 MINUTE )) user,
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) user,
        (SELECT count(*)
         FROM (SELECT *
               FROM (SELECT *
@@ -138,7 +138,7 @@
               WHERE guest.leaveDate = (SELECT MAX(leaveDate)
                                        FROM opencps_track_client
                                        WHERE sessionId = guest.sessionId)) as o
-        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL -5 MINUTE )) guest;
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) guest;
 		]]>
 	</sql>
 

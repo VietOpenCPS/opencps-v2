@@ -2,7 +2,6 @@ package org.opencps.usermgt.lifecycle;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.events.Action;
-import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -22,10 +21,10 @@ import org.osgi.service.component.annotations.Component;
 @Component(immediate = true, property = { "key=logout.events.pre" }, service = LifecycleAction.class)
 public class OpenCPSLogoutAction extends Action {
 	@Override
-	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
+	public void run(HttpServletRequest request, HttpServletResponse response)  {
 //        System.out.println("### Start Post Logout Action ######################");
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
-			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
+			long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
 
 			String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
 			try {
@@ -43,5 +42,5 @@ public class OpenCPSLogoutAction extends Action {
 //        System.out.println("### End Post Logout Action ######################");
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(OpenCPSLogoutAction.class);
+	private static final Log _log = LogFactoryUtil.getLog(OpenCPSLogoutAction.class);
 }

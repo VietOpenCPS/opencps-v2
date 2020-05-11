@@ -240,7 +240,7 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	}
 
 	@Override
-	public java.util.List getOnline() {
+	public java.util.List<Object[]> getOnline() {
 		return _trackClientLocalService.getOnline();
 	}
 

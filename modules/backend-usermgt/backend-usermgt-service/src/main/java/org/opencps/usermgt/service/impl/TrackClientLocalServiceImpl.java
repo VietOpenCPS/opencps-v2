@@ -149,7 +149,7 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		return trackClientPersistence.findByS_LVD(sessionId, visitDate, start, end);
 	}
 
-	public List getOnline()
+	public List<Object[]> getOnline()
 	{
 		return trackClientFinder.getOnline();
 	}

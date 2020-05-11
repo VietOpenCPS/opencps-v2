@@ -225,7 +225,7 @@ public class TrackClientLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static java.util.List getOnline() {
+	public static java.util.List<Object[]> getOnline() {
 		return getService().getOnline();
 	}
 

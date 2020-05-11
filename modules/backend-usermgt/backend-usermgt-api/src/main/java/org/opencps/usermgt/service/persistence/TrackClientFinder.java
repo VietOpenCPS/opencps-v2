@@ -25,5 +25,5 @@ public interface TrackClientFinder {
 	public java.util.List<org.opencps.usermgt.model.TrackClient> findPreviousPage(
 		String sessionId);
 
-	public java.util.List getOnline();
+	public java.util.List<Object[]> getOnline();
 }

@@ -2,7 +2,6 @@ package org.opencps.usermgt.lifecycle;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.events.Action;
-import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -16,11 +15,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
 import org.opencps.usermgt.action.util.HttpUtil;
 import org.opencps.usermgt.action.util.UserMgtConfigUtil;
 import org.opencps.usermgt.constants.CommonTerm;
@@ -37,8 +36,9 @@ import org.springframework.mobile.device.LiteDeviceResolver;
 
 @Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
 public class OpenCPSTraceAction extends Action {
+
 	@Override
-	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
+	public void run(HttpServletRequest request, HttpServletResponse response) {
         _log.info("### Start Post Trace Action ######################");
 		String completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
@@ -79,12 +79,10 @@ public class OpenCPSTraceAction extends Action {
 	        longitude = 
 	        		cityResponse.getLocation().getLongitude().toString();
 	        
-		} catch (IOException e) {
-			_log.debug(e);
-		} catch (GeoIp2Exception e) {
+		} catch (IOException | GeoIp2Exception e) {
 			_log.debug(e);
 		}
-        Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
@@ -110,15 +108,21 @@ public class OpenCPSTraceAction extends Action {
 
 					TrackClientLocalServiceUtil.updateTrackClient(previousPage);
 				}
+
+				c.setTime(now);
+				int timeIncrease = ConfigConstants.OPENCPS_DEFAULT_TIME_LEAVE_INCREMENT;
+				c.add(Calendar.SECOND , timeIncrease);
+				Date leaveDate = c.getTime();
+
 				TrackClientLocalServiceUtil
-					.updateTrackClient(0,sessionId,completeUrl,year,month,day,now,now,clientIP,StringPool.BLANK,cityName,
-						StringPool.BLANK,latitude,longitude,0,isDesktop,isMobile,isTablet);
+					.updateTrackClient(0,sessionId,completeUrl,year,month,day,now,leaveDate,clientIP,StringPool.BLANK,cityName,
+						StringPool.BLANK,latitude,longitude,5,isDesktop,isMobile,isTablet);
 				TrackClientStatisticLocalServiceUtil.updateStatisticTotal(completeUrl,year,month,day,cityName,isDesktop,isMobile,isTablet);
 			}
 		}
 		
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
-			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
+			long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
 
 			completeUrl = (String) request.getAttribute(CommonTerm.LOGIN_ACTION_CURRENT_COMPLETE_URL);
 
@@ -140,5 +144,5 @@ public class OpenCPSTraceAction extends Action {
         _log.info("### End Post Trace Action ######################");
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(OpenCPSTraceAction.class);
+	private static final Log _log = LogFactoryUtil.getLog(OpenCPSTraceAction.class);
 }
