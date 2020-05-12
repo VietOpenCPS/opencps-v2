@@ -98,7 +98,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,String startDay,String endDay)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		JSONObject jsonObject = ((AccessStatisticsActionsImpl) actions).getAccessStatisticsURLForPeriod();
+		JSONObject jsonObject = actions.getAccessStatisticsURLForPeriod();
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 
@@ -130,7 +130,16 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,AccessStatistics accessStatistics)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		JSONObject jsonObject = ((AccessStatisticsActionsImpl) actions).getAccessStatisticsURLForAllYear();
+		JSONObject jsonObject = actions.getAccessStatisticsURLForAllYear();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
+	}
+
+	@Override
+	public Response getOnline(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext)
+	{
+		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
+		JSONObject jsonObject = actions.getOnline();
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 }

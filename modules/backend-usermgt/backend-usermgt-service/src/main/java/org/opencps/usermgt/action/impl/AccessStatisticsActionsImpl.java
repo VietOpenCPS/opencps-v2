@@ -5,7 +5,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import org.opencps.usermgt.action.AccessStatisticsActions;
 import org.opencps.usermgt.model.TrackClientStatistic;
+import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
+
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,24 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 	public JSONObject getAccessStatisticsURLForPeriod()
 	{
 		return  TrackClientStatisticLocalServiceUtil.accessStatisticsURLForAllYear();
+	}
+
+
+	public JSONObject getOnline()
+	{
+		List<Object[]> list = (List<Object[]>) TrackClientLocalServiceUtil.getOnline();
+		if (list.size()==1)
+		{
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+				String user =list.get(0)[0].toString();
+				String guest = list.get(0)[1].toString();
+
+				jsonObject.put("user" ,user );
+				jsonObject.put("guest", guest);
+
+				return jsonObject;
+		}
+		return null;
 	}
 
 }

@@ -232,6 +232,11 @@ public class TrackClientStatisticLocalServiceWrapper
 		return _trackClientStatisticLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject getOnline() {
+		return _trackClientStatisticLocalService.getOnline();
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*

@@ -115,7 +115,15 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		}
 		
 		return trackClient;
-	}	
+	}
+
+	public TrackClient findPreviousPage(String sessionId)
+	{
+		List<TrackClient> trackClients = trackClientFinder.findPreviousPage(sessionId);
+		if (trackClients.isEmpty())
+			return null;
+		return trackClients.get(0);
+	}
 	
 	public List<TrackClient> findByS(String sessionId, int start, int end, OrderByComparator<TrackClient> orderBy) {
 		return trackClientPersistence.findByS(sessionId, start, end, orderBy);
@@ -139,5 +147,10 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 
 	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate, int start, int end) {
 		return trackClientPersistence.findByS_LVD(sessionId, visitDate, start, end);
+	}
+
+	public List<Object[]> getOnline()
+	{
+		return trackClientFinder.getOnline();
 	}
 }

@@ -216,6 +216,10 @@ public class TrackClientStatisticLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static com.liferay.portal.kernel.json.JSONObject getOnline() {
+		return getService().getOnline();
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*

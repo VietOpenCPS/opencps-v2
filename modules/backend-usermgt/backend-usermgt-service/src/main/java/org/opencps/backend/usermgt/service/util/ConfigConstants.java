@@ -255,5 +255,8 @@ public class ConfigConstants {
 	/** ApplicantListener */
 	public static final String APPLICANT_LISTENER_BASE_URL = "org.opencps.applicant.listener.base.url";
 	public static final String APPLICANT_LISTENER_ACTIVATION_LINK = "org.opencps.applicant.listener.activation.link";
+
+	public static final int	OPENCPS_DEFAULT_TIME_LEAVE_INCREMENT = 5;
+	public static final int OPENCPS_DEFAULT_TIME_ONLINE_REDUCED	= 5;
 	
 }
