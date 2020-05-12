@@ -101,4 +101,48 @@
 				AND o.tablet = ?
 		]]>
 	</sql>
+
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPreviousPage">
+		<![CDATA[
+			SELECT 	o.*
+			FROM 	`opencps_track_client` AS o
+			WHERE 	o.sessionId = ? AND
+					o.visitDate = (SELECT MAX(visitDate)
+            			FROM `opencps_track_client`
+            			WHERE sessionId = ? )
+		]]>
+	</sql>
+
+
+	<sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getOnline">
+		<![CDATA[
+		select
+		(SELECT count(*)
+        FROM (SELECT *
+              FROM (SELECT *
+                    FROM opencps_track_client
+                    WHERE sessionId IN (SELECT sessionId
+                                        FROM opencps_track_client
+                                        WHERE userId <> 0)) user
+              WHERE user.leaveDate = (SELECT MAX(leaveDate)
+                                      FROM opencps_track_client
+                                      WHERE userId = user.userId)) as o
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) user,
+       (SELECT count(*)
+        FROM (SELECT *
+              FROM (SELECT *
+                    FROM opencps_track_client
+                    WHERE sessionId NOT IN (SELECT sessionId
+                                            FROM opencps_track_client
+                                            WHERE userId <> 0)) guest
+              WHERE guest.leaveDate = (SELECT MAX(leaveDate)
+                                       FROM opencps_track_client
+                                       WHERE sessionId = guest.sessionId)) as o
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) guest;
+		]]>
+	</sql>
+
+
+
+
 </custom-sql>

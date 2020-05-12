@@ -193,6 +193,9 @@ public interface TrackClientStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public JSONObject getOnline();
+
 	/**
 	* Returns the OSGi service identifier.
 	*

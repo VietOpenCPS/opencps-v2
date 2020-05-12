@@ -4,10 +4,7 @@ package org.opencps.usermgt.service.persistence.impl;
 import java.util.List;
 
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.SQLQuery;
-import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.usermgt.model.impl.TrackClientStatisticImpl;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
@@ -185,6 +182,8 @@ public class TrackClientStatisticFinderImpl extends TrackClientStatisticFinderBa
 		}
 
 	}
+
+
 	@ServiceReference(type = CustomSQL.class)
 	private CustomSQL _customSQL;
 

@@ -54,7 +54,7 @@ public class TrackClientStatisticLocalServiceImpl
 			int day,
 			String region,
 			boolean desktop, boolean mobile, boolean tablet) {
-		TrackClientStatistic trackClientStatistic = null;
+		TrackClientStatistic trackClientStatistic;
 		Date now = new Date();
 		if (trackClientStatisticId == 0) {
 			trackClientStatisticId = counterLocalService.increment(TrackClientStatistic.class.getName());
@@ -103,15 +103,14 @@ public class TrackClientStatisticLocalServiceImpl
 			trackClientStatisticDay.setDesktop(desktop);
 			trackClientStatisticDay.setMobile(mobile);
 			trackClientStatisticDay.setTablet(tablet);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticDay);
+
 		}
 		else {
 			trackClientStatisticDay.setTotal(trackClientStatisticDay.getTotal() + 1);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticDay);
+
 		}
-		
+		trackClientStatisticPersistence.update(trackClientStatisticDay);
+
 		//By month
 		TrackClientStatistic trackClientStatisticMonth = trackClientStatisticPersistence.fetchByU_Y_M_D_D_M_T(url, year, month, 0, desktop, mobile, tablet);
 		if (trackClientStatisticMonth == null) {
@@ -126,15 +125,14 @@ public class TrackClientStatisticLocalServiceImpl
 			trackClientStatisticMonth.setDesktop(desktop);
 			trackClientStatisticMonth.setMobile(mobile);
 			trackClientStatisticMonth.setTablet(tablet);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticMonth);
+
 		}
 		else {
 			trackClientStatisticMonth.setTotal(trackClientStatisticMonth.getTotal() + 1);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticMonth);
+
 		}
-		
+		trackClientStatisticPersistence.update(trackClientStatisticMonth);
+
 		//By year
 		TrackClientStatistic trackClientStatisticYear = trackClientStatisticPersistence.fetchByU_Y_M_D_D_M_T(url, year, 0, 0, desktop, mobile, tablet);
 		if (trackClientStatisticYear == null) {
@@ -149,14 +147,13 @@ public class TrackClientStatisticLocalServiceImpl
 			trackClientStatisticYear.setDesktop(desktop);
 			trackClientStatisticYear.setMobile(mobile);
 			trackClientStatisticYear.setTablet(tablet);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticYear);
+
 		}
 		else {
 			trackClientStatisticYear.setTotal(trackClientStatisticYear.getTotal() + 1);
-			
-			trackClientStatisticPersistence.update(trackClientStatisticYear);
+
 		}
+		trackClientStatisticPersistence.update(trackClientStatisticYear);
 	}
 	public Map<String,Long> countAccess(int day,int month, int year)
 	{
@@ -229,9 +226,9 @@ public class TrackClientStatisticLocalServiceImpl
 		//Map<Integer,Long> map = new HashMap<>();
 		List<org.opencps.usermgt.model.TrackClientStatistic> l = trackClientStatisticFinder.findAllYear();
 		long count = 0 ;
-		for (int i = 0; i < l.size(); i++)
+		for (TrackClientStatistic trackClientStatistic : l)
 		{
-			count = count + l.get(i).getTotal();
+			count = count + trackClientStatistic.getTotal();
 			//sử dụng nếu muốn thống kê theo từng năm
 			//map.put(l.get(i).getYear(),l.get(i).getTotal());
 		}
@@ -240,8 +237,8 @@ public class TrackClientStatisticLocalServiceImpl
 
 	public List<TrackClientStatistic> accessStatisticsURL(int day,int month, int year)
 	{
-		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticPersistence.findByD_M_Y(day, month, year);
-		return trackClientStatistics;
+
+		return trackClientStatisticPersistence.findByD_M_Y(day, month, year);
 	}
 	public JSONObject accessStatisticsURLForAllYear()
 	{
@@ -252,10 +249,8 @@ public class TrackClientStatisticLocalServiceImpl
 			long count =0;
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLAllYear(trackClientStatistic.getUrl());
-			for (int i = 0; i < list.size(); i++)
-			{
-				count = count + list.get(i).getTotal();
-			}
+			for (TrackClientStatistic clientStatistic : list)
+				count = count + clientStatistic.getTotal();
 			jsonObject.put("value", count);
 			jsonObject.put("url",trackClientStatistic.getUrl());
 			jsonArray.put(jsonObject);
@@ -269,23 +264,38 @@ public class TrackClientStatisticLocalServiceImpl
 	public JSONObject accessStatisticsURLForPeriod(String startDay, String endDay)
 	{
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<TrackClientStatistic> trackClientStatistics = trackClientStatisticFinder.findURLPeriod(startDay,endDay);
 		for (TrackClientStatistic trackClientStatistic: trackClientStatistics )
 		{
 			long count =0;
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 			List<TrackClientStatistic> list = trackClientStatisticFinder.findAccessURLPeriod(startDay,endDay,trackClientStatistic.getUrl());
-			for (int i = 0; i < list.size(); i++)
+			for (TrackClientStatistic clientStatistic : list)
 			{
-				count = count + list.get(i).getTotal();
+				count = count + clientStatistic.getTotal();
 			}
 			jsonObject.put("value", count);
 			jsonObject.put("url",trackClientStatistic.getUrl());
 			jsonArray.put(jsonObject);
 
 		}
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+
 		result.put("accessStatisticsURL", jsonArray);
+		return result;
+	}
+
+	public JSONObject getOnline()
+	{
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+
+		List list = trackClientFinder.getOnline();
+		if (list.size() ==1)
+		{
+			result.put("online" ,list.get(0));
+		}
+
 		return result;
 	}
 }
