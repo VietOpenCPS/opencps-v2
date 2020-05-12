@@ -805,7 +805,7 @@ public class DueDateUtils {
 	public double getOverDueCalcToHours() {
 
 		double ms = (double) getOverDue();
-		double result = ms / (DAY_TO_HOURS * 60 * 1000);
+		double result = ms / (60 * 60 * 1000);
 		// lam tron den so thap phan thu 2
 		return (double) Math.round(result * 100) / 100;
 	}
