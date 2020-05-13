@@ -113,6 +113,8 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		
 		document.setSortableTextFields(new String[]{DictItemTerm.TREE_INDEX});
 		
+		document.addNumberSortable(DictItemTerm.ID_LGSP, dictItem.getIdLGSP());
+		
 		return document;
 	}
 

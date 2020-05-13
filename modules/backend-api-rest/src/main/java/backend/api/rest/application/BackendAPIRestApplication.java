@@ -178,6 +178,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new ApplicantDataManagementImpl());
 
 		singletons.add(new AccessStatisticsManagementImpl());
+		singletons.add(new LGSPIntegrationManagementImpl());
 		singletons.add(this);
 
 		// add service provider

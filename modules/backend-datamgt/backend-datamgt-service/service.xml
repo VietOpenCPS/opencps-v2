@@ -76,6 +76,7 @@
 		<column name="sibling" type="String" />
 		<column name="treeIndex" type="String" />
 		<column name="metaData" type="String" />
+		<column name="idLGSP" type="long" />
 
 		<!-- Order -->
 		<order by="asc">
@@ -132,6 +133,10 @@
             <finder-column name="modifiedDate" comparator="&gt;="></finder-column>
             <finder-column name="groupId"></finder-column>
         </finder>
+		<finder return-type="DictItem" name="ILGSP_DCI">
+			<finder-column name="idLGSP"/>
+			<finder-column name="dictCollectionId"/>
+		</finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"
