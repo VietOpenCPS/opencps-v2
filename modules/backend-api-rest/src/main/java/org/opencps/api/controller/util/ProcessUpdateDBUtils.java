@@ -1154,9 +1154,6 @@ public class ProcessUpdateDBUtils {
 					processName = option.getProcessName();
 					registerBookCode = option.getRegisterBookCode();
 					sampleCount = option.getSampleCount();
-					if ("MAU_1.001776.000.00.00.H30".contentEquals(templateNo)) {
-						_log.info("OPTION TEMPLATE FOUND: " + templateNo);
-					}
 					//
 					actionConfig.updateOptionDB(userId, groupId, optionCode, optionName, serviceConfigId, seqOrder,
 							autoSelect, instructionNote, submissionNote, templateNo, templateName, processNo, processName,
