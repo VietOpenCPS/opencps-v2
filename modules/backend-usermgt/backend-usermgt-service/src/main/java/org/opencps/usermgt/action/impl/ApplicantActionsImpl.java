@@ -194,7 +194,22 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		}
 
 	}
+	
+	@Override
+	public Applicant verifyApplicantEmail(ServiceContext context, long applicantId, String activationCode)
+			throws PortalException {
 
+		Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
+
+		if (Validator.isNotNull(applicant.getActivationCode())
+				&& applicant.getActivationCode().toLowerCase().contentEquals(activationCode.toLowerCase())) {
+			return ApplicantLocalServiceUtil.verifyApplicantEmail(applicantId, context);
+		} else {
+			return null;
+		}
+
+	}
+	
 	@Override
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
 		return ApplicantLocalServiceUtil.fetchByMappingID(userId);

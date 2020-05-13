@@ -576,7 +576,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
-
+	
 	@Override
 	public Response activateApplicant(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, String code) {
@@ -609,6 +609,53 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		try {
 
 			applicant = actions.activationApplicant(serviceContext, applicantId, code);
+
+//			results = ApplicantUtils.mappingToApplicantModel(applicant);
+			
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+
+			resultObj.put("email", applicant.getContactEmail());
+			resultObj.put("token", applicant.getTmpPass());
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(resultObj)).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response verifyApplicantEmail(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, long id, String code) {
+		ApplicantActions actions = new ApplicantActionsImpl();
+		//		ApplicantModel results = new ApplicantModel();
+
+		long applicantId = 0;
+
+		try {
+			ApplicantLocalServiceUtil.getApplicant(id);
+
+			applicantId = id;
+
+		} catch (Exception e) {
+			_log.debug(e);
+			try {
+				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+
+				if (Validator.isNotNull(applc)) {
+					applicantId = applc.getApplicantId();
+				}
+			} catch (Exception e2) {
+				// TODO: handle exception
+				_log.debug(e2);
+			}
+
+		}
+
+		Applicant applicant = null;
+		try {
+
+			applicant = actions.verifyApplicantEmail(serviceContext, applicantId, code);
 
 //			results = ApplicantUtils.mappingToApplicantModel(applicant);
 			

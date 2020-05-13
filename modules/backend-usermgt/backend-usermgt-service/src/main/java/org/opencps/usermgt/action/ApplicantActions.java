@@ -54,6 +54,9 @@ public interface ApplicantActions {
 	public Applicant activationApplicant(ServiceContext context, long applicantId, String activationCode)
 			throws PortalException;
 
+	public Applicant verifyApplicantEmail(ServiceContext context, long applicantId, String activationCode)
+			throws PortalException;
+
 	public Applicant lockApplicant(ServiceContext context, long applicantId) throws PortalException;
 
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException;

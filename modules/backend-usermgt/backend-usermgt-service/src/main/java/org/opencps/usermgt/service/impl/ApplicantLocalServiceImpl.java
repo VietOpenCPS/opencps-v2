@@ -669,6 +669,18 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		return applicant;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant verifyApplicantEmail(long applicantId, ServiceContext context) throws PortalException {
+
+		Applicant applicant = applicantLocalService.fetchApplicant(applicantId);
+
+		// verify activationCode
+		applicant.setActivationCode(ApplicantTerm.ACTIVATION_CODE_VERIFIED);
+		applicantPersistence.update(applicant);
+
+		return applicant;
+	}
+
 	@Indexable(type = IndexableType.DELETE)
 	public Applicant removeApplicant(long applicantId) throws PortalException, SystemException {
 
