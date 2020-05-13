@@ -192,18 +192,21 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 										stepDuedate, now, 1, groupId);
 									overType = MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_OVERDUETYPE);
 								}
-								if (dossier.getDurationUnit() == 0) {
-
-									result.setStepOverdue(
-										overType + StringPool.SPACE +
-											dueDateUtils.getOverDueCalcToString());
-								}
-								else {
-									String stepOverDue = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_STEPOVERDUE), overType, dueDateUtils.getOverDueCalcToHours());
-									
-									result.setStepOverdue(
-										stepOverDue);
-								}
+//								if (dossier.getDurationUnit() == 0) {
+//
+//									result.setStepOverdue(
+//										overType + StringPool.SPACE +
+//											dueDateUtils.getOverDueCalcToString());
+//								}
+//								else {
+//									String stepOverDue = String.format(MessageUtil.getMessage(ConstantUtils.DOSSIERACTION_STEPOVERDUE), overType, dueDateUtils.getOverDueCalcToHours());
+//									
+//									result.setStepOverdue(
+//										stepOverDue);
+//								}
+								result.setStepOverdue(
+									overType + StringPool.SPACE +
+									dueDateUtils.getOverDueCalcToString());
 							}
 							_log.debug(
 								stepDuedate +
