@@ -312,8 +312,7 @@ public class CPSDossierBusinessLocalServiceImpl
 				}
 			}
 			
-//			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
-			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, serviceCode, govAgencyCode);
+			ServiceConfig serviceConfig = serviceConfigLocalService.getBySICodeAndGAC(groupId, dossier.getServiceCode(), govAgencyCode);
 			if (serviceConfig != null) {
 				List<ProcessOption> lstOptions = processOptionLocalService.getByServiceProcessId(serviceConfig.getServiceConfigId());
 				//
@@ -350,8 +349,7 @@ public class CPSDossierBusinessLocalServiceImpl
 					crossDossierObj.put(DossierTerm.SERVICE_CODE, serviceCode);
 					payloadObj.put(DossierTerm.CROSS_DOSSIER, crossDossierObj);
 					
-//					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
-					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), serviceCode, govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
+					Dossier oldHslt = DossierLocalServiceUtil.getByG_AN_SC_GAC_DTNO_ODID(groupId, dossier.getApplicantIdNo(), dossier.getServiceCode(), govAgencyCode, dossierTemplate.getTemplateNo(), dossier.getDossierId());
 					Dossier hsltDossier = null;
 					
 					if (oldHslt != null) {
@@ -361,26 +359,16 @@ public class CPSDossierBusinessLocalServiceImpl
 						hsltDossier = oldHslt;
 					}
 					if (hsltDossier == null) {
-//						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
-//							dossier.getCounter(), dossier.getServiceCode(),
-//							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
-//							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
-//							dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
-//							dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
-//							dossier.getContactTelNo(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
-//							dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
-//							dossier.getPostalCityName(), dossier.getPostalTelNo(), 
-//							dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 						hsltDossier = dossierLocalService.initDossier(groupId, 0l, UUID.randomUUID().toString(), 
-								dossier.getCounter(), serviceCode,
-								dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
-								dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
-								dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
-								dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
-								dossier.getContactTelNo(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
-								dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
-								dossier.getPostalCityName(), dossier.getPostalTelNo(), 
-								dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
+							dossier.getCounter(), dossier.getServiceCode(),
+							dossier.getServiceName(), govAgencyCode, govAgencyName, dossier.getApplicantName(), 
+							dossier.getApplicantIdType(), dossier.getApplicantIdNo(), dossier.getApplicantIdDate(),
+							dossier.getAddress(), dossier.getCityCode(), dossier.getCityName(), dossier.getDistrictCode(), 
+							dossier.getDistrictName(), dossier.getWardCode(), dossier.getWardName(), dossier.getContactName(),
+							dossier.getContactTelNo(), dossier.getContactEmail(), dossierTemplate.getTemplateNo(), 
+							dossier.getPassword(), dossier.getViaPostal(), dossier.getPostalAddress(), dossier.getPostalCityCode(),
+							dossier.getPostalCityName(), dossier.getPostalTelNo(), 
+							dossier.getOnline(), dossier.getNotification(), dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 					}
 					WorkingUnit wu = WorkingUnitLocalServiceUtil.fetchByF_govAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
 

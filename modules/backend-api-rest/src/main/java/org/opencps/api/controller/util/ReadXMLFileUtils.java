@@ -280,7 +280,7 @@ public class ReadXMLFileUtils {
 			if (Validator.isNotNull(subFolder)) {
 				switch (subFolder) {
 				case ConstantUtils.SOURCE_DICTS:
-					strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
+					//strFile = processListFileDict(fileEntry, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_SERVICES:
 					strFile = processListFileService(fileEntry, folderParentPath, groupId, userId, serviceContext);
@@ -289,7 +289,7 @@ public class ReadXMLFileUtils {
 					strFile =processListFileTemplate(fileEntry, folderParentPath, groupId, userId, serviceContext);
 					break;
 				case ConstantUtils.SOURCE_PROCESSES:
-					strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
+					//strFile = processListFileProcess(fileEntry, groupId, userId, serviceContext);
 					break;
 				default:
 					break;
