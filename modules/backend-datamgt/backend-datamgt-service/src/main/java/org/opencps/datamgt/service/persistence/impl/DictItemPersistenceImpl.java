@@ -6265,6 +6265,235 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 	private static final String _FINDER_COLUMN_F_DICTITEMNEWERTHAN_MODIFIEDDATE_2 =
 		"dictItem.modifiedDate >= ? AND ";
 	private static final String _FINDER_COLUMN_F_DICTITEMNEWERTHAN_GROUPID_2 = "dictItem.groupId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_ILGSP_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, DictItemImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByILGSP_DCI",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			DictItemModelImpl.IDLGSP_COLUMN_BITMASK |
+			DictItemModelImpl.DICTCOLLECTIONID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_ILGSP_DCI = new FinderPath(DictItemModelImpl.ENTITY_CACHE_ENABLED,
+			DictItemModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByILGSP_DCI",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or throws a {@link NoSuchDictItemException} if it could not be found.
+	 *
+	 * @param idLGSP the id lgsp
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item
+	 * @throws NoSuchDictItemException if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem findByILGSP_DCI(long idLGSP, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = fetchByILGSP_DCI(idLGSP, dictCollectionId);
+
+		if (dictItem == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("idLGSP=");
+			msg.append(idLGSP);
+
+			msg.append(", dictCollectionId=");
+			msg.append(dictCollectionId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDictItemException(msg.toString());
+		}
+
+		return dictItem;
+	}
+
+	/**
+	 * Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param idLGSP the id lgsp
+	 * @param dictCollectionId the dict collection ID
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByILGSP_DCI(long idLGSP, long dictCollectionId) {
+		return fetchByILGSP_DCI(idLGSP, dictCollectionId, true);
+	}
+
+	/**
+	 * Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param idLGSP the id lgsp
+	 * @param dictCollectionId the dict collection ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	 */
+	@Override
+	public DictItem fetchByILGSP_DCI(long idLGSP, long dictCollectionId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { idLGSP, dictCollectionId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_ILGSP_DCI,
+					finderArgs, this);
+		}
+
+		if (result instanceof DictItem) {
+			DictItem dictItem = (DictItem)result;
+
+			if ((idLGSP != dictItem.getIdLGSP()) ||
+					(dictCollectionId != dictItem.getDictCollectionId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_ILGSP_DCI_IDLGSP_2);
+
+			query.append(_FINDER_COLUMN_ILGSP_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(idLGSP);
+
+				qPos.add(dictCollectionId);
+
+				List<DictItem> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_ILGSP_DCI,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DictItemPersistenceImpl.fetchByILGSP_DCI(long, long, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					DictItem dictItem = list.get(0);
+
+					result = dictItem;
+
+					cacheResult(dictItem);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_ILGSP_DCI,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (DictItem)result;
+		}
+	}
+
+	/**
+	 * Removes the dict item where idLGSP = &#63; and dictCollectionId = &#63; from the database.
+	 *
+	 * @param idLGSP the id lgsp
+	 * @param dictCollectionId the dict collection ID
+	 * @return the dict item that was removed
+	 */
+	@Override
+	public DictItem removeByILGSP_DCI(long idLGSP, long dictCollectionId)
+		throws NoSuchDictItemException {
+		DictItem dictItem = findByILGSP_DCI(idLGSP, dictCollectionId);
+
+		return remove(dictItem);
+	}
+
+	/**
+	 * Returns the number of dict items where idLGSP = &#63; and dictCollectionId = &#63;.
+	 *
+	 * @param idLGSP the id lgsp
+	 * @param dictCollectionId the dict collection ID
+	 * @return the number of matching dict items
+	 */
+	@Override
+	public int countByILGSP_DCI(long idLGSP, long dictCollectionId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_ILGSP_DCI;
+
+		Object[] finderArgs = new Object[] { idLGSP, dictCollectionId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_DICTITEM_WHERE);
+
+			query.append(_FINDER_COLUMN_ILGSP_DCI_IDLGSP_2);
+
+			query.append(_FINDER_COLUMN_ILGSP_DCI_DICTCOLLECTIONID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(idLGSP);
+
+				qPos.add(dictCollectionId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_ILGSP_DCI_IDLGSP_2 = "dictItem.idLGSP = ? AND ";
+	private static final String _FINDER_COLUMN_ILGSP_DCI_DICTCOLLECTIONID_2 = "dictItem.dictCollectionId = ?";
 
 	public DictItemPersistenceImpl() {
 		setModelClass(DictItem.class);
@@ -6313,6 +6542,10 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI,
 			new Object[] { dictItem.getItemCode(), dictItem.getDictCollectionId() },
+			dictItem);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_ILGSP_DCI,
+			new Object[] { dictItem.getIdLGSP(), dictItem.getDictCollectionId() },
 			dictItem);
 
 		dictItem.resetOriginalValues();
@@ -6422,6 +6655,16 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_IC_DCI, args,
 			dictItemModelImpl, false);
+
+		args = new Object[] {
+				dictItemModelImpl.getIdLGSP(),
+				dictItemModelImpl.getDictCollectionId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_ILGSP_DCI, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_ILGSP_DCI, args,
+			dictItemModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
@@ -6513,6 +6756,27 @@ public class DictItemPersistenceImpl extends BasePersistenceImpl<DictItem>
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_IC_DCI, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_IC_DCI, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getIdLGSP(),
+					dictItemModelImpl.getDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_ILGSP_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_ILGSP_DCI, args);
+		}
+
+		if ((dictItemModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_ILGSP_DCI.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dictItemModelImpl.getOriginalIdLGSP(),
+					dictItemModelImpl.getOriginalDictCollectionId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_ILGSP_DCI, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_ILGSP_DCI, args);
 		}
 	}
 

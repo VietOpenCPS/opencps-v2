@@ -64,7 +64,7 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -102,6 +102,8 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 		sb.append(treeIndex);
 		sb.append(", metaData=");
 		sb.append(metaData);
+		sb.append(", idLGSP=");
+		sb.append(idLGSP);
 		sb.append("}");
 
 		return sb.toString();
@@ -198,6 +200,8 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 			dictItemImpl.setMetaData(metaData);
 		}
 
+		dictItemImpl.setIdLGSP(idLGSP);
+
 		dictItemImpl.resetOriginalValues();
 
 		return dictItemImpl;
@@ -230,6 +234,8 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 		sibling = objectInput.readUTF();
 		treeIndex = objectInput.readUTF();
 		metaData = objectInput.readUTF();
+
+		idLGSP = objectInput.readLong();
 	}
 
 	@Override
@@ -314,6 +320,8 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 		else {
 			objectOutput.writeUTF(metaData);
 		}
+
+		objectOutput.writeLong(idLGSP);
 	}
 
 	public String uuid;
@@ -334,4 +342,5 @@ public class DictItemCacheModel implements CacheModel<DictItem>, Externalizable 
 	public String sibling;
 	public String treeIndex;
 	public String metaData;
+	public long idLGSP;
 }

@@ -137,6 +137,11 @@ public class DueDateUtils {
 
 			try {
 
+				if (startDate.getTime() > toDate.getTime()) {
+					Date term = startDate;
+					startDate = toDate;
+					toDate = term;
+				}
 				// 1st set workTimes & set holidays
 				this._setWorkTimes();
 				this._setHolidays(startDate);
