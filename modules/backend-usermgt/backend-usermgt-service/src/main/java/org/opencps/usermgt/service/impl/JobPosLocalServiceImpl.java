@@ -473,8 +473,11 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 				}
 			}
 			else {
-				role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
-						role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);				
+				role = RoleLocalServiceUtil.fetchRole(serviceContext.getCompanyId(), role_name);
+				if (role == null) {
+					role = RoleLocalServiceUtil.addRole(userId, Role.class.getName(), counterLocalService.increment(),
+							role_name, titleMap, null, RoleConstants.TYPE_SITE, StringPool.BLANK, serviceContext);									
+				}
 			}
 			jobPos.setMappingRoleId(role != null ? role.getRoleId() : 0);
 		} else {
