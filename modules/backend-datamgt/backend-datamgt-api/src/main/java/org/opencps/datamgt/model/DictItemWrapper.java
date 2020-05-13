@@ -77,6 +77,7 @@ public class DictItemWrapper implements DictItem, ModelWrapper<DictItem> {
 		attributes.put("sibling", getSibling());
 		attributes.put("treeIndex", getTreeIndex());
 		attributes.put("metaData", getMetaData());
+		attributes.put("idLGSP", getIdLGSP());
 
 		return attributes;
 	}
@@ -190,6 +191,12 @@ public class DictItemWrapper implements DictItem, ModelWrapper<DictItem> {
 		if (metaData != null) {
 			setMetaData(metaData);
 		}
+
+		Long idLGSP = (Long)attributes.get("idLGSP");
+
+		if (idLGSP != null) {
+			setIdLGSP(idLGSP);
+		}
 	}
 
 	@Override
@@ -255,6 +262,16 @@ public class DictItemWrapper implements DictItem, ModelWrapper<DictItem> {
 	@Override
 	public long getGroupId() {
 		return _dictItem.getGroupId();
+	}
+
+	/**
+	* Returns the id lgsp of this dict item.
+	*
+	* @return the id lgsp of this dict item
+	*/
+	@Override
+	public long getIdLGSP() {
+		return _dictItem.getIdLGSP();
 	}
 
 	/**
@@ -506,6 +523,16 @@ public class DictItemWrapper implements DictItem, ModelWrapper<DictItem> {
 	@Override
 	public void setGroupId(long groupId) {
 		_dictItem.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the id lgsp of this dict item.
+	*
+	* @param idLGSP the id lgsp of this dict item
+	*/
+	@Override
+	public void setIdLGSP(long idLGSP) {
+		_dictItem.setIdLGSP(idLGSP);
 	}
 
 	/**

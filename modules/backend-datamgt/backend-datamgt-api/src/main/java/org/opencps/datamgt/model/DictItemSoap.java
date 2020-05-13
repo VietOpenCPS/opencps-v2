@@ -51,6 +51,7 @@ public class DictItemSoap implements Serializable {
 		soapModel.setSibling(model.getSibling());
 		soapModel.setTreeIndex(model.getTreeIndex());
 		soapModel.setMetaData(model.getMetaData());
+		soapModel.setIdLGSP(model.getIdLGSP());
 
 		return soapModel;
 	}
@@ -247,6 +248,14 @@ public class DictItemSoap implements Serializable {
 		_metaData = metaData;
 	}
 
+	public long getIdLGSP() {
+		return _idLGSP;
+	}
+
+	public void setIdLGSP(long idLGSP) {
+		_idLGSP = idLGSP;
+	}
+
 	private String _uuid;
 	private long _dictItemId;
 	private long _companyId;
@@ -265,4 +274,5 @@ public class DictItemSoap implements Serializable {
 	private String _sibling;
 	private String _treeIndex;
 	private String _metaData;
+	private long _idLGSP;
 }

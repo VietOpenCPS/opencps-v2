@@ -71,6 +71,8 @@ public class DictItemTerm {
 	
 	public static final String IS_GLOBAL = "isGlobal";
 	
+	public static final String ID_LGSP = "idLGSP";
+	
 	//sortable
 	public static final String DICT_ITEM_ID_SORTABLE = "dictItemId_sortable";
 	
@@ -114,6 +116,8 @@ public class DictItemTerm {
 	
 	public static final String META_DATA_SORTABLE = "metaData_sortable";
 
+	public static final String ID_LGSP_SORTABLE = "idLGSP_sortable";
+
 	public static final String KEYWORDS = "keywords";
 	public static final String PARAMS = "params";
 	public static final String ITEM_LV = "itemLv";
@@ -143,6 +147,7 @@ public class DictItemTerm {
 	private String treeIndex;
 	private int level;
 	private String metaData;
+	private long idLGSP;
 	
 	public long getDictItemId() {
 		return dictItemId;
