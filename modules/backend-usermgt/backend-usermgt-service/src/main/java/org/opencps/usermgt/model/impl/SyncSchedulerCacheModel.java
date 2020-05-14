@@ -65,7 +65,7 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -75,12 +75,16 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", groupId=");
+		sb.append(groupId);
 		sb.append(", className=");
 		sb.append(className);
 		sb.append(", typeCode=");
 		sb.append(typeCode);
 		sb.append(", syncDate=");
 		sb.append(syncDate);
+		sb.append(", retry=");
+		sb.append(retry);
 		sb.append("}");
 
 		return sb.toString();
@@ -113,6 +117,8 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 			syncSchedulerImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		syncSchedulerImpl.setGroupId(groupId);
+
 		if (className == null) {
 			syncSchedulerImpl.setClassName("");
 		}
@@ -134,6 +140,8 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 			syncSchedulerImpl.setSyncDate(new Date(syncDate));
 		}
 
+		syncSchedulerImpl.setRetry(retry);
+
 		syncSchedulerImpl.resetOriginalValues();
 
 		return syncSchedulerImpl;
@@ -146,9 +154,13 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 		syncSchedulerId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
+		groupId = objectInput.readLong();
 		className = objectInput.readUTF();
 		typeCode = objectInput.readUTF();
 		syncDate = objectInput.readLong();
+
+		retry = objectInput.readInt();
 	}
 
 	@Override
@@ -165,6 +177,8 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		objectOutput.writeLong(groupId);
+
 		if (className == null) {
 			objectOutput.writeUTF("");
 		}
@@ -180,13 +194,17 @@ public class SyncSchedulerCacheModel implements CacheModel<SyncScheduler>,
 		}
 
 		objectOutput.writeLong(syncDate);
+
+		objectOutput.writeInt(retry);
 	}
 
 	public String uuid;
 	public long syncSchedulerId;
 	public long createDate;
 	public long modifiedDate;
+	public long groupId;
 	public String className;
 	public String typeCode;
 	public long syncDate;
+	public int retry;
 }

@@ -622,7 +622,7 @@ create table opencps_menurole (
 
 create table opencps_newsboard (
 	uuid_ VARCHAR(75) null,
-	newBoardId LONG not null primary key,
+	newsBoardId LONG not null primary key,
 	groupId LONG,
 	companyId LONG,
 	userId LONG,

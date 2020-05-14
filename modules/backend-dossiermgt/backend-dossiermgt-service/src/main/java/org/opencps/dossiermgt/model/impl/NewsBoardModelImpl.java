@@ -70,7 +70,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 	public static final String TABLE_NAME = "opencps_newsboard";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
-			{ "newBoardId", Types.BIGINT },
+			{ "newsBoardId", Types.BIGINT },
 			{ "groupId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
@@ -85,7 +85,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("newBoardId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("newsBoardId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -97,7 +97,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 		TABLE_COLUMNS_MAP.put("newsStatus", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_newsboard (uuid_ VARCHAR(75) null,newBoardId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,newsTitle VARCHAR(75) null,newsContent VARCHAR(75) null,newsStatus INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_newsboard (uuid_ VARCHAR(75) null,newsBoardId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,newsTitle VARCHAR(75) null,newsContent VARCHAR(75) null,newsStatus INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_newsboard";
 	public static final String ORDER_BY_JPQL = " ORDER BY newsBoard.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_newsboard.createDate DESC";
@@ -125,17 +125,17 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 
 	@Override
 	public long getPrimaryKey() {
-		return _newBoardId;
+		return _newsBoardId;
 	}
 
 	@Override
 	public void setPrimaryKey(long primaryKey) {
-		setNewBoardId(primaryKey);
+		setNewsBoardId(primaryKey);
 	}
 
 	@Override
 	public Serializable getPrimaryKeyObj() {
-		return _newBoardId;
+		return _newsBoardId;
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
-		attributes.put("newBoardId", getNewBoardId());
+		attributes.put("newsBoardId", getNewsBoardId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -183,10 +183,10 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 			setUuid(uuid);
 		}
 
-		Long newBoardId = (Long)attributes.get("newBoardId");
+		Long newsBoardId = (Long)attributes.get("newsBoardId");
 
-		if (newBoardId != null) {
-			setNewBoardId(newBoardId);
+		if (newsBoardId != null) {
+			setNewsBoardId(newsBoardId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -268,13 +268,13 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 	}
 
 	@Override
-	public long getNewBoardId() {
-		return _newBoardId;
+	public long getNewsBoardId() {
+		return _newsBoardId;
 	}
 
 	@Override
-	public void setNewBoardId(long newBoardId) {
-		_newBoardId = newBoardId;
+	public void setNewsBoardId(long newsBoardId) {
+		_newsBoardId = newsBoardId;
 	}
 
 	@Override
@@ -468,7 +468,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 		NewsBoardImpl newsBoardImpl = new NewsBoardImpl();
 
 		newsBoardImpl.setUuid(getUuid());
-		newsBoardImpl.setNewBoardId(getNewBoardId());
+		newsBoardImpl.setNewsBoardId(getNewsBoardId());
 		newsBoardImpl.setGroupId(getGroupId());
 		newsBoardImpl.setCompanyId(getCompanyId());
 		newsBoardImpl.setUserId(getUserId());
@@ -567,7 +567,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 			newsBoardCacheModel.uuid = null;
 		}
 
-		newsBoardCacheModel.newBoardId = getNewBoardId();
+		newsBoardCacheModel.newsBoardId = getNewsBoardId();
 
 		newsBoardCacheModel.groupId = getGroupId();
 
@@ -628,8 +628,8 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
-		sb.append(", newBoardId=");
-		sb.append(getNewBoardId());
+		sb.append(", newsBoardId=");
+		sb.append(getNewsBoardId());
 		sb.append(", groupId=");
 		sb.append(getGroupId());
 		sb.append(", companyId=");
@@ -666,8 +666,8 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 		sb.append(getUuid());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>newBoardId</column-name><column-value><![CDATA[");
-		sb.append(getNewBoardId());
+			"<column><column-name>newsBoardId</column-name><column-value><![CDATA[");
+		sb.append(getNewsBoardId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>groupId</column-name><column-value><![CDATA[");
@@ -717,7 +717,7 @@ public class NewsBoardModelImpl extends BaseModelImpl<NewsBoard>
 		};
 	private String _uuid;
 	private String _originalUuid;
-	private long _newBoardId;
+	private long _newsBoardId;
 	private long _groupId;
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;

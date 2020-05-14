@@ -254,7 +254,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			// Add audit field
 			applicant.setCreateDate(now);
-			applicant.setModifiedDate(now);
+			applicant.setModifiedDate(new Date());
 			applicant.setCompanyId(context.getCompanyId());
 			applicant.setUserId(context.getUserId());
 			applicant.setUserName(auditUser.getFullName());
@@ -435,7 +435,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			// Add audit field
 			applicant.setCreateDate(now);
-			applicant.setModifiedDate(now);
+			applicant.setModifiedDate(new Date());
 			applicant.setCompanyId(context.getCompanyId());
 			applicant.setUserId(context.getUserId());
 			applicant.setUserName(auditUser.getFullName());
@@ -1602,7 +1602,10 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		return applicant;
 	}
-	
+
+	public Applicant fetchByF_GID_CTEM(long groupId, String email) {
+		return applicantPersistence.fetchByF_GID_CTEM(groupId, email);
+	}
 	// private Log _log =
 	// LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 

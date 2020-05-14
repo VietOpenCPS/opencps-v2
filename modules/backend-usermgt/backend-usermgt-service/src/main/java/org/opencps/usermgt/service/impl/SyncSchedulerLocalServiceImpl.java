@@ -14,7 +14,11 @@
 
 package org.opencps.usermgt.service.impl;
 
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.usermgt.model.SyncScheduler;
 import org.opencps.usermgt.service.base.SyncSchedulerLocalServiceBaseImpl;
@@ -47,6 +51,50 @@ public class SyncSchedulerLocalServiceImpl
 
 	public SyncScheduler getByClassNameAndTypeCode(String className, String typeCode) {
 		return syncSchedulerPersistence.fetchByGID_NAME_TYPE(className, typeCode);
+	}
+
+	public List<SyncScheduler> getByF_NAME_RETRY(String className, int retry) {
+		return syncSchedulerPersistence.findByF_NAME_RETRY(className, retry);
+	}
+
+	public SyncScheduler updateSyncScheduler(long syncSchedulerId, long groupId, String className, String typeCode,
+			Date syncDate, int retry, ServiceContext serviceContext) {
+
+		Date now = new Date();
+
+		if (syncSchedulerId > 0) {
+			SyncScheduler syncScheduler = syncSchedulerPersistence.fetchByPrimaryKey(syncSchedulerId);
+
+			syncScheduler.setModifiedDate(now);
+
+			if (Validator.isNotNull(className))
+				syncScheduler.setClassName(className);
+			if (Validator.isNotNull(typeCode))
+				syncScheduler.setTypeCode(typeCode);
+			if (Validator.isNotNull(syncDate)) {
+				syncScheduler.setSyncDate(syncDate);
+			} else {
+				syncScheduler.setSyncDate(now);
+			}
+
+			syncScheduler.setRetry(retry);
+			//
+			return syncSchedulerPersistence.update(syncScheduler);
+		} else {
+			syncSchedulerId = counterLocalService.increment(SyncScheduler.class.getName());
+			SyncScheduler syncScheduler = syncSchedulerPersistence.create(syncSchedulerId);
+			//
+			syncScheduler.setCreateDate(now);
+			syncScheduler.setModifiedDate(now);
+			syncScheduler.setGroupId(groupId);
+			//
+			syncScheduler.setClassName(className);
+			syncScheduler.setTypeCode(typeCode);
+			syncScheduler.setSyncDate(syncDate);
+			syncScheduler.setRetry(retry);
+
+			return syncSchedulerPersistence.update(syncScheduler);
+		}
 	}
 
 }

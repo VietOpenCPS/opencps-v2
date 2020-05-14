@@ -221,6 +221,9 @@ public interface ApplicantLocalService extends BaseLocalService,
 	public Applicant fetchByF_APLC_GID(long groupId, String applicantIdNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Applicant fetchByF_GID_CTEM(long groupId, String email);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Applicant fetchByF_GID_MCN_MCPK(long groupId,
 		String mappingClassName, String mappingClassPK);
 
