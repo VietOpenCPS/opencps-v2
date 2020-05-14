@@ -357,6 +357,20 @@ public interface DictItemModel extends BaseModel<DictItem>, GroupedModel,
 	 */
 	public void setMetaData(String metaData);
 
+	/**
+	 * Returns the id lgsp of this dict item.
+	 *
+	 * @return the id lgsp of this dict item
+	 */
+	public long getIdLGSP();
+
+	/**
+	 * Sets the id lgsp of this dict item.
+	 *
+	 * @param idLGSP the id lgsp of this dict item
+	 */
+	public void setIdLGSP(long idLGSP);
+
 	@Override
 	public boolean isNew();
 

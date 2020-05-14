@@ -89,6 +89,7 @@
 		<field name="metaData" type="String">
 			<hint name="max-length">65535</hint>
 		</field>
+		<field name="idLGSP" type="long" />
 	</model>
 	<model name="org.opencps.datamgt.model.DictItemGroup">
 		<field name="uuid" type="String" />
