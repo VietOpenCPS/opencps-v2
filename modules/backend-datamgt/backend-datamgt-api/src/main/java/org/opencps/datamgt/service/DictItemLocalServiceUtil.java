@@ -277,6 +277,11 @@ public class DictItemLocalServiceUtil {
 			parentItemId);
 	}
 
+	public static java.util.List<org.opencps.datamgt.model.DictItem> findByF_IDS(
+		long[] ids) {
+		return getService().findByF_IDS(ids);
+	}
+
 	/**
 	* @param parentItemId
 	* @return

@@ -130,15 +130,16 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 			true);
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DICTCOLLECTIONID_COLUMN_BITMASK = 2L;
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long IDLGSP_COLUMN_BITMASK = 8L;
-	public static final long ITEMCODE_COLUMN_BITMASK = 16L;
-	public static final long LEVEL_COLUMN_BITMASK = 32L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
-	public static final long PARENTITEMID_COLUMN_BITMASK = 128L;
-	public static final long TREEINDEX_COLUMN_BITMASK = 256L;
-	public static final long UUID_COLUMN_BITMASK = 512L;
-	public static final long SIBLING_COLUMN_BITMASK = 1024L;
+	public static final long DICTITEMID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long IDLGSP_COLUMN_BITMASK = 16L;
+	public static final long ITEMCODE_COLUMN_BITMASK = 32L;
+	public static final long LEVEL_COLUMN_BITMASK = 64L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 128L;
+	public static final long PARENTITEMID_COLUMN_BITMASK = 256L;
+	public static final long TREEINDEX_COLUMN_BITMASK = 512L;
+	public static final long UUID_COLUMN_BITMASK = 1024L;
+	public static final long SIBLING_COLUMN_BITMASK = 2048L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.datamgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.datamgt.model.DictItem"));
 
@@ -352,7 +353,19 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 
 	@Override
 	public void setDictItemId(long dictItemId) {
+		_columnBitmask |= DICTITEMID_COLUMN_BITMASK;
+
+		if (!_setOriginalDictItemId) {
+			_setOriginalDictItemId = true;
+
+			_originalDictItemId = _dictItemId;
+		}
+
 		_dictItemId = dictItemId;
+	}
+
+	public long getOriginalDictItemId() {
+		return _originalDictItemId;
 	}
 
 	@Override
@@ -809,6 +822,10 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 
 		dictItemModelImpl._originalUuid = dictItemModelImpl._uuid;
 
+		dictItemModelImpl._originalDictItemId = dictItemModelImpl._dictItemId;
+
+		dictItemModelImpl._setOriginalDictItemId = false;
+
 		dictItemModelImpl._originalCompanyId = dictItemModelImpl._companyId;
 
 		dictItemModelImpl._setOriginalCompanyId = false;
@@ -1101,6 +1118,8 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 	private String _uuid;
 	private String _originalUuid;
 	private long _dictItemId;
+	private long _originalDictItemId;
+	private boolean _setOriginalDictItemId;
 	private long _companyId;
 	private long _originalCompanyId;
 	private boolean _setOriginalCompanyId;
