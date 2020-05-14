@@ -26,4 +26,6 @@ public interface AccessStatisticsActions
 	JSONObject getAccessStatisticsURLForPeriod();
 
 	JSONObject getOnline();
+
+	JSONObject getUserAccessStatistics(long userId,String sessionId );
 }
