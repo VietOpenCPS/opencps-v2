@@ -1209,8 +1209,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 				}
 			}
 		}
-		_log.info("object==============================================" + object);
-		_log.info("objectData==============================================" + objectData);
+		_log.debug("object" + object);
+		_log.debug("objectData" + objectData);
 		return employeePersistence.update(object);
 
 	}
