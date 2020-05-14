@@ -41,6 +41,7 @@ create index IX_B6CA9215 on opencps_employee_jobpos (workingUnitId);
 
 create index IX_8ADED1C3 on opencps_fileitem (fileTemplateNo[$COLUMN_LENGTH:128$]);
 create index IX_A082263D on opencps_fileitem (groupId, fileTemplateNo[$COLUMN_LENGTH:128$]);
+create index IX_9F5B50F8 on opencps_fileitem (groupId, status);
 create index IX_E9DD878C on opencps_fileitem (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_37FA810E on opencps_fileitem (uuid_[$COLUMN_LENGTH:75$], groupId);
 

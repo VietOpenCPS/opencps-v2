@@ -68,6 +68,7 @@ import org.opencps.dossiermgt.action.impl.DossierTemplateActionsImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.impl.DossierStatisticImpl;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.usermgt.model.impl.FileItemImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
@@ -179,6 +180,9 @@ public class BackendAPIRestApplication extends Application {
 
 		singletons.add(new AccessStatisticsManagementImpl());
 		singletons.add(new LGSPIntegrationManagementImpl());
+		
+		singletons.add(new FileItemImpl());
+		
 		singletons.add(this);
 
 		// add service provider
