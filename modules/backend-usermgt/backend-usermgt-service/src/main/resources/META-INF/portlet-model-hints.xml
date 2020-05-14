@@ -397,6 +397,7 @@
 		<field name="syncSchedulerId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="groupId" type="long" />
 		<field name="className" type="String">
 			<hint name="max-length">255</hint>
 		</field>
@@ -404,6 +405,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="syncDate" type="Date" />
+		<field name="retry" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.TrackClient">
 		<field name="uuid" type="String" />

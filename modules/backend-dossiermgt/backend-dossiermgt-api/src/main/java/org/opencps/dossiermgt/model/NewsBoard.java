@@ -37,10 +37,10 @@ public interface NewsBoard extends NewsBoardModel, PersistedModel {
 	 *
 	 * Never modify this interface directly. Add methods to {@link org.opencps.dossiermgt.model.impl.NewsBoardImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<NewsBoard, Long> NEW_BOARD_ID_ACCESSOR = new Accessor<NewsBoard, Long>() {
+	public static final Accessor<NewsBoard, Long> NEWS_BOARD_ID_ACCESSOR = new Accessor<NewsBoard, Long>() {
 			@Override
 			public Long get(NewsBoard newsBoard) {
-				return newsBoard.getNewBoardId();
+				return newsBoard.getNewsBoardId();
 			}
 
 			@Override

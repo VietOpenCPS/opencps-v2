@@ -84,18 +84,18 @@ public interface NewsBoardModel extends BaseModel<NewsBoard>, GroupedModel,
 	public void setUuid(String uuid);
 
 	/**
-	 * Returns the new board ID of this news board.
+	 * Returns the news board ID of this news board.
 	 *
-	 * @return the new board ID of this news board
+	 * @return the news board ID of this news board
 	 */
-	public long getNewBoardId();
+	public long getNewsBoardId();
 
 	/**
-	 * Sets the new board ID of this news board.
+	 * Sets the news board ID of this news board.
 	 *
-	 * @param newBoardId the new board ID of this news board
+	 * @param newsBoardId the news board ID of this news board
 	 */
-	public void setNewBoardId(long newBoardId);
+	public void setNewsBoardId(long newsBoardId);
 
 	/**
 	 * Returns the group ID of this news board.

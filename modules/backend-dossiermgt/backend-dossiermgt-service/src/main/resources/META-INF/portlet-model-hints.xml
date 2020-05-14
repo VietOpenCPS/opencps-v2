@@ -1024,7 +1024,7 @@
 	</model>
 	<model name="org.opencps.dossiermgt.model.NewsBoard">
 		<field name="uuid" type="String" />
-		<field name="newBoardId" type="long" />
+		<field name="newsBoardId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />

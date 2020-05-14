@@ -146,13 +146,13 @@ public interface NewsBoardPersistence extends BasePersistence<NewsBoard> {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where uuid = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public NewsBoard[] findByUuid_PrevAndNext(long newBoardId, String uuid,
+	public NewsBoard[] findByUuid_PrevAndNext(long newsBoardId, String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException;
 
@@ -335,14 +335,14 @@ public interface NewsBoardPersistence extends BasePersistence<NewsBoard> {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param uuid the uuid
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public NewsBoard[] findByUuid_C_PrevAndNext(long newBoardId, String uuid,
+	public NewsBoard[] findByUuid_C_PrevAndNext(long newsBoardId, String uuid,
 		long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException;
@@ -470,13 +470,13 @@ public interface NewsBoardPersistence extends BasePersistence<NewsBoard> {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where groupId = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param groupId the group ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public NewsBoard[] findByF_GID_PrevAndNext(long newBoardId, long groupId,
+	public NewsBoard[] findByF_GID_PrevAndNext(long newsBoardId, long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException;
 
@@ -512,39 +512,39 @@ public interface NewsBoardPersistence extends BasePersistence<NewsBoard> {
 	/**
 	* Creates a new news board with the primary key. Does not add the news board to the database.
 	*
-	* @param newBoardId the primary key for the new news board
+	* @param newsBoardId the primary key for the new news board
 	* @return the new news board
 	*/
-	public NewsBoard create(long newBoardId);
+	public NewsBoard create(long newsBoardId);
 
 	/**
 	* Removes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board that was removed
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public NewsBoard remove(long newBoardId) throws NoSuchNewsBoardException;
+	public NewsBoard remove(long newsBoardId) throws NoSuchNewsBoardException;
 
 	public NewsBoard updateImpl(NewsBoard newsBoard);
 
 	/**
 	* Returns the news board with the primary key or throws a {@link NoSuchNewsBoardException} if it could not be found.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public NewsBoard findByPrimaryKey(long newBoardId)
+	public NewsBoard findByPrimaryKey(long newsBoardId)
 		throws NoSuchNewsBoardException;
 
 	/**
 	* Returns the news board with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board, or <code>null</code> if a news board with the primary key could not be found
 	*/
-	public NewsBoard fetchByPrimaryKey(long newBoardId);
+	public NewsBoard fetchByPrimaryKey(long newsBoardId);
 
 	@Override
 	public java.util.Map<java.io.Serializable, NewsBoard> fetchByPrimaryKeys(
