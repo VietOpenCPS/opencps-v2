@@ -45,8 +45,8 @@ public class UsersUserItem {
 	@JsonProperty("employeeGender")
 	private Integer employeeGender = null;
 
-	@JsonProperty("employeeBirthDate")
-	private String employeeBirthDate = null;
+	@JsonProperty("employeeBirthdate")
+	private String employeeBirthdate = null;
 
 	@JsonProperty("employeeTelNo")
 	private String employeeTelNo = null;
@@ -376,24 +376,24 @@ public class UsersUserItem {
 		this.employeeGender = employeeGender;
 	}
 
-	public UsersUserItem employeeBirthDate(String employeeBirthDate) {
-		this.employeeBirthDate = employeeBirthDate;
+	public UsersUserItem employeeBirthdate(String employeeBirthdate) {
+		this.employeeBirthdate = employeeBirthdate;
 		return this;
 	}
 
 	/**
-	 * Get employeeBirthDate
+	 * Get employeeBirthdate
 	 * 
-	 * @return employeeBirthDate
+	 * @return employeeBirthdate
 	 **/
 	@ApiModelProperty(example = "", value = "")
 
-	public String getEmployeeBirthDate() {
-		return employeeBirthDate;
+	public String getEmployeeBirthdate() {
+		return employeeBirthdate;
 	}
 
-	public void setEmployeeBirthDate(String employeeBirthDate) {
-		this.employeeBirthDate = employeeBirthDate;
+	public void setEmployeeBirthdate(String employeeBirthdate) {
+		this.employeeBirthdate = employeeBirthdate;
 	}
 
 	public UsersUserItem employeeTelNo(String employeeTelNo) {
@@ -975,7 +975,7 @@ public class UsersUserItem {
 				&& Objects.equals(this.employeeFullName, usersUserItem.employeeFullName)
 				&& Objects.equals(this.employeeNo, usersUserItem.employeeNo)
 				&& Objects.equals(this.employeeGender, usersUserItem.employeeGender)
-				&& Objects.equals(this.employeeBirthDate, usersUserItem.employeeBirthDate)
+				&& Objects.equals(this.employeeBirthdate, usersUserItem.employeeBirthdate)
 				&& Objects.equals(this.employeeTelNo, usersUserItem.employeeTelNo)
 				&& Objects.equals(this.employeeMobile, usersUserItem.employeeMobile)
 				&& Objects.equals(this.employeeEmail, usersUserItem.employeeEmail)
@@ -1010,7 +1010,7 @@ public class UsersUserItem {
 	@Override
 	public int hashCode() {
 		return Objects.hash(className, classPK, userId, userName, avatar, mappingUserId, screenName, employeeFullName,
-				employeeNo, employeeGender, employeeBirthDate, employeeTelNo, employeeMobile, employeeEmail,
+				employeeNo, employeeGender, employeeBirthdate, employeeTelNo, employeeMobile, employeeEmail,
 				employeeWorkingStatus, employeeMainJobPostId, employeeMainJobPostName, employeePhotoFileEntryId,
 				employeeFileCerId, employeeFileSignId, applicantName, applicantType, applicantNo, applicantIdNo,
 				applicantIdDate, applicantAddress, applicantCityCode, applicantCityName, applicantDistrictCode,
@@ -1034,7 +1034,7 @@ public class UsersUserItem {
 		sb.append("    employeeFullName: ").append(toIndentedString(employeeFullName)).append("\n");
 		sb.append("    employeeNo: ").append(toIndentedString(employeeNo)).append("\n");
 		sb.append("    employeeGender: ").append(toIndentedString(employeeGender)).append("\n");
-		sb.append("    employeeBirthDate: ").append(toIndentedString(employeeBirthDate)).append("\n");
+		sb.append("    employeeBirthdate: ").append(toIndentedString(employeeBirthdate)).append("\n");
 		sb.append("    employeeTelNo: ").append(toIndentedString(employeeTelNo)).append("\n");
 		sb.append("    employeeMobile: ").append(toIndentedString(employeeMobile)).append("\n");
 		sb.append("    employeeEmail: ").append(toIndentedString(employeeEmail)).append("\n");

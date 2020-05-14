@@ -90,7 +90,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee addEmployee(
 		long userId, long groupId, String fullName, String employeeNo,
-		int gender, Date birthDate, String telNo, String mobile, String email,
+		int gender, Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, String title,
 		boolean isCreateUser, Date recruitDate, Date leaveDate,
 		ServiceContext serviceContext)
@@ -155,7 +155,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setFullName(fullName);
 		employee.setEmployeeNo(employeeNo);
 		employee.setGender(gender);
-		employee.setBirthdate(birthDate);
+		employee.setBirthdate(birthdate);
 		employee.setTelNo(telNo);
 		employee.setMobile(mobile);
 		employee.setEmail(email);
@@ -176,7 +176,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee addEmployee(
 		long userId, long groupId, String fullName, String employeeNo,
-		int gender, Date birthDate, String telNo, String mobile, String email,
+		int gender, Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, String title,
 		String scope,
 		boolean isCreateUser, Date recruitDate, Date leaveDate,
@@ -242,7 +242,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setFullName(fullName);
 		employee.setEmployeeNo(employeeNo);
 		employee.setGender(gender);
-		employee.setBirthdate(birthDate);
+		employee.setBirthdate(birthdate);
 		employee.setTelNo(telNo);
 		employee.setMobile(mobile);
 		employee.setEmail(email);
@@ -306,7 +306,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Override
 	public Employee updateEmployee(
 		long userId, long employeeId, String fullName, String employeeNo,
-		int gender, Date birthDate, String telNo, String mobile, String email,
+		int gender, Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, long photoFileEntryId,
 		long mappingUserId, String title, Date recruitDate, Date leaveDate,
 		ServiceContext serviceContext)
@@ -372,7 +372,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setFullName(fullName);
 		employee.setEmployeeNo(employeeNo);
 		employee.setGender(gender);
-		employee.setBirthdate(birthDate);
+		employee.setBirthdate(birthdate);
 		employee.setTelNo(telNo);
 		employee.setMobile(mobile);
 		employee.setEmail(email);
@@ -416,7 +416,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee updateEmployee(
 		long userId, long employeeId, String fullName, String employeeNo,
-		int gender, Date birthDate, String telNo, String mobile, String email,
+		int gender, Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, long photoFileEntryId,
 		long mappingUserId, String title, String scope, Date recruitDate, Date leaveDate,
 		ServiceContext serviceContext)
@@ -482,7 +482,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setFullName(fullName);
 		employee.setEmployeeNo(employeeNo);
 		employee.setGender(gender);
-		employee.setBirthdate(birthDate);
+		employee.setBirthdate(birthdate);
 		employee.setTelNo(telNo);
 		employee.setMobile(mobile);
 		employee.setEmail(email);
@@ -1209,6 +1209,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 				}
 			}
 		}
+		_log.info("object==============================================" + object);
+		_log.info("objectData==============================================" + objectData);
 		return employeePersistence.update(object);
 
 	}
