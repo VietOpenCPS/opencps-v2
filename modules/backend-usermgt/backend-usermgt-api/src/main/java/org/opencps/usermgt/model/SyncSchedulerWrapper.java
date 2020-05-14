@@ -62,9 +62,11 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 		attributes.put("syncSchedulerId", getSyncSchedulerId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("groupId", getGroupId());
 		attributes.put("className", getClassName());
 		attributes.put("typeCode", getTypeCode());
 		attributes.put("syncDate", getSyncDate());
+		attributes.put("retry", getRetry());
 
 		return attributes;
 	}
@@ -95,6 +97,12 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 			setModifiedDate(modifiedDate);
 		}
 
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
 		String className = (String)attributes.get("className");
 
 		if (className != null) {
@@ -111,6 +119,12 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 
 		if (syncDate != null) {
 			setSyncDate(syncDate);
+		}
+
+		Integer retry = (Integer)attributes.get("retry");
+
+		if (retry != null) {
+			setRetry(retry);
 		}
 	}
 
@@ -150,6 +164,16 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 	}
 
 	/**
+	* Returns the group ID of this sync scheduler.
+	*
+	* @return the group ID of this sync scheduler
+	*/
+	@Override
+	public long getGroupId() {
+		return _syncScheduler.getGroupId();
+	}
+
+	/**
 	* Returns the modified date of this sync scheduler.
 	*
 	* @return the modified date of this sync scheduler
@@ -172,6 +196,16 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _syncScheduler.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the retry of this sync scheduler.
+	*
+	* @return the retry of this sync scheduler
+	*/
+	@Override
+	public int getRetry() {
+		return _syncScheduler.getRetry();
 	}
 
 	/**
@@ -281,6 +315,16 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 	}
 
 	/**
+	* Sets the group ID of this sync scheduler.
+	*
+	* @param groupId the group ID of this sync scheduler
+	*/
+	@Override
+	public void setGroupId(long groupId) {
+		_syncScheduler.setGroupId(groupId);
+	}
+
+	/**
 	* Sets the modified date of this sync scheduler.
 	*
 	* @param modifiedDate the modified date of this sync scheduler
@@ -308,6 +352,16 @@ public class SyncSchedulerWrapper implements SyncScheduler,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_syncScheduler.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the retry of this sync scheduler.
+	*
+	* @param retry the retry of this sync scheduler
+	*/
+	@Override
+	public void setRetry(int retry) {
+		_syncScheduler.setRetry(retry);
 	}
 
 	/**

@@ -37,9 +37,11 @@ public class SyncSchedulerSoap implements Serializable {
 		soapModel.setSyncSchedulerId(model.getSyncSchedulerId());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setGroupId(model.getGroupId());
 		soapModel.setClassName(model.getClassName());
 		soapModel.setTypeCode(model.getTypeCode());
 		soapModel.setSyncDate(model.getSyncDate());
+		soapModel.setRetry(model.getRetry());
 
 		return soapModel;
 	}
@@ -124,6 +126,14 @@ public class SyncSchedulerSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public long getGroupId() {
+		return _groupId;
+	}
+
+	public void setGroupId(long groupId) {
+		_groupId = groupId;
+	}
+
 	public String getClassName() {
 		return _className;
 	}
@@ -148,11 +158,21 @@ public class SyncSchedulerSoap implements Serializable {
 		_syncDate = syncDate;
 	}
 
+	public int getRetry() {
+		return _retry;
+	}
+
+	public void setRetry(int retry) {
+		_retry = retry;
+	}
+
 	private String _uuid;
 	private long _syncSchedulerId;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private long _groupId;
 	private String _className;
 	private String _typeCode;
 	private Date _syncDate;
+	private int _retry;
 }

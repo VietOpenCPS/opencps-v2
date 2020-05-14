@@ -268,6 +268,66 @@ public class SyncSchedulerUtil {
 	}
 
 	/**
+	* Returns the sync scheduler where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchSyncSchedulerException} if it could not be found.
+	*
+	* @param uuid the uuid
+	* @param groupId the group ID
+	* @return the matching sync scheduler
+	* @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler findByUUID_G(String uuid, long groupId)
+		throws org.opencps.usermgt.exception.NoSuchSyncSchedulerException {
+		return getPersistence().findByUUID_G(uuid, groupId);
+	}
+
+	/**
+	* Returns the sync scheduler where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param uuid the uuid
+	* @param groupId the group ID
+	* @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler fetchByUUID_G(String uuid, long groupId) {
+		return getPersistence().fetchByUUID_G(uuid, groupId);
+	}
+
+	/**
+	* Returns the sync scheduler where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param uuid the uuid
+	* @param groupId the group ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler fetchByUUID_G(String uuid, long groupId,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByUUID_G(uuid, groupId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the sync scheduler where uuid = &#63; and groupId = &#63; from the database.
+	*
+	* @param uuid the uuid
+	* @param groupId the group ID
+	* @return the sync scheduler that was removed
+	*/
+	public static SyncScheduler removeByUUID_G(String uuid, long groupId)
+		throws org.opencps.usermgt.exception.NoSuchSyncSchedulerException {
+		return getPersistence().removeByUUID_G(uuid, groupId);
+	}
+
+	/**
+	* Returns the number of sync schedulers where uuid = &#63; and groupId = &#63;.
+	*
+	* @param uuid the uuid
+	* @param groupId the group ID
+	* @return the number of matching sync schedulers
+	*/
+	public static int countByUUID_G(String uuid, long groupId) {
+		return getPersistence().countByUUID_G(uuid, groupId);
+	}
+
+	/**
 	* Returns the sync scheduler where className = &#63; and syncDate = &#63; or throws a {@link NoSuchSyncSchedulerException} if it could not be found.
 	*
 	* @param className the class name
@@ -393,6 +453,183 @@ public class SyncSchedulerUtil {
 	*/
 	public static int countByGID_NAME_TYPE(String className, String typeCode) {
 		return getPersistence().countByGID_NAME_TYPE(className, typeCode);
+	}
+
+	/**
+	* Returns all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @return the matching sync schedulers
+	*/
+	public static List<SyncScheduler> findByF_NAME_RETRY(String className,
+		int retry) {
+		return getPersistence().findByF_NAME_RETRY(className, retry);
+	}
+
+	/**
+	* Returns a range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param start the lower bound of the range of sync schedulers
+	* @param end the upper bound of the range of sync schedulers (not inclusive)
+	* @return the range of matching sync schedulers
+	*/
+	public static List<SyncScheduler> findByF_NAME_RETRY(String className,
+		int retry, int start, int end) {
+		return getPersistence().findByF_NAME_RETRY(className, retry, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param start the lower bound of the range of sync schedulers
+	* @param end the upper bound of the range of sync schedulers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sync schedulers
+	*/
+	public static List<SyncScheduler> findByF_NAME_RETRY(String className,
+		int retry, int start, int end,
+		OrderByComparator<SyncScheduler> orderByComparator) {
+		return getPersistence()
+				   .findByF_NAME_RETRY(className, retry, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param start the lower bound of the range of sync schedulers
+	* @param end the upper bound of the range of sync schedulers (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching sync schedulers
+	*/
+	public static List<SyncScheduler> findByF_NAME_RETRY(String className,
+		int retry, int start, int end,
+		OrderByComparator<SyncScheduler> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_NAME_RETRY(className, retry, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching sync scheduler
+	* @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler findByF_NAME_RETRY_First(String className,
+		int retry, OrderByComparator<SyncScheduler> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchSyncSchedulerException {
+		return getPersistence()
+				   .findByF_NAME_RETRY_First(className, retry, orderByComparator);
+	}
+
+	/**
+	* Returns the first sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler fetchByF_NAME_RETRY_First(String className,
+		int retry, OrderByComparator<SyncScheduler> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_NAME_RETRY_First(className, retry,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching sync scheduler
+	* @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler findByF_NAME_RETRY_Last(String className,
+		int retry, OrderByComparator<SyncScheduler> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchSyncSchedulerException {
+		return getPersistence()
+				   .findByF_NAME_RETRY_Last(className, retry, orderByComparator);
+	}
+
+	/**
+	* Returns the last sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	public static SyncScheduler fetchByF_NAME_RETRY_Last(String className,
+		int retry, OrderByComparator<SyncScheduler> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_NAME_RETRY_Last(className, retry, orderByComparator);
+	}
+
+	/**
+	* Returns the sync schedulers before and after the current sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	*
+	* @param syncSchedulerId the primary key of the current sync scheduler
+	* @param className the class name
+	* @param retry the retry
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sync scheduler
+	* @throws NoSuchSyncSchedulerException if a sync scheduler with the primary key could not be found
+	*/
+	public static SyncScheduler[] findByF_NAME_RETRY_PrevAndNext(
+		long syncSchedulerId, String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator)
+		throws org.opencps.usermgt.exception.NoSuchSyncSchedulerException {
+		return getPersistence()
+				   .findByF_NAME_RETRY_PrevAndNext(syncSchedulerId, className,
+			retry, orderByComparator);
+	}
+
+	/**
+	* Removes all the sync schedulers where className = &#63; and retry &lt; &#63; from the database.
+	*
+	* @param className the class name
+	* @param retry the retry
+	*/
+	public static void removeByF_NAME_RETRY(String className, int retry) {
+		getPersistence().removeByF_NAME_RETRY(className, retry);
+	}
+
+	/**
+	* Returns the number of sync schedulers where className = &#63; and retry &lt; &#63;.
+	*
+	* @param className the class name
+	* @param retry the retry
+	* @return the number of matching sync schedulers
+	*/
+	public static int countByF_NAME_RETRY(String className, int retry) {
+		return getPersistence().countByF_NAME_RETRY(className, retry);
 	}
 
 	/**

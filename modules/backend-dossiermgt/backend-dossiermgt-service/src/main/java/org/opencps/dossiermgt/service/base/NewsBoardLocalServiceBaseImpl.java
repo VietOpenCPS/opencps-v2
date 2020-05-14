@@ -152,26 +152,27 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 	/**
 	 * Creates a new news board with the primary key. Does not add the news board to the database.
 	 *
-	 * @param newBoardId the primary key for the new news board
+	 * @param newsBoardId the primary key for the new news board
 	 * @return the new news board
 	 */
 	@Override
 	@Transactional(enabled = false)
-	public NewsBoard createNewsBoard(long newBoardId) {
-		return newsBoardPersistence.create(newBoardId);
+	public NewsBoard createNewsBoard(long newsBoardId) {
+		return newsBoardPersistence.create(newsBoardId);
 	}
 
 	/**
 	 * Deletes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param newBoardId the primary key of the news board
+	 * @param newsBoardId the primary key of the news board
 	 * @return the news board that was removed
 	 * @throws PortalException if a news board with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public NewsBoard deleteNewsBoard(long newBoardId) throws PortalException {
-		return newsBoardPersistence.remove(newBoardId);
+	public NewsBoard deleteNewsBoard(long newsBoardId)
+		throws PortalException {
+		return newsBoardPersistence.remove(newsBoardId);
 	}
 
 	/**
@@ -270,8 +271,8 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	@Override
-	public NewsBoard fetchNewsBoard(long newBoardId) {
-		return newsBoardPersistence.fetchByPrimaryKey(newBoardId);
+	public NewsBoard fetchNewsBoard(long newsBoardId) {
+		return newsBoardPersistence.fetchByPrimaryKey(newsBoardId);
 	}
 
 	/**
@@ -289,13 +290,13 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 	/**
 	 * Returns the news board with the primary key.
 	 *
-	 * @param newBoardId the primary key of the news board
+	 * @param newsBoardId the primary key of the news board
 	 * @return the news board
 	 * @throws PortalException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard getNewsBoard(long newBoardId) throws PortalException {
-		return newsBoardPersistence.findByPrimaryKey(newBoardId);
+	public NewsBoard getNewsBoard(long newsBoardId) throws PortalException {
+		return newsBoardPersistence.findByPrimaryKey(newsBoardId);
 	}
 
 	@Override
@@ -306,7 +307,7 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(NewsBoard.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("newBoardId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("newsBoardId");
 
 		return actionableDynamicQuery;
 	}
@@ -319,7 +320,7 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 		indexableActionableDynamicQuery.setClassLoader(getClassLoader());
 		indexableActionableDynamicQuery.setModelClass(NewsBoard.class);
 
-		indexableActionableDynamicQuery.setPrimaryKeyPropertyName("newBoardId");
+		indexableActionableDynamicQuery.setPrimaryKeyPropertyName("newsBoardId");
 
 		return indexableActionableDynamicQuery;
 	}
@@ -330,7 +331,7 @@ public abstract class NewsBoardLocalServiceBaseImpl extends BaseLocalServiceImpl
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 		actionableDynamicQuery.setModelClass(NewsBoard.class);
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("newBoardId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName("newsBoardId");
 	}
 
 	@Override

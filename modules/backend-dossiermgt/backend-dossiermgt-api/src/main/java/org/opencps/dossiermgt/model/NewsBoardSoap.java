@@ -34,7 +34,7 @@ public class NewsBoardSoap implements Serializable {
 		NewsBoardSoap soapModel = new NewsBoardSoap();
 
 		soapModel.setUuid(model.getUuid());
-		soapModel.setNewBoardId(model.getNewBoardId());
+		soapModel.setNewsBoardId(model.getNewsBoardId());
 		soapModel.setGroupId(model.getGroupId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setUserId(model.getUserId());
@@ -89,11 +89,11 @@ public class NewsBoardSoap implements Serializable {
 	}
 
 	public long getPrimaryKey() {
-		return _newBoardId;
+		return _newsBoardId;
 	}
 
 	public void setPrimaryKey(long pk) {
-		setNewBoardId(pk);
+		setNewsBoardId(pk);
 	}
 
 	public String getUuid() {
@@ -104,12 +104,12 @@ public class NewsBoardSoap implements Serializable {
 		_uuid = uuid;
 	}
 
-	public long getNewBoardId() {
-		return _newBoardId;
+	public long getNewsBoardId() {
+		return _newsBoardId;
 	}
 
-	public void setNewBoardId(long newBoardId) {
-		_newBoardId = newBoardId;
+	public void setNewsBoardId(long newsBoardId) {
+		_newsBoardId = newsBoardId;
 	}
 
 	public long getGroupId() {
@@ -185,7 +185,7 @@ public class NewsBoardSoap implements Serializable {
 	}
 
 	private String _uuid;
-	private long _newBoardId;
+	private long _newsBoardId;
 	private long _groupId;
 	private long _companyId;
 	private long _userId;

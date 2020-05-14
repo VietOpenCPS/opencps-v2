@@ -1,4 +1,4 @@
-package org.opencps.api.controller.util;
+package org.opencps.usermgt.scheduler.utils;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -6,11 +6,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -18,170 +14,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-import org.opencps.api.constants.ConstantUtils;
-import org.opencps.api.usermgt.model.ApplicantModel;
-import org.opencps.api.usermgt.model.MappingUser;
-import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserRegisterTerm;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.SyncSchedulerLocalServiceUtil;
+import org.opencps.usermgt.service.util.PasswordEncrypt;
 
-public class ApplicantUtils {
+public class RegisterLGSPUtils {
 
-	private static Log _log = LogFactoryUtil.getLog(ApplicantUtils.class);
-
-	/**
-	 * @author khoavu
-	 * @param applicant
-	 * @return
-	 */
-	public static ApplicantModel mappingToApplicantModel(Applicant applicant) {
-
-		ApplicantModel model = new ApplicantModel();
-		model.setApplicantId(GetterUtil.getLong(applicant.getPrimaryKey()));
-		model.setCreateDate(String.valueOf(applicant.getCreateDate()));
-		model.setModifiedDate(String.valueOf(applicant.getModifiedDate()));
-		model.setApplicantName(applicant.getApplicantName());
-		model.setApplicantIdType(applicant.getApplicantIdType());
-		model.setApplicantIdNo(applicant.getApplicantIdNo());
-		model.setApplicantIdDate(String.valueOf(applicant.getApplicantIdDate()));
-		model.setContactEmail(applicant.getContactEmail());
-		model.setAddress(applicant.getAddress());
-		model.setCityCode(applicant.getCityCode());
-		model.setCityName(applicant.getCityName());
-		model.setDistrictCode(applicant.getDistrictCode());
-		model.setDistrictName(applicant.getDistrictName());
-		model.setWardCode(applicant.getWardCode());
-		model.setWardName(applicant.getWardName());
-		model.setContactName(applicant.getContactName());
-		model.setContactTelNo(applicant.getContactTelNo());
-		model.setApplicantProfile(applicant.getProfile());
-		model.setVerification(applicant.getVerification());
-
-		long mappingUserId = applicant.getMappingUserId();
-		MappingUser mappingUser = processMappingUser(mappingUserId);
-		if (mappingUser != null) {
-			model.setMappingUser(mappingUser);
-		}
-
-//		MappingUser mappingUser = new MappingUser();
-//		User user = null;
-//		try {
-//			user = UserLocalServiceUtil.getUser(mappingUserId);
-//		} catch (Exception e) {
-//			//_log.error(e);
-//			_log.debug(e);
-//		}
-//		if (user != null) {
-//			mappingUser.setUserId(Long.toString(mappingUserId));
-//			mappingUser.setScreenName(user.getScreenName());
-//			mappingUser.setLocking(user.getLockout());
-//		}
-//		model.setMappingUser(mappingUser);
-
-		return model;
-	}
-
-	/**
-	 * @author khoavu
-	 * @param documents
-	 * @return
-	 */
-	public static List<ApplicantModel> mappingToApplicantResults(List<Document> documents) {
-
-		List<ApplicantModel> data = new ArrayList<ApplicantModel>();
-
-		for (Document doc : documents) {
-			ApplicantModel model = new ApplicantModel();
-
-			model.setApplicantId(GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK)));
-			model.setCreateDate(GetterUtil.getString(doc.get(Field.CREATE_DATE)));
-			model.setModifiedDate(GetterUtil.getString(doc.get(Field.MODIFIED_DATE)));
-			model.setApplicantName(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTNAME)));
-			model.setApplicantIdType(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDTYPE)));
-			model.setApplicantIdNo(GetterUtil.getString(doc.get(ApplicantTerm.APPLICANTIDNO)));
-			if (doc.hasField(ApplicantTerm.APPLICANTIDDATE)
-					&& Validator.isNotNull(doc.get(ApplicantTerm.APPLICANTIDDATE))) {
-				Date applicantDate = APIDateTimeUtils.convertStringToDate(doc.get(ApplicantTerm.APPLICANTIDDATE),
-						APIDateTimeUtils._LUCENE_PATTERN);
-				String applicantIdDateText = APIDateTimeUtils.convertDateToString(applicantDate,
-						APIDateTimeUtils._NORMAL_DATE);
-				model.setApplicantIdDate(applicantIdDateText);
-			}
-			model.setAddress(GetterUtil.getString(doc.get(ApplicantTerm.ADDRESS)));
-			model.setCityCode(GetterUtil.getString(doc.get(ApplicantTerm.CITYCODE)));
-			model.setCityName(GetterUtil.getString(doc.get(ApplicantTerm.CITYNAME)));
-			model.setDistrictCode(GetterUtil.getString(doc.get(ApplicantTerm.DISTRICTCODE)));
-			model.setDistrictName(GetterUtil.getString(doc.get(ApplicantTerm.DISTRICTNAME)));
-			model.setWardCode(GetterUtil.getString(doc.get(ApplicantTerm.WARDCODE)));
-			model.setWardName(GetterUtil.getString(doc.get(ApplicantTerm.WARDNAME)));
-			model.setContactName(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTNAME)));
-			model.setContactTelNo(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTTELNO)));
-			model.setContactEmail(GetterUtil.getString(doc.get(ApplicantTerm.CONTACTEMAIL)));
-			model.setApplicantProfile(doc.get(ApplicantTerm.PROFILE));
-
-			long mappingUserId = GetterUtil.getLong(doc.get(ApplicantTerm.MAPPINGUSERID));
-
-			MappingUser mappingUser = processMappingUser(mappingUserId);
-			if (mappingUser != null) {
-				model.setMappingUser(mappingUser);
-			}
-
-			if (doc.hasField(ApplicantTerm.VERIFICATION)) {
-				model.setVerification(GetterUtil.getInteger(doc.get(ApplicantTerm.VERIFICATION)));
-			}
-
-			data.add(model);
-		}
-
-		return data;
-	}
-
-	public static User getUser(long applicantId) {
-		User user = null;
-
-		try {
-			Applicant applicant = ApplicantLocalServiceUtil.getApplicant(applicantId);
-
-			user = UserLocalServiceUtil.fetchUser(applicant.getMappingUserId());
-		} catch (Exception e) {
-			// _log.error(e);
-			_log.debug(e);
-		}
-
-		return user;
-	}
-
-	private static MappingUser processMappingUser(long mappingUserId) {
-
-		try {
-			User user = UserLocalServiceUtil.getUser(mappingUserId);
-			if (user != null) {
-				MappingUser mappingUser = new MappingUser();
-
-				mappingUser.setUserId(Long.toString(mappingUserId));
-				mappingUser.setScreenName(user.getScreenName());
-				mappingUser.setLocking(user.getLockout());
-				//
-				return mappingUser;
-			}
-		} catch (Exception e) {
-			// _log.error(e);
-			_log.debug(e);
-		}
-
-		return null;
-	}
+	private static Log _log = LogFactoryUtil.getLog(RegisterLGSPUtils.class);
 
 	public static String getTokenLGSP() {
 		StringBuilder sbToken = new StringBuilder();
@@ -206,9 +52,9 @@ public class ApplicantUtils {
 
 			java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlVal.openConnection();
 			conToken.setRequestMethod(HttpMethod.POST);
-			conToken.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
-			conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
-			conToken.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+			conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+			conToken.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
 					StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
 
 			conToken.setUseCaches(false);
@@ -293,7 +139,7 @@ public class ApplicantUtils {
 				conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 				conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
 				_log.debug("BASIC AUTHEN: " + authStrEnc);
-				conReg.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+				conReg.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
 						StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
 				conReg.setUseCaches(false);
@@ -382,7 +228,7 @@ public class ApplicantUtils {
 				conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 				conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
 				_log.debug("BASIC AUTHEN: " + authStrEnc);
-				conReg.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+				conReg.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
 						StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
 				conReg.setUseCaches(false);
@@ -535,7 +381,7 @@ public class ApplicantUtils {
 			conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 			conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
 			_log.info("BASIC AUTHEN: " + authStrEnc);
-			conChange.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+			conChange.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
 					StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
 			conChange.setUseCaches(false);

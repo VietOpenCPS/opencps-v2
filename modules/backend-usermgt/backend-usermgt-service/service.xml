@@ -795,11 +795,13 @@
 		<!-- Audit fields -->
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
+		<column name="groupId" type="long" />
 
 		<!-- Other fields -->
 		<column name="className" type="String" />
 		<column name="typeCode" type="String" />
 		<column name="syncDate" type="Date" />
+		<column name="retry" type="int" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />
@@ -812,6 +814,10 @@
 		<finder return-type="SyncScheduler" name="GID_NAME_TYPE">
 			<finder-column name="className" />
 			<finder-column name="typeCode" />
+		</finder>
+		<finder return-type="Collection" name="F_NAME_RETRY">
+			<finder-column name="className" />
+			<finder-column name="retry" comparator="&lt;"></finder-column>
 		</finder>
 		
 	</entity>
