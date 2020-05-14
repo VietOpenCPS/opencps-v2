@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -28,7 +27,6 @@ import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
@@ -313,7 +311,32 @@ public class OpenCPSRestClient {
 		
 		return result;
 	}
-	
+		
+	public PaymentFileInputModel updatePaymentsConfirmFile(File file, String id, PaymentFileInputModel model) {
+		PaymentFileInputModel result = null;
+
+		try {
+
+			String requestURL = ConstantUtils.DOSSIERS_BASE_PATH + StringPool.FORWARD_SLASH + id
+					+ StringPool.FORWARD_SLASH + ProcessActionTerm.PAYMENTS + StringPool.FORWARD_SLASH + ProcessActionTerm.CONFIRM_FILE;
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = new HashMap<String, String>();
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.PUT, MediaType.APPLICATION_JSON,
+					 baseUrl, requestURL, username,
+					password, properties, file, file.getName(), context);
+			_log.debug("PUT payment confirm file: " + jsonObj);
+			result = OpenCPSConverter.convertPaymentConfirmFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+		
+	}
 	
 	public DossierDocumentModel postDossierDocument(File file, String dossierUnique, DossierDocumentModel model) {
 		DossierDocumentModel result = null;

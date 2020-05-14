@@ -49,6 +49,8 @@ public class ApplicantDataSoap implements Serializable {
 		soapModel.setStatus(model.getStatus());
 		soapModel.setApplicantIdNo(model.getApplicantIdNo());
 		soapModel.setApplicantDataType(model.getApplicantDataType());
+		soapModel.setDossierNo(model.getDossierNo());
+		soapModel.setLog(model.getLog());
 
 		return soapModel;
 	}
@@ -229,6 +231,22 @@ public class ApplicantDataSoap implements Serializable {
 		_applicantDataType = applicantDataType;
 	}
 
+	public String getDossierNo() {
+		return _dossierNo;
+	}
+
+	public void setDossierNo(String dossierNo) {
+		_dossierNo = dossierNo;
+	}
+
+	public String getLog() {
+		return _log;
+	}
+
+	public void setLog(String log) {
+		_log = log;
+	}
+
 	private String _uuid;
 	private long _applicantDataId;
 	private Date _createDate;
@@ -245,4 +263,6 @@ public class ApplicantDataSoap implements Serializable {
 	private int _status;
 	private String _applicantIdNo;
 	private int _applicantDataType;
+	private String _dossierNo;
+	private String _log;
 }

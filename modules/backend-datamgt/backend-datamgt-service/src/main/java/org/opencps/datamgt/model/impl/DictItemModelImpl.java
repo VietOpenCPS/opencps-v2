@@ -85,7 +85,8 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 			{ "level", Types.INTEGER },
 			{ "sibling", Types.VARCHAR },
 			{ "treeIndex", Types.VARCHAR },
-			{ "metaData", Types.VARCHAR }
+			{ "metaData", Types.VARCHAR },
+			{ "idLGSP", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,9 +109,10 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		TABLE_COLUMNS_MAP.put("sibling", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("treeIndex", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("metaData", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("idLGSP", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dictitem (uuid_ VARCHAR(75) null,dictItemId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dictCollectionId LONG,itemCode VARCHAR(100) null,itemName STRING null,itemNameEN STRING null,itemDescription TEXT null,parentItemId LONG,level INTEGER,sibling VARCHAR(255) null,treeIndex VARCHAR(255) null,metaData TEXT null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dictitem (uuid_ VARCHAR(75) null,dictItemId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,dictCollectionId LONG,itemCode VARCHAR(100) null,itemName STRING null,itemNameEN STRING null,itemDescription TEXT null,parentItemId LONG,level INTEGER,sibling VARCHAR(255) null,treeIndex VARCHAR(255) null,metaData TEXT null,idLGSP LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dictitem";
 	public static final String ORDER_BY_JPQL = " ORDER BY dictItem.sibling ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dictitem.sibling ASC";
@@ -129,13 +131,14 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DICTCOLLECTIONID_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long ITEMCODE_COLUMN_BITMASK = 8L;
-	public static final long LEVEL_COLUMN_BITMASK = 16L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 32L;
-	public static final long PARENTITEMID_COLUMN_BITMASK = 64L;
-	public static final long TREEINDEX_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
-	public static final long SIBLING_COLUMN_BITMASK = 512L;
+	public static final long IDLGSP_COLUMN_BITMASK = 8L;
+	public static final long ITEMCODE_COLUMN_BITMASK = 16L;
+	public static final long LEVEL_COLUMN_BITMASK = 32L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
+	public static final long PARENTITEMID_COLUMN_BITMASK = 128L;
+	public static final long TREEINDEX_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
+	public static final long SIBLING_COLUMN_BITMASK = 1024L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.datamgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.datamgt.model.DictItem"));
 
@@ -194,6 +197,7 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		attributes.put("sibling", getSibling());
 		attributes.put("treeIndex", getTreeIndex());
 		attributes.put("metaData", getMetaData());
+		attributes.put("idLGSP", getIdLGSP());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -309,6 +313,12 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 
 		if (metaData != null) {
 			setMetaData(metaData);
+		}
+
+		Long idLGSP = (Long)attributes.get("idLGSP");
+
+		if (idLGSP != null) {
+			setIdLGSP(idLGSP);
 		}
 	}
 
@@ -660,6 +670,28 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 	}
 
 	@Override
+	public long getIdLGSP() {
+		return _idLGSP;
+	}
+
+	@Override
+	public void setIdLGSP(long idLGSP) {
+		_columnBitmask |= IDLGSP_COLUMN_BITMASK;
+
+		if (!_setOriginalIdLGSP) {
+			_setOriginalIdLGSP = true;
+
+			_originalIdLGSP = _idLGSP;
+		}
+
+		_idLGSP = idLGSP;
+	}
+
+	public long getOriginalIdLGSP() {
+		return _originalIdLGSP;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DictItem.class.getName()));
@@ -714,6 +746,7 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		dictItemImpl.setSibling(getSibling());
 		dictItemImpl.setTreeIndex(getTreeIndex());
 		dictItemImpl.setMetaData(getMetaData());
+		dictItemImpl.setIdLGSP(getIdLGSP());
 
 		dictItemImpl.resetOriginalValues();
 
@@ -803,6 +836,10 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		dictItemModelImpl._setOriginalLevel = false;
 
 		dictItemModelImpl._originalTreeIndex = dictItemModelImpl._treeIndex;
+
+		dictItemModelImpl._originalIdLGSP = dictItemModelImpl._idLGSP;
+
+		dictItemModelImpl._setOriginalIdLGSP = false;
 
 		dictItemModelImpl._columnBitmask = 0;
 	}
@@ -915,12 +952,14 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 			dictItemCacheModel.metaData = null;
 		}
 
+		dictItemCacheModel.idLGSP = getIdLGSP();
+
 		return dictItemCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -958,6 +997,8 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 		sb.append(getTreeIndex());
 		sb.append(", metaData=");
 		sb.append(getMetaData());
+		sb.append(", idLGSP=");
+		sb.append(getIdLGSP());
 		sb.append("}");
 
 		return sb.toString();
@@ -965,7 +1006,7 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.datamgt.model.DictItem");
@@ -1043,6 +1084,10 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 			"<column><column-name>metaData</column-name><column-value><![CDATA[");
 		sb.append(getMetaData());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>idLGSP</column-name><column-value><![CDATA[");
+		sb.append(getIdLGSP());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1086,6 +1131,9 @@ public class DictItemModelImpl extends BaseModelImpl<DictItem>
 	private String _treeIndex;
 	private String _originalTreeIndex;
 	private String _metaData;
+	private long _idLGSP;
+	private long _originalIdLGSP;
+	private boolean _setOriginalIdLGSP;
 	private long _columnBitmask;
 	private DictItem _escapedModel;
 }

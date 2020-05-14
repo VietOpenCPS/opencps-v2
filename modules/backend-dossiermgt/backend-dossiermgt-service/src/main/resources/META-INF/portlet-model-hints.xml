@@ -322,7 +322,7 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="serviceName" type="String">
-			<hint name="max-length">512</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 		<field name="govAgencyCode" type="String">
 			<hint name="max-length">128</hint>
@@ -1624,7 +1624,7 @@
 			<hint name="max-length">128</hint>
 		</field>
 		<field name="serviceName" type="String">
-			<hint name="max-length">4000</hint>
+			<hint name="max-length">4096</hint>
 		</field>
 		<field name="processText" type="String">
 			<hint name="max-length">65535</hint>

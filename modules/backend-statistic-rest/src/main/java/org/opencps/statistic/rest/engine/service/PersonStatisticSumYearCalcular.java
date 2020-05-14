@@ -4,6 +4,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -18,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.opencps.communication.model.ServerConfig;
+import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.statistic.rest.dto.GovAgencyData;
 import org.opencps.statistic.rest.dto.GovAgencyRequest;
 import org.opencps.statistic.rest.dto.GovAgencyResponse;
@@ -33,6 +39,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.PersonStatisticFinderService;
 import org.opencps.statistic.rest.service.PersonStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.StatisticDataUtil;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
@@ -47,6 +54,7 @@ public class PersonStatisticSumYearCalcular {
 
 	public void filterPersonSumYear(long companyId, long groupId, int year, boolean isVoting, boolean isEmployee,
 			boolean isAgency) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+		List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
 
 		PersonRequest personResultRequest = new PersonRequest();
 
@@ -203,9 +211,35 @@ public class PersonStatisticSumYearCalcular {
 			/* statistic by all */
 
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
-			agencyRequest.setGroupId(groupId);
 
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			agencyRequest.setGroupId(groupId);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+						_log.error(e);
+					}
+				}
+			}
+
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -245,8 +279,35 @@ public class PersonStatisticSumYearCalcular {
 		if (isVoting && !isEmployee && isAgency) {
 			/* statistic by all */
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
+
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+						_log.error(e);
+					}
+				}
+			}
+
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -289,8 +350,35 @@ public class PersonStatisticSumYearCalcular {
 		if (!isVoting && isEmployee && isAgency) {
 			/* statistic by all */
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
+
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+						_log.error(e);
+					}
+				}
+			}
+
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();
@@ -334,8 +422,35 @@ public class PersonStatisticSumYearCalcular {
 			/* statistic by all */
 			//System.out.println("STRART");
 			GovAgencyRequest agencyRequest = new GovAgencyRequest();
+
 			agencyRequest.setGroupId(groupId);
-			GovAgencyResponse agencyResponse = callService.callRestService(agencyRequest);
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				if (lstScs.size() >= 1) {
+					JSONObject scObject;
+					try {
+						scObject = JSONFactoryUtil.createJSONObject(lstScs.get(0).getConfigs());
+						if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
+							agencyRequest.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+							agencyRequest.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
+						}
+						if (scObject.has(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY)) {
+							agencyRequest.setEndpoint(scObject.getString(DossierStatisticConstants.DOSSIER_ENDPOINT_KEY));
+						}						
+					} catch (JSONException e) {
+						_log.error(e);
+					}
+				}
+			}
+
+			GovAgencyResponse agencyResponse = null;
+			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+				agencyResponse = callService.callRestService(agencyRequest);
+			}
+			else {
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+			}
 
 			if (agencyResponse != null) {
 				List<GovAgencyData> agencyList = agencyResponse.getData();

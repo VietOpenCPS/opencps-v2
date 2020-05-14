@@ -137,6 +137,11 @@ public class DueDateUtils {
 
 			try {
 
+				if (startDate.getTime() > toDate.getTime()) {
+					Date term = startDate;
+					startDate = toDate;
+					toDate = term;
+				}
 				// 1st set workTimes & set holidays
 				this._setWorkTimes();
 				this._setHolidays(startDate);
@@ -805,7 +810,7 @@ public class DueDateUtils {
 	public double getOverDueCalcToHours() {
 
 		double ms = (double) getOverDue();
-		double result = ms / (DAY_TO_HOURS * 60 * 1000);
+		double result = ms / (60 * 60 * 1000);
 		// lam tron den so thap phan thu 2
 		return (double) Math.round(result * 100) / 100;
 	}
@@ -824,12 +829,14 @@ public class DueDateUtils {
 		return StringPool.BLANK.equals(time) ? " 0 ngày " : time;
 	}
 
-	public long getOverDueTypeDay() {
+	public long getOverDueTypeDay()
+	{
 
 		return countNextWorkDay;
 	}
 
-	public long getOverDueTypeHour() {
+	public long getOverDueTypeHour()
+	{
 
 		return countNextWorkDayTime / 100;
 	}

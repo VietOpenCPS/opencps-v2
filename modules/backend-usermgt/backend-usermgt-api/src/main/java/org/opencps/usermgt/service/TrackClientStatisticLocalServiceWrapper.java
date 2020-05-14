@@ -34,6 +34,25 @@ public class TrackClientStatisticLocalServiceWrapper
 		_trackClientStatisticLocalService = trackClientStatisticLocalService;
 	}
 
+	@Override
+	public java.util.List<org.opencps.usermgt.model.TrackClientStatistic> accessStatisticsURL(
+		int day, int month, int year) {
+		return _trackClientStatisticLocalService.accessStatisticsURL(day,
+			month, year);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForAllYear() {
+		return _trackClientStatisticLocalService.accessStatisticsURLForAllYear();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject accessStatisticsURLForPeriod(
+		String startDay, String endDay) {
+		return _trackClientStatisticLocalService.accessStatisticsURLForPeriod(startDay,
+			endDay);
+	}
+
 	/**
 	* Adds the track client statistic to the database. Also notifies the appropriate model listeners.
 	*
@@ -44,6 +63,23 @@ public class TrackClientStatisticLocalServiceWrapper
 	public org.opencps.usermgt.model.TrackClientStatistic addTrackClientStatistic(
 		org.opencps.usermgt.model.TrackClientStatistic trackClientStatistic) {
 		return _trackClientStatisticLocalService.addTrackClientStatistic(trackClientStatistic);
+	}
+
+	@Override
+	public java.util.Map<String, Long> countAccess(int day, int month, int year) {
+		return _trackClientStatisticLocalService.countAccess(day, month, year);
+	}
+
+	@Override
+	public long countAccessAllYear() {
+		return _trackClientStatisticLocalService.countAccessAllYear();
+	}
+
+	@Override
+	public java.util.Map<String, Long> countAccessPeriod(String startDay,
+		String endDay) {
+		return _trackClientStatisticLocalService.countAccessPeriod(startDay,
+			endDay);
 	}
 
 	/**
@@ -194,6 +230,11 @@ public class TrackClientStatisticLocalServiceWrapper
 	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _trackClientStatisticLocalService.getIndexableActionableDynamicQuery();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.json.JSONObject getOnline() {
+		return _trackClientStatisticLocalService.getOnline();
 	}
 
 	/**

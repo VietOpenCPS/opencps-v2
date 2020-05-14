@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <custom-sql>
-	<sql id="org.opencps.usermgt.service.persistence.QuestionFinder.findQuestionSearch">
-		<![CDATA[
+    <sql id="org.opencps.usermgt.service.persistence.QuestionFinder.findQuestionSearch">
+        <![CDATA[
 			SELECT q.* 
 			FROM opencps_question AS q 
 			LEFT JOIN opencps_answer as a 
@@ -19,5 +19,138 @@
 			LIMIT ?
 			OFFSET ?
 		]]>
-	</sql>
+    </sql>
+    <!--tìm số lượng truy cập trong một khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findPeriod">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+		]]>
+    </sql>
+
+    <!-- tìm các url xuất hiện trong khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLPeriod">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+			GROUP BY o.url
+		]]>
+    </sql>
+    <!-- tìm số lượng truy cập vào url xuất hiện trong khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLPeriod">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+				AND o.url = ?
+		]]>
+    </sql>
+
+
+    <!--Tìm số lượng truy cập trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAllYear">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day = 0 AND o.month = 0
+			ORDER BY o.year ASC
+		]]>
+    </sql>
+    <!-- tìm các url xuất hiện trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLAllYear">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+					o.day = 0 AND o.month = 0
+			GROUP BY o.url
+			ORDER BY o.year ASC
+		]]>
+    </sql>
+    <!-- tìm số lượng truy cập vào url xuất hiện trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLAllYear">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+					o.day = 0 AND o.month = 0
+					AND o.url = ?
+			ORDER BY o.year ASC
+		]]>
+    </sql>
+
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessPeriodDesktopMobileTablet">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+				AND o.desktop = ?
+				AND o.mobile = ?
+				AND o.tablet = ?
+		]]>
+    </sql>
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPreviousPage">
+        <![CDATA[
+			SELECT 	o.*
+			FROM 	`opencps_track_client` AS o
+			WHERE 	o.sessionId = ? AND
+					o.visitDate = (SELECT MAX(visitDate)
+            			FROM `opencps_track_client`
+            			WHERE sessionId = ? )
+		]]>
+    </sql>
+
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getOnline">
+        <![CDATA[
+		select
+		(SELECT count(*)
+        FROM (SELECT *
+              FROM (SELECT *
+                    FROM opencps_track_client
+                    WHERE sessionId IN (SELECT sessionId
+                                        FROM opencps_track_client
+                                        WHERE userId <> 0)) user
+              WHERE user.leaveDate = (SELECT MAX(leaveDate)
+                                      FROM opencps_track_client
+                                      WHERE userId = user.userId)) as o
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) user,
+       (SELECT count(*)
+        FROM (SELECT *
+              FROM (SELECT *
+                    FROM opencps_track_client
+                    WHERE sessionId NOT IN (SELECT sessionId
+                                            FROM opencps_track_client
+                                            WHERE userId <> 0)) guest
+              WHERE guest.leaveDate = (SELECT MAX(leaveDate)
+                                       FROM opencps_track_client
+                                       WHERE sessionId = guest.sessionId)) as o
+        WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) guest;
+		]]>
+    </sql>
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getTopURLUserAccess">
+        <![CDATA[
+        SELECT url , count(*) count
+        FROM qa_bxd.opencps_track_client
+        WHERE userId = ?
+        GROUP BY url
+        ORDER BY count DESC
+        ]]>
+    </sql>
+
+
 </custom-sql>

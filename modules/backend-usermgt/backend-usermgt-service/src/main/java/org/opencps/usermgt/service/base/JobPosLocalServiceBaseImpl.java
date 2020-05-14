@@ -56,6 +56,7 @@ import org.opencps.usermgt.service.persistence.ApplicantDataPersistence;
 import org.opencps.usermgt.service.persistence.ApplicantPersistence;
 import org.opencps.usermgt.service.persistence.EmployeeJobPosPersistence;
 import org.opencps.usermgt.service.persistence.EmployeePersistence;
+import org.opencps.usermgt.service.persistence.FileItemPersistence;
 import org.opencps.usermgt.service.persistence.HmacAuthenPersistence;
 import org.opencps.usermgt.service.persistence.JobPosPersistence;
 import org.opencps.usermgt.service.persistence.JobPosWorkPersistence;
@@ -66,7 +67,9 @@ import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
 import org.opencps.usermgt.service.persistence.SyncSchedulerPersistence;
+import org.opencps.usermgt.service.persistence.TrackClientFinder;
 import org.opencps.usermgt.service.persistence.TrackClientPersistence;
+import org.opencps.usermgt.service.persistence.TrackClientStatisticFinder;
 import org.opencps.usermgt.service.persistence.TrackClientStatisticPersistence;
 import org.opencps.usermgt.service.persistence.UserLoginPersistence;
 import org.opencps.usermgt.service.persistence.UserTrackPathPersistence;
@@ -634,6 +637,43 @@ public abstract class JobPosLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the file item local service.
+	 *
+	 * @return the file item local service
+	 */
+	public org.opencps.usermgt.service.FileItemLocalService getFileItemLocalService() {
+		return fileItemLocalService;
+	}
+
+	/**
+	 * Sets the file item local service.
+	 *
+	 * @param fileItemLocalService the file item local service
+	 */
+	public void setFileItemLocalService(
+		org.opencps.usermgt.service.FileItemLocalService fileItemLocalService) {
+		this.fileItemLocalService = fileItemLocalService;
+	}
+
+	/**
+	 * Returns the file item persistence.
+	 *
+	 * @return the file item persistence
+	 */
+	public FileItemPersistence getFileItemPersistence() {
+		return fileItemPersistence;
+	}
+
+	/**
+	 * Sets the file item persistence.
+	 *
+	 * @param fileItemPersistence the file item persistence
+	 */
+	public void setFileItemPersistence(FileItemPersistence fileItemPersistence) {
+		this.fileItemPersistence = fileItemPersistence;
+	}
+
+	/**
 	 * Returns the hmac authen local service.
 	 *
 	 * @return the hmac authen local service
@@ -1029,6 +1069,24 @@ public abstract class JobPosLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the track client finder.
+	 *
+	 * @return the track client finder
+	 */
+	public TrackClientFinder getTrackClientFinder() {
+		return trackClientFinder;
+	}
+
+	/**
+	 * Sets the track client finder.
+	 *
+	 * @param trackClientFinder the track client finder
+	 */
+	public void setTrackClientFinder(TrackClientFinder trackClientFinder) {
+		this.trackClientFinder = trackClientFinder;
+	}
+
+	/**
 	 * Returns the track client statistic local service.
 	 *
 	 * @return the track client statistic local service
@@ -1064,6 +1122,25 @@ public abstract class JobPosLocalServiceBaseImpl extends BaseLocalServiceImpl
 	public void setTrackClientStatisticPersistence(
 		TrackClientStatisticPersistence trackClientStatisticPersistence) {
 		this.trackClientStatisticPersistence = trackClientStatisticPersistence;
+	}
+
+	/**
+	 * Returns the track client statistic finder.
+	 *
+	 * @return the track client statistic finder
+	 */
+	public TrackClientStatisticFinder getTrackClientStatisticFinder() {
+		return trackClientStatisticFinder;
+	}
+
+	/**
+	 * Sets the track client statistic finder.
+	 *
+	 * @param trackClientStatisticFinder the track client statistic finder
+	 */
+	public void setTrackClientStatisticFinder(
+		TrackClientStatisticFinder trackClientStatisticFinder) {
+		this.trackClientStatisticFinder = trackClientStatisticFinder;
 	}
 
 	/**
@@ -1403,6 +1480,10 @@ public abstract class JobPosLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.EmployeeJobPosLocalService employeeJobPosLocalService;
 	@BeanReference(type = EmployeeJobPosPersistence.class)
 	protected EmployeeJobPosPersistence employeeJobPosPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.FileItemLocalService.class)
+	protected org.opencps.usermgt.service.FileItemLocalService fileItemLocalService;
+	@BeanReference(type = FileItemPersistence.class)
+	protected FileItemPersistence fileItemPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.HmacAuthenLocalService.class)
 	protected org.opencps.usermgt.service.HmacAuthenLocalService hmacAuthenLocalService;
 	@BeanReference(type = HmacAuthenPersistence.class)
@@ -1445,10 +1526,14 @@ public abstract class JobPosLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.TrackClientLocalService trackClientLocalService;
 	@BeanReference(type = TrackClientPersistence.class)
 	protected TrackClientPersistence trackClientPersistence;
+	@BeanReference(type = TrackClientFinder.class)
+	protected TrackClientFinder trackClientFinder;
 	@BeanReference(type = org.opencps.usermgt.service.TrackClientStatisticLocalService.class)
 	protected org.opencps.usermgt.service.TrackClientStatisticLocalService trackClientStatisticLocalService;
 	@BeanReference(type = TrackClientStatisticPersistence.class)
 	protected TrackClientStatisticPersistence trackClientStatisticPersistence;
+	@BeanReference(type = TrackClientStatisticFinder.class)
+	protected TrackClientStatisticFinder trackClientStatisticFinder;
 	@BeanReference(type = org.opencps.usermgt.service.UserLoginLocalService.class)
 	protected org.opencps.usermgt.service.UserLoginLocalService userLoginLocalService;
 	@BeanReference(type = UserLoginPersistence.class)

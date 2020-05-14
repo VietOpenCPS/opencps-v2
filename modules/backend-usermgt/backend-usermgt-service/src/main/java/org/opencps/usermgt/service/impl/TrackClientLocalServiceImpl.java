@@ -52,7 +52,7 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		else {
 			trackClient = trackClientPersistence.fetchByPrimaryKey(trackClientId);
 		}
-		
+
 		if (trackClient != null) {
 			trackClient.setSessionId(sessionId);
 			trackClient.setUrl(url);
@@ -71,15 +71,15 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 			trackClient.setDesktop(desktop);
 			trackClient.setMobile(mobile);
 			trackClient.setTablet(tablet);
-			
+
 			trackClient = trackClientPersistence.update(trackClient);
 		}
-		
+
 		return trackClient;
 	}
-	
+
 	public TrackClient updateTrackClient(long trackClientId, String sessionId, String url, int year, int month, int day, Date visitDate, Date leaveDate, String clientIP,
-			String macAddress, String region, String nation, String latitude, String longitude, long timeOnPage, boolean desktop, boolean mobile, 
+			String macAddress, String region, String nation, String latitude, String longitude, long timeOnPage, boolean desktop, boolean mobile,
 			boolean tablet, long userId, String userName) {
 		TrackClient trackClient = null;
 		if (trackClientId == 0) {
@@ -89,7 +89,7 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 		else {
 			trackClient = trackClientPersistence.fetchByPrimaryKey(trackClientId);
 		}
-		
+
 		if (trackClient != null) {
 			trackClient.setSessionId(sessionId);
 			trackClient.setUrl(url);
@@ -110,13 +110,21 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 			trackClient.setTablet(tablet);
 			trackClient.setUserId(userId);
 			trackClient.setUserName(userName);
-			
+
 			trackClient = trackClientPersistence.update(trackClient);
 		}
-		
+
 		return trackClient;
-	}	
-	
+	}
+
+	public TrackClient findPreviousPage(String sessionId)
+	{
+		List<TrackClient> trackClients = trackClientFinder.findPreviousPage(sessionId);
+		if (trackClients.isEmpty())
+			return null;
+		return trackClients.get(0);
+	}
+
 	public List<TrackClient> findByS(String sessionId, int start, int end, OrderByComparator<TrackClient> orderBy) {
 		return trackClientPersistence.findByS(sessionId, start, end, orderBy);
 	}
@@ -124,20 +132,29 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 	public List<TrackClient> findByS(String sessionId, int start, int end) {
 		return trackClientPersistence.findByS(sessionId, start, end);
 	}
-	
+
 	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate, int start, int end) {
 		return trackClientPersistence.findByS_NULL_L(sessionId, leaveDate);
 	}
-	
+
 	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate) {
 		return trackClientPersistence.findByS_NULL_L(sessionId, leaveDate);
 	}
-	
+
 	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate) {
 		return trackClientPersistence.findByS_LVD(sessionId, visitDate);
 	}
 
 	public List<TrackClient> findByS_LVD(String sessionId, Date visitDate, int start, int end) {
 		return trackClientPersistence.findByS_LVD(sessionId, visitDate, start, end);
+	}
+
+	public List<Object[]> getOnline()
+	{
+		return trackClientFinder.getOnline();
+	}
+	public List<Object[]> getTopURLUserAccess(long userId)
+	{
+		return trackClientFinder.getTopURLUserAccess(userId);
 	}
 }

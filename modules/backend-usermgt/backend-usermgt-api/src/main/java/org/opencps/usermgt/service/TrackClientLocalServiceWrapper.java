@@ -224,6 +224,12 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	}
 
 	@Override
+	public org.opencps.usermgt.model.TrackClient findPreviousPage(
+		String sessionId) {
+		return _trackClientLocalService.findPreviousPage(sessionId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _trackClientLocalService.getActionableDynamicQuery();
 	}
@@ -231,6 +237,11 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return _trackClientLocalService.getIndexableActionableDynamicQuery();
+	}
+
+	@Override
+	public java.util.List<Object[]> getOnline() {
+		return _trackClientLocalService.getOnline();
 	}
 
 	/**
@@ -248,6 +259,11 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _trackClientLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public java.util.List<Object[]> getTopURLUserAccess(long userId) {
+		return _trackClientLocalService.getTopURLUserAccess(userId);
 	}
 
 	/**

@@ -24,6 +24,7 @@ create unique index IX_1B2442E2 on opencps_dictgroup (uuid_[$COLUMN_LENGTH:75$],
 create index IX_9E48E215 on opencps_dictitem (dictCollectionId, groupId);
 create index IX_5EE7EDA3 on opencps_dictitem (dictCollectionId, parentItemId, treeIndex[$COLUMN_LENGTH:255$]);
 create index IX_8CC4CD on opencps_dictitem (groupId, dictCollectionId, parentItemId, level);
+create index IX_D0E44BDC on opencps_dictitem (idLGSP, dictCollectionId);
 create index IX_750A2581 on opencps_dictitem (itemCode[$COLUMN_LENGTH:100$], dictCollectionId, groupId);
 create index IX_7B053904 on opencps_dictitem (itemCode[$COLUMN_LENGTH:100$], groupId);
 create index IX_48C042D on opencps_dictitem (modifiedDate, groupId);

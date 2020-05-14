@@ -83,7 +83,9 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 			{ "metadata", Types.VARCHAR },
 			{ "status", Types.INTEGER },
 			{ "applicantIdNo", Types.VARCHAR },
-			{ "applicantDataType", Types.INTEGER }
+			{ "applicantDataType", Types.INTEGER },
+			{ "dossierNo", Types.VARCHAR },
+			{ "log_", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -104,9 +106,11 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("applicantIdNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("applicantDataType", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("dossierNo", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("log_", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_applicant_data (uuid_ VARCHAR(75) null,applicantDataId LONG not null primary key,createDate DATE null,modifiedDate DATE null,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,fileTemplateNo VARCHAR(255) null,fileNo VARCHAR(255) null,fileName VARCHAR(1024) null,fileEntryId LONG,metadata TEXT null,status INTEGER,applicantIdNo VARCHAR(128) null,applicantDataType INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_applicant_data (uuid_ VARCHAR(75) null,applicantDataId LONG not null primary key,createDate DATE null,modifiedDate DATE null,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,fileTemplateNo VARCHAR(255) null,fileNo VARCHAR(255) null,fileName VARCHAR(1024) null,fileEntryId LONG,metadata TEXT null,status INTEGER,applicantIdNo VARCHAR(128) null,applicantDataType INTEGER,dossierNo VARCHAR(128) null,log_ TEXT null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_applicant_data";
 	public static final String ORDER_BY_JPQL = " ORDER BY applicantData.applicantDataId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_applicant_data.applicantDataId ASC";
@@ -122,10 +126,13 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.ApplicantData"),
 			true);
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long APPLICANTDATAID_COLUMN_BITMASK = 8L;
+	public static final long APPLICANTIDNO_COLUMN_BITMASK = 1L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 4L;
+	public static final long FILETEMPLATENO_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long APPLICANTDATAID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.ApplicantData"));
 
@@ -182,6 +189,8 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		attributes.put("status", getStatus());
 		attributes.put("applicantIdNo", getApplicantIdNo());
 		attributes.put("applicantDataType", getApplicantDataType());
+		attributes.put("dossierNo", getDossierNo());
+		attributes.put("log", getLog());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -285,6 +294,18 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 		if (applicantDataType != null) {
 			setApplicantDataType(applicantDataType);
+		}
+
+		String dossierNo = (String)attributes.get("dossierNo");
+
+		if (dossierNo != null) {
+			setDossierNo(dossierNo);
+		}
+
+		String log = (String)attributes.get("log");
+
+		if (log != null) {
+			setLog(log);
 		}
 	}
 
@@ -444,7 +465,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public void setFileTemplateNo(String fileTemplateNo) {
+		_columnBitmask |= FILETEMPLATENO_COLUMN_BITMASK;
+
+		if (_originalFileTemplateNo == null) {
+			_originalFileTemplateNo = _fileTemplateNo;
+		}
+
 		_fileTemplateNo = fileTemplateNo;
+	}
+
+	public String getOriginalFileTemplateNo() {
+		return GetterUtil.getString(_originalFileTemplateNo);
 	}
 
 	@Override
@@ -524,7 +555,17 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public void setApplicantIdNo(String applicantIdNo) {
+		_columnBitmask |= APPLICANTIDNO_COLUMN_BITMASK;
+
+		if (_originalApplicantIdNo == null) {
+			_originalApplicantIdNo = _applicantIdNo;
+		}
+
 		_applicantIdNo = applicantIdNo;
+	}
+
+	public String getOriginalApplicantIdNo() {
+		return GetterUtil.getString(_originalApplicantIdNo);
 	}
 
 	@Override
@@ -535,6 +576,46 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 	@Override
 	public void setApplicantDataType(int applicantDataType) {
 		_applicantDataType = applicantDataType;
+	}
+
+	@Override
+	public String getDossierNo() {
+		if (_dossierNo == null) {
+			return "";
+		}
+		else {
+			return _dossierNo;
+		}
+	}
+
+	@Override
+	public void setDossierNo(String dossierNo) {
+		_columnBitmask |= DOSSIERNO_COLUMN_BITMASK;
+
+		if (_originalDossierNo == null) {
+			_originalDossierNo = _dossierNo;
+		}
+
+		_dossierNo = dossierNo;
+	}
+
+	public String getOriginalDossierNo() {
+		return GetterUtil.getString(_originalDossierNo);
+	}
+
+	@Override
+	public String getLog() {
+		if (_log == null) {
+			return "";
+		}
+		else {
+			return _log;
+		}
+	}
+
+	@Override
+	public void setLog(String log) {
+		_log = log;
 	}
 
 	@Override
@@ -590,6 +671,8 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		applicantDataImpl.setStatus(getStatus());
 		applicantDataImpl.setApplicantIdNo(getApplicantIdNo());
 		applicantDataImpl.setApplicantDataType(getApplicantDataType());
+		applicantDataImpl.setDossierNo(getDossierNo());
+		applicantDataImpl.setLog(getLog());
 
 		applicantDataImpl.resetOriginalValues();
 
@@ -663,6 +746,12 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		applicantDataModelImpl._originalGroupId = applicantDataModelImpl._groupId;
 
 		applicantDataModelImpl._setOriginalGroupId = false;
+
+		applicantDataModelImpl._originalFileTemplateNo = applicantDataModelImpl._fileTemplateNo;
+
+		applicantDataModelImpl._originalApplicantIdNo = applicantDataModelImpl._applicantIdNo;
+
+		applicantDataModelImpl._originalDossierNo = applicantDataModelImpl._dossierNo;
 
 		applicantDataModelImpl._columnBitmask = 0;
 	}
@@ -759,12 +848,28 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 		applicantDataCacheModel.applicantDataType = getApplicantDataType();
 
+		applicantDataCacheModel.dossierNo = getDossierNo();
+
+		String dossierNo = applicantDataCacheModel.dossierNo;
+
+		if ((dossierNo != null) && (dossierNo.length() == 0)) {
+			applicantDataCacheModel.dossierNo = null;
+		}
+
+		applicantDataCacheModel.log = getLog();
+
+		String log = applicantDataCacheModel.log;
+
+		if ((log != null) && (log.length() == 0)) {
+			applicantDataCacheModel.log = null;
+		}
+
 		return applicantDataCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -798,6 +903,10 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 		sb.append(getApplicantIdNo());
 		sb.append(", applicantDataType=");
 		sb.append(getApplicantDataType());
+		sb.append(", dossierNo=");
+		sb.append(getDossierNo());
+		sb.append(", log=");
+		sb.append(getLog());
 		sb.append("}");
 
 		return sb.toString();
@@ -805,7 +914,7 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(52);
+		StringBundler sb = new StringBundler(58);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.ApplicantData");
@@ -875,6 +984,14 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 			"<column><column-name>applicantDataType</column-name><column-value><![CDATA[");
 		sb.append(getApplicantDataType());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>dossierNo</column-name><column-value><![CDATA[");
+		sb.append(getDossierNo());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>log</column-name><column-value><![CDATA[");
+		sb.append(getLog());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -900,13 +1017,18 @@ public class ApplicantDataModelImpl extends BaseModelImpl<ApplicantData>
 	private long _userId;
 	private String _userName;
 	private String _fileTemplateNo;
+	private String _originalFileTemplateNo;
 	private String _fileNo;
 	private String _fileName;
 	private long _fileEntryId;
 	private String _metadata;
 	private int _status;
 	private String _applicantIdNo;
+	private String _originalApplicantIdNo;
 	private int _applicantDataType;
+	private String _dossierNo;
+	private String _originalDossierNo;
+	private String _log;
 	private long _columnBitmask;
 	private ApplicantData _escapedModel;
 }

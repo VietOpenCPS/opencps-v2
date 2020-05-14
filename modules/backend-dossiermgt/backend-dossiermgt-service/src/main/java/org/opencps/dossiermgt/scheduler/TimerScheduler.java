@@ -63,7 +63,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import backend.auth.api.exception.ErrorMsgModel;
 
-@Component(immediate = true, service = TimerScheduler.class)
+//@Component(immediate = true, service = TimerScheduler.class)
 public class TimerScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	

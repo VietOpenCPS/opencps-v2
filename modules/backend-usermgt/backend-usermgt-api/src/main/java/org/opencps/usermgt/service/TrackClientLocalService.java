@@ -184,11 +184,16 @@ public interface TrackClientLocalService extends BaseLocalService,
 	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
 		int start, int end);
 
+	public TrackClient findPreviousPage(String sessionId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> getOnline();
 
 	/**
 	* Returns the OSGi service identifier.
@@ -201,6 +206,9 @@ public interface TrackClientLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> getTopURLUserAccess(long userId);
 
 	/**
 	* Returns the track client with the primary key.

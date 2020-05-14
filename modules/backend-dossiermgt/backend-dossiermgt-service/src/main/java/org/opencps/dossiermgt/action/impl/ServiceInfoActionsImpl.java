@@ -442,9 +442,9 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 					}
 					if (flag) {
 						ServiceConfig serviceConfig = ServiceConfigLocalServiceUtil.deleteServiceConfig(config);
-						if (serviceConfig == null) {
-							flag = false;
-						}
+//						if (serviceConfig == null) {
+//							flag = false;
+//						}
 					}
 				}
 			} else {

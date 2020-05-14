@@ -76,6 +76,8 @@ public class ApplicantDataWrapper implements ApplicantData,
 		attributes.put("status", getStatus());
 		attributes.put("applicantIdNo", getApplicantIdNo());
 		attributes.put("applicantDataType", getApplicantDataType());
+		attributes.put("dossierNo", getDossierNo());
+		attributes.put("log", getLog());
 
 		return attributes;
 	}
@@ -177,6 +179,18 @@ public class ApplicantDataWrapper implements ApplicantData,
 		if (applicantDataType != null) {
 			setApplicantDataType(applicantDataType);
 		}
+
+		String dossierNo = (String)attributes.get("dossierNo");
+
+		if (dossierNo != null) {
+			setDossierNo(dossierNo);
+		}
+
+		String log = (String)attributes.get("log");
+
+		if (log != null) {
+			setLog(log);
+		}
 	}
 
 	@Override
@@ -239,6 +253,16 @@ public class ApplicantDataWrapper implements ApplicantData,
 		return _applicantData.getCreateDate();
 	}
 
+	/**
+	* Returns the dossier no of this applicant data.
+	*
+	* @return the dossier no of this applicant data
+	*/
+	@Override
+	public String getDossierNo() {
+		return _applicantData.getDossierNo();
+	}
+
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _applicantData.getExpandoBridge();
@@ -292,6 +316,16 @@ public class ApplicantDataWrapper implements ApplicantData,
 	@Override
 	public long getGroupId() {
 		return _applicantData.getGroupId();
+	}
+
+	/**
+	* Returns the log of this applicant data.
+	*
+	* @return the log of this applicant data
+	*/
+	@Override
+	public String getLog() {
+		return _applicantData.getLog();
 	}
 
 	/**
@@ -459,6 +493,16 @@ public class ApplicantDataWrapper implements ApplicantData,
 		_applicantData.setCreateDate(createDate);
 	}
 
+	/**
+	* Sets the dossier no of this applicant data.
+	*
+	* @param dossierNo the dossier no of this applicant data
+	*/
+	@Override
+	public void setDossierNo(String dossierNo) {
+		_applicantData.setDossierNo(dossierNo);
+	}
+
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
@@ -523,6 +567,16 @@ public class ApplicantDataWrapper implements ApplicantData,
 	@Override
 	public void setGroupId(long groupId) {
 		_applicantData.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the log of this applicant data.
+	*
+	* @param log the log of this applicant data
+	*/
+	@Override
+	public void setLog(String log) {
+		_applicantData.setLog(log);
 	}
 
 	/**

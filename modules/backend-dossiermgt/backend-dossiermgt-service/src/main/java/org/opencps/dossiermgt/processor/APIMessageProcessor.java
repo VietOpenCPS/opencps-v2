@@ -972,11 +972,24 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+			
+//			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
 //			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			client.postPaymentFiles(result.getReferenceUid(), pfiModel);
+			if (paymentFile.getConfirmFileEntryId() > 0) {
+				FileEntry fileEntry;
+				try {
+					fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					client.updatePaymentsConfirmFile(file, result.getReferenceUid(), pfiModel);
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 3: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
@@ -1008,11 +1021,23 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setFeeAmount(paymentFile.getFeeAmount());
 			pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
-			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
+//			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 			
 //			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			client.postPaymentFiles(result.getReferenceUid(), pfiModel);
+			if (paymentFile.getConfirmFileEntryId() > 0) {
+				FileEntry fileEntry;
+				try {
+					fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getConfirmFileEntryId());
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+							true);
+					client.updatePaymentsConfirmFile(file, result.getReferenceUid(), pfiModel);
+				}
+				catch (Exception e) {
+					_log.debug(e);
+				}
+			}
 			
 			_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCREQUEST REQUESTPAYMENT = 5: " + APIDateTimeUtils.convertDateToString(new Date()));
 		}

@@ -85,6 +85,7 @@ public class OneMinute extends BaseMessageListener {
 		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
 				.findByF_LessThan_ExpireDate(new Date());
 
+		_log.info("notificationQueues check SIZE: "+notificationQueues.size());
 		if (notificationQueues != null) {
 	
 			_log.info("notificationQueues SIZE: "+notificationQueues.size());
@@ -236,7 +237,7 @@ public class OneMinute extends BaseMessageListener {
 		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 		  
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 

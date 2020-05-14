@@ -866,7 +866,6 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 	}
 
-
 	// super_admin Generators
 	@Indexable(type = IndexableType.DELETE)
 	public DictItem adminProcessDelete(Long id) {
@@ -915,6 +914,7 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		object.setParentItemId(objectData.getLong(DictItemTerm.PARENT_ITEM_ID));
 		object.setSibling(objectData.getString(DictItemTerm.SIBLING));
 		object.setMetaData(objectData.getString(DictItemTerm.META_DATA));
+		object.setIdLGSP(objectData.getLong(DictItemTerm.ID_LGSP));
 
 		String treeIndex;
 		try {

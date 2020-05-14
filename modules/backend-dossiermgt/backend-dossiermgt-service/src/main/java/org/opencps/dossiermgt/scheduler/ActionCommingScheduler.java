@@ -56,11 +56,12 @@ import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-//@Component(immediate = true, service = ActionCommingScheduler.class)
+@Component(immediate = true, service = ActionCommingScheduler.class)
 public class ActionCommingScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	private static final int GROUP_TYPE_SITE = 1;

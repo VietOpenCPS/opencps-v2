@@ -34,6 +34,11 @@ public class ApplicantDataLocalServiceWrapper
 		_applicantDataLocalService = applicantDataLocalService;
 	}
 
+	@Override
+	public org.opencps.usermgt.model.ApplicantData active(long applicantDataId) {
+		return _applicantDataLocalService.active(applicantDataId);
+	}
+
 	/**
 	* Adds the applicant data to the database. Also notifies the appropriate model listeners.
 	*
@@ -68,13 +73,15 @@ public class ApplicantDataLocalServiceWrapper
 
 	@Override
 	public org.opencps.usermgt.model.ApplicantData createApplicantData(
-		long groupId, String fileNo, String fileName, String applicantIdNo,
-		String sourceFileName, java.io.InputStream inputStream,
+		long groupId, String fileTemplateNo, String fileNo, String fileName,
+		String applicantIdNo, String sourceFileName,
+		java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return _applicantDataLocalService.createApplicantData(groupId, fileNo,
-			fileName, applicantIdNo, sourceFileName, inputStream, serviceContext);
+		return _applicantDataLocalService.createApplicantData(groupId,
+			fileTemplateNo, fileNo, fileName, applicantIdNo, sourceFileName,
+			inputStream, serviceContext);
 	}
 
 	@Override
@@ -232,6 +239,14 @@ public class ApplicantDataLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.usermgt.model.ApplicantData findByG_DN_FTN_AIN(
+		long groupId, String dossierNo, String fileTemplateNo,
+		String applicantIdNo) {
+		return _applicantDataLocalService.findByG_DN_FTN_AIN(groupId,
+			dossierNo, fileTemplateNo, applicantIdNo);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _applicantDataLocalService.getActionableDynamicQuery();
 	}
@@ -354,6 +369,12 @@ public class ApplicantDataLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.usermgt.model.ApplicantData inActive(
+		long applicantDataId) {
+		return _applicantDataLocalService.inActive(applicantDataId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.search.Hits searchLucene(
 		java.util.LinkedHashMap<String, Object> params,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
@@ -378,15 +399,15 @@ public class ApplicantDataLocalServiceWrapper
 
 	@Override
 	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
-		long groupId, long applicantDataId, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName,
-		java.io.InputStream inputStream,
+		long groupId, long applicantDataId, String fileTemplateNo,
+		String fileNo, String fileName, String applicantIdNo,
+		String sourceFileName, java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _applicantDataLocalService.updateApplicantData(groupId,
-			applicantDataId, fileNo, fileName, applicantIdNo, sourceFileName,
-			inputStream, serviceContext);
+			applicantDataId, fileTemplateNo, fileNo, fileName, applicantIdNo,
+			sourceFileName, inputStream, serviceContext);
 	}
 
 	@Override
@@ -400,6 +421,19 @@ public class ApplicantDataLocalServiceWrapper
 		return _applicantDataLocalService.updateApplicantData(context, groupId,
 			applicantDataId, fileTemplateNo, fileNo, fileName, fileEntryId,
 			metadata, status, applicantIdNo, applicantDataType);
+	}
+
+	@Override
+	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
+		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
+		String fileTemplateNo, String fileName, long fileEntryId,
+		String metadata, int status, String applicantIdNo,
+		int applicantDataType, String dossierNo, String log)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _applicantDataLocalService.updateApplicantData(context, groupId,
+			fileTemplateNo, fileName, fileEntryId, metadata, status,
+			applicantIdNo, applicantDataType, dossierNo, log);
 	}
 
 	@Override
