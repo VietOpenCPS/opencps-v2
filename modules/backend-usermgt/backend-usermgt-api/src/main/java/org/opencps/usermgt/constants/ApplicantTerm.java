@@ -33,4 +33,5 @@ public class ApplicantTerm {
 	public static final String INDENTIFY_NO = "indentifyNoFile";
 	public static final String INDENTIFY_NO_URL = "indentifyNoFileUrl";
 	public static final String DOC_URL = "documents/"; 
+	public static final String ACTIVATION_CODE_VERIFIED = "verified";
 }
