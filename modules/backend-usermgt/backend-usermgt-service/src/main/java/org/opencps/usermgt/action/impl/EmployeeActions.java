@@ -106,7 +106,7 @@ public class EmployeeActions implements EmployeeInterface {
 	@Override
 	public Employee create(
 		long userId, long companyId, long groupId, String employeeNo,
-		String fullName, String email, String gender, Date birthDate,
+		String fullName, String email, String gender, Date birthdate,
 		String telNo, String mobile, String title, String workingStatus,
 		Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 		throws NoSuchUserException, UnauthenticationException,
@@ -117,7 +117,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 		ett = EmployeeLocalServiceUtil.addEmployee(
 			userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
-			birthDate, telNo, mobile, email, GetterUtil.get(workingStatus, 1),
+			birthdate, telNo, mobile, email, GetterUtil.get(workingStatus, 1),
 			0l, title, false, recruitDate, leaveDate, serviceContext);
 
 		return ett;
@@ -126,7 +126,7 @@ public class EmployeeActions implements EmployeeInterface {
 	@Override
 	public Employee update(
 		long userId, long companyId, long groupId, long id, String employeeNo,
-		String fullName, String email, String gender, Date birthDate,
+		String fullName, String email, String gender, Date birthdate,
 		String telNo, String mobile, String title, String workingStatus,
 		Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 		throws NoSuchUserException, NotFoundException,
@@ -152,8 +152,8 @@ public class EmployeeActions implements EmployeeInterface {
 			employee.setGender(GetterUtil.get(gender, 0));
 		}
 
-		if (Validator.isNotNull(birthDate)) {
-			employee.setBirthdate(birthDate);
+		if (Validator.isNotNull(birthdate)) {
+			employee.setBirthdate(birthdate);
 		}
 
 		if (Validator.isNotNull(telNo)) {
@@ -818,16 +818,16 @@ public class EmployeeActions implements EmployeeInterface {
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	@Override
 	public void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullName, String title,
-			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
+			Integer gender, String birthdate, String telNo, String email, Integer workingStatus, String jobTitle,
 			String roles, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, PortalException {
 
 		// Convert String to Date
 		Date birthDay = null;
-		if (Validator.isNotNull(birthDate)) {
+		if (Validator.isNotNull(birthdate)) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 			try {
-				birthDay = sdf.parse(birthDate);
+				birthDay = sdf.parse(birthdate);
 			} catch (java.text.ParseException e) {
 			}
 		}
@@ -852,7 +852,7 @@ public class EmployeeActions implements EmployeeInterface {
 			if (Validator.isNotNull(gender)) {
 				employee.setGender(GetterUtil.get(gender, 0));
 			}
-			if (Validator.isNotNull(birthDate)) {
+			if (Validator.isNotNull(birthdate)) {
 				employee.setBirthdate(birthDay);
 			}
 			if (Validator.isNotNull(telNo)) {
@@ -907,16 +907,16 @@ public class EmployeeActions implements EmployeeInterface {
 
 	@Override
 	public void updateEmployeeDB(long userId, long groupId, String employeeNo, String fullName, String title,
-			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
+			Integer gender, String birthdate, String telNo, String email, Integer workingStatus, String jobTitle,
 			String roles, String scope, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, PortalException {
 
 		// Convert String to Date
 		Date birthDay = null;
-		if (Validator.isNotNull(birthDate)) {
+		if (Validator.isNotNull(birthdate)) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 			try {
-				birthDay = sdf.parse(birthDate);
+				birthDay = sdf.parse(birthdate);
 			} catch (java.text.ParseException e) {
 			}
 		}
@@ -941,7 +941,7 @@ public class EmployeeActions implements EmployeeInterface {
 			if (Validator.isNotNull(gender)) {
 				employee.setGender(GetterUtil.get(gender, 0));
 			}
-			if (Validator.isNotNull(birthDate)) {
+			if (Validator.isNotNull(birthdate)) {
 				employee.setBirthdate(birthDay);
 			}
 			if (Validator.isNotNull(telNo)) {
@@ -1121,16 +1121,16 @@ public class EmployeeActions implements EmployeeInterface {
 	/** DB QA USER */
 	@Override
 	public void updateEmployeeDB_QA(long userId, long groupId, String employeeNo, String fullName, String title,
-			Integer gender, String birthDate, String telNo, String email, Integer workingStatus, String jobTitle,
+			Integer gender, String birthdate, String telNo, String email, Integer workingStatus, String jobTitle,
 			String roles, ServiceContext serviceContext) throws NoSuchUserException, UnauthenticationException,
 			UnauthorizationException, DuplicateCategoryException, PortalException {
 
 		// Convert String to Date
 		Date birthDay = null;
-		if (Validator.isNotNull(birthDate)) {
+		if (Validator.isNotNull(birthdate)) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 			try {
-				birthDay = sdf.parse(birthDate);
+				birthDay = sdf.parse(birthdate);
 			} catch (java.text.ParseException e) {
 			}
 		}
@@ -1155,7 +1155,7 @@ public class EmployeeActions implements EmployeeInterface {
 			if (Validator.isNotNull(gender)) {
 				employee.setGender(GetterUtil.get(gender, 0));
 			}
-			if (Validator.isNotNull(birthDate)) {
+			if (Validator.isNotNull(birthdate)) {
 				employee.setBirthdate(birthDay);
 			}
 			if (Validator.isNotNull(telNo)) {
