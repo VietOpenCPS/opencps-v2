@@ -977,6 +977,10 @@
             <finder-column name="groupId"></finder-column>
             <finder-column name="fileTemplateNo" comparator="=" arrayable-operator="OR"></finder-column>
         </finder>
+        <finder name="G_S" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="status"></finder-column>
+        </finder>
 	</entity>
 		
 	<exceptions>

@@ -197,6 +197,13 @@ public class FileItemLocalServiceImpl extends FileItemLocalServiceBaseImpl {
 		return fileItemPersistence.findByG_FTNS(groupId, fileTemplateNos);
 	}
 	
+	public List<FileItem> findByG_S(long groupId, int status) {
+		return fileItemPersistence.findByG_S(groupId, status);
+	}
+	
+	public List<FileItem> findByG_S(long groupId, int status, int start, int end) {
+		return fileItemPersistence.findByG_S(groupId, status, start, end);
+	}
 	private static Log _log =
 			LogFactoryUtil.getLog(FileItemLocalServiceImpl.class);
 	public FileItem fetchFileItem(long fileItemId) {

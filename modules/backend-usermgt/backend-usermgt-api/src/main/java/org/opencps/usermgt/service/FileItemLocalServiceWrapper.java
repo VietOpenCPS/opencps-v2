@@ -228,6 +228,18 @@ public class FileItemLocalServiceWrapper implements FileItemLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.usermgt.model.FileItem> findByG_S(
+		long groupId, int status) {
+		return _fileItemLocalService.findByG_S(groupId, status);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.FileItem> findByG_S(
+		long groupId, int status, int start, int end) {
+		return _fileItemLocalService.findByG_S(groupId, status, start, end);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _fileItemLocalService.getActionableDynamicQuery();
 	}
