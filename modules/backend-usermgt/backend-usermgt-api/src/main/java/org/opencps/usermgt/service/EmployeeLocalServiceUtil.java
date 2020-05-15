@@ -69,7 +69,7 @@ public class EmployeeLocalServiceUtil {
 			com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addEmployee(userId, groupId, fullName, employeeNo, gender,
-						   birthdate, telNo, mobile, email, workingStatus, mainJobPostId,
+			birthdate, telNo, mobile, email, workingStatus, mainJobPostId,
 			title, isCreateUser, recruitDate, leaveDate, serviceContext);
 	}
 
@@ -88,7 +88,7 @@ public class EmployeeLocalServiceUtil {
 			com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addEmployee(userId, groupId, fullName, employeeNo, gender,
-						   birthdate, telNo, mobile, email, workingStatus, mainJobPostId,
+			birthdate, telNo, mobile, email, workingStatus, mainJobPostId,
 			title, scope, isCreateUser, recruitDate, leaveDate, serviceContext);
 	}
 

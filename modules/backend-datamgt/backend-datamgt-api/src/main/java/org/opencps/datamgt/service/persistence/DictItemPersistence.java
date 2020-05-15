@@ -1618,6 +1618,195 @@ public interface DictItemPersistence extends BasePersistence<DictItem> {
 	public int countByILGSP_DCI(long idLGSP, long dictCollectionId);
 
 	/**
+	* Returns all the dict items where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @return the matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long dictItemId);
+
+	/**
+	* Returns a range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @return the range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long dictItemId, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long dictItemId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long dictItemId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dict item
+	* @throws NoSuchDictItemException if a matching dict item could not be found
+	*/
+	public DictItem findByF_IDS_First(long dictItemId,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException;
+
+	/**
+	* Returns the first dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public DictItem fetchByF_IDS_First(long dictItemId,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator);
+
+	/**
+	* Returns the last dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dict item
+	* @throws NoSuchDictItemException if a matching dict item could not be found
+	*/
+	public DictItem findByF_IDS_Last(long dictItemId,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator)
+		throws NoSuchDictItemException;
+
+	/**
+	* Returns the last dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public DictItem fetchByF_IDS_Last(long dictItemId,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator);
+
+	/**
+	* Returns all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @return the matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long[] dictItemIds);
+
+	/**
+	* Returns a range of all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @return the range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dict items
+	*/
+	public java.util.List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the dict items where dictItemId = &#63; from the database.
+	*
+	* @param dictItemId the dict item ID
+	*/
+	public void removeByF_IDS(long dictItemId);
+
+	/**
+	* Returns the number of dict items where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @return the number of matching dict items
+	*/
+	public int countByF_IDS(long dictItemId);
+
+	/**
+	* Returns the number of dict items where dictItemId = any &#63;.
+	*
+	* @param dictItemIds the dict item IDs
+	* @return the number of matching dict items
+	*/
+	public int countByF_IDS(long[] dictItemIds);
+
+	/**
 	* Caches the dict item in the entity cache if it is enabled.
 	*
 	* @param dictItem the dict item
