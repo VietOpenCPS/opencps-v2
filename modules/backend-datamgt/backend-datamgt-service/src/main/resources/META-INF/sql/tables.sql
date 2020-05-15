@@ -104,7 +104,8 @@ create table opencps_dictitem (
 	level INTEGER,
 	sibling VARCHAR(255) null,
 	treeIndex VARCHAR(255) null,
-	metaData TEXT null
+	metaData TEXT null,
+	idLGSP LONG
 );
 
 create table opencps_dictitemgroup (

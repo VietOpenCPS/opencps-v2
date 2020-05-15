@@ -1504,6 +1504,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1534,193 +1535,29 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			} catch (Exception e) {
 			}
 
-			String clientId = "yPTWeD3FuqgYku7SvNJ5VuylmY0a";
-			String clientSecret = "lEti1opjJtLecmHcdGf9ogat0SUa";
-			String grantType = "client_credentials";
-			String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
+			//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
 			String strProfile = StringPool.BLANK;
-			try {
-				/** Get Token */
-				String urlToken = "https://lgsp.dongthap.gov.vn/token";
-
-				StringBuilder sbToken = new StringBuilder();
-				URL urlVal = new URL(urlToken);
-				StringBuilder postData = new StringBuilder();
+			String strToken = ApplicantUtils.getTokenLGSP();
+			if (Validator.isNotNull(strToken)) {
+				JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
 				//
-				postData.append("client_id");
-				postData.append(StringPool.EQUAL);
-				postData.append(clientId);
-				//
-				postData.append(StringPool.AMPERSAND);
-				postData.append("client_secret");
-				postData.append(StringPool.EQUAL);
-				postData.append(clientSecret);
-				//
-				postData.append(StringPool.AMPERSAND);
-				postData.append("grant_type");
-				postData.append(StringPool.EQUAL);
-				postData.append(grantType);
+				if (jsonToken.has("access_token") && jsonToken.has("token_type")
+						&& Validator.isNotNull(jsonToken.getString("access_token"))
+						&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+					String accessToken = jsonToken.getString("access_token");
+					String tokenType = jsonToken.getString("token_type");
 
-				java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlVal.openConnection();
-				conToken.setRequestMethod("POST");
-				conToken.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
-				conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
-				conToken.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
-						StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
+					_log.info("accessToken: " + accessToken);
+					_log.info("tokenType: " + tokenType);
 
-				conToken.setUseCaches(false);
-				conToken.setDoInput(true);
-				conToken.setDoOutput(true);
-				_log.debug("POST DATA: " + postData.toString());
-				OutputStream osToken = conToken.getOutputStream();
-				osToken.write(postData.toString().getBytes());
-				osToken.close();
-
-				BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
-
-				int cpToken;
-				while ((cpToken = brfToken.read()) != -1) {
-					sbToken.append((char) cpToken);
-				}
-				_log.debug("RESULT PROXY: " + sbToken.toString());
-				if (Validator.isNotNull(sbToken.toString())) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
-					//
-					if (jsonToken.has("access_token") && jsonToken.has("token_type")
-							&& Validator.isNotNull(jsonToken.getString("access_token"))
-							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
-						String accessToken = jsonToken.getString("access_token");
-						String tokenType = jsonToken.getString("token_type");
-						
-						_log.info("accessToken: " + accessToken);
-						_log.info("tokenType: " + tokenType);
-
-						// Dang ky tk cong dan
-						if ("citizen".equalsIgnoreCase(applicantIdType)) {
-							//
-							String urlRegister = endPoitBaseUrl + "/congdan/dangky";
-							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
-
-							StringBuilder sbReg = new StringBuilder();
-							try {
-								URL urlValRegister = new URL(urlRegister);
-
-								JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
-								jsonBody.put("email", contactEmail);
-								jsonBody.put("soCMND", applicantIdNo);
-								jsonBody.put("ngaySinh", "1990-12-01");
-								jsonBody.put("gioiTinh", 0);
-								jsonBody.put("moTaDiaChiThuongTru", "");
-								jsonBody.put("tinhThuongTruId", 0);
-								jsonBody.put("huyenThuongTruId", 0);
-								jsonBody.put("xaThuongTruId", 0);
-								jsonBody.put("dienThoai", contactTelNo);
-								//
-								if (Validator.isNotNull(applicantName)) {
-									String[] splitAppName = applicantName.split("\\s+");
-									int lengthAppName = splitAppName.length;
-									if (lengthAppName > 3) {
-										jsonBody.put("ho", splitAppName[0]);
-										jsonBody.put("ten", splitAppName[lengthAppName - 1]);
-										String tenDem = StringPool.BLANK;
-										for (int i = 1; i < splitAppName.length - 1; i++) {
-											if (i == 1) {
-												tenDem += splitAppName[1];
-											} else {
-												tenDem += StringPool.SPACE + splitAppName[i];
-											}
-										}
-										jsonBody.put("dem", tenDem);
-									} else if (lengthAppName == 3) {
-										jsonBody.put("ho", splitAppName[0]);
-										jsonBody.put("dem", splitAppName[1]);
-										jsonBody.put("ten", splitAppName[2]);
-									} else if (lengthAppName == 2) {
-										jsonBody.put("ho", "Công dân");
-										jsonBody.put("dem", splitAppName[1]);
-										jsonBody.put("ten", splitAppName[2]);
-									} else {
-										jsonBody.put("ho", "Công");
-										jsonBody.put("dem", "dân");
-										jsonBody.put("ten", splitAppName[2]);
-									}
-								}
-								
-								
-
-								java.net.HttpURLConnection conReg = (java.net.HttpURLConnection) urlValRegister
-										.openConnection();
-								conReg.setRequestMethod("POST");
-								conReg.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-								conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
-								conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-								_log.debug("BASIC AUTHEN: " + authStrEnc);
-								conReg.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
-										StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-
-								conReg.setUseCaches(false);
-								conReg.setDoInput(true);
-								conReg.setDoOutput(true);
-								_log.debug("POST DATA: " + jsonBody.toString());
-								OutputStream osReg = conReg.getOutputStream();
-								osReg.write(jsonBody.toString().getBytes());
-								osReg.close();
-
-								BufferedReader brfReg = new BufferedReader(
-										new InputStreamReader(conReg.getInputStream()));
-
-								int cpReg;
-								while ((cpReg = brfReg.read()) != -1) {
-									sbReg.append((char) cpReg);
-								}
-								_log.info("RESULT PROXY: " + sbReg.toString());
-								//
-								if (Validator.isNotNull(sbReg.toString())) {
-									//
-									_log.error("sbReg:"+ sbReg.toString());
-									JSONObject jsonReg = JSONFactoryUtil.createJSONObject(sbReg.toString());
-									if (jsonReg.has("message") && jsonReg.has("error_code")
-											&& Validator.isNotNull(jsonReg.get("message"))
-											&& Validator.isNotNull(jsonReg.get("error_code"))) {
-										String message = jsonReg.getString("message");
-										int errorCode = jsonReg.getInt("error_code");
-										
-										if (errorCode == 0) {
-											JSONObject jsonMessage = JSONFactoryUtil.createJSONObject(message);
-											//
-											String maXacNhan = jsonMessage.getString("maXacNhan");
-											String matKhau = jsonMessage.getString("matKhau");
-											String taiKhoan = jsonMessage.getString("taiKhoan");
-											// Them 1 cot luu pass vs activeCode vào profile
-											JSONObject jsonProfile = JSONFactoryUtil.createJSONObject();
-											jsonProfile.put("maXacNhan", maXacNhan);
-											jsonProfile.put("matKhau", matKhau);
-											jsonProfile.put("taiKhoan", taiKhoan);
-											//
-											_log.error("maXacNhan:"+ maXacNhan);
-											_log.error("matKhau:"+ matKhau);
-											strProfile = jsonProfile.toJSONString();
-										} else {
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
-										}
-									} else {
-										return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
-									}
-								} else {
-									return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
-								}
-							} catch (IOException e) {
-								_log.error(e);
-								_log.debug("Something went wrong while reading/writing in stream!!");
-							}
-						}
+					// Dang ky tk cong dan
+					strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
+							applicantIdNo, applicantName, applicantIdDate, contactTelNo);
+					if (Validator.isNull(strProfile)) {
+						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 					}
 				}
-			} catch (IOException e) {
-				_log.error(e);
-				_log.debug("Something went wrong while reading/writing in stream!!");
 			}
-
 
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
@@ -1812,56 +1649,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			} catch (Exception e) {
 			}
 	
-			String clientId = "yPTWeD3FuqgYku7SvNJ5VuylmY0a";
-			String clientSecret = "lEti1opjJtLecmHcdGf9ogat0SUa";
-			String grantType = "client_credentials";
 			String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
 			try {
 				/** Get Token */
-				String urlToken = "https://lgsp.dongthap.gov.vn/token";
-	
-				StringBuilder sbToken = new StringBuilder();
-				URL urlVal = new URL(urlToken);
-				StringBuilder postData = new StringBuilder();
-				//
-				postData.append("client_id");
-				postData.append(StringPool.EQUAL);
-				postData.append(clientId);
-				//
-				postData.append(StringPool.AMPERSAND);
-				postData.append("client_secret");
-				postData.append(StringPool.EQUAL);
-				postData.append(clientSecret);
-				//
-				postData.append(StringPool.AMPERSAND);
-				postData.append("grant_type");
-				postData.append(StringPool.EQUAL);
-				postData.append(grantType);
-	
-				java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlVal.openConnection();
-				conToken.setRequestMethod("POST");
-				conToken.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
-				conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, ConstantUtils.CONTENT_TYPE_XXX_FORM_URLENCODED);
-				conToken.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
-						StringPool.BLANK + Integer.toString(postData.toString().getBytes().length));
-	
-				conToken.setUseCaches(false);
-				conToken.setDoInput(true);
-				conToken.setDoOutput(true);
-				_log.debug("POST DATA: " + postData.toString());
-				OutputStream osToken = conToken.getOutputStream();
-				osToken.write(postData.toString().getBytes());
-				osToken.close();
-	
-				BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
-	
-				int cpToken;
-				while ((cpToken = brfToken.read()) != -1) {
-					sbToken.append((char) cpToken);
-				}
-				_log.debug("RESULT PROXY: " + sbToken.toString());
-				if (Validator.isNotNull(sbToken.toString())) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+				String strToken = ApplicantUtils.getTokenLGSP();
+				_log.debug("RESULT PROXY: " + strToken);
+				if (Validator.isNotNull(strToken)) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
 					//
 					if (jsonToken.has("access_token") && jsonToken.has("token_type")
 							&& Validator.isNotNull(jsonToken.getString("access_token"))

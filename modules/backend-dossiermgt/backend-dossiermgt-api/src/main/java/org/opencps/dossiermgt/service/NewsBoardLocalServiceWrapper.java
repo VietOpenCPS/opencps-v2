@@ -46,6 +46,18 @@ public class NewsBoardLocalServiceWrapper implements NewsBoardLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.NewsBoard adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return _newsBoardLocalService.adminProcessData(objectData);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.NewsBoard adminProcessDelete(Long id)
+		throws Exception {
+		return _newsBoardLocalService.adminProcessDelete(id);
+	}
+
+	@Override
 	public int countByNewsBoardList(long groupId) {
 		return _newsBoardLocalService.countByNewsBoardList(groupId);
 	}
@@ -53,13 +65,13 @@ public class NewsBoardLocalServiceWrapper implements NewsBoardLocalService,
 	/**
 	* Creates a new news board with the primary key. Does not add the news board to the database.
 	*
-	* @param newBoardId the primary key for the new news board
+	* @param newsBoardId the primary key for the new news board
 	* @return the new news board
 	*/
 	@Override
 	public org.opencps.dossiermgt.model.NewsBoard createNewsBoard(
-		long newBoardId) {
-		return _newsBoardLocalService.createNewsBoard(newBoardId);
+		long newsBoardId) {
+		return _newsBoardLocalService.createNewsBoard(newsBoardId);
 	}
 
 	@Override
@@ -73,15 +85,15 @@ public class NewsBoardLocalServiceWrapper implements NewsBoardLocalService,
 	/**
 	* Deletes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board that was removed
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	@Override
 	public org.opencps.dossiermgt.model.NewsBoard deleteNewsBoard(
-		long newBoardId)
+		long newsBoardId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _newsBoardLocalService.deleteNewsBoard(newBoardId);
+		return _newsBoardLocalService.deleteNewsBoard(newsBoardId);
 	}
 
 	/**
@@ -192,8 +204,8 @@ public class NewsBoardLocalServiceWrapper implements NewsBoardLocalService,
 
 	@Override
 	public org.opencps.dossiermgt.model.NewsBoard fetchNewsBoard(
-		long newBoardId) {
-		return _newsBoardLocalService.fetchNewsBoard(newBoardId);
+		long newsBoardId) {
+		return _newsBoardLocalService.fetchNewsBoard(newsBoardId);
 	}
 
 	/**
@@ -229,14 +241,14 @@ public class NewsBoardLocalServiceWrapper implements NewsBoardLocalService,
 	/**
 	* Returns the news board with the primary key.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	@Override
-	public org.opencps.dossiermgt.model.NewsBoard getNewsBoard(long newBoardId)
+	public org.opencps.dossiermgt.model.NewsBoard getNewsBoard(long newsBoardId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _newsBoardLocalService.getNewsBoard(newBoardId);
+		return _newsBoardLocalService.getNewsBoard(newsBoardId);
 	}
 
 	/**

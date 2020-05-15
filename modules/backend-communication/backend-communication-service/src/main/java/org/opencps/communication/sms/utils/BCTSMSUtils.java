@@ -26,7 +26,7 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 public class BCTSMSUtils {
 
 	public static String sendSMS(
-		long groupId, String body, String title, String toTelNo)
+		long groupId, String classPK, String body, String title, String toTelNo)
 		throws RemoteException, ServiceException {
 
 		//CcApi_ServiceLocator locator = new CcApi_ServiceLocator();
@@ -60,7 +60,7 @@ public class BCTSMSUtils {
 				String toTelNoRpl = toTelNo;
 				if ("+84".equals(toTelNo.substring(0, 2))) {
 					toTelNoRpl = toTelNo.replace("+84", "0");
-				} else if ("+84".equals(toTelNo.substring(0, 1))) {
+				} else if ("84".equals(toTelNo.substring(0, 1))) {
 					toTelNoRpl = toTelNo.replace("84", "0");
 				}
 
@@ -75,33 +75,41 @@ public class BCTSMSUtils {
 					Iterator<?> keys = configObj.keys();
 					while (keys.hasNext()) {
 						String key = (String) keys.next();
-						if (!"".equals(postData.toString()) && key.equals(SendSMSTerm.BCT_USER_NAME)
-								&& key.equals(SendSMSTerm.BCT_SECRET) && "url".contentEquals(key)) {
+						if (!"".equals(postData.toString()) && !key.equals(SendSMSTerm.BCT_USER_NAME)
+								&& !key.equals(SendSMSTerm.BCT_SECRET) && !"url".contentEquals(key)) {
 							postData.append("&");
 						}
-						postData.append(key);
-						postData.append("=");
-						postData.append(configObj.get(key));
+						if (!key.equals(SendSMSTerm.BCT_USER_NAME) && !key.equals(SendSMSTerm.BCT_SECRET)
+								&& !"url".contentEquals(key)) {
+							postData.append(key);
+							postData.append("=");
+							postData.append(configObj.get(key));
+						}
+					}
+					if (!"".equals(postData.toString())) {
+						postData.append("&");
 					}
 					//Add new key
 					postData.append("msisdn");
 					postData.append("=");
 					postData.append(toTelNoRpl);
 					//
+					postData.append("&");
 					postData.append("sale_order_id");
 					postData.append("=");
-					postData.append(100);
+					postData.append("BZ" + classPK);
 					//
+					postData.append("&");
 					postData.append("content");
 					postData.append("=");
-					postData.append(body +" : "+ 100);
+					postData.append(body + " BZ" + classPK);
 
 
 					apiUrl = serverUrl + "/send-sms";
 					URL urlVal = new URL(apiUrl);
 					_log.debug("API URL: " + apiUrl);
 					java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
-					conn.setRequestProperty("groupId", String.valueOf(groupId));
+					//conn.setRequestProperty("groupId", String.valueOf(groupId));
 					conn.setRequestMethod("POST");
 					conn.setRequestProperty("Accept", "application/json");
 					conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
@@ -140,5 +148,5 @@ public class BCTSMSUtils {
 	}
 
 	private static final Log _log =
-		LogFactoryUtil.getLog(ViettelSMSUtils.class);
+		LogFactoryUtil.getLog(BCTSMSUtils.class);
 }

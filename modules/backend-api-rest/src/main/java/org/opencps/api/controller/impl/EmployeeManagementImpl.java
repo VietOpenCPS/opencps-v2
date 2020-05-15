@@ -165,7 +165,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
+			Date birthdate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
@@ -177,7 +177,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			String title = HtmlUtil.escape(input.getTitle());
 			
 			Employee employee = actions.create(user.getUserId(), company.getCompanyId(), groupId, employeeNo,
-					fullName, email, input.getGender(), birthDate, telNo,
+					fullName, email, input.getGender(), birthdate, telNo,
 					mobile, title, input.getWorkingStatus(), recruitDate, leaveDate,
 					serviceContext);
 
@@ -200,7 +200,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
-			Date birthDate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
+			Date birthdate = DateTimeUtils.convertStringToDateAPI(input.getBirthdate());
 			Date recruitDate = DateTimeUtils.convertStringToDateAPI(input.getRecruitDate());
 			Date leaveDate = DateTimeUtils.convertStringToDateAPI(input.getLeaveDate());
 
@@ -212,7 +212,7 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			String title = HtmlUtil.escape(input.getTitle());
 
 			Employee employee = actions.update(user.getUserId(), company.getCompanyId(), groupId, id,
-					employeeNo, fullName, email, input.getGender(), birthDate,
+					employeeNo, fullName, email, input.getGender(), birthdate,
 					telNo, mobile, title, input.getWorkingStatus(), recruitDate,
 					leaveDate, serviceContext);
 

@@ -195,6 +195,10 @@ public interface FileItemLocalService extends BaseLocalService,
 
 	public List<FileItem> findByG_FTNS(long groupId, String[] fileTemplateNos);
 
+	public List<FileItem> findByG_S(long groupId, int status);
+
+	public List<FileItem> findByG_S(long groupId, int status, int start, int end);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

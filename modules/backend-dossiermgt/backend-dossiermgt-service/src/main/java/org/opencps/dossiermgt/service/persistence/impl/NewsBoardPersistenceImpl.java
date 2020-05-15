@@ -399,17 +399,17 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Returns the news boards before and after the current news board in the ordered set where uuid = &#63;.
 	 *
-	 * @param newBoardId the primary key of the current news board
+	 * @param newsBoardId the primary key of the current news board
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next news board
 	 * @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard[] findByUuid_PrevAndNext(long newBoardId, String uuid,
+	public NewsBoard[] findByUuid_PrevAndNext(long newsBoardId, String uuid,
 		OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException {
-		NewsBoard newsBoard = findByPrimaryKey(newBoardId);
+		NewsBoard newsBoard = findByPrimaryKey(newsBoardId);
 
 		Session session = null;
 
@@ -1220,7 +1220,7 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Returns the news boards before and after the current news board in the ordered set where uuid = &#63; and companyId = &#63;.
 	 *
-	 * @param newBoardId the primary key of the current news board
+	 * @param newsBoardId the primary key of the current news board
 	 * @param uuid the uuid
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1228,10 +1228,10 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	 * @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard[] findByUuid_C_PrevAndNext(long newBoardId, String uuid,
+	public NewsBoard[] findByUuid_C_PrevAndNext(long newsBoardId, String uuid,
 		long companyId, OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException {
-		NewsBoard newsBoard = findByPrimaryKey(newBoardId);
+		NewsBoard newsBoard = findByPrimaryKey(newsBoardId);
 
 		Session session = null;
 
@@ -1762,17 +1762,17 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Returns the news boards before and after the current news board in the ordered set where groupId = &#63;.
 	 *
-	 * @param newBoardId the primary key of the current news board
+	 * @param newsBoardId the primary key of the current news board
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next news board
 	 * @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard[] findByF_GID_PrevAndNext(long newBoardId, long groupId,
+	public NewsBoard[] findByF_GID_PrevAndNext(long newsBoardId, long groupId,
 		OrderByComparator<NewsBoard> orderByComparator)
 		throws NoSuchNewsBoardException {
-		NewsBoard newsBoard = findByPrimaryKey(newBoardId);
+		NewsBoard newsBoard = findByPrimaryKey(newsBoardId);
 
 		Session session = null;
 
@@ -2114,15 +2114,15 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Creates a new news board with the primary key. Does not add the news board to the database.
 	 *
-	 * @param newBoardId the primary key for the new news board
+	 * @param newsBoardId the primary key for the new news board
 	 * @return the new news board
 	 */
 	@Override
-	public NewsBoard create(long newBoardId) {
+	public NewsBoard create(long newsBoardId) {
 		NewsBoard newsBoard = new NewsBoardImpl();
 
 		newsBoard.setNew(true);
-		newsBoard.setPrimaryKey(newBoardId);
+		newsBoard.setPrimaryKey(newsBoardId);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -2136,13 +2136,13 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Removes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param newBoardId the primary key of the news board
+	 * @param newsBoardId the primary key of the news board
 	 * @return the news board that was removed
 	 * @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard remove(long newBoardId) throws NoSuchNewsBoardException {
-		return remove((Serializable)newBoardId);
+	public NewsBoard remove(long newsBoardId) throws NoSuchNewsBoardException {
+		return remove((Serializable)newsBoardId);
 	}
 
 	/**
@@ -2414,14 +2414,14 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Returns the news board with the primary key or throws a {@link NoSuchNewsBoardException} if it could not be found.
 	 *
-	 * @param newBoardId the primary key of the news board
+	 * @param newsBoardId the primary key of the news board
 	 * @return the news board
 	 * @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard findByPrimaryKey(long newBoardId)
+	public NewsBoard findByPrimaryKey(long newsBoardId)
 		throws NoSuchNewsBoardException {
-		return findByPrimaryKey((Serializable)newBoardId);
+		return findByPrimaryKey((Serializable)newsBoardId);
 	}
 
 	/**
@@ -2475,12 +2475,12 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	/**
 	 * Returns the news board with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param newBoardId the primary key of the news board
+	 * @param newsBoardId the primary key of the news board
 	 * @return the news board, or <code>null</code> if a news board with the primary key could not be found
 	 */
 	@Override
-	public NewsBoard fetchByPrimaryKey(long newBoardId) {
-		return fetchByPrimaryKey((Serializable)newBoardId);
+	public NewsBoard fetchByPrimaryKey(long newsBoardId) {
+		return fetchByPrimaryKey((Serializable)newsBoardId);
 	}
 
 	@Override
@@ -2798,7 +2798,7 @@ public class NewsBoardPersistenceImpl extends BasePersistenceImpl<NewsBoard>
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_NEWSBOARD = "SELECT newsBoard FROM NewsBoard newsBoard";
-	private static final String _SQL_SELECT_NEWSBOARD_WHERE_PKS_IN = "SELECT newsBoard FROM NewsBoard newsBoard WHERE newBoardId IN (";
+	private static final String _SQL_SELECT_NEWSBOARD_WHERE_PKS_IN = "SELECT newsBoard FROM NewsBoard newsBoard WHERE newsBoardId IN (";
 	private static final String _SQL_SELECT_NEWSBOARD_WHERE = "SELECT newsBoard FROM NewsBoard newsBoard WHERE ";
 	private static final String _SQL_COUNT_NEWSBOARD = "SELECT COUNT(newsBoard) FROM NewsBoard newsBoard";
 	private static final String _SQL_COUNT_NEWSBOARD_WHERE = "SELECT COUNT(newsBoard) FROM NewsBoard newsBoard WHERE ";

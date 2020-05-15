@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <custom-sql>
-	<sql id="org.opencps.usermgt.service.persistence.QuestionFinder.findQuestionSearch">
-		<![CDATA[
+    <sql id="org.opencps.usermgt.service.persistence.QuestionFinder.findQuestionSearch">
+        <![CDATA[
 			SELECT q.* 
 			FROM opencps_question AS q 
 			LEFT JOIN opencps_answer as a 
@@ -19,21 +19,21 @@
 			LIMIT ?
 			OFFSET ?
 		]]>
-	</sql>
-	<!--tìm số lượng truy cập trong một khoảng thời gian -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findPeriod">
-		<![CDATA[
+    </sql>
+    <!--tìm số lượng truy cập trong một khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findPeriod">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
 				o.day <> 0
 				AND o.createDate BETWEEN ? AND ?
 		]]>
-	</sql>
+    </sql>
 
-	<!-- tìm các url xuất hiện trong khoảng thời gian -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLPeriod">
-		<![CDATA[
+    <!-- tìm các url xuất hiện trong khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLPeriod">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
@@ -41,10 +41,10 @@
 				AND o.createDate BETWEEN ? AND ?
 			GROUP BY o.url
 		]]>
-	</sql>
-	<!-- tìm số lượng truy cập vào url xuất hiện trong khoảng thời gian -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLPeriod">
-		<![CDATA[
+    </sql>
+    <!-- tìm số lượng truy cập vào url xuất hiện trong khoảng thời gian -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLPeriod">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
@@ -52,22 +52,22 @@
 				AND o.createDate BETWEEN ? AND ?
 				AND o.url = ?
 		]]>
-	</sql>
+    </sql>
 
 
-	<!--Tìm số lượng truy cập trong tất cả các năm -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAllYear">
-		<![CDATA[
+    <!--Tìm số lượng truy cập trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAllYear">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
 				o.day = 0 AND o.month = 0
 			ORDER BY o.year ASC
 		]]>
-	</sql>
-	<!-- tìm các url xuất hiện trong tất cả các năm -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLAllYear">
-		<![CDATA[
+    </sql>
+    <!-- tìm các url xuất hiện trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLAllYear">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
@@ -75,10 +75,10 @@
 			GROUP BY o.url
 			ORDER BY o.year ASC
 		]]>
-	</sql>
-	<!-- tìm số lượng truy cập vào url xuất hiện trong tất cả các năm -->
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLAllYear">
-		<![CDATA[
+    </sql>
+    <!-- tìm số lượng truy cập vào url xuất hiện trong tất cả các năm -->
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessURLAllYear">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
@@ -86,11 +86,11 @@
 					AND o.url = ?
 			ORDER BY o.year ASC
 		]]>
-	</sql>
+    </sql>
 
 
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessPeriodDesktopMobileTablet">
-		<![CDATA[
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findAccessPeriodDesktopMobileTablet">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	opencps_track_client_statistic AS o
 			WHERE
@@ -100,10 +100,10 @@
 				AND o.mobile = ?
 				AND o.tablet = ?
 		]]>
-	</sql>
+    </sql>
 
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPreviousPage">
-		<![CDATA[
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPreviousPage">
+        <![CDATA[
 			SELECT 	o.*
 			FROM 	`opencps_track_client` AS o
 			WHERE 	o.sessionId = ? AND
@@ -111,11 +111,11 @@
             			FROM `opencps_track_client`
             			WHERE sessionId = ? )
 		]]>
-	</sql>
+    </sql>
 
 
-	<sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getOnline">
-		<![CDATA[
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getOnline">
+        <![CDATA[
 		select
 		(SELECT count(*)
         FROM (SELECT *
@@ -140,9 +140,17 @@
                                        WHERE sessionId = guest.sessionId)) as o
         WHERE o.leaveDate > DATE_ADD(NOW() , INTERVAL - ? MINUTE )) guest;
 		]]>
-	</sql>
+    </sql>
 
-
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getTopURLUserAccess">
+        <![CDATA[
+        SELECT url , count(*) count
+        FROM qa_bxd.opencps_track_client
+        WHERE userId = ?
+        GROUP BY url
+        ORDER BY count DESC
+        ]]>
+    </sql>
 
 
 </custom-sql>

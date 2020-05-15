@@ -2009,6 +2009,287 @@ public class DictItemUtil {
 	}
 
 	/**
+	* Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or throws a {@link NoSuchDictItemException} if it could not be found.
+	*
+	* @param idLGSP the id lgsp
+	* @param dictCollectionId the dict collection ID
+	* @return the matching dict item
+	* @throws NoSuchDictItemException if a matching dict item could not be found
+	*/
+	public static DictItem findByILGSP_DCI(long idLGSP, long dictCollectionId)
+		throws org.opencps.datamgt.exception.NoSuchDictItemException {
+		return getPersistence().findByILGSP_DCI(idLGSP, dictCollectionId);
+	}
+
+	/**
+	* Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param idLGSP the id lgsp
+	* @param dictCollectionId the dict collection ID
+	* @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public static DictItem fetchByILGSP_DCI(long idLGSP, long dictCollectionId) {
+		return getPersistence().fetchByILGSP_DCI(idLGSP, dictCollectionId);
+	}
+
+	/**
+	* Returns the dict item where idLGSP = &#63; and dictCollectionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param idLGSP the id lgsp
+	* @param dictCollectionId the dict collection ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public static DictItem fetchByILGSP_DCI(long idLGSP, long dictCollectionId,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchByILGSP_DCI(idLGSP, dictCollectionId, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dict item where idLGSP = &#63; and dictCollectionId = &#63; from the database.
+	*
+	* @param idLGSP the id lgsp
+	* @param dictCollectionId the dict collection ID
+	* @return the dict item that was removed
+	*/
+	public static DictItem removeByILGSP_DCI(long idLGSP, long dictCollectionId)
+		throws org.opencps.datamgt.exception.NoSuchDictItemException {
+		return getPersistence().removeByILGSP_DCI(idLGSP, dictCollectionId);
+	}
+
+	/**
+	* Returns the number of dict items where idLGSP = &#63; and dictCollectionId = &#63;.
+	*
+	* @param idLGSP the id lgsp
+	* @param dictCollectionId the dict collection ID
+	* @return the number of matching dict items
+	*/
+	public static int countByILGSP_DCI(long idLGSP, long dictCollectionId) {
+		return getPersistence().countByILGSP_DCI(idLGSP, dictCollectionId);
+	}
+
+	/**
+	* Returns all the dict items where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @return the matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long dictItemId) {
+		return getPersistence().findByF_IDS(dictItemId);
+	}
+
+	/**
+	* Returns a range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @return the range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long dictItemId, int start, int end) {
+		return getPersistence().findByF_IDS(dictItemId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long dictItemId, int start,
+		int end, OrderByComparator<DictItem> orderByComparator) {
+		return getPersistence()
+				   .findByF_IDS(dictItemId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long dictItemId, int start,
+		int end, OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_IDS(dictItemId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dict item
+	* @throws NoSuchDictItemException if a matching dict item could not be found
+	*/
+	public static DictItem findByF_IDS_First(long dictItemId,
+		OrderByComparator<DictItem> orderByComparator)
+		throws org.opencps.datamgt.exception.NoSuchDictItemException {
+		return getPersistence().findByF_IDS_First(dictItemId, orderByComparator);
+	}
+
+	/**
+	* Returns the first dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public static DictItem fetchByF_IDS_First(long dictItemId,
+		OrderByComparator<DictItem> orderByComparator) {
+		return getPersistence().fetchByF_IDS_First(dictItemId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dict item
+	* @throws NoSuchDictItemException if a matching dict item could not be found
+	*/
+	public static DictItem findByF_IDS_Last(long dictItemId,
+		OrderByComparator<DictItem> orderByComparator)
+		throws org.opencps.datamgt.exception.NoSuchDictItemException {
+		return getPersistence().findByF_IDS_Last(dictItemId, orderByComparator);
+	}
+
+	/**
+	* Returns the last dict item in the ordered set where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching dict item, or <code>null</code> if a matching dict item could not be found
+	*/
+	public static DictItem fetchByF_IDS_Last(long dictItemId,
+		OrderByComparator<DictItem> orderByComparator) {
+		return getPersistence().fetchByF_IDS_Last(dictItemId, orderByComparator);
+	}
+
+	/**
+	* Returns all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @return the matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long[] dictItemIds) {
+		return getPersistence().findByF_IDS(dictItemIds);
+	}
+
+	/**
+	* Returns a range of all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @return the range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end) {
+		return getPersistence().findByF_IDS(dictItemIds, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemIds the dict item IDs
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end, OrderByComparator<DictItem> orderByComparator) {
+		return getPersistence()
+				   .findByF_IDS(dictItemIds, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the dict items where dictItemId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DictItemModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param dictItemId the dict item ID
+	* @param start the lower bound of the range of dict items
+	* @param end the upper bound of the range of dict items (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching dict items
+	*/
+	public static List<DictItem> findByF_IDS(long[] dictItemIds, int start,
+		int end, OrderByComparator<DictItem> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_IDS(dictItemIds, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the dict items where dictItemId = &#63; from the database.
+	*
+	* @param dictItemId the dict item ID
+	*/
+	public static void removeByF_IDS(long dictItemId) {
+		getPersistence().removeByF_IDS(dictItemId);
+	}
+
+	/**
+	* Returns the number of dict items where dictItemId = &#63;.
+	*
+	* @param dictItemId the dict item ID
+	* @return the number of matching dict items
+	*/
+	public static int countByF_IDS(long dictItemId) {
+		return getPersistence().countByF_IDS(dictItemId);
+	}
+
+	/**
+	* Returns the number of dict items where dictItemId = any &#63;.
+	*
+	* @param dictItemIds the dict item IDs
+	* @return the number of matching dict items
+	*/
+	public static int countByF_IDS(long[] dictItemIds) {
+		return getPersistence().countByF_IDS(dictItemIds);
+	}
+
+	/**
 	* Caches the dict item in the entity cache if it is enabled.
 	*
 	* @param dictItem the dict item

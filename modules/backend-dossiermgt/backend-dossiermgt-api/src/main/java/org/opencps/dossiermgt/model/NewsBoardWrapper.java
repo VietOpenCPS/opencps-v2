@@ -60,7 +60,7 @@ public class NewsBoardWrapper implements NewsBoard, ModelWrapper<NewsBoard> {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
-		attributes.put("newBoardId", getNewBoardId());
+		attributes.put("newsBoardId", getNewsBoardId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -82,10 +82,10 @@ public class NewsBoardWrapper implements NewsBoard, ModelWrapper<NewsBoard> {
 			setUuid(uuid);
 		}
 
-		Long newBoardId = (Long)attributes.get("newBoardId");
+		Long newsBoardId = (Long)attributes.get("newsBoardId");
 
-		if (newBoardId != null) {
-			setNewBoardId(newBoardId);
+		if (newsBoardId != null) {
+			setNewsBoardId(newsBoardId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -199,13 +199,13 @@ public class NewsBoardWrapper implements NewsBoard, ModelWrapper<NewsBoard> {
 	}
 
 	/**
-	* Returns the new board ID of this news board.
+	* Returns the news board ID of this news board.
 	*
-	* @return the new board ID of this news board
+	* @return the news board ID of this news board
 	*/
 	@Override
-	public long getNewBoardId() {
-		return _newsBoard.getNewBoardId();
+	public long getNewsBoardId() {
+		return _newsBoard.getNewsBoardId();
 	}
 
 	/**
@@ -385,13 +385,13 @@ public class NewsBoardWrapper implements NewsBoard, ModelWrapper<NewsBoard> {
 	}
 
 	/**
-	* Sets the new board ID of this news board.
+	* Sets the news board ID of this news board.
 	*
-	* @param newBoardId the new board ID of this news board
+	* @param newsBoardId the news board ID of this news board
 	*/
 	@Override
-	public void setNewBoardId(long newBoardId) {
-		_newsBoard.setNewBoardId(newBoardId);
+	public void setNewsBoardId(long newsBoardId) {
+		_newsBoard.setNewsBoardId(newsBoardId);
 	}
 
 	/**

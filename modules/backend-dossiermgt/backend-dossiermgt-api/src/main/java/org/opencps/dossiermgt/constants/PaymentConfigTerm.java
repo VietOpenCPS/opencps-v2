@@ -14,6 +14,7 @@ public class PaymentConfigTerm {
 	public static final String INVOICE_LAST_NO = "invoiceLastNo";
 	public static final String INVOICE_FORM = "invoiceForm";
 	public static final String BANK_INFO = "bankInfo";
+	public static final String BANK_ACCOUNT_INFO = "bankAccountInfo";
 	public static final String EPAYMENT_CONFIG = "epaymentConfig";
 	
 	public static final String NUM_TO_WORD = "numToWord";

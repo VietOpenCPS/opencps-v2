@@ -207,6 +207,9 @@ public interface TrackClientLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> getTopURLUserAccess(long userId);
+
 	/**
 	* Returns the track client with the primary key.
 	*

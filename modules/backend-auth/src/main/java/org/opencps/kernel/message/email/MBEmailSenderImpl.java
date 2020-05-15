@@ -39,6 +39,8 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					break;
 				}
 			}
+			_log.debug("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
+			
 			if (needSendEmail) {
 				MailMessage mailMessage = new MailMessage();
 				mailMessage.setSubject(messageEntry.getEmailSubject());
@@ -50,6 +52,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				String smtpUser = PrefsPropsUtil.getString(
 						PropsKeys.MAIL_SESSION_MAIL_SMTP_USER,
 						StringPool.BLANK);
+				_log.debug("Send from email: " + smtpUser);
 				if (Validator.isNotNull(smtpUser)) {
 					messageEntry.getFrom().setAddress(smtpUser);				
 					mailMessage.setFrom(messageEntry.getFrom());

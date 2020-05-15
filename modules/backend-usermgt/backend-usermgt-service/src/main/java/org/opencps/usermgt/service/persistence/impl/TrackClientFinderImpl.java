@@ -69,7 +69,32 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 			e.printStackTrace();
 			return null;
 		}
+	}
 
+	@Override
+	public List<Object[]> getTopURLUserAccess(long userId)
+	{
+		Session session;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),TrackClientFinder.class.getName() + ".getTopURLUserAccess");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+
+			query.addScalar("url",Type.STRING);
+			query.addScalar("count",Type.INTEGER);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(userId);
+
+			return (List<Object[]>) query.list();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

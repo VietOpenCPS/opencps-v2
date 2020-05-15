@@ -59,6 +59,9 @@ public class OneMinute extends BaseMessageListener {
 	private static boolean flagJobMail = Validator.isNotNull(PropsUtil.get("opencps.notify.job.mail"))
 			? GetterUtil.getBoolean(PropsUtil.get("opencps.notify.job.mail"))
 			: false;
+	private static String agencySMS = Validator.isNotNull(PropsUtil.get("opencps.notify.agency.sms"))
+			? GetterUtil.getString(PropsUtil.get("opencps.notify.agency.sms"))
+			: StringPool.BLANK;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -82,6 +85,7 @@ public class OneMinute extends BaseMessageListener {
 		List<NotificationQueue> notificationQueues = NotificationQueueLocalServiceUtil
 				.findByF_LessThan_ExpireDate(new Date());
 
+		_log.info("notificationQueues check SIZE: "+notificationQueues.size());
 		if (notificationQueues != null) {
 	
 			_log.info("notificationQueues SIZE: "+notificationQueues.size());
@@ -109,8 +113,9 @@ public class OneMinute extends BaseMessageListener {
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
 
-								if (NotificationType.BOOKING_01.equalsIgnoreCase(messageEntry.getNotificationType())) {
-									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
+								if ("BCT".equalsIgnoreCase(agencySMS)) {
+									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
+											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
 											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 									JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
 									if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
@@ -154,9 +159,11 @@ public class OneMinute extends BaseMessageListener {
 								flagSend = true;
 							} */
 
-							if (NotificationType.BOOKING_01.equalsIgnoreCase(messageEntry.getNotificationType())) {
-								String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
-										messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+							_log.info("notificationQueue.getNotificationType(): "+notificationQueue.getNotificationType());
+							if ("BCT".equalsIgnoreCase(agencySMS)) {
+									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
+											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
+											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
 								JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
 								if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
 									resultSendSMS.setMessage("Success");

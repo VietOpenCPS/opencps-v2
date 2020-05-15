@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -169,6 +170,17 @@ public interface SyncSchedulerLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SyncScheduler fetchSyncScheduler(long syncSchedulerId);
 
+	/**
+	* Returns the sync scheduler matching the UUID and group.
+	*
+	* @param uuid the sync scheduler's UUID
+	* @param groupId the primary key of the group
+	* @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncScheduler fetchSyncSchedulerByUuidAndGroupId(String uuid,
+		long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -179,6 +191,9 @@ public interface SyncSchedulerLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SyncScheduler getByClassNameAndTypeCode(String className,
 		String typeCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SyncScheduler> getByF_NAME_RETRY(String className, int retry);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -207,6 +222,18 @@ public interface SyncSchedulerLocalService extends BaseLocalService,
 		throws PortalException;
 
 	/**
+	* Returns the sync scheduler matching the UUID and group.
+	*
+	* @param uuid the sync scheduler's UUID
+	* @param groupId the primary key of the group
+	* @return the matching sync scheduler
+	* @throws PortalException if a matching sync scheduler could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SyncScheduler getSyncSchedulerByUuidAndGroupId(String uuid,
+		long groupId) throws PortalException;
+
+	/**
 	* Returns a range of all the sync schedulers.
 	*
 	* <p>
@@ -227,6 +254,10 @@ public interface SyncSchedulerLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSyncSchedulersCount();
+
+	public SyncScheduler updateSyncScheduler(long syncSchedulerId,
+		long groupId, String className, String typeCode, Date syncDate,
+		int retry, ServiceContext serviceContext);
 
 	/**
 	* Updates the sync scheduler in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

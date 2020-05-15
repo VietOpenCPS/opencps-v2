@@ -26,4 +26,6 @@ public interface TrackClientFinder {
 		String sessionId);
 
 	public java.util.List<Object[]> getOnline();
+
+	public java.util.List<Object[]> getTopURLUserAccess(long userId);
 }

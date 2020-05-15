@@ -120,6 +120,20 @@ public interface SyncSchedulerModel extends BaseModel<SyncScheduler> {
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the group ID of this sync scheduler.
+	 *
+	 * @return the group ID of this sync scheduler
+	 */
+	public long getGroupId();
+
+	/**
+	 * Sets the group ID of this sync scheduler.
+	 *
+	 * @param groupId the group ID of this sync scheduler
+	 */
+	public void setGroupId(long groupId);
+
+	/**
 	 * Returns the class name of this sync scheduler.
 	 *
 	 * @return the class name of this sync scheduler
@@ -162,6 +176,20 @@ public interface SyncSchedulerModel extends BaseModel<SyncScheduler> {
 	 * @param syncDate the sync date of this sync scheduler
 	 */
 	public void setSyncDate(Date syncDate);
+
+	/**
+	 * Returns the retry of this sync scheduler.
+	 *
+	 * @return the retry of this sync scheduler
+	 */
+	public int getRetry();
+
+	/**
+	 * Sets the retry of this sync scheduler.
+	 *
+	 * @param retry the retry of this sync scheduler
+	 */
+	public void setRetry(int retry);
 
 	@Override
 	public boolean isNew();

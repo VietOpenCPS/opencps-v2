@@ -66,6 +66,7 @@
 		<property name="sibling" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="treeIndex" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="idLGSP" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.datamgt.model.impl.DictItemGroupImpl" table="opencps_dictitemgroup">
 		<id name="dictItemGroupId" type="long">

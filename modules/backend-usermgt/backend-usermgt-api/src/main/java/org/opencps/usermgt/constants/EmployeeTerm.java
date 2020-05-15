@@ -29,7 +29,7 @@ public class EmployeeTerm {
 
 	public static final String GENDER = "gender";
 
-	public static final String BIRTH_DATE = "birthDate";
+	public static final String BIRTH_DATE = "birthdate";
 
 	public static final String TELNO = "telNo";
 
@@ -90,7 +90,7 @@ public class EmployeeTerm {
 
 	public static final String GENDER_SORTABLE = "gender_sortable";
 
-	public static final String BIRTH_DATE_SORTABLE = "birthDate_sortable";
+	public static final String BIRTH_DATE_SORTABLE = "birthdate_sortable";
 
 	public static final String TELNO_SORTABLE = "telNo_sortable";
 
@@ -151,7 +151,7 @@ public class EmployeeTerm {
 
 	private int gender;
 
-	private Date birthDate;
+	private Date birthdate;
 
 	private String telNo;
 
@@ -258,12 +258,12 @@ public class EmployeeTerm {
 		this.gender = gender;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
+	public Date getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
 	}
 
 	public String getTelNo() {

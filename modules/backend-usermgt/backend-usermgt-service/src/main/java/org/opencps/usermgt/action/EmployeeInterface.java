@@ -28,13 +28,13 @@ public interface EmployeeInterface {
 			Sort[] sorts, int start, int end, ServiceContext serviceContext);
 
 	Employee create(long userId, long companyId, long groupId, String employeeNo, String fullName, String email,
-			String gender, Date birthDate, String telNo, String mobile, String title, String workingStatus,
+			String gender, Date birthdate, String telNo, String mobile, String title, String workingStatus,
 			Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 			throws NoSuchUserException, UnauthenticationException, UnauthorizationException,
 			DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;
 
 	Employee update(long userId, long companyId, long groupId, long id, String employeeNo, String fullName,
-			String email, String gender, Date birthDate, String telNo, String mobile, String title,
+			String email, String gender, Date birthdate, String telNo, String mobile, String title,
 			String workingStatus, Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 			throws NoSuchUserException, NotFoundException, UnauthenticationException, UnauthorizationException,
 			DuplicateEmployeeNoException, DuplicateEmployeeEmailException, PortalException;

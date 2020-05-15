@@ -92,7 +92,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee addEmployee(long userId, long groupId, String fullName,
-		String employeeNo, int gender, Date birthDate, String telNo,
+		String employeeNo, int gender, Date birthdate, String telNo,
 		String mobile, String email, int workingStatus, long mainJobPostId,
 		String title, boolean isCreateUser, Date recruitDate, Date leaveDate,
 		ServiceContext serviceContext)
@@ -102,7 +102,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee addEmployee(long userId, long groupId, String fullName,
-		String employeeNo, int gender, Date birthDate, String telNo,
+		String employeeNo, int gender, Date birthdate, String telNo,
 		String mobile, String email, int workingStatus, long mainJobPostId,
 		String title, String scope, boolean isCreateUser, Date recruitDate,
 		Date leaveDate, ServiceContext serviceContext)
@@ -370,7 +370,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee updateEmployee(long userId, long employeeId,
-		String fullName, String employeeNo, int gender, Date birthDate,
+		String fullName, String employeeNo, int gender, Date birthdate,
 		String telNo, String mobile, String email, int workingStatus,
 		long mainJobPostId, long photoFileEntryId, long mappingUserId,
 		String title, Date recruitDate, Date leaveDate,
@@ -381,7 +381,7 @@ public interface EmployeeLocalService extends BaseLocalService,
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Employee updateEmployee(long userId, long employeeId,
-		String fullName, String employeeNo, int gender, Date birthDate,
+		String fullName, String employeeNo, int gender, Date birthdate,
 		String telNo, String mobile, String email, int workingStatus,
 		long mainJobPostId, long photoFileEntryId, long mappingUserId,
 		String title, String scope, Date recruitDate, Date leaveDate,

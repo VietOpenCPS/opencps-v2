@@ -268,9 +268,11 @@ create table opencps_sync_scheduler (
 	syncSchedulerId LONG not null primary key,
 	createDate DATE null,
 	modifiedDate DATE null,
+	groupId LONG,
 	className VARCHAR(255) null,
 	typeCode VARCHAR(255) null,
-	syncDate DATE null
+	syncDate DATE null,
+	retry INTEGER
 );
 
 create table opencps_track_client (

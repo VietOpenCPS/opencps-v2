@@ -8,7 +8,6 @@ import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +94,23 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 				return jsonObject;
 		}
 		return null;
+	}
+
+	@Override public JSONObject getUserAccessStatistics(long userId,String sessionId )
+	{
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		List<Object[]> lists = (List<Object[]>) TrackClientLocalServiceUtil.getTopURLUserAccess(userId);
+		if (lists.size()!=0)
+			for (Object[] list:lists)
+			{
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+				jsonObject.put("url",list[0]);
+				jsonObject.put("count",list[1]);
+				jsonArray.put(jsonObject);
+			}
+		result.put("topURLUserAccess", jsonArray);
+		return result;
 	}
 
 }
