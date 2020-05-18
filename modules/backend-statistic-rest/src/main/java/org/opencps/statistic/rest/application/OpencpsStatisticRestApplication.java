@@ -1119,7 +1119,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 
-		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs);
+		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs, lstScs);
 	}
 
 	@POST

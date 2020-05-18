@@ -48,11 +48,12 @@ public class StatisticSumYearCalcular {
 	private OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyRestFacadeImpl();
 
 	/* Tính theo năm */
-	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs)
+	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs,
+			List<ServerConfig> lstScs)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
-		List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
+//		List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(groupId, DossierStatisticConstants.STATISTIC_PROTOCOL);
 		
 		dossierStatisticRequest.setMonth(-1);
 		dossierStatisticRequest.setYear(year);
@@ -71,10 +72,12 @@ public class StatisticSumYearCalcular {
 					dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
-
+					long startTime = System.currentTimeMillis();
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
-
+					long endTime = System.currentTimeMillis();
+					_log.debug("FINDER ALL DOMAIN, GOV, SYSTEM: " + (endTime - startTime) / 1000.0);
+					
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -648,10 +651,10 @@ public class StatisticSumYearCalcular {
 
 	/* Caculate all year */
 	public void filterSumAllYear(long companyId, long groupId, int month, boolean isDomain, boolean isAgency,
-			boolean isSystem, List<String> lstGroupGovs) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+			boolean isSystem, List<String> lstGroupGovs, List<ServerConfig> lstScs) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
-		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
-				DossierStatisticConstants.STATISTIC_PROTOCOL);
+//		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
+//				DossierStatisticConstants.STATISTIC_PROTOCOL);
 
 		dossierStatisticRequest.setMonth(0);
 		dossierStatisticRequest.setYear(-1);

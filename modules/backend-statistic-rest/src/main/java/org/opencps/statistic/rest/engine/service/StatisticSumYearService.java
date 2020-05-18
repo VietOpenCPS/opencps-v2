@@ -7,6 +7,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencps.communication.model.ServerConfig;
+
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
 import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
@@ -14,7 +16,7 @@ public class StatisticSumYearService {
 
 	private static final Log _log = LogFactoryUtil.getLog(StatisticSumYearService.class);
 
-	public void caculateSumYear(long companyId, long groupId, int year, List<String> lstGroupGovs)
+	public void caculateSumYear(long companyId, long groupId, int year, List<String> lstGroupGovs, List<ServerConfig> lstScs)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		//int year = LocalDate.now().getYear();
@@ -31,38 +33,38 @@ public class StatisticSumYearService {
 		
 		List<String> nonGroupGovs = new ArrayList<String>();
 		
-		//LOG.info("RUN#1" + groupId + "year" + year);
+		_log.info("RUN#1" + groupId + "year" + year);
 		/* filter all */
-		calcular1.filterSumYear(companyId, groupId, year, false, false, false, nonGroupGovs);
-		//LOG.info("RUN#2" + groupId + "year" + year);
+		calcular1.filterSumYear(companyId, groupId, year, false, false, false, nonGroupGovs, lstScs);
+		_log.info("RUN#2" + groupId + "year" + year);
 		/* filter domain = null, agency = null, systemId != null */
-		calcular2.filterSumYear(companyId, groupId, year, false, false, true, nonGroupGovs);
+		calcular2.filterSumYear(companyId, groupId, year, false, false, true, nonGroupGovs, lstScs);
 		
 		//LOG.info("RUN#3" + groupId + "year" + year);
 		/* filter domain = null, agency != null, systemId = null */
-		calcular3.filterSumYear(companyId, groupId, year, false, true, false, nonGroupGovs);
+		calcular3.filterSumYear(companyId, groupId, year, false, true, false, nonGroupGovs, lstScs);
 		
 		//LOG.info("RUN#4" + groupId + "year" + year);
 		/* filter domain != null, agency = null, systemId = null */
-		calcular4.filterSumYear(companyId, groupId, year, true, false, false, nonGroupGovs);
+		calcular4.filterSumYear(companyId, groupId, year, true, false, false, nonGroupGovs, lstScs);
 
 		//LOG.info("RUN#5" + groupId + "year" + year);
 		/* filter domain = null, agency != null, systemId != null */
-		calcular5.filterSumYear(companyId, groupId, year, false, true, true, nonGroupGovs);
+		calcular5.filterSumYear(companyId, groupId, year, false, true, true, nonGroupGovs, lstScs);
 
 		//LOG.info("RUN#6" + groupId + "year" + year);
 		/* filter domain != null, agency = null, systemId != null */
-		calcular6.filterSumYear(companyId, groupId, year, true, false, true, nonGroupGovs);
+		calcular6.filterSumYear(companyId, groupId, year, true, false, true, nonGroupGovs, lstScs);
 		
 		//LOG.info("RUN#7" + groupId + "year" + year);
 		/* filter domain != null, agency != null, systemId = null */
-		calcular7.filterSumYear(companyId, groupId, year, true, true, false, nonGroupGovs);
+		calcular7.filterSumYear(companyId, groupId, year, true, true, false, nonGroupGovs, lstScs);
 		
 		//LOG.info("RUN#8" + groupId + "year" + year);
 		/* filter domain != null, agency != null, systemId != null */
-		calcular8.filterSumYear(companyId, groupId, year, true, true, true, nonGroupGovs);
+		calcular8.filterSumYear(companyId, groupId, year, true, true, true, nonGroupGovs, lstScs);
 
-		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs);
+		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs);
 	}
 
 	public void votingCalculateSumYear(long companyId, long groupId, int year)
@@ -138,7 +140,7 @@ public class StatisticSumYearService {
 
 	}
 
-	public void caculateSumAllYear(long companyId, long groupId, int month, List<String> lstGroupGovs) {
+	public void caculateSumAllYear(long companyId, long groupId, int month, List<String> lstGroupGovs, List<ServerConfig> lstScs) {
 		//int year = LocalDate.now().getYear();
 		
 		StatisticSumYearCalcular calcular1 = new StatisticSumYearCalcular();
@@ -156,36 +158,36 @@ public class StatisticSumYearService {
 		try {
 			//LOG.info("RUN#1" + groupId + "year" + year);
 			/* filter all */
-			calcular1.filterSumAllYear(companyId, groupId, month, false, false, false, nonGroupGovs);
+			calcular1.filterSumAllYear(companyId, groupId, month, false, false, false, nonGroupGovs, lstScs);
 			//LOG.info("RUN#2" + groupId + "year" + year);
 			/* filter domain = null, agency = null, systemId != null */
-			calcular2.filterSumAllYear(companyId, groupId, month, false, false, true, nonGroupGovs);
+			calcular2.filterSumAllYear(companyId, groupId, month, false, false, true, nonGroupGovs, lstScs);
 			
 			//LOG.info("RUN#3" + groupId + "year" + year);
 			/* filter domain = null, agency != null, systemId = null */
-			calcular3.filterSumAllYear(companyId, groupId, month, false, true, false, nonGroupGovs);
+			calcular3.filterSumAllYear(companyId, groupId, month, false, true, false, nonGroupGovs, lstScs);
 			
 			//LOG.info("RUN#4" + groupId + "year" + year);
 			/* filter domain != null, agency = null, systemId = null */
-			calcular4.filterSumAllYear(companyId, groupId, month, true, false, false, nonGroupGovs);
+			calcular4.filterSumAllYear(companyId, groupId, month, true, false, false, nonGroupGovs, lstScs);
 
 			//LOG.info("RUN#5" + groupId + "year" + year);
 			/* filter domain = null, agency != null, systemId != null */
-			calcular5.filterSumAllYear(companyId, groupId, month, false, true, true, nonGroupGovs);
+			calcular5.filterSumAllYear(companyId, groupId, month, false, true, true, nonGroupGovs, lstScs);
 
 			//LOG.info("RUN#6" + groupId + "year" + year);
 			/* filter domain != null, agency = null, systemId != null */
-			calcular6.filterSumAllYear(companyId, groupId, month, true, false, true, nonGroupGovs);
+			calcular6.filterSumAllYear(companyId, groupId, month, true, false, true, nonGroupGovs, lstScs);
 			
 			//LOG.info("RUN#7" + groupId + "year" + year);
 			/* filter domain != null, agency != null, systemId = null */
-			calcular7.filterSumAllYear(companyId, groupId, month, true, true, false, nonGroupGovs);
+			calcular7.filterSumAllYear(companyId, groupId, month, true, true, false, nonGroupGovs, lstScs);
 			
 			//LOG.info("RUN#8" + groupId + "year" + year);
 			/* filter domain != null, agency != null, systemId != null */
-			calcular8.filterSumAllYear(companyId, groupId, month, true, true, true, nonGroupGovs);
+			calcular8.filterSumAllYear(companyId, groupId, month, true, true, true, nonGroupGovs, lstScs);
 
-			calcular9.filterSumAllYear(companyId, groupId, month, true, true, true, lstGroupGovs);		
+			calcular9.filterSumAllYear(companyId, groupId, month, true, true, true, lstGroupGovs, lstScs);		
 		} catch (Exception e) {
 			_log.debug(e);
 		}

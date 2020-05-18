@@ -100,6 +100,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	private static final String GROUP_SBN = "SBN";
 	private static final String GROUP_QUAN_HUYEN = "QUAN_HUYEN";
 	private static final String GROUP_XA_PHUONG = "XA_PHUONG";
+	private static final String CALCULATE_GROUP_STATISTIC_ENABLE = "org.opencps.statistic.group.enable";
+	
+	private boolean isCalculateGroupStatistic() {
+		String calculateGroupStatisticEnable = PropsUtil.get(CALCULATE_GROUP_STATISTIC_ENABLE);
+		return Validator.isNotNull(calculateGroupStatisticEnable) ? Boolean.parseBoolean(CALCULATE_GROUP_STATISTIC_ENABLE) : false;
+	}
 	
 	@Override
 	protected void doReceive(Message message) throws Exception {
@@ -132,87 +138,90 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group site : sites) {
 				StringBuilder groupGovAgency = new StringBuilder();
 				List<String> lstGroupGovs = new ArrayList<String>();
-
-				DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_SBN, site.getGroupId());
-				List<DictItemGroup> lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
-				List<DictItem> lstGovs = new ArrayList<DictItem>();
-				int count = 0;
-				long[] ids;
-				if (lstDigs.size() > 0) {
-					ids = new long[lstDigs.size()];
-					for (DictItemGroup dig : lstDigs) {
-						ids[count++] = dig.getDictItemId();
-//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-//						lstGovs.add(di);
+				_log.info("CALCULATE FOR SITE: " + site.getName() + ", " + (System.currentTimeMillis() - startTime) + " ms");
+				if (isCalculateGroupStatistic()) {
+					DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_SBN, site.getGroupId());
+					List<DictItemGroup> lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+					List<DictItem> lstGovs = new ArrayList<DictItem>();
+					int count = 0;
+					long[] ids;
+					if (lstDigs.size() > 0) {
+						ids = new long[lstDigs.size()];
+						for (DictItemGroup dig : lstDigs) {
+							ids[count++] = dig.getDictItemId();
+//							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//							lstGovs.add(di);
+						}
+						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 					}
-					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
-				}
-				
-				for (DictItem di : lstGovs) {
-					if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
-						groupGovAgency.append(StringPool.COMMA);
-					}
-					groupGovAgency.append(di.getItemCode());
-				}
-				if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
-					lstGroupGovs.add(groupGovAgency.toString());					
-				}
-
-				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
-				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
-				lstGovs = new ArrayList<DictItem>();
-				StringBuilder groupGovAgencyQH = new StringBuilder();
-				count = 0;
-				if (lstDigs.size() > 0) {
-					ids = new long[lstDigs.size()];
 					
-					for (DictItemGroup dig : lstDigs) {
-						ids[count++] = dig.getDictItemId();
-//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-//						lstGovs.add(di);
+					for (DictItem di : lstGovs) {
+						if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
+							groupGovAgency.append(StringPool.COMMA);
+						}
+						groupGovAgency.append(di.getItemCode());
 					}
-					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
-				}
-				
-				for (DictItem di : lstGovs) {
-					if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
-						groupGovAgencyQH.append(StringPool.COMMA);
+					if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
+						lstGroupGovs.add(groupGovAgency.toString());					
 					}
-					groupGovAgencyQH.append(di.getItemCode());
-				}
-				if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
-					lstGroupGovs.add(groupGovAgencyQH.toString());					
-				}
-				
-				dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
-				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
-				lstGovs = new ArrayList<DictItem>();
-				StringBuilder groupGovAgencyXP = new StringBuilder();
-				if (lstDigs.size() > 0) {
-					ids = new long[lstDigs.size()];
+
+					dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
+					lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+					lstGovs = new ArrayList<DictItem>();
+					StringBuilder groupGovAgencyQH = new StringBuilder();
 					count = 0;
-					for (DictItemGroup dig : lstDigs) {
-						ids[count++] = dig.getDictItemId();
-//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-//						lstGovs.add(di);
+					if (lstDigs.size() > 0) {
+						ids = new long[lstDigs.size()];
+						
+						for (DictItemGroup dig : lstDigs) {
+							ids[count++] = dig.getDictItemId();
+//							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//							lstGovs.add(di);
+						}
+						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 					}
-					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
-				}
-				
-				for (DictItem di : lstGovs) {
+					
+					for (DictItem di : lstGovs) {
+						if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
+							groupGovAgencyQH.append(StringPool.COMMA);
+						}
+						groupGovAgencyQH.append(di.getItemCode());
+					}
+					if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
+						lstGroupGovs.add(groupGovAgencyQH.toString());					
+					}
+					
+					dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
+					lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
+					lstGovs = new ArrayList<DictItem>();
+					StringBuilder groupGovAgencyXP = new StringBuilder();
+					if (lstDigs.size() > 0) {
+						ids = new long[lstDigs.size()];
+						count = 0;
+						for (DictItemGroup dig : lstDigs) {
+							ids[count++] = dig.getDictItemId();
+//							DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//							lstGovs.add(di);
+						}
+						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
+					}
+					
+					for (DictItem di : lstGovs) {
+						if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
+							groupGovAgencyXP.append(StringPool.COMMA);
+						}
+						groupGovAgencyXP.append(di.getItemCode());
+					}
 					if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
-						groupGovAgencyXP.append(StringPool.COMMA);
+						lstGroupGovs.add(groupGovAgencyXP.toString());					
 					}
-					groupGovAgencyXP.append(di.getItemCode());
-				}
-				if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
-					lstGroupGovs.add(groupGovAgencyXP.toString());					
-				}
-				for (String groupGovAgencyCode : lstGroupGovs) {
-					_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+//					for (String groupGovAgencyCode : lstGroupGovs) {
+//						_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
+//					}					
 				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
+				_log.info("CALCULATE AFTER GET SERVER CONFIG: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 	
@@ -246,6 +255,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 				
+				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
 				GetDossierRequest payload = new GetDossierRequest();
 				
 				payload.setGroupId(site.getGroupId());
@@ -309,6 +319,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 					mapFlagCurrent.put(month, flagStatistic);
+					_log.info("CALCULATE AFTER GET PROCESS UPDATE STATISTIC: " + (System.currentTimeMillis() - startTime) + " ms");
+					
 				}
 
 				//Recalculate data				
@@ -335,6 +347,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
+				_log.info("CALCULATE AFTER GET FLAG LAST YEAR: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 //				3 year before
 //				int lastYear2 = LocalDate.now().getYear() - 2;
@@ -389,12 +402,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				}
 				for (int month = 1; month <= monthCurrent; month ++) {
 					if (mapFlagCurrent.get(month)) {						
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
-						}
-						catch (Exception e) {
-							_log.debug(e);
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(site.getGroupId(), month, yearCurrent);
+//						}
+//						catch (Exception e) {
+//							_log.debug(e);
+//						}
 						if (calculateDatas.get(yearCurrent) != null &&
 								calculateDatas.get(yearCurrent).get(month) != null) {
 //						if (calculateData.get(month) != null) {
@@ -405,6 +418,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
+				_log.info("CALCULATE AFTER CURRENT MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
@@ -416,6 +430,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
+				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
 //				StatisticEngineUpdate statisticEngineUpdate2 = new StatisticEngineUpdate();
@@ -449,16 +464,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 				//Current year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs);
+				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs);
+				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear2);
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear3);
 				//Caculate statistic all year
 //				_log.info("START STATISTIC ALL YEAR: ");
-				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs);
+				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
+				_log.info("CALCULATE AFTER SUM ALL YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 			}
 	
 			
@@ -512,11 +530,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										
 									}
 									else {
-										try {
-											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-										} catch (NoSuchOpencpsDossierStatisticException e) {
-											_log.debug(e);
-										}
+//										try {
+//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//										} catch (NoSuchOpencpsDossierStatisticException e) {
+//											_log.debug(e);
+//										}
 									}
 								}
 								for (GetDossierData dd : dossierData) {
@@ -531,22 +549,22 @@ public class DossierStatisticEngine extends BaseMessageListener {
 										
 									}
 									else {
-										try {
-											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
-										} catch (NoSuchOpencpsDossierStatisticException e) {
-											_log.debug(e);
-										}
+//										try {
+//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
+//										} catch (NoSuchOpencpsDossierStatisticException e) {
+//											_log.debug(e);
+//										}
 									}
 								}
 							}
 						}
 						else {
-							try {
-								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-							}
-							catch (NoSuchOpencpsDossierStatisticException e) {
-								_log.debug(e);
-							}
+//							try {
+//								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//							}
+//							catch (NoSuchOpencpsDossierStatisticException e) {
+//								_log.debug(e);
+//							}
 						}
 						
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -565,47 +583,47 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
 						if (serviceDomainData != null) {
 							for (ServiceDomainData sdd : serviceDomainData) {
-								try {
-									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-								} catch (NoSuchOpencpsDossierStatisticException e) {
-									_log.debug(e);
-								}
+//								try {
+//									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//								} catch (NoSuchOpencpsDossierStatisticException e) {
+//									_log.debug(e);
+//								}
 							}
 						}	
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-						}
-						catch (NoSuchOpencpsDossierStatisticException e) {
-							_log.debug(e);
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//						}
+//						catch (NoSuchOpencpsDossierStatisticException e) {
+//							_log.debug(e);
+//						}
 					}
 				}
 				else {
 					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
 					if (serviceDomainData != null) {
 						for (ServiceDomainData sdd : serviceDomainData) {
-							try {
-								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-							} catch (NoSuchOpencpsDossierStatisticException e) {
-								_log.debug(e);	
-							}
+//							try {
+//								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//							} catch (NoSuchOpencpsDossierStatisticException e) {
+//								_log.debug(e);	
+//							}
 						}
 					}
-					try {
-						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-					}
-					catch (Exception e) {
-						_log.debug(e);
-					}
+//					try {
+//						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//					}
+//					catch (Exception e) {
+//						_log.debug(e);
+//					}
 				}
 			}
 			else {
-				try {
-					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-				}
-				catch (Exception e) {
-					_log.debug(e);
-				}
+//				try {
+//					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//				}
+//				catch (Exception e) {
+//					_log.debug(e);
+//				}
 			}
 			
 		}
@@ -667,13 +685,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			List<GetDossierData> dossierData = new ArrayList<>();
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
-			_log.debug("GET DOSSIER SIZE: " + datas.size());
-			_log.debug("GET DOSSIER total: " + total);
+//			_log.debug("GET DOSSIER SIZE: " + datas.size());
+//			_log.debug("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
 				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
-				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+//				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
 			}
 
 			for (Document doc : datas) {
@@ -738,11 +756,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 									
 								}
 								else {
-									try {
-										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-									} catch (NoSuchOpencpsDossierStatisticException e) {
-										_log.debug(e);
-									}
+//									try {
+//										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//									} catch (NoSuchOpencpsDossierStatisticException e) {
+//										_log.debug(e);
+//									}
 								}
 							}
 							for (GetDossierData dd : dossierData) {
@@ -757,22 +775,22 @@ public class DossierStatisticEngine extends BaseMessageListener {
 									
 								}
 								else {
-									try {
-										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
-									} catch (NoSuchOpencpsDossierStatisticException e) {
-										_log.debug(e);
-									}
+//									try {
+//										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
+//									} catch (NoSuchOpencpsDossierStatisticException e) {
+//										_log.debug(e);
+//									}
 								}
 							}
 						}
 					}
 					else {
-						try {
-							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-						}
-						catch (NoSuchOpencpsDossierStatisticException e) {
-							_log.debug(e);
-						}
+//						try {
+//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//						}
+//						catch (NoSuchOpencpsDossierStatisticException e) {
+//							_log.debug(e);
+//						}
 					}
 						
 					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
@@ -785,7 +803,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 	//					
 	//					statisticEngineUpdate.updateStatisticData(statisticData);	
-					_log.debug("PUT MONTH: " + month + ", " + groupId);
+//					_log.debug("PUT MONTH: " + month + ", " + groupId);
 					calculateData.put(month, statisticData);
 //					}
 //					else {
@@ -811,19 +829,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
 					if (serviceDomainData != null) {
 						for (ServiceDomainData sdd : serviceDomainData) {
-							try {
-								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-							} catch (NoSuchOpencpsDossierStatisticException e) {
-								_log.debug(e);	
-							}
+//							try {
+//								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//							} catch (NoSuchOpencpsDossierStatisticException e) {
+//								_log.debug(e);	
+//							}
 						}
 					}
-					try {
-						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-					}
-					catch (Exception e) {
-						_log.debug(e);
-					}
+//					try {
+//						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//					}
+//					catch (Exception e) {
+//						_log.debug(e);
+//					}
 				}
 			}
 			/*
