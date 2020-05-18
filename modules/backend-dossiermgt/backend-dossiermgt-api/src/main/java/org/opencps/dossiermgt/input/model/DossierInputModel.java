@@ -76,6 +76,15 @@ public class DossierInputModel {
 	private String dossierCounter;
 	private Integer vnpostalStatus;
 	private String vnpostalProfile;
+	private Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;

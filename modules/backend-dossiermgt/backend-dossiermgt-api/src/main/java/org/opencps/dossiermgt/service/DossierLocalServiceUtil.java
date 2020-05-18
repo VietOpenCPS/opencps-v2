@@ -762,7 +762,7 @@ public class DossierLocalServiceUtil {
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
-		Integer vnpostalStatus, String vnpostalProfile,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossier(groupId, id, applicantName,
@@ -773,7 +773,8 @@ public class DossierLocalServiceUtil {
 			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
-			sampleCount, vnpostalStatus, vnpostalProfile, serviceContext);
+			sampleCount, vnpostalStatus, vnpostalProfile, fromViaPostal,
+			serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
@@ -789,6 +790,7 @@ public class DossierLocalServiceUtil {
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, Integer vnpostalStatus, String vnpostalProfile,
+		Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossier(groupId, id, applicantName,
@@ -800,7 +802,7 @@ public class DossierLocalServiceUtil {
 			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, vnpostalStatus, vnpostalProfile,
-			serviceContext);
+			fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
@@ -843,7 +845,7 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
-		Integer vnpostalStatus, String vnpostalProfile,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierFull(groupId, id, applicantName,
@@ -856,7 +858,7 @@ public class DossierLocalServiceUtil {
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			serviceContext);
+			fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier postDossier(
@@ -911,7 +913,7 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		Integer vnpostalStatus, String vnpostalProfile,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -931,7 +933,8 @@ public class DossierLocalServiceUtil {
 			delegateAddress, delegateCityCode, delegateCityName,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, durationCount, durationUnit, dossierName,
-			processNo, metaData, vnpostalStatus, vnpostalProfile, context);
+			processNo, metaData, vnpostalStatus, vnpostalProfile,
+			fromViaPostal, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier publishImportDossier(
@@ -948,7 +951,7 @@ public class DossierLocalServiceUtil {
 		java.util.Date dueDate, java.util.Date releaseDate,
 		java.util.Date finishDate, String dossierTemplateNo,
 		String dossierTemplateName, Integer vnpostalStatus,
-		String vnpostalProfile,
+		String vnpostalProfile, Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .publishImportDossier(groupId, dossierId, referenceUid,
@@ -959,7 +962,7 @@ public class DossierLocalServiceUtil {
 			dossierActionId, durationCount, durationUnit, sampleCount,
 			createDate, modifiedDate, submitDate, receiveDate, dueDate,
 			releaseDate, finishDate, dossierTemplateNo, dossierTemplateName,
-			vnpostalStatus, vnpostalProfile, serviceContext);
+			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier removeDossier(

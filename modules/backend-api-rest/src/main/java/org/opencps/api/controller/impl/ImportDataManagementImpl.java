@@ -413,7 +413,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
 					submitDateLong != 0 ? new Date(submitDateLong) : null,
 					receiveDate, dueDate, releaseDate, finishDate,
-					dossierTemplateNo, dossierTemplateName, null, null, serviceContext);
+					dossierTemplateNo, dossierTemplateName, null, null, null, serviceContext);
 
 				if (Validator.isNotNull(dossierTemplateNo)) {
 					List<DossierPart> partList =
@@ -470,7 +470,7 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
 					submitDateLong != 0 ? new Date(submitDateLong) : null,
 					receiveDate, dueDate, releaseDate, finishDate,
-					dossierTemplateNo, dossierTemplateName, null, null, serviceContext);
+					dossierTemplateNo, dossierTemplateName, null, null, null, serviceContext);
 				if (Validator.isNotNull(dossierTemplateNo)) {
 					List<DossierPart> partList =
 						DossierPartLocalServiceUtil.getByTemplateNo(

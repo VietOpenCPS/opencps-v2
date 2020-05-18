@@ -124,7 +124,8 @@ import javax.xml.bind.annotation.XmlType;
 	"mataData",
 	"dossierCounter",
 	"vnpostalStatus",
-	"vnpostalProfile"
+	"vnpostalProfile",
+	"fromViaPostal"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierPublishModel {
@@ -274,6 +275,16 @@ public class DossierPublishModel {
 	protected Integer vnpostalStatus;
 	@FormParam(value = "vnpostalProfile")
 	protected String vnpostalProfile;
+	@FormParam(value = "fromViaPostal")
+	protected Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;

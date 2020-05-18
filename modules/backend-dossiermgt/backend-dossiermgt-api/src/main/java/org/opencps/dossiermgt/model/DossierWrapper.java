@@ -159,6 +159,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("dossierCounter", getDossierCounter());
 		attributes.put("vnpostalStatus", getVnpostalStatus());
 		attributes.put("vnpostalProfile", getVnpostalProfile());
+		attributes.put("fromViaPostal", getFromViaPostal());
 
 		return attributes;
 	}
@@ -768,6 +769,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (vnpostalProfile != null) {
 			setVnpostalProfile(vnpostalProfile);
 		}
+
+		Integer fromViaPostal = (Integer)attributes.get("fromViaPostal");
+
+		if (fromViaPostal != null) {
+			setFromViaPostal(fromViaPostal);
+		}
 	}
 
 	@Override
@@ -1313,6 +1320,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public long getFolderId() {
 		return _dossier.getFolderId();
+	}
+
+	/**
+	* Returns the from via postal of this dossier.
+	*
+	* @return the from via postal of this dossier
+	*/
+	@Override
+	public int getFromViaPostal() {
+		return _dossier.getFromViaPostal();
 	}
 
 	/**
@@ -2424,6 +2441,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setFolderId(long folderId) {
 		_dossier.setFolderId(folderId);
+	}
+
+	/**
+	* Sets the from via postal of this dossier.
+	*
+	* @param fromViaPostal the from via postal of this dossier
+	*/
+	@Override
+	public void setFromViaPostal(int fromViaPostal) {
+		_dossier.setFromViaPostal(fromViaPostal);
 	}
 
 	/**

@@ -1048,6 +1048,11 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.VNPOSTAL_STATUS, vnpostalStatus);
 			}
 
+			Integer fromViaPostal = query.getFromViaPostal();
+			if (fromViaPostal != null) {
+				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
@@ -1378,7 +1383,7 @@ public class DossierManagementImpl implements DossierManagement {
 				input.getDelegateWardCode(), input.getSampleCount(),
 				input.getDossierName(), input.getBriefNote(), delegateType,
 				documentNo, documentDate, systemId, vnpostalStatus,
-				vnpostalProfile, serviceContext);
+				vnpostalProfile, input.getFromViaPostal(), serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());

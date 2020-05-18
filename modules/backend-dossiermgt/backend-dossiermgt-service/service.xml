@@ -581,6 +581,7 @@
 		<column name="dossierCounter" type="String" />
 		<column name="vnpostalStatus" type="int" />
 		<column name="vnpostalProfile" type="String" />
+		<column name="fromViaPostal" type="int" />
 		
 		<!-- Order -->
 		
