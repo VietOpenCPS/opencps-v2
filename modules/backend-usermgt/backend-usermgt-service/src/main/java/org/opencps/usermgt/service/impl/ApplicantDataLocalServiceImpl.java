@@ -510,6 +510,8 @@ public class ApplicantDataLocalServiceImpl
 		String fileNo = String.valueOf(params.get(ApplicantDataTerm.FILE_NO));
 		String status = String.valueOf(params.get(ApplicantDataTerm.STATUS));
 		String applicantDataType = String.valueOf(params.get(ApplicantDataTerm.APPLICANT_DATA_TYPE));
+		String fileTemplateNo = String.valueOf(params.get(ApplicantDataTerm.FILE_TEMPLATE_NO));
+		
 		if (Validator.isNotNull(applicantIdNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
 
@@ -521,6 +523,13 @@ public class ApplicantDataLocalServiceImpl
 			MultiMatchQuery query = new MultiMatchQuery(fileNo);
 
 			query.addFields(ApplicantDataTerm.FILE_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
+		if (Validator.isNotNull(fileTemplateNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+
+			query.addFields(ApplicantDataTerm.FILE_TEMPLATE_NO);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);			
 		}

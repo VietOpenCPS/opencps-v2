@@ -115,6 +115,7 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			params.put(ApplicantDataTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
 			params.put(ApplicantDataTerm.STATUS, query.getStatus());
 			params.put(ApplicantDataTerm.FILE_NO, query.getFileNo());
+			params.put(ApplicantDataTerm.FILE_TEMPLATE_NO, query.getFileTemplateNo());
 			
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 			
