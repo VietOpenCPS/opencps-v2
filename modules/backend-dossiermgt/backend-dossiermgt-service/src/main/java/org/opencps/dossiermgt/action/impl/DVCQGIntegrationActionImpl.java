@@ -1053,11 +1053,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		HttpURLConnection conn = null;
 
 		try {
+			_log.debug("config: " + config.toJSONString());
+			
 			String adapter_url = config.getString("adapter_url");
 			String auth_endpoint = config.getString("auth_endpoint");
 			String username = config.getString("username");
 			String password = config.getString("password");
 			String dstcode = config.getString("dstcode");
+			_log.debug("dstcode: " + dstcode);
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("username", username);
@@ -1079,7 +1082,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setInstanceFollowRedirects(true);
 			HttpURLConnection.setFollowRedirects(true);
 			conn.setReadTimeout(60 * 1000);
-
+			
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
 			int postDataLength = postData.length;
 			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
