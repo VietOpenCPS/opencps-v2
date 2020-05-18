@@ -5306,6 +5306,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
 			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
+			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
@@ -5638,6 +5641,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());

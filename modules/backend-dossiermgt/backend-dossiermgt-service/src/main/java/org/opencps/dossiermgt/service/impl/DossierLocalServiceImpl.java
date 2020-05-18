@@ -5182,6 +5182,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(vnpostalProfile)) {
 			dossier.setVnpostalProfile(vnpostalProfile);
 		}
+		if (Validator.isNotNull(fromViaPostal)) {
+			dossier.setFromViaPostal(fromViaPostal);
+		}
 		if (isSameAsApplicant) {
 			dossier.setDelegateName(applicantName);
 			dossier.setDelegateIdNo(applicantIdNo);
