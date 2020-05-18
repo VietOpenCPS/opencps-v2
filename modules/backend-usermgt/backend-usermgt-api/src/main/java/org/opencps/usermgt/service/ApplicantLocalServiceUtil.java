@@ -238,6 +238,11 @@ public class ApplicantLocalServiceUtil {
 		return getService().fetchByF_APLC_GID(groupId, applicantIdNo);
 	}
 
+	public static org.opencps.usermgt.model.Applicant fetchByF_GID_CTEM(
+		long groupId, String email) {
+		return getService().fetchByF_GID_CTEM(groupId, email);
+	}
+
 	public static org.opencps.usermgt.model.Applicant fetchByF_GID_MCN_MCPK(
 		long groupId, String mappingClassName, String mappingClassPK) {
 		return getService()

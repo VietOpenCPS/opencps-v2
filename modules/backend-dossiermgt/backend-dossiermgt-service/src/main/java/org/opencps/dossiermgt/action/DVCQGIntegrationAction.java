@@ -16,8 +16,8 @@ public interface DVCQGIntegrationAction {
 	public String getAccessToken(User user, HttpServletRequest request, HttpServletResponse response, ServiceContext serviceContext);
 	public JSONObject getSharingDictCollection(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject getSharingData(User user, ServiceContext serviceContext, JSONObject data);
-	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId, String isUpdating);
-	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId);
+	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId, String isUpdating, HttpServletRequest request);
+	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId, HttpServletRequest request);
 	public JSONObject mappingServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCode,
 			String serviceCodeDVCQG, String serviceNameDVCQG);
 	public boolean removeMappingServiceInfo(User user, long groupId, ServiceContext serviceContext, long id);

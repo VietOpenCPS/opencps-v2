@@ -2855,7 +2855,7 @@
 		local-service="true" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
-		<column name="newBoardId" primary="true" type="long" />
+		<column name="newsBoardId" primary="true" type="long" />
 
 		<!-- Group instance -->
 		<column name="groupId" type="long" />

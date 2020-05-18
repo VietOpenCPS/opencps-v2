@@ -185,6 +185,20 @@ public class SyncSchedulerLocalServiceWrapper
 		return _syncSchedulerLocalService.fetchSyncScheduler(syncSchedulerId);
 	}
 
+	/**
+	* Returns the sync scheduler matching the UUID and group.
+	*
+	* @param uuid the sync scheduler's UUID
+	* @param groupId the primary key of the group
+	* @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	*/
+	@Override
+	public org.opencps.usermgt.model.SyncScheduler fetchSyncSchedulerByUuidAndGroupId(
+		String uuid, long groupId) {
+		return _syncSchedulerLocalService.fetchSyncSchedulerByUuidAndGroupId(uuid,
+			groupId);
+	}
+
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _syncSchedulerLocalService.getActionableDynamicQuery();
@@ -202,6 +216,12 @@ public class SyncSchedulerLocalServiceWrapper
 		String className, String typeCode) {
 		return _syncSchedulerLocalService.getByClassNameAndTypeCode(className,
 			typeCode);
+	}
+
+	@Override
+	public java.util.List<org.opencps.usermgt.model.SyncScheduler> getByF_NAME_RETRY(
+		String className, int retry) {
+		return _syncSchedulerLocalService.getByF_NAME_RETRY(className, retry);
 	}
 
 	@Override
@@ -241,6 +261,22 @@ public class SyncSchedulerLocalServiceWrapper
 	}
 
 	/**
+	* Returns the sync scheduler matching the UUID and group.
+	*
+	* @param uuid the sync scheduler's UUID
+	* @param groupId the primary key of the group
+	* @return the matching sync scheduler
+	* @throws PortalException if a matching sync scheduler could not be found
+	*/
+	@Override
+	public org.opencps.usermgt.model.SyncScheduler getSyncSchedulerByUuidAndGroupId(
+		String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _syncSchedulerLocalService.getSyncSchedulerByUuidAndGroupId(uuid,
+			groupId);
+	}
+
+	/**
 	* Returns a range of all the sync schedulers.
 	*
 	* <p>
@@ -265,6 +301,15 @@ public class SyncSchedulerLocalServiceWrapper
 	@Override
 	public int getSyncSchedulersCount() {
 		return _syncSchedulerLocalService.getSyncSchedulersCount();
+	}
+
+	@Override
+	public org.opencps.usermgt.model.SyncScheduler updateSyncScheduler(
+		long syncSchedulerId, long groupId, String className, String typeCode,
+		java.util.Date syncDate, int retry,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return _syncSchedulerLocalService.updateSyncScheduler(syncSchedulerId,
+			groupId, className, typeCode, syncDate, retry, serviceContext);
 	}
 
 	/**

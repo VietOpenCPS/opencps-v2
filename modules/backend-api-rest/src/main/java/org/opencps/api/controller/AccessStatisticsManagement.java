@@ -97,6 +97,11 @@ public interface AccessStatisticsManagement
 	Response getOnline(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
 		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext);
 
+	@GET
+	@Path("/user")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	Response getUserAccessStatistics(@Context HttpServletRequest request, @Context HttpHeaders header,@Context
+		Company company, @Context Locale locale, @Context User user,@Context ServiceContext serviceContext);
 
 
 }

@@ -932,5 +932,9 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		return object;
 	}
 	
+	public List<DictItem> findByF_IDS(long[] ids) {
+		return dictItemPersistence.findByF_IDS(ids);
+	}
+	
 	private static final Log _log = LogFactoryUtil.getLog(DictItemLocalServiceImpl.class);
 }

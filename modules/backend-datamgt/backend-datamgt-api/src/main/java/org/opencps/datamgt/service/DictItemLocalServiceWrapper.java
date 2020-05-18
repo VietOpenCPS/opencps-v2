@@ -285,6 +285,12 @@ public class DictItemLocalServiceWrapper implements DictItemLocalService,
 			parentItemId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.datamgt.model.DictItem> findByF_IDS(
+		long[] ids) {
+		return _dictItemLocalService.findByF_IDS(ids);
+	}
+
 	/**
 	* @param parentItemId
 	* @return

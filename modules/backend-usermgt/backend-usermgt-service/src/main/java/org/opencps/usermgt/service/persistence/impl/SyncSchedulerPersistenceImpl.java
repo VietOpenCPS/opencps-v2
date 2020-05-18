@@ -641,6 +641,253 @@ public class SyncSchedulerPersistenceImpl extends BasePersistenceImpl<SyncSchedu
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "syncScheduler.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "syncScheduler.uuid = ?";
 	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(syncScheduler.uuid IS NULL OR syncScheduler.uuid = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
+			SyncSchedulerModelImpl.FINDER_CACHE_ENABLED,
+			SyncSchedulerImpl.class, FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
+			new String[] { String.class.getName(), Long.class.getName() },
+			SyncSchedulerModelImpl.UUID_COLUMN_BITMASK |
+			SyncSchedulerModelImpl.GROUPID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_G = new FinderPath(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
+			SyncSchedulerModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
+			new String[] { String.class.getName(), Long.class.getName() });
+
+	/**
+	 * Returns the sync scheduler where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchSyncSchedulerException} if it could not be found.
+	 *
+	 * @param uuid the uuid
+	 * @param groupId the group ID
+	 * @return the matching sync scheduler
+	 * @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler findByUUID_G(String uuid, long groupId)
+		throws NoSuchSyncSchedulerException {
+		SyncScheduler syncScheduler = fetchByUUID_G(uuid, groupId);
+
+		if (syncScheduler == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("uuid=");
+			msg.append(uuid);
+
+			msg.append(", groupId=");
+			msg.append(groupId);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchSyncSchedulerException(msg.toString());
+		}
+
+		return syncScheduler;
+	}
+
+	/**
+	 * Returns the sync scheduler where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param uuid the uuid
+	 * @param groupId the group ID
+	 * @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler fetchByUUID_G(String uuid, long groupId) {
+		return fetchByUUID_G(uuid, groupId, true);
+	}
+
+	/**
+	 * Returns the sync scheduler where uuid = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param uuid the uuid
+	 * @param groupId the group ID
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler fetchByUUID_G(String uuid, long groupId,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { uuid, groupId };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_UUID_G,
+					finderArgs, this);
+		}
+
+		if (result instanceof SyncScheduler) {
+			SyncScheduler syncScheduler = (SyncScheduler)result;
+
+			if (!Objects.equals(uuid, syncScheduler.getUuid()) ||
+					(groupId != syncScheduler.getGroupId())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_SYNCSCHEDULER_WHERE);
+
+			boolean bindUuid = false;
+
+			if (uuid == null) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
+			}
+			else if (uuid.equals("")) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
+			else {
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
+			}
+
+			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindUuid) {
+					qPos.add(uuid);
+				}
+
+				qPos.add(groupId);
+
+				List<SyncScheduler> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+						finderArgs, list);
+				}
+				else {
+					SyncScheduler syncScheduler = list.get(0);
+
+					result = syncScheduler;
+
+					cacheResult(syncScheduler);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SyncScheduler)result;
+		}
+	}
+
+	/**
+	 * Removes the sync scheduler where uuid = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param uuid the uuid
+	 * @param groupId the group ID
+	 * @return the sync scheduler that was removed
+	 */
+	@Override
+	public SyncScheduler removeByUUID_G(String uuid, long groupId)
+		throws NoSuchSyncSchedulerException {
+		SyncScheduler syncScheduler = findByUUID_G(uuid, groupId);
+
+		return remove(syncScheduler);
+	}
+
+	/**
+	 * Returns the number of sync schedulers where uuid = &#63; and groupId = &#63;.
+	 *
+	 * @param uuid the uuid
+	 * @param groupId the group ID
+	 * @return the number of matching sync schedulers
+	 */
+	@Override
+	public int countByUUID_G(String uuid, long groupId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
+
+		Object[] finderArgs = new Object[] { uuid, groupId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SYNCSCHEDULER_WHERE);
+
+			boolean bindUuid = false;
+
+			if (uuid == null) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
+			}
+			else if (uuid.equals("")) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
+			else {
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
+			}
+
+			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindUuid) {
+					qPos.add(uuid);
+				}
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "syncScheduler.uuid IS NULL AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "syncScheduler.uuid = ? AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(syncScheduler.uuid IS NULL OR syncScheduler.uuid = '') AND ";
+	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "syncScheduler.groupId = ?";
 	public static final FinderPath FINDER_PATH_FETCH_BY_GID_NAME_SYNC = new FinderPath(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
 			SyncSchedulerModelImpl.FINDER_CACHE_ENABLED,
 			SyncSchedulerImpl.class, FINDER_CLASS_NAME_ENTITY,
@@ -1214,6 +1461,581 @@ public class SyncSchedulerPersistenceImpl extends BasePersistenceImpl<SyncSchedu
 	private static final String _FINDER_COLUMN_GID_NAME_TYPE_TYPECODE_1 = "syncScheduler.typeCode IS NULL";
 	private static final String _FINDER_COLUMN_GID_NAME_TYPE_TYPECODE_2 = "syncScheduler.typeCode = ?";
 	private static final String _FINDER_COLUMN_GID_NAME_TYPE_TYPECODE_3 = "(syncScheduler.typeCode IS NULL OR syncScheduler.typeCode = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NAME_RETRY =
+		new FinderPath(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
+			SyncSchedulerModelImpl.FINDER_CACHE_ENABLED,
+			SyncSchedulerImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_NAME_RETRY",
+			new String[] {
+				String.class.getName(), Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NAME_RETRY =
+		new FinderPath(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
+			SyncSchedulerModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_NAME_RETRY",
+			new String[] { String.class.getName(), Integer.class.getName() });
+
+	/**
+	 * Returns all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @return the matching sync schedulers
+	 */
+	@Override
+	public List<SyncScheduler> findByF_NAME_RETRY(String className, int retry) {
+		return findByF_NAME_RETRY(className, retry, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param start the lower bound of the range of sync schedulers
+	 * @param end the upper bound of the range of sync schedulers (not inclusive)
+	 * @return the range of matching sync schedulers
+	 */
+	@Override
+	public List<SyncScheduler> findByF_NAME_RETRY(String className, int retry,
+		int start, int end) {
+		return findByF_NAME_RETRY(className, retry, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param start the lower bound of the range of sync schedulers
+	 * @param end the upper bound of the range of sync schedulers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching sync schedulers
+	 */
+	@Override
+	public List<SyncScheduler> findByF_NAME_RETRY(String className, int retry,
+		int start, int end, OrderByComparator<SyncScheduler> orderByComparator) {
+		return findByF_NAME_RETRY(className, retry, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the sync schedulers where className = &#63; and retry &lt; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SyncSchedulerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param start the lower bound of the range of sync schedulers
+	 * @param end the upper bound of the range of sync schedulers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching sync schedulers
+	 */
+	@Override
+	public List<SyncScheduler> findByF_NAME_RETRY(String className, int retry,
+		int start, int end, OrderByComparator<SyncScheduler> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NAME_RETRY;
+		finderArgs = new Object[] {
+				className, retry,
+				
+				start, end, orderByComparator
+			};
+
+		List<SyncScheduler> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<SyncScheduler>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (SyncScheduler syncScheduler : list) {
+					if (!Objects.equals(className, syncScheduler.getClassName()) ||
+							(retry <= syncScheduler.getRetry())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_SYNCSCHEDULER_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_NAME_RETRY_RETRY_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(SyncSchedulerModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				qPos.add(retry);
+
+				if (!pagination) {
+					list = (List<SyncScheduler>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<SyncScheduler>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync scheduler
+	 * @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler findByF_NAME_RETRY_First(String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator)
+		throws NoSuchSyncSchedulerException {
+		SyncScheduler syncScheduler = fetchByF_NAME_RETRY_First(className,
+				retry, orderByComparator);
+
+		if (syncScheduler != null) {
+			return syncScheduler;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("className=");
+		msg.append(className);
+
+		msg.append(", retry=");
+		msg.append(retry);
+
+		msg.append("}");
+
+		throw new NoSuchSyncSchedulerException(msg.toString());
+	}
+
+	/**
+	 * Returns the first sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler fetchByF_NAME_RETRY_First(String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator) {
+		List<SyncScheduler> list = findByF_NAME_RETRY(className, retry, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync scheduler
+	 * @throws NoSuchSyncSchedulerException if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler findByF_NAME_RETRY_Last(String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator)
+		throws NoSuchSyncSchedulerException {
+		SyncScheduler syncScheduler = fetchByF_NAME_RETRY_Last(className,
+				retry, orderByComparator);
+
+		if (syncScheduler != null) {
+			return syncScheduler;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("className=");
+		msg.append(className);
+
+		msg.append(", retry=");
+		msg.append(retry);
+
+		msg.append("}");
+
+		throw new NoSuchSyncSchedulerException(msg.toString());
+	}
+
+	/**
+	 * Returns the last sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler fetchByF_NAME_RETRY_Last(String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator) {
+		int count = countByF_NAME_RETRY(className, retry);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<SyncScheduler> list = findByF_NAME_RETRY(className, retry,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the sync schedulers before and after the current sync scheduler in the ordered set where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param syncSchedulerId the primary key of the current sync scheduler
+	 * @param className the class name
+	 * @param retry the retry
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next sync scheduler
+	 * @throws NoSuchSyncSchedulerException if a sync scheduler with the primary key could not be found
+	 */
+	@Override
+	public SyncScheduler[] findByF_NAME_RETRY_PrevAndNext(
+		long syncSchedulerId, String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator)
+		throws NoSuchSyncSchedulerException {
+		SyncScheduler syncScheduler = findByPrimaryKey(syncSchedulerId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SyncScheduler[] array = new SyncSchedulerImpl[3];
+
+			array[0] = getByF_NAME_RETRY_PrevAndNext(session, syncScheduler,
+					className, retry, orderByComparator, true);
+
+			array[1] = syncScheduler;
+
+			array[2] = getByF_NAME_RETRY_PrevAndNext(session, syncScheduler,
+					className, retry, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected SyncScheduler getByF_NAME_RETRY_PrevAndNext(Session session,
+		SyncScheduler syncScheduler, String className, int retry,
+		OrderByComparator<SyncScheduler> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_SYNCSCHEDULER_WHERE);
+
+		boolean bindClassName = false;
+
+		if (className == null) {
+			query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_1);
+		}
+		else if (className.equals("")) {
+			query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_3);
+		}
+		else {
+			bindClassName = true;
+
+			query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_F_NAME_RETRY_RETRY_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(SyncSchedulerModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindClassName) {
+			qPos.add(className);
+		}
+
+		qPos.add(retry);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(syncScheduler);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<SyncScheduler> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the sync schedulers where className = &#63; and retry &lt; &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 */
+	@Override
+	public void removeByF_NAME_RETRY(String className, int retry) {
+		for (SyncScheduler syncScheduler : findByF_NAME_RETRY(className, retry,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(syncScheduler);
+		}
+	}
+
+	/**
+	 * Returns the number of sync schedulers where className = &#63; and retry &lt; &#63;.
+	 *
+	 * @param className the class name
+	 * @param retry the retry
+	 * @return the number of matching sync schedulers
+	 */
+	@Override
+	public int countByF_NAME_RETRY(String className, int retry) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NAME_RETRY;
+
+		Object[] finderArgs = new Object[] { className, retry };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SYNCSCHEDULER_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className == null) {
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_1);
+			}
+			else if (className.equals("")) {
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				query.append(_FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_2);
+			}
+
+			query.append(_FINDER_COLUMN_F_NAME_RETRY_RETRY_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindClassName) {
+					qPos.add(className);
+				}
+
+				qPos.add(retry);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_1 = "syncScheduler.className IS NULL AND ";
+	private static final String _FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_2 = "syncScheduler.className = ? AND ";
+	private static final String _FINDER_COLUMN_F_NAME_RETRY_CLASSNAME_3 = "(syncScheduler.className IS NULL OR syncScheduler.className = '') AND ";
+	private static final String _FINDER_COLUMN_F_NAME_RETRY_RETRY_2 = "syncScheduler.retry < ?";
 
 	public SyncSchedulerPersistenceImpl() {
 		setModelClass(SyncScheduler.class);
@@ -1246,6 +2068,10 @@ public class SyncSchedulerPersistenceImpl extends BasePersistenceImpl<SyncSchedu
 	public void cacheResult(SyncScheduler syncScheduler) {
 		entityCache.putResult(SyncSchedulerModelImpl.ENTITY_CACHE_ENABLED,
 			SyncSchedulerImpl.class, syncScheduler.getPrimaryKey(),
+			syncScheduler);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+			new Object[] { syncScheduler.getUuid(), syncScheduler.getGroupId() },
 			syncScheduler);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_GID_NAME_SYNC,
@@ -1330,6 +2156,16 @@ public class SyncSchedulerPersistenceImpl extends BasePersistenceImpl<SyncSchedu
 	protected void cacheUniqueFindersCache(
 		SyncSchedulerModelImpl syncSchedulerModelImpl) {
 		Object[] args = new Object[] {
+				syncSchedulerModelImpl.getUuid(),
+				syncSchedulerModelImpl.getGroupId()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			syncSchedulerModelImpl, false);
+
+		args = new Object[] {
 				syncSchedulerModelImpl.getClassName(),
 				_getTime(syncSchedulerModelImpl.getSyncDate())
 			};
@@ -1352,6 +2188,27 @@ public class SyncSchedulerPersistenceImpl extends BasePersistenceImpl<SyncSchedu
 
 	protected void clearUniqueFindersCache(
 		SyncSchedulerModelImpl syncSchedulerModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					syncSchedulerModelImpl.getUuid(),
+					syncSchedulerModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if ((syncSchedulerModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					syncSchedulerModelImpl.getOriginalUuid(),
+					syncSchedulerModelImpl.getOriginalGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
 		if (clearCurrent) {
 			Object[] args = new Object[] {
 					syncSchedulerModelImpl.getClassName(),

@@ -51,7 +51,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 
 		NewsBoardCacheModel newsBoardCacheModel = (NewsBoardCacheModel)obj;
 
-		if (newBoardId == newsBoardCacheModel.newBoardId) {
+		if (newsBoardId == newsBoardCacheModel.newsBoardId) {
 			return true;
 		}
 
@@ -60,7 +60,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 
 	@Override
 	public int hashCode() {
-		return HashUtil.hash(0, newBoardId);
+		return HashUtil.hash(0, newsBoardId);
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 
 		sb.append("{uuid=");
 		sb.append(uuid);
-		sb.append(", newBoardId=");
-		sb.append(newBoardId);
+		sb.append(", newsBoardId=");
+		sb.append(newsBoardId);
 		sb.append(", groupId=");
 		sb.append(groupId);
 		sb.append(", companyId=");
@@ -105,7 +105,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 			newsBoardImpl.setUuid(uuid);
 		}
 
-		newsBoardImpl.setNewBoardId(newBoardId);
+		newsBoardImpl.setNewsBoardId(newsBoardId);
 		newsBoardImpl.setGroupId(groupId);
 		newsBoardImpl.setCompanyId(companyId);
 		newsBoardImpl.setUserId(userId);
@@ -156,7 +156,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 
-		newBoardId = objectInput.readLong();
+		newsBoardId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
 
@@ -182,7 +182,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 			objectOutput.writeUTF(uuid);
 		}
 
-		objectOutput.writeLong(newBoardId);
+		objectOutput.writeLong(newsBoardId);
 
 		objectOutput.writeLong(groupId);
 
@@ -218,7 +218,7 @@ public class NewsBoardCacheModel implements CacheModel<NewsBoard>,
 	}
 
 	public String uuid;
-	public long newBoardId;
+	public long newsBoardId;
 	public long groupId;
 	public long companyId;
 	public long userId;

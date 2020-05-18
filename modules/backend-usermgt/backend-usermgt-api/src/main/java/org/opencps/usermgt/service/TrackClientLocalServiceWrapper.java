@@ -261,6 +261,11 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 		return _trackClientLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public java.util.List<Object[]> getTopURLUserAccess(long userId) {
+		return _trackClientLocalService.getTopURLUserAccess(userId);
+	}
+
 	/**
 	* Returns the track client with the primary key.
 	*

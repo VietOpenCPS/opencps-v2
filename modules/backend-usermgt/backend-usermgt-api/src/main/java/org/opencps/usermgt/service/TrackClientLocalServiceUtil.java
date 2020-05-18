@@ -244,6 +244,10 @@ public class TrackClientLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static java.util.List<Object[]> getTopURLUserAccess(long userId) {
+		return getService().getTopURLUserAccess(userId);
+	}
+
 	/**
 	* Returns the track client with the primary key.
 	*

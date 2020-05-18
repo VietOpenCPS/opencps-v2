@@ -54,6 +54,16 @@ public class NewsBoardLocalServiceUtil {
 		return getService().addNewsBoard(newsBoard);
 	}
 
+	public static org.opencps.dossiermgt.model.NewsBoard adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.dossiermgt.model.NewsBoard adminProcessDelete(
+		Long id) throws Exception {
+		return getService().adminProcessDelete(id);
+	}
+
 	public static int countByNewsBoardList(long groupId) {
 		return getService().countByNewsBoardList(groupId);
 	}
@@ -61,12 +71,12 @@ public class NewsBoardLocalServiceUtil {
 	/**
 	* Creates a new news board with the primary key. Does not add the news board to the database.
 	*
-	* @param newBoardId the primary key for the new news board
+	* @param newsBoardId the primary key for the new news board
 	* @return the new news board
 	*/
 	public static org.opencps.dossiermgt.model.NewsBoard createNewsBoard(
-		long newBoardId) {
-		return getService().createNewsBoard(newBoardId);
+		long newsBoardId) {
+		return getService().createNewsBoard(newsBoardId);
 	}
 
 	public static org.opencps.dossiermgt.model.NewsBoard createNewsBoard(
@@ -80,14 +90,14 @@ public class NewsBoardLocalServiceUtil {
 	/**
 	* Deletes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board that was removed
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.NewsBoard deleteNewsBoard(
-		long newBoardId)
+		long newsBoardId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteNewsBoard(newBoardId);
+		return getService().deleteNewsBoard(newsBoardId);
 	}
 
 	/**
@@ -189,8 +199,8 @@ public class NewsBoardLocalServiceUtil {
 	}
 
 	public static org.opencps.dossiermgt.model.NewsBoard fetchNewsBoard(
-		long newBoardId) {
-		return getService().fetchNewsBoard(newBoardId);
+		long newsBoardId) {
+		return getService().fetchNewsBoard(newsBoardId);
 	}
 
 	/**
@@ -221,14 +231,14 @@ public class NewsBoardLocalServiceUtil {
 	/**
 	* Returns the news board with the primary key.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	public static org.opencps.dossiermgt.model.NewsBoard getNewsBoard(
-		long newBoardId)
+		long newsBoardId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getNewsBoard(newBoardId);
+		return getService().getNewsBoard(newsBoardId);
 	}
 
 	/**
