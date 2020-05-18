@@ -35,10 +35,10 @@ public class StatisticSumYearService {
 		
 		List<String> nonGroupGovs = new ArrayList<String>();
 		
-		_log.info("RUN#1" + groupId + "year" + year);
+//		_log.info("RUN#1" + groupId + "year" + year);
 		/* filter all */
 		calcular1.filterSumYear(companyId, groupId, year, false, false, false, nonGroupGovs, lstScs, lstCurrents);
-		_log.info("RUN#2" + groupId + "year" + year);
+//		_log.info("RUN#2" + groupId + "year" + year);
 		/* filter domain = null, agency = null, systemId != null */
 		calcular2.filterSumYear(companyId, groupId, year, false, false, true, nonGroupGovs, lstScs, lstCurrents);
 		
