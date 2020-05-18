@@ -3184,7 +3184,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			bResult.put(DossierTerm.DUE_DATE, true);
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		} else //Update counter and dossierNo
-		if (dateOption == DossierTerm.DATE_OPTION_TWO || dateOption == DossierTerm.DATE_OPTION_TEN) {
+		if (dateOption == DossierTerm.DATE_OPTION_TEN) {
 
 			/** 
 			 * THANHNV create common init DueDate DossierNo DossierCounter 
@@ -3244,6 +3244,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			THANHNV: end
 			*/
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
+		} else if (dateOption == DossierTerm.DATE_OPTION_TWO) {
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, true,
+					dossier.getReceiveDate() != null ? dossier.getReceiveDate() : new Date(), params);
 		}
 
 		//Check if dossier is done
@@ -3760,6 +3763,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			notarizationArr.put(notObj);
 		}
 		jsonData.put(DossierTerm.NOTARIZATIONS, notarizationArr);
+
+		// Meta data
+		if (Validator.isNotNull(dossier.getMetaData())) {
+			try {
+				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
+			} catch (JSONException e) {
+				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+			}
+		} else {
+			jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+		}
 
 		return jsonData;
 	}
