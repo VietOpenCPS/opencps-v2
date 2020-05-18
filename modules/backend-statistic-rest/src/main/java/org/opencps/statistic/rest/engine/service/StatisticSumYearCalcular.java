@@ -20,6 +20,8 @@ import java.util.Set;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.rest.converter.DossierStatisticConverter;
 import org.opencps.statistic.rest.dto.DomainResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
@@ -46,10 +48,43 @@ public class StatisticSumYearCalcular {
 	private DossierStatisticUpdateService<DossierStatisticData> updateGovService = new DossierStatisticUpdateServiceImpl();
 
 	private OpencpsCallRestFacade<GovAgencyRequest, GovAgencyResponse> callService = new OpencpsCallGovAgencyRestFacadeImpl();
-
+	
+	private List<OpencpsDossierStatistic> filter(List<OpencpsDossierStatistic> lstStatistics, String domain, String govAgencyCode, String system, String groupAgencyCode) {
+		List<OpencpsDossierStatistic> results = new ArrayList<OpencpsDossierStatistic>();
+		for (OpencpsDossierStatistic statistic : lstStatistics) {
+			boolean checkDomain = false;
+			if ((Validator.isNull(domain) || "total".contentEquals(domain)) && Validator.isNull(statistic.getDomainCode())) {
+				checkDomain = true;
+			}
+			else if (domain.contentEquals(statistic.getDomainCode())) {
+				checkDomain = true;
+			}
+			boolean checkGovAgency = false;
+			if ((Validator.isNull(govAgencyCode) || "total".contentEquals(govAgencyCode)) && Validator.isNull(statistic.getGovAgencyCode())) {
+				checkGovAgency = true;
+			}
+			else if (govAgencyCode.contentEquals(statistic.getGovAgencyCode())) {
+				checkGovAgency = true;
+			}
+			boolean checkSystem = false;
+			if ((Validator.isNull(system) || "total".contentEquals(system)) && Validator.isNull(statistic.getSystem())) {
+				checkSystem = true;
+			}
+			else if (system.contentEquals(statistic.getSystem())) {
+				checkSystem = true;
+			}
+			boolean checkGroupGovAgency = false;
+			if (checkDomain && checkGovAgency && checkGroupGovAgency && checkSystem) {
+				results.add(statistic);
+			}
+		}
+		
+		return results;
+	}
+	
 	/* Tính theo năm */
 	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs,
-			List<ServerConfig> lstScs)
+			List<ServerConfig> lstScs, List<OpencpsDossierStatistic> lstCurrents)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
@@ -73,8 +108,9 @@ public class StatisticSumYearCalcular {
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 					long startTime = System.currentTimeMillis();
-					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
-							.finderDossierStatistics(dossierStatisticRequest);
+//					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+//							.finderDossierStatistics(dossierStatisticRequest);
+					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", "total"));
 					long endTime = System.currentTimeMillis();
 					_log.debug("FINDER ALL DOMAIN, GOV, SYSTEM: " + (endTime - startTime) / 1000.0);
 					
@@ -123,8 +159,9 @@ public class StatisticSumYearCalcular {
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
-							.finderDossierStatistics(dossierStatisticRequest);
+//					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+//							.finderDossierStatistics(dossierStatisticRequest);
+					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", strSystem, "total"));
 
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -201,9 +238,10 @@ public class StatisticSumYearCalcular {
 
 					DossierStatisticResponse dossierStatisticResponse;
 
-					try {
-						dossierStatisticResponse = dossierStatisticFinderService
-								.finderDossierStatistics(dossierStatisticRequest);
+//					try {
+//						dossierStatisticResponse = dossierStatisticFinderService
+//								.finderDossierStatistics(dossierStatisticRequest);
+						dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", data.getItemCode(), "total", "total"));
 
 						if (dossierStatisticResponse != null) {
 							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -227,9 +265,9 @@ public class StatisticSumYearCalcular {
 							});
 						}
 
-					} catch (PortalException e) {
-						_log.error(e);
-					}
+//					} catch (PortalException e) {
+//						_log.error(e);
+//					}
 
 				}
 			});
@@ -254,8 +292,9 @@ public class StatisticSumYearCalcular {
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
-							.finderDossierStatistics(dossierStatisticRequest);
+//					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+//							.finderDossierStatistics(dossierStatisticRequest);
+					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, domainResponse.getItemCode(), "total", "total", "total"));
 
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -338,9 +377,10 @@ public class StatisticSumYearCalcular {
 
 						DossierStatisticResponse dossierStatisticResponse;
 
-						try {
-							dossierStatisticResponse = dossierStatisticFinderService
-									.finderDossierStatistics(dossierStatisticRequest);
+//						try {
+//							dossierStatisticResponse = dossierStatisticFinderService
+//									.finderDossierStatistics(dossierStatisticRequest);
+							dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", data.getItemCode(), "total", "total"));
 
 							if (dossierStatisticResponse != null) {
 								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -364,9 +404,9 @@ public class StatisticSumYearCalcular {
 								});
 							}
 
-						} catch (PortalException e) {
-							_log.error(e);
-						}
+//						} catch (PortalException e) {
+//							_log.error(e);
+//						}
 
 					}
 				});
@@ -393,9 +433,10 @@ public class StatisticSumYearCalcular {
 
 						DossierStatisticResponse dossierStatisticResponse;
 
-						try {
-							dossierStatisticResponse = dossierStatisticFinderService
-									.finderDossierStatistics(dossierStatisticRequest);
+//						try {
+//							dossierStatisticResponse = dossierStatisticFinderService
+//									.finderDossierStatistics(dossierStatisticRequest);
+							dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, domainResponse.getItemCode(), "total", strSystem, "total"));
 
 							if (dossierStatisticResponse != null) {
 								Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -419,9 +460,9 @@ public class StatisticSumYearCalcular {
 								});
 							}
 
-						} catch (PortalException e) {
-							_log.error(e);
-						}
+//						} catch (PortalException e) {
+//							_log.error(e);
+//						}
 					}
 				}
 			}
@@ -479,9 +520,10 @@ public class StatisticSumYearCalcular {
 
 							DossierStatisticResponse dossierStatisticResponse;
 
-							try {
-								dossierStatisticResponse = dossierStatisticFinderService
-										.finderDossierStatistics(dossierStatisticRequest);
+//							try {
+//								dossierStatisticResponse = dossierStatisticFinderService
+//										.finderDossierStatistics(dossierStatisticRequest);
+								dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, domainResponse.getItemCode(), data.getItemCode(), "total", "total"));
 
 								if (dossierStatisticResponse != null) {
 									Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -505,9 +547,9 @@ public class StatisticSumYearCalcular {
 									});
 								}
 
-							} catch (PortalException e) {
-								_log.error(e);
-							}
+//							} catch (PortalException e) {
+//								_log.error(e);
+//							}
 						}
 					}
 
@@ -572,9 +614,10 @@ public class StatisticSumYearCalcular {
 
 								DossierStatisticResponse dossierStatisticResponse;
 
-								try {
-									dossierStatisticResponse = dossierStatisticFinderService
-											.finderDossierStatistics(dossierStatisticRequest);
+//								try {
+//									dossierStatisticResponse = dossierStatisticFinderService
+//											.finderDossierStatistics(dossierStatisticRequest);
+									dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, domainResponse.getItemCode(), data.getItemCode(), strSystem, "total"));
 
 									if (dossierStatisticResponse != null) {
 										Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -598,9 +641,9 @@ public class StatisticSumYearCalcular {
 										});
 									}
 
-								} catch (PortalException e) {
-									_log.error(e);
-								}
+//								} catch (PortalException e) {
+//									_log.error(e);
+//								}
 							}
 						}
 					}
@@ -618,8 +661,9 @@ public class StatisticSumYearCalcular {
 				
 				//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
 
-				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
-						.finderDossierStatistics(dossierStatisticRequest);
+//				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
+//						.finderDossierStatistics(dossierStatisticRequest);
+				DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", "total"));
 				
 				if (dossierStatisticResponse != null) {
 					Optional<List<DossierStatisticData>> dossierStatisticData = Optional

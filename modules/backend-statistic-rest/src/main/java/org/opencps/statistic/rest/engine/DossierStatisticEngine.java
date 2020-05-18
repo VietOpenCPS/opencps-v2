@@ -76,6 +76,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
+import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 //import org.opencps.systemmgt.constants.SchedulerRecordTerm;
 //import org.opencps.systemmgt.model.SchedulerRecord;
 //import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
@@ -463,11 +464,14 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				}
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				
 				//Current year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstCurrents);
 				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs);
+				List<OpencpsDossierStatistic> lstLasts = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, lastYear, "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstLasts);
 				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before

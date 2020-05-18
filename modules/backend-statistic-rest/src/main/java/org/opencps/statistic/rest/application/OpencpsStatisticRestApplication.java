@@ -1118,8 +1118,9 @@ public class OpencpsStatisticRestApplication extends Application {
 //		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, year);
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+		List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(groupId, -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs, lstScs);
+		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs, lstScs, lstCurrents);
 	}
 
 	@POST
