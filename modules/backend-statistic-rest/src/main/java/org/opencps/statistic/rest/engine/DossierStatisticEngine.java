@@ -139,7 +139,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			for (Group site : sites) {
 				StringBuilder groupGovAgency = new StringBuilder();
 				List<String> lstGroupGovs = new ArrayList<String>();
-				_log.info("CALCULATE FOR SITE: " + site.getName() + ", " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE FOR SITE: " + site.getName() + ", " + (System.currentTimeMillis() - startTime) + " ms");
 				if (isCalculateGroupStatistic()) {
 					DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_SBN, site.getGroupId());
 					List<DictItemGroup> lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
@@ -222,7 +222,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
-				_log.info("CALCULATE AFTER GET SERVER CONFIG: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER GET SERVER CONFIG: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 	//			LOG.info("START getDossierStatistic(): " + site.getGroupId());
 	
@@ -256,7 +256,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 				
-				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
 				GetDossierRequest payload = new GetDossierRequest();
 				
 				payload.setGroupId(site.getGroupId());
@@ -320,7 +320,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 					mapFlagCurrent.put(month, flagStatistic);
-					_log.info("CALCULATE AFTER GET PROCESS UPDATE STATISTIC: " + (System.currentTimeMillis() - startTime) + " ms");
+//					_log.info("CALCULATE AFTER GET PROCESS UPDATE STATISTIC: " + (System.currentTimeMillis() - startTime) + " ms");
 					
 				}
 
@@ -348,7 +348,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					}
 					mapFlagPrev.put(lastMonth, flagLastYear);
 				}
-				_log.info("CALCULATE AFTER GET FLAG LAST YEAR: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER GET FLAG LAST YEAR: " + (System.currentTimeMillis() - startTime) + " ms");
 				
 //				3 year before
 //				int lastYear2 = LocalDate.now().getYear() - 2;
@@ -419,7 +419,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
-				_log.info("CALCULATE AFTER CURRENT MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER CURRENT MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
@@ -431,7 +431,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
-				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
 //				StatisticEngineUpdate statisticEngineUpdate2 = new StatisticEngineUpdate();
@@ -468,11 +468,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				
 				//Current year
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstCurrents);
-				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
 				List<OpencpsDossierStatistic> lstLasts = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, lastYear, "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstLasts);
-				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear2);
@@ -480,7 +480,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				//Caculate statistic all year
 //				_log.info("START STATISTIC ALL YEAR: ");
 				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
-				_log.info("CALCULATE AFTER SUM ALL YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
+//				_log.info("CALCULATE AFTER SUM ALL YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 			}
 	
 			
