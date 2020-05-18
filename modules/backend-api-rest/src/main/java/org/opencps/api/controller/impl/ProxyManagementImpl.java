@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +27,13 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ProxyManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.util.MultipartUtility;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -138,5 +141,85 @@ public class ProxyManagementImpl implements ProxyManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response proxyMultipart(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Attachment file, String url, String method, String data,
+			String serverCode) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : ConstantUtils.PROXY_SERVER_DVC;
+			
+			ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, serverCodeFind);
+			_log.debug("SERVER PROXY: " + sc.getConfigs());
+			if (sc != null) {
+				JSONObject configObj = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+				String serverUrl = StringPool.BLANK;
+		        String authStrEnc = StringPool.BLANK;
+				
+	
+			    String apiUrl;
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try
+			    {
+			        URL urlVal = null;
+			        String groupIdRequest = StringPool.BLANK;
+			        
+					if (configObj.has(SyncServerTerm.SERVER_USERNAME) 
+							&& configObj.has(SyncServerTerm.SERVER_SECRET)
+							&& configObj.has(SyncServerTerm.SERVER_URL)
+							&& configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+						authStrEnc = Base64.getEncoder().encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME) + ":" + configObj.getString(SyncServerTerm.SERVER_SECRET)).getBytes());
+						
+						serverUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+				        groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+					}
+			        
+					
+					if (ConstantUtils.PROXY_STATISTICS_ENDPOINT.equalsIgnoreCase(url) && serverUrl.contains(ConstantUtils.PROXY_V2_ENDPOINT)) {
+						apiUrl = serverUrl.replace(ConstantUtils.PROXY_V2_ENDPOINT, url);
+					} else {
+						apiUrl = serverUrl + url;
+					}
+			        _log.debug("API URL: " + apiUrl);
+			        if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
+						JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
+						Iterator<?> keys = dataObj.keys();
+						MultipartUtility multipart = new MultipartUtility(apiUrl, "UTF-8", groupId, authStrEnc);
+						while(keys.hasNext() ) {
+						    String key = (String)keys.next();
+						    multipart.addFormField(key, dataObj.getString(key));
+						}
+						if (file != null) {
+							multipart.addFilePartDataHandler("file", file);				
+						}
+						else {
+							multipart.addFormField("file", StringPool.BLANK);
+						}
+						List<String> res = multipart.finish();
+						sb = new StringBuilder();
+
+						for (String line : res) {
+							sb.append(line);
+						}
+			        }
+
+					
+			        _log.debug("RESULT PROXY: " + sb.toString());
+					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
+			    }
+				catch (IOException e) {
+					_log.error(e);
+					_log.debug("Something went wrong while reading/writing in stream!!");
+				}
+			    //return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
+			}
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}	
 	}
 }

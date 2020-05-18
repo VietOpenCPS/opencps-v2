@@ -214,7 +214,9 @@ public class ApplicantDataLocalServiceImpl
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
-			String sourceFileName, InputStream inputStream,
+			int status,
+			String sourceFileName, 
+			InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
 
@@ -233,7 +235,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(1);
+		applicantData.setStatus(status);
 		applicantData.setApplicantDataType(0);
 		
 		long fileEntryId = 0;
@@ -270,6 +272,7 @@ public class ApplicantDataLocalServiceImpl
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
+			int status,
 			String sourceFileName, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
@@ -288,7 +291,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(1);
+		applicantData.setStatus(status);
 		applicantData.setApplicantDataType(0);
 		
 		if (applicantData.getFileEntryId() != 0) {

@@ -10,6 +10,7 @@
 			<xsd:element name="modifiedDate" type="xsd:string" />
 			<xsd:element name="userName" type="xsd:string" />
 			<xsd:element name="fileTemplateNo" type="xsd:string" />
+			<xsd:element name="fileType" type="xsd:string" />
 			<xsd:element name="name" type="xsd:string" />
 			<xsd:element name="status" type="xsd:int" />
 			<xsd:element name="size" type="xsd:int" />

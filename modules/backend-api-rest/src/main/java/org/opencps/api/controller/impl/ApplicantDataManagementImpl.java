@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,13 +46,15 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 	@Override
 	public Response addApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Attachment file, String fileTemplateNo, String fileNo, String fileName,
-			String applicantIdNo) {
+			String applicantIdNo, String status) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
-			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
+			
+			applicantData = ApplicantDataLocalServiceUtil.createApplicantData(groupId, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
@@ -135,13 +138,14 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 	@Override
 	public Response updateApplicantData(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long id, Attachment file, String fileTemplateNo, String fileNo, String fileName,
-			String applicantIdNo) {
+			String applicantIdNo, String status) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 		ApplicantData applicantData = null;
 		
 		try {
-			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
+			int statusInt = Validator.isNotNull(status) ? Integer.parseInt(status) : 0;
+			applicantData = ApplicantDataLocalServiceUtil.updateApplicantData(groupId, id, fileTemplateNo, fileNo, fileName, applicantIdNo, statusInt, dataHandler.getName(), dataHandler.getInputStream(), serviceContext);
 			ApplicantDataDetailModel result = ApplicantDataUtils.mappingToApplicantDataModel(applicantData);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
