@@ -429,10 +429,10 @@ public class DossierTemplateLocalServiceImpl extends DossierTemplateLocalService
 		object.setDescription(objectData.getString(DossierTemplateTerm.DESCRIPTION));
 		object.setTemplateNo(objectData.getString(DossierTemplateTerm.TEMPLATE_NO));
 		object.setNewFormScript(objectData.getString(DossierTemplateTerm.NEWFORM_SCRIPT));
+		object.setFormMeta(objectData.getString(DossierTemplateTerm.FORM_META));
 		
-		dossierTemplatePersistence.update(object);
+		return dossierTemplatePersistence.update(object);
 
-		return object;
 	}
 
 	public List<DossierTemplate> findByG(long groupId) {

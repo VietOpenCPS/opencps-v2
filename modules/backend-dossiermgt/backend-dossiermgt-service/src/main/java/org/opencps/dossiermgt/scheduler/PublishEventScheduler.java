@@ -211,7 +211,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 			try {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				
-				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier);
+				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
 				_log.info("result DVCQG: "+result);
 				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
 					PublishQueueLocalServiceUtil.updatePublishQueue(

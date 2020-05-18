@@ -41,7 +41,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 
-			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating);
+			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating, request);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -58,7 +58,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 
-			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId);
+			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId, request);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);

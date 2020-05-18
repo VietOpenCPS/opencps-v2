@@ -182,10 +182,10 @@ public class BookingManagementImpl implements BookingManagement{
 				bookingDateSearch = splitBookingDate[2] + "-" + splitBookingDate[1] + "-" + splitBookingDate[0];
 
 				bookingDate = APIDateTimeUtils.convertStringToDate(input.getBookingDate(),
-						APIDateTimeUtils._NORMAL_PARTTERN);
+						APIDateTimeUtils._NORMAL_DATE);
 				if (bookingDate == null) {
 					bookingDate = APIDateTimeUtils.convertStringToDate(input.getBookingDate(),
-							APIDateTimeUtils._NORMAL_DATE);
+							APIDateTimeUtils._NORMAL_PARTTERN);
 				}
 			}
 			//Convert Date to sql Date
@@ -645,14 +645,12 @@ public class BookingManagementImpl implements BookingManagement{
 				NotificationQueue queue = NotificationQueueLocalServiceUtil
 						.createNotificationQueue(notificationQueueId);
 
-				Date now = new Date();
-
 				Calendar cal = Calendar.getInstance();
 
 				cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
 
-				queue.setCreateDate(now);
-				queue.setModifiedDate(now);
+				queue.setCreateDate(new Date());
+				queue.setModifiedDate(new Date());
 				queue.setGroupId(booking.getGroupId());
 				queue.setCompanyId(booking.getCompanyId());
 
@@ -661,7 +659,7 @@ public class BookingManagementImpl implements BookingManagement{
 				queue.setClassPK(String.valueOf(booking.getPrimaryKey()));
 				queue.setToUsername(booking.getUserName());
 				queue.setToUserId(booking.getUserId());
-				queue.setToEmail("");
+				queue.setToEmail(StringPool.BLANK);
 				queue.setToTelNo(booking.getTelNo());
 
 				JSONObject payload = JSONFactoryUtil.createJSONObject();

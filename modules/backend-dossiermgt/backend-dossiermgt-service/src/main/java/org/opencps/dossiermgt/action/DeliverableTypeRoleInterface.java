@@ -7,7 +7,7 @@ import java.util.Date;
 public interface DeliverableTypeRoleInterface {
 
 //	Employee create(long userId, long companyId, long groupId, String employeeNo, String fullName, String email,
-//			String gender, Date birthDate, String telNo, String mobile, String title, String workingStatus,
+//			String gender, Date birthdate, String telNo, String mobile, String title, String workingStatus,
 //			Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 	
 }

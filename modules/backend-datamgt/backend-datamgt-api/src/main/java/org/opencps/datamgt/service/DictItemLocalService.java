@@ -244,6 +244,8 @@ public interface DictItemLocalService extends BaseLocalService,
 	public List<DictItem> findByF_dictCollectionId_parentItemId(
 		long dictCollectionId, long parentItemId);
 
+	public List<DictItem> findByF_IDS(long[] ids);
+
 	/**
 	* @param parentItemId
 	* @return

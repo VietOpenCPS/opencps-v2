@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -74,16 +75,20 @@ public interface NewsBoardLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public NewsBoard addNewsBoard(NewsBoard newsBoard);
 
+	public NewsBoard adminProcessData(JSONObject objectData);
+
+	public NewsBoard adminProcessDelete(Long id) throws Exception;
+
 	public int countByNewsBoardList(long groupId);
 
 	/**
 	* Creates a new news board with the primary key. Does not add the news board to the database.
 	*
-	* @param newBoardId the primary key for the new news board
+	* @param newsBoardId the primary key for the new news board
 	* @return the new news board
 	*/
 	@Transactional(enabled = false)
-	public NewsBoard createNewsBoard(long newBoardId);
+	public NewsBoard createNewsBoard(long newsBoardId);
 
 	public NewsBoard createNewsBoard(long groupId, long userId,
 		String newsTitle, String newsContent, int newsStatus,
@@ -92,12 +97,13 @@ public interface NewsBoardLocalService extends BaseLocalService,
 	/**
 	* Deletes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board that was removed
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	@Indexable(type = IndexableType.DELETE)
-	public NewsBoard deleteNewsBoard(long newBoardId) throws PortalException;
+	public NewsBoard deleteNewsBoard(long newsBoardId)
+		throws PortalException;
 
 	/**
 	* Deletes the news board from the database. Also notifies the appropriate model listeners.
@@ -175,7 +181,7 @@ public interface NewsBoardLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public NewsBoard fetchNewsBoard(long newBoardId);
+	public NewsBoard fetchNewsBoard(long newsBoardId);
 
 	/**
 	* Returns the news board matching the UUID and group.
@@ -200,12 +206,12 @@ public interface NewsBoardLocalService extends BaseLocalService,
 	/**
 	* Returns the news board with the primary key.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board
 	* @throws PortalException if a news board with the primary key could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public NewsBoard getNewsBoard(long newBoardId) throws PortalException;
+	public NewsBoard getNewsBoard(long newsBoardId) throws PortalException;
 
 	/**
 	* Returns the news board matching the UUID and group.

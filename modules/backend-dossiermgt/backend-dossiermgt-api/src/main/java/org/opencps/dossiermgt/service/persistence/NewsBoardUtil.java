@@ -233,17 +233,17 @@ public class NewsBoardUtil {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where uuid = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public static NewsBoard[] findByUuid_PrevAndNext(long newBoardId,
+	public static NewsBoard[] findByUuid_PrevAndNext(long newsBoardId,
 		String uuid, OrderByComparator<NewsBoard> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchNewsBoardException {
 		return getPersistence()
-				   .findByUuid_PrevAndNext(newBoardId, uuid, orderByComparator);
+				   .findByUuid_PrevAndNext(newsBoardId, uuid, orderByComparator);
 	}
 
 	/**
@@ -460,19 +460,19 @@ public class NewsBoardUtil {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param uuid the uuid
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public static NewsBoard[] findByUuid_C_PrevAndNext(long newBoardId,
+	public static NewsBoard[] findByUuid_C_PrevAndNext(long newsBoardId,
 		String uuid, long companyId,
 		OrderByComparator<NewsBoard> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchNewsBoardException {
 		return getPersistence()
-				   .findByUuid_C_PrevAndNext(newBoardId, uuid, companyId,
+				   .findByUuid_C_PrevAndNext(newsBoardId, uuid, companyId,
 			orderByComparator);
 	}
 
@@ -619,17 +619,17 @@ public class NewsBoardUtil {
 	/**
 	* Returns the news boards before and after the current news board in the ordered set where groupId = &#63;.
 	*
-	* @param newBoardId the primary key of the current news board
+	* @param newsBoardId the primary key of the current news board
 	* @param groupId the group ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public static NewsBoard[] findByF_GID_PrevAndNext(long newBoardId,
+	public static NewsBoard[] findByF_GID_PrevAndNext(long newsBoardId,
 		long groupId, OrderByComparator<NewsBoard> orderByComparator)
 		throws org.opencps.dossiermgt.exception.NoSuchNewsBoardException {
 		return getPersistence()
-				   .findByF_GID_PrevAndNext(newBoardId, groupId,
+				   .findByF_GID_PrevAndNext(newsBoardId, groupId,
 			orderByComparator);
 	}
 
@@ -673,23 +673,23 @@ public class NewsBoardUtil {
 	/**
 	* Creates a new news board with the primary key. Does not add the news board to the database.
 	*
-	* @param newBoardId the primary key for the new news board
+	* @param newsBoardId the primary key for the new news board
 	* @return the new news board
 	*/
-	public static NewsBoard create(long newBoardId) {
-		return getPersistence().create(newBoardId);
+	public static NewsBoard create(long newsBoardId) {
+		return getPersistence().create(newsBoardId);
 	}
 
 	/**
 	* Removes the news board with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board that was removed
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public static NewsBoard remove(long newBoardId)
+	public static NewsBoard remove(long newsBoardId)
 		throws org.opencps.dossiermgt.exception.NoSuchNewsBoardException {
-		return getPersistence().remove(newBoardId);
+		return getPersistence().remove(newsBoardId);
 	}
 
 	public static NewsBoard updateImpl(NewsBoard newsBoard) {
@@ -699,23 +699,23 @@ public class NewsBoardUtil {
 	/**
 	* Returns the news board with the primary key or throws a {@link NoSuchNewsBoardException} if it could not be found.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board
 	* @throws NoSuchNewsBoardException if a news board with the primary key could not be found
 	*/
-	public static NewsBoard findByPrimaryKey(long newBoardId)
+	public static NewsBoard findByPrimaryKey(long newsBoardId)
 		throws org.opencps.dossiermgt.exception.NoSuchNewsBoardException {
-		return getPersistence().findByPrimaryKey(newBoardId);
+		return getPersistence().findByPrimaryKey(newsBoardId);
 	}
 
 	/**
 	* Returns the news board with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param newBoardId the primary key of the news board
+	* @param newsBoardId the primary key of the news board
 	* @return the news board, or <code>null</code> if a news board with the primary key could not be found
 	*/
-	public static NewsBoard fetchByPrimaryKey(long newBoardId) {
-		return getPersistence().fetchByPrimaryKey(newBoardId);
+	public static NewsBoard fetchByPrimaryKey(long newsBoardId) {
+		return getPersistence().fetchByPrimaryKey(newsBoardId);
 	}
 
 	public static java.util.Map<java.io.Serializable, NewsBoard> fetchByPrimaryKeys(

@@ -3,6 +3,7 @@ package org.opencps.dossiermgt.action.util;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -17,6 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.PaymentConfigTerm;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
@@ -87,7 +90,8 @@ public class PaymentUrlGenerator {
 
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,
 					dossier.getGovAgencyCode());
-
+			String serviceCode = dossier.getServiceCode();
+			
 			if (Validator.isNotNull(paymentConfig)) {
 				List<String> lsMessages = _putPaymentMessage(pattern);
 
@@ -110,13 +114,13 @@ public class PaymentUrlGenerator {
 				String version = epaymentConfigJSON.getString("paymentVersion");
 				String command = epaymentConfigJSON.getString("paymentCommand");
 				String currency_code = epaymentConfigJSON.getString("paymentCurrencyCode");
-
+				String bankAccountInfo = StringPool.BLANK;
+				
 				String desc_1 = StringPool.BLANK;
 				String desc_2 = StringPool.BLANK;
 				String desc_3 = StringPool.BLANK;
 				String desc_4 = StringPool.BLANK;
 				String desc_5 = StringPool.BLANK;
-
 				if (lsMessages.size() > 0) {
 					desc_1 = lsMessages.get(0);
 					desc_2 = lsMessages.get(1);
@@ -143,6 +147,22 @@ public class PaymentUrlGenerator {
 							desc_5 = StringPool.BLANK;
 						}
 					}
+				}
+
+				if (epaymentConfigJSON.has(PaymentConfigTerm.BANK_ACCOUNT_INFO)) {
+					bankAccountInfo = epaymentConfigJSON.getString(PaymentConfigTerm.BANK_ACCOUNT_INFO);
+				}
+				try {
+					JSONObject bankAccountObj = JSONFactoryUtil.createJSONObject(bankAccountInfo);
+					if (bankAccountObj.has(serviceCode)) {
+						desc_3 = bankAccountObj.getString(serviceCode);
+					}
+					else if (bankAccountObj.has("default")) {
+						desc_3 = bankAccountObj.getString("default");
+					}
+				}
+				catch (JSONException e) {
+					_log.debug(e);
 				}
 
 				String xml_description = StringPool.BLANK;

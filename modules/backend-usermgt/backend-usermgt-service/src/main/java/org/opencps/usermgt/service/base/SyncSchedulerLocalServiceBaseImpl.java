@@ -238,6 +238,19 @@ public abstract class SyncSchedulerLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the sync scheduler matching the UUID and group.
+	 *
+	 * @param uuid the sync scheduler's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching sync scheduler, or <code>null</code> if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler fetchSyncSchedulerByUuidAndGroupId(String uuid,
+		long groupId) {
+		return syncSchedulerPersistence.fetchByUUID_G(uuid, groupId);
+	}
+
+	/**
 	 * Returns the sync scheduler with the primary key.
 	 *
 	 * @param syncSchedulerId the primary key of the sync scheduler
@@ -299,6 +312,20 @@ public abstract class SyncSchedulerLocalServiceBaseImpl
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException {
 		return syncSchedulerPersistence.findByPrimaryKey(primaryKeyObj);
+	}
+
+	/**
+	 * Returns the sync scheduler matching the UUID and group.
+	 *
+	 * @param uuid the sync scheduler's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching sync scheduler
+	 * @throws PortalException if a matching sync scheduler could not be found
+	 */
+	@Override
+	public SyncScheduler getSyncSchedulerByUuidAndGroupId(String uuid,
+		long groupId) throws PortalException {
+		return syncSchedulerPersistence.findByUUID_G(uuid, groupId);
 	}
 
 	/**

@@ -137,6 +137,9 @@
 			<finder-column name="idLGSP"/>
 			<finder-column name="dictCollectionId"/>
 		</finder>
+        <finder name="F_IDS" return-type="Collection">
+            <finder-column name="dictItemId" comparator="=" arrayable-operator="OR"></finder-column>
+        </finder>
 	</entity>
 
 	<entity name="DictGroup" uuid="true" local-service="true"

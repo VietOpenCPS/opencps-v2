@@ -14,14 +14,30 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.model.NewsBoard;
+import org.opencps.dossiermgt.model.ServiceFileTemplate;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.base.NewsBoardLocalServiceBaseImpl;
 
 /**
@@ -44,6 +60,8 @@ public class NewsBoardLocalServiceImpl extends NewsBoardLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Always use {@link org.opencps.dossiermgt.service.NewsBoardLocalServiceUtil} to access the news board local service.
 	 */
+
+	private Log _log = LogFactoryUtil.getLog(NewsBoardLocalServiceImpl.class);
 
 	public List<NewsBoard> getNewsBoardList(long groupId, int start, int end) {
 
@@ -124,4 +142,49 @@ public class NewsBoardLocalServiceImpl extends NewsBoardLocalServiceBaseImpl {
 
 	}
 
+	// super_admin Generators
+	//@Indexable(type = IndexableType.DELETE)
+	public NewsBoard adminProcessDelete(Long id) throws Exception {
+
+		NewsBoard object = newsBoardPersistence.fetchByPrimaryKey(id);
+		if (Validator.isNull(object)) {
+			return null;
+		}
+		return newsBoardPersistence.remove(object);
+
+	}
+
+	//@Indexable(type = IndexableType.REINDEX)
+	public NewsBoard adminProcessData(JSONObject objectData) {
+
+		NewsBoard object = null;
+
+		if (objectData.getLong("newsBoardId") > 0) {
+
+			object = newsBoardPersistence.fetchByPrimaryKey(objectData.getLong("newsBoardId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long newsBoardId = CounterLocalServiceUtil.increment(NewsBoard.class.getName());
+
+			object = newsBoardPersistence.create(newsBoardId);
+
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
+			object.setCreateDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong(Field.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
+
+		object.setNewsTitle(objectData.getString("newsTitle"));
+		object.setNewsContent(objectData.getString("newsContent"));
+		object.setNewsStatus(objectData.getInt("newsStatus"));
+
+		return newsBoardPersistence.update(object);
+
+	}
 }

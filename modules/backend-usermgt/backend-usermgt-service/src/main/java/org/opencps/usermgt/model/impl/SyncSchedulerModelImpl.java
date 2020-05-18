@@ -67,9 +67,11 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 			{ "syncSchedulerId", Types.BIGINT },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
+			{ "groupId", Types.BIGINT },
 			{ "className", Types.VARCHAR },
 			{ "typeCode", Types.VARCHAR },
-			{ "syncDate", Types.TIMESTAMP }
+			{ "syncDate", Types.TIMESTAMP },
+			{ "retry", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -78,12 +80,14 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		TABLE_COLUMNS_MAP.put("syncSchedulerId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("typeCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("syncDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("retry", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_sync_scheduler (uuid_ VARCHAR(75) null,syncSchedulerId LONG not null primary key,createDate DATE null,modifiedDate DATE null,className VARCHAR(255) null,typeCode VARCHAR(255) null,syncDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_sync_scheduler (uuid_ VARCHAR(75) null,syncSchedulerId LONG not null primary key,createDate DATE null,modifiedDate DATE null,groupId LONG,className VARCHAR(255) null,typeCode VARCHAR(255) null,syncDate DATE null,retry INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_sync_scheduler";
 	public static final String ORDER_BY_JPQL = " ORDER BY syncScheduler.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_sync_scheduler.createDate ASC";
@@ -100,10 +104,12 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 				"value.object.column.bitmask.enabled.org.opencps.usermgt.model.SyncScheduler"),
 			true);
 	public static final long CLASSNAME_COLUMN_BITMASK = 1L;
-	public static final long SYNCDATE_COLUMN_BITMASK = 2L;
-	public static final long TYPECODE_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 2L;
+	public static final long RETRY_COLUMN_BITMASK = 4L;
+	public static final long SYNCDATE_COLUMN_BITMASK = 8L;
+	public static final long TYPECODE_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.SyncScheduler"));
 
@@ -148,9 +154,11 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		attributes.put("syncSchedulerId", getSyncSchedulerId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("groupId", getGroupId());
 		attributes.put("className", getClassName());
 		attributes.put("typeCode", getTypeCode());
 		attributes.put("syncDate", getSyncDate());
+		attributes.put("retry", getRetry());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -184,6 +192,12 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 			setModifiedDate(modifiedDate);
 		}
 
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
 		String className = (String)attributes.get("className");
 
 		if (className != null) {
@@ -200,6 +214,12 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 
 		if (syncDate != null) {
 			setSyncDate(syncDate);
+		}
+
+		Integer retry = (Integer)attributes.get("retry");
+
+		if (retry != null) {
+			setRetry(retry);
 		}
 	}
 
@@ -262,6 +282,28 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		_setModifiedDate = true;
 
 		_modifiedDate = modifiedDate;
+	}
+
+	@Override
+	public long getGroupId() {
+		return _groupId;
+	}
+
+	@Override
+	public void setGroupId(long groupId) {
+		_columnBitmask |= GROUPID_COLUMN_BITMASK;
+
+		if (!_setOriginalGroupId) {
+			_setOriginalGroupId = true;
+
+			_originalGroupId = _groupId;
+		}
+
+		_groupId = groupId;
+	}
+
+	public long getOriginalGroupId() {
+		return _originalGroupId;
 	}
 
 	@Override
@@ -334,6 +376,28 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		return _originalSyncDate;
 	}
 
+	@Override
+	public int getRetry() {
+		return _retry;
+	}
+
+	@Override
+	public void setRetry(int retry) {
+		_columnBitmask |= RETRY_COLUMN_BITMASK;
+
+		if (!_setOriginalRetry) {
+			_setOriginalRetry = true;
+
+			_originalRetry = _retry;
+		}
+
+		_retry = retry;
+	}
+
+	public int getOriginalRetry() {
+		return _originalRetry;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -369,9 +433,11 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		syncSchedulerImpl.setSyncSchedulerId(getSyncSchedulerId());
 		syncSchedulerImpl.setCreateDate(getCreateDate());
 		syncSchedulerImpl.setModifiedDate(getModifiedDate());
+		syncSchedulerImpl.setGroupId(getGroupId());
 		syncSchedulerImpl.setClassName(getClassName());
 		syncSchedulerImpl.setTypeCode(getTypeCode());
 		syncSchedulerImpl.setSyncDate(getSyncDate());
+		syncSchedulerImpl.setRetry(getRetry());
 
 		syncSchedulerImpl.resetOriginalValues();
 
@@ -437,11 +503,19 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 
 		syncSchedulerModelImpl._setModifiedDate = false;
 
+		syncSchedulerModelImpl._originalGroupId = syncSchedulerModelImpl._groupId;
+
+		syncSchedulerModelImpl._setOriginalGroupId = false;
+
 		syncSchedulerModelImpl._originalClassName = syncSchedulerModelImpl._className;
 
 		syncSchedulerModelImpl._originalTypeCode = syncSchedulerModelImpl._typeCode;
 
 		syncSchedulerModelImpl._originalSyncDate = syncSchedulerModelImpl._syncDate;
+
+		syncSchedulerModelImpl._originalRetry = syncSchedulerModelImpl._retry;
+
+		syncSchedulerModelImpl._setOriginalRetry = false;
 
 		syncSchedulerModelImpl._columnBitmask = 0;
 	}
@@ -478,6 +552,8 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 			syncSchedulerCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		syncSchedulerCacheModel.groupId = getGroupId();
+
 		syncSchedulerCacheModel.className = getClassName();
 
 		String className = syncSchedulerCacheModel.className;
@@ -503,12 +579,14 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 			syncSchedulerCacheModel.syncDate = Long.MIN_VALUE;
 		}
 
+		syncSchedulerCacheModel.retry = getRetry();
+
 		return syncSchedulerCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -518,12 +596,16 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
+		sb.append(", groupId=");
+		sb.append(getGroupId());
 		sb.append(", className=");
 		sb.append(getClassName());
 		sb.append(", typeCode=");
 		sb.append(getTypeCode());
 		sb.append(", syncDate=");
 		sb.append(getSyncDate());
+		sb.append(", retry=");
+		sb.append(getRetry());
 		sb.append("}");
 
 		return sb.toString();
@@ -531,7 +613,7 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.SyncScheduler");
@@ -554,6 +636,10 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		sb.append(getModifiedDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>groupId</column-name><column-value><![CDATA[");
+		sb.append(getGroupId());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>className</column-name><column-value><![CDATA[");
 		sb.append(getClassName());
 		sb.append("]]></column-value></column>");
@@ -564,6 +650,10 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 		sb.append(
 			"<column><column-name>syncDate</column-name><column-value><![CDATA[");
 		sb.append(getSyncDate());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>retry</column-name><column-value><![CDATA[");
+		sb.append(getRetry());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
@@ -581,12 +671,18 @@ public class SyncSchedulerModelImpl extends BaseModelImpl<SyncScheduler>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private long _groupId;
+	private long _originalGroupId;
+	private boolean _setOriginalGroupId;
 	private String _className;
 	private String _originalClassName;
 	private String _typeCode;
 	private String _originalTypeCode;
 	private Date _syncDate;
 	private Date _originalSyncDate;
+	private int _retry;
+	private int _originalRetry;
+	private boolean _setOriginalRetry;
 	private long _columnBitmask;
 	private SyncScheduler _escapedModel;
 }

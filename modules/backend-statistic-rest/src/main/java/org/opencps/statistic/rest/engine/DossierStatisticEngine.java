@@ -136,10 +136,18 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				DictGroup dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_SBN, site.getGroupId());
 				List<DictItemGroup> lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 				List<DictItem> lstGovs = new ArrayList<DictItem>();
-				for (DictItemGroup dig : lstDigs) {
-					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-					lstGovs.add(di);
+				int count = 0;
+				long[] ids;
+				if (lstDigs.size() > 0) {
+					ids = new long[lstDigs.size()];
+					for (DictItemGroup dig : lstDigs) {
+						ids[count++] = dig.getDictItemId();
+//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//						lstGovs.add(di);
+					}
+					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 				}
+				
 				for (DictItem di : lstGovs) {
 					if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
 						groupGovAgency.append(StringPool.COMMA);
@@ -154,11 +162,18 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 				lstGovs = new ArrayList<DictItem>();
 				StringBuilder groupGovAgencyQH = new StringBuilder();
-				
-				for (DictItemGroup dig : lstDigs) {
-					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-					lstGovs.add(di);
+				count = 0;
+				if (lstDigs.size() > 0) {
+					ids = new long[lstDigs.size()];
+					
+					for (DictItemGroup dig : lstDigs) {
+						ids[count++] = dig.getDictItemId();
+//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//						lstGovs.add(di);
+					}
+					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 				}
+				
 				for (DictItem di : lstGovs) {
 					if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
 						groupGovAgencyQH.append(StringPool.COMMA);
@@ -173,11 +188,17 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 				lstGovs = new ArrayList<DictItem>();
 				StringBuilder groupGovAgencyXP = new StringBuilder();
-				
-				for (DictItemGroup dig : lstDigs) {
-					DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
-					lstGovs.add(di);
+				if (lstDigs.size() > 0) {
+					ids = new long[lstDigs.size()];
+					count = 0;
+					for (DictItemGroup dig : lstDigs) {
+						ids[count++] = dig.getDictItemId();
+//						DictItem di = DictItemLocalServiceUtil.fetchDictItem(dig.getDictItemId());
+//						lstGovs.add(di);
+					}
+					lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 				}
+				
 				for (DictItem di : lstGovs) {
 					if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
 						groupGovAgencyXP.append(StringPool.COMMA);

@@ -41,7 +41,7 @@ public class UserTerm {
 	public static final String EMPLOYEE_FULLNAME = "employeeFullName";
 	public static final String EMPLOYEE_NO = "employeeNo";
 	public static final String EMPLOYEE_TELNO = "employeeTelNo";
-	public static final String EMPLOYEE_BIRTHDATE = "employeeBirthDate";
+	public static final String EMPLOYEE_BIRTHDATE = "employeeBirthdate";
 	public static final String EMPLOYEE_MOBILE = "employeeMobile";
 	public static final String EMPLOYEE_EMAIL = "employeeEmail";
 

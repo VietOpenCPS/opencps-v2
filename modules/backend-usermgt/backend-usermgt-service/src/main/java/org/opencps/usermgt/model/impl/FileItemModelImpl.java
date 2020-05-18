@@ -121,8 +121,9 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long FILETEMPLATENO_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long UUID_COLUMN_BITMASK = 8L;
-	public static final long FILEITEMID_COLUMN_BITMASK = 16L;
+	public static final long STATUS_COLUMN_BITMASK = 8L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
+	public static final long FILEITEMID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.usermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.usermgt.model.FileItem"));
 
@@ -462,7 +463,19 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 
 	@Override
 	public void setStatus(int status) {
+		_columnBitmask |= STATUS_COLUMN_BITMASK;
+
+		if (!_setOriginalStatus) {
+			_setOriginalStatus = true;
+
+			_originalStatus = _status;
+		}
+
 		_status = status;
+	}
+
+	public int getOriginalStatus() {
+		return _originalStatus;
 	}
 
 	@Override
@@ -631,6 +644,10 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 		fileItemModelImpl._setOriginalGroupId = false;
 
 		fileItemModelImpl._originalFileTemplateNo = fileItemModelImpl._fileTemplateNo;
+
+		fileItemModelImpl._originalStatus = fileItemModelImpl._status;
+
+		fileItemModelImpl._setOriginalStatus = false;
 
 		fileItemModelImpl._columnBitmask = 0;
 	}
@@ -849,6 +866,8 @@ public class FileItemModelImpl extends BaseModelImpl<FileItem>
 	private String _originalFileTemplateNo;
 	private String _name;
 	private int _status;
+	private int _originalStatus;
+	private boolean _setOriginalStatus;
 	private int _size;
 	private String _fileType;
 	private String _log;
