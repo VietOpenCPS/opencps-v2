@@ -55,9 +55,7 @@ public class AccessStatisticsManagementImpl implements AccessStatisticsManagemen
 		Locale locale,User user,ServiceContext serviceContext,String startDay,String endDay)
 	{
 		AccessStatisticsActions actions = new AccessStatisticsActionsImpl();
-		Map<String,Long> result=actions.getAccessStatisticsForPeriod(startDay,endDay);
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("accessStatistics" , result);
+		JSONObject jsonObject = actions.getAccessStatisticsForPeriod(startDay,endDay);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(jsonObject.toString())).build();
 	}
 

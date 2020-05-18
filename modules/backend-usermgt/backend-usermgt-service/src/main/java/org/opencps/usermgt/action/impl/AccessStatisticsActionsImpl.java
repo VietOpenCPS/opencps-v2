@@ -8,8 +8,9 @@ import org.opencps.usermgt.model.TrackClientStatistic;
 import org.opencps.usermgt.service.TrackClientLocalServiceUtil;
 import org.opencps.usermgt.service.TrackClientStatisticLocalServiceUtil;
 
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 {
@@ -28,9 +29,72 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 	}
 
 	@Override
-	public Map<String, Long> getAccessStatisticsForPeriod(String  startDay, String endDay)
+	public JSONObject getAccessStatisticsForPeriod(String  startDay, String endDay)
 	{
-		return TrackClientStatisticLocalServiceUtil.countAccessPeriod(startDay,endDay);
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+		try
+		{
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date stratDate = dateFormat.parse(startDay);
+			Date endDate = dateFormat.parse(endDay);
+
+
+			List<Object[]> list = TrackClientLocalServiceUtil.findPeriodCountDay(startDay, endDay);
+
+			Calendar calendar = Calendar.getInstance();
+			for (calendar.setTime(stratDate); calendar.getTime().getTime()<=endDate.getTime(); calendar.add(Calendar.DAY_OF_MONTH,1) )
+			{
+				JSONObject  jsonObject = JSONFactoryUtil.createJSONObject();
+				boolean added = false;
+
+				for (int i = 0; i < list.size(); i++)
+				{
+					Date date = (Date) list.get(i)[0];
+					int count =(int) list.get(i)[1];
+
+					if (date.getTime()==calendar.getTime().getTime())
+					{
+						jsonObject.put("day" , date.toString());
+						jsonObject.put("count", count);
+						added = true;
+						break;
+					}
+				}
+				if (!added)
+				{
+					String date = dateFormat.format(calendar.getTime()).toString();
+					jsonObject.put("day" , date );
+					jsonObject.put("count", 0);
+				}
+				jsonArray.put(jsonObject);
+
+			}
+
+		}
+		catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
+
+		Map<String,Long> result=TrackClientStatisticLocalServiceUtil.countAccessPeriod(startDay, endDay);
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		JSONArray regionJSONArray = JSONFactoryUtil.createJSONArray();
+
+		List<Object[]> regions = TrackClientLocalServiceUtil.findPeriodRegion(startDay, endDay);
+
+		for (int i = 0; i < regions.size(); i++)
+		{
+			JSONObject object = JSONFactoryUtil.createJSONObject();
+			String region = (String) regions.get(i)[0];
+			int count = (int) regions.get(i)[1];
+			object.put("region" ,region);
+			object.put("count", count);
+			regionJSONArray.put(object);
+		}
+		jsonObject.put("detail",jsonArray);
+		jsonObject.put("accessStatistics", result );
+		jsonObject.put("region" ,regionJSONArray);
+		return jsonObject;
 	}
 
 	@Override
@@ -112,5 +176,4 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 		result.put("topURLUserAccess", jsonArray);
 		return result;
 	}
-
 }

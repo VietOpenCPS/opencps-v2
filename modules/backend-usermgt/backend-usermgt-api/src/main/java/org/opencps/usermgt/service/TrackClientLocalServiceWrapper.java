@@ -224,6 +224,18 @@ public class TrackClientLocalServiceWrapper implements TrackClientLocalService,
 	}
 
 	@Override
+	public java.util.List<Object[]> findPeriodCountDay(String startDay,
+		String endDay) {
+		return _trackClientLocalService.findPeriodCountDay(startDay, endDay);
+	}
+
+	@Override
+	public java.util.List<Object[]> findPeriodRegion(String startDay,
+		String endDay) {
+		return _trackClientLocalService.findPeriodRegion(startDay, endDay);
+	}
+
+	@Override
 	public org.opencps.usermgt.model.TrackClient findPreviousPage(
 		String sessionId) {
 		return _trackClientLocalService.findPreviousPage(sessionId);
