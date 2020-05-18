@@ -112,6 +112,10 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(ApplicantDataTerm.APPLICANT_ID_NO, query.getApplicantIdNo());
+			params.put(ApplicantDataTerm.STATUS, query.getStatus());
+			params.put(ApplicantDataTerm.FILE_NO, query.getFileNo());
+			
 			params.put(Field.KEYWORD_SEARCH, query.getKeyword());
 			
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());

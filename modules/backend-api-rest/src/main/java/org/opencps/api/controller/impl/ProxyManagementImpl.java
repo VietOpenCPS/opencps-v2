@@ -192,6 +192,8 @@ public class ProxyManagementImpl implements ProxyManagement {
 						    String key = (String)keys.next();
 						    multipart.addFormField(key, dataObj.getString(key));
 						}
+						multipart.addHeaderField(Field.GROUP_ID, groupIdRequest);
+						
 						if (file != null) {
 							multipart.addFilePartDataHandler("file", file);				
 						}
