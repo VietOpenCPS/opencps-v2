@@ -42,10 +42,10 @@ public class OpenCPSConfigUtil {
 	
 	public static final String OPENCPS_MAIL_TO_APPLICANT_FROM = "org.opencps.mailtoapplicant.from";
 	
-	public static String getPortalDomain() {
-		return PropsUtil.get(PORTAL_DOMAIN);
+	public static int getPortalDomain() {
+		return GetterUtil.getInteger(PropsUtil.get(PORTAL_DOMAIN));
 	}
-	
+
 	public static boolean isNotificationEnable() {
 	    String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
 	    return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty) : false;
