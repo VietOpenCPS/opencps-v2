@@ -187,12 +187,11 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        if (ConstantUtils.METHOD_POST.equals(method) || ConstantUtils.METHOD_PUT.equals(method)) {
 						JSONObject dataObj = JSONFactoryUtil.createJSONObject(data);
 						Iterator<?> keys = dataObj.keys();
-						MultipartUtility multipart = new MultipartUtility(apiUrl, "UTF-8", groupId, authStrEnc);
+						MultipartUtility multipart = new MultipartUtility(apiUrl, "UTF-8", Integer.parseInt(groupIdRequest), authStrEnc);
 						while(keys.hasNext() ) {
 						    String key = (String)keys.next();
 						    multipart.addFormField(key, dataObj.getString(key));
 						}
-						multipart.addHeaderField(Field.GROUP_ID, groupIdRequest);
 						
 						if (file != null) {
 							multipart.addFilePartDataHandler("file", file);				
