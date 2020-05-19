@@ -210,7 +210,8 @@ import javax.xml.bind.annotation.XmlType;
     "serviceLevel",
     "dossierCounter",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 public class DossierDataModel {
 
@@ -327,6 +328,15 @@ public class DossierDataModel {
     protected String dossierCounter;
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;

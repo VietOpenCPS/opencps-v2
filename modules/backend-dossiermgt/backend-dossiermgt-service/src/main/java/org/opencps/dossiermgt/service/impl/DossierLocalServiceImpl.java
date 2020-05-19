@@ -2864,6 +2864,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
 		Integer vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
 			? GetterUtil.getInteger(params.get(DossierTerm.VNPOSTAL_STATUS)) : null;
+		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
+					? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL)) : null;
 
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -2906,7 +2908,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
-			delegate, vnpostalStatus,
+			delegate, vnpostalStatus, fromViaPostal,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3057,7 +3059,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
 				? GetterUtil.getInteger(params.get(DossierTerm.VNPOSTAL_STATUS))
 				: null;
-
+		
+		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
+				? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL))
+				: null;
+		
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3096,7 +3102,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			toStatisticDate, originDossierId, time, register, day,
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
-			delegate, vnpostalStatus,
+			delegate, vnpostalStatus, fromViaPostal,
 			booleanCommon);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -3226,7 +3232,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Long groupDossierId, String assignedUserId, String assignedUserIdSearch, Integer delegateType,
 		String documentNo, String documentDate, String strSystemId,
 		Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
-		String delegate, Integer vnpostalStatus,
+		String delegate, Integer vnpostalStatus, Integer fromViaPostal,
 		BooleanQuery booleanQuery)
 		throws ParseException {
 
@@ -3250,6 +3256,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			MultiMatchQuery query =
 				new MultiMatchQuery(String.valueOf(vnpostalStatus));
 			query.addField(DossierTerm.VNPOSTAL_STATUS);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(fromViaPostal)) {
+			MultiMatchQuery query =
+				new MultiMatchQuery(String.valueOf(fromViaPostal));
+			query.addField(DossierTerm.FROM_VIA_POSTAL);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
@@ -5090,7 +5102,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
-		Integer vnpostalStatus, String vnpostalProfile,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		ServiceContext serviceContext) {
 
 		Date now = new Date();
@@ -5164,8 +5176,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(vnpostalStatus)) {
 			dossier.setVnpostalStatus(vnpostalStatus);
 		}
+		if (Validator.isNotNull(fromViaPostal)) {
+			dossier.setFromViaPostal(fromViaPostal);
+		}
 		if (Validator.isNotNull(vnpostalProfile)) {
 			dossier.setVnpostalProfile(vnpostalProfile);
+		}
+		if (Validator.isNotNull(fromViaPostal)) {
+			dossier.setFromViaPostal(fromViaPostal);
 		}
 		if (isSameAsApplicant) {
 			dossier.setDelegateName(applicantName);
@@ -5246,7 +5264,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
-		String dossierName, Integer vnpostalStatus, String vnpostalProfile,
+		String dossierName, Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		ServiceContext serviceContext) {
 
 		Date now = new Date();
@@ -5324,6 +5342,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (Validator.isNotNull(vnpostalProfile)) {
 			dossier.setVnpostalProfile(vnpostalProfile);
+		}
+		if (Validator.isNotNull(fromViaPostal)) {
+			dossier.setFromViaPostal(fromViaPostal);
 		}
 		if (isSameAsApplicant) {
 			dossier.setDelegateName(applicantName);
@@ -5577,7 +5598,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, double durationCount, int durationUnit,
 		String dossierName, String processNo, String metaData,
-		Integer vnpostalStatus, String vnpostalProfile, ServiceContext context)
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext context)
 		throws PortalException {
 
 		long userId = context.getUserId();
@@ -5685,6 +5706,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setMetaData(metaData);
 			dossier.setVnpostalStatus(vnpostalStatus);
 			dossier.setVnpostalProfile(vnpostalProfile);
+			if (Validator.isNotNull(fromViaPostal)) {
+				dossier.setFromViaPostal(fromViaPostal);				
+			}
 
 			dossier = dossierPersistence.update(dossier);
 		}
@@ -5800,6 +5824,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier.setVnpostalStatus(vnpostalStatus);
 			dossier.setVnpostalProfile(vnpostalProfile);
+			if (Validator.isNotNull(fromViaPostal)) {
+				dossier.setFromViaPostal(fromViaPostal);				
+			}
 
 			dossier = dossierPersistence.update(dossier);
 
@@ -6622,7 +6649,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, Date documentDate, int systemId,
-		Integer vnpostalStatus, String vnpostalProfile,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		ServiceContext serviceContext) {
 
 		Date now = new Date();
@@ -6785,6 +6812,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (vnpostalProfile != null && Validator.isNotNull(vnpostalProfile)) {
 			dossier.setVnpostalProfile(vnpostalProfile);
 		}
+		if (fromViaPostal != null && Validator.isNotNull(fromViaPostal)) {
+			dossier.setFromViaPostal(fromViaPostal);
+		}
 
 		return dossierPersistence.update(dossier);
 	}
@@ -6851,7 +6881,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer durationUnit, Integer sampleCount, Date createDate,
 		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
 		Date releaseDate, Date finishDate, String dossierTemplateNo,
-		String dossierTemplateName, Integer vnpostalStatus, String vnpostalProfile, ServiceContext serviceContext) {
+		String dossierTemplateName, Integer vnpostalStatus, String vnpostalProfile,
+		Integer fromViaPostal, ServiceContext serviceContext) {
 
 		long userId = serviceContext.getUserId();
 
@@ -6925,6 +6956,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setDossierName(serviceName);
 			dossier.setVnpostalStatus(vnpostalStatus);
 			dossier.setVnpostalProfile(vnpostalProfile);
+			dossier.setFromViaPostal(fromViaPostal);
 
 			dossier = dossierPersistence.update(dossier);
 		}
@@ -6975,6 +7007,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 			if (Validator.isNotNull(vnpostalProfile)) {
 				dossier.setVnpostalProfile(vnpostalProfile);
+			}
+			if (Validator.isNotNull(fromViaPostal)) {
+				dossier.setFromViaPostal(fromViaPostal);
 			}
 
 			dossier = dossierPersistence.update(dossier);

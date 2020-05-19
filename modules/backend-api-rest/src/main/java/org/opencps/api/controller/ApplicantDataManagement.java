@@ -70,7 +70,8 @@ public interface ApplicantDataManagement {
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
-		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("status") String status);
 
 	@DELETE
 	@Path("/{id}")
@@ -115,7 +116,8 @@ public interface ApplicantDataManagement {
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
 		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
-		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo);
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("status") String status);
 	
 	@POST
 	@Path("/{id}/active")

@@ -204,7 +204,8 @@ import javax.xml.bind.annotation.XmlType;
     "groupId",
     "dossierCounter",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -316,6 +317,15 @@ public class DossierDetailModel {
 	protected String dossierCounter;
 	protected Integer vnpostalStatus;
 	protected String vnpostalProfile;
+	protected Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;
