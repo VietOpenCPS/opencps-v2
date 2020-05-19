@@ -112,12 +112,12 @@ public interface ApplicantDataManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of applicant data", required = true) @PathParam("id") long id,
-		@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
-		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileTemplateNo") String fileTemplateNo,
-		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileNo") String fileNo,
-		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart("fileName") String fileName,
-		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("applicantIdNo") String applicantIdNo,
-		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart("status") String status);
+		@ApiParam(value = "Attachment files", required = false) @Multipart(value="file", required=false) Attachment file,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart(value="fileTemplateNo", required=false) String fileTemplateNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart(value="fileNo", required=false) String fileNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = false) @Multipart(value="fileName", required=false) String fileName,
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart(value="applicantIdNo", required=false) String applicantIdNo,
+		@ApiParam(value = "Metadata of ApplicantData", required = true) @Multipart(value="status", required=false) String status);
 	
 	@POST
 	@Path("/{id}/active")
