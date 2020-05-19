@@ -120,7 +120,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 						os.close();			        	
 			        }
 
-					
+					_log.debug("PROXY CONTENT TYPE RETURN: " + conn.getContentType());
 			        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			        			        
 			        int cp;
@@ -128,7 +128,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 			          sb.append((char) cp);
 			        }
 			        _log.debug("RESULT PROXY: " + sb.toString());
-					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();			        
+					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).header(HttpHeaders.CONTENT_TYPE, conn.getContentType()) .build();			        
 			    }
 				catch (IOException e) {
 					_log.error(e);
