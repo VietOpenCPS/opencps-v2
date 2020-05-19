@@ -26,6 +26,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opencps.kernel.prop.PropValues;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -58,6 +59,8 @@ public class OpenCPSServletFilter extends BaseFilter {
 	@Override
 	protected void processFilter(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws Exception {
+		httpServletRequest.setAttribute("USER_ID", PropValues.PORTAL_DEFAULT_USERID);
+		_log.debug("===> httpServletRequest UserId " + httpServletRequest.getAttribute("USER_ID"));
 		String requestURI = httpServletRequest.getRequestURI();
 		if (Validator.isNotNull(requestURI)
 				&& requestURI.contains("/XrdAdapter/RestService/forward/addtthcKhuyenMai")) {

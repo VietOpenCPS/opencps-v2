@@ -285,13 +285,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							data = JSONFactoryUtil.createJSONObject();
 							if (dossierFile.getDossierPartType() == 2) {
 								data.put("TenGiayTo", dossierFile.getDisplayName());
-								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								//data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", StringPool.BLANK);
 								data.put("GiayToId", String.valueOf(dossierFile.getDossierFileId()));
 								data.put("DuongDanTepTinKetQua", url);
 								DanhSachGiayToKetQua.put(data);
 							} else {
 								data.put("TenTepDinhKem", dossierFile.getDisplayName());
-								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								//data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", StringPool.BLANK);
 								data.put("TepDinhKemId", String.valueOf(dossierFile.getDossierFileId()));
 								data.put("DuongDanTaiTepTin", url);
 								data.put("IsDeleted", "False");
@@ -310,7 +312,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			object.put("TaiLieuNop", TaiLieuNop);//ko bb
 
 		}
-
+		
 		return object;
 	}
 
@@ -3163,6 +3165,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			//inputModel.setMetaData(metaData);
 
+			serviceContext.setUserId(applicant.getMappingUserId());
+			
+			serviceContext.setSignedIn(true);
+			
+			_log.debug("applicant.getMappingUserId() " + serviceContext.getUserId());
+			
+			_log.debug("applicant " + JSONFactoryUtil.looseSerialize(applicant));
+			
 			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
 					inputModel);
 
