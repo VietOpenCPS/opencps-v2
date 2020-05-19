@@ -19,6 +19,7 @@
 			<xsd:element name="status" type="xsd:int" />
 			<xsd:element name="applicantIdNo" type="xsd:string" />
 			<xsd:element name="applicantDataType" type="xsd:int" />
+			<xsd:element name="dossierNo" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
 

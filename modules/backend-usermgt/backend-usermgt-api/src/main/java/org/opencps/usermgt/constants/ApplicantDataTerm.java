@@ -15,6 +15,7 @@ public class ApplicantDataTerm {
 	public static final String STATUS = "status";
 	public static final String APPLICANT_ID_NO = "applicantIdNo";
 	public static final String APPLICANT_DATA_TYPE = "applicantDataType";
+	public static final String DOSSIER_NO = "dossierNo";
 	public static final String DATA = "data";
 	public static final String TOTAL = "total";
 	public static final String PAGINATION_TYPE = "paginationType";
