@@ -5706,7 +5706,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setMetaData(metaData);
 			dossier.setVnpostalStatus(vnpostalStatus);
 			dossier.setVnpostalProfile(vnpostalProfile);
-			dossier.setFromViaPostal(fromViaPostal);
+			if (Validator.isNotNull(fromViaPostal)) {
+				dossier.setFromViaPostal(fromViaPostal);				
+			}
 
 			dossier = dossierPersistence.update(dossier);
 		}
@@ -5822,7 +5824,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			dossier.setVnpostalStatus(vnpostalStatus);
 			dossier.setVnpostalProfile(vnpostalProfile);
-			dossier.setFromViaPostal(fromViaPostal);
+			if (Validator.isNotNull(fromViaPostal)) {
+				dossier.setFromViaPostal(fromViaPostal);				
+			}
 
 			dossier = dossierPersistence.update(dossier);
 
