@@ -772,6 +772,17 @@ public class DossierDocumentUtils {
 		}
 		jsonData.put(DossierTerm.NOTARIZATIONS, notarizationArr);
 		
+		// Meta data
+		if (Validator.isNotNull(dossier.getMetaData())) {
+			try {
+				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
+			} catch (JSONException e) {
+				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+			}
+		} else {
+			jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+		}
+
 		return jsonData;
 	}
 	
