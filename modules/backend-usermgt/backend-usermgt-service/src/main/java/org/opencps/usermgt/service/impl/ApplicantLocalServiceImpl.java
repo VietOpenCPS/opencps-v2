@@ -16,6 +16,7 @@ package org.opencps.usermgt.service.impl;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -1140,7 +1141,15 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		if (Validator.isNull(object)) {
 			return null;
 		} else {
-			applicantPersistence.remove(object);
+			long mappingUserId = object.getMappingUserId();
+			if (mappingUserId > 0) {
+				try {
+					userPersistence.remove(mappingUserId);
+				} catch (NoSuchUserException e) {
+					_log.debug(e);
+				}
+			}
+			applicantPersistence.remove(object);			
 		}
 
 		return object;
