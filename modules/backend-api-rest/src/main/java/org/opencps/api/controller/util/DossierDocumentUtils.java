@@ -316,6 +316,13 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
 						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						if (!DossierPartTerm.TP_DIFFERENT.equals(part.getPartNo()) &&
+								DossierPartTerm.DOSSIER_PART_TYPE_OTHES == part.getPartType()) {
+
+							jsonMark.put(DossierPartTerm.FORM_DATA, dossierMark.getRecordCount());
+						} else {
+							jsonMark.put(DossierPartTerm.FORM_DATA, StringPool.BLANK);
+						}
 					}
 				}
 				jsonMark.put(DossierPartTerm.PART_NO, partNo);
@@ -349,6 +356,7 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+						jsonMark.put(DossierPartTerm.FORM_DATA, StringPool.BLANK);
 						dossierMarkArr.put(jsonMark);
 					}
 				}

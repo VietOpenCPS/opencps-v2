@@ -1589,6 +1589,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setVnpostalProfile(String vnpostalProfile);
 
+	/**
+	 * Returns the from via postal of this dossier.
+	 *
+	 * @return the from via postal of this dossier
+	 */
+	public int getFromViaPostal();
+
+	/**
+	 * Sets the from via postal of this dossier.
+	 *
+	 * @param fromViaPostal the from via postal of this dossier
+	 */
+	public void setFromViaPostal(int fromViaPostal);
+
 	@Override
 	public boolean isNew();
 

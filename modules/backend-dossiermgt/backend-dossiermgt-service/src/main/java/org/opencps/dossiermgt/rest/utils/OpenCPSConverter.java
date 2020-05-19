@@ -165,7 +165,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getVnpostalProfile())) {
 	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
 	    }
-	    
+	    if (Validator.isNotNull(model.getFromViaPostal())) {
+	    	params.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
+	    }
 	    return params;
 	}
 	
@@ -352,7 +354,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getVnpostalProfile())) {
 	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
 	    }
-	    
+	    if (Validator.isNotNull(model.getFromViaPostal())) {
+	    	params.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
+	    }
 	    return params;
 	}	
 	
@@ -479,7 +483,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getVnpostalProfile())) {
 	    	params.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
 	    }
-	    
+	    if (Validator.isNotNull(model.getFromViaPostal())) {
+	    	params.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
+	    }
 	    return params;
 	}	
 	
@@ -600,6 +606,9 @@ public class OpenCPSConverter {
 		}
 		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
 			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
+		}
+		if (jsonObj.has(DossierTerm.FROM_VIA_POSTAL)) {
+			model.setFromViaPostal(jsonObj.getInt(DossierTerm.FROM_VIA_POSTAL));
 		}
 
 		return model;
@@ -862,6 +871,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
 			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
 		}
+		if (jsonObj.has(DossierTerm.FROM_VIA_POSTAL)) {
+			model.setFromViaPostal(jsonObj.getInt(DossierTerm.FROM_VIA_POSTAL));
+		}
 		
 		return model;
 	}	
@@ -1015,6 +1027,9 @@ public class OpenCPSConverter {
 		if (jsonObj.has(DossierTerm.VNPOSTAL_PROFILE)) {
 			model.setVnpostalProfile(jsonObj.getString(DossierTerm.VNPOSTAL_PROFILE));
 		}
+		if (jsonObj.has(DossierTerm.FROM_VIA_POSTAL)) {
+			model.setFromViaPostal(jsonObj.getInt(DossierTerm.FROM_VIA_POSTAL));
+		}
 
 		return model;
 	}	
@@ -1120,6 +1135,9 @@ public class OpenCPSConverter {
 		}
 		if (Validator.isNotNull(dossier.getVnpostalProfile())) {
 			model.setVnpostalProfile(dossier.getVnpostalProfile());
+		}
+		if (Validator.isNotNull(dossier.getFromViaPostal())) {
+			model.setFromViaPostal(dossier.getFromViaPostal());
 		}
 
 		return model;
@@ -1451,6 +1469,7 @@ public class OpenCPSConverter {
 		result.put(ConverterTerm.ORGANINCHARGENAME, model.getGovAgencyName());
 		result.put(DossierTerm.VNPOSTAL_STATUS, model.getVnpostalStatus());
 		result.put(DossierTerm.VNPOSTAL_PROFILE, model.getVnpostalProfile());
+		result.put(DossierTerm.FROM_VIA_POSTAL, model.getFromViaPostal());
 		System.out.println("LGSP SYNC DOCUMENT");
 		return result;
 	}

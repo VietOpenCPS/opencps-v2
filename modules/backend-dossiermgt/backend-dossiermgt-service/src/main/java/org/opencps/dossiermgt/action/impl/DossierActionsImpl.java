@@ -3580,7 +3580,7 @@ public class DossierActionsImpl implements DossierActions {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
-			Long sampleCount, Integer vnpostalStatus, String vnpostalProfile, ServiceContext serviceContext) {
+			Long sampleCount, Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext serviceContext) {
 
 		try {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
@@ -3588,7 +3588,7 @@ public class DossierActionsImpl implements DossierActions {
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-					delegateWardCode, sampleCount, vnpostalStatus, vnpostalProfile, serviceContext);
+					delegateWardCode, sampleCount, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -3920,14 +3920,15 @@ public class DossierActionsImpl implements DossierActions {
 			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
-			String delegateWardCode, Long sampleCount, String dossierName, Integer vnpostalStatus, String vnpostalProfile, ServiceContext serviceContext) {
+			String delegateWardCode, Long sampleCount, String dossierName, Integer vnpostalStatus, String vnpostalProfile,
+			Integer fromViaPostal, ServiceContext serviceContext) {
 		try {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-					delegateWardCode, sampleCount, dossierName, vnpostalStatus, vnpostalProfile, serviceContext);
+					delegateWardCode, sampleCount, dossierName, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -3996,7 +3997,8 @@ public class DossierActionsImpl implements DossierActions {
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
-			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile, ServiceContext serviceContext) {
+			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
+			Integer fromViaPostal, ServiceContext serviceContext) {
 		try {
 			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
 					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
@@ -4004,7 +4006,7 @@ public class DossierActionsImpl implements DossierActions {
 					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 					delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-					systemId, vnpostalStatus, vnpostalProfile, serviceContext);
+					systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -4027,7 +4029,8 @@ public class DossierActionsImpl implements DossierActions {
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode,
 			String delegateDistrictName, String delegateWardCode, String delegateWardName, double durationCount,
-			int durationUnit, String dossierName, String processNo, String metaData, Integer vnpostalStauts, String vnpostalProfile, ServiceContext context) throws PortalException {
+			int durationUnit, String dossierName, String processNo, String metaData, Integer vnpostalStauts, String vnpostalProfile,
+			Integer fromViaPostal, ServiceContext context) throws PortalException {
 
 		Date appIdDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
@@ -4049,7 +4052,7 @@ public class DossierActionsImpl implements DossierActions {
 					dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,
 					lockState, delegateName, delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-					delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, vnpostalStauts, vnpostalProfile, context);
+					delegateWardName, durationCount, durationUnit, dossierName, processNo, metaData, vnpostalStauts, vnpostalProfile, fromViaPostal, context);
 
 		} catch (Exception e) {
 			_log.debug(e);
@@ -4066,7 +4069,8 @@ public class DossierActionsImpl implements DossierActions {
 			String contactTelNo, String contactEmail, String dossierNo, String dossierStatus, String dossierStatusText,
 			Boolean online, int originality, int sampleCount, Double durationCount, Integer durationUnit,
 			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate,
-			Date finishDate, String dossierTemplateNo, String dossierTemplateName, Integer vnpostalStatus, String vnpostalProfile, ServiceContext serviceContext) {
+			Date finishDate, String dossierTemplateNo, String dossierTemplateName, Integer vnpostalStatus, String vnpostalProfile,
+			Integer fromViaPostal, ServiceContext serviceContext) {
 
 		Dossier dossier = null;
 		try {
@@ -4135,7 +4139,8 @@ public class DossierActionsImpl implements DossierActions {
 					applicantIdDate, address, contactName, contactTelNo, contactEmail, online, originality, dossierNo,
 					dossierStatus, dossierStatusText, dossierAction != null ? dossierAction.getDossierActionId() : 0,
 					durationCount, durationUnit, sampleCount, createDate, modifiedDate, submitDate, receiveDate,
-					dueDate, releaseDate, finishDate, dossierTemplateNo, dossierTemplateName, vnpostalStatus, vnpostalProfile, serviceContext);
+					dueDate, releaseDate, finishDate, dossierTemplateNo, dossierTemplateName, vnpostalStatus, vnpostalProfile,
+					fromViaPostal, serviceContext);
 			// Update dossierAction
 			if (dossierAction != null) {
 				dossierAction.setDossierId(dossier.getDossierId());
