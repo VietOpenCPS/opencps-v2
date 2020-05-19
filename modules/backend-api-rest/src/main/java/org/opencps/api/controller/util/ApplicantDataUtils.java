@@ -1,5 +1,7 @@
 package org.opencps.api.controller.util;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -72,7 +74,11 @@ public class ApplicantDataUtils {
 			}
 			if (Validator.isNotNull(doc.get(ApplicantDataTerm.FILE_ENTRY_ID))) {
 				String filePath = FileUploadUtil.getFileEntryPreviewPath(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)), request);
-				model.setFilePath(filePath);				
+				model.setFilePath(filePath);	
+				DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)));
+				if (fileEntry != null) {
+					model.setFileExtension(fileEntry.getExtension());
+				}
 			}
 			
 			data.add(model);

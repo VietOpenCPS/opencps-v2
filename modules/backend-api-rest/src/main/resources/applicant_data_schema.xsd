@@ -14,6 +14,7 @@
 			<xsd:element name="fileName" type="xsd:string" />
 			<xsd:element name="fileEntryId" type="xsd:long" />
 			<xsd:element name="filePath" type="xsd:string" />
+			<xsd:element name="fileExtension" type="xsd:string" />
 			<xsd:element name="metadata" type="xsd:string" />
 			<xsd:element name="status" type="xsd:int" />
 			<xsd:element name="applicantIdNo" type="xsd:string" />
