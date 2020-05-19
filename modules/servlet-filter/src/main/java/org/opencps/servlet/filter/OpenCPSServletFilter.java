@@ -19,6 +19,8 @@ package org.opencps.servlet.filter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BaseFilter;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import javax.servlet.Filter;
@@ -26,7 +28,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.opencps.kernel.prop.PropValues;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -59,17 +60,19 @@ public class OpenCPSServletFilter extends BaseFilter {
 	@Override
 	protected void processFilter(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws Exception {
-		httpServletRequest.setAttribute("USER_ID", PropValues.PORTAL_DEFAULT_USERID);
-		_log.debug("===> httpServletRequest UserId " + httpServletRequest.getAttribute("USER_ID"));
+		httpServletRequest.setAttribute("USER_ID", PORTAL_DEFAULT_USERID);
+		_log.info("===> httpServletRequest UserId " + httpServletRequest.getAttribute("USER_ID"));
 		String requestURI = httpServletRequest.getRequestURI();
 		if (Validator.isNotNull(requestURI)
 				&& requestURI.contains("/XrdAdapter/RestService/forward/addtthcKhuyenMai")) {
-			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg")
-					.forward(httpServletRequest, httpServletResponse);
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,
+					httpServletResponse);
 		}
 		processFilter(OpenCPSServletFilter.class.getName(), httpServletRequest, httpServletResponse, filterChain);
 
 	}
+
+	public static final long PORTAL_DEFAULT_USERID = GetterUtil.getLong(PropsUtil.get("portal.default.userid"));
 
 	private static final Log _log = LogFactoryUtil.getLog(OpenCPSServletFilter.class);
 
