@@ -197,7 +197,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 							multipart.addFilePartDataHandler("file", file);				
 						}
 						else {
-							multipart.addFormField("file", StringPool.BLANK);
+							//multipart.addFormField("file", StringPool.BLANK);
 						}
 						List<String> res = multipart.finish();
 						sb = new StringBuilder();
