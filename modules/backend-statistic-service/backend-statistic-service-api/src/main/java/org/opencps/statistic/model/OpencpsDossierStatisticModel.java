@@ -811,6 +811,20 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 */
 	public void setReleaseDossierSatCount(int releaseDossierSatCount);
 
+	/**
+	 * Returns the from via postal count of this opencps dossier statistic.
+	 *
+	 * @return the from via postal count of this opencps dossier statistic
+	 */
+	public int getFromViaPostalCount();
+
+	/**
+	 * Sets the from via postal count of this opencps dossier statistic.
+	 *
+	 * @param fromViaPostalCount the from via postal count of this opencps dossier statistic
+	 */
+	public void setFromViaPostalCount(int fromViaPostalCount);
+
 	@Override
 	public boolean isNew();
 

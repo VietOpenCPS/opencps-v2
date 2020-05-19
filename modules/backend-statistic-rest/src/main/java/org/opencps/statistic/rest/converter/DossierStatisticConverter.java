@@ -71,7 +71,7 @@ public class DossierStatisticConverter {
 					dossierStatisticData.setOnegateCount(dossierStatistic.getOnegateCount());
 					dossierStatisticData.setInsideCount(dossierStatistic.getInsideCount());
 					dossierStatisticData.setOutsideCount(dossierStatistic.getOutsideCount());
-					
+					dossierStatisticData.setFromViaPostalCount(dossierStatistic.getFromViaPostalCount());
 					dossierStatisticData.setSystem(dossierStatistic.getSystem());
 					
 					dossierStatisticDatas.add(dossierStatisticData);
@@ -139,7 +139,7 @@ public class DossierStatisticConverter {
 					dossierStatisticData.setOnegateCount(dossierStatistic.getOnegateCount());
 					dossierStatisticData.setInsideCount(dossierStatistic.getInsideCount());
 					dossierStatisticData.setOutsideCount(dossierStatistic.getOutsideCount());
-					
+					dossierStatisticData.setFromViaPostalCount(dossierStatistic.getFromViaPostalCount());
 					dossierStatisticData.setSystem(dossierStatistic.getSystem());
 					
 					dossierStatisticDatas.add(dossierStatisticData);

@@ -324,7 +324,16 @@ public class DossierStatisticData {
 	private int receiveDossierSatCount;
 	private int releaseDossierSatCount;
 	private String groupAgencyCode;
+	private int fromViaPostalCount;
 	
+	public int getFromViaPostalCount() {
+		return fromViaPostalCount;
+	}
+
+	public void setFromViaPostalCount(int fromViaPostalCount) {
+		this.fromViaPostalCount = fromViaPostalCount;
+	}
+
 	public String getGroupAgencyCode() {
 		return groupAgencyCode;
 	}

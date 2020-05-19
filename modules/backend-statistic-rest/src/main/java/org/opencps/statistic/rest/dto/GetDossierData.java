@@ -20,6 +20,15 @@ public class GetDossierData {
 	private String system;
 	private int viaPostal;
 	private int serviceLevel;
+	private int fromViaPostal;
+
+	public int getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(int fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public int getServiceLevel() {
 		return serviceLevel;

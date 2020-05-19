@@ -733,6 +733,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						_log.debug(e);
 					}
 				}
+				model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
 				
 				dossierData.add(model);
 			}

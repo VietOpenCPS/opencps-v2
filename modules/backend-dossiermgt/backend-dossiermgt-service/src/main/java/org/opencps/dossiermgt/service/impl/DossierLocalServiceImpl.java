@@ -6341,6 +6341,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		object.setDurationCount(objectData.getDouble("durationCount"));
 		object.setDossierName(objectData.getString("dossierName"));
 		object.setOriginDossierNo(objectData.getString("originDossierNo"));
+		object.setFromViaPostal(objectData.getInt(DossierTerm.FROM_VIA_POSTAL));
 
 		dossierPersistence.update(object);
 
