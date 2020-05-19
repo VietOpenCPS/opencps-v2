@@ -128,7 +128,10 @@ public class ProxyManagementImpl implements ProxyManagement {
 			          sb.append((char) cp);
 			        }
 			        _log.debug("RESULT PROXY: " + sb.toString());
-					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).header(HttpHeaders.CONTENT_TYPE, conn.getContentType()) .build();			        
+			        String contentDisposition = conn.getHeaderField(HttpHeaders.CONTENT_DISPOSITION);
+			        
+					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
+							header(HttpHeaders.CONTENT_TYPE, conn.getContentType()).header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition).build();			        
 			    }
 				catch (IOException e) {
 					_log.error(e);
