@@ -12,4 +12,5 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
 	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
+
 }
