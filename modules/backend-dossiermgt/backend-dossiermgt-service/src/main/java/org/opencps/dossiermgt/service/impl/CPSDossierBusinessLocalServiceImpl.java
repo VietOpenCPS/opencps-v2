@@ -5306,6 +5306,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
 			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
+			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
 			}
@@ -5638,6 +5641,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
@@ -7319,12 +7325,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
-					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(),
-					input.getVnpostalStatus(), input.getVnpostalProfile(), serviceContext);
-
-			return dossier;
-		}
-		return oldDossier;
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(),
+					input.getFromViaPostal(), serviceContext);
+				
+				return dossier;
+			}
+			return oldDossier;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,

@@ -173,7 +173,8 @@ import javax.xml.bind.annotation.XmlType;
     "serverNo",
     "metaData",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -249,8 +250,17 @@ public class DossierDetailModel {
     protected String metaData;
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
 
-    public Integer getVnpostalStatus() {
+    public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
+
+	public Integer getVnpostalStatus() {
 		return vnpostalStatus;
 	}
 
