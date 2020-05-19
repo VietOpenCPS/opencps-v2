@@ -269,9 +269,13 @@ public class StatisticDataUtil {
 		return response;
 	}	
 	
+	private static GovAgencyResponse localResponse = null;
+	
 	public static GovAgencyResponse getLocalGovAgency(GovAgencyRequest payload) {
-		GovAgencyResponse response = new GovAgencyResponse();
-
+//		GovAgencyResponse response = new GovAgencyResponse();
+		if (localResponse != null) return localResponse;
+		localResponse = new GovAgencyResponse();
+		
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			
@@ -296,7 +300,7 @@ public class StatisticDataUtil {
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
 					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
-			response.setTotal(jsonData.getInt("total"));
+			localResponse.setTotal(jsonData.getInt("total"));
 			List<Document> lstDocs = (List<Document>) jsonData.get("data");
 			List<GovAgencyData> lstSDatas = new ArrayList<>();
 			for (Document doc : lstDocs) {
@@ -306,12 +310,12 @@ public class StatisticDataUtil {
 				
 				lstSDatas.add(sd);
 			}
-			response.setData(lstSDatas);
+			localResponse.setData(lstSDatas);
 		}
 		catch (Exception e) {
 			_log.error(e);
 		}
-		return response;
+		return localResponse;
 	}	
 	
 	private static Log _log = LogFactoryUtil.getLog(StatisticDataUtil.class);

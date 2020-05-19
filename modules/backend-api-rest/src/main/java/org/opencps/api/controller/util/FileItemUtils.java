@@ -25,6 +25,7 @@ public class FileItemUtils {
 			model.setStatus(fileItem.getStatus());
 			model.setUserId(fileItem.getUserId());
 			model.setUserName(fileItem.getUserName());
+			model.setFileType(fileItem.getFileType());
 			
 			data.add(model);
 		}

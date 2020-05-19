@@ -214,7 +214,9 @@ public class ApplicantDataLocalServiceImpl
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
-			String sourceFileName, InputStream inputStream,
+			int status,
+			String sourceFileName, 
+			InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
 
@@ -233,7 +235,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(1);
+		applicantData.setStatus(status);
 		applicantData.setApplicantDataType(0);
 		
 		long fileEntryId = 0;
@@ -270,6 +272,7 @@ public class ApplicantDataLocalServiceImpl
 			String fileNo,
 			String fileName,
 			String applicantIdNo,
+			int status,
 			String sourceFileName, InputStream inputStream,
 			ServiceContext serviceContext) throws PortalException, SystemException {
 		ApplicantData applicantData = null;
@@ -288,7 +291,7 @@ public class ApplicantDataLocalServiceImpl
 		applicantData.setFileNo(fileNo);
 		applicantData.setFileName(fileName);
 		applicantData.setApplicantIdNo(applicantIdNo);
-		applicantData.setStatus(1);
+		applicantData.setStatus(status);
 		applicantData.setApplicantDataType(0);
 		
 		if (applicantData.getFileEntryId() != 0) {
@@ -426,16 +429,14 @@ public class ApplicantDataLocalServiceImpl
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-					ApplicantDataTerm.FILE_NAME);
+					ApplicantDataTerm.FILE_NAME, ApplicantDataTerm.FILE_NO);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 			}
 		}
-		
 		if (Validator.isNotNull(groupId)) {
 			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
 			query.addFields(ApplicantDataTerm.GROUP_ID);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
@@ -482,7 +483,7 @@ public class ApplicantDataLocalServiceImpl
 				MultiMatchQuery query = new MultiMatchQuery(string);
 
 				query.addFields(
-					ApplicantDataTerm.FILE_NAME);
+					ApplicantDataTerm.FILE_NAME, ApplicantDataTerm.FILE_NO);
 
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 
@@ -509,6 +510,7 @@ public class ApplicantDataLocalServiceImpl
 		String fileNo = String.valueOf(params.get(ApplicantDataTerm.FILE_NO));
 		String status = String.valueOf(params.get(ApplicantDataTerm.STATUS));
 		String applicantDataType = String.valueOf(params.get(ApplicantDataTerm.APPLICANT_DATA_TYPE));
+		String fileTemplateNo = String.valueOf(params.get(ApplicantDataTerm.FILE_TEMPLATE_NO));
 		
 		if (Validator.isNotNull(applicantIdNo)) {
 			MultiMatchQuery query = new MultiMatchQuery(applicantIdNo);
@@ -521,6 +523,13 @@ public class ApplicantDataLocalServiceImpl
 			MultiMatchQuery query = new MultiMatchQuery(fileNo);
 
 			query.addFields(ApplicantDataTerm.FILE_NO);
+
+			booleanQuery.add(query, BooleanClauseOccur.MUST);			
+		}
+		if (Validator.isNotNull(fileTemplateNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+
+			query.addFields(ApplicantDataTerm.FILE_TEMPLATE_NO);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);			
 		}

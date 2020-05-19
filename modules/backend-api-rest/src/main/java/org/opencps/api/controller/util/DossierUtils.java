@@ -1582,6 +1582,7 @@ public class DossierUtils {
 		model.setDossierCounter(input.getDossierCounter());
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
+		model.setFromViaPostal(input.getFromViaPostal());
 		
 		return model;
 	}
