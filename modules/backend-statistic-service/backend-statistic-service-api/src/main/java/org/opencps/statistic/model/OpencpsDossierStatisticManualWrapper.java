@@ -112,6 +112,7 @@ public class OpencpsDossierStatisticManualWrapper
 		attributes.put("dossierOnline4Count", getDossierOnline4Count());
 		attributes.put("receiveDossierSatCount", getReceiveDossierSatCount());
 		attributes.put("releaseDossierSatCount", getReleaseDossierSatCount());
+		attributes.put("fromViaPostalCount", getFromViaPostalCount());
 
 		return attributes;
 	}
@@ -422,6 +423,13 @@ public class OpencpsDossierStatisticManualWrapper
 		if (releaseDossierSatCount != null) {
 			setReleaseDossierSatCount(releaseDossierSatCount);
 		}
+
+		Integer fromViaPostalCount = (Integer)attributes.get(
+				"fromViaPostalCount");
+
+		if (fromViaPostalCount != null) {
+			setFromViaPostalCount(fromViaPostalCount);
+		}
 	}
 
 	@Override
@@ -548,6 +556,16 @@ public class OpencpsDossierStatisticManualWrapper
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _opencpsDossierStatisticManual.getExpandoBridge();
+	}
+
+	/**
+	* Returns the from via postal count of this opencps dossier statistic manual.
+	*
+	* @return the from via postal count of this opencps dossier statistic manual
+	*/
+	@Override
+	public int getFromViaPostalCount() {
+		return _opencpsDossierStatisticManual.getFromViaPostalCount();
 	}
 
 	/**
@@ -1129,6 +1147,16 @@ public class OpencpsDossierStatisticManualWrapper
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
 		_opencpsDossierStatisticManual.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets the from via postal count of this opencps dossier statistic manual.
+	*
+	* @param fromViaPostalCount the from via postal count of this opencps dossier statistic manual
+	*/
+	@Override
+	public void setFromViaPostalCount(int fromViaPostalCount) {
+		_opencpsDossierStatisticManual.setFromViaPostalCount(fromViaPostalCount);
 	}
 
 	/**

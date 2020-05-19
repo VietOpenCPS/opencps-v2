@@ -112,4 +112,7 @@ public class ConstantTerm {
 	public static final String SIZE = "size";
 	public static final String DOMAINS = "domains";
 	public static final String STATISTICS = "statistics";
+	
+
+	public static final String JSON_FROM_VIA_POSTAL_COUNT = "fromViaPostalCount";
 }

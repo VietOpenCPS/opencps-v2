@@ -469,7 +469,7 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -483,7 +483,8 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 			interoperatingCount, waitingCount, viaPostalCount, saturdayCount,
 			dossierOnline3Count, dossierOnline4Count, receiveDossierSatCount,
 			releaseDossierSatCount, govAgencyCode, govAgencyName, domainCode,
-			domainName, reporting, onegateCount, outsideCount, insideCount);
+			domainName, reporting, onegateCount, outsideCount, insideCount,
+			fromViaPostalCount);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatisticManual updateStatisticManual(
@@ -497,7 +498,8 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount)
+		int onegateCount, int outsideCount, int insideCount,
+		int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -510,7 +512,7 @@ public class OpencpsDossierStatisticManualLocalServiceUtil {
 			ontimePercentage, overtimeInside, overtimeOutside,
 			interoperatingCount, waitingCount, govAgencyCode, govAgencyName,
 			domainCode, domainName, reporting, onegateCount, outsideCount,
-			insideCount);
+			insideCount, fromViaPostalCount);
 	}
 
 	public static OpencpsDossierStatisticManualLocalService getService() {

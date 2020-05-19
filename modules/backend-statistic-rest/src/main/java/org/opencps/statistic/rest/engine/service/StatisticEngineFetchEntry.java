@@ -55,6 +55,9 @@ public class StatisticEngineFetchEntry {
 		else {
 			
 		}
+		if (!dossierData.getOnline() && dossierData.getFromViaPostal() > 0) {
+			statisticData.setFromViaPostalCount(statisticData.getFromViaPostalCount() + 1);
+		}
 		Calendar receivedStatistic = Calendar.getInstance();
 		receivedStatistic.setTime(receviedDate);
 		boolean isReceivedSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
@@ -214,6 +217,9 @@ public class StatisticEngineFetchEntry {
 		int viaPostalCount = dossierData.getViaPostal();
 		if (viaPostalCount == USED_POSTAL) {
 			statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
+		}
+		if (!dossierData.getOnline() && dossierData.getFromViaPostal() > 0) {
+			statisticData.setFromViaPostalCount(statisticData.getFromViaPostalCount() + 1);
 		}
 		Calendar receivedStatistic = Calendar.getInstance();
 		receivedStatistic.setTime(receviedDate);

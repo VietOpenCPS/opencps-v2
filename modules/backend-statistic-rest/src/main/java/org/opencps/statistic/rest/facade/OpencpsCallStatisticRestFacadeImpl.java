@@ -88,6 +88,8 @@ public class OpencpsCallStatisticRestFacadeImpl extends OpencpsRestFacade<Dossie
 		params.add(ReportConstants.WAITINGCOUNT, String.valueOf(payload.getWaitingCount()));
 		params.add(ReportConstants.YEAR, String.valueOf(payload.getYear()));
 		
+		params.add(ReportConstants.FROM_VIA_POSTAL_COUNT, String.valueOf(payload.getFromViaPostalCount()));
+		
 		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 		requestFactory.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
 		requestFactory.setReadTimeout(DEFAULT_READ_TIMEOUT);
