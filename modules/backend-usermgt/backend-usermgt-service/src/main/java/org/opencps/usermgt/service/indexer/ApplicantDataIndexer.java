@@ -48,8 +48,8 @@ public class ApplicantDataIndexer extends BaseIndexer<ApplicantData> {
 		// Indexer of audit fields
 		document.addNumberSortable(Field.COMPANY_ID, object.getCompanyId());
 		document.addNumberSortable(Field.GROUP_ID, object.getGroupId());
-		document.addDateSortable(Field.MODIFIED_DATE, object.getCreateDate());
-		document.addDateSortable(Field.CREATE_DATE, object.getModifiedDate());
+		document.addDateSortable(ApplicantDataTerm.MODIFIED_DATE, object.getModifiedDate());
+		document.addDateSortable(ApplicantDataTerm.CREATE_DATE, object.getCreateDate());
 		document.addNumberSortable(Field.USER_ID, object.getUserId());
 		document.addKeywordSortable(Field.USER_NAME, String.valueOf(object.getUserName()));
 		document.addKeywordSortable(Field.ENTRY_CLASS_NAME, ApplicantData.class.getName());

@@ -110,6 +110,7 @@ import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -1649,7 +1650,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			} catch (Exception e) {
 			}
 	
-			String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
 			try {
 				/** Get Token */
 				String strToken = ApplicantUtils.getTokenLGSP();
@@ -1660,136 +1660,16 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					if (jsonToken.has("access_token") && jsonToken.has("token_type")
 							&& Validator.isNotNull(jsonToken.getString("access_token"))
 							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
-						String accessToken = jsonToken.getString("access_token");
-						String tokenType = jsonToken.getString("token_type");
-						
-						_log.info("accessToken: " + accessToken);
-						_log.info("tokenType: " + tokenType);
-	
-						// Dang ky tk cong dan
-						String profile = aplc.getProfile();
-						String maXacNhan = StringPool.BLANK;
-						String matKhau = StringPool.BLANK;
-						if (Validator.isNotNull(profile)) {
-							JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(profile);
-							//
-							if (jsonProfile.has("maXacNhan") && jsonProfile.has("matKhau") &&
-									Validator.isNotNull(jsonProfile.getString("maXacNhan"))
-									&& Validator.isNotNull(jsonProfile.getString("matKhau"))) {
-								maXacNhan = jsonProfile.getString("maXacNhan");
-								matKhau = jsonProfile.getString("matKhau");
-								
-							}
+
+						int resultLGSP = RegisterLGSPUtils.activeUserLGSP(jsonToken, aplc.getGroupId(), aplc.getProfile(),
+								aplc.getTmpPass(), aplc.getContactEmail(), aplc.getApplicantIdType());
+						if (resultLGSP == 0 || resultLGSP == 1) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Active error");
+							error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+							error.setDescription("Active error");
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 						}
-							//
-							String urlActive = endPoitBaseUrl + "/congdan/kichhoat" + StringPool.FORWARD_SLASH + maXacNhan;
-							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
-	
-							StringBuilder sbActive = new StringBuilder();
-							try {
-								URL urlValActive = new URL(urlActive);
-	
-								java.net.HttpURLConnection conActive = (java.net.HttpURLConnection) urlValActive
-										.openConnection();
-								conActive.setRequestMethod("POST");
-								conActive.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-								conActive.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
-								conActive.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-								_log.debug("BASIC AUTHEN: " + authStrEnc);
-	
-								BufferedReader brfAc = new BufferedReader(
-										new InputStreamReader(conActive.getInputStream()));
-	
-								int cpActive;
-								while ((cpActive = brfAc.read()) != -1) {
-									sbActive.append((char) cpActive);
-								}
-								_log.info("RESULT PROXY: " + sbActive.toString());
-								//
-								if (Validator.isNotNull(sbActive.toString())) {
-									//
-									_log.error("sbActive:"+ sbActive.toString());
-									JSONObject jsonActive = JSONFactoryUtil.createJSONObject(sbActive.toString());
-									if (jsonActive.has("message") && jsonActive.has("error_code")
-											&& Validator.isNotNull(jsonActive.get("message"))
-											&& Validator.isNotNull(jsonActive.get("error_code"))) {
-										int errorCode = jsonActive.getInt("error_code");
-										if (errorCode == 0) {
-											//
-											String oldSecrect = PasswordEncrypt.encrypt(matKhau);
-											String newSecrect = PasswordEncrypt.encrypt(aplc.getTmpPass());
-											
-											_log.info("oldSecrect: " + oldSecrect);
-											_log.info("newSecrect: " + newSecrect);
-											//
-											String urlChange = endPoitBaseUrl + "/doimatkhau";
-					
-											StringBuilder sbChange = new StringBuilder();
-											try {
-												URL urlValChange = new URL(urlChange);
-					
-												JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
-												jsonBody.put("matKhauCu", oldSecrect);
-												jsonBody.put("matKhauMoi", newSecrect);
-												jsonBody.put("email", aplc.getContactEmail());
-
-												java.net.HttpURLConnection conChange = (java.net.HttpURLConnection) urlValChange
-														.openConnection();
-												conChange.setRequestMethod("POST");
-												conChange.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-												conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
-												conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-												_log.info("BASIC AUTHEN: " + authStrEnc);
-												conChange.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
-														StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-
-												conChange.setUseCaches(false);
-												conChange.setDoInput(true);
-												conChange.setDoOutput(true);
-												_log.info("POST DATA: " + jsonBody.toString());
-												OutputStream osChange = conChange.getOutputStream();
-												osChange.write(jsonBody.toString().getBytes());
-												osChange.close();
-
-												BufferedReader brfChange = new BufferedReader(
-														new InputStreamReader(conChange.getInputStream()));
-					
-												int cpChange;
-												while ((cpChange = brfChange.read()) != -1) {
-													sbChange.append((char) cpChange);
-												}
-												_log.info("RESULT PROXY: " + sbChange.toString());
-												//
-												if (Validator.isNotNull(sbChange.toString())) {
-													//
-													JSONObject jsonChange = JSONFactoryUtil.createJSONObject(sbChange.toString());
-													if (jsonChange.has("message") && jsonChange.has("error_code")
-															&& Validator.isNotNull(jsonChange.get("message"))
-															&& Validator.isNotNull(jsonChange.get("error_code"))) {
-														int errorCodeChange = jsonChange.getInt("error_code");
-														if (errorCodeChange == 0) {
-															//
-															
-														}
-													}
-												}
-											} catch (IOException e) {
-												_log.error(e);
-												_log.debug("Something went wrong while reading/writing in stream!!");
-												return BusinessExceptionImpl.processException(e);
-											}
-										} else {
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
-										}
-									}
-								} else {
-									return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("{error}").build();
-								}
-							} catch (IOException e) {
-								_log.error(e);
-								_log.debug("Something went wrong while reading/writing in stream!!");
-								return BusinessExceptionImpl.processException(e);
-							}
 					}
 				}
 			} catch (Exception e) {

@@ -284,8 +284,9 @@ public class RegisterLGSPUtils {
 		return strProfile;
 	}
 
-	public static boolean activeUserLGSP(JSONObject jsonToken, long groupId, String profile, String tmpSecrect,
-			String contactEmail) throws Exception {
+	public static int activeUserLGSP(JSONObject jsonToken, long groupId, String profile, String tmpSecrect,
+			String contactEmail, String applicantIdType) throws Exception {
+
 		String accessToken = jsonToken.getString("access_token");
 		String tokenType = jsonToken.getString("token_type");
 
@@ -298,17 +299,21 @@ public class RegisterLGSPUtils {
 		if (Validator.isNotNull(profile)) {
 			JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(profile);
 			//
-			if (jsonProfile.has("maXacNhan") && jsonProfile.has("matKhau")
-					&& Validator.isNotNull(jsonProfile.getString("maXacNhan"))
-					&& Validator.isNotNull(jsonProfile.getString("matKhau"))) {
-				maXacNhan = jsonProfile.getString("maXacNhan");
-				matKhau = jsonProfile.getString("matKhau");
+			if (jsonProfile.has(UserRegisterTerm.MA_XAC_NHAN) && jsonProfile.has(UserRegisterTerm.MAT_KHAU)
+					&& Validator.isNotNull(jsonProfile.getString(UserRegisterTerm.MA_XAC_NHAN))
+					&& Validator.isNotNull(jsonProfile.getString(UserRegisterTerm.MAT_KHAU))) {
+				maXacNhan = jsonProfile.getString(UserRegisterTerm.MA_XAC_NHAN);
+				matKhau = jsonProfile.getString(UserRegisterTerm.MAT_KHAU);
 
 			}
 		}
 		//
-		String urlActive = UserRegisterTerm.BASE_URL + UserRegisterTerm.ENDPOINT_CITIZEN_ACTIVE
-				+ StringPool.FORWARD_SLASH + maXacNhan;
+		String urlActive = UserRegisterTerm.BASE_URL;
+		if (ApplicantTerm.APPLICANTIDTYPE_CITIZEN.equalsIgnoreCase(applicantIdType)) {
+			urlActive += UserRegisterTerm.ENDPOINT_CITIZEN_ACTIVE + StringPool.FORWARD_SLASH + maXacNhan;
+		} else if (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equalsIgnoreCase(applicantIdType)) {
+			urlActive += UserRegisterTerm.ENDPOINT_BUSINESS_ACTIVE + StringPool.FORWARD_SLASH + maXacNhan;
+		}
 		String authStrEnc = tokenType + StringPool.SPACE + accessToken;
 
 		StringBuilder sbActive = new StringBuilder();
@@ -334,16 +339,20 @@ public class RegisterLGSPUtils {
 				//
 				_log.error("sbActive:" + sbActive.toString());
 				JSONObject jsonActive = JSONFactoryUtil.createJSONObject(sbActive.toString());
-				if (jsonActive.has("message") && jsonActive.has("error_code")
-						&& Validator.isNotNull(jsonActive.get("message"))
-						&& Validator.isNotNull(jsonActive.get("error_code"))) {
-					int errorCode = jsonActive.getInt("error_code");
+				if (jsonActive.has(UserRegisterTerm.MESSAGE) && jsonActive.has(UserRegisterTerm.ERROR_CODE)
+						&& Validator.isNotNull(jsonActive.get(UserRegisterTerm.MESSAGE))
+						&& Validator.isNotNull(jsonActive.get(UserRegisterTerm.ERROR_CODE))) {
+					int errorCode = jsonActive.getInt(UserRegisterTerm.ERROR_CODE);
 					if (errorCode == 0) {
 						boolean flagChange = changePassLGSP(matKhau, tmpSecrect, contactEmail, authStrEnc);
 						if (!flagChange) {
 							SyncSchedulerLocalServiceUtil.updateSyncScheduler(0, groupId, User.class.getName(),
 									contactEmail, new Date(), 0, new ServiceContext());
 						}
+
+						return 2;
+					} else {
+						return 1;
 					}
 				}
 			}
@@ -351,7 +360,7 @@ public class RegisterLGSPUtils {
 			_log.error(e);
 			_log.debug("Something went wrong while reading/writing in stream!!");
 		}
-		return false;
+		return 0;
 	}
 
 	public static boolean changePassLGSP(String matKhau, String tmpSecrect, String contactEmail, String authStrEnc) {
@@ -403,10 +412,10 @@ public class RegisterLGSPUtils {
 			if (Validator.isNotNull(sbChange.toString())) {
 				//
 				JSONObject jsonChange = JSONFactoryUtil.createJSONObject(sbChange.toString());
-				if (jsonChange.has("message") && jsonChange.has("error_code")
-						&& Validator.isNotNull(jsonChange.get("message"))
-						&& Validator.isNotNull(jsonChange.get("error_code"))) {
-					int errorCodeChange = jsonChange.getInt("error_code");
+				if (jsonChange.has(UserRegisterTerm.MESSAGE) && jsonChange.has(UserRegisterTerm.ERROR_CODE)
+						&& Validator.isNotNull(jsonChange.get(UserRegisterTerm.MESSAGE))
+						&& Validator.isNotNull(jsonChange.get(UserRegisterTerm.ERROR_CODE))) {
+					int errorCodeChange = jsonChange.getInt(UserRegisterTerm.ERROR_CODE);
 					if (errorCodeChange == 0) {
 						return true;
 					}
