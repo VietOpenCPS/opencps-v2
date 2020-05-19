@@ -35,4 +35,5 @@ public interface ReportConstants {
 	public static final String WAITINGCOUNT = "waitingCount";
 	public static final String OUTSIDECOUNT = "outsideCount";
 	public static final String INSIDECOUNT = "insideCount";
+	public static final String FROM_VIA_POSTAL_COUNT = "fromViaPostalCount";
 }

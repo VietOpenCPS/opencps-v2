@@ -117,7 +117,8 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 			{ "dossierOnline3Count", Types.INTEGER },
 			{ "dossierOnline4Count", Types.INTEGER },
 			{ "receiveDossierSatCount", Types.INTEGER },
-			{ "releaseDossierSatCount", Types.INTEGER }
+			{ "releaseDossierSatCount", Types.INTEGER },
+			{ "fromViaPostalCount", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -172,9 +173,10 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 		TABLE_COLUMNS_MAP.put("dossierOnline4Count", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("receiveDossierSatCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("releaseDossierSatCount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("fromViaPostalCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic_manual (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic_manual (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER,fromViaPostalCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_statistic_manual";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsDossierStatisticManual.dossierStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_statistic_manual.dossierStatisticId ASC";
@@ -291,6 +293,7 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 		attributes.put("dossierOnline4Count", getDossierOnline4Count());
 		attributes.put("receiveDossierSatCount", getReceiveDossierSatCount());
 		attributes.put("releaseDossierSatCount", getReleaseDossierSatCount());
+		attributes.put("fromViaPostalCount", getFromViaPostalCount());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -603,6 +606,13 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 
 		if (releaseDossierSatCount != null) {
 			setReleaseDossierSatCount(releaseDossierSatCount);
+		}
+
+		Integer fromViaPostalCount = (Integer)attributes.get(
+				"fromViaPostalCount");
+
+		if (fromViaPostalCount != null) {
+			setFromViaPostalCount(fromViaPostalCount);
 		}
 	}
 
@@ -1284,6 +1294,16 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 	}
 
 	@Override
+	public int getFromViaPostalCount() {
+		return _fromViaPostalCount;
+	}
+
+	@Override
+	public void setFromViaPostalCount(int fromViaPostalCount) {
+		_fromViaPostalCount = fromViaPostalCount;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				OpencpsDossierStatisticManual.class.getName()));
@@ -1370,6 +1390,7 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 		opencpsDossierStatisticManualImpl.setDossierOnline4Count(getDossierOnline4Count());
 		opencpsDossierStatisticManualImpl.setReceiveDossierSatCount(getReceiveDossierSatCount());
 		opencpsDossierStatisticManualImpl.setReleaseDossierSatCount(getReleaseDossierSatCount());
+		opencpsDossierStatisticManualImpl.setFromViaPostalCount(getFromViaPostalCount());
 
 		opencpsDossierStatisticManualImpl.resetOriginalValues();
 
@@ -1638,12 +1659,14 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 
 		opencpsDossierStatisticManualCacheModel.releaseDossierSatCount = getReleaseDossierSatCount();
 
+		opencpsDossierStatisticManualCacheModel.fromViaPostalCount = getFromViaPostalCount();
+
 		return opencpsDossierStatisticManualCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(101);
+		StringBundler sb = new StringBundler(103);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1745,6 +1768,8 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 		sb.append(getReceiveDossierSatCount());
 		sb.append(", releaseDossierSatCount=");
 		sb.append(getReleaseDossierSatCount());
+		sb.append(", fromViaPostalCount=");
+		sb.append(getFromViaPostalCount());
 		sb.append("}");
 
 		return sb.toString();
@@ -1752,7 +1777,7 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(154);
+		StringBundler sb = new StringBundler(157);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.statistic.model.OpencpsDossierStatisticManual");
@@ -1958,6 +1983,10 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 			"<column><column-name>releaseDossierSatCount</column-name><column-value><![CDATA[");
 		sb.append(getReleaseDossierSatCount());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fromViaPostalCount</column-name><column-value><![CDATA[");
+		sb.append(getFromViaPostalCount());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -2035,6 +2064,7 @@ public class OpencpsDossierStatisticManualModelImpl extends BaseModelImpl<Opencp
 	private int _dossierOnline4Count;
 	private int _receiveDossierSatCount;
 	private int _releaseDossierSatCount;
+	private int _fromViaPostalCount;
 	private long _columnBitmask;
 	private OpencpsDossierStatisticManual _escapedModel;
 }

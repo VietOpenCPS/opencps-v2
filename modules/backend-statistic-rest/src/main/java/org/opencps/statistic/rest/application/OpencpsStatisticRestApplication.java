@@ -1142,7 +1142,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					input.getOntimePercentage(), input.getOvertimeInside(), input.getOvertimeOutside(),
 					input.getInteroperatingCount(), input.getWaitingCount(), input.getGovAgencyCode(),
 					input.getGovAgencyName(), input.getDomainCode(), input.getDomainName(), input.getReporting(),
-					input.getOnegateCount(), input.getOutsideCount(), input.getInsideCount());
+					input.getOnegateCount(), input.getOutsideCount(), input.getInsideCount(), input.getFromViaPostalCount());
 			input.setDomainCode(statistic.getDomainCode());
 		} catch (SystemException e) {
 			_log.debug(e);
@@ -1223,6 +1223,7 @@ public class OpencpsStatisticRestApplication extends Application {
 								request.setYear(statistic.getYear());
 								request.setViaPostalCount(statistic.getViaPostalCount());
 								request.setSaturdayCount(statistic.getSaturdayCount());
+								request.setFromViaPostalCount(statistic.getFromViaPostalCount());
 								
 								DossierStatisticModel model = callReportService.callRestService(request);
 								_log.debug(model);
@@ -1316,6 +1317,7 @@ public class OpencpsStatisticRestApplication extends Application {
                 int receivedCount = 0;
                 int ontimeCount = 0;
                 int overdueCount = 0;
+                int fromViaPostalCount = 0;
                 currentCell = currentRow.getCell(4);
                 CellValue cellValue = evaluator.evaluate(currentCell);
                 if (cellValue.getCellType() == CellType.NUMERIC) {
@@ -1345,7 +1347,13 @@ public class OpencpsStatisticRestApplication extends Application {
                 if (cellValue.getCellType() == CellType.NUMERIC) {
                 	releaseCount = (int)cellValue.getNumberValue();
                 }
-                OpencpsDossierStatisticManual manual = OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, month, year, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, StringPool.BLANK, StringPool.BLANK, domainCode, domainName, false, 0, 0, 0);
+                
+                currentCell = currentRow.getCell(9);
+                cellValue = evaluator.evaluate(currentCell);
+                if (cellValue.getCellType() == CellType.NUMERIC) {
+                	fromViaPostalCount = (int)cellValue.getNumberValue();
+                }
+                OpencpsDossierStatisticManual manual = OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, month, year, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, StringPool.BLANK, StringPool.BLANK, domainCode, domainName, false, 0, 0, 0, fromViaPostalCount);
                 List<OpencpsDossierStatisticManual> lstManual = new ArrayList<OpencpsDossierStatisticManual>();
                 if (mapStatistics.containsKey(year)) {
                 	lstManual = mapStatistics.get(year);
@@ -1371,7 +1379,7 @@ public class OpencpsStatisticRestApplication extends Application {
                 	releaseCount += manual.getReleaseCount();
                 }
                 
-                OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, 0, keyYear, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, false, 0, 0, 0);
+                OpencpsDossierStatisticManualLocalServiceUtil.updateStatisticManual(0l, 0, groupId, 0, StringPool.BLANK, 0, keyYear, 0, 0, 0, 0, 0, receivedCount, onlineCount, releaseCount, 0, ontimeCount, 0, 0, 0, 0, 0, 0, overdueCount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, false, 0, 0, 0, 0);
             }
     		return Response.status(200).entity(DossierConstants.JSON_SUCCESS_TRUE_EMPTY).build();
 		}

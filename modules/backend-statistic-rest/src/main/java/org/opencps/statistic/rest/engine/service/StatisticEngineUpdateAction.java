@@ -81,7 +81,9 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
 					payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
 					payload.getDomainCode(), payload.getDomainName(), payload.getGroupAgencyCode(), payload.isReporting(), payload.getOnegateCount(),
-					payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount());
+					payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(),
+					payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
+					payload.getFromViaPostalCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;
@@ -245,7 +247,8 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
 					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount());
+					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
+					payload.getFromViaPostalCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;
@@ -268,7 +271,8 @@ public class StatisticEngineUpdateAction {
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
 					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
-					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount());
+					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
+					payload.getFromViaPostalCount());
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;

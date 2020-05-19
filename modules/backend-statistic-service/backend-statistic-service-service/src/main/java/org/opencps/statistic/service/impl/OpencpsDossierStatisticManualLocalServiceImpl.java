@@ -55,7 +55,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			int undueCount, int overdueCount, int pausingCount, int ontimePercentage, int overtimeInside,
 			int overtimeOutside, int interoperatingCount, int waitingCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int insideCount) throws PortalException, SystemException {
+			int insideCount, int fromViaPostalCount) throws PortalException, SystemException {
 		OpencpsDossierStatisticManual dossierStatistic = null;
 		Date now = new Date();
 		if (dossierStatisticId == 0L) {
@@ -100,6 +100,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setOnegateCount(onegateCount);
 			dossierStatistic.setOutsideCount(outsideCount);
 			dossierStatistic.setInsideCount(insideCount);
+			dossierStatistic.setFromViaPostalCount(fromViaPostalCount);
 		} else {
 			dossierStatistic = opencpsDossierStatisticManualPersistence.findByPrimaryKey(dossierStatisticId);
 			dossierStatistic.setModifiedDate(now);
@@ -131,6 +132,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setOnegateCount(onegateCount);
 			dossierStatistic.setOutsideCount(outsideCount);
 			dossierStatistic.setInsideCount(insideCount);
+			dossierStatistic.setFromViaPostalCount(fromViaPostalCount);
 			
 			dossierStatistic.setGovAgencyCode(govAgencyCode);
 			dossierStatistic.setGovAgencyName(govAgencyName);
@@ -157,7 +159,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			int overtimeOutside, int interoperatingCount, int waitingCount, int viaPostalCount,
 			int saturdayCount, int dossierOnline3Count, int dossierOnline4Count, int receiveDossierSatCount, int releaseDossierSatCount, String govAgencyCode, String govAgencyName,
 			String domainCode, String domainName, boolean reporting, int onegateCount, int outsideCount,
-			int insideCount) throws PortalException, SystemException {
+			int insideCount, int fromViaPostalCount) throws PortalException, SystemException {
 		OpencpsDossierStatisticManual dossierStatistic = null;
 		Date now = new Date();
 		if (dossierStatisticId == 0L) {
@@ -208,6 +210,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);
+			dossierStatistic.setFromViaPostalCount(fromViaPostalCount);
 			dossierStatistic.setSystem("1");
 		} else {
 			dossierStatistic = opencpsDossierStatisticManualPersistence.findByPrimaryKey(dossierStatisticId);
@@ -251,6 +254,7 @@ public class OpencpsDossierStatisticManualLocalServiceImpl
 			dossierStatistic.setDossierOnline4Count(dossierOnline4Count);
 			dossierStatistic.setReceiveDossierSatCount(receiveDossierSatCount);
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);	
+			dossierStatistic.setFromViaPostalCount(fromViaPostalCount);
 			dossierStatistic.setSystem("1");
 		}
 

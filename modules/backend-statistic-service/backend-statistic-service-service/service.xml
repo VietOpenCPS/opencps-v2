@@ -60,6 +60,7 @@
 		<column name="dossierOnline4Count" type="int" />
 		<column name="receiveDossierSatCount" type="int" />
 		<column name="releaseDossierSatCount" type="int" />
+		<column name="fromViaPostalCount" type="int" />
 		
 		<!-- Order -->
 
@@ -341,6 +342,7 @@
 		<column name="dossierOnline4Count" type="int" />
 		<column name="receiveDossierSatCount" type="int" />
 		<column name="releaseDossierSatCount" type="int" />
+		<column name="fromViaPostalCount" type="int" />
 		
 		<!-- Order -->
 

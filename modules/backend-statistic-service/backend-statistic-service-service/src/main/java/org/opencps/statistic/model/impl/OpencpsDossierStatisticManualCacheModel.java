@@ -66,7 +66,7 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(101);
+		StringBundler sb = new StringBundler(103);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -168,6 +168,8 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 		sb.append(receiveDossierSatCount);
 		sb.append(", releaseDossierSatCount=");
 		sb.append(releaseDossierSatCount);
+		sb.append(", fromViaPostalCount=");
+		sb.append(fromViaPostalCount);
 		sb.append("}");
 
 		return sb.toString();
@@ -291,6 +293,7 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 		opencpsDossierStatisticManualImpl.setDossierOnline4Count(dossierOnline4Count);
 		opencpsDossierStatisticManualImpl.setReceiveDossierSatCount(receiveDossierSatCount);
 		opencpsDossierStatisticManualImpl.setReleaseDossierSatCount(releaseDossierSatCount);
+		opencpsDossierStatisticManualImpl.setFromViaPostalCount(fromViaPostalCount);
 
 		opencpsDossierStatisticManualImpl.resetOriginalValues();
 
@@ -389,6 +392,8 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 		receiveDossierSatCount = objectInput.readInt();
 
 		releaseDossierSatCount = objectInput.readInt();
+
+		fromViaPostalCount = objectInput.readInt();
 	}
 
 	@Override
@@ -532,6 +537,8 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 		objectOutput.writeInt(receiveDossierSatCount);
 
 		objectOutput.writeInt(releaseDossierSatCount);
+
+		objectOutput.writeInt(fromViaPostalCount);
 	}
 
 	public String uuid;
@@ -584,4 +591,5 @@ public class OpencpsDossierStatisticManualCacheModel implements CacheModel<Openc
 	public int dossierOnline4Count;
 	public int receiveDossierSatCount;
 	public int releaseDossierSatCount;
+	public int fromViaPostalCount;
 }

@@ -1336,6 +1336,7 @@ public class StatisticSumYearCalcular {
 		int dossierOnline4Count = 0;
 		int receiveDossierSatCount = 0;
 		int releaseDossierSatCount = 0;
+		int fromViaPostalCount = 0;
 		
 		if (month == 0 && year == 0) {
 			for (DossierStatisticData data : source) {
@@ -1353,6 +1354,7 @@ public class StatisticSumYearCalcular {
 				overtimeOutside = overtimeOutside + data.getOvertimeOutside();
 				overtimeInside = overtimeInside + data.getOvertimeInside();
 				onegateCount = onegateCount + data.getOnegateCount();
+				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
 				//
 				processingCount = processingCount + data.getProcessingCount();
 				undueCount = undueCount + data.getUndueCount();
@@ -1388,6 +1390,7 @@ public class StatisticSumYearCalcular {
 				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
 				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
 				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
+				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
