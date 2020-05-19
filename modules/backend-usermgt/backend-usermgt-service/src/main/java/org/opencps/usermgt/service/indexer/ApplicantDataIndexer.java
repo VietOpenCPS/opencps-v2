@@ -63,6 +63,7 @@ public class ApplicantDataIndexer extends BaseIndexer<ApplicantData> {
 		document.addNumber(ApplicantDataTerm.STATUS, object.getStatus());
 		document.addTextSortable(ApplicantDataTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
 		document.addNumber(ApplicantDataTerm.APPLICANT_DATA_TYPE, object.getApplicantDataType());
+		document.addTextSortable(ApplicantDataTerm.DOSSIER_NO, object.getDossierNo());
 
 		return document;
 	}

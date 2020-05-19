@@ -80,7 +80,7 @@ public class ApplicantDataUtils {
 					model.setFileExtension(fileEntry.getExtension());
 				}
 			}
-			
+			model.setDossierNo(GetterUtil.getString(doc.get(ApplicantDataTerm.DOSSIER_NO)));
 			data.add(model);
 		}
 
