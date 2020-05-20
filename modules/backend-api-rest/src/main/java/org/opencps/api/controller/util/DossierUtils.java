@@ -531,7 +531,9 @@ public class DossierUtils {
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
 			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
-				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+				model.setFromViaPostal(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			} else {
+				model.setFromViaPostal(0);
 			}
 			ouputs.add(model);
 		}
@@ -878,9 +880,10 @@ public class DossierUtils {
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
 			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
-				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+				model.setFromViaPostal(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			} else {
+				model.setFromViaPostal(0);
 			}
-
 			ouputs.add(model);
 		}
 //		_log.info("ouputs: "+ouputs.size());
