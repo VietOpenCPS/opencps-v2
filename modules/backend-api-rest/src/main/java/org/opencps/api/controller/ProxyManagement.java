@@ -42,7 +42,8 @@ public interface ProxyManagement {
 	public Response proxy(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@FormParam("url") String url, @FormParam("method") String method, @FormParam("data") String data,
-			@FormParam("serverCode") String serverCode);
+			@FormParam("serverCode") String serverCode,
+			@FormParam("dataType") String dataType);
 	
 	@POST
 	@Path("/multipart")

@@ -13,7 +13,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
@@ -42,9 +44,35 @@ public class ProxyManagementImpl implements ProxyManagement {
 
 	private static final Log _log = LogFactoryUtil.getLog(ProxyManagementImpl.class);
 
+	public static byte[] readAllBytes(InputStream inputStream) throws IOException {
+	    final int bufLen = 4 * 0x400; // 4KB
+	    byte[] buf = new byte[bufLen];
+	    int readLen;
+	    IOException exception = null;
+
+	    try {
+	        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+	            while ((readLen = inputStream.read(buf, 0, bufLen)) != -1)
+	                outputStream.write(buf, 0, readLen);
+
+	            return outputStream.toByteArray();
+	        }
+	    } catch (IOException e) {
+	        exception = e;
+	        throw e;
+	    } finally {
+	        if (exception == null) inputStream.close();
+	        else try {
+	            inputStream.close();
+	        } catch (IOException e) {
+	            exception.addSuppressed(e);
+	        }
+	    }
+	}
+	
 	@Override
 	public Response proxy(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode) {
+			User user, ServiceContext serviceContext, String url, String method, String data, String serverCode, String dataType) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
 			String serverCodeFind = Validator.isNotNull(serverCode) ? serverCode : ConstantUtils.PROXY_SERVER_DVC;
@@ -104,6 +132,8 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
 			        conn.setRequestMethod(method);
 			        conn.setRequestProperty(HttpHeaders.ACCEPT, ConstantUtils.CONTENT_TYPE_JSON);
+			        conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
+			        
 			        String authorization = String.format(MessageUtil.getMessage(ConstantUtils.HTTP_HEADER_BASICAUTH), authStrEnc);
 			        conn.setRequestProperty(HttpHeaders.AUTHORIZATION, authorization);
 			        _log.debug("BASIC AUTHEN: " + authStrEnc);
@@ -119,19 +149,23 @@ public class ProxyManagementImpl implements ProxyManagement {
 						os.write( postData.toString().getBytes() );    
 						os.close();			        	
 			        }
-
-					_log.debug("PROXY CONTENT TYPE RETURN: " + conn.getContentType());
-			        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			        			        
-			        int cp;
-			        while ((cp = brf.read()) != -1) {
-			          sb.append((char) cp);
+			        if (dataType != null && "binary".contentEquals(dataType)) {
+					    byte[] bytes = readAllBytes(conn.getInputStream());
+					    
+						return Response.status(HttpURLConnection.HTTP_OK).entity(bytes).
+								header(HttpHeaders.CONTENT_TYPE, conn.getContentType())
+								.build();			        			        	
 			        }
-			        _log.debug("RESULT PROXY: " + sb.toString());
-			        String contentDisposition = conn.getHeaderField(HttpHeaders.CONTENT_DISPOSITION);
-			        
-					return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
-							header(HttpHeaders.CONTENT_TYPE, conn.getContentType()).header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition).build();			        
+			        else {
+				        BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    			        
+				        int cp;
+					    while ((cp = brf.read()) != -1) {
+					      sb.append((char) cp);
+					    }
+						return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
+								build();			        			        	
+			        }
 			    }
 				catch (IOException e) {
 					_log.error(e);
