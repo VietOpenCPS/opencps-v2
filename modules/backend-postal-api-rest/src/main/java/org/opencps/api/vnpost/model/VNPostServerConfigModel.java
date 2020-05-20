@@ -32,12 +32,14 @@ public class VNPostServerConfigModel {
 	private String senderAddress;
 	
 	private String senderEmail;
-	
+
 	private String senderTel;
+
+	private String senderName;
 
 	public VNPostServerConfigModel(String apiPostOrder, String apiGetOrderTracking, String apiGetToken,
 			String apiCancelOrder, String customerKey, String secretKey, boolean active, String customerCode,
-			Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel) {
+			Integer senderProvince, Integer senderDistrict, String senderAddress, String senderEmail, String senderTel, String senderName) {
 		super();
 		this.apiPostOrder = apiPostOrder;
 		this.apiGetOrderTracking = apiGetOrderTracking;
@@ -174,6 +176,16 @@ public class VNPostServerConfigModel {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
 	}
 
 	

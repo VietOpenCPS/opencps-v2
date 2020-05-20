@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -60,7 +61,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 					configObj.getInt(VnPostTerm.SERVER_SENDERDISTRICT),
 					configObj.getString(VnPostTerm.SERVER_SENDERADDRESS),
 					configObj.getString(VnPostTerm.SERVER_SENDEREMAIL),
-					configObj.getString(VnPostTerm.SERVER_SENDERTEL));
+					configObj.getString(VnPostTerm.SERVER_SENDERTEL),
+					configObj.getString(VnPostTerm.SERVER_SENDERNAME));
 		} else {
 			return null;
 		}
@@ -106,9 +108,12 @@ public class VNPostManagementImpl implements VNPostManagement {
 				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
 				
 				//_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
+				
+				String senderName = Validator.isNull(config.getSenderName()) ? config.getSenderName()
+						: input.getSenderName();
 				MOrder order = new MOrder(config.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),
 						config.getSenderProvince(), config.getSenderDistrict(), config.getSenderAddress(),
-						input.getSenderName(), config.getSenderEmail(), config.getSenderTel(), input.getSenderDesc(),
+						senderName, config.getSenderEmail(), config.getSenderTel(), input.getSenderDesc(),
 						input.getDescription(), input.getReceiverName(), input.getReceiverAddress(),
 						input.getReceiverTel(), input.getReceiverProvince(), input.getReceiverDistrict(),
 						input.getReceiverEmail());
@@ -139,7 +144,8 @@ public class VNPostManagementImpl implements VNPostManagement {
 				_log.info(token);
 				_log.info("input============" + input);
 				_log.info("config============" + config);
-				String receiverName = input.getGovAgencyName();
+				String receiverName = Validator.isNull(config.getSenderName()) ? config.getSenderName()
+						: input.getGovAgencyName();
 				String receiverAddress = config.getSenderAddress();
 				String receiverTel = config.getSenderTel();
 				int receiverProvince = config.getSenderProvince();
@@ -151,7 +157,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 						input.getSenderName(), input.getSenderEmail(), input.getSenderTel(), input.getSenderDesc(),
 						input.getDescription(), receiverName, receiverAddress, receiverTel, receiverProvince,
 						receiverDistrict, receiverEmail);
-
+				
 				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
 						token.getTokenType(), order);
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
