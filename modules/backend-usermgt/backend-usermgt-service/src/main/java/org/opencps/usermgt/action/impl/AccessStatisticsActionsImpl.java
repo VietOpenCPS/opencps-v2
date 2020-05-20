@@ -93,7 +93,7 @@ public class AccessStatisticsActionsImpl implements AccessStatisticsActions
 		}
 		jsonObject.put("detail",jsonArray);
 		jsonObject.put("accessStatistics", result );
-		jsonObject.put("region" ,regionJSONArray);
+		jsonObject.put("regions" ,regionJSONArray);
 		return jsonObject;
 	}
 
