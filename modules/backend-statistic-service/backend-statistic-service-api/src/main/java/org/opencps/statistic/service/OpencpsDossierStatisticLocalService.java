@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -432,6 +433,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public List<OpencpsDossierStatistic> searchDossierStatisticSystem(
 		long groupId, int month, int year, String domain, String govAgencyCode,
 		String system, String groupAgenvyCode, int start, int end)
+		throws PortalException, SystemException;
+
+	public void updateBatchStatistic(List<JSONObject> dossierDataObjs)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateOnlyStatistic(

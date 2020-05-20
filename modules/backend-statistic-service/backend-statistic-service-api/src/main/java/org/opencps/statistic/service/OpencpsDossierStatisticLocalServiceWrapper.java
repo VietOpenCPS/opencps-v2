@@ -623,6 +623,14 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public void updateBatchStatistic(
+		java.util.List<com.liferay.portal.kernel.json.JSONObject> dossierDataObjs)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_opencpsDossierStatisticLocalService.updateBatchStatistic(dossierDataObjs);
+	}
+
+	@Override
 	public org.opencps.statistic.model.OpencpsDossierStatistic updateOnlyStatistic(
 		org.opencps.statistic.model.OpencpsDossierStatistic dossierStatistic,
 		long companyId, long groupId, long userId, String userName, int month,
