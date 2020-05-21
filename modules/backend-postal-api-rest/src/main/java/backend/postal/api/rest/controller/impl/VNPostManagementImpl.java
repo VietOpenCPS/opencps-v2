@@ -106,19 +106,25 @@ public class VNPostManagementImpl implements VNPostManagement {
 			try {
 				MToken token = IToken.getToken(config.getApiGetToken(), config.getCustomerKey(), config.getSecretKey());
 				// String apiUrl = "https://api.mitc.vn/apiVNPostNGSP/p1.0/order/post";
-				
-				//_log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
-				
-				String senderName = Validator.isNull(config.getSenderName()) ? config.getSenderName()
+
+				// _log.info("token ============= " + JSONFactoryUtil.looseSerialize(token));
+
+				String senderName = Validator.isNotNull(config.getSenderName()) ? config.getSenderName()
 						: input.getSenderName();
 				MOrder order = new MOrder(config.getCustomerCode(), input.getOrderNumber(), input.getCodAmount(),
-						config.getSenderProvince(), config.getSenderDistrict(), config.getSenderAddress(),
-						senderName, config.getSenderEmail(), config.getSenderTel(), input.getSenderDesc(),
-						input.getDescription(), input.getReceiverName(), input.getReceiverAddress(),
-						input.getReceiverTel(), input.getReceiverProvince(), input.getReceiverDistrict(),
-						input.getReceiverEmail());
+						config.getSenderProvince(), config.getSenderDistrict(), config.getSenderAddress(), senderName,
+						config.getSenderEmail(), config.getSenderTel(), input.getSenderDesc(), input.getDescription(),
+						input.getReceiverName(), input.getReceiverAddress(), input.getReceiverTel(),
+						input.getReceiverProvince(), input.getReceiverDistrict(), input.getReceiverEmail());
 				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
 						token.getTokenType(), order);
+				_log.info(config.getCustomerCode() + "-----" + input.getOrderNumber() + "-----" + input.getCodAmount()
+						+ "-----" + config.getSenderProvince() + "-----" + config.getSenderDistrict() + "-----"
+						+ config.getSenderAddress() + "-----" + senderName + "-----" + config.getSenderEmail() + "-----"
+						+ config.getSenderTel() + "-----" + input.getSenderDesc() + "-----" + input.getDescription()
+						+ "-----" + input.getReceiverName() + "-----" + input.getReceiverAddress() + "-----"
+						+ input.getReceiverTel() + "-----" + input.getReceiverProvince() + "-----"
+						+ input.getReceiverDistrict() + "-----" + input.getReceiverEmail());
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} catch (Exception e) {
 				_log.error(e);
@@ -144,7 +150,7 @@ public class VNPostManagementImpl implements VNPostManagement {
 				_log.info(token);
 				_log.info("input============" + input);
 				_log.info("config============" + config);
-				String receiverName = Validator.isNull(config.getSenderName()) ? config.getSenderName()
+				String receiverName = Validator.isNotNull(config.getSenderName()) ? config.getSenderName()
 						: input.getGovAgencyName();
 				String receiverAddress = config.getSenderAddress();
 				String receiverTel = config.getSenderTel();
@@ -160,6 +166,13 @@ public class VNPostManagementImpl implements VNPostManagement {
 				
 				MResult result = IOrder.postOrder(config.getApiPostOrder(), token.getAccessToken(),
 						token.getTokenType(), order);
+				_log.info(config.getCustomerCode() + "-----" + input.getOrderNumber() + "-----" + input.getCodAmount()
+						+ "-----" + input.getSenderProvince() + "-----" + input.getSenderDistrict() + "-----"
+						+ input.getSenderAddress() + "-----" + input.getSenderName() + "-----" + input.getSenderEmail()
+						+ "-----" + input.getSenderTel() + "-----" + input.getSenderDesc() + "-----"
+						+ input.getDescription() + "-----" + receiverName + "-----" + receiverAddress + "-----"
+						+ receiverTel + "-----" + receiverProvince + "-----" + receiverDistrict + "-----"
+						+ receiverEmail);
 				return Response.status(200).entity(JSONFactoryUtil.looseSerialize(result)).build();
 			} catch (Exception e) {
 				_log.error(e);

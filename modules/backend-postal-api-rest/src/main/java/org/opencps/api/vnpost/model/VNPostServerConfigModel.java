@@ -54,6 +54,7 @@ public class VNPostServerConfigModel {
 		this.senderAddress = senderAddress;
 		this.senderEmail = senderEmail;
 		this.senderTel = senderTel;
+		this.senderName = senderName;
 	}
 	
 
