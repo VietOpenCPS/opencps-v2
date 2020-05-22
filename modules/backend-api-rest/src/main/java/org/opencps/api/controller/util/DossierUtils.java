@@ -460,6 +460,8 @@ public class DossierUtils {
 			model.setPostalAddress(doc.get(DossierTerm.POSTAL_ADDRESS));
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
+			model.setPostalDistrictCode(doc.get(DossierTerm.POSTAL_DISTRICT_CODE));
+			model.setPostalDistrictName(doc.get(DossierTerm.POSTAL_DISTRICT_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
 			model.setCertNo(doc.get(DeliverableTerm.SO_CHUNG_CHI));
 			if (Validator.isNotNull(doc.get(DeliverableTerm.NGAY_KY_CC))) {
@@ -531,7 +533,9 @@ public class DossierUtils {
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
 			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
-				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+				model.setFromViaPostal(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			} else {
+				model.setFromViaPostal(0);
 			}
 			ouputs.add(model);
 		}
@@ -825,6 +829,8 @@ public class DossierUtils {
 			model.setPostalAddress(doc.get(DossierTerm.POSTAL_ADDRESS));
 			model.setPostalCityCode(doc.get(DossierTerm.POSTAL_CITY_CODE));
 			model.setPostalCityName(doc.get(DossierTerm.POSTAL_CITY_NAME));
+			model.setPostalDistrictCode(doc.get(DossierTerm.POSTAL_DISTRICT_CODE));
+			model.setPostalDistrictName(doc.get(DossierTerm.POSTAL_DISTRICT_NAME));
 			model.setPostalTelNo(doc.get(DossierTerm.POSTAL_TEL_NO));
 			
 			String certNo = doc.get(DeliverableTerm.SO_CHUNG_CHI);
@@ -878,9 +884,10 @@ public class DossierUtils {
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
 			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
-				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+				model.setFromViaPostal(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			} else {
+				model.setFromViaPostal(0);
 			}
-
 			ouputs.add(model);
 		}
 //		_log.info("ouputs: "+ouputs.size());
@@ -963,6 +970,8 @@ public class DossierUtils {
 		model.setPostalAddress(input.getPostalAddress());
 		model.setPostalCityCode(input.getPostalCityCode());
 		model.setPostalCityName(input.getPostalCityName());
+		model.setPostalDistrictCode(input.getPostalDistrictCode());
+		model.setPostalDistrictName(input.getPostalDistrictName());
 		model.setPostalTelNo(input.getPostalTelNo());
 		model.setPermission(getPermission(input.getPrimaryKey(), userId));
 
@@ -1563,6 +1572,8 @@ public class DossierUtils {
 		model.setPostalAddress(input.getPostalAddress());
 		model.setPostalCityCode(input.getPostalCityCode());
 		model.setPostalCityName(input.getPostalCityName());
+		model.setPostalDistrictCode(input.getPostalDistrictCode());
+		model.setPostalDistrictName(input.getPostalDistrictName());
 		model.setPostalTelNo(input.getPostalTelNo());
 		model.setProcessDate(input.getProcessDate());
 		model.setProcessNo(input.getProcessNo());

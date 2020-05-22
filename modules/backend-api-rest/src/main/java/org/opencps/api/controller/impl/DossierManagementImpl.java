@@ -579,6 +579,11 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.VNPOSTAL_STATUS, query.getVnpostalStatus());
 			}
 
+			Integer fromViaPostal = query.getFromViaPostal();
+			if (fromViaPostal != null) {
+				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
@@ -1313,6 +1318,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String districtName = StringPool.BLANK;
 			String wardName = StringPool.BLANK;
 			String postalCityName = StringPool.BLANK;
+			String postalDistrictName = StringPool.BLANK;
 
 			if (Validator.isNotNull(input.getCityCode()))
 				cityName = getDictItemName(
@@ -1327,6 +1333,10 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNotNull(input.getPostalCityCode())) {
 				postalCityName = getDictItemName(
 					groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+			}
+			if (Validator.isNotNull(input.getPostalDistrictCode())) {
+				postalDistrictName = getDictItemName(
+					groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
 			}
 			Integer delegateType =
 				(input.getDelegateType() != null ? input.getDelegateType() : 0);
@@ -1375,6 +1385,7 @@ public class DossierManagementImpl implements DossierManagement {
 				input.getContactEmail(), input.getDossierTemplateNo(),
 				input.getViaPostal(), input.getPostalAddress(),
 				input.getPostalCityCode(), postalCityName,
+				input.getPostalDistrictCode(), postalDistrictName,
 				input.getPostalTelNo(), input.getApplicantNote(),
 				input.isSameAsApplicant(), input.getDelegateName(),
 				input.getDelegateIdNo(), input.getDelegateTelNo(),

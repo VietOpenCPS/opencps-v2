@@ -143,6 +143,11 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		Dossier dossier, int allowAssignUser, DossierAction dossierAction,
 		long userId, long groupId, long assignUserId) throws PortalException;
 
+	public void initDossierActionUser(String stepCode, long serviceProcessId,
+		Dossier dossier, ProcessAction processAction, int allowAssignUser,
+		DossierAction dossierAction, long userId, long groupId,
+		long assignUserId) throws PortalException;
+
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
