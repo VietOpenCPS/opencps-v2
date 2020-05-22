@@ -174,6 +174,19 @@ public class CPSDossierBusinessLocalServiceWrapper
 	}
 
 	@Override
+	public void initDossierActionUser(String stepCode, long serviceProcessId,
+		org.opencps.dossiermgt.model.Dossier dossier,
+		org.opencps.dossiermgt.model.ProcessAction processAction,
+		int allowAssignUser,
+		org.opencps.dossiermgt.model.DossierAction dossierAction, long userId,
+		long groupId, long assignUserId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_cpsDossierBusinessLocalService.initDossierActionUser(stepCode,
+			serviceProcessId, dossier, processAction, allowAssignUser,
+			dossierAction, userId, groupId, assignUserId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DossierFile resetformdataDossierFileFormData(
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,

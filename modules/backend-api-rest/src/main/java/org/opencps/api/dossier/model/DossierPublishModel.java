@@ -80,6 +80,7 @@ import javax.xml.bind.annotation.XmlType;
     "viaPostal",
     "postalAddress",
     "postalCityCode",
+    "postalDistrictCode",
     "postalTelNo",
     "originality",
     "dossierNo",
@@ -113,6 +114,7 @@ import javax.xml.bind.annotation.XmlType;
 	"lockState",
 	"counter",
 	"postalCityName",
+	"postalDistrictName",
 	"delegateCityName",
 	"delegateDistrictName",
 	"delegateWardName",
@@ -183,6 +185,8 @@ public class DossierPublishModel {
 	protected String postalAddress;
 	@FormParam(value = "postalCityCode")
 	protected String postalCityCode;
+	@FormParam(value = "postalDistrictCode")
+	protected String postalDistrictCode;
 	@FormParam(value = "postalTelNo")
 	protected String postalTelNo;
 	@FormParam(value = "originality")
@@ -249,6 +253,8 @@ public class DossierPublishModel {
 	private Integer counter;	
 	@FormParam(value = "postalCityName")
 	protected String postalCityName;
+	@FormParam(value = "postalDistrictName")
+	protected String postalDistrictName;
 	@FormParam(value = "delegateCityName")
 	protected String delegateCityName;
 	@FormParam(value = "delegateDistrictName")
@@ -277,6 +283,22 @@ public class DossierPublishModel {
 	protected String vnpostalProfile;
 	@FormParam(value = "fromViaPostal")
 	protected Integer fromViaPostal;
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+
+	public void setPostalDistrictName(String postalDistrictName) {
+		this.postalDistrictName = postalDistrictName;
+	}
+
+	public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+
+	public void setPostalDistrictCode(String postalDistrictCode) {
+		this.postalDistrictCode = postalDistrictCode;
+	}
 
 	public Integer getFromViaPostal() {
 		return fromViaPostal;
