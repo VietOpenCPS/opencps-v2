@@ -64,6 +64,7 @@
 		<field name="dossierOnline4Count" type="int" />
 		<field name="receiveDossierSatCount" type="int" />
 		<field name="releaseDossierSatCount" type="int" />
+		<field name="fromViaPostalCount" type="int" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsDossierStatisticManual">
 		<field name="uuid" type="String" />
@@ -128,6 +129,7 @@
 		<field name="dossierOnline4Count" type="int" />
 		<field name="receiveDossierSatCount" type="int" />
 		<field name="releaseDossierSatCount" type="int" />
+		<field name="fromViaPostalCount" type="int" />
 	</model>
 	<model name="org.opencps.statistic.model.OpencpsPersonStatistic">
 		<field name="uuid" type="String" />

@@ -365,6 +365,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								dossier.getContactName(), dossier.getContactTelNo(), dossier.getContactEmail(),
 								dossierTemplate.getTemplateNo(), dossier.getPassword(), dossier.getViaPostal(),
 								dossier.getPostalAddress(), dossier.getPostalCityCode(), dossier.getPostalCityName(),
+								dossier.getPostalDistrictCode(), dossier.getPostalDistrictName(),
 								dossier.getPostalTelNo(), dossier.getOnline(), dossier.getNotification(),
 								dossier.getApplicantNote(), DossierTerm.ORIGINALITY_DVCTT, context);
 					}
@@ -5146,9 +5147,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		String postalCityName = StringPool.BLANK;
+		String postalDistrictName = StringPool.BLANK;
 
 		if (Validator.isNotNull(input.getPostalCityCode())) {
 			postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+		}
+		if (Validator.isNotNull(input.getPostalDistrictCode())) {
+			postalDistrictName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
 		}
 		Long sampleCount = (option != null ? option.getSampleCount() : 1l);
 		String registerBookCode = (option != null
@@ -5183,7 +5188,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), password, viaPostal,
-					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+					input.getPostalAddress(), input.getPostalCityCode(), postalCityName,
+					input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 					process.getDirectNotification(), input.getApplicantNote(), Integer.valueOf(input.getOriginality()),
 					service, process, option, serviceContext);
 
@@ -5318,6 +5324,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
@@ -5470,7 +5479,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						input.getCityCode(), cityName, input.getDistrictCode(), districtName, input.getWardCode(),
 						wardName, input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
 						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(),
-						input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+						input.getPostalCityCode(), postalCityName, input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 						process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), service, process, option, serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
@@ -5486,7 +5495,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
 				dossier.setPostalDistrictCode(input.getPostalDistrictCode());
-				dossier.setPostalDistrictName(input.getPostalDistrictName());
+				dossier.setPostalDistrictName(postalDistrictName);
 				dossier.setPostalWardCode(input.getPostalWardCode());
 				dossier.setPostalWardName(input.getPostalWardName());
 				dossier.setOriginDossierNo(input.getOriginDossierNo());
@@ -5651,6 +5660,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getVnpostalProfile())) {
 				dossier.setVnpostalProfile(input.getVnpostalProfile());
+			}
+			if (Validator.isNotNull(input.getFromViaPostal())) {
+				dossier.setFromViaPostal(input.getFromViaPostal());
 			}
 			if (Validator.isNotNull(input.getServerNo())) {
 				dossier.setServerNo(input.getServerNo());
@@ -7312,7 +7324,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo, applicantIdDate, address,
 					cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
 					contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
 					createDateLong != 0 ? new Date(createDateLong) : null,
 					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
 					submitDateLong != 0 ? new Date(submitDateLong) : null,
@@ -7332,12 +7344,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
 					input.getDelegateCityName(), input.getDelegateDistrictCode(), input.getDelegateDistrictName(),
 					input.getDelegateWardCode(), input.getDelegateWardName(), input.getDurationCount(),
-					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(),
-					input.getVnpostalStatus(), input.getVnpostalProfile(), serviceContext);
-
-			return dossier;
-		}
-		return oldDossier;
+					input.getDurationUnit(), input.getDossierName(), input.getProcessNo(), input.getMetaData(), input.getVnpostalStatus(), input.getVnpostalProfile(),
+					input.getFromViaPostal(), serviceContext);
+				
+				return dossier;
+			}
+			return oldDossier;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
@@ -7456,9 +7468,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		String postalCityName = StringPool.BLANK;
+		String postalDistrictName = StringPool.BLANK;
 
 		if (Validator.isNotNull(input.getPostalCityCode())) {
 			postalCityName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
+		}
+		if (Validator.isNotNull(input.getPostalDistrictCode())) {
+			postalDistrictName = getDictItemName(groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
 		}
 		Long sampleCount = (option != null ? option.getSampleCount() : 1l);
 
@@ -7482,7 +7498,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
 					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
 					input.getContactEmail(), input.getDossierTemplateNo(), password, viaPostal,
-					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 					process.getDirectNotification(), input.getApplicantNote(), Integer.valueOf(input.getOriginality()),
 					service, process, option, serviceContext);
 
@@ -7669,6 +7685,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setPostalAddress(input.getPostalAddress());
 				dossier.setPostalCityCode(input.getPostalCityCode());
 				dossier.setPostalCityName(postalCityName);
+				dossier.setPostalDistrictCode(input.getPostalDistrictCode());
+				dossier.setPostalDistrictName(postalDistrictName);
 				dossier.setPostalTelNo(input.getPostalTelNo());
 				dossier.setPostalServiceCode(input.getPostalServiceCode());
 				dossier.setPostalServiceName(input.getPostalServiceName());
@@ -7737,7 +7755,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						input.getCityCode(), cityName, input.getDistrictCode(), districtName, input.getWardCode(),
 						wardName, input.getContactName(), input.getContactTelNo(), input.getContactEmail(),
 						input.getDossierTemplateNo(), password, viaPostal, input.getPostalAddress(),
-						input.getPostalCityCode(), postalCityName, input.getPostalTelNo(), online,
+						input.getPostalCityCode(), postalCityName, input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 						process.getDirectNotification(), input.getApplicantNote(),
 						Integer.valueOf(input.getOriginality()), service, process, option, serviceContext);
 				dossier.setDelegateName(input.getDelegateName());
@@ -8111,7 +8129,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					serviceCode, serviceName, govAgencyCode, govAgencyName, applicantName, applicantType, applicantIdNo,
 					appIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, 0, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
+					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, Boolean.valueOf(online), false, applicantNote, originality,
 					createDateLong != 0 ? new Date(createDateLong) : null,
 					modifiedDateLong != 0 ? new Date(modifiedDateLong) : null,
 					submitDateLong != 0 ? new Date(submitDateLong) : null,

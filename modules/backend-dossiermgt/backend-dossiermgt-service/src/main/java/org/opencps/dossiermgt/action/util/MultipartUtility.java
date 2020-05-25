@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -16,6 +17,8 @@ import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -187,6 +190,51 @@ public class MultipartUtility {
 			outputStream.write(buffer, 0, bytesRead);
 		}
 		outputStream.flush();
+		} catch (Exception e) {
+			// TODO: handle exception
+			_log.error(e);
+		} finally{
+			if (inputStream != null) {
+                try {
+		inputStream.close();
+                } catch (IOException ex1) {
+                    //TODO:
+                	_log.error(ex1);
+                }
+            }
+		}
+
+		writer.append(LINE_FEED);
+		writer.flush();
+	}
+
+	/**
+	 * Adds a upload file section to the request
+	 * 
+	 * @param fieldName
+	 *            name attribute in <input type="file" name="..." />
+	 * @param uploadFile
+	 *            a File to be uploaded
+	 * @throws IOException
+	 */
+	public void addFilePartDataHandler(String fieldName, Attachment attachment) throws IOException {
+		String fileName = attachment.getDataHandler().getName();
+		writer.append("--" + boundary).append(LINE_FEED);
+		writer.append("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + fileName + "\"")
+				.append(LINE_FEED);
+		writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
+		writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+		writer.append(LINE_FEED);
+		writer.flush();
+			
+		InputStream inputStream = attachment.getDataHandler().getInputStream();
+		try {
+			byte[] buffer = new byte[4096];
+			int bytesRead = -1;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+			}
+			outputStream.flush();
 		} catch (Exception e) {
 			// TODO: handle exception
 			_log.error(e);

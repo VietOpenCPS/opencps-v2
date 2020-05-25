@@ -74,14 +74,14 @@ public class ApplicantDataLocalServiceWrapper
 	@Override
 	public org.opencps.usermgt.model.ApplicantData createApplicantData(
 		long groupId, String fileTemplateNo, String fileNo, String fileName,
-		String applicantIdNo, String sourceFileName,
+		String applicantIdNo, int status, String sourceFileName,
 		java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _applicantDataLocalService.createApplicantData(groupId,
-			fileTemplateNo, fileNo, fileName, applicantIdNo, sourceFileName,
-			inputStream, serviceContext);
+			fileTemplateNo, fileNo, fileName, applicantIdNo, status,
+			sourceFileName, inputStream, serviceContext);
 	}
 
 	@Override
@@ -400,14 +400,14 @@ public class ApplicantDataLocalServiceWrapper
 	@Override
 	public org.opencps.usermgt.model.ApplicantData updateApplicantData(
 		long groupId, long applicantDataId, String fileTemplateNo,
-		String fileNo, String fileName, String applicantIdNo,
+		String fileNo, String fileName, String applicantIdNo, int status,
 		String sourceFileName, java.io.InputStream inputStream,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _applicantDataLocalService.updateApplicantData(groupId,
 			applicantDataId, fileTemplateNo, fileNo, fileName, applicantIdNo,
-			sourceFileName, inputStream, serviceContext);
+			status, sourceFileName, inputStream, serviceContext);
 	}
 
 	@Override

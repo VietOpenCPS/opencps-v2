@@ -98,7 +98,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic createOnlyStatistic(long companyId,
@@ -114,8 +114,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		String domainName, boolean reporting, int onegateCount,
 		int outsideCount, int insideCount, int viaPostalCount,
 		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
-		int receiveDossierSatCount, int releaseDossierSatCount)
-		throws PortalException, SystemException;
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
 
 	/**
 	* Creates a new opencps dossier statistic with the primary key. Does not add the opencps dossier statistic to the database.
@@ -138,8 +138,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount)
-		throws PortalException, SystemException;
+		int onegateCount, int outsideCount, int insideCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
 		long groupId, long userId, String userName, int month, int year,
@@ -155,7 +155,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int onegateCount, int outsideCount, int insideCount,
 		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
 		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount) throws PortalException, SystemException;
+		int releaseDossierSatCount, int fromViaPostalCount)
+		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
 		long groupId, long userId, String userName, int month, int year,
@@ -171,7 +172,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		boolean reporting, int onegateCount, int outsideCount, int insideCount,
 		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
 		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount) throws PortalException, SystemException;
+		int releaseDossierSatCount, int fromViaPostalCount)
+		throws PortalException, SystemException;
 
 	/**
 	* Deletes the opencps dossier statistic with the primary key from the database. Also notifies the appropriate model listeners.
@@ -444,7 +446,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateOnlyStatistic(
@@ -461,8 +463,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		String domainName, boolean reporting, int onegateCount,
 		int outsideCount, int insideCount, int viaPostalCount,
 		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
-		int receiveDossierSatCount, int releaseDossierSatCount)
-		throws PortalException, SystemException;
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
 
 	/**
 	* Updates the opencps dossier statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -488,7 +490,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
@@ -502,8 +504,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount)
-		throws PortalException, SystemException;
+		int onegateCount, int outsideCount, int insideCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}

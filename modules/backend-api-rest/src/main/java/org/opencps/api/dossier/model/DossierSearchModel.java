@@ -127,7 +127,9 @@ import javax.xml.bind.annotation.XmlType;
     "backlog",
     "assignedUserIdSearch",
     "dossierCounter",
-    "delegate"
+    "delegate",
+    "vnpostalStatus",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
@@ -278,6 +280,16 @@ public class DossierSearchModel {
 
     @QueryParam(value = "vnpostalStatus")
     protected Integer vnpostalStatus;
+    @QueryParam(value = "fromViaPostal")
+    protected Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;

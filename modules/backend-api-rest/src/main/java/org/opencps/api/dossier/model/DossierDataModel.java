@@ -147,6 +147,8 @@ import javax.xml.bind.annotation.XmlType;
     "postalAddress",
     "postalCityCode",
     "postalCityName",
+    "postalDistrictCode",
+    "postalDistrictName",
     "postalTelNo",
     "permission",
     "lastActionDate",
@@ -210,7 +212,8 @@ import javax.xml.bind.annotation.XmlType;
     "serviceLevel",
     "dossierCounter",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 public class DossierDataModel {
 
@@ -263,6 +266,8 @@ public class DossierDataModel {
     protected String postalAddress;
     protected String postalCityCode;
     protected String postalCityName;
+    protected String postalDistrictCode;
+    protected String postalDistrictName;
     protected String postalTelNo;
     protected String permission;
     protected String lastActionDate;
@@ -327,6 +332,15 @@ public class DossierDataModel {
     protected String dossierCounter;
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;
@@ -1593,7 +1607,23 @@ public class DossierDataModel {
         this.postalCityName = value;
     }
 
-    /**
+    public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+
+	public void setPostalDistrictCode(String postalDistrictCode) {
+		this.postalDistrictCode = postalDistrictCode;
+	}
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+
+	public void setPostalDistrictName(String postalDistrictName) {
+		this.postalDistrictName = postalDistrictName;
+	}
+
+	/**
      * Gets the value of the postalTelNo property.
      * 
      * @return

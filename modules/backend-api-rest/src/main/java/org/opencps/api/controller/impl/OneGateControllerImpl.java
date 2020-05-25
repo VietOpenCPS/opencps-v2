@@ -147,7 +147,7 @@ public class OneGateControllerImpl implements OneGateController {
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
 //			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.findBySPS(spArr);
+			List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : new ArrayList<ServiceProcessRole>();
 			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
 			for (ServiceProcessRole spr : lstPRoles) {
 				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();

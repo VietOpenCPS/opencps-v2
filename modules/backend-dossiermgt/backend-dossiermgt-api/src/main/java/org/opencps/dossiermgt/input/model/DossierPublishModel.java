@@ -36,6 +36,7 @@ public class DossierPublishModel {
 	protected int viaPostal;
 	protected String postalAddress;
 	protected String postalCityCode;
+	protected String postalDistrictCode;
 	protected String postalTelNo;
 	protected String originality;
 	protected String dossierNo;
@@ -69,6 +70,7 @@ public class DossierPublishModel {
 	private String lockState;	
 	private Integer counter;	
 	protected String postalCityName;
+	protected String postalDistrictName;
 	protected String delegateCityName;
 	protected String delegateDistrictName;
 	protected String delegateWardName;
@@ -81,6 +83,31 @@ public class DossierPublishModel {
 	protected String dossierCounter;
 	protected Integer vnpostalStatus;
 	protected String vnpostalProfile;
+	protected Integer fromViaPostal;
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+
+	public void setPostalDistrictName(String postalDistrictName) {
+		this.postalDistrictName = postalDistrictName;
+	}
+
+	public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+
+	public void setPostalDistrictCode(String postalDistrictCode) {
+		this.postalDistrictCode = postalDistrictCode;
+	}
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
 	public Integer getVnpostalStatus() {
 		return vnpostalStatus;

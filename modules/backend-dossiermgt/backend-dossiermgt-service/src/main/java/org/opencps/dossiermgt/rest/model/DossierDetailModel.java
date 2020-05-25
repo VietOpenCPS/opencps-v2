@@ -173,7 +173,8 @@ import javax.xml.bind.annotation.XmlType;
     "serverNo",
     "metaData",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -224,6 +225,8 @@ public class DossierDetailModel {
     protected String postalAddress;
     protected String postalCityCode;
     protected String postalCityName;
+    protected String postalDistrictCode;
+    protected String postalDistrictName;
     protected String postalTelNo;
     protected String permission;
     protected String lastActionDate;
@@ -249,8 +252,33 @@ public class DossierDetailModel {
     protected String metaData;
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
 
-    public Integer getVnpostalStatus() {
+    public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+
+	public void setPostalDistrictCode(String postalDistrictCode) {
+		this.postalDistrictCode = postalDistrictCode;
+	}
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+
+	public void setPostalDistrictName(String postalDistrictName) {
+		this.postalDistrictName = postalDistrictName;
+	}
+
+	public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
+
+	public Integer getVnpostalStatus() {
 		return vnpostalStatus;
 	}
 
