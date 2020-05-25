@@ -5,6 +5,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -73,8 +74,8 @@ public class ApplicantDataUtils {
 				model.setModifiedDate(doc.get(ApplicantDataTerm.MODIFIED_DATE));
 			}
 			if (Validator.isNotNull(doc.get(ApplicantDataTerm.FILE_ENTRY_ID))) {
-				String filePath = FileUploadUtil.getFileEntryPreviewPath(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)), request);
-				model.setFilePath(filePath);	
+				String filePath = PropsUtil.get("portal.domain") + FileUploadUtil.getFileEntryPreviewPath(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)), request);
+				model.setFilePath(filePath);
 				DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(GetterUtil.getLong(doc.get(ApplicantDataTerm.FILE_ENTRY_ID)));
 				if (fileEntry != null) {
 					model.setFileExtension(fileEntry.getExtension());

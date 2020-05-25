@@ -133,7 +133,6 @@ public class ApplicantDataLocalServiceImpl
 		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
 		
 		applicantData.setModifiedDate(now);
-		applicantData.setCreateDate(now);
 		applicantData.setCompanyId(context.getCompanyId());
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
@@ -174,7 +173,6 @@ public class ApplicantDataLocalServiceImpl
 		}
 		
 		applicantData.setModifiedDate(now);
-		applicantData.setCreateDate(now);
 		applicantData.setCompanyId(context.getCompanyId());
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());
@@ -282,7 +280,6 @@ public class ApplicantDataLocalServiceImpl
 		
 		applicantData = applicantDataPersistence.fetchByPrimaryKey(applicantDataId);
 		applicantData.setModifiedDate(now);
-		applicantData.setCreateDate(now);
 		applicantData.setCompanyId(serviceContext.getCompanyId());
 		applicantData.setGroupId(groupId);
 		applicantData.setUserId(auditUser.getUserId());

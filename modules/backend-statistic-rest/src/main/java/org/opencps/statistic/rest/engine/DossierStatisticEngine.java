@@ -422,15 +422,19 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				_log.info("CALCULATE AFTER CURRENT MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlagPrev.get(lastMonth)) {
 						if (calculateDatas.get(lastYear) != null &&
 								calculateDatas.get(lastYear).get(lastMonth) != null) {
 //							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth), allSiteDatas);
-							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
+//							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
+							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
 						}
 					}
 				}
+				engineUpdateAction.updateStatistic(lstDossierDataObjs);
+				
 //				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before

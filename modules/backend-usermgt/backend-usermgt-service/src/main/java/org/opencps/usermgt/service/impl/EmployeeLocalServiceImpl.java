@@ -288,6 +288,17 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 
 		Employee employee = null;
 		try {
+			employee = employeePersistence.fetchByPrimaryKey(employeeId);
+			if (employee != null) {
+				long mappingUserId = employee.getMappingUserId();
+				if (mappingUserId > 0) {
+					try {
+						userPersistence.remove(mappingUserId);
+					} catch (NoSuchUserException e) {
+						_log.debug(e);
+					}
+				}
+			}
 			employee = employeePersistence.remove(employeeId);
 		}
 		catch (NoSuchEmployeeException e) {
@@ -1090,7 +1101,6 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			return null;
 		}
 		else {
-			employeePersistence.remove(object);
 			// delete user
 			long userId = object.getMappingUserId();
 			if (userId > 0) {
@@ -1101,6 +1111,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 					_log.error(e);
 				}
 			}
+			employeePersistence.remove(object);
 		}
 
 		return object;

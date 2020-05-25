@@ -1,5 +1,6 @@
 package org.opencps.gogoshell.tool.command;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -34,10 +35,13 @@ import org.opencps.dossiermgt.service.DossierSyncLocalService;
 import org.opencps.dossiermgt.service.ProcessOptionLocalService;
 import org.opencps.dossiermgt.service.ServiceConfigLocalService;
 import org.opencps.dossiermgt.service.ServiceInfoLocalService;
+import org.opencps.gogoshell.tool.command.util.Console;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import de.vandermeer.asciitable.AsciiTable;
 
 /**
  * @author Admin
@@ -209,20 +213,48 @@ public class GogoShellTool {
 					if (rsmd != null) {
 						int columnsNumber = rsmd.getColumnCount();
 						System.out.println("Số cột trong kết quả: " + columnsNumber);
-						StringBuilder columnNames = new StringBuilder();
-						columnNames.append("");
-						for (int i = 1; i <= columnsNumber; i++) {
-							columnNames.append("\t|" + rsmd.getColumnName(i));
-						}
-						System.out.println(columnNames.toString());
-						
-						do {
+						if (columnsNumber > 0) {
+							AsciiTable at = new AsciiTable();
+							List<String> columnNames = new ArrayList<String>();
+							
 							for (int i = 1; i <= columnsNumber; i++) {
-								System.out.print("\t|" + rs.getString(i));
+								columnNames.add(rsmd.getColumnName(i));
 							}
-							System.out.println();
-						}	
-						while (rs.next());
+							at.addRule();
+							at.addRow(columnNames);
+							at.addRule();
+
+							Console.println(at.render(160));
+							List<String> columnValues = new ArrayList<String>();
+							at = new AsciiTable();
+							do {
+								for (int i = 1; i <= columnsNumber; i++) {
+									columnValues.add(rs.getString(i) != null ? rs.getString(i) : StringPool.BLANK);
+								}
+							}	
+							while (rs.next());
+							at.addRule();
+							at.addRow(columnValues);
+							at.addRule();
+
+							Console.println(at.render(160));							
+						}
+						else {
+							StringBuilder columnNames = new StringBuilder();
+							columnNames.append("");
+							for (int i = 1; i <= columnsNumber; i++) {
+								columnNames.append("\t|" + rsmd.getColumnName(i));
+							}
+							System.out.println(columnNames.toString());
+							
+							do {
+								for (int i = 1; i <= columnsNumber; i++) {
+									System.out.print("\t|" + rs.getString(i));
+								}
+								System.out.println();
+							}	
+							while (rs.next());
+						}
 					}
 				}
 			}
