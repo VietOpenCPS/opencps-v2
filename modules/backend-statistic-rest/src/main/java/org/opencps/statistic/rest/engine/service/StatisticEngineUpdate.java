@@ -99,6 +99,7 @@ public class StatisticEngineUpdate {
 			data.setDossierOnline4Count(tempData.getDossierOnline4Count());
 			data.setReceiveDossierSatCount(tempData.getReceiveDossierSatCount());
 			data.setReleaseDossierSatCount(tempData.getReleaseDossierSatCount());
+			data.setFromViaPostalCount(tempData.getFromViaPostalCount());
 			
 			statisticDataResult.put(key, data);
 		}

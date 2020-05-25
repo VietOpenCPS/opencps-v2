@@ -530,6 +530,9 @@ public class DossierUtils {
 				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.VNPOSTAL_STATUS)));
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
+			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
+				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			}
 			ouputs.add(model);
 		}
 
@@ -874,6 +877,9 @@ public class DossierUtils {
 				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.VNPOSTAL_STATUS)));
 				model.setVnpostalProfile(doc.get(DossierTerm.VNPOSTAL_PROFILE));
 			}
+			if (Validator.isNotNull(doc.get(DossierTerm.FROM_VIA_POSTAL))) {
+				model.setVnpostalStatus(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+			}
 
 			ouputs.add(model);
 		}
@@ -1069,6 +1075,7 @@ public class DossierUtils {
 		model.setDossierCounter(input.getDossierCounter());
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
+		model.setFromViaPostal(input.getFromViaPostal());
 
 		return model;
 	}
@@ -1480,6 +1487,7 @@ public class DossierUtils {
 		model.setDossierCounter(input.getDossierCounter());
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
+		model.setFromViaPostal(input.getFromViaPostal());
 
 		return model;
 	}
@@ -1574,6 +1582,7 @@ public class DossierUtils {
 		model.setDossierCounter(input.getDossierCounter());
 		model.setVnpostalStatus(input.getVnpostalStatus());
 		model.setVnpostalProfile(input.getVnpostalProfile());
+		model.setFromViaPostal(input.getFromViaPostal());
 		
 		return model;
 	}

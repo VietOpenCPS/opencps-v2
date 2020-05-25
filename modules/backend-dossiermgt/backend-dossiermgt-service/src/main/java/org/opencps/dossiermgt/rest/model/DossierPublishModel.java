@@ -191,7 +191,8 @@ import javax.xml.bind.annotation.XmlType;
     "metaData",
     "dossierCounter",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierPublishModel")
 public class DossierPublishModel {
@@ -276,6 +277,15 @@ public class DossierPublishModel {
     protected String dossierCounter;
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
+
+    public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
     
     public Integer getVnpostalStatus() {
 		return vnpostalStatus;

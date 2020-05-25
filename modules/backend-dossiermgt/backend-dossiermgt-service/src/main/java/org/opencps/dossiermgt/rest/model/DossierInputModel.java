@@ -129,7 +129,8 @@ import javax.xml.bind.annotation.XmlType;
     "originDossierNo",
     "serverNo",
     "vnpostalStatus",
-    "vnpostalProfile"
+    "vnpostalProfile",
+    "fromViaPostal"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -184,6 +185,15 @@ public class DossierInputModel {
     
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
+    protected Integer fromViaPostal;
+
+    public Integer getFromViaPostal() {
+		return fromViaPostal;
+	}
+
+	public void setFromViaPostal(Integer fromViaPostal) {
+		this.fromViaPostal = fromViaPostal;
+	}
 
     public Integer getVnpostalStatus() {
 		return vnpostalStatus;

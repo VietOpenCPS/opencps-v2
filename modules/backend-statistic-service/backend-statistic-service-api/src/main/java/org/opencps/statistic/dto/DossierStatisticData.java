@@ -323,7 +323,16 @@ public class DossierStatisticData {
 	private int dossierOnline4Count;
 	private int receiveDossierSatCount;
 	private int releaseDossierSatCount;
+	private int fromViaPostalCount;
 	
+	public int getFromViaPostalCount() {
+		return fromViaPostalCount;
+	}
+
+	public void setFromViaPostalCount(int fromViaPostalCount) {
+		this.fromViaPostalCount = fromViaPostalCount;
+	}
+
 	public int getDossierOnline3Count() {
 		return dossierOnline3Count;
 	}

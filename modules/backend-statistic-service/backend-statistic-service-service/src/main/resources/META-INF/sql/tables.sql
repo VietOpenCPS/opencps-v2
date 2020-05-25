@@ -74,7 +74,8 @@ create table opencps_statistic (
 	dossierOnline3Count INTEGER,
 	dossierOnline4Count INTEGER,
 	receiveDossierSatCount INTEGER,
-	releaseDossierSatCount INTEGER
+	releaseDossierSatCount INTEGER,
+	fromViaPostalCount INTEGER
 );
 
 create table opencps_statistic_manual (
@@ -127,7 +128,8 @@ create table opencps_statistic_manual (
 	dossierOnline3Count INTEGER,
 	dossierOnline4Count INTEGER,
 	receiveDossierSatCount INTEGER,
-	releaseDossierSatCount INTEGER
+	releaseDossierSatCount INTEGER,
+	fromViaPostalCount INTEGER
 );
 
 create table opencps_voting_statistic (

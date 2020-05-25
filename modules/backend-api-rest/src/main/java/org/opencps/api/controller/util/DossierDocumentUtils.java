@@ -316,6 +316,13 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
 						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						if (!DossierPartTerm.TP_DIFFERENT.equals(part.getPartNo()) &&
+								DossierPartTerm.DOSSIER_PART_TYPE_OTHES == part.getPartType()) {
+
+							jsonMark.put(DossierPartTerm.FORM_DATA, dossierMark.getRecordCount());
+						} else {
+							jsonMark.put(DossierPartTerm.FORM_DATA, StringPool.BLANK);
+						}
 					}
 				}
 				jsonMark.put(DossierPartTerm.PART_NO, partNo);
@@ -349,6 +356,7 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
+						jsonMark.put(DossierPartTerm.FORM_DATA, StringPool.BLANK);
 						dossierMarkArr.put(jsonMark);
 					}
 				}
@@ -436,6 +444,8 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+		jsonData.put(DossierTerm.ONLINE, String.valueOf(dossier.getOnline()));
+		jsonData.put(DossierTerm.FROM_VIA_POSTAL, String.valueOf(dossier.getFromViaPostal()));
 
 		// MetaData
 		String metaData = dossier.getMetaData();
@@ -764,6 +774,17 @@ public class DossierDocumentUtils {
 		}
 		jsonData.put(DossierTerm.NOTARIZATIONS, notarizationArr);
 		
+		// Meta data
+		if (Validator.isNotNull(dossier.getMetaData())) {
+			try {
+				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
+			} catch (JSONException e) {
+				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+			}
+		} else {
+			jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
+		}
+
 		return jsonData;
 	}
 	

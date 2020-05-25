@@ -348,7 +348,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
 	//LamTV_ Mapping process dossier and formData
 	private JSONObject processMergeDossierProcessRole(Dossier dossier, int length, JSONObject jsonData,
 			DossierAction dAction) {
@@ -579,7 +578,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 	@Override
 	public Response getQRPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
-		ServiceContext serviceContext,int id,String value)
+		ServiceContext serviceContext,String id,String value)
 	{
 		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -588,20 +587,28 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 		{
 			if (!auth.isAuth(serviceContext))
 				throw new UnauthenticationException();
-			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+			Dossier dossier = DossierUtils.getDossier(id,groupId);
 			if (Validator.isNotNull(dossier))
 			{
 				String govAgencyCode = dossier.getGovAgencyCode();
 
 				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
-				String epay = paymentConfig.getEpaymentConfig();
-
-				try
+				if (Validator.isNotNull(paymentConfig))
 				{
+					String epay = paymentConfig.getEpaymentConfig();
+
+					JSONObject result = JSONFactoryUtil.createJSONObject();
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
+					String paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
+					String paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
+
+					result.put("paymentReturnUrl", paymentReturnUrl);
+					result.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
+
 					QrCode qrcode = new QrCode();
 					qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
 					qrcode.setDataType(Symbol.DataType.ECI);
-					qrcode.setContent(epay);
+					qrcode.setContent(result.toString());
 
 					int width = qrcode.getWidth();
 					int height = qrcode.getHeight();
@@ -633,22 +640,13 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 
 						return responseBuilder.build();
 					}
-					else
-					{
-						return Response.status(java.net.HttpURLConnection.HTTP_NO_CONTENT).build();
-					}
-				}
-				catch (Exception e)
-				{
-					_log.debug(e);
-					return Response.status(java.net.HttpURLConnection.HTTP_NO_CONTENT).build();
 				}
 			}
 		}
 		catch(Exception e){
 			return BusinessExceptionImpl.processException(e);
 		}
-		return null;
+		return Response.status(java.net.HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
 }

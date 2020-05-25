@@ -18,6 +18,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.faq.model.QuestionDetailModel;
 import org.opencps.exception.model.ExceptionModel;
 
@@ -42,4 +44,22 @@ public interface ProxyManagement {
 			@FormParam("url") String url, @FormParam("method") String method, @FormParam("data") String data,
 			@FormParam("serverCode") String serverCode);
 	
+	@POST
+	@Path("/multipart")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Proxy server", response = QuestionDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a question was created", response = QuestionDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
+	public Response proxyMultipart(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@Multipart("file") Attachment file,
+			@Multipart("url") String url, 
+			@Multipart("method") String method, 
+			@Multipart("data") String data,
+			@Multipart(value="serverCode", required=false) String serverCode);
 }

@@ -118,7 +118,7 @@ public interface DossierDocumentManagement {
 
 
 	@GET
-	@Path("/{id}/qrpay")
+	@Path("/{id}/callback")
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@ApiOperation(value = "Get a formdata of Plugin", response = DossierResultsModel.class)
 	@ApiResponses(value = {
@@ -129,6 +129,6 @@ public interface DossierDocumentManagement {
 
 	public Response getQRPay(@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext, @PathParam("id") int id, @FormParam("value") String value);
+		@Context ServiceContext serviceContext, @PathParam("id") String id, @FormParam("value") String value);
 
 }

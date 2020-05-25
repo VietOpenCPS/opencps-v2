@@ -67,6 +67,7 @@ import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
@@ -77,6 +78,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierStatusMapping;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -154,7 +156,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
 		}
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
-
+		if(dossier.getSystemId() == 5) {
+			object.put("MaHoSo", dossier.getReferenceUid());
+		}else {
+			object.put("MaHoSo", dossier.getDossierNo());
+		}
 		object.put("MaHoSo", dossier.getDossierNo());
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
@@ -285,13 +291,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							data = JSONFactoryUtil.createJSONObject();
 							if (dossierFile.getDossierPartType() == 2) {
 								data.put("TenGiayTo", dossierFile.getDisplayName());
-								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								//data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", "");
 								data.put("GiayToId", String.valueOf(dossierFile.getDossierFileId()));
 								data.put("DuongDanTepTinKetQua", url);
 								DanhSachGiayToKetQua.put(data);
 							} else {
 								data.put("TenTepDinhKem", dossierFile.getDisplayName());
-								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								//data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", "");
 								data.put("TepDinhKemId", String.valueOf(dossierFile.getDossierFileId()));
 								data.put("DuongDanTaiTepTin", url);
 								data.put("IsDeleted", "False");
@@ -326,7 +334,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
 
-		object.put("MaHoSo", dossier.getDossierNo());
+		if(dossier.getSystemId() == 5) {
+			object.put("MaHoSo", dossier.getReferenceUid());
+		}else {
+			object.put("MaHoSo", dossier.getDossierNo());
+		}
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put("service", "LayThuTuc");
@@ -1053,11 +1065,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		HttpURLConnection conn = null;
 
 		try {
+			_log.debug("config: " + config.toJSONString());
+
 			String adapter_url = config.getString("adapter_url");
 			String auth_endpoint = config.getString("auth_endpoint");
 			String username = config.getString("username");
 			String password = config.getString("password");
 			String dstcode = config.getString("dstcode");
+			_log.debug("dstcode: " + dstcode);
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("username", username);
@@ -3160,6 +3175,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			//inputModel.setMetaData(metaData);
 
+			serviceContext.setUserId(applicant.getMappingUserId());
+
+			serviceContext.setSignedIn(true);
+
+			_log.debug("applicant.getMappingUserId() " + serviceContext.getUserId());
+
+			_log.debug("applicant " + JSONFactoryUtil.looseSerialize(applicant));
+
 			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
 					inputModel);
 
@@ -3181,12 +3204,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 			}
 
+			dossier.setReferenceUid(MaHoSo);
+			//5: tu he thong dvcqg
+			dossier.setSystemId(5);
+
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+
 			//post action
 
 			DossierActions actions = new DossierActionsImpl();
 			ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
 			ErrorMsgModel errorModel = new ErrorMsgModel();
-			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, null, actionCode,
+
+			ProcessAction processAction = DossierActionUtils.getProcessAction(groupId, dossier, actionCode,
+					option.getServiceProcessId());
+
+			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
 

@@ -376,7 +376,7 @@ public interface OpencpsDossierStatisticManualLocalService
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
 		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount)
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatisticManual updateStatisticManual(
@@ -390,6 +390,6 @@ public interface OpencpsDossierStatisticManualLocalService
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount)
-		throws PortalException, SystemException;
+		int onegateCount, int outsideCount, int insideCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
 }

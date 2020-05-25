@@ -58,6 +58,7 @@ import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceInfoMapping;
 import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -66,6 +67,7 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
@@ -145,7 +147,7 @@ public class OneGateControllerImpl implements OneGateController {
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
 //			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.findBySPS(spArr);
+			List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : new ArrayList<ServiceProcessRole>();
 			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
 			for (ServiceProcessRole spr : lstPRoles) {
 				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
@@ -179,6 +181,7 @@ public class OneGateControllerImpl implements OneGateController {
 					
 					//Hot fix
 					ServiceInfo serviceInfo = null;
+					ServiceInfoMapping serviceInfoMapping = null;
 					if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
 						serviceInfo = mapServiceInfos.get(serviceConfig.getServiceInfoId());
 						if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
@@ -188,8 +191,11 @@ public class OneGateControllerImpl implements OneGateController {
 		//						_log.debug(e1);
 		//						break;
 		//					}
+							serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceInfo.getServiceCode());
 							elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 							elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
+							elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
+							elmData.put(ServiceInfoTerm.SERVICE_NAME_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG() : StringPool.BLANK);
 							elmData.put(ServiceConfigTerm.GOVAGENCY_CODE, serviceConfig.getGovAgencyCode());
 							elmData.put(ServiceConfigTerm.GOVAGENCY_NAME, serviceConfig.getGovAgencyName());
 			
