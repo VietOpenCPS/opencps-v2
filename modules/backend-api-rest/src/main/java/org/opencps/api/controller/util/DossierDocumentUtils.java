@@ -444,6 +444,8 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.VIA_POSTAL, dossier.getViaPostal());
 		jsonData.put(DossierTerm.POSTAL_ADDRESS, dossier.getPostalAddress());
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
+		jsonData.put(DossierTerm.ONLINE, String.valueOf(dossier.getOnline()));
+		jsonData.put(DossierTerm.FROM_VIA_POSTAL, String.valueOf(dossier.getFromViaPostal()));
 
 		// MetaData
 		String metaData = dossier.getMetaData();

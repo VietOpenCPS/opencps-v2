@@ -353,7 +353,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
 						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
 						model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
-						model.setFromViaPostal(Integer.parseInt(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+						model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
 						
 						dossierData.add(model);
 					}

@@ -58,6 +58,9 @@ public class ConvertDossierFromV1Dot9Utils {
 	static Log _log =
 		LogFactoryUtil.getLog(ConvertDossierFromV1Dot9Utils.class);
 
+	public static final String TEMP_NAME = "name";
+	public static final String TEMP_TYPE = "type";
+	public static final String TEMP_TYPE_DATE = "date";
 	public static final String TEMP_UUID_ = "uuid_";
 	public static final String TEMP_DOSSIERID = "dossierId";
 	public static final String TEMP_GROUPID = "groupId";
@@ -891,7 +894,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 	}
 
-	static Long convertStringToDate(String result) {
+	public static Long convertStringToDate(String result) {
 
 		if (result != null &&
 			result.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {

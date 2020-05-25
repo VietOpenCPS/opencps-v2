@@ -138,6 +138,8 @@ public class OneGateUtils {
 		model.setPostalAddress(input.getPostalAddress());
 		model.setPostalCityCode(input.getPostalCityCode());
 		model.setPostalCityName(input.getPostalCityName());
+		model.setPostalDistrictCode(input.getPostalDistrictCode());
+		model.setPostalDistrictName(input.getPostalDistrictName());
 		model.setPostalTelNo(input.getPostalTelNo());
 		
 		//Gte serviceProcess
