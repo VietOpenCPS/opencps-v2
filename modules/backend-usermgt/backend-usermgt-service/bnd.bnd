@@ -20,6 +20,7 @@ Export-Package: \
 	com.maxmind.geoip2.*,\
 	com.maxmind.db.*,\
 	org.springframework.mobile.device.*,\
-	org.opencps.usermgt.model.impl
+	org.opencps.usermgt.model.impl,\
+	org.opencps.usermgt.scheduler.utils
 Require-Capability: osgi.contract; filter:="(&(osgi.contract=JavaJAXRS)(version=2))"
 -sources: true

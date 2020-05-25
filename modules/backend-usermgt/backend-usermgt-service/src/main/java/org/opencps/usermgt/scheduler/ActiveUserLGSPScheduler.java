@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -44,6 +46,10 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = ActiveUserLGSPScheduler.class)
 public class ActiveUserLGSPScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
+	//Time engine dossier
+	private static boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+			? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp"))
+			: false;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -54,7 +60,9 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-			doProcessChangePass();
+			if (syncUserLGSP) {
+				doProcessChangePass();
+			}
 		}
 		catch (Exception e) {
 			_log.debug(e);
@@ -64,18 +72,27 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 
 	private void doProcessChangePass() throws Exception {
 		
+		System.out.println("START CHANGE PASS");
 		List<SyncScheduler> syncList = SyncSchedulerLocalServiceUtil.getByF_NAME_RETRY(User.class.getName(), 5);
+		_log.info("syncList: "+syncList);
+		_log.info("User.class.getName(): "+User.class.getName());
+		_log.info("syncList.size(): "+syncList.size());
 
 		if (syncList != null && syncList.size() > 0) {
 
 			for (SyncScheduler syncScheduler : syncList) {
 				long groupId = syncScheduler.getGroupId();
+				_log.info("groupId: "+groupId);
 				String contactEmail = syncScheduler.getTypeCode();
 				int retry = syncScheduler.getRetry();
+				_log.info("contactEmail: "+contactEmail);
+				_log.info("retry: "+retry);
 				//
 				Applicant aplc = ApplicantLocalServiceUtil.fetchByF_GID_CTEM(groupId, contactEmail);
+				_log.info("aplc: "+aplc);
 				if (aplc != null) {
 					String profile = aplc.getProfile();
+					_log.info("profile: "+profile);
 					String oldSecrect = StringPool.BLANK;
 					if (Validator.isNotNull(profile)) {
 						JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(profile);
@@ -83,11 +100,13 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 						if (jsonProfile.has(UserRegisterTerm.MAT_KHAU)
 								&& Validator.isNotNull(jsonProfile.getString(UserRegisterTerm.MAT_KHAU))) {
 							oldSecrect = jsonProfile.getString(UserRegisterTerm.MAT_KHAU);
+							_log.info("oldSecrect: "+oldSecrect);
 						}
 					}
 					
 					//
 					String strToken = RegisterLGSPUtils.getTokenLGSP();
+					_log.info("strToken: "+strToken);
 					if (Validator.isNotNull(strToken)) {
 						JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
 						//
@@ -109,6 +128,11 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 								SyncSchedulerLocalServiceUtil.updateSyncScheduler(syncScheduler);
 							}
 						}
+					} else {
+						retry += 1;
+						//Update sync scheduler
+						syncScheduler.setRetry(retry);
+						SyncSchedulerLocalServiceUtil.updateSyncScheduler(syncScheduler);
 					}
 				}
 			}

@@ -54,6 +54,9 @@ public interface UserInterface {
 	public Document getForgotConfirm(long groupId, long companyId, String screenname_email, String code,
 			ServiceContext serviceContext) throws DigestException;
 
+	public Document getLGSPForgotConfirm(long groupId, long companyId, String screenname_email, String code,
+			String secretKey, ServiceContext serviceContext) throws DigestException;
+
 	public boolean getCheckpass(long groupId, long companyId, long id, String password, ServiceContext serviceContext);
 
 	public int addChangepass(long groupId, long companyId, long id, String oldPassword, String newPassword,

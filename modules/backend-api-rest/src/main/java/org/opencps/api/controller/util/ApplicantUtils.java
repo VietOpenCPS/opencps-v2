@@ -283,7 +283,7 @@ public class ApplicantUtils {
 					} else {
 						jsonBody.put(UserRegisterTerm.HO, "Công");
 						jsonBody.put(UserRegisterTerm.DEM, "dân");
-						jsonBody.put(UserRegisterTerm.TEN, splitAppName[2]);
+						jsonBody.put(UserRegisterTerm.TEN, splitAppName[0]);
 					}
 				}
 
@@ -573,4 +573,5 @@ public class ApplicantUtils {
 
 		return false;
 	}
+
 }

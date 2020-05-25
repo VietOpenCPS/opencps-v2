@@ -170,7 +170,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		User auditUser = userPersistence.fetchByPrimaryKey(context.getUserId());
 
 		Date idDate = DateTimeUtils.stringToDate(applicantIdDate);
-		_log.debug("ADD APPLICANT");
+		_log.debug("ADD APPLICANT | profile: "+profile);
 		if (applicantId == 0) {
 
 			validateAdd(applicantName, applicantIdType, applicantIdNo, applicantIdDate);
@@ -336,9 +336,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		}
 
-		applicantPersistence.update(applicant);
-
-		return applicant;
+		return applicantPersistence.update(applicant);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

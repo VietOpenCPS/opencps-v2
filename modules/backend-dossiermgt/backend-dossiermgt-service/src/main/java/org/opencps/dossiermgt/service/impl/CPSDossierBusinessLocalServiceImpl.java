@@ -3244,9 +3244,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			THANHNV: end
 			*/
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
-		} else if (dateOption == DossierTerm.DATE_OPTION_TWO) {
-			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, true,
-					dossier.getReceiveDate() != null ? dossier.getReceiveDate() : new Date(), params);
+		} else if(dateOption == DossierTerm.DATE_OPTION_TWO) {
+			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, true, dossier.getReceiveDate(), params);
 		}
 
 		//Check if dossier is done
