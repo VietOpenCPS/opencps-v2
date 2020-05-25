@@ -1,10 +1,12 @@
 package org.opencps.api.controller.impl;
 
+import com.google.gson.JsonArray;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -43,6 +45,10 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -58,6 +64,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -70,6 +77,7 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.ApplicantManagement;
 import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
+import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.EmployeeUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.NGSPRestClient;
@@ -1693,5 +1701,85 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+	
+	@Override
+	public Response importWithsql(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			String driveClassName,
+			String connectionUrl,
+			String dbUser,
+			String dbSecret,
+			String sqlQuery,
+			String fields, boolean isAllowedUpdate, long replaceGroupId) {
+
+		ApplicantModel result = new ApplicantModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("sqlQuery:" +sqlQuery);
+		_log.info("fields:" +fields);
+		try {
+			Class.forName(driveClassName);
+			Statement stmt = null;
+			ResultSet rs = null;
+			Connection con = null;
+			int resultt = 0;
+			try {
+				con = DriverManager.getConnection(connectionUrl, dbUser, dbSecret);
+				stmt = con.createStatement();
+				rs = stmt.executeQuery(sqlQuery);
+				JSONArray fieldsImport = JSONFactoryUtil.createJSONArray(fields);
+				while (rs.next()) {
+					try {
+						resultt++;
+						JSONObject objectData =JSONFactoryUtil.createJSONObject();
+						for(int i=0; i < fieldsImport.length(); i++) {
+							JSONObject j = fieldsImport.getJSONObject(i);
+							if (ConvertDossierFromV1Dot9Utils.TEMP_TYPE_DATE.equals(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_TYPE))) {
+								Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
+								if (date == null) {
+									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), 0l); 
+								} else {
+									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), date); 
+								}
+							} else {
+								objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
+							}
+						}
+						objectData.put(Field.GROUP_ID, groupId);
+						objectData.put(Field.USER_ID, user.getUserId());
+						objectData.put(Field.COMPANY_ID, company.getCompanyId());
+						objectData.put(ApplicantTerm.MAPPINGUSERID, 0l);
+						objectData.put(ApplicantTerm.LOCK_, false);
+						_log.debug(objectData);
+						if (isAllowedUpdate) {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_CTEM(replaceGroupId, objectData.getString(ApplicantTerm.CONTACTEMAIL));
+							objectData.put(ApplicantTerm.APPLICANT_ID, applicant.getApplicantId());
+						}
+						ApplicantLocalServiceUtil.adminProcessData(objectData);
+					} catch (Exception e) {
+						e.printStackTrace();
+						resultt--;
+					}
+					
+				}
+				return Response.status(HttpURLConnection.HTTP_OK).entity("ok " + resultt).build();
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+			finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			}
+		}
+		catch (Exception ex) {
+			_log.debug(ex);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity("err").build();
 	}
 }
