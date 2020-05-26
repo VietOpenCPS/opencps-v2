@@ -65,43 +65,43 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	}
 
 	public OpencpsDossierStatistic checkExsitSystem(long groupId, int month, int year, String govAgency, String domain, String system, String groupGovAgencyCode) {
-		if (lstStatistics == null) {
-			lstStatistics = new ArrayList<OpencpsDossierStatistic>();
-			lstStatistics.addAll(opencpsDossierStatisticPersistence.findAll());
-		}
-		for (OpencpsDossierStatistic statistic : lstStatistics) {
-			boolean checkGroup = false;
-			if (groupId == statistic.getGroupId()) {
-				checkGroup = true;
-			}
-			boolean checkDomain = false;
-			if (Validator.isNull(domain) || domain.contentEquals(statistic.getDomainCode())) {
-				checkDomain = true;
-			}
-			boolean checkGov = false;
-			if (Validator.isNull(govAgency) || govAgency.contentEquals(statistic.getGovAgencyCode())) {
-				checkGov = true;
-			}
-			boolean checkSystem = false;
-			if (Validator.isNull(system) || system.contentEquals(statistic.getSystem())) {
-				checkSystem = true;
-			}
-			boolean checkGroupGov = false;
-			if (Validator.isNull(groupGovAgencyCode) || groupGovAgencyCode.contentEquals(statistic.getGroupAgencyCode())) {
-				checkGroupGov = true;
-			}
-			boolean checkMonth = false;
-			if (month == statistic.getMonth()) {
-				checkMonth = true;
-			}
-			boolean checkYear = false;
-			if (year == statistic.getYear()) {
-				checkYear = true;
-			}
-			if (checkDomain && checkGov && checkGroup && checkGroupGov && checkMonth && checkYear && checkSystem) return statistic;			
-		}
-		return null;
-//		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system, groupGovAgencyCode);
+//		if (lstStatistics == null) {
+//			lstStatistics = new ArrayList<OpencpsDossierStatistic>();
+//			lstStatistics.addAll(opencpsDossierStatisticPersistence.findAll());
+//		}
+//		for (OpencpsDossierStatistic statistic : lstStatistics) {
+//			boolean checkGroup = false;
+//			if (groupId == statistic.getGroupId()) {
+//				checkGroup = true;
+//			}
+//			boolean checkDomain = false;
+//			if (Validator.isNull(domain) || domain.contentEquals(statistic.getDomainCode())) {
+//				checkDomain = true;
+//			}
+//			boolean checkGov = false;
+//			if (Validator.isNull(govAgency) || govAgency.contentEquals(statistic.getGovAgencyCode())) {
+//				checkGov = true;
+//			}
+//			boolean checkSystem = false;
+//			if (Validator.isNull(system) || system.contentEquals(statistic.getSystem())) {
+//				checkSystem = true;
+//			}
+//			boolean checkGroupGov = false;
+//			if (Validator.isNull(groupGovAgencyCode) || groupGovAgencyCode.contentEquals(statistic.getGroupAgencyCode())) {
+//				checkGroupGov = true;
+//			}
+//			boolean checkMonth = false;
+//			if (month == statistic.getMonth()) {
+//				checkMonth = true;
+//			}
+//			boolean checkYear = false;
+//			if (year == statistic.getYear()) {
+//				checkYear = true;
+//			}
+//			if (checkDomain && checkGov && checkGroup && checkGroupGov && checkMonth && checkYear && checkSystem) return statistic;			
+//		}
+//		return null;
+		return opencpsDossierStatisticFinder.checkContainsSystem(groupId, month, year, domain, govAgency, system, groupGovAgencyCode);
 	}
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId, long companyId, long groupId, long userId,
@@ -1021,7 +1021,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 			dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
 			
-			lstStatistics.add(dossierStatistic);
+//			lstStatistics.add(dossierStatistic);
 		} else {
 			if (!dossierStatistic.isReporting()) {
 				dossierStatistic.setModifiedDate(now);
@@ -1119,7 +1119,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			String govAgencyName = dossierObj.has("govAgencyName") ? dossierObj.getString("govAgencyName") : StringPool.BLANK;
 			String domainCode = dossierObj.has("domainCode") ? dossierObj.getString("domainCode") : StringPool.BLANK;
 			String domainName = dossierObj.has("domainName") ? dossierObj.getString("domainName") : StringPool.BLANK;
-			String groupGovAgencyCode = dossierObj.has("groupGovAgencyCode") ? dossierObj.getString("groupGovAgencyCode") : StringPool.BLANK;
+			String groupGovAgencyCode = dossierObj.has("groupAgencyCode") ? dossierObj.getString("groupAgencyCode") : StringPool.BLANK;
 			boolean reporting = dossierObj.has("reporting") ? dossierObj.getBoolean("reporting") : false;
 			int onegateCount = dossierObj.has("onegateCount") ? dossierObj.getInt("onegateCount") : 0;
 			int outsideCount = dossierObj.has("outsideCount") ? dossierObj.getInt("outsideCount") : 0;
@@ -1187,7 +1187,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 				dossierStatistic.setReleaseDossierSatCount(releaseDossierSatCount);		
 				dossierStatistic.setGroupAgencyCode(groupGovAgencyCode);
 				
-				lstStatistics.add(dossierStatistic);
+//				lstStatistics.add(dossierStatistic);
 			} else {
 				if (!dossierStatistic.isReporting()) {
 					dossierStatistic.setModifiedDate(now);
