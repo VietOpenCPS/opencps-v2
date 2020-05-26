@@ -1345,10 +1345,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			InputStream inputStream =
 					ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
 			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
+			String sourceFileName = displayName + StringPool.PERIOD + fileType;
 			DossierFile dossierFile = action.addDossierFile(
 				groupId, id, UUID.randomUUID().toString(),
 				dossierTemplateNo, dossierPartNo, fileTemplateNo,
-				displayName, "sourceFileName", 0l, inputStream, fileType, "false",
+				displayName, sourceFileName, 0l, inputStream, StringPool.BLANK, String.valueOf(false),
 				serviceContext);
 			 _log.debug("__End add file at:" + new Date());
 			dossierFile.setRemoved(false);
