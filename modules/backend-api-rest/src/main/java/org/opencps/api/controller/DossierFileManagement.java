@@ -586,4 +586,31 @@ public interface DossierFileManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 		@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);	
+
+	@POST
+	@Path("/{id}/files/applicantdata")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@ApiOperation(value = "clone a DossierFile", response = String.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response cloneFromApplicantData(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
+		@ApiParam(value = "dossier TemplateNo", required = true) @FormParam("dossierTemplateNo") String dossierTemplateNo,
+		@ApiParam(value = "dossier PartNo", required = true) @FormParam("dossierPartNo") String dossierPartNo,
+		@ApiParam(value = "url get file by applicant Data Id", required = true) @FormParam("uri") String uri,
+		@ApiParam(value = "display name dossier file", required = true) @FormParam("displayName") String displayName);
 }
