@@ -141,6 +141,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, ServiceContext context)
 		throws PortalException {
@@ -209,6 +210,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalDistrictCode(postalDistrictCode);
+			dossier.setPostalDistrictName(postalDistrictName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			// dossier.setServerNo(getServerNo(groupId));
@@ -323,6 +326,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -334,12 +338,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			dossier = dossierPersistence.update(dossier);
@@ -381,6 +390,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -392,12 +402,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			// if (Validator.isNotNull(applicantNote))
@@ -421,6 +436,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, ServiceInfo service,
 		ServiceProcess serviceProcess, ProcessOption processOption,
@@ -483,6 +499,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(postalAddress);
 				dossier.setPostalCityCode(postalCityCode);
 				dossier.setPostalCityName(postalCityName);
+				dossier.setPostalDistrictCode(postalDistrictCode);
+				dossier.setPostalDistrictName(postalDistrictName);
 				dossier.setPostalTelNo(postalTelNo);
 				dossier.setApplicantNote(applicantNote);
 				dossier.setOriginality(originality);
@@ -569,6 +587,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(postalAddress);
 				dossier.setPostalCityCode(postalCityCode);
 				dossier.setPostalCityName(postalCityName);
+				dossier.setPostalDistrictCode(postalDistrictCode);
+				dossier.setPostalDistrictName(postalDistrictName);
 				dossier.setPostalTelNo(postalTelNo);
 				dossier.setApplicantNote(applicantNote);
 				// dossier.setServerNo(getServerNo(groupId));
@@ -613,6 +633,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalAddress(StringPool.BLANK);
 					dossier.setPostalCityCode(StringPool.BLANK);
 					dossier.setPostalTelNo(StringPool.BLANK);
+					dossier.setPostalDistrictCode(StringPool.BLANK);
 
 				}
 				else if (viaPostal == 2) {
@@ -624,12 +645,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						dossier.setPostalTelNo(postalTelNo);
 					if (Validator.isNotNull(postalCityName))
 						dossier.setPostalCityName(postalCityName);
+					if (Validator.isNotNull(postalDistrictCode))
+						dossier.setPostalDistrictCode(postalDistrictCode);
+					if (Validator.isNotNull(postalDistrictName))
+						dossier.setPostalDistrictName(postalDistrictName);
 
 				}
 				else {
 					dossier.setPostalAddress(StringPool.BLANK);
 					dossier.setPostalCityCode(StringPool.BLANK);
 					dossier.setPostalTelNo(StringPool.BLANK);
+					dossier.setPostalDistrictCode(StringPool.BLANK);
 				}
 
 				dossierPersistence.update(dossier);
@@ -672,6 +698,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalAddress(StringPool.BLANK);
 					dossier.setPostalCityCode(StringPool.BLANK);
 					dossier.setPostalTelNo(StringPool.BLANK);
+					dossier.setPostalDistrictCode(StringPool.BLANK);
 
 				}
 				else if (viaPostal == 2) {
@@ -683,12 +710,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 						dossier.setPostalTelNo(postalTelNo);
 					if (Validator.isNotNull(postalCityName))
 						dossier.setPostalCityName(postalCityName);
+					if (Validator.isNotNull(postalDistrictCode))
+						dossier.setPostalDistrictCode(postalDistrictCode);
+					if (Validator.isNotNull(postalDistrictName))
+						dossier.setPostalDistrictName(postalDistrictName);
 
 				}
 				else {
 					dossier.setPostalAddress(StringPool.BLANK);
 					dossier.setPostalCityCode(StringPool.BLANK);
 					dossier.setPostalTelNo(StringPool.BLANK);
+					dossier.setPostalDistrictCode(StringPool.BLANK);
 				}
 
 				// if (Validator.isNotNull(applicantNote))
@@ -794,6 +826,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -805,12 +838,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			dossier.setPostalServiceCode(postalServiceCode);
@@ -950,6 +988,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -961,12 +1000,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			dossier.setPostalServiceCode(postalServiceCode);
@@ -1564,6 +1608,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, ServiceContext context)
 		throws PortalException {
@@ -1632,6 +1677,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalDistrictCode(postalDistrictCode);
+			dossier.setPostalDistrictName(postalDistrictName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			ProcessOption option = getProcessOption(
@@ -1737,6 +1784,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -1748,12 +1796,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			// if (Validator.isNotNull(applicantNote))
@@ -1802,7 +1855,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierStatusText, String dossierSubStatus,
 		String dossierSubStatusText, long folderId, long dossierActionId,
 		int viaPostal, String postalAddress, String postalCityCode,
-		String postalCityName, String postalTelNo, String password,
+		String postalCityName, String postalDistrictCode,
+		String postalDistrictName, String postalTelNo, String password,
 		boolean notification, boolean online, String serverNo,
 		ServiceContext context)
 		throws PortalException {
@@ -1818,8 +1872,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			address, cityCode, districtCode, wardCode, contactName,
 			contactTelNo, contactEmail, dossierTemplateNo, dossierNote,
 			submissionNote, dossierNo, submitting, dossierStatusText,
-			dossierSubStatusText, postalAddress, postalCityCode, postalTelNo,
-			serverNo);
+			dossierSubStatusText, postalAddress, postalCityCode,
+			postalDistrictCode, postalTelNo, serverNo);
 
 		Dossier dossier = null;
 
@@ -1937,7 +1991,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierStatusText, String dossierSubStatus,
 		String dossierSubStatusText, long folderId, long dossierActionId,
 		int viaPostal, String postalAddress, String postalCityCode,
-		String postalCityName, String postalTelNo, String password,
+		String postalCityName, String postalDistrictCode,
+		String postalDistrictName, String postalTelNo, String password,
 		boolean notification, boolean online, String serverNo, Date submitDate,
 		ServiceContext context)
 		throws PortalException {
@@ -1953,8 +2008,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			address, cityCode, districtCode, wardCode, contactName,
 			contactTelNo, contactEmail, dossierTemplateNo, dossierNote,
 			submissionNote, dossierNo, submitting, dossierStatusText,
-			dossierSubStatusText, postalAddress, postalCityCode, postalTelNo,
-			serverNo);
+			dossierSubStatusText, postalAddress, postalCityCode, postalDistrictCode,
+			postalTelNo, serverNo);
 
 		Dossier dossier = null;
 
@@ -2016,6 +2071,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalDistrictCode(postalDistrictCode);
+			dossier.setPostalDistrictName(postalDistrictName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setPassword(password);
 			dossier.setNotification(notification);
@@ -2047,6 +2104,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalDistrictCode(postalDistrictCode);
+			dossier.setPostalDistrictName(postalDistrictName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			dossier.setNotification(notification);
@@ -2671,8 +2730,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactTelNo, String contactEmail, String dossierTemplateNo,
 		String dossierNote, String submissionNote, String dossierNo,
 		boolean submitting, String dossierStatus, String dossierSubStatus,
-		String postalAddress, String postalCityCode, String postalTelNo,
-		String serverNo)
+		String postalAddress, String postalCityCode, String postalDistrictCode,
+		String postalTelNo, String serverNo)
 		throws PortalException {
 
 	}
@@ -5097,7 +5156,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName, String postalTelNo,
 		String applicantNote, boolean isSameAsApplicant, String delegateName,
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
@@ -5154,6 +5214,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -5165,12 +5226,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 		}
 		if (Validator.isNotNull(vnpostalStatus)) {
@@ -5259,7 +5323,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName, String postalTelNo,
 		String applicantNote, boolean isSameAsApplicant, String delegateName,
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
@@ -5318,6 +5383,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -5329,12 +5395,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 		}
 		if (Validator.isNotNull(vnpostalStatus)) {
@@ -5583,6 +5652,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, Date createDate,
 		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
@@ -5675,6 +5745,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setPostalAddress(postalAddress);
 			dossier.setPostalCityCode(postalCityCode);
 			dossier.setPostalCityName(postalCityName);
+			dossier.setPostalDistrictCode(postalDistrictCode);
+			dossier.setPostalDistrictName(postalDistrictName);
 			dossier.setPostalTelNo(postalTelNo);
 			dossier.setApplicantNote(applicantNote);
 			// dossier.setServerNo(getServerNo(groupId));
@@ -5800,6 +5872,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -5811,12 +5884,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictCode(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			// if (Validator.isNotNull(applicantNote))
@@ -5994,6 +6072,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		desDossier.setPostalAddress(srcDossier.getPostalAddress());
 		desDossier.setPostalCityCode(srcDossier.getPostalCityCode());
 		desDossier.setPostalCityName(srcDossier.getPostalCityName());
+		desDossier.setPostalDistrictCode(srcDossier.getPostalDistrictCode());
+		desDossier.setPostalDistrictName(srcDossier.getPostalDistrictName());
 		desDossier.setPostalTelNo(srcDossier.getPostalTelNo());
 		desDossier.setApplicantNote(srcDossier.getApplicantNote());
 
@@ -6486,7 +6566,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName, String postalTelNo,
 		String applicantNote, boolean isSameAsApplicant, String delegateName,
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
@@ -6542,6 +6623,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -6553,12 +6635,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalCityName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 		}
 		if (isSameAsApplicant) {
@@ -6643,7 +6730,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
+		String postalCityCode, String postalCityName, 
+		String postalDistrictCode, String postalDistrictName, String postalTelNo,
 		String applicantNote, boolean isSameAsApplicant, String delegateName,
 		String delegateIdNo, String delegateTelNo, String delegateEmail,
 		String delegateAddress, String delegateCityCode,
@@ -6702,6 +6790,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -6713,12 +6802,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 		}
 		if (isSameAsApplicant) {
@@ -7084,6 +7178,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, Date createDate,
 		Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
@@ -7203,6 +7298,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 
 			}
 			else if (viaPostal == 2) {
@@ -7214,12 +7310,17 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					dossier.setPostalTelNo(postalTelNo);
 				if (Validator.isNotNull(postalCityName))
 					dossier.setPostalCityName(postalCityName);
+				if (Validator.isNotNull(postalDistrictCode))
+					dossier.setPostalDistrictCode(postalDistrictCode);
+				if (Validator.isNotNull(postalDistrictName))
+					dossier.setPostalDistrictName(postalDistrictName);
 
 			}
 			else {
 				dossier.setPostalAddress(StringPool.BLANK);
 				dossier.setPostalCityCode(StringPool.BLANK);
 				dossier.setPostalTelNo(StringPool.BLANK);
+				dossier.setPostalDistrictCode(StringPool.BLANK);
 			}
 
 			// if (Validator.isNotNull(applicantNote))

@@ -2760,7 +2760,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName,
+			String postalDistrictCode, String postalDistrictName, String postalTelNo,
 			boolean online, boolean notification, String applicantNote, int originality, ServiceContext context) throws PortalException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_PARTTERN);
@@ -2784,7 +2785,7 @@ public class DossierActionsImpl implements DossierActions {
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, originality, context);
+					postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, online, notification, applicantNote, originality, context);
 
 		} catch (Exception e) {
 			_log.error(e);
@@ -3261,7 +3262,8 @@ public class DossierActionsImpl implements DossierActions {
 				applicantIdType, applicantIdNo, applicantIdDate, address, cityCode, districtCode, wardCode, contactName,
 				contactTelNo, contactEmail, isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo, delegateEmail,
 				delegateAddress, delegateCityCode, delegateDistrictCode, delegateWardCode, applicantNote, briefNote,
-				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress, postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, originality, context);
+				dossierNo, dossierTemplateNo, viaPostal, postalServiceCode, postalServiceName, postalAddress,
+				postalCityCode, postalDistrictCode, postalWardCode, postalTelNo, originality, context);
 				
 	}
 
@@ -3577,7 +3579,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+			String postalCityCode, String postalCityName, String postalDistrictCode, String postalDistrictName,
+			String postalTelNo, String applicantNote, boolean isSameAsApplicant,
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext serviceContext) {
@@ -3586,7 +3589,8 @@ public class DossierActionsImpl implements DossierActions {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					postalCityCode, postalCityName, postalDistrictCode, postalDistrictName,
+					postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 					delegateWardCode, sampleCount, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 
@@ -3876,7 +3880,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName,
+			String postalDistrictCode, String postalDistrictName, String postalTelNo,
 			boolean online, boolean notification, String applicantNote, int originality, ServiceInfo service,
 			ServiceProcess serviceProcess, ProcessOption processOption, ServiceContext context) throws PortalException {
 
@@ -3901,7 +3906,7 @@ public class DossierActionsImpl implements DossierActions {
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, originality, 
+					postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, online, notification, applicantNote, originality, 
 					service, serviceProcess, processOption,
 					context);
 
@@ -3917,7 +3922,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			String postalCityCode, String postalCityName, String postalDistrictCode, String postalDistrictName,
+			String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, Integer vnpostalStatus, String vnpostalProfile,
@@ -3926,7 +3932,7 @@ public class DossierActionsImpl implements DossierActions {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 					delegateWardCode, sampleCount, dossierName, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 
@@ -3969,7 +3975,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			String postalCityCode, String postalCityName, String postalDistrictCode, String postalDistrictName,
+			String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote,
@@ -3978,7 +3985,7 @@ public class DossierActionsImpl implements DossierActions {
 			return DossierLocalServiceUtil.initUpdateDossier(groupId, id, applicantName, applicantIdType, applicantIdNo,
 					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
 					contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 					delegateWardCode, sampleCount, dossierName, briefNote, serviceContext);
 
@@ -3993,7 +4000,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
 			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
-			String postalCityCode, String postalCityName, String postalTelNo, String applicantNote,
+			String postalCityCode, String postalCityName, String postalDistrictCode, String postalDistrictName,
+			String postalTelNo, String applicantNote,
 			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
@@ -4003,7 +4011,7 @@ public class DossierActionsImpl implements DossierActions {
 			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
 					applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
 					wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-					postalCityCode, postalCityName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+					postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 					delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 					delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
 					systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
@@ -4020,7 +4028,8 @@ public class DossierActionsImpl implements DossierActions {
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
-			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
+			int viaPostal, String postalAddress, String postalCityCode, String postalCityName,
+			String postalDistrictCode, String postalDistrictName, String postalTelNo,
 			boolean online, boolean notification, String applicantNote, int originality, Date createDate,
 			Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate, Date finishDate,
 			Date cancellingDate, Date correctingDate, Date endorsementDate, Date extendDate, Date processDate,
@@ -4046,7 +4055,7 @@ public class DossierActionsImpl implements DossierActions {
 					serviceName, govAgencyCode, govAgencyName, applicantName, applicantIdType, applicantIdNo, appIdDate,
 					address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 					contactTelNo, contactEmail, dossierTemplateNo, password, viaPostal, postalAddress, postalCityCode,
-					postalCityName, postalTelNo, online, notification, applicantNote, originality, createDate,
+					postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, online, notification, applicantNote, originality, createDate,
 					modifiedDate, submitDate, receiveDate, dueDate, releaseDate, finishDate, cancellingDate,
 					correctingDate, endorsementDate, extendDate, processDate, dossierNo, dossierStatus,
 					dossierStatusText, dossierSubStatus, dossierSubStatusText, dossierActionId, submissionNote,

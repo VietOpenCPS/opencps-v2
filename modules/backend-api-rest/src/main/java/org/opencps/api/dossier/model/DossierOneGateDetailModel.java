@@ -144,6 +144,8 @@ import javax.xml.bind.annotation.XmlType;
     "postalAddress",
     "postalCityCode",
     "postalCityName",
+    "postalDistrictCode",
+    "postalDistrictName",
     "postalTelNo",
     "permission",
     "lastActionDate",
@@ -213,6 +215,8 @@ public class DossierOneGateDetailModel {
     protected String postalAddress;
     protected String postalCityCode;
     protected String postalCityName;
+    protected String postalDistrictCode;
+    protected String postalDistrictName;
     protected String postalTelNo;
     protected String permission;
     protected String lastActionDate;
@@ -232,6 +236,22 @@ public class DossierOneGateDetailModel {
     protected String online;
     protected Integer specialNo;
     protected String lockState;
+
+	public String getPostalDistrictCode() {
+		return postalDistrictCode;
+	}
+
+	public void setPostalDistrictCode(String postalDistrictCode) {
+		this.postalDistrictCode = postalDistrictCode;
+	}
+
+	public String getPostalDistrictName() {
+		return postalDistrictName;
+	}
+
+	public void setPostalDistrictName(String postalDistrictName) {
+		this.postalDistrictName = postalDistrictName;
+	}
 
 	public String getLockState() {
 		return lockState;

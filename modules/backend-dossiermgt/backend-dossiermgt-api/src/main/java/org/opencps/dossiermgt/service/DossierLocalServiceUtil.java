@@ -301,6 +301,7 @@ public class DossierLocalServiceUtil {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, java.util.Date createDate,
 		java.util.Date modifiedDate, java.util.Date submitDate,
@@ -327,7 +328,8 @@ public class DossierLocalServiceUtil {
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail,
 			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, online, notification,
 			applicantNote, originality, createDate, modifiedDate, submitDate,
 			receiveDate, dueDate, releaseDate, finishDate, cancellingDate,
 			correctingDate, endorsementDate, extendDate, processDate,
@@ -628,6 +630,7 @@ public class DossierLocalServiceUtil {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality,
 		org.opencps.dossiermgt.model.ServiceInfo service,
@@ -642,7 +645,8 @@ public class DossierLocalServiceUtil {
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail,
 			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, online, notification,
 			applicantNote, originality, service, serviceProcess, processOption,
 			context);
 	}
@@ -657,6 +661,7 @@ public class DossierLocalServiceUtil {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality,
 		com.liferay.portal.kernel.service.ServiceContext context)
@@ -668,7 +673,8 @@ public class DossierLocalServiceUtil {
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail,
 			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, online, notification,
 			applicantNote, originality, context);
 	}
 
@@ -757,10 +763,11 @@ public class DossierLocalServiceUtil {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String applicantNote, boolean isSameAsApplicant, String delegateName,
-		String delegateIdNo, String delegateTelNo, String delegateEmail,
-		String delegateAddress, String delegateCityCode,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
@@ -770,11 +777,11 @@ public class DossierLocalServiceUtil {
 			cityName, districtCode, districtName, wardCode, wardName,
 			contactName, contactTelNo, contactEmail, dossierTemplateNo,
 			viaPostal, postalAddress, postalCityCode, postalCityName,
-			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
-			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
-			delegateCityCode, delegateDistrictCode, delegateWardCode,
-			sampleCount, vnpostalStatus, vnpostalProfile, fromViaPostal,
-			serviceContext);
+			postalDistrictCode, postalDistrictName, postalTelNo, applicantNote,
+			isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode,
+			delegateDistrictCode, delegateWardCode, sampleCount,
+			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
@@ -784,10 +791,11 @@ public class DossierLocalServiceUtil {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String applicantNote, boolean isSameAsApplicant, String delegateName,
-		String delegateIdNo, String delegateTelNo, String delegateEmail,
-		String delegateAddress, String delegateCityCode,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, Integer vnpostalStatus, String vnpostalProfile,
 		Integer fromViaPostal,
@@ -798,11 +806,11 @@ public class DossierLocalServiceUtil {
 			cityName, districtCode, districtName, wardCode, wardName,
 			contactName, contactTelNo, contactEmail, dossierTemplateNo,
 			viaPostal, postalAddress, postalCityCode, postalCityName,
-			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
-			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
-			delegateCityCode, delegateDistrictCode, delegateWardCode,
-			sampleCount, dossierName, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, serviceContext);
+			postalDistrictCode, postalDistrictName, postalTelNo, applicantNote,
+			isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode,
+			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
+			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
@@ -812,10 +820,11 @@ public class DossierLocalServiceUtil {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String applicantNote, boolean isSameAsApplicant, String delegateName,
-		String delegateIdNo, String delegateTelNo, String delegateEmail,
-		String delegateAddress, String delegateCityCode,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
@@ -825,10 +834,11 @@ public class DossierLocalServiceUtil {
 			cityName, districtCode, districtName, wardCode, wardName,
 			contactName, contactTelNo, contactEmail, dossierTemplateNo,
 			viaPostal, postalAddress, postalCityCode, postalCityName,
-			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
-			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
-			delegateCityCode, delegateDistrictCode, delegateWardCode,
-			sampleCount, dossierName, briefNote, serviceContext);
+			postalDistrictCode, postalDistrictName, postalTelNo, applicantNote,
+			isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode,
+			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
+			briefNote, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossierFull(
@@ -838,10 +848,11 @@ public class DossierLocalServiceUtil {
 		String districtName, String wardCode, String wardName,
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, Integer viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String applicantNote, boolean isSameAsApplicant, String delegateName,
-		String delegateIdNo, String delegateTelNo, String delegateEmail,
-		String delegateAddress, String delegateCityCode,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
 		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
@@ -853,12 +864,12 @@ public class DossierLocalServiceUtil {
 			cityName, districtCode, districtName, wardCode, wardName,
 			contactName, contactTelNo, contactEmail, dossierTemplateNo,
 			viaPostal, postalAddress, postalCityCode, postalCityName,
-			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
-			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
-			delegateCityCode, delegateDistrictCode, delegateWardCode,
-			sampleCount, dossierName, briefNote, delegateType, documentNo,
-			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, serviceContext);
+			postalDistrictCode, postalDistrictName, postalTelNo, applicantNote,
+			isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode,
+			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
+			briefNote, delegateType, documentNo, documentDate, systemId,
+			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier postDossier(
@@ -871,6 +882,7 @@ public class DossierLocalServiceUtil {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality,
 		com.liferay.portal.kernel.service.ServiceContext context)
@@ -882,7 +894,8 @@ public class DossierLocalServiceUtil {
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail,
 			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, online, notification,
 			applicantNote, originality, context);
 	}
 
@@ -896,6 +909,7 @@ public class DossierLocalServiceUtil {
 		String contactName, String contactTelNo, String contactEmail,
 		String dossierTemplateNo, String password, int viaPostal,
 		String postalAddress, String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
 		String postalTelNo, boolean online, boolean notification,
 		String applicantNote, int originality, java.util.Date createDate,
 		java.util.Date modifiedDate, java.util.Date submitDate,
@@ -923,7 +937,8 @@ public class DossierLocalServiceUtil {
 			address, cityCode, cityName, districtCode, districtName, wardCode,
 			wardName, contactName, contactTelNo, contactEmail,
 			dossierTemplateNo, password, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, online, notification,
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, online, notification,
 			applicantNote, originality, createDate, modifiedDate, submitDate,
 			receiveDate, dueDate, releaseDate, finishDate, cancellingDate,
 			correctingDate, endorsementDate, extendDate, processDate,
@@ -1078,9 +1093,10 @@ public class DossierLocalServiceUtil {
 		String dossierStatus, String dossierStatusText,
 		String dossierSubStatus, String dossierSubStatusText, long folderId,
 		long dossierActionId, int viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String password, boolean notification, boolean online, String serverNo,
-		java.util.Date submitDate,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String password, boolean notification,
+		boolean online, String serverNo, java.util.Date submitDate,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -1093,8 +1109,9 @@ public class DossierLocalServiceUtil {
 			briefNote, dossierNo, submitting, correctingDate, dossierStatus,
 			dossierStatusText, dossierSubStatus, dossierSubStatusText,
 			folderId, dossierActionId, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, password,
-			notification, online, serverNo, submitDate, context);
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, password, notification, online,
+			serverNo, submitDate, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier updateDossier(
@@ -1111,8 +1128,10 @@ public class DossierLocalServiceUtil {
 		String dossierStatus, String dossierStatusText,
 		String dossierSubStatus, String dossierSubStatusText, long folderId,
 		long dossierActionId, int viaPostal, String postalAddress,
-		String postalCityCode, String postalCityName, String postalTelNo,
-		String password, boolean notification, boolean online, String serverNo,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String password, boolean notification,
+		boolean online, String serverNo,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -1125,8 +1144,9 @@ public class DossierLocalServiceUtil {
 			briefNote, dossierNo, submitting, correctingDate, dossierStatus,
 			dossierStatusText, dossierSubStatus, dossierSubStatusText,
 			folderId, dossierActionId, viaPostal, postalAddress,
-			postalCityCode, postalCityName, postalTelNo, password,
-			notification, online, serverNo, context);
+			postalCityCode, postalCityName, postalDistrictCode,
+			postalDistrictName, postalTelNo, password, notification, online,
+			serverNo, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier updateDossierAction(

@@ -486,6 +486,7 @@ public class SMSManagementImpl implements SMSManagement {
 		buyerInfo.put("buyerTaxCode", dossier.getApplicantIdNo());
 		buyerInfo.put("buyerAddressLine", dossier.getAddress());
 		buyerInfo.put("buyerPostalCode", dossier.getPostalCityCode());
+		buyerInfo.put("buyerPostalCode_", dossier.getPostalCityCode());
 		buyerInfo.put("buyerDistrictName", dossier.getDistrictName());
 		buyerInfo.put("buyerCityName", dossier.getCityName());
 		buyerInfo.put(
