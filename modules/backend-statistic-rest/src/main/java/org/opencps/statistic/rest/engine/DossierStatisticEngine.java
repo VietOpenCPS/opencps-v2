@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -105,7 +107,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	
 	private boolean isCalculateGroupStatistic() {
 		String calculateGroupStatisticEnable = PropsUtil.get(CALCULATE_GROUP_STATISTIC_ENABLE);
-		return Validator.isNotNull(calculateGroupStatisticEnable) ? Boolean.parseBoolean(CALCULATE_GROUP_STATISTIC_ENABLE) : false;
+		return Validator.isNotNull(calculateGroupStatisticEnable) ? Boolean.parseBoolean(calculateGroupStatisticEnable) : false;
 	}
 	
 	@Override
@@ -136,6 +138,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 	
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
+			Comparator<DictItem> compareByItemCode = new Comparator<DictItem>() {
+				@Override
+			    public int compare(DictItem o1, DictItem o2) {
+			        return o1.getItemCode().compareTo(o2.getItemCode());
+			    }
+			};
+			
 			for (Group site : sites) {
 				StringBuilder groupGovAgency = new StringBuilder();
 				List<String> lstGroupGovs = new ArrayList<String>();
@@ -155,6 +164,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 					}
+					ArrayList<DictItem> lstSortItems = new ArrayList<DictItem>();
+					lstSortItems.addAll(lstGovs);
+					
+					Collections.sort(lstSortItems, compareByItemCode);
+					lstGovs = lstSortItems;
 					
 					for (DictItem di : lstGovs) {
 						if (!StringPool.BLANK.contentEquals(groupGovAgency.toString())) {
@@ -181,6 +195,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 					}
+					lstSortItems = new ArrayList<DictItem>();
+					lstSortItems.addAll(lstGovs);
+					
+					Collections.sort(lstSortItems, compareByItemCode);
+					lstGovs = lstSortItems;
 					
 					for (DictItem di : lstGovs) {
 						if (!StringPool.BLANK.contentEquals(groupGovAgencyQH.toString())) {
@@ -206,6 +225,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 						lstGovs = DictItemLocalServiceUtil.findByF_IDS(ids);					
 					}
+					lstSortItems = new ArrayList<DictItem>();
+					lstSortItems.addAll(lstGovs);
+					
+					Collections.sort(lstSortItems, compareByItemCode);
+					lstGovs = lstSortItems;
 					
 					for (DictItem di : lstGovs) {
 						if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
@@ -246,7 +270,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}						
 					}
 				}
-				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
+//				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
 				ServiceDomainResponse serviceDomainResponse = null;
 				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
 					serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
@@ -254,7 +278,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				else {
 					serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
 				}
-				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
+//				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 				
 //				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
 				GetDossierRequest payload = new GetDossierRequest();
@@ -284,7 +308,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				for (int month = 1; month <= monthCurrent; month ++) {
 					boolean flagStatistic = true;
 					if (month < monthCurrent) {
-						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
+//						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
 						List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
 								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
 						if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
@@ -307,7 +331,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								_log.debug(e);
 							}
 						}
-						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
+//						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
 					} else {
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
@@ -401,6 +425,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				if (allSiteDatas.size() == 0 && site.getGroupId() == 52737) {
 //					System.out.println("STATISTIC SIZE 0: " + site.getGroupId());
 //				}
+				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int month = 1; month <= monthCurrent; month ++) {
 					if (mapFlagCurrent.get(month)) {						
 //						try {
@@ -412,23 +438,23 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						if (calculateDatas.get(yearCurrent) != null &&
 								calculateDatas.get(yearCurrent).get(month) != null) {
 //						if (calculateData.get(month) != null) {
-							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//							StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 //							_log.debug("DOSSIER CAL MEMORY SIZE CURRENT: " + calculateDatas.get(yearCurrent).get(month).size());
 //							statisticEngineUpdate.updateStatisticData(calculateDatas.get(yearCurrent).get(month), allSiteDatas);
-							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
+//							statisticEngineUpdate.updateStatisticData(calculateData.get(month));
+							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateData.get(month)));
 						}
 					}
 				}
 //				_log.info("CALCULATE AFTER CURRENT MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
-				StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-				List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					if (mapFlagPrev.get(lastMonth)) {
 						if (calculateDatas.get(lastYear) != null &&
 								calculateDatas.get(lastYear).get(lastMonth) != null) {
 //							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth), allSiteDatas);
 //							statisticEngineUpdate.updateStatisticData(calculateDatas.get(lastYear).get(lastMonth));
+//							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
 							lstDossierDataObjs.addAll(statisticEngineUpdate.convertStatisticDataList(calculateDatas.get(lastYear).get(lastMonth)));
 						}
 					}
@@ -471,11 +497,13 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				
 				//Current year
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstCurrents);
+//				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstCurrents);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
 				List<OpencpsDossierStatistic> lstLasts = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, lastYear, "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstLasts);
+//				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstLasts);
+				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
@@ -484,6 +512,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				//Caculate statistic all year
 //				_log.info("START STATISTIC ALL YEAR: ");
 				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
+//				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM ALL YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 			}
 	
