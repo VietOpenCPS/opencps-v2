@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -443,6 +444,18 @@ public class OpencpsStatisticRestApplication extends Application {
 							}
 						}
 					}
+					
+					Comparator<DictItem> compareByItemCode = new Comparator<DictItem>() {
+						@Override
+					    public int compare(DictItem o1, DictItem o2) {
+					        return o1.getItemCode().compareTo(o2.getItemCode());
+					    }
+					};
+					ArrayList<DictItem> lstSortItems = new ArrayList<DictItem>();
+					lstSortItems.addAll(lstItems);
+					
+					Collections.sort(lstSortItems, compareByItemCode);
+					lstItems = lstSortItems;
 					
 					if (!Validator.isNull(query.getParentAgency())) {
 						if (dg != null) {
@@ -1123,9 +1136,8 @@ public class OpencpsStatisticRestApplication extends Application {
 //		engineUpdateAction.removeDossierStatisticByYear(companyId, groupId, 0, year);
 		//
 		StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
-		List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(groupId, -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs, lstScs, lstCurrents);
+		statisticSumYearService.caculateSumYear(companyId, groupId, year, lstGroupGovs, lstScs);
 	}
 
 	@POST

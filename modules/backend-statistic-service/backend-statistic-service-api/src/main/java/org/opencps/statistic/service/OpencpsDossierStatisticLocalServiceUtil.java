@@ -592,6 +592,13 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 			govAgencyCode, system, groupAgenvyCode, start, end);
 	}
 
+	public static void updateBatchStatistic(
+		java.util.List<com.liferay.portal.kernel.json.JSONObject> dossierDataObjs)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().updateBatchStatistic(dossierDataObjs);
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatistic updateOnlyStatistic(
 		org.opencps.statistic.model.OpencpsDossierStatistic dossierStatistic,
 		long companyId, long groupId, long userId, String userName, int month,

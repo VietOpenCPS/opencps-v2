@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
+import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.ImportZipFileUtils;
 import org.opencps.api.controller.util.MessageUtil;
@@ -1327,6 +1329,40 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}	
+	}
+
+	@Override
+	public Response cloneFromApplicantData(
+			HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			long id, String dossierTemplateNo, String dossierPartNo, String uri,
+			String displayName, String fileType) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+			DossierFileActions action = new DossierFileActionsImpl();
+
+			InputStream inputStream =
+					ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(uri);
+			String fileTemplateNo = dossierTemplateNo + dossierPartNo;
+			String sourceFileName = displayName + StringPool.PERIOD + fileType;
+			DossierFile dossierFile = action.addDossierFile(
+				groupId, id, UUID.randomUUID().toString(),
+				dossierTemplateNo, dossierPartNo, fileTemplateNo,
+				displayName, sourceFileName, 0l, inputStream, StringPool.BLANK, String.valueOf(false),
+				serviceContext);
+			 _log.debug("__End add file at:" + new Date());
+			dossierFile.setRemoved(false);
+			 _log.debug("__Start update dossier file at:" + new Date());
+			 dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+			DossierFileModel result =
+					DossierFileUtils.mappingToDossierFileModel(dossierFile);
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 
 }

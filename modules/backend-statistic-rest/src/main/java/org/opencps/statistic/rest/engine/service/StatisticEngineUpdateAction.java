@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -87,6 +88,16 @@ public class StatisticEngineUpdateAction {
 		} catch (PortalException | SystemException e) {
 			_log.error(e);
 			return null;
+		}
+	}
+	
+	public void updateStatistic(List<JSONObject> dossierDataObjs) {
+		try {
+			OpencpsDossierStatisticLocalServiceUtil.updateBatchStatistic(dossierDataObjs);
+		} catch (SystemException e) {
+			_log.debug(e);
+		} catch (PortalException e) {
+			_log.debug(e);
 		}
 	}
 	

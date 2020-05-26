@@ -1,5 +1,10 @@
 package org.opencps.statistic.rest.engine.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,19 +38,43 @@ public class StatisticEngineUpdate {
 //		} catch (PortalException e) {
 //		}
 	}
+
+	public List<JSONObject> convertStatisticDataList(Map<String, DossierStatisticData> statisticData) {
+		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
+		for (Map.Entry<String, DossierStatisticData> me : statisticData.entrySet()) {
+
+			DossierStatisticData payload = (DossierStatisticData) me.getValue();
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				JSONObject dossierDataObj = JSONFactoryUtil.createJSONObject(mapper.writeValueAsString(payload));
+				lstDossierDataObjs.add(dossierDataObj);
+			}
+			catch (Exception e) {
+				
+			}
+		}
+		return lstDossierDataObjs;
+	}
 	
 	public void updateStatisticData(Map<String, DossierStatisticData> statisticData) {
 
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
-
+		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		for (Map.Entry<String, DossierStatisticData> me : statisticData.entrySet()) {
 
 			DossierStatisticData payload = (DossierStatisticData) me.getValue();
-
-			engineUpdateAction.updateStatistic(payload);
-
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				JSONObject dossierDataObj = JSONFactoryUtil.createJSONObject(mapper.writeValueAsString(payload));
+				lstDossierDataObjs.add(dossierDataObj);
+			}
+			catch (Exception e) {
+				
+			}
+//			engineUpdateAction.updateStatistic(payload);
 		}
-
+		engineUpdateAction.updateStatistic(lstDossierDataObjs);
+		
 //		try {
 //			OpencpsDossierStatisticLocalServiceUtil.updateStatisticData(mappingDossierStatisticData(statisticData));
 //		} catch (SystemException e) {
