@@ -153,9 +153,11 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
 
 			Sort[] sorts = null;
-//			_log.info("sorts: "+query.getSort());
+			_log.info("sorts: "+query.getSort());
+			_log.info("getOrder: "+query.getOrder());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
-					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
+					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN)
+					|| query.getSort().equals(ServiceInfoTerm.MAX_LEVEL))) {
 				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
 				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };
