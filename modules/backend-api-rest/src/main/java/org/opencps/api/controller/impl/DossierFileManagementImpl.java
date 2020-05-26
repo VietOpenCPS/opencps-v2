@@ -1335,7 +1335,8 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	public Response cloneFromApplicantData(
 			HttpServletRequest request, HttpHeaders header, Company company,
 			Locale locale, User user, ServiceContext serviceContext,
-			long id, String dossierTemplateNo, String dossierPartNo, String uri, String displayName) {
+			long id, String dossierTemplateNo, String dossierPartNo, String uri,
+			String displayName, String fileType) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		try {
@@ -1347,7 +1348,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFile dossierFile = action.addDossierFile(
 				groupId, id, UUID.randomUUID().toString(),
 				dossierTemplateNo, dossierPartNo, fileTemplateNo,
-				displayName, "sourceFileName", 0l, inputStream, "", "false",
+				displayName, "sourceFileName", 0l, inputStream, fileType, "false",
 				serviceContext);
 			 _log.debug("__End add file at:" + new Date());
 			dossierFile.setRemoved(false);
