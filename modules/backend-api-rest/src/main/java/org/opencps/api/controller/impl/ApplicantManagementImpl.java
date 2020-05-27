@@ -1915,7 +1915,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 								rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE), applicantIdDate,
 								rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO),
 								rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),rs.getString(ApplicantTerm.DISTRICTCODE),
-								rs.getString(ApplicantTerm.WARDCODE), rs.getString(ApplicantTerm.CONTACTNAME), rs.getString(ApplicantTerm.PROFILE), false, serviceContext);
+								rs.getString(ApplicantTerm.WARDCODE), rs.getString(ApplicantTerm.CONTACTNAME), rs.getString(ApplicantTerm.PROFILE), true, serviceContext);
 					} catch (Exception e) {
 						_log.debug(e);
 						resultt--;
