@@ -53,6 +53,7 @@ import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.datamgt.model.DictItemInputModel;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
+import org.opencps.api.usermgt.model.ApplicantImportDBModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -75,6 +76,8 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierMarkLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.usermgt.action.ApplicantActions;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.QuestionTerm;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
@@ -926,6 +929,39 @@ public class ImportDataManagementImpl implements ImportDataManagement {
 		}
 		catch (Exception e) {
 
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response addApplicantImportData(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, ApplicantImportDBModel input) {
+
+		try {
+			ApplicantActions actions = new ApplicantActionsImpl();
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+			String applicantName = input.getApplicantName();
+			String applicantIdType = input.getApplicantIdType();
+			String applicantIdNo = input.getApplicantIdNo();
+			String applicantIdDate = input.getApplicantIdDate();
+			String address = input.getAddress();
+			String cityCode = input.getCityCode();
+			String districtCode = input.getDistrictCode();
+			String wardCode = input.getWardCode();
+			String contactName = input.getContactName();
+			String contactEmail = input.getContactEmail();
+			String contactTelNo = input.getContactTelNo();
+			String profile = input.getProfile();
+			boolean lgsp = GetterUtil.getBoolean(input.getLgsp());
+
+			actions.importApplicantDB(user.getUserId(), groupId, applicantIdNo, applicantName, applicantIdType,
+					applicantIdDate, contactEmail, contactTelNo, address, cityCode, districtCode, wardCode, contactName,
+					profile, lgsp, serviceContext);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity("{success}").build();
+		}
+		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

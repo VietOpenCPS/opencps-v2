@@ -16,6 +16,7 @@ public class UserRegisterTerm {
 	public static final String ENDPOINT_CHANGE_SECRECT = "/doimatkhau";
 	public static final String ENDPOINT_CITIZEN_ACTIVE = "/congdan/kichhoat";
 	public static final String ENDPOINT_BUSINESS_ACTIVE = "/doanhnghiep/kichhoat";
+	public static final String ENDPOINT_FORGOT = "/quenmatkhau";
 
 	//Citizen
 	public static final String EMAIL = "email";

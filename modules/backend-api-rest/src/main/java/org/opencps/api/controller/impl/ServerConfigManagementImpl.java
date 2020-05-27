@@ -428,23 +428,23 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String classPKInput = query.getClassPK();
 			String dossierId = query.get_dossierId();
 			String dossierCounter = query.get_dossierCounter();
-			System.out.println("eFormNo: "+eFormNo);
+			_log.debug("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
-				System.out.println("protocolCode: "+protocolCode);
+				_log.debug("protocolCode: "+protocolCode);
 				ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, serverNo, protocolCode);
-				System.out.println("serverConfig: "+serverConfig);
+				_log.debug("serverConfig: "+serverConfig);
 				if (serverConfig != null) {
 
 					String configs = serverConfig.getConfigs();
 					JSONObject jsonConfig = JSONFactoryUtil.createJSONObject(configs);
 					if (jsonConfig != null) {
 						String method = jsonConfig.getString("method");
-						System.out.println("method: "+method);
+						_log.debug("method: "+method);
 						
 						if ("GET".equalsIgnoreCase(method)) {
-							System.out.println("methodEQUAL: "+method);
-							System.out.println("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
+							//System.out.println("methodEQUAL: "+method);
+							_log.debug("jsonConfig.getString(\"url\"): "+jsonConfig.getString("url"));
 							String urlGet = "";
 							try {
 								urlGet = jsonConfig.getString("url");
@@ -511,7 +511,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 //										.replaceAll("{parentId}", parentId)
 //										.replaceAll("{govAgencyName}", govAgencyName)
 //										.replaceAll("{employeeName}", employeeName);
-								System.out.println("urlGet: "+urlGet);
+								_log.debug("urlGet: "+urlGet);
 							} catch (Exception e) {
 								_log.debug(e);
 //								System.out.println("error: "+e);
@@ -522,7 +522,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							String authStrEnc = "";
 							//
 							String params = jsonConfig.getString("params");
-							System.out.println("params: "+params);
+							_log.debug("params: "+params);
 							if (Validator.isNotNull(params)) {
 								JSONObject jsonParams = JSONFactoryUtil.createJSONObject(params);
 								//
@@ -531,24 +531,24 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 									JSONObject jsonHeader = JSONFactoryUtil.createJSONObject(strHeader);
 									//
 									groupIdGet = jsonHeader.getLong("groupId");
-									System.out.println("groupIdGet: "+groupIdGet);
+									_log.debug("groupIdGet: "+groupIdGet);
 									
 								}
 							}
 							
 							//AUTHEN
 							String authenticate = jsonConfig.getString("authenticate");
-							System.out.println("authenticate: "+authenticate);
+							_log.debug("authenticate: "+authenticate);
 							if (Validator.isNotNull(authenticate)) {
 								JSONObject jsonAuthen = JSONFactoryUtil.createJSONObject(authenticate);
 								//
 								String type = jsonAuthen.getString("type");
-								System.out.println("type: "+type);
+								_log.debug("type: "+type);
 								if ("base".equals(type)) {
 									String userName = jsonAuthen.getString("username");
 									String password = jsonAuthen.getString("password");
-									System.out.println("userName: "+userName);
-									System.out.println("password: "+password);
+									_log.debug("userName: "+userName);
+									_log.debug("password: "+password);
 									//
 									authStrEnc = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
 									
@@ -557,21 +557,21 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							
 							URL urlVal = new URL(urlGet);
 
-							System.out.println("API URL: " + urlGet);
+							_log.debug("API URL: " + urlGet);
 							java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal.openConnection();
 							conn.setRequestProperty("groupId", String.valueOf(groupIdGet));
 							conn.setRequestMethod(method);
 							conn.setRequestProperty("Accept", "application/json");
 							conn.setRequestProperty("Authorization", "Basic " + authStrEnc);
-							System.out.println("BASIC AUTHEN: " + authStrEnc);
+							_log.debug("BASIC AUTHEN: " + authStrEnc);
 
-							JSONFactoryUtil.looseSerialize(conn);
+							//JSONFactoryUtil.looseSerialize(conn);
 							BufferedReader brf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 							int cp;
 							while ((cp = brf.read()) != -1) {
 								sb.append((char) cp);
 							}
-							System.out.println("RESULT PROXY: " + sb.toString());
+							//_log.debug("RESULT PROXY: " + sb.toString());
 							return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).build();
 						}
 						else if ("POST".equals(method) || "PUT".equals(method)) {

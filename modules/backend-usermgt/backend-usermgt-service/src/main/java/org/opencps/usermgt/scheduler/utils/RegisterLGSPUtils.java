@@ -314,6 +314,9 @@ public class RegisterLGSPUtils {
 		} else if (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equalsIgnoreCase(applicantIdType)) {
 			urlActive += UserRegisterTerm.ENDPOINT_BUSINESS_ACTIVE + StringPool.FORWARD_SLASH + maXacNhan;
 		}
+		
+		_log.info("urlActive: "+urlActive);
+		_log.info("applicantIdType: "+applicantIdType);
 		String authStrEnc = tokenType + StringPool.SPACE + accessToken;
 
 		StringBuilder sbActive = new StringBuilder();
@@ -427,5 +430,71 @@ public class RegisterLGSPUtils {
 		}
 
 		return false;
+	}
+
+	public static String forgotLGSP(JSONObject jsonToken, String contactEmail) {
+		String accessToken = jsonToken.getString("access_token");
+		String tokenType = jsonToken.getString("token_type");
+
+		_log.info("accessToken: " + accessToken);
+		_log.info("tokenType: " + tokenType);
+
+		// Dang ky tk cong dan
+		if (Validator.isNotNull(contactEmail)) {
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put(UserRegisterTerm.EMAIL, contactEmail);
+			//
+			String urlForgot = UserRegisterTerm.BASE_URL + UserRegisterTerm.ENDPOINT_FORGOT;
+			String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+
+			StringBuilder sbForgot = new StringBuilder();
+			try {
+				URL urlValForgot = new URL(urlForgot);
+
+				java.net.HttpURLConnection conReg = (java.net.HttpURLConnection) urlValForgot.openConnection();
+				conReg.setRequestMethod(HttpMethod.POST);
+				conReg.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+				conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+				conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+				_log.debug("BASIC AUTHEN: " + authStrEnc);
+				conReg.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
+						StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+				conReg.setUseCaches(false);
+				conReg.setDoInput(true);
+				conReg.setDoOutput(true);
+				_log.debug("POST DATA: " + jsonBody.toString());
+				OutputStream osReg = conReg.getOutputStream();
+				osReg.write(jsonBody.toString().getBytes());
+				osReg.close();
+
+				BufferedReader brfForgot = new BufferedReader(new InputStreamReader(conReg.getInputStream()));
+
+				int cpForgot;
+				while ((cpForgot = brfForgot.read()) != -1) {
+					sbForgot.append((char) cpForgot);
+				}
+				_log.info("RESULT PROXY: " + sbForgot.toString());
+				//
+				if (Validator.isNotNull(sbForgot.toString())) {
+					//
+					_log.error("sbForgot:" + sbForgot.toString());
+					JSONObject jsonForgot = JSONFactoryUtil.createJSONObject(sbForgot.toString());
+					if (jsonForgot.has("message") && jsonForgot.has("error_code")
+							&& Validator.isNotNull(jsonForgot.get("message"))
+							&& Validator.isNotNull(jsonForgot.get("error_code"))) {
+						int errorCode = jsonForgot.getInt("error_code");
+						if (errorCode == 0) {
+							return jsonForgot.get("message").toString();
+						}
+					}
+				}
+			} catch (Exception e) {
+				_log.error(e);
+				_log.debug("Something went wrong while reading/writing in stream!!");
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 }

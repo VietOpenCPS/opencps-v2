@@ -635,31 +635,77 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		long applicantId = 0;
 
-		try {
-			ApplicantLocalServiceUtil.getApplicant(id);
+		Applicant aplc = ApplicantLocalServiceUtil.fetchApplicant(id);
 
+		if (aplc != null) {
 			applicantId = id;
-
-		} catch (Exception e) {
-			_log.debug(e);
-			try {
-				Applicant applc = ApplicantLocalServiceUtil.fetchByMappingID(id);
-
-				if (Validator.isNotNull(applc)) {
-					applicantId = applc.getApplicantId();
-				}
-			} catch (Exception e2) {
-				// TODO: handle exception
-				_log.debug(e2);
+		} else {
+			aplc = ApplicantLocalServiceUtil.fetchByMappingID(id);
+			if (aplc != null) {
+				applicantId = aplc.getApplicantId();
 			}
-
 		}
 
 		Applicant applicant = null;
 		try {
 
-			applicant = actions.activationApplicant(serviceContext, applicantId, code);
+			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
+					
+			if (syncUserLGSP) {
+				//Active LGSP and change pass
+				if (aplc != null) {
+					// Create a trust manager that does not validate certificate chains
+					TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+						public X509Certificate[] getAcceptedIssuers() {
+							return null;
+						}
+						public void checkClientTrusted(X509Certificate[] certs, String authType) {
+						}
+						public void checkServerTrusted(X509Certificate[] certs, String authType) {
+						}
+					} };
+					// Install the all-trusting trust manager
+					try {
+						SSLContext sc = SSLContext.getInstance("SSL");
+						sc.init(null, trustAllCerts, new SecureRandom());
+						HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+					} catch (Exception e) {
+					}
+			
+					try {
+						/** Get Token */
+						String strToken = ApplicantUtils.getTokenLGSP();
+						_log.debug("RESULT PROXY: " + strToken);
+						if (Validator.isNotNull(strToken)) {
+							JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+							//
+							if (jsonToken.has("access_token") && jsonToken.has("token_type")
+									&& Validator.isNotNull(jsonToken.getString("access_token"))
+									&& Validator.isNotNull(jsonToken.getString("token_type"))) {
 
+								int resultLGSP = RegisterLGSPUtils.activeUserLGSP(jsonToken, aplc.getGroupId(), aplc.getProfile(),
+										aplc.getTmpPass(), aplc.getContactEmail(), aplc.getApplicantIdType());
+								if (resultLGSP == 0 || resultLGSP == 1) {
+									ErrorMsgModel error = new ErrorMsgModel();
+									error.setMessage("Active error");
+									error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+									error.setDescription("Active error");
+									return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+								}
+							}
+						}
+					} catch (Exception e) {
+						_log.error(e);
+						_log.debug("Something went wrong while reading/writing in stream!!");
+						return BusinessExceptionImpl.processException(e);
+					}
+				}
+				
+				applicant = actions.activationLGSPApplicant(serviceContext, applicantId, code);
+			} else {
+				applicant = actions.activationApplicant(serviceContext, applicantId, code);
+			}
 //			results = ApplicantUtils.mappingToApplicantModel(applicant);
 			
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
@@ -1003,6 +1049,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
+			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1016,8 +1063,59 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
 
 			}
+
+			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
+			
+			if (syncUserLGSP) {
+				// Create a trust manager that does not validate certificate chains
+				TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+					public void checkClientTrusted(X509Certificate[] certs, String authType) {
+					}
+					public void checkServerTrusted(X509Certificate[] certs, String authType) {
+					}
+				} };
+				// Install the all-trusting trust manager
+				try {
+					SSLContext sc = SSLContext.getInstance("SSL");
+					sc.init(null, trustAllCerts, new SecureRandom());
+					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+				} catch (Exception e) {
+				}
+
+				//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
+				String strProfile = StringPool.BLANK;
+				String strToken = ApplicantUtils.getTokenLGSP();
+				if (Validator.isNotNull(strToken)) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+					//
+					if (jsonToken.has("access_token") && jsonToken.has("token_type")
+							&& Validator.isNotNull(jsonToken.getString("access_token"))
+							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+						String accessToken = jsonToken.getString("access_token");
+						String tokenType = jsonToken.getString("token_type");
+
+						_log.info("accessToken: " + accessToken);
+						_log.info("tokenType: " + tokenType);
+
+						// Dang ky tk cong dan
+						strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
+								applicantIdNo, applicantName, applicantIdDate, contactTelNo);
+						_log.info("strProfile: " + strProfile);
+						if (Validator.isNull(strProfile)) {
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+						}
+					}
+				} else {
+					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+				}
+			}
+
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-					applicantIdNo, input.getApplicantIdDate(), contactEmail, address,
+					applicantIdNo, applicantIdDate, contactEmail, address,
 					cityCode, cityName, districtCode, districtName,
 					wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
 					input.getPassword());
@@ -1565,10 +1663,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					// Dang ky tk cong dan
 					strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
 							applicantIdNo, applicantName, applicantIdDate, contactTelNo);
+					_log.info("strProfile: " + strProfile);
 					if (Validator.isNull(strProfile)) {
 						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 					}
 				}
+			} else {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 			}
 
 			Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,

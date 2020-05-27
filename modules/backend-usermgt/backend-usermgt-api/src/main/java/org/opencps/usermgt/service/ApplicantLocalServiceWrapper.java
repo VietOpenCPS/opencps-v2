@@ -423,14 +423,14 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		java.util.Date applicantIdDate, String contactEmail,
 		String contactTelNo, String address, String cityCode, String cityName,
 		String districtCode, String districtName, String wardCode,
-		String wardName,
+		String wardName, String contactName, String profile,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _applicantLocalService.importApplicationDB(groupId, userId,
 			applicantId, mappingUserId, applicantIdNo, applicantName,
 			applicantIdType, applicantIdDate, contactEmail, contactTelNo,
 			address, cityCode, cityName, districtCode, districtName, wardCode,
-			wardName, context);
+			wardName, contactName, profile, context);
 	}
 
 	@Override
@@ -440,13 +440,14 @@ public class ApplicantLocalServiceWrapper implements ApplicantLocalService,
 		java.util.Date applicantIdDate, String contactEmail,
 		String contactTelNo, String address, String cityCode, String cityName,
 		String districtCode, String districtName, String wardCode,
-		String wardName,
+		String wardName, String contactName, String profile,
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _applicantLocalService.importApplicationDB(groupId, userId,
 			applicantId, applicantIdNo, applicantName, applicantIdType,
 			applicantIdDate, contactEmail, contactTelNo, address, cityCode,
-			cityName, districtCode, districtName, wardCode, wardName, context);
+			cityName, districtCode, districtName, wardCode, wardName,
+			contactName, profile, context);
 	}
 
 	@Override

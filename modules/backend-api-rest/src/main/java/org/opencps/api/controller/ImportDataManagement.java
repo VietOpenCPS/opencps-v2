@@ -24,6 +24,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.dossier.model.DossierPublishImportModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
+import org.opencps.api.usermgt.model.ApplicantImportDBModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import io.swagger.annotations.Api;
@@ -122,4 +123,18 @@ public interface ImportDataManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file,
 			@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("collectionCode") String collectionCode);
+
+	@POST
+	@Path("/applicant/importData")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Add dossier publish")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DossierFileModel was updated", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response addApplicantImportData(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @BeanParam ApplicantImportDBModel input);
 }

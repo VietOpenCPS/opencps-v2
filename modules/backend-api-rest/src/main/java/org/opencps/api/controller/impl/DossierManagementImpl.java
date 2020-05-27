@@ -7013,17 +7013,15 @@ public class DossierManagementImpl implements DossierManagement {
 
 					JSONObject applicant = dataApplicant.getJSONObject(i);
 					ApplicantActions actions = new ApplicantActionsImpl();
-					actions.importApplicantDB(
-						user.getUserId(), applicant.getLong(Field.GROUP_ID),
-						applicant.getString(ApplicantTerm.APPLICANTIDNO),
-						applicant.getString(ApplicantTerm.APPLICANTNAME),
-						applicant.getString(ApplicantTerm.APPLICANTIDTYPE), null,
-						applicant.getString(ApplicantTerm.EMAIL),
-						applicant.getString(ApplicantTerm.TELNO),
-						applicant.getString(ApplicantTerm.ADDRESS),
-						applicant.getString(ApplicantTerm.CITYCODE),
-						applicant.getString(ApplicantTerm.DISTRICTCODE),
-						applicant.getString(ApplicantTerm.WARDCODE), serviceContext);
+					actions.importApplicantDB(user.getUserId(), applicant.getLong(Field.GROUP_ID),
+							applicant.getString(ApplicantTerm.APPLICANTIDNO),
+							applicant.getString(ApplicantTerm.APPLICANTNAME),
+							applicant.getString(ApplicantTerm.APPLICANTIDTYPE), null,
+							applicant.getString(ApplicantTerm.EMAIL), applicant.getString(ApplicantTerm.TELNO),
+							applicant.getString(ApplicantTerm.ADDRESS), applicant.getString(ApplicantTerm.CITYCODE),
+							applicant.getString(ApplicantTerm.DISTRICTCODE),
+							applicant.getString(ApplicantTerm.WARDCODE),
+							applicant.getString(ApplicantTerm.APPLICANTNAME), StringPool.BLANK, false, serviceContext);
 				}
 				catch (Exception e) {
 					_log.error(e);

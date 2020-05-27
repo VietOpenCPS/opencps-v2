@@ -44,6 +44,7 @@ import org.opencps.api.controller.BookingManagement;
 import org.opencps.api.controller.util.BookingUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.usermgt.model.ApplicantInputModel;
 import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.NotificationQueue;
@@ -58,6 +59,7 @@ import org.opencps.dossiermgt.constants.EFormTerm;
 import org.opencps.dossiermgt.model.Booking;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
+import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -196,15 +198,39 @@ public class BookingManagementImpl implements BookingManagement{
 			String bookingInTime = StringPool.BLANK;
 			if (online) {
 				//Check captcha
-				String captchaType = PropValues.CAPTCHA_TYPE;
-				if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
-					ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
-					String captchaId = request.getSession().getId();
-					try {
-						_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
-						boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
-						_log.info("Check captcha result: " + isResponseCorrect);
-						if (!isResponseCorrect) {
+				_log.info("input.getBypassCaptcha(): "+input.getBypassCaptcha());
+				if (!GetterUtil.getBoolean(input.getBypassCaptcha())) {
+					String captchaType = PropValues.CAPTCHA_TYPE;
+					if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
+						ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+						String captchaId = request.getSession().getId();
+						try {
+							_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+							boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+							_log.info("Check captcha result: " + isResponseCorrect);
+							if (!isResponseCorrect) {
+								ErrorMsgModel error = new ErrorMsgModel();
+								error.setMessage("Captcha incorrect");
+								error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+								error.setDescription("Captcha incorrect");
+
+								return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+							}
+						} catch (CaptchaServiceException e) {
+							_log.debug(e);
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Captcha incorrect");
+							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+							error.setDescription("Captcha incorrect");
+
+							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+						}
+					} else {
+						boolean isValid = actions.validateSimpleCaptcha(request, header, company, locale, user,
+								serviceContext, jCaptchaResponse);
+
+						if (!isValid) {
 							ErrorMsgModel error = new ErrorMsgModel();
 							error.setMessage("Captcha incorrect");
 							error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
@@ -212,30 +238,9 @@ public class BookingManagementImpl implements BookingManagement{
 
 							return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 						}
-					} catch (CaptchaServiceException e) {
-						_log.debug(e);
-						ErrorMsgModel error = new ErrorMsgModel();
-						error.setMessage("Captcha incorrect");
-						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-						error.setDescription("Captcha incorrect");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
-
-					}
-				} else {
-					boolean isValid = actions.validateSimpleCaptcha(request, header, company, locale, user,
-							serviceContext, jCaptchaResponse);
-
-					if (!isValid) {
-						ErrorMsgModel error = new ErrorMsgModel();
-						error.setMessage("Captcha incorrect");
-						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
-						error.setDescription("Captcha incorrect");
-
-						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 					}
 				}
-				
+
 				_log.info("bookingDate: "+bookingDate);
 				List bookingList = actions.getBookingCounterOnline(groupId, bookingDateSearch, online, serviceContext);
 				if (bookingList != null && bookingList.size() > 0) {
@@ -888,12 +893,18 @@ public class BookingManagementImpl implements BookingManagement{
 					}
 				}
 			} else {
+				_log.info("GetterUtil.getInteger(splitBookingDate[0]): "+cal.get(Calendar.DATE));
+				_log.info("GetterUtil.getInteger(splitBookingDate[1]): "+cal.get(Calendar.MONTH));
+				_log.info("GetterUtil.getInteger(splitBookingDate[2]): "+cal.get(Calendar.YEAR));
+				_log.info("splitBookingDate.length: "+ splitBookingDate.length);
+				
 				if (splitBookingDate != null && splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
 						&& GetterUtil.getInteger(splitBookingDate[1]) == (cal.get(Calendar.MONTH) + 1)
 						&& GetterUtil.getInteger(splitBookingDate[2]) == cal.get(Calendar.YEAR)) {
 
 					ServerConfig config = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId,
 							"BOOKING_CONFIG", "MULTIMEDIA");
+					_log.info("config: "+ config);
 					if (config != null) {
 						JSONObject jsonData = JSONFactoryUtil.createJSONObject(config.getConfigs());
 						if (jsonData.has("bookingOnline")
@@ -1012,4 +1023,55 @@ public class BookingManagementImpl implements BookingManagement{
 
 		return Response.status(200).entity("{}").build();
 	}
+
+	@Override
+	public Response validateCaptcha(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String value) {
+
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
+			ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+			String captchaId = request.getSession().getId();
+			try {
+				_log.info("Captcha: " + captchaId + "," + value);
+				boolean isResponseCorrect = instance.validateResponseForID(captchaId, value);
+				_log.info("Check captcha result: " + isResponseCorrect);
+				if (!isResponseCorrect) {
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage("Captcha incorrect");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Captcha incorrect");
+
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				} else {
+					return Response.status(200).entity(String.valueOf(true)).build();
+				}
+			} catch (CaptchaServiceException e) {
+				_log.debug(e);
+				ErrorMsgModel error = new ErrorMsgModel();
+				error.setMessage("Captcha incorrect");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Captcha incorrect");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+
+			}
+		} else {
+			BookingActions actions = new BookingActionsImpl();
+			boolean isValid = actions.validateSimpleCaptcha(request, header, company, locale, user,
+					serviceContext, value);
+
+			if (!isValid) {
+				ErrorMsgModel error = new ErrorMsgModel();
+				error.setMessage("Captcha incorrect");
+				error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+				error.setDescription("Captcha incorrect");
+
+				return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+			} else {
+				return Response.status(200).entity(String.valueOf(isValid)).build();
+			}
+		}
+	}
+
 }

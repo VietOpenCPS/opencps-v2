@@ -24,11 +24,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Request;
@@ -39,6 +45,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.UserManagement;
+import org.opencps.api.controller.util.ApplicantUtils;
 import org.opencps.api.controller.util.CaptchaServiceSingleton;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.UserUtils;
@@ -60,6 +67,7 @@ import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 
@@ -420,13 +428,85 @@ public class UserManagementImpl implements UserManagement {
 				}
 			}
 			
-			Document document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
-					serviceContext);
+			Document document = null;
+			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
+			if (syncUserLGSP) {
+				//Forgot LGSP
+				String secretKey = StringPool.BLANK;
+				// Create a trust manager that does not validate certificate chains
+				TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+					public void checkClientTrusted(X509Certificate[] certs, String authType) {
+					}
+					public void checkServerTrusted(X509Certificate[] certs, String authType) {
+					}
+				} };
+				// Install the all-trusting trust manager
+				try {
+					SSLContext sc = SSLContext.getInstance("SSL");
+					sc.init(null, trustAllCerts, new SecureRandom());
+					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+				} catch (Exception e) {
+				}
+				
+				//
+				String strToken = ApplicantUtils.getTokenLGSP();
+				if (Validator.isNotNull(strToken)) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+					//
+					if (jsonToken.has("access_token") && jsonToken.has("token_type")
+							&& Validator.isNotNull(jsonToken.getString("access_token"))
+							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+						String accessToken = jsonToken.getString("access_token");
+						String tokenType = jsonToken.getString("token_type");
 
-			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
+						_log.info("accessToken: " + accessToken);
+						_log.info("tokenType: " + tokenType);
 
-			return Response.status(HttpURLConnection.HTTP_OK).entity(userAccountModel).build();
+						// Dang ky tk cong dan
+						String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
+						if (Validator.isNull(message)) {
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+						} else {
+							JSONObject jsonMessage =  JSONFactoryUtil.createJSONObject(message);
+							if (jsonMessage != null && jsonMessage.has("matKhau") && jsonMessage.has("taiKhoan")
+									&& Validator.isNotNull(jsonMessage.getString("matKhau"))
+									&& Validator.isNotNull(jsonMessage.getString("taiKhoan"))) {
+								secretKey = jsonMessage.getString("matKhau");
+								
+							} else {
+								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+							}
+						}
+					}
+				} else {
+					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+				}
+				
+				_log.info("secretKey: "+secretKey);
+				document = actions.getLGSPForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
+						secretKey, serviceContext);
+			} else {
+				document = actions.getForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
+						serviceContext);
 
+			}
+			
+			if (document != null) {
+				UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(userAccountModel).build();
+			} else {
+				ErrorMsgModel error = new ErrorMsgModel();
+				error.setMessage("No Content.");
+				error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+				error.setDescription("No Content.");
+//				e.printStackTrace();
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+			}
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 
@@ -804,4 +884,123 @@ public class UserManagementImpl implements UserManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
+
+	@Override
+	public Response getLGSPForgotConfirm(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String screenname_email, String code, String jCaptchaResponse) {
+		UserInterface actions = new UserActions();
+		
+		String captchaType = PropValues.CAPTCHA_TYPE;
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		try {
+			if (Validator.isNotNull(captchaType) && "jcaptcha".equals(captchaType)) {
+
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+				String captchaId = request.getSession().getId();
+				try {
+					_log.info("Captcha: " + captchaId + "," + jCaptchaResponse);
+					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+					_log.info("Check captcha result: " + isResponseCorrect);
+					if (!isResponseCorrect) {
+						ErrorMsgModel error = new ErrorMsgModel();
+						error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+						error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+						error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+
+						return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+					}
+				} catch (CaptchaServiceException e) {
+					_log.debug(e);
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_CAPTCHA_INCORRECT));
+
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				}
+			} else {
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+
+				boolean isValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, user,
+						serviceContext, jCaptchaResponse);
+
+				if (!isValid) {
+					ErrorMsgModel error = new ErrorMsgModel();
+					error.setMessage("Captcha incorrect");
+					error.setCode(HttpURLConnection.HTTP_NOT_AUTHORITATIVE);
+					error.setDescription("Captcha incorrect");
+
+					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
+				}
+			}
+
+			//Forgot LGSP
+			String secretKey = StringPool.BLANK;
+			// Create a trust manager that does not validate certificate chains
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {
+				}
+				public void checkServerTrusted(X509Certificate[] certs, String authType) {
+				}
+			} };
+			// Install the all-trusting trust manager
+			try {
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch (Exception e) {
+			}
+			
+			//
+			String strToken = ApplicantUtils.getTokenLGSP();
+			if (Validator.isNotNull(strToken)) {
+				JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+				//
+				if (jsonToken.has("access_token") && jsonToken.has("token_type")
+						&& Validator.isNotNull(jsonToken.getString("access_token"))
+						&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+					String accessToken = jsonToken.getString("access_token");
+					String tokenType = jsonToken.getString("token_type");
+
+					_log.info("accessToken: " + accessToken);
+					_log.info("tokenType: " + tokenType);
+
+					// Dang ky tk cong dan
+					String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
+					if (Validator.isNull(message)) {
+						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+					} else {
+						JSONObject jsonMessage =  JSONFactoryUtil.createJSONObject(message);
+						if (jsonMessage != null && jsonMessage.has("matKhau") && jsonMessage.has("taiKhoan")
+								&& Validator.isNotNull(jsonMessage.getString("matKhau"))
+								&& Validator.isNotNull(jsonMessage.getString("taiKhoan"))) {
+							secretKey = jsonMessage.getString("matKhau");
+							
+						} else {
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+						}
+					}
+				}
+			} else {
+				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+			}
+			
+			_log.info("secretKey: "+secretKey);
+			
+			Document document = actions.getLGSPForgotConfirm(groupId, company.getCompanyId(), screenname_email, code,
+					secretKey, serviceContext);
+
+			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(userAccountModel).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+
+		}
+	}
+
 }

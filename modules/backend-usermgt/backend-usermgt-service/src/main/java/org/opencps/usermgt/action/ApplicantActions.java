@@ -74,7 +74,8 @@ public interface ApplicantActions {
 
 	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String appliantName,
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
-			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException;
+			String cityCode, String districtCode, String wardCode, String contactName,
+			String profile, boolean lgsp, ServiceContext serviceContext) throws PortalException;
 
 public String getSimpleCaptcha(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, Integer width, Integer height);
