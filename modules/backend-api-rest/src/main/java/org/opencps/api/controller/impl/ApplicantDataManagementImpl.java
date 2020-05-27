@@ -1,9 +1,12 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -12,6 +15,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +24,7 @@ import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -187,6 +192,42 @@ public class ApplicantDataManagementImpl implements ApplicantDataManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getApplicantDataFilePreview(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, long id) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			ApplicantData applicantData = ApplicantDataLocalServiceUtil.fetchApplicantData(id);
+			
+			if (applicantData != null) {
+				long fileEntryId = applicantData.getFileEntryId();
+				if (fileEntryId > 0) {
+					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+
+					File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(),
+							fileEntry.getVersion(), true);
+
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+					String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+							attachmentFilename);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
+	
+					return responseBuilder.build();
+				}
+			}
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
 }

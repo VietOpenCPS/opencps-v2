@@ -42,7 +42,8 @@ public interface ProxyManagement {
 	public Response proxy(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@FormParam("url") String url, @FormParam("method") String method, @FormParam("data") String data,
-			@FormParam("serverCode") String serverCode);
+			@FormParam("serverCode") String serverCode,
+			@FormParam("dataType") String dataType);
 	
 	@POST
 	@Path("/multipart")
@@ -57,7 +58,7 @@ public interface ProxyManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
 	public Response proxyMultipart(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-			@Multipart("file") Attachment file,
+			@Multipart(value="file", required=false) Attachment file,
 			@Multipart("url") String url, 
 			@Multipart("method") String method, 
 			@Multipart("data") String data,
