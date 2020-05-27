@@ -1170,13 +1170,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 		} else {
 
-			int checkExitsAplc = applicantPersistence.countByF_EMAIL(objectData.getString("contactEmail"));
+			int checkExitsAplc = applicantPersistence.countByF_GID_CTEM(objectData.getLong(Field.GROUP_ID), objectData.getString(ApplicantTerm.CONTACTEMAIL));
 			if (checkExitsAplc > 0) {
 				throw new DuplicateContactEmailException("email_exits");
-			} else if (Validator.isNull(objectData.getString("applicantIdNo"))) {
+			} else if (Validator.isNull(objectData.getString(ApplicantTerm.APPLICANTIDNO))) {
 				throw new NoApplicantIdNoException("NoApplicantIdNo");
 			} else {
-				checkExitsAplc = applicantPersistence.countByF_APLC_ID(objectData.getString("applicantIdNo"));
+				checkExitsAplc = applicantPersistence.countByF_APLC_GID(objectData.getLong(Field.GROUP_ID), ApplicantTerm.APPLICANTIDNO);
 				if (checkExitsAplc > 0) {
 					throw new DuplicateApplicantIdException("applicantIdNo_exits");
 				}
