@@ -49,6 +49,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,6 +66,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -95,6 +97,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.auth.utils.DLFolderUtil;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
@@ -1713,7 +1716,6 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String sqlQuery,
 			String fields, boolean isAllowedUpdate, long replaceGroupId) {
 
-		ApplicantModel result = new ApplicantModel();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("sqlQuery:" +sqlQuery);
 		_log.info("fields:" +fields);
@@ -1762,7 +1764,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					}
 					
 				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity("ok " + resultt).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + resultt).build();
 			}
 			catch (Exception e) {
 				_log.debug(e);
@@ -1780,6 +1782,61 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			_log.debug(ex);
 		}
 
-		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity("err").build();
+		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity(ConstantUtils.API_JSON_ERROR).build();
+	}
+	
+	@Override
+	public Response registryWithsql(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			String driveClassName, String connectionUrl, String dbUser,
+			String dbSecret, String sqlQuery) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("sqlQuery:" +sqlQuery);
+		try {
+			Class.forName(driveClassName);
+			Statement stmt = null;
+			ResultSet rs = null;
+			Connection con = null;
+			int resultt = 0;
+			try {
+				con = DriverManager.getConnection(connectionUrl, dbUser, dbSecret);
+				stmt = con.createStatement();
+				rs = stmt.executeQuery(sqlQuery);
+				while (rs.next()) {
+					try {
+						resultt++;
+						ApplicantActions actions = new ApplicantActionsImpl();
+						Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(ApplicantTerm.APPLICANTIDDATE));
+						String applicantIdDate = date != null ? new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
+								new Date(date)) : null;
+						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE),
+								applicantIdDate, rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO), rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),
+								rs.getString(ApplicantTerm.DISTRICTCODE), rs.getString(ApplicantTerm.WARDCODE), serviceContext);
+					} catch (Exception e) {
+						_log.debug(e);
+						resultt--;
+					}
+					
+				}
+				return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + resultt).build();
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+			finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			}
+		}
+		catch (Exception ex) {
+			_log.debug(ex);
+		}
+
+		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity(ConstantUtils.API_JSON_ERROR).build();
 	}
 }
