@@ -1245,8 +1245,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	public Applicant importApplicationDB(long groupId, long userId, long applicantId, long mappingUserId,
 			String applicantIdNo, String applicantName, String applicantIdType, Date applicantIdDate,
 			String contactEmail, String contactTelNo, String address, String cityCode, String cityName,
-			String districtCode, String districtName, String wardCode, String wardName, ServiceContext context)
-			throws PortalException {
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String profile, ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
@@ -1281,6 +1281,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				applicant.setContactEmail(contactEmail);
 				applicant.setMappingUserId(mappingUserId);
 				applicant.setActivationCode(StringPool.BLANK);
+				applicant.setContactName(contactName);
+				applicant.setProfile(profile);
 			} catch (Exception e) {
 				_log.info(e);
 			}
@@ -1293,7 +1295,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	public Applicant importApplicationDB(long groupId, long userId, long applicantId, String applicantIdNo,
 			String applicantName, String applicantIdType, Date applicantIdDate, String contactEmail,
 			String contactTelNo, String address, String cityCode, String cityName, String districtCode,
-			String districtName, String wardCode, String wardName, ServiceContext context) throws PortalException {
+			String districtName, String wardCode, String wardName, String contactName, String profile,
+			ServiceContext context) throws PortalException {
 
 		Date now = new Date();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
@@ -1392,6 +1395,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				applicant.setMappingUserId(mappingUserId);
 				applicant.setActivationCode(activationCode);
 				applicant.setTmpPass(password);
+				applicant.setContactName(contactName);
+				applicant.setProfile(profile);
 			} catch (Exception e) {
 				_log.info(e);
 			}
@@ -1438,6 +1443,13 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 
 			if (Validator.isNotNull(wardName))
 				applicant.setWardName(wardName);
+			
+			if (Validator.isNotNull(contactName))
+				applicant.setContactName(contactName);
+			
+			if (Validator.isNotNull(profile))
+				applicant.setProfile(profile);
+			
 		}
 
 		return applicantPersistence.update(applicant);
