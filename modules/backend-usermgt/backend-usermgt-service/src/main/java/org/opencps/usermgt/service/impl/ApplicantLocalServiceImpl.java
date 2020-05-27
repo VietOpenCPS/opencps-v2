@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
@@ -1169,7 +1170,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		} else {
 
 			int checkExitsAplc = applicantPersistence.countByF_GID_CTEM(objectData.getLong(Field.GROUP_ID), objectData.getString(ApplicantTerm.CONTACTEMAIL));
-			if (checkExitsAplc > 0) {
+			if (checkExitsAplc > 0 && !GetterUtil.getBoolean(objectData.getBoolean(ApplicantTerm.NOT_CHECK_DUPLICATE))) {
 				throw new DuplicateContactEmailException("email_exits");
 			} else if (Validator.isNull(objectData.getString(ApplicantTerm.APPLICANTIDNO))) {
 				throw new NoApplicantIdNoException("NoApplicantIdNo");

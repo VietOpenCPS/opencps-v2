@@ -1853,10 +1853,15 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						objectData.put(Field.COMPANY_ID, company.getCompanyId());
 						objectData.put(ApplicantTerm.MAPPINGUSERID, 0l);
 						objectData.put(ApplicantTerm.LOCK_, false);
+						objectData.put(ApplicantTerm.LOCK_, false);
+						objectData.put(ApplicantTerm.ACTIVATION_CODE, ApplicantTerm.NOT_CHECK_DUPLICATE);
+						objectData.put(ApplicantTerm.NOT_CHECK_DUPLICATE, true);
 						_log.debug(objectData);
 						if (isAllowedUpdate) {
-							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_CTEM(replaceGroupId, objectData.getString(ApplicantTerm.CONTACTEMAIL));
-							objectData.put(ApplicantTerm.APPLICANT_ID, applicant.getApplicantId());
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, ApplicantTerm.APPLICANTIDNO);
+							if (Validator.isNotNull(applicant)) {
+								objectData.put(ApplicantTerm.APPLICANT_ID, applicant.getApplicantId());
+							}
 						}
 						ApplicantLocalServiceUtil.adminProcessData(objectData);
 					} catch (Exception e) {
