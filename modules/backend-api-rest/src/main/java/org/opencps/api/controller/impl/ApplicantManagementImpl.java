@@ -1911,9 +1911,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(ApplicantTerm.APPLICANTIDDATE));
 						String applicantIdDate = date != null ? new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
 								new Date(date)) : null;
-						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE),
-								applicantIdDate, rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO), rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),
-								rs.getString(ApplicantTerm.DISTRICTCODE), rs.getString(ApplicantTerm.WARDCODE), serviceContext);
+						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), 
+								rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE), applicantIdDate,
+								rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO),
+								rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),rs.getString(ApplicantTerm.DISTRICTCODE),
+								rs.getString(ApplicantTerm.WARDCODE), rs.getString(ApplicantTerm.CONTACTNAME), rs.getString(ApplicantTerm.PROFILE), false, serviceContext);
 					} catch (Exception e) {
 						_log.debug(e);
 						resultt--;
