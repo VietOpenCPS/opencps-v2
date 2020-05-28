@@ -99,6 +99,24 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					} else {
 						jsonData.put(Field.USER_NAME, user.getFullName());
 					}
+					String govAgencyCode = dossier.getGovAgencyCode();
+					if (Validator.isNotNull(govAgencyCode))
+					{
+						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
+						if (Validator.isNotNull(paymentConfig))
+						{
+							String epay = paymentConfig.getEpaymentConfig();
+							JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
+							String paymentReturnUrl = StringPool.BLANK;
+							String paymentMerchantSecureKey = StringPool.BLANK;
+							if (jsonObject.has("paymentReturnUrl"))
+								paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
+							if (jsonObject.has("paymentMerchantSecureKey"));
+							paymentMerchantSecureKey =	jsonObject.getString("paymentMerchantSecureKey");
+							jsonData.put("paymentReturnUrl",paymentReturnUrl);
+							jsonData.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
+						}
+					}
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
@@ -106,7 +124,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
-
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
@@ -124,7 +141,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 								attachmentFilename);
 						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
-
 						Date dateEnd1 = new Date();
 						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
 						return responseBuilder.build();
