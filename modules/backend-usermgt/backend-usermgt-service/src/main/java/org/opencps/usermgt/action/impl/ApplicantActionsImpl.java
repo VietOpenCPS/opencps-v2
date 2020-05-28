@@ -457,7 +457,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 			String profile, boolean lgsp, ServiceContext serviceContext) throws PortalException {
 		
 		// Check exits applicantIdNo
-		if (lgsp) {
+		if (lgsp && (Validator.isNotNull(applicantIdNo) || Validator.isNotNull(contactEmail))) {
 			int flagUser = 0;
 			long mappingUserId = 0;
 			if (groupId > 0) {
