@@ -122,7 +122,8 @@ public class ConfigCounterNumberGenerator {
 					// Pattern follow serviceProcess
 					if (r.toString().equals(codePatternDate)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + configCounter.getCounterCode()
+								+ StringPool.POUND + day + month + year;
 						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
@@ -141,7 +142,8 @@ public class ConfigCounterNumberGenerator {
 						// Pattern follow GovAgencyCode
 					} else if (r.toString().equals(codePatternMonth)) {
 						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + month + year;
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + configCounter.getCounterCode()
+								+ StringPool.POUND + month + year;
 						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
@@ -159,8 +161,8 @@ public class ConfigCounterNumberGenerator {
 
 						// Pattern follow GovAgencyCode
 					} else if (r.toString().equals(codePatternYear)) {
-						//String key = "opencps.dossier.number.counter#" + processOtionId + "#" + year;
-						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + year;
+						String elCounter = seriNumberPattern.replace(m.group(0), String.valueOf(year));
+						String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + elCounter;
 						String number = countByNumber(key, tmp, configCounter);
 
 						//String number11 = countByInit(serviceProcessCode, dossierId, tmp, groupId);
@@ -399,4 +401,5 @@ public class ConfigCounterNumberGenerator {
 
 		return String.format(format, _counterNumber); 
 	}
+
 }

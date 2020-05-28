@@ -239,4 +239,13 @@ public interface UserManagement {
 			@Context ServiceContext serviceContext, @DefaultValue("0") @FormParam("mappingUserId") long id,
 			@DefaultValue("") @FormParam("mappingUserId") String email,
 			@DefaultValue("true") @FormParam("unlocked") boolean unlocked);
+
+	@GET
+	@Path("/lgsp/{screenname_email}/forgot/confirm/{code}")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getLGSPForgotConfirm(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, 
+			@PathParam("screenname_email") String screenname_email, @PathParam("code") String code, @QueryParam("j_captcha_response") String jCaptchaResponse);
 }

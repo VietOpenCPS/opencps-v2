@@ -714,6 +714,136 @@ public class UserActions implements UserInterface {
 	}
 
 	@Override
+	public Document getLGSPForgotConfirm(long groupId, long companyId, String screenname_email, String code,
+			String secretKey, ServiceContext serviceContext) throws DigestException {
+
+		Document document = new DocumentImpl();
+
+		User user = UserLocalServiceUtil.fetchUserByEmailAddress(
+			companyId, screenname_email);
+
+		if (Validator.isNull(user)) {
+			user = UserLocalServiceUtil.fetchUserByScreenName(
+				companyId, screenname_email);
+		}
+
+		long mappingUserId = Validator.isNotNull(user) ? user.getUserId() : 0;
+		String userName =
+			Validator.isNotNull(user) ? user.getFullName() : StringPool.BLANK;
+
+		try {
+
+			if (user.getDigest().equals(code)) {
+				user = UserLocalServiceUtil.updatePassword(
+					user.getUserId(), secretKey, secretKey, Boolean.TRUE);
+				user.setDigest(secretKey + System.currentTimeMillis());
+				user.setPasswordReset(false);
+				UserLocalServiceUtil.updateUser(user);
+			}
+			else {
+				throw new DigestException();
+			}
+
+			Employee employee =
+				EmployeeLocalServiceUtil.fetchByFB_MUID(mappingUserId);
+			Applicant applicant = null;
+			if (employee != null) {
+				document.addTextSortable(
+					UserTerm.USER_ID, String.valueOf(mappingUserId));
+				document.addTextSortable(
+					UserTerm.USER_NAME, Validator.isNotNull(employee)
+						? employee.getFullName() : userName);
+				document.addTextSortable(
+					UserTerm.CONTACT_EMAIL, Validator.isNotNull(employee)
+						? employee.getEmail() : StringPool.BLANK);
+				document.addTextSortable(
+					UserTerm.CONTACT_TELNO, Validator.isNotNull(employee)
+						? employee.getTelNo() : StringPool.BLANK);
+			}
+			else {
+				applicant =
+					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				if (applicant != null) {
+					document.addTextSortable(
+						UserTerm.USER_ID, String.valueOf(mappingUserId));
+					document.addTextSortable(
+						UserTerm.USER_NAME, Validator.isNotNull(applicant)
+							? applicant.getContactName() : userName);
+					document.addTextSortable(
+						UserTerm.CONTACT_EMAIL, Validator.isNotNull(applicant)
+							? applicant.getContactEmail() : StringPool.BLANK);
+					document.addTextSortable(
+						UserTerm.CONTACT_TELNO, Validator.isNotNull(applicant)
+							? applicant.getContactTelNo() : StringPool.BLANK);
+				}
+			}
+
+			// _log.info("STRART SEND CHANGE PASS!");
+			long notificationQueueId = CounterLocalServiceUtil.increment(
+				NotificationQueue.class.getName());
+			NotificationQueue queue =
+				NotificationQueueLocalServiceUtil.createNotificationQueue(
+					notificationQueueId);
+
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+			queue.setCreateDate(now);
+			queue.setModifiedDate(now);
+			queue.setGroupId(groupId);
+			queue.setCompanyId(user.getCompanyId());
+
+			queue.setNotificationType(NotificationType.USER_03);
+			queue.setClassName(User.class.getName());
+			if (employee != null) {
+				queue.setClassPK(String.valueOf(employee.getPrimaryKey()));
+				queue.setToUsername(employee.getFullName());
+				queue.setToUserId(employee.getMappingUserId());
+				queue.setToEmail(employee.getEmail());
+				queue.setToTelNo(employee.getTelNo());
+			}
+			else if (applicant != null) {
+				queue.setClassPK(String.valueOf(applicant.getPrimaryKey()));
+				queue.setToUsername(applicant.getApplicantName());
+				queue.setToUserId(applicant.getUserId());
+				queue.setToEmail(applicant.getContactEmail());
+				queue.setToTelNo(applicant.getContactTelNo());
+			}
+
+			JSONObject payload = JSONFactoryUtil.createJSONObject();
+			// _log.info("START PAYLOAD: ");
+			JSONObject subPayload = JSONFactoryUtil.createJSONObject();
+			if (employee != null) {
+				subPayload.put(UserTerm.USER_NAME, employee.getFullName());
+				subPayload.put(UserTerm.USER_ID, employee.getMappingUserId());
+				subPayload.put(UserTerm.EMAIL, employee.getEmail());
+				subPayload.put(UserTerm.TELNO, employee.getTelNo());
+			}
+			else if (applicant != null) {
+				subPayload.put(UserTerm.USER_NAME, applicant.getApplicantName());
+				subPayload.put(UserTerm.USER_ID, applicant.getUserId());
+				subPayload.put(UserTerm.EMAIL, applicant.getContactEmail());
+				subPayload.put(UserTerm.TELNO, applicant.getContactTelNo());
+			}
+			_log.info("secretKey: "+secretKey);
+			subPayload.put(UserTerm.SECRET_KEY, secretKey);
+			payload.put(UserTerm.USER, subPayload);
+
+			// _log.info("payloadTest: "+payload.toJSONString());
+			queue.setPayload(payload.toJSONString());
+			queue.setExpireDate(cal.getTime());
+
+			NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+		}
+		catch (PortalException e) {
+			_log.error(e);
+		}
+		return document;
+	}
+
+
+	@Override
 	public boolean getCheckpass(
 		long groupId, long companyId, long id, String password,
 		ServiceContext serviceContext) {

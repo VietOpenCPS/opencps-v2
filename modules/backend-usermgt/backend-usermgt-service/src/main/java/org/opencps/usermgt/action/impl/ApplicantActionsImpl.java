@@ -453,155 +453,253 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	@Override
 	public void importApplicantDB(long userId, long groupId, String applicantIdNo, String applicantName,
 			String applicantIdType, String applicantIdDate, String contactEmail, String contactTelNo, String address,
-			String cityCode, String districtCode, String wardCode, ServiceContext serviceContext) throws PortalException {
+			String cityCode, String districtCode, String wardCode, String contactName,
+			String profile, boolean lgsp, ServiceContext serviceContext) throws PortalException {
 		
 		// Check exits applicantIdNo
-		int flagUser = 0;
-		if (Validator.isNotNull(applicantIdNo)) {
-			List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
-			if (appList != null && appList.size() > 0) {
-				for (Applicant applicant : appList) {
-					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-					if (flagUser == 2) break;
-				}
-			}
-		}
-		// Check exits contactEmail
-		if (flagUser != 2 && Validator.isNotNull(contactEmail)) {
-			List<Applicant> appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
-			if (appList != null && appList.size() > 0) {
-				for (Applicant applicant : appList) {
-					flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
-					if (flagUser == 2) break;
-				}
-			}
-		}
-
-		// Check exits contactEmail
-		long mappingUserId = 0;
-		if (flagUser != 2 && flagUser != 1 && Validator.isNotNull(contactEmail)) {
-			User appUser = UserLocalServiceUtil.fetchUserByEmailAddress(serviceContext.getCompanyId(), contactEmail);
-			if (appUser != null) {
-				flagUser = 3;
-				mappingUserId = appUser.getUserId();
-			}
-		}
-
-		if (flagUser != 2) {
-			DictCollection dc = DictCollectionLocalServiceUtil
-					.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
-			String cityName = getDictItemName(groupId, dc, cityCode);
-			String districtName = getDictItemName(groupId, dc, districtCode);
-			String wardName = getDictItemName(groupId, dc, wardCode);
-			//
-			Date appDate = null;
-			if (Validator.isNotNull(applicantIdDate)) {
-				SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-				try {
-					appDate = sdf.parse(applicantIdDate);
-				} catch (ParseException e) {
-				}
-			}
-			
-//			System.out.println("flagUser: "+flagUser);
-			//Process update applicant and user
-			if (flagUser == 0) {
-				//Add applicant and user
-				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
-				if (app != null) {
-					//Send Email active account
-					Date now = new Date();
-					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					Calendar cal = Calendar.getInstance();
-					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-
-					queue.setCreateDate(now);
-					queue.setModifiedDate(now);
-					queue.setGroupId(groupId);
-					queue.setCompanyId(serviceContext.getCompanyId());
-
-					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
-					queue.setClassName(Applicant.class.getName());
-					queue.setClassPK(String.valueOf(app.getApplicantId()));
-					queue.setToUsername(applicantName);
-					queue.setToUserId(app.getMappingUserId());
-					queue.setToEmail(contactEmail);
-					queue.setToTelNo(StringPool.BLANK);
-					
-					JSONObject payload = JSONFactoryUtil.createJSONObject();
-					try {
-						// _log.info("START PAYLOAD: ");
-						payload.put(ApplicantListenerMessageKeys.APPLICANT,
-								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					} catch (JSONException parse) {
-						_log.error(parse);
+		if (lgsp && (Validator.isNotNull(applicantIdNo) || Validator.isNotNull(contactEmail))) {
+			int flagUser = 0;
+			long mappingUserId = 0;
+			if (groupId > 0) {
+				if (Validator.isNotNull(applicantIdNo)) {
+					List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
+					if (appList != null && appList.size() > 0) {
+						for (Applicant applicant : appList) {
+							flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+							if (flagUser == 2) break;
+						}
 					}
-					//_log.info("payloadTest: "+payload.toJSONString());
-					queue.setPayload(payload.toJSONString());
-					
-					queue.setExpireDate(cal.getTime());
-					
-					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
-				//Add applicant search
-				ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
-						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
-			} else if (flagUser == 1) {
-				//Add applicant and user
-				Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
-				if (app != null) {
-					//Send Email active account
-					Date now = new Date();
-					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
-
-					NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
-					Calendar cal = Calendar.getInstance();
-					cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
-
-					queue.setCreateDate(now);
-					queue.setModifiedDate(now);
-					queue.setGroupId(groupId);
-					queue.setCompanyId(serviceContext.getCompanyId());
-
-					queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
-					queue.setClassName(Applicant.class.getName());
-					queue.setClassPK(String.valueOf(app.getApplicantId()));
-					queue.setToUsername(applicantName);
-					queue.setToUserId(app.getMappingUserId());
-					queue.setToEmail(contactEmail);
-					queue.setToTelNo(StringPool.BLANK);
-					
-					JSONObject payload = JSONFactoryUtil.createJSONObject();
-					try {
-						// _log.info("START PAYLOAD: ");
-						payload.put(ApplicantListenerMessageKeys.APPLICANT,
-								JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
-					} catch (JSONException parse) {
-						_log.error(parse);
+				// Check exits contactEmail
+				if (flagUser != 2 && Validator.isNotNull(contactEmail)) {
+					List<Applicant> appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
+					if (appList != null && appList.size() > 0) {
+						for (Applicant applicant : appList) {
+							flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+							if (flagUser == 2) break;
+						}
 					}
-					//_log.info("payloadTest: "+payload.toJSONString());
-					queue.setPayload(payload.toJSONString());
-					
-					queue.setExpireDate(cal.getTime());
-					
-					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
 				}
-			} else if (flagUser == 3) {
-				ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
-						applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, serviceContext);
+
+				// Check exits contactEmail
+				if (flagUser != 2 && flagUser != 1 && Validator.isNotNull(contactEmail)) {
+					User appUser = UserLocalServiceUtil.fetchUserByEmailAddress(serviceContext.getCompanyId(), contactEmail);
+					if (appUser != null) {
+						flagUser = 3;
+						mappingUserId = appUser.getUserId();
+					}
+				}
+			} else {
+				flagUser = 4;
+				if (Validator.isNotNull(applicantIdNo)) {
+					Applicant app = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, applicantIdNo);
+					if (app != null) flagUser = 2;
+				}
+				// Check exits contactEmail
+				if (flagUser != 2 && Validator.isNotNull(contactEmail)) {
+					Applicant app = ApplicantLocalServiceUtil.fetchByF_GID_CTEM(groupId, contactEmail);
+					if (app != null) flagUser = 2;
+				}
+
+			}
+
+			if (flagUser != 2) {
+				DictCollection dc = DictCollectionLocalServiceUtil
+						.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
+				String cityName = getDictItemName(groupId, dc, cityCode);
+				String districtName = getDictItemName(groupId, dc, districtCode);
+				String wardName = getDictItemName(groupId, dc, wardCode);
 				//
-				//Add applicant search
-				ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
-						applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
-						districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
+				Date appDate = null;
+				if (Validator.isNotNull(applicantIdDate)) {
+					SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+					try {
+						appDate = sdf.parse(applicantIdDate);
+					} catch (ParseException e) {
+					}
+				}
+				
+				//Process update applicant and user
+				if (flagUser == 0) {
+					//Add applicant and user
+					Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+					//Add applicant search
+					ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
+							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail, profile);
+				} else if (flagUser == 1) {
+					//Add applicant and user
+					ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+				} else if (flagUser == 3) {
+					ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+
+					//Add applicant search
+					ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
+							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail,
+							 profile);
+				} else if (flagUser == 4) {
+					//Add applicant search
+					ApplicantLocalServiceUtil.updateApplicant(0l, userId, serviceContext.getCompanyId(),
+							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail, profile);
+				}
+			}
+		} // Import project not using LGSP
+		else {
+			int flagUser = 0;
+			if (Validator.isNotNull(applicantIdNo)) {
+				List<Applicant> appList = ApplicantLocalServiceUtil.findByAppIds(applicantIdNo);
+				if (appList != null && appList.size() > 0) {
+					for (Applicant applicant : appList) {
+						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+						if (flagUser == 2) break;
+					}
+				}
+			}
+			// Check exits contactEmail
+			if (flagUser != 2 && Validator.isNotNull(contactEmail)) {
+				List<Applicant> appList = ApplicantLocalServiceUtil.findByContactEmailList(contactEmail);
+				if (appList != null && appList.size() > 0) {
+					for (Applicant applicant : appList) {
+						flagUser = applicant.getMappingUserId() > 0 ? 2 : 1;
+						if (flagUser == 2) break;
+					}
+				}
+			}
+
+			// Check exits contactEmail
+			long mappingUserId = 0;
+			if (flagUser != 2 && flagUser != 1 && Validator.isNotNull(contactEmail)) {
+				User appUser = UserLocalServiceUtil.fetchUserByEmailAddress(serviceContext.getCompanyId(), contactEmail);
+				if (appUser != null) {
+					flagUser = 3;
+					mappingUserId = appUser.getUserId();
+				}
+			}
+
+			if (flagUser != 2) {
+				DictCollection dc = DictCollectionLocalServiceUtil
+						.fetchByF_dictCollectionCode(ConfigProps.get(ConfigConstants.VALUE_ADMINISTRATIVE_REGION), groupId);
+				String cityName = getDictItemName(groupId, dc, cityCode);
+				String districtName = getDictItemName(groupId, dc, districtCode);
+				String wardName = getDictItemName(groupId, dc, wardCode);
+				//
+				Date appDate = null;
+				if (Validator.isNotNull(applicantIdDate)) {
+					SimpleDateFormat sdf = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
+					try {
+						appDate = sdf.parse(applicantIdDate);
+					} catch (ParseException e) {
+					}
+				}
+				
+//				System.out.println("flagUser: "+flagUser);
+				//Process update applicant and user
+				if (flagUser == 0) {
+					//Add applicant and user
+					Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+					if (app != null) {
+						//Send Email active account
+						Date now = new Date();
+						long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+						NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+						queue.setCreateDate(now);
+						queue.setModifiedDate(now);
+						queue.setGroupId(groupId);
+						queue.setCompanyId(serviceContext.getCompanyId());
+
+						queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
+						queue.setClassName(Applicant.class.getName());
+						queue.setClassPK(String.valueOf(app.getApplicantId()));
+						queue.setToUsername(applicantName);
+						queue.setToUserId(app.getMappingUserId());
+						queue.setToEmail(contactEmail);
+						queue.setToTelNo(StringPool.BLANK);
+						
+						JSONObject payload = JSONFactoryUtil.createJSONObject();
+						try {
+							// _log.info("START PAYLOAD: ");
+							payload.put(ApplicantListenerMessageKeys.APPLICANT,
+									JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+						} catch (JSONException parse) {
+							_log.error(parse);
+						}
+						//_log.info("payloadTest: "+payload.toJSONString());
+						queue.setPayload(payload.toJSONString());
+						
+						queue.setExpireDate(cal.getTime());
+						
+						NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+					}
+					//Add applicant search
+					ApplicantLocalServiceUtil.updateApplicant(0l, app.getMappingUserId(), serviceContext.getCompanyId(),
+							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
+				} else if (flagUser == 1) {
+					//Add applicant and user
+					Applicant app = ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+					if (app != null) {
+						//Send Email active account
+						Date now = new Date();
+						long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
+
+						NotificationQueue queue = NotificationQueueLocalServiceUtil.createNotificationQueue(notificationQueueId);
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1);
+
+						queue.setCreateDate(now);
+						queue.setModifiedDate(now);
+						queue.setGroupId(groupId);
+						queue.setCompanyId(serviceContext.getCompanyId());
+
+						queue.setNotificationType(ConfigProps.get(ConfigConstants.APPLICANT_NOTI_TYPE_OLD_ACTIVE));
+						queue.setClassName(Applicant.class.getName());
+						queue.setClassPK(String.valueOf(app.getApplicantId()));
+						queue.setToUsername(applicantName);
+						queue.setToUserId(app.getMappingUserId());
+						queue.setToEmail(contactEmail);
+						queue.setToTelNo(StringPool.BLANK);
+						
+						JSONObject payload = JSONFactoryUtil.createJSONObject();
+						try {
+							// _log.info("START PAYLOAD: ");
+							payload.put(ApplicantListenerMessageKeys.APPLICANT,
+									JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(app)));
+						} catch (JSONException parse) {
+							_log.error(parse);
+						}
+						//_log.info("payloadTest: "+payload.toJSONString());
+						queue.setPayload(payload.toJSONString());
+						
+						queue.setExpireDate(cal.getTime());
+						
+						NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+					}
+				} else if (flagUser == 3) {
+					ApplicantLocalServiceUtil.importApplicationDB(groupId, userId, 0l, mappingUserId, applicantIdNo, applicantName,
+							applicantIdType, appDate, contactEmail, contactTelNo, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, contactName, profile, serviceContext);
+					//
+					//Add applicant search
+					ApplicantLocalServiceUtil.updateApplicant(0l, mappingUserId, serviceContext.getCompanyId(),
+							applicantName, applicantIdType, applicantIdNo, appDate, address, cityCode, cityName,
+							districtCode, districtName, wardCode, wardName, applicantName, contactTelNo, contactEmail);
+				}
 			}
 		}
 	}

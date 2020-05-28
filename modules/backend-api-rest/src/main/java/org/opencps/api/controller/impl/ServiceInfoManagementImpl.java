@@ -153,8 +153,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
 
 			Sort[] sorts = null;
-			_log.info("sorts: "+query.getSort());
-			_log.info("getOrder: "+query.getOrder());
+//			_log.info("sorts: "+query.getSort());
+//			_log.info("getOrder: "+query.getOrder());
 			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
 					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN)
 					|| query.getSort().equals(ServiceInfoTerm.MAX_LEVEL))) {

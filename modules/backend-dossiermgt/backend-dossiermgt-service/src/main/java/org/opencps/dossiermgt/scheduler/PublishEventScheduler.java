@@ -107,7 +107,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 	private boolean processPublish(PublishQueue pq) {
 		long dossierId = pq.getDossierId();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		if (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo())) {
+		if (Validator.isNotNull(dossier.getOriginDossierId()) && (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
 			return true;
 		}
 		_log.info("pq: "+JSONFactoryUtil.looseSerialize(pq));
