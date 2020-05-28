@@ -1175,7 +1175,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			} else if (Validator.isNull(objectData.getString(ApplicantTerm.APPLICANTIDNO))) {
 				throw new NoApplicantIdNoException("NoApplicantIdNo");
 			} else {
-				checkExitsAplc = applicantPersistence.countByF_APLC_GID(objectData.getLong(Field.GROUP_ID), ApplicantTerm.APPLICANTIDNO);
+				checkExitsAplc = applicantPersistence.countByF_APLC_GID(objectData.getLong(Field.GROUP_ID), objectData.getString(ApplicantTerm.APPLICANTIDNO));
 				if (checkExitsAplc > 0) {
 					throw new DuplicateApplicantIdException("applicantIdNo_exits");
 				}
