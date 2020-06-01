@@ -153,11 +153,19 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			params.put(ServiceInfoTerm.SYNCED, query.getSynced());
 
 			Sort[] sorts = null;
-			_log.info("sorts: "+query.getSort());
-			_log.info("getOrder: "+query.getOrder());
-			if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
-					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN)
-					|| query.getSort().equals(ServiceInfoTerm.MAX_LEVEL))) {
+//			_log.info("sorts: "+query.getSort());
+//			_log.info("getOrder: "+query.getOrder());
+			if (Validator.isNotNull(query.getSort()) && query.getSort().equals(ServiceInfoTerm.MAX_LEVEL)) {
+				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
+				String serviceCodeSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), ServiceInfoTerm.SERVICE_CODE_SEARCH);
+				String serviceNameSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), ServiceInfoTerm.SERVICE_NAME_SEARCH);
+				sorts = new Sort[] {
+						SortFactoryUtil.create(numberSort, Sort.INT_TYPE, GetterUtil.getBoolean(query.getOrder())),
+						SortFactoryUtil.create(serviceCodeSort, Sort.STRING_TYPE, false),
+						SortFactoryUtil.create(serviceNameSort, Sort.STRING_TYPE, false)
+					};
+			} else if (Validator.isNotNull(query.getSort()) && (query.getSort().equals(DictItemTerm.SIBLING_AGENCY)
+					|| query.getSort().equals(DictItemTerm.SIBLING_DOMAIN))) {
 				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), query.getSort());
 				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

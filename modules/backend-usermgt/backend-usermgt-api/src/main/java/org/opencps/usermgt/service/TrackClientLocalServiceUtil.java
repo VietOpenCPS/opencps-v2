@@ -212,6 +212,16 @@ public class TrackClientLocalServiceUtil {
 		return getService().findByS_NULL_L(sessionId, leaveDate, start, end);
 	}
 
+	public static java.util.List<Object[]> findPeriodCountDay(String startDay,
+		String endDay) {
+		return getService().findPeriodCountDay(startDay, endDay);
+	}
+
+	public static java.util.List<Object[]> findPeriodRegion(String startDay,
+		String endDay) {
+		return getService().findPeriodRegion(startDay, endDay);
+	}
+
 	public static org.opencps.usermgt.model.TrackClient findPreviousPage(
 		String sessionId) {
 		return getService().findPreviousPage(sessionId);

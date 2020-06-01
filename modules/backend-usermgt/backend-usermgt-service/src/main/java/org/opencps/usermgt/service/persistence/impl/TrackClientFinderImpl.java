@@ -97,4 +97,55 @@ public class TrackClientFinderImpl extends TrackClientFinderBaseImpl implements 
 		}
 	}
 
+	@Override
+	public List<Object[]> findPeriodCountDay(String startDay, String endDay)
+	{
+		Session session;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),TrackClientFinder.class.getName() + ".findPeriodCountDay");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+
+			query.addScalar("date",Type.DATE);
+			query.addScalar("count",Type.INTEGER);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(startDay);
+			queryPos.add(endDay);
+			return (List<Object[]>) query.list();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	@Override
+	public List<Object[]> findPeriodRegion(String startDay, String endDay)
+	{
+		Session session;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),TrackClientFinder.class.getName() + ".findPeriodRegion");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+
+			query.addScalar("region",Type.STRING);
+			query.addScalar("count",Type.INTEGER);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(startDay);
+			queryPos.add(endDay);
+			return (List<Object[]>) query.list();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.HttpStatus;
 import org.opencps.api.constants.LGSPTerm;
 import org.opencps.api.controller.LGSPIntegrationManagement;
+import org.opencps.api.controller.util.PasswordEncrypt;
 
 public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement {
 
@@ -38,6 +40,20 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 		}
 
 		return Response.status(HttpStatus.SC_OK).entity(result.toJSONString()).build();
+	}
+
+	@Override
+	public Response secrectKeyToMD5(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String secrectKey) {
+		try {
+			String encryptSecrect = PasswordEncrypt.encrypt(secrectKey);
+			JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
+			jsonResult.put("secrectKey", encryptSecrect);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toString()).build();
+		} catch (Exception e) {
+			_log.error("err");
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
 	}
 
 }
