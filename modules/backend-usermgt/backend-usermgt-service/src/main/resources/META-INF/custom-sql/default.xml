@@ -30,6 +30,32 @@
 				AND o.createDate BETWEEN ? AND ?
 		]]>
     </sql>
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPeriodCountDay">
+        <![CDATA[
+			SELECT 	DATE(createDate) date , count(*) count
+			FROM 	opencps_track_client_statistic AS o
+			WHERE
+				o.day <> 0
+				AND o.createDate BETWEEN ? AND ?
+            GROUP BY date
+            ORDER BY createDate ASC
+		]]>
+    </sql>
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.findPeriodRegion">
+        <![CDATA[
+			SELECT 	region , count(*) count
+            FROM 	opencps_track_client
+            WHERE
+                    day <> 0
+                    AND createDate BETWEEN ? AND ?
+                    AND region IS NOT NULL
+                    GROUP BY region
+            ORDER BY count DESC
+            LIMIT 20
+		]]>
+    </sql>
+
 
     <!-- tìm các url xuất hiện trong khoảng thời gian -->
     <sql id="org.opencps.usermgt.service.persistence.TrackClientStatisticFinder.findURLPeriod">
@@ -149,6 +175,19 @@
         WHERE userId = ?
         GROUP BY url
         ORDER BY count DESC
+        ]]>
+    </sql>
+
+
+
+    <sql id="org.opencps.usermgt.service.persistence.TrackClientFinder.getTopRegionClient">
+        <![CDATA[
+        SELECT  region , count(*) count
+        FROM    opencps_track_client
+        WHERE   userId = ?
+        GROUP BY region
+        ORDER BY count DESC
+        limit 20
         ]]>
     </sql>
 
