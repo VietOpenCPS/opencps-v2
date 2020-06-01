@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.exportimport.UserImporter;
+//import com.liferay.portal.security.exportimport.UserImporter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,10 +48,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Daeyoung Song
  */
 @Component(
-	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
+//	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
 	immediate = true, service = AutoLogin.class
 )
-public class CASAutoLogin extends com.liferay.portal.security.sso.cas.internal.auto.login.CASAutoLogin {
+public class CASAutoLogin extends BaseAutoLogin {
 	public static final String CAS_FORCE_LOGOUT = "CAS_FORCE_LOGOUT";
 
 	public static final String CAS_LOGIN = "CAS_LOGIN";
@@ -184,10 +184,10 @@ public class CASAutoLogin extends com.liferay.portal.security.sso.cas.internal.a
 		_configurationProvider = configurationProvider;
 	}
 
-	@Reference(unbind = "-")
-	protected void setUserImporter(UserImporter userImporter) {
-		_userImporter = userImporter;
-	}
+//	@Reference(unbind = "-")
+//	protected void setUserImporter(UserImporter userImporter) {
+//		_userImporter = userImporter;
+//	}
 
 	@Reference(unbind = "-")
 	protected void setUserLocalService(UserLocalService userLocalService) {
@@ -201,7 +201,7 @@ public class CASAutoLogin extends com.liferay.portal.security.sso.cas.internal.a
 	@Reference
 	private Portal _portal;
 
-	private UserImporter _userImporter;
+//	private UserImporter _userImporter;
 	private UserLocalService _userLocalService;
 
 }
