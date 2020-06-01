@@ -28,4 +28,10 @@ public interface TrackClientFinder {
 	public java.util.List<Object[]> getOnline();
 
 	public java.util.List<Object[]> getTopURLUserAccess(long userId);
+
+	public java.util.List<Object[]> findPeriodCountDay(String startDay,
+		String endDay);
+
+	public java.util.List<Object[]> findPeriodRegion(String startDay,
+		String endDay);
 }

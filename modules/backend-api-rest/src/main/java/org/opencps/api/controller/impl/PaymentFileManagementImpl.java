@@ -24,10 +24,13 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URI;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +57,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentConfigTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -1122,5 +1126,41 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response checkKeyPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext, String input)
+	{
+
+		Map map = new HashMap();
+		map.put("","");
+
+		List list = new ArrayList(map.keySet());
+		Collections.sort(list);
+
+		Iterator iterator = list.iterator();
+
+		StringBuilder stringBuilder = new StringBuilder();
+		while (iterator.hasNext())
+		{
+			String key = (String) iterator.next();
+			String val = (String) map.get(key);
+			stringBuilder.append(val);
+		}
+
+		String hashCodeUppercase = null;
+		try
+		{
+			MessageDigest crypt = MessageDigest.getInstance("MD5");
+			crypt.reset();
+			crypt.update(input.getBytes("UTF-8"));
+			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();
+		}
+		catch (UnsupportedEncodingException | NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

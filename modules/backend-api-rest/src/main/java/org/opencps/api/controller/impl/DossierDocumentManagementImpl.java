@@ -19,12 +19,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -45,25 +46,15 @@ import org.opencps.dossiermgt.constants.DossierDocumentTerm;
 //import org.opencps.cache.service.CacheLocalServiceUtil;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
-import org.opencps.dossiermgt.model.DocumentType;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.ProcessSequence;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DocumentTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import uk.org.okapibarcode.backend.HumanReadableLocation;
+import uk.org.okapibarcode.backend.QrCode;
+import uk.org.okapibarcode.backend.Symbol;
+import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class DossierDocumentManagementImpl implements DossierDocumentManagement {	
 	private static Log _log = LogFactoryUtil.getLog(DossierDocumentManagementImpl.class);
@@ -92,7 +83,7 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					JSONObject jsonData = JSONFactoryUtil.createJSONObject();
 					DossierAction dAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
 					ServiceProcess sp = ServiceProcessLocalServiceUtil.fetchServiceProcess(dAction.getServiceProcessId());
-					
+
 					//String payload = StringPool.BLANK;
 					if (dAction != null) {
 						String payload = dAction.getPayload();
@@ -108,6 +99,24 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					} else {
 						jsonData.put(Field.USER_NAME, user.getFullName());
 					}
+					String govAgencyCode = dossier.getGovAgencyCode();
+					if (Validator.isNotNull(govAgencyCode))
+					{
+						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
+						if (Validator.isNotNull(paymentConfig))
+						{
+							String epay = paymentConfig.getEpaymentConfig();
+							JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
+							String paymentReturnUrl = StringPool.BLANK;
+							String paymentMerchantSecureKey = StringPool.BLANK;
+							if (jsonObject.has("paymentReturnUrl"))
+								paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
+							if (jsonObject.has("paymentMerchantSecureKey"));
+							paymentMerchantSecureKey =	jsonObject.getString("paymentMerchantSecureKey");
+							jsonData.put("paymentReturnUrl",paymentReturnUrl);
+							jsonData.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
+						}
+					}
 					//
 					//_log.info("jsonData: "+jsonData);
 					jsonData.put(ConstantUtils.API_JSON_URL, serviceContext.getPortalURL());
@@ -115,7 +124,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 					Message message = new Message();
 					message.put(DossierDocumentTerm.FORM_REPORT, documentScript);
 					message.put(DossierDocumentTerm.FORM_DATA, jsonData.toJSONString());
-
 					Date dateEnd = new Date();
 					_log.debug("TIME Part 1: "+(dateEnd.getTime() - dateStart.getTime()) +" ms");
 					try {
@@ -133,7 +141,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
 								attachmentFilename);
 						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_PDF);
-
 						Date dateEnd1 = new Date();
 						_log.debug("TIME Part 2: "+(dateEnd1.getTime() - dateStart1.getTime()) +" ms");
 						return responseBuilder.build();
@@ -357,7 +364,6 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
 	//LamTV_ Mapping process dossier and formData
 	private JSONObject processMergeDossierProcessRole(Dossier dossier, int length, JSONObject jsonData,
 			DossierAction dAction) {
@@ -584,6 +590,79 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 			return BusinessExceptionImpl.processException(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+	}
+
+	@Override
+	public Response getQRPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,String id,String value)
+	{
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		try
+		{
+			if (!auth.isAuth(serviceContext))
+				throw new UnauthenticationException();
+			Dossier dossier = DossierUtils.getDossier(id,groupId);
+			if (Validator.isNotNull(dossier))
+			{
+				String govAgencyCode = dossier.getGovAgencyCode();
+
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
+				if (Validator.isNotNull(paymentConfig))
+				{
+					String epay = paymentConfig.getEpaymentConfig();
+
+					JSONObject result = JSONFactoryUtil.createJSONObject();
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
+					String paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
+					String paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
+
+					result.put("paymentReturnUrl", paymentReturnUrl);
+					result.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
+
+					QrCode qrcode = new QrCode();
+					qrcode.setHumanReadableLocation(HumanReadableLocation.BOTTOM);
+					qrcode.setDataType(Symbol.DataType.ECI);
+					qrcode.setContent(result.toString());
+
+					int width = qrcode.getWidth();
+					int height = qrcode.getHeight();
+
+					BufferedImage image = new BufferedImage(width,height,BufferedImage.TYPE_BYTE_GRAY);
+					Graphics2D g2d = image.createGraphics();
+					Java2DRenderer renderer = new Java2DRenderer(g2d,1,Color.WHITE,Color.BLACK);
+					renderer.render(qrcode);
+					String uuid = UUID.randomUUID().toString();
+					File destDir = new File(ConstantUtils.BARCODE);
+					if (!destDir.exists())
+					{
+						destDir.mkdir();
+					}
+					String barCodeFileName = String.format(MessageUtil.getMessage(ConstantUtils.BARCODE_FILENAME),uuid);
+					File file = new File(barCodeFileName);
+					if (!file.exists())
+					{
+						file.createNewFile();
+					}
+					if (file.exists())
+					{
+						ImageIO.write(image,ConstantUtils.PNG,file);
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+						String fileName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME),file.getName());
+
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,fileName);
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE,ConstantUtils.MEDIA_TYPE_PNG);
+
+						return responseBuilder.build();
+					}
+				}
+			}
+		}
+		catch(Exception e){
+			return BusinessExceptionImpl.processException(e);
+		}
+		return Response.status(java.net.HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
 }

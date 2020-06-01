@@ -177,7 +177,7 @@ public class TrackClientStatisticLocalServiceImpl
 		result.put("mobile",count);
 
 		count=0;
-		List<TrackClientStatistic> trackClientStatisticsTablet = trackClientStatisticPersistence.findByD_M_Y_D_M_T(day,month,year,false,true,false);
+		List<TrackClientStatistic> trackClientStatisticsTablet = trackClientStatisticPersistence.findByD_M_Y_D_M_T(day,month,year,false,false,true);
 		for (TrackClientStatistic trackClientStatistic: trackClientStatisticsTablet)
 			count = count + trackClientStatistic.getTotal();
 		result.put("tablet",count);
