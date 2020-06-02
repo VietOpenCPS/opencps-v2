@@ -1400,7 +1400,9 @@ public interface DossierManagement {
 		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("dvcGroupId") long dvcGroupId,
 		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("groupId") long groupId,
 		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("govAgencyCode") String govAgencyCode,
-		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("govAgencyName") String govAgencyName);
+		@ApiParam(value = "actionCode to done Dossier", required = true) @Multipart("govAgencyName") String govAgencyName,
+		@ApiParam(value = "appUser to done Dossier", required = true) @Multipart("appUser") String appUser,
+		@ApiParam(value = "appSecret to done Dossier", required = true) @Multipart("appSecret") String appSecret);
 
 	@POST
 	@Path("/convert/olddossierfiles")
@@ -1460,10 +1462,17 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
+		@FormParam("driveClassName") String driveClassName,
+		@FormParam("connectionUrl") String connectionUrl,
+		@FormParam("dbUser") String dbUser,
+		@FormParam("dbSecret") String dbSecret,
+		@FormParam("sqlQuery") String sqlQuery,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
 		@FormParam("dvcGroupId") long dvcGroupId,
-		@FormParam("groupId") long groupId);
+		@FormParam("groupId") long groupId,
+		@FormParam("appUser") String appUser,
+		@FormParam("appSecret") String appSecret);
 
 	@POST
 	@Path("/doconvertdossierfilewithsql")
@@ -1484,6 +1493,11 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext,
+		@FormParam("driveClassName") String driveClassName,
+		@FormParam("connectionUrl") String connectionUrl,
+		@FormParam("dbUser") String dbUser,
+		@FormParam("dbSecret") String dbSecret,
+		@FormParam("sqlQuery") String sqlQuery,
 		@FormParam("actionCode") String actionCode,
 		@FormParam("pathBase") String pathBase,
 		@FormParam("dvcGroupId") long dvcGroupId,

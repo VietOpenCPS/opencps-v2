@@ -516,6 +516,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 	public static JSONObject callActionDoneDossier(
 		String pathBase, long groupId, long id, String actionCode,
+		String appUser, String appSecret,
 		ServiceContext serviceContext)
 		throws PortalException {
 
@@ -535,7 +536,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		JSONObject resPostDossier = rest.callPostAPI(
 			groupId, HttpMethods.POST, "application/json", pathBase, endPoint,
-			RESTFulConfiguration.SERVER_USER, RESTFulConfiguration.SERVER_PASS,
+			appUser, appSecret,
 			properties, params, serviceContext);
 
 		System.out.println(resPostDossier);
