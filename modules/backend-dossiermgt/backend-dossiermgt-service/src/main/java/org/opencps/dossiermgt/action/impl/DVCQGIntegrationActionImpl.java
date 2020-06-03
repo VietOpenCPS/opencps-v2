@@ -154,6 +154,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
+		}else {
+			//danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
+			_mServiceCode = _oServiceCode;
 		}
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
 		if(dossier.getSystemId() == 5) {
@@ -331,7 +334,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
+		}else {
+			//danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
+			_mServiceCode = _oServiceCode;
 		}
+		
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
 
 		if(dossier.getSystemId() == 5) {

@@ -66,14 +66,18 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 			} catch (Exception e) {
 				_log.error(e);
-				result.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
-				result.put(ConstantUtils.API_JSON_DESCRIPTION, MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
+				result.put(ConstantUtils.API_JSON_MESSAGE,
+						MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
+				result.put(ConstantUtils.API_JSON_DESCRIPTION,
+						MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
 				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(result.toJSONString()).build();
 			}
 
 		} else {
-			result.put(ConstantUtils.API_JSON_MESSAGE, MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
-			result.put(ConstantUtils.API_JSON_DESCRIPTION, MessageUtil.getMessage(ConstantUtils.DVCQG_SSO_CANNOTGETUSERINFO));
+			result.put(ConstantUtils.API_JSON_MESSAGE,
+					MessageUtil.getMessage(ConstantUtils.API_JSON_MESSAGE_AUTHENTICATEDFAILURE));
+			result.put(ConstantUtils.API_JSON_DESCRIPTION,
+					MessageUtil.getMessage(ConstantUtils.DVCQG_SSO_CANNOTGETUSERINFO));
 			return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity(result.toJSONString()).build();
 		}
 
@@ -81,7 +85,8 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 
 	@Override
 	public Response getAuthURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
-			Company company, Locale locale, User user, ServiceContext serviceContext, String state, String redirectURL) {
+			Company company, Locale locale, User user, ServiceContext serviceContext, String state,
+			String redirectURL) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -96,15 +101,16 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 	public Response doChangeEmail(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
 			Company company, Locale locale, User user, ServiceContext serviceContext, String oldEmail, String newEmail,
 			String techId) {
-		
+
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		
+
 		try {
-			result = action.doChangeEmail(user, company.getCompanyId(), groupId, request, response, serviceContext, oldEmail, newEmail, techId);
+			result = action.doChangeEmail(user, company.getCompanyId(), groupId, request, response, serviceContext,
+					oldEmail, newEmail, techId);
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
@@ -112,5 +118,17 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 			result.put("description", "authentication failed");
 			return Response.status(401).entity(result.toJSONString()).build();
 		}
+	}
+
+	@Override
+	public Response doLogout(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String accessToken,
+			String redirectURL, String state) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
+
+		String data = action.getLogout(user, groupId, request, serviceContext, accessToken, redirectURL, state);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(data).build();
 	}
 }
