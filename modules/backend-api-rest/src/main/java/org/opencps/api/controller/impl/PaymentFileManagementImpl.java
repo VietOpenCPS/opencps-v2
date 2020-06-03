@@ -788,7 +788,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	//LamTV_Process new API Payment
 	@Override
 	public Response getPaymentFileByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
-			Locale locale, User user, ServiceContext serviceContext, String id) {
+			Locale locale, User user, ServiceContext serviceContext, String id, String secretCode) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
@@ -797,10 +797,9 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		try {
 			// Check user is login
-			if (!auth.isAuth(serviceContext)) {
+			if (Validator.isNull(secretCode) && !auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-
 			if (dossierId == 0) {
 				Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, id);
 				if (dossier != null) {
@@ -808,8 +807,13 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				}
 			}
 
+			if (Validator.isNotNull(secretCode) && dossierId > 0) {
+				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+				if (!secretCode.equals(dossier.getPassword())) {
+					throw new UnauthenticationException();
+				}
+			}
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-
 			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
