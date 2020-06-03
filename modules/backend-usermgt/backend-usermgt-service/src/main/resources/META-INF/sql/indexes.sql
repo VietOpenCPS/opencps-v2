@@ -73,6 +73,9 @@ create index IX_EA37248D on opencps_resourceuser (groupId, className[$COLUMN_LEN
 create index IX_7B404B56 on opencps_resourceuser (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_71EFAF58 on opencps_resourceuser (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_99ABEB80 on opencps_save_pick_field (groupId, userId, classPK[$COLUMN_LENGTH:75$]);
+create unique index IX_D092ECB7 on opencps_save_pick_field (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_E6980DC5 on opencps_sync_scheduler (className[$COLUMN_LENGTH:255$], retry);
 create index IX_2247AC10 on opencps_sync_scheduler (className[$COLUMN_LENGTH:255$], syncDate);
 create index IX_4F2917EE on opencps_sync_scheduler (className[$COLUMN_LENGTH:255$], typeCode[$COLUMN_LENGTH:255$]);

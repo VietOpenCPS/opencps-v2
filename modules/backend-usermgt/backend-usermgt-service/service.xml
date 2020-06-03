@@ -982,6 +982,29 @@
             <finder-column name="status"></finder-column>
         </finder>
 	</entity>
+
+
+	<entity name="SavePickField" uuid="true" local-service="true"
+			remote-service="false" table="opencps_save_pick_field">
+		<!-- PK fields -->
+		<column name="fieldPickId" type="long" primary="true"/>
+
+		<!-- Audit fields -->
+		<column name="groupId" type="long"/>
+		<column name="userId" type="long"/>
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+		<column name="formData" type="String"/>
+		<column name="classPK" type="String"/>
+
+		<finder name="G_U_ClassPK" return-type="SavePickField">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="userId"></finder-column>
+			<finder-column name="classPK"></finder-column>
+		</finder>
+	</entity>
 		
 	<exceptions>
 		<exception>NoApplicantName</exception>

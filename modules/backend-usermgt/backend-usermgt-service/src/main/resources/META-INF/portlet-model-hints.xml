@@ -424,6 +424,18 @@
 		</field>
 		<field name="readonly" type="boolean" />
 	</model>
+	<model name="org.opencps.usermgt.model.SavePickField">
+		<field name="uuid" type="String" />
+		<field name="fieldPickId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="formData" type="String">
+			<hint name="max-length">2048</hint>
+		</field>
+		<field name="classPK" type="String" />
+	</model>
 	<model name="org.opencps.usermgt.model.SyncScheduler">
 		<field name="uuid" type="String" />
 		<field name="syncSchedulerId" type="long" />
