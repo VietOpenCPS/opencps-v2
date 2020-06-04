@@ -28,21 +28,20 @@ public interface SaveFieldPickManagement
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "Get field pick saved", response = String.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServerConfig", response = ServerConfigResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServerConfig", response = String.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
-
-	public Response getFieldPick(@Context HttpServletRequest request, @Context HttpHeaders header,@Context Company company, @Context
-		Locale locale, @Context User user,@Context ServiceContext serviceContext,
+	public Response getFieldPick(@Context HttpServletRequest request, @Context HttpHeaders header,@Context Company company,
+		@Context Locale locale, @Context User user,@Context ServiceContext serviceContext,
 		@PathParam(value = "classPK") String classPK);
 
 	@POST
-	@Path("/save/{classPK}")
+	@Path("/classpk/{classPK}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@ApiOperation(value = "save field pick ", response = String.class)
 	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServerConfig", response = ServerConfigResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServerConfig", response = String.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
 		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })

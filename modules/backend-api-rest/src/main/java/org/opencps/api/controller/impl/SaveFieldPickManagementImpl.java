@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -25,7 +27,8 @@ import java.util.Locale;
 
 public class SaveFieldPickManagementImpl implements SaveFieldPickManagement
 {
-	Log _log = LogFactoryUtil.getLog(ServerConfigManagementImpl.class);
+	private static final Log _log = LogFactoryUtil.getLog(ServerConfigManagementImpl.class);
+
 	@Override
 	public Response getFieldPick(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
 		ServiceContext serviceContext,String classPK)
@@ -46,12 +49,18 @@ public class SaveFieldPickManagementImpl implements SaveFieldPickManagement
 			groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			userID = serviceContext.getUserId();
 			if (Validator.isNotNull(classPK))
+			{
 				formData = actions.getFieldPick(groupId,userID,classPK);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(formData).build();
-
+				JSONObject result = JSONFactoryUtil.createJSONObject();
+				result.put("formData",formData);
+				return Response.status(HttpURLConnection.HTTP_OK).entity(formData).build();
+			}
+			else
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 		catch (Exception e)
 		{
+			_log.error("err", e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 
@@ -80,7 +89,14 @@ public class SaveFieldPickManagementImpl implements SaveFieldPickManagement
 			{
 				savePickField = actions.updateFieldPick(userID,groupId,formData,classPK);
 				if (Validator.isNotNull(savePickField))
-					return Response.status(HttpURLConnection.HTTP_OK).entity(formData).build();
+				{
+					JSONObject result = JSONFactoryUtil.createJSONObject();
+					if (Validator.isNotNull(savePickField))
+					{
+						result.put("updated",true);
+						return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
+					}
+				}
 			}
 		}
 		catch (Exception e)
