@@ -21,6 +21,9 @@ public interface DVCQGSSOInterface {
 
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
 			String authToken, String state);
+	
+	public String getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String accessToken, String redirectURL, String state);
 
 	public JSONObject doAuth(User user, HttpServletRequest request, HttpServletResponse response,
 			ServiceContext serviceContext, String userInfo) throws Exception;

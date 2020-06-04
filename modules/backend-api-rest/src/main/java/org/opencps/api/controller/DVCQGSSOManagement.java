@@ -27,41 +27,52 @@ public interface DVCQGSSOManagement {
 	@Path("/checkauth")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
-	public Response checkAuth(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
+	public Response checkAuth(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @FormParam("vnconnect") int vnconnect,
 			@FormParam("curenturl") String currentURL);
-	
+
 	@GET
 	@Path("/authurl")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.TEXT_HTML, MediaType.APPLICATION_JSON })
-	public Response getAuthURL(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @FormParam("state") String state, @FormParam("redirectURL") String redirectURL);
+	public Response getAuthURL(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("state") String state,
+			@FormParam("redirectURL") String redirectURL);
 
 	@GET
 	@Path("/userinfo")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
-	public Response getUserInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken, @QueryParam("state") String state);
-	
+	public Response getUserInfo(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken,
+			@QueryParam("state") String state);
+
+	@POST
+	@Path("/logout")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
+	public Response doLogout(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("accessToken") String accessToken,
+			@QueryParam("redirectURL") String redirectURL, @QueryParam("state") String state);
+
 	@POST
 	@Path("/auth")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
-	public Response doAuth(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
+	public Response doAuth(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, String userinfo);
-	
-	
+
 	@POST
 	@Path("/changeemail")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_JSON})
-	public Response doChangeEmail(@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("oldEmail") String oldEmail, @QueryParam("newEmail") String newEmail, @QueryParam("techId") String techId);
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doChangeEmail(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("oldEmail") String oldEmail,
+			@QueryParam("newEmail") String newEmail, @QueryParam("techId") String techId);
 }
