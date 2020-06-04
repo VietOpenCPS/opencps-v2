@@ -7,7 +7,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.opencps.api.serverconfig.model.ServerConfigResultsModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import javax.servlet.http.HttpServletRequest;
