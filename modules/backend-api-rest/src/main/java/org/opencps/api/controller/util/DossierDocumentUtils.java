@@ -446,6 +446,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
 		jsonData.put(DossierTerm.ONLINE, String.valueOf(dossier.getOnline()));
 		jsonData.put(DossierTerm.FROM_VIA_POSTAL, String.valueOf(dossier.getFromViaPostal()));
+		jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 
 		// MetaData
 		String metaData = dossier.getMetaData();

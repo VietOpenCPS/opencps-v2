@@ -6498,6 +6498,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				if (dossierFileArr != null && dossierFileArr.length() > 0) {
 
 					for (int j = 0; j < dossierFileArr.length(); j++) {
+						//
+						String referenceFileUid = DossierNumberGenerator.generateReferenceUID(groupId);
 						JSONObject jsonFile = dossierFileArr.getJSONObject(j);
 
 						boolean eform = Boolean.valueOf(jsonFile.getString("eform"));
@@ -6520,7 +6522,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								if (dossierFile == null) {
 									_log.info("dossierFile NULL");
 									dossierFile = dossierFileLocalService.addDossierFileEForm(groupId, dossierId,
-											referenceUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
+											referenceFileUid, templateNo, partNo, dossierPart.getFileTemplateNo(),
 											dossierPart.getPartName(), dossierPart.getPartName(), 0, null,
 											StringPool.BLANK, "true", serviceContext);
 								}
