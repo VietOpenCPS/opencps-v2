@@ -494,16 +494,46 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				}
 				// Caculate statistic each year
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
-				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-				
+//				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.findByG_NM_Y(site.getGroupId(), 0, LocalDate.now().getYear());
+				Comparator<OpencpsDossierStatistic> compareByYearMonth = new Comparator<OpencpsDossierStatistic>() {
+					@Override
+				    public int compare(OpencpsDossierStatistic o1, OpencpsDossierStatistic o2) {
+				        if (o1.getYear() == o2.getYear()) {
+				        	if (o1.getMonth() > o2.getMonth()) {
+				        		return -1;
+				        	}
+				        	else if (o1.getMonth() == o2.getMonth()) {
+				        		return 0;
+				        	}
+				        	else {
+				        		return 1;
+				        	}
+				        }
+				        else if (o1.getYear() > o2.getYear()) {
+				        	return -1;
+				        }
+				        else {
+				        	return 1;
+				        }
+				    }
+				};
+				ArrayList<OpencpsDossierStatistic> lstSortCurrents = new ArrayList<OpencpsDossierStatistic>();
+				lstSortCurrents.addAll(lstCurrents);
+				Collections.sort(lstSortCurrents, compareByYearMonth);
 				//Current year
-//				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstCurrents);
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs);
+				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs, lstSortCurrents);
+//				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), LocalDate.now().getYear(), lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM CURRENT YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 				// Last year
 				List<OpencpsDossierStatistic> lstLasts = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, lastYear, "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				ArrayList<OpencpsDossierStatistic> lstSortLasts = new ArrayList<OpencpsDossierStatistic>();
+				lstSortLasts.addAll(lstLasts);
+				Collections.sort(lstSortLasts, compareByYearMonth);
+				statisticSumYearService.batchCaculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstSortLasts);
+
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs, lstLasts);
-				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs);
+//				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear, lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM LAST YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
 //				3 year before
@@ -511,7 +541,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				statisticSumYearService.caculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear3);
 				//Caculate statistic all year
 //				_log.info("START STATISTIC ALL YEAR: ");
-				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
+				statisticSumYearService.batchCaculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
+				
+//				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
 //				statisticSumYearService.caculateSumAllYear(site.getCompanyId(), site.getGroupId(), 0, lstGroupGovs, lstScs);
 //				_log.info("CALCULATE AFTER SUM ALL YEAR TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 			}

@@ -57,11 +57,6 @@ dependencies {
     compile name : "jcaptcha-2.0-alpha-1-SNAPSHOT", transitive:false
     compile name : "jcaptcha-api-1.0", transitive:false
     compile name : "java-jwt-3.10.0", transitive:false
-    compile name : "cas-client-core-3.6.1", transitive:false
-    compile name : "com.liferay.portal.security.exportimport.api-4.0.0", transitive:false
-    compile name : "com.liferay.portal.configuration.metatype-2.0.15", transitive:false
-	
-
 }
 
 war {

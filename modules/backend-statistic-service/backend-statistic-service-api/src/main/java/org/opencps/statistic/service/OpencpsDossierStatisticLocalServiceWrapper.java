@@ -411,6 +411,13 @@ public class OpencpsDossierStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByG_NM_Y(
+		long groupId, int notMonth, int year) {
+		return _opencpsDossierStatisticLocalService.findByG_NM_Y(groupId,
+			notMonth, year);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _opencpsDossierStatisticLocalService.getActionableDynamicQuery();
 	}

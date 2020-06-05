@@ -96,7 +96,6 @@ dependencies {
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 	// https://mvnrepository.com/artifact/org.jboss.spec.javax.net.ssl/jboss-jsse-api_8.0_spec
 	compile group: 'org.jboss.spec.javax.net.ssl', name: 'jboss-jsse-api_8.0_spec', version: '1.0.0.Final'
-
 }
 
 repositories {
