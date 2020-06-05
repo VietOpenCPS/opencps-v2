@@ -45,20 +45,29 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.VTPayTerm;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
+import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.PaymentFileLocalServiceBaseImpl;
@@ -810,5 +819,122 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 	public PaymentFile getByG_DID(long groupId, long dossierId) {
 		return paymentFilePersistence.fetchByDossierId(groupId, dossierId);
+	}
+
+	/**
+	 * Create a payment File
+	 * 
+	 * @param
+	 * @return PaymentFile
+	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile createPaymentFileByDossierId(long userId, long groupId, long dossierId,
+			PaymentFileInputModel input, ServiceContext serviceContext) throws PortalException {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		PaymentFile paymentFile = paymentFilePersistence.fetchByDossierId(groupId, dossier.getDossierId());
+
+		if (Validator.isNull(paymentFile)) {
+
+			long paymentFileId = counterLocalService.increment(PaymentFile.class.getName());
+
+			paymentFile = paymentFilePersistence.create(paymentFileId);
+
+			paymentFile.setGroupId(groupId);
+			paymentFile.setCompanyId(auditUser.getCompanyId());
+			paymentFile.setUserId(auditUser.getUserId());
+			paymentFile.setUserName(auditUser.getFullName());
+			paymentFile.setCreateDate(now);
+			paymentFile.setDossierId(dossierId);
+			paymentFile.setReferenceUid(UUID.randomUUID().toString());
+		}
+
+		paymentFile.setModifiedDate(now);
+		paymentFile.setPaymentFee(input.getPaymentFee());
+		paymentFile.setAdvanceAmount(input.getAdvanceAmount());
+		paymentFile.setFeeAmount(input.getFeeAmount());
+		paymentFile.setServiceAmount(input.getServiceAmount());
+		paymentFile.setShipAmount(input.getShipAmount());
+		paymentFile.setPaymentAmount(GetterUtil.getLong(input.getPaymentAmount()));
+		paymentFile.setPaymentNote(input.getPaymentNote());
+		paymentFile.setBankInfo(input.getBankInfo());
+		paymentFile.setPaymentStatus(input.getPaymentStatus());
+		paymentFile.setPaymentMethod(input.getPaymentMethod());
+
+		paymentFilePersistence.update(paymentFile);
+		
+		JSONObject epaymentConfigJSON = input.getEpaymentProfile() != null
+				? JSONFactoryUtil.createJSONObject(input.getEpaymentProfile())
+				: JSONFactoryUtil.createJSONObject();
+		JSONObject epaymentProfileJSON = JSONFactoryUtil.createJSONObject();
+
+		if (epaymentConfigJSON.has("paymentKeypayDomain")) {
+			try {
+				String generatorPayURL = PaymentUrlGenerator.generatorPayURLEpar(groupId, dossier, input.getPaymentAmount(), input.getPaymentFee(), epaymentConfigJSON);
+				epaymentProfileJSON.put(KeyPayTerm.KEYPAYURL, generatorPayURL);
+
+				String pattern1 = KeyPayTerm.GOOD_CODE_EQ;
+				String pattern2 = StringPool.AMPERSAND;
+
+				String regexString = Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2);
+
+				Pattern p = Pattern.compile(regexString);
+				Matcher m = p.matcher(generatorPayURL);
+
+				if (m.find()) {
+					String goodCode = m.group(1);
+
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, goodCode);
+				} else {
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAYGOODCODE, StringPool.BLANK);
+				}
+
+				epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE,
+						epaymentConfigJSON.get("paymentMerchantCode"));
+				epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
+				epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
+				epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, input.getServiceAmount());
+				epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, input.getPaymentNote());
+				epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, input.getPaymentFee());
+
+			} catch (IOException e) {
+				_log.error(e);
+			}
+
+		}
+
+		if (epaymentConfigJSON.has(VTPayTerm.VTP_CONFIG)) {
+			try {
+				JSONObject schema = epaymentConfigJSON.getJSONObject(VTPayTerm.VTP_CONFIG);
+				JSONObject data = JSONFactoryUtil.createJSONObject();
+
+				data.put(schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.KEY),
+						schema.getJSONObject(VTPayTerm.PRIORITY).getString(VTPayTerm.VALUE));
+				data.put(schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.KEY),
+						schema.getJSONObject(VTPayTerm.VERSION).getString(VTPayTerm.VALUE));
+				data.put(schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.KEY),
+						schema.getJSONObject(VTPayTerm.TYPE).getString(VTPayTerm.VALUE));
+				data.put(schema.getJSONObject(VTPayTerm.BILLCODE).getString(VTPayTerm.KEY),
+						VTPayTerm.createBillCode(dossier.getGovAgencyCode(), paymentFile.getInvoiceNo()));
+				data.put(schema.getJSONObject(VTPayTerm.ORDER_ID).getString(VTPayTerm.KEY),
+						VTPayTerm.createOrderId(dossier.getDossierId(), dossier.getDossierNo()));
+				data.put(schema.getJSONObject(VTPayTerm.AMOUNT).getString(VTPayTerm.KEY),
+						paymentFile.getPaymentAmount());
+				data.put(schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.KEY),
+						schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
+
+				epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+			} catch (Exception e) {
+				_log.error(e);
+			}
+
+		}
+
+		paymentFile.setEpaymentProfile(epaymentProfileJSON.toString());
+		paymentFilePersistence.update(paymentFile);
+
+		return paymentFile;
 	}
 }

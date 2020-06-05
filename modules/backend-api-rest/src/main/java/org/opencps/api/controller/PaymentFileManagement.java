@@ -301,7 +301,22 @@ public interface PaymentFileManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);	
-	
+
+	@POST
+	@Path("/{id}/paymentepar")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@ApiOperation(value = "addPaymentFileByDosierId", response = PaymentFileInputModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns epaymentprofile was create", response = PaymentFileInputModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response createPaymentFileByDossierIdEpar(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);	
+
 	@GET
 	@Path("/{id}/payments/{referenceUid}/invoicefile/preview")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
