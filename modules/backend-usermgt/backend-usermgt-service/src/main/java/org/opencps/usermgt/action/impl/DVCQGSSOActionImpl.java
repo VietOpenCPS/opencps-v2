@@ -1,7 +1,6 @@
 package org.opencps.usermgt.action.impl;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -22,7 +21,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,6 @@ import javax.ws.rs.HttpMethod;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.usermgt.action.DVCQGSSOInterface;
-import org.opencps.usermgt.constants.DVCQGSSOTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.util.DateTimeUtils;
@@ -237,6 +237,14 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				HttpSession httpSession = request.getSession();
 				httpSession.setAttribute("SSO_STATE", state);
 				httpSession.setAttribute("ACCESS_TOKEN", accessToken);
+				
+				Enumeration<String> enumeration = request.getSession().getAttributeNames();
+
+				List<String> values = Collections.list(enumeration);
+
+				for (String value : values) {
+					_log.info("========================== > session.getAttributeNames() " + value);
+				}
 			}
 		}
 
@@ -428,7 +436,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			params.append("&client_secret=" + client_secret);
 
 			String endpoint = auth_server + accesstoken_endpoint;
-			
+
 			_log.debug("endpoint --->>> " + endpoint);
 
 			URL url = new URL(endpoint);
@@ -497,18 +505,18 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 		try {
 
-		JSONObject userInfoObject = JSONFactoryUtil.createJSONObject(userInfo);
+			JSONObject userInfoObject = JSONFactoryUtil.createJSONObject(userInfo);
 
 			int LoaiTaiKhoan = userInfoObject.getInt("LoaiTaiKhoan");
-		//String HoChieu = userInfoObject.getString("HoChieu");
+			//String HoChieu = userInfoObject.getString("HoChieu");
 			String SoCMND = userInfoObject.getString("SoCMND");
 			String MaSoThue = userInfoObject.getString("MaSoThue");
-		//int GioiTinh = userInfoObject.getInt("GioiTinh");
+			//int GioiTinh = userInfoObject.getInt("GioiTinh");
 			String DiaChi = userInfoObject.getString("DiaChi");
 			String SoDienThoai = userInfoObject.getString("SoDienThoai");
 			String ThuDienTu = userInfoObject.getString("ThuDienTu");
 			String HoVaTen = userInfoObject.getString("HoVaTen");
-		//String sub = userInfoObject.getString("sub");
+			//String sub = userInfoObject.getString("sub");
 			String TenDoanhNghiep = userInfoObject.getString("TenDoanhNghiep");
 			String MaSoDoanhNghiep = userInfoObject.getString("MaSoDoanhNghiep");
 			String SoDinhDanh = userInfoObject.getString("SoDinhDanh");
@@ -531,11 +539,11 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				return createErrorMessage("not found MaSoThue", 404);
 			}
 
-		Applicant applicant = null;
+			Applicant applicant = null;
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
 
-		_log.info(">>>>>>>>>>>>>>>>>>>>>>>> userInfoObject " + userInfoObject.toJSONString());
+			_log.info("userInfoObject " + userInfoObject.toJSONString());
 
 			applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(groupId, _DEFAULT_CLASS_NAME, TechID);
 
@@ -577,6 +585,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
 				session.setAttribute("_ACCESS_TOKEN", accessToken);
+				session.setMaxInactiveInterval(36000);
 
 			} else if ("mapping".equalsIgnoreCase(state)) {
 				mappingUserId = user.getUserId();
@@ -595,61 +604,62 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
 				session.setAttribute("_ACCESS_TOKEN", accessToken);
+				session.setMaxInactiveInterval(36000);
 			} else if ("create".equalsIgnoreCase(state)) {
-		// ca nhan
+				// ca nhan
 				if (LoaiTaiKhoan == 1) {
 
-			if (Validator.isNull(SoCMND) && Validator.isNull(SoDinhDanh)) {
+					if (Validator.isNull(SoCMND) && Validator.isNull(SoDinhDanh)) {
 						return createErrorMessage("Unknown SoCMND, SoDinhDanh", 404);
-			}
-			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
-					Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
+					}
+					applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
+							Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
-			if (applicant == null) {
-				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
-			}
-		}
-		// doanh nghiep
-		else if (LoaiTaiKhoan == 2) {
-			if (Validator.isNull(MaSoThue) && Validator.isNull(MaSoDoanhNghiep)) {
+					if (applicant == null) {
+						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+					}
+				}
+				// doanh nghiep
+				else if (LoaiTaiKhoan == 2) {
+					if (Validator.isNull(MaSoThue) && Validator.isNull(MaSoDoanhNghiep)) {
 						return createErrorMessage("Unknown MaSoThue, MaSoDoanhNghiep", 404);
-			}
-			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
-					Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
-			if (applicant == null) {
-				applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
-			}
-		} else {
+					}
+					applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
+							Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
+					if (applicant == null) {
+						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+					}
+				} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);
 				}
 
-			// create
-			if (Validator.isNull(ThuDienTu)) {
+				// create
+				if (Validator.isNull(ThuDienTu)) {
 					//return createErrorMessage("Unknown ThuDienTu", 404);
 					ThuDienTu = TechID + "@dvcqg.gov.vn";
-			}
+				}
 
-			applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L,
-					LoaiTaiKhoan == 1 ? HoVaTen : TenDoanhNghiep, LoaiTaiKhoan == 1 ? "citizen" : "business",
-					LoaiTaiKhoan == 1 ? (Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh)
-							: (Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep),
-					DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE), DiaChi, StringPool.BLANK,
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-					StringPool.BLANK, SoDienThoai, ThuDienTu, StringPool.BLANK, TechID, true);
+				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L,
+						LoaiTaiKhoan == 1 ? HoVaTen : TenDoanhNghiep, LoaiTaiKhoan == 1 ? "citizen" : "business",
+						LoaiTaiKhoan == 1 ? (Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh)
+								: (Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep),
+						DateTimeUtils.dateToString(new Date(), DateTimeUtils._TYPEDATE), DiaChi, StringPool.BLANK,
+						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+						StringPool.BLANK, SoDienThoai, ThuDienTu, StringPool.BLANK, TechID, true);
 
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
 						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, TechID);
 
-			mappingUserId = applicant.getMappingUserId();
+				mappingUserId = applicant.getMappingUserId();
 
-			HttpSession session = request.getSession();
-			session = renewSession(request, session);
+				HttpSession session = request.getSession();
+				session = renewSession(request, session);
 				session = renewSession(request, session);
 				session.setAttribute("_GROUP_ID", groupId);
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
 				session.setAttribute("_ACCESS_TOKEN", accessToken);
-
+				session.setMaxInactiveInterval(36000);
 			} else {
 				result.put("statusCode", 500);
 				result.put("message", "error");
@@ -764,6 +774,75 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		return result;
 	}
 
-	private String _DEFAULT_CLASS_NAME = "dvcqg";
+	@Override
+	public String getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String accessToken, String redirectURL, String state) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
+		
+		if(Validator.isNull(accessToken)) {
+			
+			HttpSession session = request.getSession();
+			
+			accessToken = (String) session.getAttribute(_SESSION_API_PRIFIX + "_MAPPING_CLASS_NAME");
+		}
+		
+		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(accessToken)) {
+			
+			ServerConfig serverConfig = serverConfigs.get(0);
+			
+			HttpURLConnection conn = null;
+			
+			try {
 
+				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String auth_server = config.getString("auth_server");
+				String logout_endpoint = config.getString("logout_endpoint");
+				String endpoint = auth_server + logout_endpoint + "?id_token_hint=" + accessToken + "&post_logout_redirect_uri=" + redirectURL +
+						"&state="
+						+ AuthTokenUtil.getToken(request);
+				_log.info("Logout endpoint " + endpoint);
+				URL url = new URL(endpoint);
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod(HttpMethod.POST);
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				conn.setRequestProperty("Accept", "text/html");
+				conn.setRequestProperty("Content-Type", "text/html");
+				conn.setInstanceFollowRedirects(true);
+				HttpURLConnection.setFollowRedirects(true);
+				conn.setReadTimeout(60 * 1000);
+				conn.connect();
+
+				try (BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader((conn.getInputStream())))) {
+
+					String output = StringPool.BLANK;
+
+					StringBuilder sb = new StringBuilder();
+
+					while ((output = bufferedReader.readLine()) != null) {
+						sb.append(output);
+					}
+
+					_log.info("response: " + sb.toString());
+					return sb.toString();
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+				return StringPool.BLANK;
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+
+		}
+		return StringPool.BLANK;
+	}
+
+	private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";
+	
+	private String _DEFAULT_CLASS_NAME = "dvcqg";
 }

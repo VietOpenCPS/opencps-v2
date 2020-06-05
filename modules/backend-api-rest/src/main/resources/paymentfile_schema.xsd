@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xsd:schema [
+		<!ELEMENT xsd:schema (xsd:element|xsd:complexType)*>
+		<!ATTLIST xsd:schema
+				xmlns:xsd CDATA #REQUIRED>
+		<!ELEMENT xsd:element (xsd:complexType)*>
+		<!ATTLIST xsd:element
+				maxOccurs CDATA #IMPLIED
+				minOccurs CDATA #IMPLIED
+				name CDATA #REQUIRED
+				type CDATA #IMPLIED>
+		<!ELEMENT xsd:complexType (xsd:sequence)*>
+		<!ATTLIST xsd:complexType
+				name CDATA #IMPLIED>
+		<!ELEMENT xsd:sequence (xsd:element)*>
+		]>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
 	<xsd:element name="PaymentFileSearchModel">
 		<xsd:complexType>
@@ -119,6 +134,37 @@
 				<xsd:element name="invoiceFileSize" type="xsd:long" minOccurs="0" />
 			</xsd:sequence>
 		</xsd:complexType>
+	<xsd:complexType name="KeyPayResultInput">
+		<xsd:sequence>
+			<xsd:element name="paymentPortal" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="actionCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="dossierId" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="goodCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="transId" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="referenceUid" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="command" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="merchantTransId" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="merchantCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="responseCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="transId2" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="netCost" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="shipFee" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="tax" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="serviceCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="currencyCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="bankCode" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="desc1" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="desc2" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="desc3" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="desc4" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="desc5" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="customerPhoneNumber" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="customerName" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="customerAddress" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="customerEmail" type="xsd:string"  minOccurs="0"/>
+			<xsd:element name="secureHash" type="xsd:string"  minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:element name="PaymentFileResultModel">
 		<xsd:complexType>
