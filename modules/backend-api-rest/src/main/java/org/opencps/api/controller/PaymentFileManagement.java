@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.opencps.api.paymentfile.model.KeyPayResultInput;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileResultModel;
 import org.opencps.exception.model.ExceptionModel;
@@ -102,7 +104,8 @@ public interface PaymentFileManagement {
 	public Response getPaymentFileByDossierId(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
-			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id);
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@FormParam("secretCode") String secretCode);
 
 	//4
 	/* Get info epaymentProfile - START */
@@ -299,7 +302,22 @@ public interface PaymentFileManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);	
-	
+
+	@POST
+	@Path("/{id}/paymentepar")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@ApiOperation(value = "addPaymentFileByDosierId", response = PaymentFileInputModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns epaymentprofile was create", response = PaymentFileInputModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response createPaymentFileByDossierIdEpar(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
+			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);	
+
 	@GET
 	@Path("/{id}/payments/{referenceUid}/invoicefile/preview")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -328,4 +346,18 @@ public interface PaymentFileManagement {
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);
+
+	@GET
+	@Path("/checkkeypay")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Download invoice file")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access defined", response = ExceptionModel.class) })
+	public Response checkHashKeyPay(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+		@Context Locale locale, @Context User user, @Context ServiceContext serviceContext ,@BeanParam
+		KeyPayResultInput input);
+
 }

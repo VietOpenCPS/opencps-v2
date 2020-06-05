@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 "feeAmount",
 "serviceAmount",
 "shipAmount",
+"paymentAmount",
 "editable"
 })
 public class DossierActionPaymentModel {
@@ -61,6 +62,7 @@ public class DossierActionPaymentModel {
 	protected Long feeAmount;
 	protected Long serviceAmount;
 	protected Long shipAmount;
+	protected Long paymentAmount;
 	protected int editable;
 
 	public Integer getRequestPayment() {
@@ -111,4 +113,11 @@ public class DossierActionPaymentModel {
 	public String getPaymentNote() {
 		return paymentNote;
 	}
+	public Long getPaymentAmount() {
+		return paymentAmount;
+	}
+	public void setPaymentAmount(Long paymentAmount) {
+		this.paymentAmount = paymentAmount;
+	}
+
 }

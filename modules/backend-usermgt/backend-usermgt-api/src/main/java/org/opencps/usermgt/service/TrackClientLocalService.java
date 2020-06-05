@@ -184,6 +184,10 @@ public interface TrackClientLocalService extends BaseLocalService,
 	public List<TrackClient> findByS_NULL_L(String sessionId, Date leaveDate,
 		int start, int end);
 
+	public List<Object[]> findPeriodCountDay(String startDay, String endDay);
+
+	public List<Object[]> findPeriodRegion(String startDay, String endDay);
+
 	public TrackClient findPreviousPage(String sessionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

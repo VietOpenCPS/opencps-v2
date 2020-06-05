@@ -157,4 +157,13 @@ public class TrackClientLocalServiceImpl extends TrackClientLocalServiceBaseImpl
 	{
 		return trackClientFinder.getTopURLUserAccess(userId);
 	}
+
+	public List<Object[]> findPeriodCountDay(String startDay, String endDay)
+	{
+		return trackClientFinder.findPeriodCountDay(startDay,endDay);
+	}
+	public List<Object[]> findPeriodRegion(String startDay, String endDay)
+	{
+		return trackClientFinder.findPeriodRegion(startDay,endDay);
+	}
 }

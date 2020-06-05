@@ -11,7 +11,7 @@ public interface AccessStatisticsActions
 
 	Map<String,Long> getAccessStatisticsForDay(int day,int month,int yaer);
 
-	Map<String, Long> getAccessStatisticsForPeriod(String startDay,String endDay);
+	JSONObject getAccessStatisticsForPeriod(String startDay,String endDay);
 
 	Map<String,Long> getAccessStatisticsForMonth(int month,int yaer);
 
