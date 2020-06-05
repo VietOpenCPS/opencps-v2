@@ -43,22 +43,17 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 	}
 
 	@Override
-	public Response passwordToMD5(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
-		ServiceContext serviceContext,String password)
-	{
-		try
-		{
-			String passwordMD5 = PasswordEncrypt.encrypt(password);
+	public Response secrectKeyToMD5(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String secrectKey) {
+		try {
+			String encryptSecrect = PasswordEncrypt.encrypt(secrectKey);
 			JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
-			jsonResult.put("passwordMD5", passwordMD5);
+			jsonResult.put("secrectKey", encryptSecrect);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toString()).build();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			_log.error("err");
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}
-
 
 }

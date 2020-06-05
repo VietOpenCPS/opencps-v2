@@ -7417,7 +7417,7 @@ public class DossierManagementImpl implements DossierManagement {
 				MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
 		}
 	}
-	
+
 	@Override
 	public Response updateInformDossier(
 		HttpServletRequest request, HttpHeaders header, Company company,
