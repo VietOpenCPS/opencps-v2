@@ -246,14 +246,14 @@ public class DossierManagementImpl implements DossierManagement {
 
 			String status = query.getStatus();
 			String substatus = query.getSubstatus();
-			String agency = query.getAgency();
-			if (ALL_AGENCY.equals(agency)) {
-				agency = StringPool.BLANK;
+			String agencys = query.getAgency();
+			if (ALL_AGENCY.equals(agencys)) {
+				agencys = StringPool.BLANK;
 			}
-			if (Validator.isNull(agency)) {
+			if (Validator.isNull(agencys)) {
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				if (employee != null && Validator.isNotNull(employee.getScope())) {
-					agency = employee.getScope();
+					agencys = employee.getScope();
 				}
 			}
 			
@@ -450,7 +450,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.ONLINE, online);
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
-			params.put(DossierTerm.AGENCY, agency);
+			params.put(DossierTerm.AGENCYS, agencys);
 			params.put(DossierTerm.SERVICE, service);
 			params.put(DossierTerm.TEMPLATE, template);
 			if (year != 0) {
@@ -830,7 +830,7 @@ public class DossierManagementImpl implements DossierManagement {
 					DossierTerm.ASSIGNED_USER_ID, strAssignedUserId.toString());
 			}
 
-			String agency = query.getAgency();
+			String agencys = query.getAgency();
 			String serviceCode = query.getService();
 			String service = StringPool.BLANK;
 			if (Validator.isNotNull(serviceCode)) {
@@ -847,10 +847,10 @@ public class DossierManagementImpl implements DossierManagement {
 				owner = String.valueOf(true);
 			}
 			else {
-				if (Validator.isNull(agency)) {
+				if (Validator.isNull(agencys)) {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 					if (employee != null && Validator.isNotNull(employee.getScope())) {
-						agency = employee.getScope();
+						agencys = employee.getScope();
 					}					
 				}
 			}
@@ -940,7 +940,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
-			params.put(DossierTerm.AGENCY, agency);
+			params.put(DossierTerm.AGENCYS, agencys);
 			params.put(DossierTerm.SERVICE, service);
 			params.put(DossierTerm.TEMPLATE, template);
 			params.put(DossierTerm.OWNER, owner);

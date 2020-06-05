@@ -276,7 +276,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			else {
 				Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 				if (e != null && !Validator.isNull(e.getScope())) {
-					params.put(DossierTerm.AGENCY, e.getScope());
+					params.put(DossierTerm.AGENCYS, e.getScope());
 				}
 			}
 			String stepCode = query.getStep();
@@ -571,7 +571,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			//Count if employee scope
 			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			if (e != null && !Validator.isNull(e.getScope())) {
-				params.put(DossierTerm.AGENCY, e.getScope());
+				params.put(DossierTerm.AGENCYS, e.getScope());
 			}
 			
 			// boolean ownerBoolean = GetterUtil.getBoolean(query.getOwner());
