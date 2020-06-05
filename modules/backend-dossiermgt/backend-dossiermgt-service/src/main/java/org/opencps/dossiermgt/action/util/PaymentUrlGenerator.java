@@ -252,6 +252,162 @@ public class PaymentUrlGenerator {
 		return result;
 	}
 
+	public static String generatorPayURLEpar(long groupId, Dossier dossier, long paymentAmount, String pattern,
+			JSONObject epaymentConfigJSON) throws IOException {
+
+		String result = "";
+		try {
+
+			List<String> lsMessages = _putPaymentMessage(pattern);
+
+			long merchant_trans_id = _genetatorTransactionId();
+
+			String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
+
+			String good_code = generatorGoodCode(10);
+			
+			String net_cost = String.valueOf(paymentAmount);
+			
+			String ship_fee = "0";
+			String tax = "0";
+
+			String bank_code = StringPool.BLANK;
+
+			String service_code = epaymentConfigJSON.getString("paymentServiceCode");
+			String version = epaymentConfigJSON.getString("paymentVersion");
+			String command = epaymentConfigJSON.getString("paymentCommand");
+			String currency_code = epaymentConfigJSON.getString("paymentCurrencyCode");
+			String bankAccountInfo = StringPool.BLANK;
+			
+			String desc_1 = StringPool.BLANK;
+			String desc_2 = StringPool.BLANK;
+			String desc_3 = StringPool.BLANK;
+			String desc_4 = StringPool.BLANK;
+			String desc_5 = StringPool.BLANK;
+			if (lsMessages.size() > 0) {
+				desc_1 = lsMessages.get(0);
+				desc_2 = lsMessages.get(1);
+				desc_3 = lsMessages.get(2);
+				desc_4 = lsMessages.get(3);
+				desc_5 = lsMessages.get(4);
+
+				if (desc_1.length() >= 20) {
+					desc_1 = desc_1.substring(0, 19);
+				}
+				if (desc_2.length() >= 30) {
+					desc_2 = desc_2.substring(0, 29);
+				}
+				if (desc_3.length() >= 40) {
+					desc_3 = desc_3.substring(0, 39);
+				}
+				if (desc_4.length() >= 100) {
+					desc_4 = desc_4.substring(0, 89);
+				}
+				if (desc_5.length() > 15) {
+					desc_5 = desc_5.substring(0, 15);
+
+					if (!Validator.isDigit(desc_5)) {
+						desc_5 = StringPool.BLANK;
+					}
+				}
+			}
+
+			if (epaymentConfigJSON.has(PaymentConfigTerm.BANK_ACCOUNT_INFO)) {
+				bankAccountInfo = epaymentConfigJSON.getString(PaymentConfigTerm.BANK_ACCOUNT_INFO);
+			}
+			try {
+				JSONObject bankAccountObj = JSONFactoryUtil.createJSONObject(bankAccountInfo);
+				if (bankAccountObj.has("default")) {
+					desc_3 = bankAccountObj.getString("default");
+				}
+			}
+			catch (JSONException e) {
+				_log.debug(e);
+			}
+
+			String xml_description = StringPool.BLANK;
+			String current_locale = epaymentConfigJSON.getString("paymentCurrentLocale");
+			String country_code = epaymentConfigJSON.getString("paymentCountryCode");
+			String internal_bank = epaymentConfigJSON.getString("paymentInternalBank");
+
+			String merchant_secure_key = epaymentConfigJSON.getString("paymentMerchantSecureKey");
+			String algorithm = KeyPayTerm.VALUE_MD5;
+			if (epaymentConfigJSON.has("paymentHashAlgorithm")) {
+				algorithm = epaymentConfigJSON.getString("paymentHashAlgorithm");
+			}
+			// dossier = _getDossier(dossierId);
+
+			// TODO : update returnURL keyPay
+
+			String return_url;
+			_log.info("SONDT GENURL paymentReturnUrl ====================== "+ JSONFactoryUtil.looseSerialize(epaymentConfigJSON));
+//				return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "/" + dossier.getReferenceUid() + "/" + paymentFile.getReferenceUid();
+			return_url = epaymentConfigJSON.getString("paymentReturnUrl")+ "&dossierId=" + dossier.getDossierId() + "&goodCode=" + good_code + "&transId=" + merchant_trans_id + "&referenceUid=" + dossier.getReferenceUid();
+			_log.info("SONDT GENURL paymentReturnUrl ====================== "+ return_url);
+			// http://119.17.200.66:2681/web/bo-van-hoa/dich-vu-cong/#/thanh-toan-thanh-cong?paymentPortal=KEYPAY&dossierId=77603&goodCode=123&transId=555
+			KeyPay keypay = new KeyPay(String.valueOf(merchant_trans_id), merchant_code, good_code, net_cost,
+					ship_fee, tax, bank_code, service_code, version, command, currency_code, desc_1, desc_2, desc_3,
+					desc_4, desc_5, xml_description, current_locale, country_code, return_url, internal_bank,
+					merchant_secure_key, algorithm);
+			_log.info("NEW KEYPAY ALGORITHM: " + algorithm + ", " + keypay.getSecure_hash());
+			// keypay.setKeypay_url(paymentConfig.getKeypayDomain());
+
+			StringBuffer param = new StringBuffer();
+			param.append("merchant_code=").append(URLEncoder.encode(keypay.getMerchant_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+//				param.append("merchant_secure_key=").append(URLEncoder.encode(keypay.getMerchant_secure_key(), "UTF-8"))
+//						.append(StringPool.AMPERSAND);
+			param.append("bank_code=").append(URLEncoder.encode(keypay.getBank_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("internal_bank=").append(URLEncoder.encode(keypay.getInternal_bank(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("merchant_trans_id=").append(URLEncoder.encode(keypay.getMerchant_trans_id(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("good_code=").append(URLEncoder.encode(keypay.getGood_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("net_cost=").append(URLEncoder.encode(keypay.getNet_cost(), "UTF-8") )
+					.append(StringPool.AMPERSAND);
+			param.append("ship_fee=").append(URLEncoder.encode(keypay.getShip_fee(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("tax=").append(URLEncoder.encode(keypay.getTax(), "UTF-8")).append(StringPool.AMPERSAND);
+			param.append("return_url=").append(URLEncoder.encode(keypay.getReturn_url(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("version=").append(URLEncoder.encode(keypay.getVersion(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("command=").append(URLEncoder.encode(keypay.getCommand(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("current_locale=").append(URLEncoder.encode(keypay.getCurrent_locale(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("currency_code=").append(URLEncoder.encode(keypay.getCurrency_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("service_code=").append(URLEncoder.encode(keypay.getService_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("country_code=").append(URLEncoder.encode(keypay.getCountry_code(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+
+			param.append("desc_1=").append(URLEncoder.encode(keypay.getDesc_1(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("desc_2=").append(URLEncoder.encode(keypay.getDesc_2(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("desc_3=").append(URLEncoder.encode(keypay.getDesc_3(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("desc_4=").append(URLEncoder.encode(keypay.getDesc_4(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("desc_5=").append(URLEncoder.encode(keypay.getDesc_5(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("xml_description=").append(URLEncoder.encode(keypay.getXml_description(), "UTF-8"))
+					.append(StringPool.AMPERSAND);
+			param.append("secure_hash=").append(keypay.getSecure_hash());
+
+			result = epaymentConfigJSON.getString("paymentKeypayDomain") + StringPool.QUESTION + param.toString();
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
+
 	/**
 	 * @param dossierId
 	 * @return
