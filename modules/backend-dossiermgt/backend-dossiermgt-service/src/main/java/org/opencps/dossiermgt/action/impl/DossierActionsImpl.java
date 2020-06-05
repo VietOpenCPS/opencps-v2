@@ -683,6 +683,7 @@ public class DossierActionsImpl implements DossierActions {
 						payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
 						payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFile.getPaymentFee());
 						payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+						payment.put(PaymentFileTerm.PAYMENT_AMOUNT, paymentFile.getPaymentAmount());
 						payment.put(PaymentFileTerm.EDITABLE, editable);
 					} else {
 						if (Validator.isNotNull(paymentFeeData)) {
@@ -694,6 +695,10 @@ public class DossierActionsImpl implements DossierActions {
 								payment.put(PaymentFileTerm.SHIP_AMOUNT, shipAmount);
 								payment.put(PaymentFileTerm.PAYMENT_FEE, paymentFee);
 								payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentNote);
+								payment.put(PaymentFileTerm.PAYMENT_AMOUNT,
+										jsonPaymentFee.has(PaymentFileTerm.PAYMENT_AMOUNT)
+												? jsonPaymentFee.getString(PaymentFileTerm.PAYMENT_AMOUNT)
+												: StringPool.BLANK);
 								payment.put(PaymentFileTerm.EDITABLE, editable);
 
 							} else {
@@ -705,6 +710,7 @@ public class DossierActionsImpl implements DossierActions {
 							payment.put(PaymentFileTerm.SHIP_AMOUNT, 0);
 							payment.put(PaymentFileTerm.PAYMENT_FEE, 0);
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, 0);
+							payment.put(PaymentFileTerm.PAYMENT_AMOUNT, 0);
 							payment.put(PaymentFileTerm.EDITABLE, editable);
 						}
 					}
