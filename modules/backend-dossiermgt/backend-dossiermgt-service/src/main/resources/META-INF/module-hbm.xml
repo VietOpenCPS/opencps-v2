@@ -341,7 +341,7 @@
 		<property name="durationCount" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
 		<property name="dossierName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="originDossierNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="groupDossierId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="groupDossierId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="metaData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="systemId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="dossierCounter" type="com.liferay.portal.dao.orm.hibernate.StringType" />

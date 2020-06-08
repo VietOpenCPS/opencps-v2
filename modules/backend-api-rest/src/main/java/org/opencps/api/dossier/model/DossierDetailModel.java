@@ -307,7 +307,7 @@ public class DossierDetailModel {
 	protected Long originDossierId;
 	protected String originDossierNo;
 	protected String metaData;
-	protected Long groupDossierId;
+	protected String groupDossierId;
 	protected Integer delegateType;
 	protected String documentNo;
 	protected String documentDate;
@@ -399,11 +399,11 @@ public class DossierDetailModel {
 		this.documentDate = documentDate;
 	}
 
-	public Long getGroupDossierId() {
+	public String getGroupDossierId() {
 		return groupDossierId;
 	}
 
-	public void setGroupDossierId(Long groupDossierId) {
+	public void setGroupDossierId(String groupDossierId) {
 		this.groupDossierId = groupDossierId;
 	}
 

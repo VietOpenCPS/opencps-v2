@@ -250,7 +250,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "day")
     protected int day;
 	@QueryParam(value = "groupDossierId")
-    protected Long groupDossierId;
+    protected String groupDossierId;
     @QueryParam(value = "permission")
     protected String permission;
     @QueryParam(value = "delegateType")
@@ -1187,11 +1187,11 @@ public class DossierSearchModel {
 		this.day = value;
 	}
 
-	public Long getGroupDossierId() {
+	public String getGroupDossierId() {
 		return groupDossierId;
 	}
 
-	public void setGroupDossierId(Long groupDossierId) {
+	public void setGroupDossierId(String groupDossierId) {
 		this.groupDossierId = groupDossierId;
 	}
 
