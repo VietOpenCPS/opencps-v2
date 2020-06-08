@@ -7127,7 +7127,15 @@ public class DossierManagementImpl implements DossierManagement {
 						ConvertDossierFromV1Dot9Utils.TEMP_ORIGINAL, false);
 					// them ho so vao dvc set groupId = dvcGroupId
 					if (dvcGroupId > 0) {
-	
+
+						if (Validator.isNotNull(dossierJson.getString(ConvertDossierFromV1Dot9Utils.TEMP_CONTACTEMAIL))) {
+							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_GID_CTEM(groupId, dossierJson.getString(ConvertDossierFromV1Dot9Utils.TEMP_CONTACTEMAIL));
+							if (Validator.isNotNull(applicant) && applicant.getMappingUserId() > 0) {
+								dossierJson.put(
+										ConvertDossierFromV1Dot9Utils.TEMP_USERNAME, applicant.getApplicantName());
+								dossierJson.put(ConvertDossierFromV1Dot9Utils.TEMP_USERID, applicant.getMappingUserId());
+							}
+						}
 						dossierJson.put(
 							ConvertDossierFromV1Dot9Utils.TEMP_GROUPID, dvcGroupId);
 	
