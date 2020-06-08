@@ -734,7 +734,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 			setOriginDossierNo(originDossierNo);
 		}
 
-		Long groupDossierId = (Long)attributes.get("groupDossierId");
+		String groupDossierId = (String)attributes.get("groupDossierId");
 
 		if (groupDossierId != null) {
 			setGroupDossierId(groupDossierId);
@@ -1358,7 +1358,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	* @return the group dossier ID of this dossier
 	*/
 	@Override
-	public long getGroupDossierId() {
+	public String getGroupDossierId() {
 		return _dossier.getGroupDossierId();
 	}
 
@@ -2479,7 +2479,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	* @param groupDossierId the group dossier ID of this dossier
 	*/
 	@Override
-	public void setGroupDossierId(long groupDossierId) {
+	public void setGroupDossierId(String groupDossierId) {
 		_dossier.setGroupDossierId(groupDossierId);
 	}
 

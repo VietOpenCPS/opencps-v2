@@ -123,7 +123,9 @@ import javax.xml.bind.annotation.XmlType;
 	"dvcqgIntegration",
 	"vnpostalStatus",
 	"vnpostalProfile",
-	"fromViaPostal"
+	"fromViaPostal",
+	// Custom form
+	"formMeta"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -266,6 +268,16 @@ public class DossierInputModel {
 	protected String vnpostalProfile;
 	@FormParam(value = "fromViaPostal")
 	protected Integer fromViaPostal;
+	@FormParam(value = "formMeta")
+	protected String formMeta;
+
+	public String getFormMeta() {
+		return formMeta;
+	}
+
+	public void setFormMeta(String formMeta) {
+		this.formMeta = formMeta;
+	}
 
 	public Integer getFromViaPostal() {
 		return fromViaPostal;

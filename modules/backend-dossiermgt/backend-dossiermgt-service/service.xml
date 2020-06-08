@@ -575,7 +575,7 @@
 		<column name="durationCount" type="double" />
 		<column name="dossierName" type ="String" />
 		<column name="originDossierNo" type="String" />
-		<column name="groupDossierId" type="long" />
+		<column name="groupDossierId" type="String" />
 		<column name="metaData" type="String" />
 		<column name="systemId" type="int" />
 		<column name="dossierCounter" type="String" />
@@ -730,7 +730,7 @@
 			<finder-column name="originDossierNo" />
 		</finder>
 		<finder return-type="Collection" name="ORIGIN_NO">
-			<finder-column name="originDossierNo" />
+			<finder-column name="originDossierNo"/>
 		</finder>
 		<finder return-type="Collection" name="G_NOTS_O_SC">
 			<finder-column name="groupId" />
@@ -762,7 +762,7 @@
         
         <finder name="G_GDID" return-type="Collection">
         	<finder-column name="groupId"></finder-column>
-            <finder-column name="groupDossierId"></finder-column>
+            <finder-column name="groupDossierId" comparator="LIKE" />
         </finder>
         <finder name="G_UID_DS" return-type="Collection">
         	<finder-column name="groupId"></finder-column>

@@ -606,6 +606,7 @@ public class DossierActionUtils {
 
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
+							// Check JobPostTitle
 							if (mapJps.containsKey(employee.getMainJobPostId())) {
 								String jobPosTitle = mapJps.get(employee.getMainJobPostId());
 								modelUser.setJobPosTitle(jobPosTitle);
