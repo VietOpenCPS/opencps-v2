@@ -52,8 +52,6 @@ dependencies {
     compile name : "jcaptcha-2.0-alpha-1-SNAPSHOT", transitive:false
     compile name : "jcaptcha-api-1.0", transitive:false
     compile name : "java-jwt-3.10.0", transitive:false
-	
-
 }
 
 war {

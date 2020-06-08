@@ -143,7 +143,13 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="month"></finder-column>
 			<finder-column name="year"></finder-column>
-		</finder>			
+		</finder>	
+		
+		<finder return-type="Collection" name="G_NM_Y">
+			<finder-column name="groupId"></finder-column>
+            <finder-column name="month" comparator="!="></finder-column>
+			<finder-column name="year"></finder-column>
+		</finder>				
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"
