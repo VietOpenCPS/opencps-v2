@@ -46,6 +46,7 @@ import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentFileUtils;
+import org.opencps.api.paymentfile.model.KeyPayResultInput;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
@@ -68,6 +69,7 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
+import org.opencps.dossiermgt.service.persistence.DossierUtil;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
 import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
@@ -839,6 +841,24 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	}
 
 	@Override
+	public Response createPaymentFileByDossierIdEpar(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFileByDossierId(user.getUserId(), groupId, GetterUtil.getLong(id),
+					PaymentFileUtils.convertFormModelToInputModel(input), serviceContext);		
+
+			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}	
+	}
+
+	@Override
 	public Response previewInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();
@@ -1133,12 +1153,54 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	}
 
 	@Override
-	public Response checkKeyPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
-		ServiceContext serviceContext, String input)
+	public Response checkHashKeyPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext, KeyPayResultInput input)
 	{
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String paymentMerchantSecureKey = StringPool.BLANK;
+
+		try
+		{
+			if (!auth.isAuth(serviceContext))
+				throw new UnauthenticationException();
+
+			String dossierId = input.getDossierId();
+			Dossier dossier = DossierUtils.getDossier(dossierId,groupId);
+			String govAgencyCode = dossier.getGovAgencyCode();
+			if (Validator.isNotNull(govAgencyCode))
+			{
+				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
+				if (Validator.isNotNull(paymentConfig))
+				{
+					String epay = paymentConfig.getEpaymentConfig();
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
+					String paymentReturnUrl = StringPool.BLANK;
+					if (jsonObject.has("paymentMerchantSecureKey"))
+						paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_log.error("err",e);
+		}
 
 		Map map = new HashMap();
-		map.put("","");
+
+		map.put("good_code",input.getGoodCode());
+		map.put("command",input.getCommand());
+		map.put("merchant_trans_id",input.getMerchantTransId());
+		map.put("merchant_code",input.getMerchantCode());
+		map.put("response_code",input.getResponseCode());
+		map.put("trans_id",input.getTransId2());
+		map.put("net_cost",input.getNetCost());
+		map.put("ship_fee",input.getShipFee());
+		map.put("tax",input.getTax());
+		map.put("service_code",input.getServiceCode());
+		map.put("currency_code",input.getCurrencyCode());
+		map.put("bank_code",input.getBankCode());
+
 
 		List list = new ArrayList(map.keySet());
 		Collections.sort(list);
@@ -1146,6 +1208,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		Iterator iterator = list.iterator();
 
 		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(paymentMerchantSecureKey);
 		while (iterator.hasNext())
 		{
 			String key = (String) iterator.next();
@@ -1158,13 +1221,21 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		{
 			MessageDigest crypt = MessageDigest.getInstance("MD5");
 			crypt.reset();
-			crypt.update(input.getBytes("UTF-8"));
+			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			if (hashCodeUppercase.equals(input.getSecureHash()) )
+				result.put("result", true );
+			else
+				result.put("result",false);
+
+			return Response.status(200).entity(result.toString()).build();
 		}
 		catch (UnsupportedEncodingException | NoSuchAlgorithmException e)
 		{
-			e.printStackTrace();
+			_log.error("err in checkHashKeyPay",e);
+			return BusinessExceptionImpl.processException(e);
 		}
-		return null;
+
 	}
 }

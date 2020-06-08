@@ -34,12 +34,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
-import org.jasig.cas.client.validation.TicketValidationException;
-import org.jasig.cas.client.validation.TicketValidator;
+//import org.jasig.cas.client.authentication.AttributePrincipal;
+//import org.jasig.cas.client.util.CommonUtils;
+//import org.jasig.cas.client.validation.Assertion;
+//import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
+//import org.jasig.cas.client.validation.TicketValidationException;
+//import org.jasig.cas.client.validation.TicketValidator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -77,13 +77,13 @@ import org.osgi.service.component.annotations.Reference;
  * @author Zsolt Balogh
  */
 @Component(
-	//configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
+//	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
 	immediate = true,
 	property = {
 		"before-filter=Auto Login Filter", "dispatcher=FORWARD",
 		"dispatcher=REQUEST", "servlet-context-name=",
 		"servlet-filter-name=SSO CAS Filter", "url-pattern=/c/portal/loglog",
-		"url-pattern=/c/portal/logout"
+		"url-pattern=/c/portal/loglogout"
 	},
 	service = Filter.class
 )
@@ -100,10 +100,10 @@ public class CASFilter extends BaseFilter {
 		System.out.println("INITINIT: ");
 		super.init(filterConfig);
 	}
-	public static void reload(long companyId) {
-		System.out.println("AAAA: ");
-		_ticketValidators.remove(companyId);
-	}
+//	public static void reload(long companyId) {
+//		System.out.println("AAAA: ");
+//		_ticketValidators.remove(companyId);
+//	}
 
 	@Override
 	public boolean isFilterEnabled(
@@ -137,54 +137,54 @@ public class CASFilter extends BaseFilter {
 		return _log;
 	}
 
-	protected TicketValidator getTicketValidator(long companyId)
-		throws Exception {
-
-		System.out.println("CCCCCC: ");
-		TicketValidator ticketValidator = _ticketValidators.get(companyId);
-
-		if (ticketValidator != null) {
-			return ticketValidator;
-		}
-
-//		CASConfiguration casConfiguration =
-//			_configurationProvider.getConfiguration(
-//				CASConfiguration.class,
-//				new CompanyServiceSettingsLocator(
-//					companyId, CASConstants.SERVICE_NAME));
-
-		//String serverUrl = casConfiguration.serverURL();
-		String serverUrl = "https://dangnhap.dongthap.gov.vn/cas";
-		String serverName = "http://183.91.11.60:8080";
-
-		Cas20ProxyTicketValidator cas20ProxyTicketValidator =
-			new Cas20ProxyTicketValidator(serverUrl);
-		_log.info("cas20ProxyTicketValidator: "+cas20ProxyTicketValidator);
-
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("casServerLoginUrl", "https://dangnhap.dongthap.gov.vn/cas/login");
-		parameters.put("casServerUrlPrefix", serverUrl);
-		parameters.put("redirectAfterValidation", "false");
-		parameters.put("serverName", serverName);
-				
-//				HashMapBuilder.put(
-//			//"casServerLoginUrl", casConfiguration.loginURL()
-//			"casServerLoginUrl", "https://dangnhap.dongthap.gov.vn/cas/login"
-//		).put(
-//			"casServerUrlPrefix", serverUrl
-//		).put(
-//			"redirectAfterValidation", "false"
-//		).put(
-//			//"serverName", casConfiguration.serverName()
-//			"serverName", serverName
-//		).build();
-
-		cas20ProxyTicketValidator.setCustomParameters(parameters);
-
-		_ticketValidators.put(companyId, cas20ProxyTicketValidator);
-
-		return cas20ProxyTicketValidator;
-	}
+//	protected TicketValidator getTicketValidator(long companyId)
+//		throws Exception {
+//
+//		System.out.println("CCCCCC: ");
+////		TicketValidator ticketValidator = _ticketValidators.get(companyId);
+//
+////		if (ticketValidator != null) {
+////			return ticketValidator;
+////		}
+//
+////		CASConfiguration casConfiguration =
+////			_configurationProvider.getConfiguration(
+////				CASConfiguration.class,
+////				new CompanyServiceSettingsLocator(
+////					companyId, CASConstants.SERVICE_NAME));
+//
+//		//String serverUrl = casConfiguration.serverURL();
+//		String serverUrl = "https://dangnhap.dongthap.gov.vn/cas";
+//		String serverName = "http://183.91.11.60:8080";
+//
+////		Cas20ProxyTicketValidator cas20ProxyTicketValidator =
+////			new Cas20ProxyTicketValidator(serverUrl);
+////		_log.info("cas20ProxyTicketValidator: "+cas20ProxyTicketValidator);
+//
+//		Map<String, String> parameters = new HashMap<String, String>();
+//		parameters.put("casServerLoginUrl", "https://dangnhap.dongthap.gov.vn/cas/login");
+//		parameters.put("casServerUrlPrefix", serverUrl);
+//		parameters.put("redirectAfterValidation", "false");
+//		parameters.put("serverName", serverName);
+//				
+////				HashMapBuilder.put(
+////			//"casServerLoginUrl", casConfiguration.loginURL()
+////			"casServerLoginUrl", "https://dangnhap.dongthap.gov.vn/cas/login"
+////		).put(
+////			"casServerUrlPrefix", serverUrl
+////		).put(
+////			"redirectAfterValidation", "false"
+////		).put(
+////			//"serverName", casConfiguration.serverName()
+////			"serverName", serverName
+////		).build();
+//
+////		cas20ProxyTicketValidator.setCustomParameters(parameters);
+//
+////		_ticketValidators.put(companyId, cas20ProxyTicketValidator);
+//
+////		return cas20ProxyTicketValidator;
+//	}
 
 	@Override
 	protected void processFilter(
@@ -254,9 +254,9 @@ public class CASFilter extends BaseFilter {
 		String serviceURL = "http://183.91.11.60:8080/c/portal/login";
 
 		if (Validator.isNull(serviceURL)) {
-			serviceURL = CommonUtils.constructServiceUrl(
-				httpServletRequest, httpServletResponse, serviceURL, serverName,
-				"service", "ticket", true);
+//			serviceURL = CommonUtils.constructServiceUrl(
+//				httpServletRequest, httpServletResponse, serviceURL, serverName,
+//				"service", "ticket", true);
 		}
 
 		String ticket = ParamUtil.getString(httpServletRequest, "ticket");
@@ -272,40 +272,40 @@ public class CASFilter extends BaseFilter {
 			return;
 		}
 
-		TicketValidator ticketValidator = getTicketValidator(companyId);
+//		TicketValidator ticketValidator = getTicketValidator(companyId);
 
-		Assertion assertion = null;
+//		Assertion assertion = null;
 
-		try {
-			assertion = ticketValidator.validate(ticket, serviceURL);
-		}
-		catch (TicketValidationException ticketValidationException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					ticketValidationException.getMessage(),
-					ticketValidationException);
-			}
-			else if (_log.isInfoEnabled()) {
-				_log.info(ticketValidationException.getMessage());
-			}
+//		try {
+//			assertion = ticketValidator.validate(ticket, serviceURL);
+//		}
+//		catch (TicketValidationException ticketValidationException) {
+//			if (_log.isDebugEnabled()) {
+//				_log.debug(
+//					ticketValidationException.getMessage(),
+//					ticketValidationException);
+//			}
+//			else if (_log.isInfoEnabled()) {
+//				_log.info(ticketValidationException.getMessage());
+//			}
+//
+//			_portal.sendError(
+//				new PortalException(
+//					"Unable to validate CAS ticket: " + ticket,
+//					ticketValidationException),
+//				httpServletRequest, httpServletResponse);
+//
+//			return;
+//		}
 
-			_portal.sendError(
-				new PortalException(
-					"Unable to validate CAS ticket: " + ticket,
-					ticketValidationException),
-				httpServletRequest, httpServletResponse);
-
-			return;
-		}
-
-		if (assertion != null) {
-			AttributePrincipal attributePrincipal = assertion.getPrincipal();
-
-			login = attributePrincipal.getName();
-
-//			session.setAttribute(CASWebKeys.CAS_LOGIN, login);
-			session.setAttribute(CAS_LOGIN, login);
-		}
+//		if (assertion != null) {
+//			AttributePrincipal attributePrincipal = assertion.getPrincipal();
+//
+//			login = attributePrincipal.getName();
+//
+////			session.setAttribute(CASWebKeys.CAS_LOGIN, login);
+//			session.setAttribute(CAS_LOGIN, login);
+//		}
 
 		processFilter(
 			CASFilter.class.getName(), httpServletRequest, httpServletResponse,
@@ -321,8 +321,8 @@ public class CASFilter extends BaseFilter {
 
 	private static final Log _log = LogFactoryUtil.getLog(CASFilter.class);
 
-	private static final Map<Long, TicketValidator> _ticketValidators =
-		new ConcurrentHashMap<>();
+//	private static final Map<Long, TicketValidator> _ticketValidators =
+//		new ConcurrentHashMap<>();
 
 //	private ConfigurationProvider _configurationProvider;
 

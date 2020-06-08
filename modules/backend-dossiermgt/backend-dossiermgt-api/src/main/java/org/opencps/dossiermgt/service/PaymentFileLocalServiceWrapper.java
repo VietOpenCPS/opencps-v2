@@ -89,6 +89,22 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	* @return PaymentFile
 	*/
 	@Override
+	public org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(
+		long userId, long groupId, long dossierId,
+		org.opencps.dossiermgt.input.model.PaymentFileInputModel input,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _paymentFileLocalService.createPaymentFileByDossierId(userId,
+			groupId, dossierId, input, serviceContext);
+	}
+
+	/**
+	* Create a payment File
+	*
+	* @param
+	* @return PaymentFile
+	*/
+	@Override
 	public org.opencps.dossiermgt.model.PaymentFile createPaymentFiles(
 		long userId, long groupId, long dossierId, String referenceUid,
 		String paymentFee, long advanceAmount, long feeAmount,

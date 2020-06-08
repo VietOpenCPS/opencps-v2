@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.PaymentFile;
 
 import java.io.InputStream;
@@ -105,6 +106,17 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	*/
 	@Transactional(enabled = false)
 	public PaymentFile createPaymentFile(long paymentFileId);
+
+	/**
+	* Create a payment File
+	*
+	* @param
+	* @return PaymentFile
+	*/
+	@Indexable(type = IndexableType.REINDEX)
+	public PaymentFile createPaymentFileByDossierId(long userId, long groupId,
+		long dossierId, PaymentFileInputModel input,
+		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Create a payment File
