@@ -107,7 +107,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	
 	private boolean isCalculateGroupStatistic() {
 		String calculateGroupStatisticEnable = PropsUtil.get(CALCULATE_GROUP_STATISTIC_ENABLE);
-		return Validator.isNotNull(calculateGroupStatisticEnable) ? Boolean.parseBoolean(calculateGroupStatisticEnable) : false;
+		return Validator.isNotNull(calculateGroupStatisticEnable) ? Boolean.parseBoolean(calculateGroupStatisticEnable) : true;
 	}
 	
 	@Override
