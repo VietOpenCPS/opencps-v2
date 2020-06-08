@@ -506,7 +506,7 @@
 		<field name="originDossierNo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="groupDossierId" type="long" />
+		<field name="groupDossierId" type="String" />
 		<field name="metaData" type="String">
 			<hint name="max-length">65535</hint>
 		</field>

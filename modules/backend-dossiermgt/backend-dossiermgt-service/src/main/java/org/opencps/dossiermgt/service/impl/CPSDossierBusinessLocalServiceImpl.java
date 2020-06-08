@@ -3664,7 +3664,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
 			JSONArray groupDossierArr = JSONFactoryUtil.createJSONArray();
-			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossier.getDossierId());
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, String.valueOf(dossier.getDossierId()));
 			for (Dossier d : lstDossiers) {
 				JSONObject dObject = JSONFactoryUtil.createJSONObject();
 				dObject.put(DossierTerm.DOSSIER_NO, d.getDossierNo());

@@ -1394,7 +1394,7 @@ public class DossierManagementImpl implements DossierManagement {
 				input.getDelegateWardCode(), input.getSampleCount(),
 				input.getDossierName(), input.getBriefNote(), delegateType,
 				documentNo, documentDate, systemId, vnpostalStatus,
-				vnpostalProfile, input.getFromViaPostal(), serviceContext);
+				vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -6366,7 +6366,13 @@ public class DossierManagementImpl implements DossierManagement {
 					Dossier dossier = DossierLocalServiceUtil.fetchDossier(
 						GetterUtil.getLong(dossierStr));
 					if (dossier != null) {
-						dossier.setGroupDossierId(groupDossierId);
+						String strGroupDossierId = dossier.getGroupDossierId();
+						if (Validator.isNotNull(strGroupDossierId)) {
+							strGroupDossierId += StringPool.COMMA + groupDossierId;
+							dossier.setGroupDossierId(GetterUtil.getString(strGroupDossierId));
+						} else {
+							dossier.setGroupDossierId(GetterUtil.getString(groupDossierId));
+						}
 						DossierLocalServiceUtil.updateDossier(dossier);
 
 						DossierDataModel dataModel = new DossierDataModel();
@@ -6381,7 +6387,13 @@ public class DossierManagementImpl implements DossierManagement {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(
 					GetterUtil.getLong(dossierIds));
 				if (dossier != null) {
-					dossier.setGroupDossierId(groupDossierId);
+					String strGroupDossierId = dossier.getGroupDossierId();
+					if (Validator.isNotNull(strGroupDossierId)) {
+						strGroupDossierId += StringPool.COMMA + groupDossierId;
+						dossier.setGroupDossierId(strGroupDossierId);
+					} else {
+						dossier.setGroupDossierId(GetterUtil.getString(groupDossierId));
+					}
 					DossierLocalServiceUtil.updateDossier(dossier);
 				}
 				DossierDetailModel result =

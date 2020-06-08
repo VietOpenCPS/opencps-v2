@@ -289,7 +289,7 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByDN_AN(String dossierNo, String applicantIdNo);
 
-	public List<Dossier> findByG_GDID(long groupId, long groupDossierId);
+	public List<Dossier> findByG_GDID(long groupId, String groupDossierId);
 
 	public List<Dossier> findByG_UID_DS(long groupId, long userId,
 		String dossierStatus);
@@ -603,6 +603,25 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal,
+		ServiceContext serviceContext);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier initUpdateDossierMeta(long groupId, long id,
+		String applicantName, String applicantIdType, String applicantIdNo,
+		String applicantIdDate, String address, String cityCode,
+		String cityName, String districtCode, String districtName,
+		String wardCode, String wardName, String contactName,
+		String contactTelNo, String contactEmail, String dossierTemplateNo,
+		Integer viaPostal, String postalAddress, String postalCityCode,
+		String postalCityName, String postalDistrictCode,
+		String postalDistrictName, String postalTelNo, String applicantNote,
+		boolean isSameAsApplicant, String delegateName, String delegateIdNo,
+		String delegateTelNo, String delegateEmail, String delegateAddress,
+		String delegateCityCode, String delegateDistrictCode,
+		String delegateWardCode, Long sampleCount, String dossierName,
+		String briefNote, Integer delegateType, String documentNo,
+		Date documentDate, int systemId, Integer vnpostalStatus,
+		String vnpostalProfile, Integer fromViaPostal, String metaData,
 		ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)

@@ -77,6 +77,15 @@ public class DossierInputModel {
 	private Integer vnpostalStatus;
 	private String vnpostalProfile;
 	private Integer fromViaPostal;
+	private String formMeta;
+
+	public String getFormMeta() {
+		return formMeta;
+	}
+
+	public void setFormMeta(String formMeta) {
+		this.formMeta = formMeta;
+	}
 
 	public Integer getFromViaPostal() {
 		return fromViaPostal;
