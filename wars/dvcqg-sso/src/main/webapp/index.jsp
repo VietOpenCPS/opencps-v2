@@ -32,9 +32,12 @@
 		
 <div id="userinfo"></div>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script> -->
 
+<script src="jquery-3.4.1.min.js"></script>
+<script src="loadingoverlay.min.js"></script>
+<script src="js.cookie-2.2.1.min.js"></script>
 <script type="text/javascript">
 	$( document ).ready(function() {
 		var state = '<%=state%>';
@@ -53,8 +56,12 @@
 					alert("Không lấy được thông tin người dùng từ DVCQG.");
 					window.location.href = '/';
 				}else{
+					var id_token = data.id_token;
+					var access_token = data.access_token;
+					setCookie('id_token', id_token, 1);
+					setCookie('access_token', access_token, 1);
+					//$.cookie("id_token", id_token, { expires : 1,  path : '/', secure : true });
 					if(parseInt(data.userId) > 0){
-						
 						doAuth(data, redirect);
 					}else{
 					
@@ -127,6 +134,17 @@
 				}
 			});
 		};
+		
+		
+		function setCookie(name,value,days) {
+		    var expires = "";
+		    if (days) {
+		        var date = new Date();
+		        date.setTime(date.getTime() + (days*24*60*60*1000));
+		        expires = "; expires=" + date.toUTCString();
+		    }
+		    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+		}
 	});
 </script>
 

@@ -20,10 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,14 +152,16 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
+		String id_token = StringPool.BLANK;
+		String accessToken = StringPool.BLANK;
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
 
 			JSONObject accessTokenInfo = getAccessToken(user, groupId, serviceContext, authToken, serverConfig);
 
 			if (accessTokenInfo.length() > 0 && accessTokenInfo.has("access_token")) {
-				String accessToken = accessTokenInfo.getString("access_token");
+				accessToken = accessTokenInfo.getString("access_token");
+				id_token = accessTokenInfo.getString("id_token");
 				//state = "create";
 				int LoaiTaiKhoan = 0;
 				//String HoChieu = StringPool.BLANK;
@@ -233,18 +232,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					}
 
 				}
-
-				HttpSession httpSession = request.getSession();
-				httpSession.setAttribute("SSO_STATE", state);
-				httpSession.setAttribute("ACCESS_TOKEN", accessToken);
-				
-				Enumeration<String> enumeration = request.getSession().getAttributeNames();
-
-				List<String> values = Collections.list(enumeration);
-
-				for (String value : values) {
-					_log.info("========================== > session.getAttributeNames() " + value);
-				}
 			}
 		}
 
@@ -258,6 +245,9 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				: StringPool.BLANK;
 		if (result != null)
 			result.put("encryptData", encryptData);
+
+		result.put("id_token", id_token);
+		result.put("access_token", accessToken);
 
 		return result;
 	}
@@ -408,13 +398,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		}
 	}
 
-	public static void main(String[] args) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(new Date());
-		c.set(Calendar.MILLISECOND, 0);
-		System.out.println(c.getTimeInMillis());
-	}
-
 	private JSONObject getAccessToken(User user, long groupId, ServiceContext serviceContext, String authToken,
 			ServerConfig serverConfig) {
 
@@ -547,7 +530,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			applicant = ApplicantLocalServiceUtil.fetchByF_GID_MCN_MCPK(groupId, _DEFAULT_CLASS_NAME, TechID);
 
-			String accessToken = StringPool.BLANK;
+			//String accessToken = StringPool.BLANK;
 
 			//Enumeration<String> enumeration = request.getSession().getAttributeNames();
 
@@ -557,13 +540,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			//	_log.info("========================== > session.getAttributeNames() " + value);
 			//}
 
-			if (request.getSession().getAttribute("ACCESS_TOKEN") != null) {
-				accessToken = request.getSession().getAttribute("ACCESS_TOKEN").toString();
-			}
-
 			long mappingUserId = 0;
-
-			//_log.info("------------>>> accessToken: " + accessToken + "|state " + state);
 
 			if ("auth".equalsIgnoreCase(state) && applicant != null) {
 
@@ -584,7 +561,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_GROUP_ID", groupId);
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
-				session.setAttribute("_ACCESS_TOKEN", accessToken);
 				session.setMaxInactiveInterval(36000);
 
 			} else if ("mapping".equalsIgnoreCase(state)) {
@@ -603,7 +579,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_GROUP_ID", groupId);
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
-				session.setAttribute("_ACCESS_TOKEN", accessToken);
 				session.setMaxInactiveInterval(36000);
 			} else if ("create".equalsIgnoreCase(state)) {
 				// ca nhan
@@ -658,7 +633,6 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 				session.setAttribute("_GROUP_ID", groupId);
 				session.setAttribute("_MAPPING_CLASS_NAME", applicant.getMappingClassName());
 				session.setAttribute("_MAPPING_CLASS_PK", applicant.getMappingClassPK());
-				session.setAttribute("_ACCESS_TOKEN", accessToken);
 				session.setMaxInactiveInterval(36000);
 			} else {
 				result.put("statusCode", 500);
@@ -775,42 +749,49 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 	}
 
 	@Override
-	public String getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String accessToken, String redirectURL, String state) {
+	public boolean revoke(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken, String accessToken, String redirectURL, String state) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
-		
-		if(Validator.isNull(accessToken)) {
-			
-			HttpSession session = request.getSession();
-			
-			accessToken = (String) session.getAttribute(_SESSION_API_PRIFIX + "_MAPPING_CLASS_NAME");
-		}
-		
-		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(accessToken)) {
-			
-			ServerConfig serverConfig = serverConfigs.get(0);
-			
-			HttpURLConnection conn = null;
-			
-			try {
+		_log.error("idToken " + idToken);
+		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(idToken)) {
 
+			ServerConfig serverConfig = serverConfigs.get(0);
+
+			HttpURLConnection conn = null;
+
+			try {
 				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				//String callback_url = config.getString("callback_url");
 				String auth_server = config.getString("auth_server");
-				String logout_endpoint = config.getString("logout_endpoint");
-				String endpoint = auth_server + logout_endpoint + "?id_token_hint=" + accessToken + "&post_logout_redirect_uri=" + redirectURL +
-						"&state="
-						+ AuthTokenUtil.getToken(request);
-				_log.info("Logout endpoint " + endpoint);
+				String revoketoken_endpoint = config.getString("revoketoken_endpoint");
+				String endpoint = auth_server + revoketoken_endpoint;
+				String clientid = config.getString("clientid");
+				String client_secret = config.getString("client_secret");
+				StringBuffer params = new StringBuffer();
+				params.append("token=" + idToken);
+				//params.append("&post_logout_redirect_uri=" + redirectURL);
+				params.append("&token_type_hint =" + accessToken);
+				params.append("&client_id=" + clientid);
+				params.append("&client_secret=" + client_secret);
+
 				URL url = new URL(endpoint);
 				conn = (HttpURLConnection) url.openConnection();
 				conn.setRequestMethod(HttpMethod.POST);
 				conn.setDoInput(true);
 				conn.setDoOutput(true);
 
-				conn.setRequestProperty("Accept", "text/html");
-				conn.setRequestProperty("Content-Type", "text/html");
-				conn.setInstanceFollowRedirects(true);
-				HttpURLConnection.setFollowRedirects(true);
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				conn.setReadTimeout(60 * 1000);
+
+				conn.setUseCaches(false);
+				byte[] postData = params.toString().getBytes("UTF-8");
+				int postDataLength = postData.length;
+				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+					wr.write(postData);
+				}
+
 				conn.setReadTimeout(60 * 1000);
 				conn.connect();
 
@@ -826,12 +807,12 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					}
 
 					_log.info("response: " + sb.toString());
-					return sb.toString();
+					return true;
 				}
 
 			} catch (Exception e) {
 				_log.error(e);
-				return StringPool.BLANK;
+				return false;
 			} finally {
 				if (conn != null) {
 					conn.disconnect();
@@ -839,10 +820,110 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			}
 
 		}
+		return false;
+	}
+
+	@Override
+	public boolean getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken, String redirectURL, String state) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
+		_log.error("idToken " + idToken);
+		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(idToken)) {
+
+			ServerConfig serverConfig = serverConfigs.get(0);
+
+			HttpURLConnection conn = null;
+
+			try {
+				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String callback_url = config.getString("callback_url");
+				String auth_server = config.getString("auth_server");
+				String logout_endpoint = config.getString("logout_endpoint");
+				String endpoint = auth_server + logout_endpoint;
+
+				StringBuffer params = new StringBuffer();
+				params.append("id_token_hint=" + idToken);
+				//params.append("&post_logout_redirect_uri=" + redirectURL);
+				params.append("&post_logout_redirect_uri=" + callback_url);
+				params.append("&state=" + AuthTokenUtil.getToken(request));
+
+				URL url = new URL(endpoint);
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod(HttpMethod.POST);
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				conn.setReadTimeout(60 * 1000);
+
+				conn.setUseCaches(false);
+				byte[] postData = params.toString().getBytes("UTF-8");
+				int postDataLength = postData.length;
+				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+					wr.write(postData);
+				}
+
+				conn.setReadTimeout(60 * 1000);
+				conn.connect();
+
+				try (BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader((conn.getInputStream())))) {
+
+					String output = StringPool.BLANK;
+
+					StringBuilder sb = new StringBuilder();
+
+					while ((output = bufferedReader.readLine()) != null) {
+						sb.append(output);
+					}
+
+					_log.info("response: " + sb.toString());
+					return true;
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+				return false;
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+
+		}
+		return false;
+	}
+
+	@Override
+	public String getLogoutURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken) {
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
+		_log.debug("idToken " + idToken);
+		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(idToken)) {
+
+			ServerConfig serverConfig = serverConfigs.get(0);
+			try {
+				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String logout_callback_url = config.getString("logout_callback_url");
+				String auth_server = config.getString("auth_server");
+				String logout_endpoint = config.getString("logout_endpoint");
+				String endpoint = auth_server + logout_endpoint + "?id_token_hint=" + idToken
+						+ "&post_logout_redirect_uri=" + logout_callback_url;
+
+				return endpoint;
+
+			} catch (Exception e) {
+				_log.error(e);
+				return StringPool.BLANK;
+			}
+
+		}
 		return StringPool.BLANK;
 	}
 
-	private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";
-	
+	//private String _SESSION_API_PRIFIX = "equinox.http.rest.v2";
+
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
 }
