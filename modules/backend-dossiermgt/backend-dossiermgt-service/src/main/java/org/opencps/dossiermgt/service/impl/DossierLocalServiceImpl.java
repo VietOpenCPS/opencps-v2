@@ -2795,7 +2795,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
 		String subStatus =
 			GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
+		String agencys = GetterUtil.getString(params.get(DossierTerm.AGENCYS));
 		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
 		String template =
 			GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
@@ -2955,7 +2955,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			top, emailLogin, originality, applicantFollowIdNo, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(
-			status, subStatus, state, online, submitting, agency, service,
+			status, subStatus, state, online, submitting, agencys, service,
 			userId, top, year, month, dossierNo, certificateNo,
 			strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 			fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState,
@@ -2986,7 +2986,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String status = GetterUtil.getString(params.get(DossierTerm.STATUS));
 		String subStatus =
 			GetterUtil.getString(params.get(DossierTerm.SUBSTATUS));
-		String agency = GetterUtil.getString(params.get(DossierTerm.AGENCY));
+		String agencys = GetterUtil.getString(params.get(DossierTerm.AGENCYS));
 		String service = GetterUtil.getString(params.get(DossierTerm.SERVICE));
 		String template =
 			GetterUtil.getString(params.get(DossierTerm.TEMPLATE));
@@ -3149,7 +3149,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			top, emailLogin, originality, applicantFollowIdNo, booleanQuery);
 		// Search follow param input
 		BooleanQuery booleanInput = processSearchInput(
-			status, subStatus, state, online, submitting, agency, service,
+			status, subStatus, state, online, submitting, agencys, service,
 			userId, top, year, month, dossierNo, certificateNo,
 			strDossierActionId, fromReceiveDate, toReceiveDate, certNo,
 			fromCertDate, toCertDate, fromSubmitDate, toSubmitDate, notState,
@@ -3274,7 +3274,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	private BooleanQuery processSearchInput(
 		String status, String subStatus, String state, String online,
-		String submitting, String agency, String service, long userId,
+		String submitting, String agencys, String service, long userId,
 		String top, int year, int month, String dossierNo, String certificateNo,
 		String strDossierActionId, String fromReceiveDate, String toReceiveDate,
 		String certNo, String fromCertDate, String toCertDate,
@@ -3435,12 +3435,20 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		if (Validator.isNotNull(agency)) {
-			MultiMatchQuery query = new MultiMatchQuery(agency);
+		if (Validator.isNotNull(agencys)) {
+			String[] govsArr = StringUtil.split(agencys);
+			BooleanQuery gobSubQuery = new BooleanQueryImpl();
+			for (String gov : govsArr) {
+				if (Validator.isNotNull(gov)) {
 
-			query.addFields(DossierTerm.GOV_AGENCY_CODE);
+					MultiMatchQuery query =
+						new MultiMatchQuery(gov);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+					query.addFields(DossierTerm.GOV_AGENCY_CODE);
+					gobSubQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+			}
+			booleanQuery.add(gobSubQuery, BooleanClauseOccur.MUST);
 		}
 
 		if (Validator.isNotNull(service)) {
@@ -3857,11 +3865,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
-			BooleanQuery query = new BooleanQueryImpl();
-			for (String key : keyDossier) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keyDossier) {
 					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch, key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
-			}
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
 				queryBool.add(query, BooleanClauseOccur.SHOULD);
 			}
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
