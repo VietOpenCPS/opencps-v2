@@ -480,6 +480,10 @@ public class DossierActionUtils {
 							payment.setShipAmount(
 								paymentObject.getLong(PaymentFileTerm.SHIP_AMOUNT));
 						}
+						if (paymentObject.has(PaymentFileTerm.PAYMENT_AMOUNT)) {
+							payment.setPaymentAmount(
+								paymentObject.getLong(PaymentFileTerm.PAYMENT_AMOUNT));
+						}
 						if (paymentObject.has(PaymentFileTerm.EDITABLE)) {
 							payment.setEditable(
 								paymentObject.getInt(PaymentFileTerm.EDITABLE));

@@ -55,28 +55,28 @@ public class StatisticSumYearCalcular {
 		List<OpencpsDossierStatistic> results = new ArrayList<OpencpsDossierStatistic>();
 		for (OpencpsDossierStatistic statistic : lstStatistics) {
 			boolean checkDomain = false;
-			if ((Validator.isNull(domain) || "total".contentEquals(domain))) {
+			if ((Validator.isNull(domain) || ("total".contentEquals(domain)) && Validator.isNull(statistic.getDomainCode()))) {
 				checkDomain = true;
 			}
 			else if (domain.contentEquals(statistic.getDomainCode())) {
 				checkDomain = true;
 			}
 			boolean checkGovAgency = false;
-			if ((Validator.isNull(govAgencyCode) || "total".contentEquals(govAgencyCode))) {
+			if ((Validator.isNull(govAgencyCode) || ("total".contentEquals(govAgencyCode)) && Validator.isNull(statistic.getGovAgencyCode()))) {
 				checkGovAgency = true;
 			}
 			else if (govAgencyCode.contentEquals(statistic.getGovAgencyCode())) {
 				checkGovAgency = true;
 			}
 			boolean checkSystem = false;
-			if ((Validator.isNull(system) || "total".contentEquals(system))) {
+			if ((Validator.isNull(system) || ("total".contentEquals(system)) && Validator.isNull(statistic.getSystem()))) {
 				checkSystem = true;
 			}
 			else if (system.contentEquals(statistic.getSystem())) {
 				checkSystem = true;
 			}
 			boolean checkGroupGovAgency = false;
-			if ((Validator.isNull(groupAgencyCode) || "total".contentEquals(groupAgencyCode))) {
+			if ((Validator.isNull(groupAgencyCode) || ("total".contentEquals(groupAgencyCode)) && Validator.isNull(statistic.getGroupAgencyCode()))) {
 				checkGroupGovAgency = true;
 			}
 			else if (groupAgencyCode.contentEquals(statistic.getGroupAgencyCode())) {
@@ -89,7 +89,46 @@ public class StatisticSumYearCalcular {
 		
 		return results;
 	}
-	
+
+	private List<OpencpsDossierStatistic> filterGov(List<OpencpsDossierStatistic> lstStatistics, String domain, String govAgencyCode, String system, String groupAgencyCode) {
+		List<OpencpsDossierStatistic> results = new ArrayList<OpencpsDossierStatistic>();
+		for (OpencpsDossierStatistic statistic : lstStatistics) {
+			boolean checkDomain = false;
+			if ((Validator.isNull(domain) || ("total".contentEquals(domain)) && Validator.isNull(statistic.getDomainCode()))) {
+				checkDomain = true;
+			}
+			else if (domain.contentEquals(statistic.getDomainCode())) {
+				checkDomain = true;
+			}
+			boolean checkGovAgency = false;
+			if ((Validator.isNull(govAgencyCode) || ("total".contentEquals(govAgencyCode)) && Validator.isNull(statistic.getGovAgencyCode()))) {
+				checkGovAgency = true;
+			}
+			else if (govAgencyCode.contentEquals(statistic.getGovAgencyCode())) {
+				checkGovAgency = true;
+			}
+			boolean checkSystem = false;
+			if ((Validator.isNull(system) || ("total".contentEquals(system)) && Validator.isNull(statistic.getSystem()))) {
+				checkSystem = true;
+			}
+			else if (system.contentEquals(statistic.getSystem())) {
+				checkSystem = true;
+			}
+			boolean checkGroupGovAgency = false;
+			if ((Validator.isNull(groupAgencyCode) || ("total".contentEquals(groupAgencyCode)) && Validator.isNull(statistic.getGroupAgencyCode()))) {
+				checkGroupGovAgency = true;
+			}
+			else if (groupAgencyCode.contentEquals(statistic.getGroupAgencyCode())) {
+				checkGroupGovAgency = true;
+			}
+			if (checkDomain && checkGovAgency && checkGroupGovAgency && checkSystem) {
+				results.add(statistic);
+			}
+		}
+		
+		return results;
+	}
+
 	/* Tính theo năm */
 	public void filterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs,
 			List<ServerConfig> lstScs, List<DomainResponse> domainResponses, Optional<List<GovAgencyData>> govDataList)
@@ -591,7 +630,11 @@ public class StatisticSumYearCalcular {
 					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", "total"));
 					long endTime = System.currentTimeMillis();
 //					_log.debug("FINDER ALL DOMAIN, GOV, SYSTEM: " + (endTime - startTime) / 1000.0);
-					
+//					if (dossierStatisticResponse != null && dossierStatisticResponse.getDossierStatisticData().size() > 0) {
+//						for (DossierStatisticData data : dossierStatisticResponse.getDossierStatisticData()) {
+//							System.out.println("DATA: " + data.getMonth() + ", " + data.getYear() + ", " + data.getDomainCode() + ", " + data.getGovAgencyCode() + ", " + data.getGroupAgencyCode() + ", " + data.getSystem() + ", " + data.getReceivedCount());
+//						}
+//					}
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 								.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -719,8 +762,10 @@ public class StatisticSumYearCalcular {
 //					try {
 //						dossierStatisticResponse = dossierStatisticFinderService
 //								.finderDossierStatistics(dossierStatisticRequest);
-						dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", data.getItemCode(), "total", "total"));
-
+						dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filterGov(lstCurrents, "total", data.getItemCode(), "total", "total"));
+						if (dossierStatisticResponse != null && dossierStatisticResponse.getTotal() > 0) {
+//							System.out.println("FILTER GOV YEAR: " + data.getItemCode());							
+						}
 						if (dossierStatisticResponse != null) {
 							Optional<List<DossierStatisticData>> dossierStatisticData = Optional
 									.ofNullable(dossierStatisticResponse.getDossierStatisticData());
@@ -1141,7 +1186,7 @@ public class StatisticSumYearCalcular {
 	
 	//				DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 	//						.finderDossierStatistics(dossierStatisticRequest);
-					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", "total"));
+					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", gc.toString()));
 					
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
