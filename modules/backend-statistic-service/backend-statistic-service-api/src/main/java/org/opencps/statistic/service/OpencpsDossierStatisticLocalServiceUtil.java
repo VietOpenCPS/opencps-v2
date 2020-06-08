@@ -399,6 +399,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().findByG(groupId);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByG_NM_Y(
+		long groupId, int notMonth, int year) {
+		return getService().findByG_NM_Y(groupId, notMonth, year);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

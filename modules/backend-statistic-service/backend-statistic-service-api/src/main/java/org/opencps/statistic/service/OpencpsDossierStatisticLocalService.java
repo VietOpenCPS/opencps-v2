@@ -296,6 +296,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	public List<OpencpsDossierStatistic> findByG(long groupId);
 
+	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId,
+		int notMonth, int year);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
