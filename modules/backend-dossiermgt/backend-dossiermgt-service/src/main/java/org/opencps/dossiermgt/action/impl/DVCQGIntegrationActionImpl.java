@@ -268,7 +268,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 						} else {
 							StringBundler sb = new StringBundler(11);
-							sb.append(OpenCPSConfigUtil.getPortalDomain());
+							sb.append(OpenCPSConfigUtil.getPortalDocumentURI());
 							sb.append(PortalUtil.getPathContext());
 							sb.append("/documents/");
 							sb.append(fileEntry.getRepositoryId());
@@ -450,7 +450,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
 						} else {
 							StringBundler sb = new StringBundler(11);
-							sb.append(OpenCPSConfigUtil.getPortalDomain());
+							sb.append(OpenCPSConfigUtil.getPortalDocumentURI());
 							sb.append(PortalUtil.getPathContext());
 							sb.append("/documents/");
 							sb.append(fileEntry.getRepositoryId());

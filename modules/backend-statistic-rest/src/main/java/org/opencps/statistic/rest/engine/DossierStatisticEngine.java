@@ -719,7 +719,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			}
 			else {
 				if (Validator.isNotNull(payload.getGovAgencyCode())) {
-					params.put(DossierTerm.AGENCY, payload.getGovAgencyCode());
+					params.put(DossierTerm.AGENCYS, payload.getGovAgencyCode());
 				}
 				if (Validator.isNotNull(payload.getFromStatisticDate())) {
 					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());

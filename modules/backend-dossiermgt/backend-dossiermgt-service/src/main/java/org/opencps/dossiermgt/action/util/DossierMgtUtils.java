@@ -567,11 +567,20 @@ public class DossierMgtUtils {
 					result = result && checkNotServiceCode(splitCodes[1], dossier);
 				}			
 			}
-			if (preCondition.contains(DossierTerm.AGENCY)) {
+			if (preCondition.contains(DossierTerm.AGENCYS)) {
 				String[] splitAgencies = preCondition.split(StringPool.EQUAL);
 				if (splitAgencies.length == 2) {
-					result = result && checkAgencyCode(splitAgencies[1], dossier);
-				}							
+					boolean checkGovs = false;
+					String govs = splitAgencies[1];
+					if (govs.contains(StringPool.COMMA)) {
+						String[] govsArr = StringUtil.split(govs);
+						for (String gov : govsArr) {
+							checkGovs = checkGovs || checkAgencyCode(gov, dossier);
+						}
+					} else {
+						result = result && checkAgencyCode(govs, dossier);
+					}
+				}
 			}
 			if (preCondition.contains(DossierTerm.CONTAIN_NOT_AGENCY_CODE)) {
 				String[] splitAgencies = preCondition.split(StringPool.EQUAL);

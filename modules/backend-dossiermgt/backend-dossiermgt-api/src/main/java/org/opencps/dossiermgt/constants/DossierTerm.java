@@ -91,7 +91,7 @@ public class DossierTerm {
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";
-	public static final String AGENCY = "agency";
+	public static final String AGENCYS = "agencys";
 	public static final String SERVICE = "service";
 	public static final String TEMPLATE = "template";
 	public static final String YEAR = "year";

@@ -174,7 +174,7 @@ public class OneGateControllerImpl implements OneGateController {
 //					_log.debug("SERVICE CONFIG SCOPE: " + e.getScope());
 //					_log.debug("SERVICE CONFIG LEVEL: " + serviceConfig.getServiceLevel());
 //				}
-				if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
+				if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0))) {
 					JSONObject elmData = JSONFactoryUtil.createJSONObject();
 	
 					elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
@@ -228,7 +228,7 @@ public class OneGateControllerImpl implements OneGateController {
 									hasPermission = true;
 								}
 								if (e != null) {
-									if (Validator.isNotNull(e.getScope()) && !serviceConfig.getGovAgencyCode().contentEquals(e.getScope())) {
+									if (Validator.isNotNull(e.getScope()) && e.getScope().indexOf(serviceConfig.getGovAgencyCode()) < 0) {
 										hasPermission = false;
 									}
 								}

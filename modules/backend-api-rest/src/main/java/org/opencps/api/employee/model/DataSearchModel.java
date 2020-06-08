@@ -365,5 +365,13 @@ public class DataSearchModel {
 	public void setJobposCode(String jobposCode) {
 		this.jobposCode = jobposCode;
 	}
+	
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 
 }

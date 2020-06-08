@@ -103,6 +103,13 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 			}
 			params.put(EmployeeTerm.JOB_POS_CODE_SEARCH, jobposCodeSearch);
 
+			String scopes = query.getScope();
+			String scopesSearch = StringPool.BLANK;
+			if (Validator.isNotNull(jobposCode)) {
+				scopesSearch = SpecialCharacterUtils.splitSpecial(scopes);
+				params.put(EmployeeTerm.SCOPES_SEARCH, scopesSearch);
+			}
+
 			if(Validator.isNotNull(query.getActive())){
 				params.put(EmployeeTerm.ACTIVE,
 						query.getActive().equals(Boolean.TRUE.toString())

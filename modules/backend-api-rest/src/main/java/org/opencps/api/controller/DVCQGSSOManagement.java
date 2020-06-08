@@ -50,14 +50,31 @@ public interface DVCQGSSOManagement {
 			@Context ServiceContext serviceContext, @QueryParam("authToken") String authToken,
 			@QueryParam("state") String state);
 
+	@Deprecated
 	@POST
 	@Path("/logout")
-	@Consumes({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
 	public Response doLogout(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("accessToken") String accessToken,
-			@QueryParam("redirectURL") String redirectURL, @QueryParam("state") String state);
+			@Context ServiceContext serviceContext, @FormParam("accessToken") String accessToken,
+			@FormParam("redirectURL") String redirectURL, @FormParam("state") String state);
+	@GET
+	@Path("/logouturl")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
+	public Response getLogoutURL(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("idToken") String idToken);
+	
+	@POST
+	@Path("/revoke")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON })
+	public Response doRevoke(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("idToken") String idToken, @FormParam("accessToken") String accessToken,
+			@FormParam("redirectURL") String redirectURL, @FormParam("state") String state);
 
 	@POST
 	@Path("/auth")

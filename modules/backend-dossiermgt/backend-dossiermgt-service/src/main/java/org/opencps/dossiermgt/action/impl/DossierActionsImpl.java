@@ -3437,7 +3437,7 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
-		if (e != null && (Validator.isNull(e.getScope()) || (dossier.getGovAgencyCode().contentEquals(e.getScope())))) {
+		if (e != null && (Validator.isNull(e.getScope()) || (e.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
 			return true;
 		}		
 		
