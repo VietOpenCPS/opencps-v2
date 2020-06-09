@@ -54,7 +54,7 @@ create index IX_624F4C36 on opencps_dossier (groupId, dossierStatus[$COLUMN_LENG
 create index IX_A09BF1BA on opencps_dossier (groupId, dossierTemplateNo[$COLUMN_LENGTH:128$]);
 create index IX_CE4B5438 on opencps_dossier (groupId, govAgencyCode[$COLUMN_LENGTH:128$], serviceCode[$COLUMN_LENGTH:128$], dossierId);
 create index IX_4935E3DB on opencps_dossier (groupId, govAgencyCode[$COLUMN_LENGTH:128$], serviceCode[$COLUMN_LENGTH:128$], dossierTemplateNo[$COLUMN_LENGTH:128$], dossierStatus[$COLUMN_LENGTH:255$], applicantIdType[$COLUMN_LENGTH:128$], originality);
-create index IX_699FDB37 on opencps_dossier (groupId, groupDossierId);
+create index IX_699FDB37 on opencps_dossier (groupId, groupDossierId[$COLUMN_LENGTH:75$]);
 create index IX_92D12774 on opencps_dossier (groupId, originDossierId);
 create index IX_92D3969A on opencps_dossier (groupId, originDossierNo[$COLUMN_LENGTH:255$]);
 create index IX_562A1F7A on opencps_dossier (groupId, originality, dossierStatus[$COLUMN_LENGTH:255$], serviceCode[$COLUMN_LENGTH:128$], govAgencyCode[$COLUMN_LENGTH:128$]);

@@ -69,6 +69,8 @@ public class EmployeeTerm {
 	
 	public static final String VALUE_EMPLOYEE = "employee";
 
+	public static final String SCOPES_SEARCH = "scopesSearch";
+
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";
 

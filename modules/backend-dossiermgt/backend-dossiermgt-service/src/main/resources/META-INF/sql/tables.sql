@@ -276,7 +276,7 @@ create table opencps_dossier (
 	durationCount DOUBLE,
 	dossierName VARCHAR(1000) null,
 	originDossierNo VARCHAR(255) null,
-	groupDossierId LONG,
+	groupDossierId VARCHAR(75) null,
 	metaData TEXT null,
 	systemId INTEGER,
 	dossierCounter VARCHAR(128) null,

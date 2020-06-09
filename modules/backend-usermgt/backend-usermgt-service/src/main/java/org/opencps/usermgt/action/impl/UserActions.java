@@ -8,6 +8,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 
@@ -1235,24 +1237,36 @@ public class UserActions implements UserInterface {
 				}
 				//Add new scope
 				if (Validator.isNotNull(employee.getScope()) && groupId > 0) {
+					JSONArray govs = JSONFactoryUtil.createJSONArray();
+					JSONObject gov = JSONFactoryUtil.createJSONObject();
 					DictCollection dict = DictCollectionLocalServiceUtil
 							.fetchByF_dictCollectionCode(ConstantUtils.GOVERNMENT_AGENCY, groupId);
 					if (dict != null) {
-						DictItem item = DictItemLocalServiceUtil.fetchByF_dictItemCode(employee.getScope(), dict.getDictCollectionId(), groupId);
-						if (item != null) {
-							result.put(UserTerm.GOV_AGENCY_CODE, item.getItemCode());
-							result.put(UserTerm.GOV_AGENCY_NAME, item.getItemName());
-						} else {
-							result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
-							result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+						String [] scopes = StringUtil.split(employee.getScope());
+						for (String scope : scopes) {
+							DictItem item = DictItemLocalServiceUtil.fetchByF_dictItemCode(scope, dict.getDictCollectionId(), groupId);
+							if (item != null) {
+								gov.put(UserTerm.GOV_AGENCY_CODE, item.getItemCode());
+								gov.put(UserTerm.GOV_AGENCY_NAME, item.getItemName());
+							} else {
+								gov.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+								gov.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+							}
+							govs.put(gov);
 						}
 					} else {
-						result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
-						result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+						gov.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+						gov.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+						govs.put(gov);
 					}
+					result.put(UserTerm.GOV_AGENCYS, govs);
 				} else {
-					result.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
-					result.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+					JSONArray govs = JSONFactoryUtil.createJSONArray();
+					JSONObject gov = JSONFactoryUtil.createJSONObject();
+					gov.put(UserTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+					gov.put(UserTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+					govs.put(gov);
+					result.put(UserTerm.GOV_AGENCYS, govs);
 				}
 			}
 			else {

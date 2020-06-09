@@ -127,8 +127,33 @@ public class DVCQGSSOManagementImpl implements DVCQGSSOManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
 
-		String data = action.getLogout(user, groupId, request, serviceContext, accessToken, redirectURL, state);
+		boolean result = action.getLogout(user, groupId, request, serviceContext, accessToken, redirectURL, state);
 
-		return Response.status(HttpURLConnection.HTTP_OK).entity(data).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(result)).build();
+	}
+
+	@Override
+	public Response doRevoke(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String idToken,
+			String accessToken, String redirectURL, String state) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
+
+		boolean result = action.revoke(user, groupId, request, serviceContext, idToken, accessToken, redirectURL,
+				state);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(result)).build();
+	}
+
+	@Override
+	public Response getLogoutURL(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String idToken) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		DVCQGSSOActionImpl action = new DVCQGSSOActionImpl();
+
+		String result = action.getLogoutURL(user, groupId, request, serviceContext, idToken);
+
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
 }

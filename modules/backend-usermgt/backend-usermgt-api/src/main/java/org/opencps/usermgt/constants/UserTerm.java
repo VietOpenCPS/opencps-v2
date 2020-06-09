@@ -72,6 +72,7 @@ public class UserTerm {
 	public static final String DEACTIVE_ACCOUNT_FLAG = "deactiveAccountFlag";
 	public static final String GOV_AGENCY_CODE = "govAgencyCode";
 	public static final String GOV_AGENCY_NAME = "govAgencyName";
+	public static final String GOV_AGENCYS = "govAgencys";
 	public static int getUserByIdDefault() {
 
 		return 0;

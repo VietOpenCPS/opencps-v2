@@ -1507,14 +1507,15 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 *
 	 * @return the group dossier ID of this dossier
 	 */
-	public long getGroupDossierId();
+	@AutoEscape
+	public String getGroupDossierId();
 
 	/**
 	 * Sets the group dossier ID of this dossier.
 	 *
 	 * @param groupDossierId the group dossier ID of this dossier
 	 */
-	public void setGroupDossierId(long groupDossierId);
+	public void setGroupDossierId(String groupDossierId);
 
 	/**
 	 * Returns the meta data of this dossier.

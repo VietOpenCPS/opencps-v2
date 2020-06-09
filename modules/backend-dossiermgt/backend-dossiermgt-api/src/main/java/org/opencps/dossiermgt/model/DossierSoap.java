@@ -954,11 +954,11 @@ public class DossierSoap implements Serializable {
 		_originDossierNo = originDossierNo;
 	}
 
-	public long getGroupDossierId() {
+	public String getGroupDossierId() {
 		return _groupDossierId;
 	}
 
-	public void setGroupDossierId(long groupDossierId) {
+	public void setGroupDossierId(String groupDossierId) {
 		_groupDossierId = groupDossierId;
 	}
 
@@ -1104,7 +1104,7 @@ public class DossierSoap implements Serializable {
 	private double _durationCount;
 	private String _dossierName;
 	private String _originDossierNo;
-	private long _groupDossierId;
+	private String _groupDossierId;
 	private String _metaData;
 	private int _systemId;
 	private String _dossierCounter;

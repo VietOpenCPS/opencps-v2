@@ -3664,7 +3664,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
 			JSONArray groupDossierArr = JSONFactoryUtil.createJSONArray();
-			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossier.getDossierId());
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, String.valueOf(dossier.getDossierId()));
 			for (Dossier d : lstDossiers) {
 				JSONObject dObject = JSONFactoryUtil.createJSONObject();
 				dObject.put(DossierTerm.DOSSIER_NO, d.getDossierNo());
@@ -4779,7 +4779,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					//_log.debug("Employee : " + employee);
 					if (employee != null && employee.getWorkingStatus() == 1
 							&& (Validator.isNull(employee.getScope()) || (Validator.isNotNull(employee.getScope())
-									&& dossier.getGovAgencyCode().contentEquals(employee.getScope())))) {
+									&& employee.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
 						List<DossierAction> lstDoneActions = dossierActionLocalService
 								.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
 						if (!lstStepActions.isEmpty()) {
@@ -4846,7 +4846,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
-		if (e != null && (Validator.isNull(e.getScope()) || (dossier.getGovAgencyCode().contentEquals(e.getScope())))) {
+		if (e != null && (Validator.isNull(e.getScope()) || (e.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
 			return true;
 		}
 

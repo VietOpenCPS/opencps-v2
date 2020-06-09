@@ -606,9 +606,14 @@ public class DossierActionUtils {
 
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
-							if (mapJps.containsKey(employee.getMainJobPostId())) {
-								String jobPosTitle = mapJps.get(employee.getMainJobPostId());
-								modelUser.setJobPosTitle(jobPosTitle);
+							// Check JobPostTitle
+							if (Validator.isNotNull(user.getJobTitle())) {
+								modelUser.setJobPosTitle(user.getJobTitle());
+							} else {
+								if (mapJps.containsKey(employee.getMainJobPostId())) {
+									String jobPosTitle = mapJps.get(employee.getMainJobPostId());
+									modelUser.setJobPosTitle(jobPosTitle);
+								}
 							}
 							boolean flag = true;
 							if (outputUsers != null && !outputUsers.isEmpty()) {
