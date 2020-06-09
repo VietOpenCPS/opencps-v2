@@ -1085,6 +1085,13 @@
 			<finder-column name="groupId" />
 			<finder-column name="dossierId" />
 		</finder>
+        <finder name="G_PT" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+            <finder-column name="paymentStatus"></finder-column>
+        </finder>
+        <finder name="G" return-type="Collection">
+            <finder-column name="groupId"></finder-column>
+        </finder>
 
 	</entity>
 

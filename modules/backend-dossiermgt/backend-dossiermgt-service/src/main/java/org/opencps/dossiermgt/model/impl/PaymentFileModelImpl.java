@@ -166,9 +166,10 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DOSSIERID_COLUMN_BITMASK = 2L;
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 8L;
-	public static final long UUID_COLUMN_BITMASK = 16L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 32L;
+	public static final long PAYMENTSTATUS_COLUMN_BITMASK = 8L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.PaymentFile"));
 
@@ -811,7 +812,19 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 
 	@Override
 	public void setPaymentStatus(int paymentStatus) {
+		_columnBitmask |= PAYMENTSTATUS_COLUMN_BITMASK;
+
+		if (!_setOriginalPaymentStatus) {
+			_setOriginalPaymentStatus = true;
+
+			_originalPaymentStatus = _paymentStatus;
+		}
+
 		_paymentStatus = paymentStatus;
+	}
+
+	public int getOriginalPaymentStatus() {
+		return _originalPaymentStatus;
 	}
 
 	@Override
@@ -1156,6 +1169,10 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 		paymentFileModelImpl._setOriginalDossierId = false;
 
 		paymentFileModelImpl._originalReferenceUid = paymentFileModelImpl._referenceUid;
+
+		paymentFileModelImpl._originalPaymentStatus = paymentFileModelImpl._paymentStatus;
+
+		paymentFileModelImpl._setOriginalPaymentStatus = false;
 
 		paymentFileModelImpl._columnBitmask = 0;
 	}
@@ -1655,6 +1672,8 @@ public class PaymentFileModelImpl extends BaseModelImpl<PaymentFile>
 	private String _epaymentProfile;
 	private String _bankInfo;
 	private int _paymentStatus;
+	private int _originalPaymentStatus;
+	private boolean _setOriginalPaymentStatus;
 	private String _paymentMethod;
 	private Date _confirmDatetime;
 	private String _confirmPayload;

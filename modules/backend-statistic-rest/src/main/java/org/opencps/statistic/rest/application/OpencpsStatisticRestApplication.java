@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -82,6 +83,9 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
@@ -1497,5 +1501,330 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 
 		return null;
+	}	
+	
+	@GET
+	@Path("/feereport")
+	public Response feeReport(@HeaderParam("groupId") long groupId,
+			@QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("fromStatisticDate") String fromStatisticDate,
+			@QueryParam("toStatisticDate") String toStatisticDate,
+			@QueryParam("start") int start,
+			@QueryParam("end") int end,
+			@QueryParam("paymentStatus") int paymentStatus) {
+		DossierActions actions = new DossierActionsImpl();
+		Sort[] sorts = null;
+		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+				true) };
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
+		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
+			
+		if (Validator.isNotNull(govAgencyCode)) {
+			params.put(DossierTerm.AGENCY, govAgencyCode);
+		}
+		if (Validator.isNotNull(fromStatisticDate)) {
+			params.put(DossierTerm.FROM_STATISTIC_DATE, from);
+		}
+		if (Validator.isNotNull(toStatisticDate)) {
+			params.put(DossierTerm.TO_STATISTIC_DATE, to);
+		}				
+		//Add common params
+		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+		params.put(DossierTerm.SYSTEM_ID, strSystemId);
+		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		
+		Company company;
+		try {
+			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			long companyId = company.getCompanyId(); 
+			int startOff = QueryUtil.ALL_POS;
+			int endOff = QueryUtil.ALL_POS;
+			
+			if (start != 0) {
+				startOff = start;			
+			}
+			else {
+			}
+			if (end != 0) {
+				endOff = end;
+			}
+			else {
+			}
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			List<GetDossierData> dossierData = new ArrayList<>();
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
+			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+			Map<String, String> domains = new HashMap<String, String>();
+			Map<String, String> services = new HashMap<String, String>();
+			
+			for (Document doc : datas) {
+				String domainCode = doc.get(DossierTerm.DOMAIN_CODE);
+				String domainName = doc.get(DossierTerm.DOMAIN_NAME);
+				
+				String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+				String serviceName = doc.get(DossierTerm.SERVICE_NAME);
+				
+				if (!domains.containsKey(domainCode)) {
+					domains.put(domainCode, domainName);
+				}
+				if (!services.containsKey(serviceCode)) {
+					services.put(serviceCode, serviceName);
+				}
+				if (mapResults.get(domainCode) != null) {
+					Map<String, List<Document>> mapDomains = mapResults.get(domainCode);
+					List<Document> lstDossiers = null;
+					if (mapDomains.containsKey(serviceCode)) {
+						lstDossiers = mapDomains.get(serviceCode);
+					}
+					else {
+						lstDossiers = new ArrayList<Document>();
+						mapDomains.put(serviceCode, lstDossiers);
+					}
+					lstDossiers.add(doc);
+				}
+				else {
+					Map<String, List<Document>> mapDomains = new HashMap<String, List<Document>>();
+					List<Document> lstDossiers = new ArrayList<Document>();
+					mapDomains.put(serviceCode, lstDossiers);
+					lstDossiers.add(doc);
+					mapResults.put(domainCode, mapDomains);
+				}
+			}
+			List<PaymentFile> lstPfs = null;
+			if (paymentStatus != -1) {
+				lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+			}
+			else {
+				lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+			}
+			Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
+			for (PaymentFile pf : lstPfs) {
+				mapPfs.put(String.valueOf(pf.getDossierId()), pf);
+			}
+			
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			for (String domainCode : mapResults.keySet()) {
+				JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+				groupDomainObj.put("domain", domains.get(domainCode));
+				JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+				
+				for (String serviceCode : mapResults.get(domainCode).keySet()) {
+					JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
+					serviceObj.put("service", services.get(serviceCode));
+					JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+					int count = 1;
+					for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
+						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
+						if (mapPfs.containsKey(dossierId)) {
+							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+							dossierObj.put("no", count++);
+							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
+							dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
+							String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
+							dossierObj.put("address", address);
+							PaymentFile pf = mapPfs.get(dossierId);
+							String paymentDate = APIDateTimeUtils.convertDateToString(pf.getModifiedDate(), APIDateTimeUtils._NORMAL_DATE_TIME);
+							dossierObj.put("paymentDate", paymentDate);
+							dossierObj.put("paymentFee", pf.getFeeAmount());
+							dossierObj.put("paymentAmount", pf.getPaymentAmount());
+							dossierObj.put("totalAmount", (pf.getFeeAmount() + pf.getPaymentAmount()));
+							dossierArr.put(dossierObj);						
+						}
+					}
+					if (dossierArr.length() > 0) {
+						serviceObj.put("data", dossierArr);						
+						serviceArr.put(serviceObj);
+					}
+				}
+				if (serviceArr.length() > 0) {
+					groupDomainObj.put("data", serviceArr);					
+					results.put(groupDomainObj);
+				}
+			}
+			ResponseBuilder builder = Response.ok(results.toJSONString());
+			return builder.build();
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		
+		ResponseBuilder builder = Response.ok("");
+		return builder.build();
+	}
+	
+	@GET
+	@Path("/feesummary")
+	public Response feeReportSummary(@HeaderParam("groupId") long groupId,
+			@QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("fromStatisticDate") String fromStatisticDate,
+			@QueryParam("toStatisticDate") String toStatisticDate,
+			@QueryParam("paymentStatus") int paymentStatus,
+			@QueryParam("type") String type) {
+		DossierActions actions = new DossierActionsImpl();
+		Sort[] sorts = null;
+		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+				true) };
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
+		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
+			
+		if (Validator.isNotNull(govAgencyCode)) {
+			params.put(DossierTerm.AGENCY, govAgencyCode);
+		}
+		if (Validator.isNotNull(fromStatisticDate)) {
+			params.put(DossierTerm.FROM_STATISTIC_DATE, from);
+		}
+		if (Validator.isNotNull(toStatisticDate)) {
+			params.put(DossierTerm.TO_STATISTIC_DATE, to);
+		}				
+		//Add common params
+		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+		params.put(DossierTerm.SYSTEM_ID, strSystemId);
+		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		
+		Company company;
+		try {
+			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			long companyId = company.getCompanyId(); 
+			int startOff = QueryUtil.ALL_POS;
+			int endOff = QueryUtil.ALL_POS;
+			
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			List<GetDossierData> dossierData = new ArrayList<>();
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
+			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+			Map<String, String> domains = new HashMap<String, String>();
+			Map<String, String> services = new HashMap<String, String>();
+			
+			for (Document doc : datas) {
+				String domainCode = doc.get(DossierTerm.DOMAIN_CODE);
+				String domainName = doc.get(DossierTerm.DOMAIN_NAME);
+				
+				String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+				String serviceName = doc.get(DossierTerm.SERVICE_NAME);
+				
+				if (!domains.containsKey(domainCode)) {
+					domains.put(domainCode, domainName);
+				}
+				if (!services.containsKey(serviceCode)) {
+					services.put(serviceCode, serviceName);
+				}
+				if (mapResults.get(domainCode) != null) {
+					Map<String, List<Document>> mapDomains = mapResults.get(domainCode);
+					List<Document> lstDossiers = null;
+					if (mapDomains.containsKey(serviceCode)) {
+						lstDossiers = mapDomains.get(serviceCode);
+					}
+					else {
+						lstDossiers = new ArrayList<Document>();
+						mapDomains.put(serviceCode, lstDossiers);
+					}
+					lstDossiers.add(doc);
+				}
+				else {
+					Map<String, List<Document>> mapDomains = new HashMap<String, List<Document>>();
+					List<Document> lstDossiers = new ArrayList<Document>();
+					mapDomains.put(serviceCode, lstDossiers);
+					lstDossiers.add(doc);
+					mapResults.put(domainCode, mapDomains);
+				}
+			}
+			List<PaymentFile> lstPfs = null;
+			if (paymentStatus != -1) {
+				lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+			}
+			else {
+				lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+			}
+			Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
+			for (PaymentFile pf : lstPfs) {
+				mapPfs.put(String.valueOf(pf.getDossierId()), pf);
+			}
+			
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			
+			if (Validator.isNotNull(type) && "service".contentEquals(type)) {
+				for (String domainCode : mapResults.keySet()) {
+					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+					groupDomainObj.put("domain", domains.get(domainCode));
+					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+					
+					for (String serviceCode : mapResults.get(domainCode).keySet()) {
+						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
+						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
+						int count = 0;
+						long totalFee = 0;
+						long totalPaymentAmount = 0;
+						
+						for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
+							String dossierId = doc.get(DossierTerm.DOSSIER_ID);
+							if (mapPfs.containsKey(dossierId)) {
+								count++;
+								PaymentFile pf = mapPfs.get(dossierId);
+								totalFee += pf.getFeeAmount();
+								totalPaymentAmount += pf.getPaymentAmount();
+							}
+						}
+						if (count > 0) {
+							JSONArray paymentArr = JSONFactoryUtil.createJSONArray();
+							JSONObject paymentObj = JSONFactoryUtil.createJSONObject();
+							paymentObj.put("no", 1);
+							paymentObj.put("serviceName", serviceCode + " - " + services.get(serviceCode));
+							paymentObj.put("totalDossier", count);
+							paymentObj.put("totalFeeAmount", totalFee);
+							paymentObj.put("totalPaymentAmount", totalPaymentAmount);
+							paymentObj.put("totalAmount", totalFee + totalPaymentAmount);
+							paymentArr.put(paymentObj);
+							serviceObj.put("data", paymentArr);						
+							serviceArr.put(serviceObj);			
+						}
+					}
+					if (serviceArr.length() > 0) {
+						groupDomainObj.put("data", serviceArr);					
+						results.put(groupDomainObj);
+					}
+				}				
+			}
+			else {
+				for (String domainCode : mapResults.keySet()) {
+					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+					groupDomainObj.put("domain", domains.get(domainCode));
+					int count = 0;
+					long totalFee = 0;
+					long totalPaymentAmount = 0;
+					
+					for (String serviceCode : mapResults.get(domainCode).keySet()) {
+						
+						for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
+							String dossierId = doc.get(DossierTerm.DOSSIER_ID);
+							if (mapPfs.containsKey(dossierId)) {
+								count++;
+								PaymentFile pf = mapPfs.get(dossierId);
+								totalFee += pf.getFeeAmount();
+								totalPaymentAmount += pf.getPaymentAmount();
+							}
+						}
+					}
+					if (count > 0) {
+						groupDomainObj.put("totalDossier", count);
+						groupDomainObj.put("totalFeeAmount", totalFee);
+						groupDomainObj.put("totalPaymentAmount", totalPaymentAmount);
+						groupDomainObj.put("totalAmount", totalFee + totalPaymentAmount);
+						results.put(groupDomainObj);
+					}
+				}								
+			}
+			ResponseBuilder builder = Response.ok(results.toJSONString());
+			return builder.build();
+		} catch (PortalException e) {
+			_log.debug(e);
+		}
+		
+		ResponseBuilder builder = Response.ok("");
+		return builder.build();
 	}	
 }
