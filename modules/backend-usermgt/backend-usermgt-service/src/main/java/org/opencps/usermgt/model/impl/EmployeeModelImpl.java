@@ -94,6 +94,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			{ "fileSignId", Types.BIGINT },
 			{ "fileCertPath", Types.VARCHAR },
 			{ "fileSignPath", Types.VARCHAR },
+			{ "jobPosTitle", Types.VARCHAR },
 			{ "scope", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
@@ -125,10 +126,11 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		TABLE_COLUMNS_MAP.put("fileSignId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("fileCertPath", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fileSignPath", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("jobPosTitle", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(255) null,fullName VARCHAR(1024) null,title VARCHAR(1024) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(255) null,mobile VARCHAR(255) null,email VARCHAR(512) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(512) null,fileSignPath VARCHAR(512) null,scope VARCHAR(128) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(255) null,fullName VARCHAR(1024) null,title VARCHAR(1024) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(255) null,mobile VARCHAR(255) null,email VARCHAR(512) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(512) null,fileSignPath VARCHAR(512) null,jobPosTitle VARCHAR(75) null,scope VARCHAR(128) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee";
 	public static final String ORDER_BY_JPQL = " ORDER BY employee.employeeNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee.employeeNo ASC";
@@ -219,6 +221,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		attributes.put("fileSignId", getFileSignId());
 		attributes.put("fileCertPath", getFileCertPath());
 		attributes.put("fileSignPath", getFileSignPath());
+		attributes.put("jobPosTitle", getJobPosTitle());
 		attributes.put("scope", getScope());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
@@ -383,6 +386,12 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 		if (fileSignPath != null) {
 			setFileSignPath(fileSignPath);
+		}
+
+		String jobPosTitle = (String)attributes.get("jobPosTitle");
+
+		if (jobPosTitle != null) {
+			setJobPosTitle(jobPosTitle);
 		}
 
 		String scope = (String)attributes.get("scope");
@@ -841,6 +850,21 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	}
 
 	@Override
+	public String getJobPosTitle() {
+		if (_jobPosTitle == null) {
+			return "";
+		}
+		else {
+			return _jobPosTitle;
+		}
+	}
+
+	@Override
+	public void setJobPosTitle(String jobPosTitle) {
+		_jobPosTitle = jobPosTitle;
+	}
+
+	@Override
 	public String getScope() {
 		if (_scope == null) {
 			return "";
@@ -918,6 +942,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		employeeImpl.setFileSignId(getFileSignId());
 		employeeImpl.setFileCertPath(getFileCertPath());
 		employeeImpl.setFileSignPath(getFileSignPath());
+		employeeImpl.setJobPosTitle(getJobPosTitle());
 		employeeImpl.setScope(getScope());
 
 		employeeImpl.resetOriginalValues();
@@ -1165,6 +1190,14 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			employeeCacheModel.fileSignPath = null;
 		}
 
+		employeeCacheModel.jobPosTitle = getJobPosTitle();
+
+		String jobPosTitle = employeeCacheModel.jobPosTitle;
+
+		if ((jobPosTitle != null) && (jobPosTitle.length() == 0)) {
+			employeeCacheModel.jobPosTitle = null;
+		}
+
 		employeeCacheModel.scope = getScope();
 
 		String scope = employeeCacheModel.scope;
@@ -1178,7 +1211,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1232,6 +1265,8 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		sb.append(getFileCertPath());
 		sb.append(", fileSignPath=");
 		sb.append(getFileSignPath());
+		sb.append(", jobPosTitle=");
+		sb.append(getJobPosTitle());
 		sb.append(", scope=");
 		sb.append(getScope());
 		sb.append("}");
@@ -1241,7 +1276,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(85);
+		StringBundler sb = new StringBundler(88);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Employee");
@@ -1352,6 +1387,10 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		sb.append(getFileSignPath());
 		sb.append("]]></column-value></column>");
 		sb.append(
+			"<column><column-name>jobPosTitle</column-name><column-value><![CDATA[");
+		sb.append(getJobPosTitle());
+		sb.append("]]></column-value></column>");
+		sb.append(
 			"<column><column-name>scope</column-name><column-value><![CDATA[");
 		sb.append(getScope());
 		sb.append("]]></column-value></column>");
@@ -1407,6 +1446,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	private long _fileSignId;
 	private String _fileCertPath;
 	private String _fileSignPath;
+	private String _jobPosTitle;
 	private String _scope;
 	private long _columnBitmask;
 	private Employee _escapedModel;

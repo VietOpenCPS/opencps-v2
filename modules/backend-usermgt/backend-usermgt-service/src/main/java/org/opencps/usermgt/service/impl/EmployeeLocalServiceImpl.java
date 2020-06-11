@@ -178,7 +178,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		long userId, long groupId, String fullName, String employeeNo,
 		int gender, Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, String title,
-		String scope,
+		String scope, String jobPosTitle,
 		boolean isCreateUser, Date recruitDate, Date leaveDate,
 		ServiceContext serviceContext)
 		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
@@ -249,6 +249,8 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		employee.setWorkingStatus(workingStatus);
 		employee.setTitle(title);
 		employee.setScope(scope);
+		if (Validator.isNotNull(jobPosTitle))
+			employee.setJobPosTitle(jobPosTitle);
 		
 		employee.setMainJobPostId(mainJobPostId);
 
@@ -1233,6 +1235,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		object.setRecruitDate(new Date(objectData.getLong(EmployeeTerm.RECRUIT_DATE)));
 		if(objectData.getLong(EmployeeTerm.LEAVE_DATE) > 0)
 		object.setLeaveDate(new Date(objectData.getLong(EmployeeTerm.LEAVE_DATE)));
+		object.setScope(objectData.getString(EmployeeTerm.SCOPE));
 		// object.setFileCertId(fileCertId);
 		// object.setFileSignId(fileSignId);
 		// object.setFileCertPath(fileCertPath);
