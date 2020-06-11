@@ -1,9 +1,12 @@
 package org.opencps.api.controller.impl;
 
+import backend.api.rest.application.BackendAPIRestApplication;
 import backend.auth.api.exception.BusinessExceptionImpl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -27,6 +30,7 @@ import java.util.List;
 
 public class VNPostManagementImpl implements VNPostManagement
 {
+	private static final Log _log = LogFactoryUtil.getLog(VNPostManagementImpl.class);
 	@Override
 	public Response getDossierDetailByBarcode(HttpServletRequest request,HttpHeaders header,ServiceContext serviceContext,
 		String receiptCode)
@@ -35,32 +39,32 @@ public class VNPostManagementImpl implements VNPostManagement
 		String checkKey = receiptCodeSplit[0];
 		String securityCode = StringPool.BLANK;
 		long dossierId ;
-		String dossierCounter = StringPool.BLANK;
+		long dossierCounter ;
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		if (Validator.isNotNull(receiptCode) && receiptCodeSplit.length==4 && checkKey.equals("D"))
 		{
 			securityCode = receiptCodeSplit[1];
 			dossierId = Long.parseLong(receiptCodeSplit[2]);
-			dossierCounter = receiptCodeSplit[3];
-			Dossier dossier2 = DossierLocalServiceUtil.fetchDossier(dossierId);
-			System.out.println(dossier2.getApplicantIdType());
+			dossierCounter = Long.parseLong(receiptCodeSplit[3]);
 			List<Dossier> dossiers = DossierLocalServiceUtil.fetchDossierByG_DID(groupId,dossierId);
+			_log.info(dossiers.size());
 			if (Validator.isNotNull(dossiers) && dossiers.size() ==1 && Validator.isNotNull(dossiers.get(0)))
 			{
 				Dossier dossier = dossiers.get(0);
 				String password = dossier.getPassword();
-				String dossierCounter2 = dossier.getDossierCounter();
-				if (Validator.isNotNull(password) && securityCode.equals(password) && Validator.isNotNull(dossierCounter2) && dossierCounter.equals(dossierCounter2))
+				long counter = dossier.getCounter();
+				if (Validator.isNotNull(password) && securityCode.equals(password) && Validator.isNotNull(counter) && dossierCounter==counter)
 				{
+					_log.info(dossiers.size());
 					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier,0);
-					return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.serialize(result)).build();
+					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}
 			}
 		}
 		return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 	}
 
-	@Override public Response updateDossierDetailByBarcode(HttpServletRequest request,HttpHeaders header,
+	@Override public Response updateDossierByBarcode(HttpServletRequest request,HttpHeaders header,
 		ServiceContext serviceContext,String receiptCode,DossierInputModel dossierInputModel, String ma_bien_nhan)
 	{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -82,6 +86,7 @@ public class VNPostManagementImpl implements VNPostManagement
 			postalDistrictName, postalWardCode, postalWardName, postalTelNo);
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("result", "succeed");
+
 		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 	}
 }
