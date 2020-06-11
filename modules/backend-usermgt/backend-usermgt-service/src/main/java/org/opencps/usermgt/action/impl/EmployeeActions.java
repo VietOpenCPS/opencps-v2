@@ -878,7 +878,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 		//Check exits account and create new account
 		if (isNew) {
-			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, jobTitle, serviceContext);
 		}
 		//_log.info("Employee UPUP: "+employee);
 		//_log.info("roles: "+roles);
@@ -964,12 +964,15 @@ public class EmployeeActions implements EmployeeInterface {
 				employee.getMainJobPostId(), employee.getPhotoFileEntryId(),
 				employee.getMappingUserId(), employee.getTitle(), employee.getScope(),
 				employee.getRecruitDate(), employee.getLeaveDate(), serviceContext);
+			//Add jobTitle in user
 		}
 		//_log.info("Employee Create: "+employee);
 
 		//Check exits account and create new account
 		if (isNew) {
-			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, serviceContext);
+			employee = createNewEmployeeAccount_QA(userId, groupId, employee, StringPool.BLANK, email, jobTitle, serviceContext);
+		} else if (employee != null && Validator.isNotNull(jobTitle)) {
+			UserLocalServiceUtil.updateJobTitle(employee.getMappingUserId(), jobTitle);
 		}
 		//_log.info("Employee UPUP: "+employee);
 		//_log.info("roles: "+roles);
@@ -1009,7 +1012,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 	//Create account
 	private Employee createNewEmployeeAccount_QA(long userId, long groupId, Employee employee, String screenName,
-			String email, ServiceContext serviceContext) throws PortalException {
+			String email, String jobTitle, ServiceContext serviceContext) throws PortalException {
 
 		try {
 			if (Validator.isNull(screenName)) {
@@ -1065,7 +1068,7 @@ public class EmployeeActions implements EmployeeInterface {
 
 				User newUser = UserLocalServiceUtil.addUser(0, companyId, false, secret, secret, false,
 						screenName.toLowerCase(), email, 0, StringPool.BLANK, serviceContext.getLocale(), fml[0],
-						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, StringPool.BLANK, groupIds,
+						fml[1], fml[2], 0, 0, true, Calendar.JANUARY, 1, 1979, jobTitle, groupIds,
 						organizationIds, resultRoles, userGroupIds, false, serviceContext);
 				if (newUser != null) {
 					newUser.setPasswordReset(false);
