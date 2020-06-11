@@ -40,6 +40,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -107,6 +108,7 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
@@ -779,9 +781,29 @@ public class DossierActionsImpl implements DossierActions {
 						Double durationCount = serviceProcess.getDurationCount();
 						if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
+							
 							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							dueDate = dueDateUtils.getDueDate();
 							dossier.setDueDate(dueDate);
+							
+							JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
+							String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
+							if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
+								JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
+								if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
+									String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
+									if (Validator.isNotNull(strDateOption) && (
+											Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
+										
+										DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
+												serviceProcess.getDueDatePattern());
+										dueDate = dueDatePharse.getDueDate();
+										dossier.setDueDate(dueDate);
+									}
+								}
+							}
 						}
 					}
 
