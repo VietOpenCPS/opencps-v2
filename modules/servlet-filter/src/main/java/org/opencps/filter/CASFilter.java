@@ -194,8 +194,10 @@ public class CASFilter extends BaseFilter {
 
 		System.out.println("DDDDDDD: ");
 		HttpSession session = httpServletRequest.getSession();
+		System.out.println("session: "+session);
 
 		long companyId = _portal.getCompanyId(httpServletRequest);
+		System.out.println("companyId: "+companyId);
 
 //		CASConfiguration casConfiguration =
 //			_configurationProvider.getConfiguration(
@@ -205,6 +207,7 @@ public class CASFilter extends BaseFilter {
 
 //		Object forceLogout = session.getAttribute(CASWebKeys.CAS_FORCE_LOGOUT);
 		Object forceLogout = session.getAttribute(CAS_FORCE_LOGOUT);
+		_log.info("forceLogout: "+forceLogout);
 
 		if (forceLogout != null) {
 //			session.removeAttribute(CASWebKeys.CAS_FORCE_LOGOUT);
@@ -221,18 +224,18 @@ public class CASFilter extends BaseFilter {
 		String pathInfo = httpServletRequest.getPathInfo();
 		System.out.println("pathInfo: "+pathInfo);
 
-		if (Validator.isNotNull(pathInfo) &&
-			pathInfo.contains("/portal/logout")) {
-
-			session.invalidate();
-
-			//String logoutUrl = casConfiguration.logoutURL();
-			String logoutUrl = "https://dangnhap.dongthap.gov.vn/cas/logout";
-
-			httpServletResponse.sendRedirect(logoutUrl);
-
-			return;
-		}
+//		if (Validator.isNotNull(pathInfo) &&
+//			pathInfo.contains("/portal/logout")) {
+//
+//			session.invalidate();
+//
+//			//String logoutUrl = casConfiguration.logoutURL();
+//			String logoutUrl = "https://dangnhap.dongthap.gov.vn/cas/logout";
+//
+//			httpServletResponse.sendRedirect(logoutUrl);
+//
+//			return;
+//		}
 
 //		String login = (String)session.getAttribute(CASWebKeys.CAS_LOGIN);
 		String login = (String)session.getAttribute(CAS_LOGIN);
@@ -248,29 +251,29 @@ public class CASFilter extends BaseFilter {
 		}
 
 		//String serverName = casConfiguration.serverName();
-		String serverName = "http://183.91.11.60:8080";
+//		String serverName = "http://183.91.11.60:8080";
 
 		//String serviceURL = casConfiguration.serviceURL();
-		String serviceURL = "http://183.91.11.60:8080/c/portal/login";
+//		String serviceURL = "http://183.91.11.60:8080/c/portal/login";
 
-		if (Validator.isNull(serviceURL)) {
-//			serviceURL = CommonUtils.constructServiceUrl(
-//				httpServletRequest, httpServletResponse, serviceURL, serverName,
-//				"service", "ticket", true);
-		}
+//		if (Validator.isNull(serviceURL)) {
+////			serviceURL = CommonUtils.constructServiceUrl(
+////				httpServletRequest, httpServletResponse, serviceURL, serverName,
+////				"service", "ticket", true);
+//		}
 
 		String ticket = ParamUtil.getString(httpServletRequest, "ticket");
 
-		if (Validator.isNull(ticket)) {
-			//String loginUrl = casConfiguration.loginURL();
-			String loginUrl = "https://dangnhap.dongthap.gov.vn/cas/login";
-
-			loginUrl = _http.addParameter(loginUrl, "service", serviceURL);
-
-			httpServletResponse.sendRedirect(loginUrl);
-
-			return;
-		}
+//		if (Validator.isNull(ticket)) {
+//			//String loginUrl = casConfiguration.loginURL();
+//			String loginUrl = "https://dangnhap.dongthap.gov.vn/cas/login";
+//
+//			loginUrl = _http.addParameter(loginUrl, "service", serviceURL);
+//
+//			httpServletResponse.sendRedirect(loginUrl);
+//
+//			return;
+//		}
 
 //		TicketValidator ticketValidator = getTicketValidator(companyId);
 
@@ -307,9 +310,9 @@ public class CASFilter extends BaseFilter {
 //			session.setAttribute(CAS_LOGIN, login);
 //		}
 
-		processFilter(
-			CASFilter.class.getName(), httpServletRequest, httpServletResponse,
-			filterChain);
+//		processFilter(
+//			CASFilter.class.getName(), httpServletRequest, httpServletResponse,
+//			filterChain);
 	}
 
 //	@Reference(unbind = "-")

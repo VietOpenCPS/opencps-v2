@@ -235,6 +235,10 @@ public interface PaymentFileLocalService extends BaseLocalService,
 	public PaymentFile fetchPaymentFileByUuidAndGroupId(String uuid,
 		long groupId);
 
+	public List<PaymentFile> findByG(long groupId);
+
+	public List<PaymentFile> findByG_PT(long groupId, int paymentStatus);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 

@@ -937,4 +937,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		return paymentFile;
 	}
+	
+	public List<PaymentFile> findByG_PT(long groupId, int paymentStatus) {
+		return paymentFilePersistence.findByG_PT(groupId, paymentStatus);
+	}
+	
+	public List<PaymentFile> findByG(long groupId) {
+		return paymentFilePersistence.findByG(groupId);
+	}
 }

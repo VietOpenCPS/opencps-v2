@@ -104,8 +104,8 @@ public interface EmployeeLocalService extends BaseLocalService,
 	public Employee addEmployee(long userId, long groupId, String fullName,
 		String employeeNo, int gender, Date birthdate, String telNo,
 		String mobile, String email, int workingStatus, long mainJobPostId,
-		String title, String scope, boolean isCreateUser, Date recruitDate,
-		Date leaveDate, ServiceContext serviceContext)
+		String title, String scope, String jobPosTitle, boolean isCreateUser,
+		Date recruitDate, Date leaveDate, ServiceContext serviceContext)
 		throws DuplicateEmployeeNoException, DuplicateEmployeeEmailException,
 			UnauthenticationException, UnauthorizationException,
 			NoSuchUserException, PortalException;

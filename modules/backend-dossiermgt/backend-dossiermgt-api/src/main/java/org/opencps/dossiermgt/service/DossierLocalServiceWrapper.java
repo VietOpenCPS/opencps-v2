@@ -908,6 +908,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+		java.util.Date dueDate,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierFull(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -920,7 +921,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, serviceContext);
+			fromViaPostal, dueDate, serviceContext);
 	}
 
 	@Override
@@ -940,7 +941,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData,
+		String metaData, java.util.Date dueDate,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierMeta(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -953,7 +954,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, metaData, serviceContext);
+			fromViaPostal, metaData, dueDate, serviceContext);
 	}
 
 	@Override
@@ -1320,6 +1321,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _dossierLocalService.updateFinishDate(groupId, id, refId, date,
 			context);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier updateGroupDossier(
+		org.opencps.dossiermgt.model.Dossier dossier, String groupDossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _dossierLocalService.updateGroupDossier(dossier, groupDossierId);
 	}
 
 	@Override

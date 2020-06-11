@@ -40,6 +40,7 @@ import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.datamgt.util.DueDatePhaseUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierFileActions;
@@ -107,6 +108,7 @@ import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
+import org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
@@ -779,9 +781,29 @@ public class DossierActionsImpl implements DossierActions {
 						Double durationCount = serviceProcess.getDurationCount();
 						if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
+							
 							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							dueDate = dueDateUtils.getDueDate();
 							dossier.setDueDate(dueDate);
+							
+							JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
+							String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
+							if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
+								JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
+								if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
+									String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
+									if (Validator.isNotNull(strDateOption) && (
+											Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
+										
+										DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
+												serviceProcess.getDueDatePattern());
+										dueDate = dueDatePharse.getDueDate();
+										dossier.setDueDate(dueDate);
+									}
+								}
+							}
 						}
 					}
 
@@ -4001,24 +4023,80 @@ public class DossierActionsImpl implements DossierActions {
 		}
 	}
 
-	@Override public Dossier initUpdateDossierFull(long groupId,long id,String applicantName,String applicantIdType,
-		String applicantIdNo,String applicantIdDate,String address,String cityCode,String cityName,String districtCode,
-		String districtName,String wardCode,String wardName,String contactName,String contactTelNo,String contactEmail,
-		String dossierTemplateNo,Integer viaPostal,String postalAddress,String postalCityCode,String postalCityName,
-		String postalDistrictCode,String postalDistrictName,String postalTelNo,String applicantNote,
-		boolean isSameAsApplicant,String delegateName,String delegateIdNo,String delegateTelNo,String delegateEmail,
-		String delegateAddress,String delegateCityCode,String delegateDistrictCode,String delegateWardCode,Long sampleCount,
-		String dossierName,String briefNote,Integer delegateType,String documentNo,Date documentDate,int systemId,
-		Integer vnpostalStatus,String vnpostalProfile,Integer fromViaPostal,String formMeta,ServiceContext serviceContext)
-	{
+	@Override public Dossier initUpdateDossierFull(long groupId, long id, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
+			String districtCode, String districtName, String wardCode, String wardName, String contactName,
+			String contactTelNo, String contactEmail, String dossierTemplateNo, Integer viaPostal, String postalAddress,
+			String postalCityCode, String postalCityName, String postalDistrictCode, String postalDistrictName,
+			String postalTelNo, String applicantNote,
+			boolean isSameAsApplicant, String delegateName, String delegateIdNo, String delegateTelNo,
+			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
+			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
+			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
+			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
 		try {
-			return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
-				applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
-				wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
-				postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
-				delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
-				delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-				systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
+			Date dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
+			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
+				String metaData = StringPool.BLANK;
+				if (dossier != null) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject();
+
+					if (Validator.isNull(dossier.getMetaData())) {
+						metaData = formMeta;
+					} else {
+						JSONObject jsonMeta = JSONFactoryUtil.createJSONObject(formMeta);
+						Iterator<String> keyIt = jsonMeta.keys();
+						while (keyIt.hasNext()) {
+							String key = keyIt.next();
+							String[] keys = key.split("\\.");
+							JSONObject tempObj = obj;
+							int index = 0;
+							for (int i = 0; i < keys.length; i++) {
+								if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+									tempObj = tempObj.getJSONObject(keys[i]);
+								} else {
+									index = i;
+									break;
+								}
+							}
+							if (keys.length == 1) {
+								obj.put(key, jsonMeta.get(key));
+							} else {
+								if (index == keys.length - 1) {
+									tempObj.put(keys[index], jsonMeta.get(key));
+								} else {
+									JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+									mergeObj.put(keys[keys.length - 1], jsonMeta.get(key));
+									for (int i = keys.length - 2; i > index; i--) {
+										JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+										indexObj.put(keys[i], mergeObj);
+										mergeObj = indexObj;
+									}
+									tempObj.put(keys[index], mergeObj);
+								}
+							}
+						}
+						metaData = obj.toJSONString();
+					}
+				}
+
+				return DossierLocalServiceUtil.initUpdateDossierMeta(groupId, id, applicantName, applicantIdType,
+						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+						wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate, serviceContext);
+			} else {
+				return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
+						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
+						wardName, contactName, contactTelNo, contactEmail, dossierTemplateNo, viaPostal, postalAddress,
+						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
+						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate, serviceContext);
+			}
 
 		} catch (Exception e) {
 			_log.debug(e);

@@ -605,7 +605,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateWardCode, Long sampleCount, String dossierName,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
-		String vnpostalProfile, Integer fromViaPostal,
+		String vnpostalProfile, Integer fromViaPostal, Date dueDate,
 		ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -625,7 +625,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
-		ServiceContext serviceContext);
+		Date dueDate, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,
@@ -821,6 +821,10 @@ public interface DossierLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateFinishDate(long groupId, long id, String refId,
 		Date date, ServiceContext context) throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateGroupDossier(Dossier dossier, String groupDossierId)
+		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateProcessDate(long groupId, long id, String refId,

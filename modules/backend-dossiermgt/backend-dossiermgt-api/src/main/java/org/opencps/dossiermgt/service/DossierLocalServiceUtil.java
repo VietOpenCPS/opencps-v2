@@ -862,6 +862,7 @@ public class DossierLocalServiceUtil {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+		java.util.Date dueDate,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierFull(groupId, id, applicantName,
@@ -874,7 +875,8 @@ public class DossierLocalServiceUtil {
 			delegateEmail, delegateAddress, delegateCityCode,
 			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
 			briefNote, delegateType, documentNo, documentDate, systemId,
-			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
+			vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate,
+			serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossierMeta(
@@ -893,7 +895,7 @@ public class DossierLocalServiceUtil {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData,
+		String metaData, java.util.Date dueDate,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return getService()
 				   .initUpdateDossierMeta(groupId, id, applicantName,
@@ -906,7 +908,7 @@ public class DossierLocalServiceUtil {
 			delegateEmail, delegateAddress, delegateCityCode,
 			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
 			briefNote, delegateType, documentNo, documentDate, systemId,
-			vnpostalStatus, vnpostalProfile, fromViaPostal, metaData,
+			vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate,
 			serviceContext);
 	}
 
@@ -1255,6 +1257,12 @@ public class DossierLocalServiceUtil {
 		com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().updateFinishDate(groupId, id, refId, date, context);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier updateGroupDossier(
+		org.opencps.dossiermgt.model.Dossier dossier, String groupDossierId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().updateGroupDossier(dossier, groupDossierId);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier updateProcessDate(
