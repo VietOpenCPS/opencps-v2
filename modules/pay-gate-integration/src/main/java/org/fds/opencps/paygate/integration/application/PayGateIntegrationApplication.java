@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.xml.QName;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -21,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -181,7 +183,40 @@ public class PayGateIntegrationApplication extends Application {
 			@FormParam("userName") String userName, @FormParam("pwd") String pwd) {
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
-		JSONObject result = actionImpl.dvcReceiveResult(user, serviceContext, url, groupId, actionCode, order_id, userName, pwd);
+		JSONObject result = actionImpl.dvcReceiveResult(user, serviceContext, url, groupId, actionCode, order_id,
+				userName, pwd);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@POST
+	@Path("/kpdvcqg/createtransaction")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response kpCreateTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("groupId") long groupId,
+			@QueryParam("dossierId") long dossierId) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+	
+	@POST
+	@Path("/kpdvcqg/paymentconfirm")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response kpCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			String body) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.kpCallBack(user, serviceContext, body);
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
