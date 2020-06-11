@@ -621,6 +621,333 @@ public class PaymentFileUtil {
 	}
 
 	/**
+	* Returns all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @return the matching payment files
+	*/
+	public static List<PaymentFile> findByG_PT(long groupId, int paymentStatus) {
+		return getPersistence().findByG_PT(groupId, paymentStatus);
+	}
+
+	/**
+	* Returns a range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @return the range of matching payment files
+	*/
+	public static List<PaymentFile> findByG_PT(long groupId, int paymentStatus,
+		int start, int end) {
+		return getPersistence().findByG_PT(groupId, paymentStatus, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching payment files
+	*/
+	public static List<PaymentFile> findByG_PT(long groupId, int paymentStatus,
+		int start, int end, OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence()
+				   .findByG_PT(groupId, paymentStatus, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching payment files
+	*/
+	public static List<PaymentFile> findByG_PT(long groupId, int paymentStatus,
+		int start, int end, OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_PT(groupId, paymentStatus, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public static PaymentFile findByG_PT_First(long groupId, int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence()
+				   .findByG_PT_First(groupId, paymentStatus, orderByComparator);
+	}
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public static PaymentFile fetchByG_PT_First(long groupId,
+		int paymentStatus, OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_PT_First(groupId, paymentStatus, orderByComparator);
+	}
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public static PaymentFile findByG_PT_Last(long groupId, int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence()
+				   .findByG_PT_Last(groupId, paymentStatus, orderByComparator);
+	}
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public static PaymentFile fetchByG_PT_Last(long groupId, int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_PT_Last(groupId, paymentStatus, orderByComparator);
+	}
+
+	/**
+	* Returns the payment files before and after the current payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param paymentFileId the primary key of the current payment file
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next payment file
+	* @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	*/
+	public static PaymentFile[] findByG_PT_PrevAndNext(long paymentFileId,
+		long groupId, int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence()
+				   .findByG_PT_PrevAndNext(paymentFileId, groupId,
+			paymentStatus, orderByComparator);
+	}
+
+	/**
+	* Removes all the payment files where groupId = &#63; and paymentStatus = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	*/
+	public static void removeByG_PT(long groupId, int paymentStatus) {
+		getPersistence().removeByG_PT(groupId, paymentStatus);
+	}
+
+	/**
+	* Returns the number of payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @return the number of matching payment files
+	*/
+	public static int countByG_PT(long groupId, int paymentStatus) {
+		return getPersistence().countByG_PT(groupId, paymentStatus);
+	}
+
+	/**
+	* Returns all the payment files where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching payment files
+	*/
+	public static List<PaymentFile> findByG(long groupId) {
+		return getPersistence().findByG(groupId);
+	}
+
+	/**
+	* Returns a range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @return the range of matching payment files
+	*/
+	public static List<PaymentFile> findByG(long groupId, int start, int end) {
+		return getPersistence().findByG(groupId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching payment files
+	*/
+	public static List<PaymentFile> findByG(long groupId, int start, int end,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence().findByG(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching payment files
+	*/
+	public static List<PaymentFile> findByG(long groupId, int start, int end,
+		OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public static PaymentFile findByG_First(long groupId,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence().findByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public static PaymentFile fetchByG_First(long groupId,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence().fetchByG_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public static PaymentFile findByG_Last(long groupId,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence().findByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public static PaymentFile fetchByG_Last(long groupId,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		return getPersistence().fetchByG_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the payment files before and after the current payment file in the ordered set where groupId = &#63;.
+	*
+	* @param paymentFileId the primary key of the current payment file
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next payment file
+	* @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	*/
+	public static PaymentFile[] findByG_PrevAndNext(long paymentFileId,
+		long groupId, OrderByComparator<PaymentFile> orderByComparator)
+		throws org.opencps.dossiermgt.exception.NoSuchPaymentFileException {
+		return getPersistence()
+				   .findByG_PrevAndNext(paymentFileId, groupId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the payment files where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public static void removeByG(long groupId) {
+		getPersistence().removeByG(groupId);
+	}
+
+	/**
+	* Returns the number of payment files where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching payment files
+	*/
+	public static int countByG(long groupId) {
+		return getPersistence().countByG(groupId);
+	}
+
+	/**
 	* Caches the payment file in the entity cache if it is enabled.
 	*
 	* @param paymentFile the payment file
