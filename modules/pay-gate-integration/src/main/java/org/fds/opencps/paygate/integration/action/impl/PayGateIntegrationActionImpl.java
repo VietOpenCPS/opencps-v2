@@ -665,8 +665,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 	//Add by TrungNT
 	@Override
-	public JSONObject kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
+		String result = StringPool.BETWEEN;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil
@@ -817,7 +817,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					_log.info("response: " + sb.toString());
 
-					result = JSONFactoryUtil.createJSONObject(sb.toString());
+					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
+					
+					if(response.has("error") && response.getInt("error") == 0) {
+						result = response.getString("payment_url");
+					}
+					
+					_log.info("result " + result);
 
 				}
 
