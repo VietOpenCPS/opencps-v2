@@ -32,4 +32,10 @@ public interface PayGateIntegrationAction {
 	public JSONObject mcSearchResult(User user, ServiceContext serviceContext, String order_id, String billcode, String cust_msisdn, long trans_amount);
 
 	public JSONObject dvcReceiveResult(User user, ServiceContext serviceContext, String url, long groupId, String actionCode, String order_id, String username, String pwd);
+	
+	public JSONObject kpCallBack(User user, ServiceContext serviceContext, String body);
+	
+	public JSONObject kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
+	
+	public JSONObject kpViewDetailTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
 }

@@ -14,12 +14,16 @@ public class PayGateTerm {
 	private static Log _log = LogFactoryUtil.getLog(PayGateTerm.class.getName());
 	public static final String ATTACHMENT_FILENAME_FORMAT = "attachment; filename=\"%s\"";
 	public static final String PNG_TYPE = "image/png";
-
+	public static final String KEYPAY_DVCQG_PROTOCOL = "KEYPAY_DVCQG_PROTOCOL";
+	public static final String KEYPAY_DVCQG_CREATE_TRANSACTION_ENDPOINT = "KEYPAY_DVCQG_CREATE_TRANSACTION_ENDPOINT";
+	public static final String KEYPAY_DVCQG_DETAIL_TRANSACTION_ENDPOINT = "KEYPAY_DVCQG_DETAIL_TRANSACTION_ENDPOINT";
 	public static final String VTP_PROTOCOL = "VTP_QRCODE";
 	public static final String PRIORITY = "priority";
 	public static final String KEY = "key";
 	public static final String VALUE = "value";
 	public static final String VERSION = "version";
+	public static final String HASH_KEY_1 = "hash_key_1";
+	public static final String HASH_KEY_2 = "hash_key_2";
 	public static final String TYPE = "type";
 	public static final String BILLCODE = "billcode";
 	public static final String ORDER_ID = "order_id";
@@ -36,6 +40,7 @@ public class PayGateTerm {
 	public static final String HMAC_SHA1 = "HmacSHA1";
 	public static final String CHECK_SUM = "check_sum";
 	public static final String TRANS_AMOUNT = "trans_amount";
+	public static final String PAYMENT_FEE = "payment_fee";
 	public static final String ERROR_CODE = "error_code";
 	public static final String HEX_FORMAT = "%02x";
 	public static final String RETURN_URL = "return_url";
@@ -65,6 +70,59 @@ public class PayGateTerm {
 	public static final String USERNAME = "userName";
 	public static final String PWD = "pwd";
 	public static final String ACTION_ENPOINT = "actions";
+	
+	//add by TrungNT
+	public static final String CLIENT_ID = "client_id";
+	public static final String TRANSACTION_ID = "transaction_id";
+	public static final String TRANSACTION_CODE = "transaction_code";
+	public static final String COMMAND = "command";
+	public static final String DESCRIPTION = "description";
+	public static final String LOCALE = "locale";
+	public static final String COUNTRY_CODE = "country_code";
+	public static final String CURRENCY_CODE = "currency_code";
+	public static final String ENVIRONMENT = "environment";
+	public static final String STATUS = "status";
+	public static final String BILL_INFO = "bill_info";
+	public static final String MADICHVU = "MaDichVu";
+	public static final String TKTHUHUONG = "TKThuHuong";
+	
+	public static final String MANHTHUHUONG = "MaNHThuHuong";
+	public static final String TENTKTHUHUONG = "TenTKThuHuong";
+	public static final String PHILEPHI = "PhiLePhi";
+	public static final String LOAIPHILEPHI = "LoaiPhiLePhi";
+	
+	public static final String MAPHILEPHI = "MaPhiLePhi";
+	public static final String TENPHILEPHI = "TenPhiLePhi";
+	public static final String SOTIEN = "SoTien";
+	public static final String MADONVI = "MaDonVi";
+	public static final String TENDONVI = "TenDonVi";
+	public static final String MAHOSO = "MaHoSo";
+	public static final String MADVC = "MaDVC";
+	public static final String TENDVC = "TenDVC";
+	public static final String MATTHC = "MaTTHC";
+	public static final String TENTTHC = "TenTTHC";
+	public static final String NOIDUNGTHANHTOAN = "NoiDungThanhToan";
+	public static final String MALOAIHINHTHUPHAT = "MaLoaiHinhThuPhat";
+	
+	public static final String TENLOAIHINHTHUPHAT = "TenLoaiHinhThuPhat";
+	public static final String HOTENNGUOINOP = "HoTenNguoiNop";
+	public static final String SOCMNDNGUOINOP = "SoCMNDNguoiNop";
+	public static final String DIACHINGUOINOP = "DiaChiNguoiNop";
+	public static final String HUYENNGUOINOP = "HuyenNguoiNop";
+	public static final String TINHNGUOINOP = "TinhNguoiNop";
+	public static final String MACOQUANQD = "MaCoQuanQD";
+	public static final String TENCOQUANQD = "TenCoQuanQD";
+	public static final String KHOBAC = "KhoBac";
+	public static final String NGAYQD = "NgayQD";
+	public static final String SOQD = "SoQD";
+	public static final String THOIGIANVIPHAM = "ThoiGianViPham";
+	public static final String DIADIEMVIPHAM = "DiaDiemViPham";
+	public static final String TENNGUOIVIPHAM = "TenNguoiViPham";
+	public static final String TAIKHOANTHUNSNN = "TaiKhoanThuNSNN";
+	public static final String DSKHOANNOP = "DSKhoanNop";
+	public static final String NOIDUNG = "NoiDung";
+	public static final String ADDITION_FEE = "addition_fee";
+	public static final String KP_DVCQG_CONFIG = "KP_DVCQG_CONFIG";
 
 	public static String buildPathDoAction(String path, long dossierId) {
 
