@@ -268,6 +268,18 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG(
+		long groupId) {
+		return _paymentFileLocalService.findByG(groupId);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG_PT(
+		long groupId, int paymentStatus) {
+		return _paymentFileLocalService.findByG_PT(groupId, paymentStatus);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _paymentFileLocalService.getActionableDynamicQuery();
 	}

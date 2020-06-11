@@ -467,6 +467,280 @@ public interface PaymentFilePersistence extends BasePersistence<PaymentFile> {
 	public int countByDossierId(long groupId, long dossierId);
 
 	/**
+	* Returns all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @return the matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG_PT(long groupId,
+		int paymentStatus);
+
+	/**
+	* Returns a range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @return the range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG_PT(long groupId,
+		int paymentStatus, int start, int end);
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG_PT(long groupId,
+		int paymentStatus, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG_PT(long groupId,
+		int paymentStatus, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByG_PT_First(long groupId, int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByG_PT_First(long groupId, int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByG_PT_Last(long groupId, int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByG_PT_Last(long groupId, int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the payment files before and after the current payment file in the ordered set where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param paymentFileId the primary key of the current payment file
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next payment file
+	* @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	*/
+	public PaymentFile[] findByG_PT_PrevAndNext(long paymentFileId,
+		long groupId, int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Removes all the payment files where groupId = &#63; and paymentStatus = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	*/
+	public void removeByG_PT(long groupId, int paymentStatus);
+
+	/**
+	* Returns the number of payment files where groupId = &#63; and paymentStatus = &#63;.
+	*
+	* @param groupId the group ID
+	* @param paymentStatus the payment status
+	* @return the number of matching payment files
+	*/
+	public int countByG_PT(long groupId, int paymentStatus);
+
+	/**
+	* Returns all the payment files where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG(long groupId);
+
+	/**
+	* Returns a range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @return the range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG(long groupId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the payment files where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByG(long groupId, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the first payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByG_First(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the last payment file in the ordered set where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByG_Last(long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the payment files before and after the current payment file in the ordered set where groupId = &#63;.
+	*
+	* @param paymentFileId the primary key of the current payment file
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next payment file
+	* @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	*/
+	public PaymentFile[] findByG_PrevAndNext(long paymentFileId, long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Removes all the payment files where groupId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public void removeByG(long groupId);
+
+	/**
+	* Returns the number of payment files where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching payment files
+	*/
+	public int countByG(long groupId);
+
+	/**
 	* Caches the payment file in the entity cache if it is enabled.
 	*
 	* @param paymentFile the payment file
