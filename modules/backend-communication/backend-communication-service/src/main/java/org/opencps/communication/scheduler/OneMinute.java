@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -141,9 +142,11 @@ public class OneMinute extends BaseMessageListener {
 							 * If Send SMS error, continue until expiredDate 
 							 * */
 							_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
-							Date now = new Date();
-							notificationQueue.setExpireDate(now);
-							notificationQueue.setModifiedDate(now);
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(notificationQueue.getCreateDate());
+							cal.add(Calendar.SECOND, 30);
+							notificationQueue.setExpireDate(cal.getTime());
+							notificationQueue.setModifiedDate(cal.getTime());
 							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 						} else {
 						//Process send SMS
