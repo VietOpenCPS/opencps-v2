@@ -834,7 +834,12 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setOriginDossierNo(originDossierNo);
 		}
 
-		dossierImpl.setGroupDossierId(groupDossierId);
+		if (groupDossierId == null) {
+			dossierImpl.setGroupDossierId("");
+		}
+		else {
+			dossierImpl.setGroupDossierId(groupDossierId);
+		}
 
 		if (metaData == null) {
 			dossierImpl.setMetaData("");
@@ -982,8 +987,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		durationCount = objectInput.readDouble();
 		dossierName = objectInput.readUTF();
 		originDossierNo = objectInput.readUTF();
-
-		groupDossierId = objectInput.readLong();
+		groupDossierId = objectInput.readUTF();
 		metaData = objectInput.readUTF();
 
 		systemId = objectInput.readInt();
@@ -1486,7 +1490,12 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			objectOutput.writeUTF(originDossierNo);
 		}
 
-		objectOutput.writeLong(groupDossierId);
+		if (groupDossierId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(groupDossierId);
+		}
 
 		if (metaData == null) {
 			objectOutput.writeUTF("");
@@ -1610,7 +1619,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public double durationCount;
 	public String dossierName;
 	public String originDossierNo;
-	public long groupDossierId;
+	public String groupDossierId;
 	public String metaData;
 	public int systemId;
 	public String dossierCounter;

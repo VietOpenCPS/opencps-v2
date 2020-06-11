@@ -352,6 +352,11 @@ public class DossierLocalServiceUtil {
 		return getService().fetchDossier(dossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> fetchDossierByG_DID(
+		long groupId, long dossierId) {
+		return getService().fetchDossierByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Returns the dossier matching the UUID and group.
 	*
@@ -374,7 +379,7 @@ public class DossierLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
-		long groupId, long groupDossierId) {
+		long groupId, String groupDossierId) {
 		return getService().findByG_GDID(groupId, groupDossierId);
 	}
 
@@ -870,6 +875,39 @@ public class DossierLocalServiceUtil {
 			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
 			briefNote, delegateType, documentNo, documentDate, systemId,
 			vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier initUpdateDossierMeta(
+		long groupId, long id, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, Integer viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
+		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
+		String dossierName, String briefNote, Integer delegateType,
+		String documentNo, java.util.Date documentDate, int systemId,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+		String metaData,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return getService()
+				   .initUpdateDossierMeta(groupId, id, applicantName,
+			applicantIdType, applicantIdNo, applicantIdDate, address, cityCode,
+			cityName, districtCode, districtName, wardCode, wardName,
+			contactName, contactTelNo, contactEmail, dossierTemplateNo,
+			viaPostal, postalAddress, postalCityCode, postalCityName,
+			postalDistrictCode, postalDistrictName, postalTelNo, applicantNote,
+			isSameAsApplicant, delegateName, delegateIdNo, delegateTelNo,
+			delegateEmail, delegateAddress, delegateCityCode,
+			delegateDistrictCode, delegateWardCode, sampleCount, dossierName,
+			briefNote, delegateType, documentNo, documentDate, systemId,
+			vnpostalStatus, vnpostalProfile, fromViaPostal, metaData,
+			serviceContext);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier postDossier(

@@ -841,6 +841,24 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	}
 
 	@Override
+	public Response createPaymentFileByDossierIdEpar(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id, PaymentFileInputModel input) {
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		try {
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.createPaymentFileByDossierId(user.getUserId(), groupId, GetterUtil.getLong(id),
+					PaymentFileUtils.convertFormModelToInputModel(input), serviceContext);		
+
+			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}	
+	}
+
+	@Override
 	public Response previewInvoiceFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, String id, String referenceUid) {
 		BackendAuth auth = new BackendAuthImpl();

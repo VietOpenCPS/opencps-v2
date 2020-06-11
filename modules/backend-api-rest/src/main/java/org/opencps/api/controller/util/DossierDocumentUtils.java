@@ -376,7 +376,7 @@ public class DossierDocumentUtils {
 		
 		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
 			JSONArray groupDossierArr = JSONFactoryUtil.createJSONArray();
-			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossier.getDossierId());
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, String.valueOf(dossier.getDossierId()));
 			for (Dossier d : lstDossiers) {
 				JSONObject dObject = JSONFactoryUtil.createJSONObject();
 				dObject.put(DossierTerm.DOSSIER_NO, d.getDossierNo());
@@ -446,6 +446,7 @@ public class DossierDocumentUtils {
 		jsonData.put(DossierTerm.APPLICANT_NOTE, dossier.getApplicantNote());
 		jsonData.put(DossierTerm.ONLINE, String.valueOf(dossier.getOnline()));
 		jsonData.put(DossierTerm.FROM_VIA_POSTAL, String.valueOf(dossier.getFromViaPostal()));
+		jsonData.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
 
 		// MetaData
 		String metaData = dossier.getMetaData();
@@ -705,7 +706,7 @@ public class DossierDocumentUtils {
 		
 		if (dossier.getOriginality() == DossierTerm.ORIGINALITY_HOSONHOM) {
 			JSONArray groupDossierArr = JSONFactoryUtil.createJSONArray();
-			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossier.getDossierId());
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, String.valueOf(dossier.getDossierId()));
 			for (Dossier d : lstDossiers) {
 				JSONObject dObject = JSONFactoryUtil.createJSONObject();
 				dObject.put(DossierTerm.DOSSIER_NO, d.getDossierNo());

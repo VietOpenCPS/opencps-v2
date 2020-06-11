@@ -183,6 +183,7 @@ public class BackendAPIRestApplication extends Application {
 		singletons.add(new FileItemManagementImpl());
 
 		singletons.add(new SaveFieldPickManagementImpl());
+		singletons.add(new VNPostManagementImpl());
 		
 		singletons.add(this);
 

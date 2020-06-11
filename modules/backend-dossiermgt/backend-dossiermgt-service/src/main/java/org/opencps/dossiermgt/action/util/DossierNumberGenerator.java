@@ -416,7 +416,7 @@ public class DossierNumberGenerator {
 	public static String generateDossierNumber(String code, String pattern, long groupId, Long companyId, String agency,
 			String service, String template) throws ParseException, SearchException {
 		LinkedHashMap<String, Object> param = new LinkedHashMap<String, Object>();
-		param.put(DossierTerm.AGENCY, agency);
+		param.put(DossierTerm.AGENCYS, agency);
 		param.put(DossierTerm.SERVICE, service);
 		param.put(DossierTerm.TEMPLATE, template);
 		SearchContext sc = new SearchContext();

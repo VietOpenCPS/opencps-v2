@@ -1,6 +1,7 @@
 package org.opencps.usermgt.service.indexer;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -170,6 +171,14 @@ public class EmployeeIndexer extends BaseIndexer<Employee> {
 		}
 		
 		document.addNumberSortable(EmployeeTerm.ACTIVE, status);
+
+		String scopesSearch = StringPool.BLANK;
+		if (Validator.isNotNull(employee.getScope())) {
+			for (String scope : StringUtil.split(employee.getScope())) {
+				scopesSearch += splitSpecial(scope) + StringPool.SPACE;
+			}
+		}
+		document.addTextSortable(EmployeeTerm.SCOPES_SEARCH, scopesSearch);
 		
 		return document;
 	}

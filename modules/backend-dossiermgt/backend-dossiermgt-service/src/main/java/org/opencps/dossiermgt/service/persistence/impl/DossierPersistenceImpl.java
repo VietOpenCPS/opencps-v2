@@ -22134,38 +22134,31 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_GDID",
 			new String[] {
-				Long.class.getName(), Long.class.getName(),
+				Long.class.getName(), String.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
 			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID =
-		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
-			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_GDID",
-			new String[] { Long.class.getName(), Long.class.getName() },
-			DossierModelImpl.GROUPID_COLUMN_BITMASK |
-			DossierModelImpl.GROUPDOSSIERID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_G_GDID = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_GDID = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
 			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_GDID",
-			new String[] { Long.class.getName(), Long.class.getName() });
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_GDID",
+			new String[] { Long.class.getName(), String.class.getName() });
 
 	/**
-	 * Returns all the dossiers where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns all the dossiers where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
 	 * @return the matching dossiers
 	 */
 	@Override
-	public List<Dossier> findByG_GDID(long groupId, long groupDossierId) {
+	public List<Dossier> findByG_GDID(long groupId, String groupDossierId) {
 		return findByG_GDID(groupId, groupDossierId, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the dossiers where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns a range of all the dossiers where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -22178,13 +22171,13 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @return the range of matching dossiers
 	 */
 	@Override
-	public List<Dossier> findByG_GDID(long groupId, long groupDossierId,
+	public List<Dossier> findByG_GDID(long groupId, String groupDossierId,
 		int start, int end) {
 		return findByG_GDID(groupId, groupDossierId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the dossiers where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -22198,14 +22191,14 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @return the ordered range of matching dossiers
 	 */
 	@Override
-	public List<Dossier> findByG_GDID(long groupId, long groupDossierId,
+	public List<Dossier> findByG_GDID(long groupId, String groupDossierId,
 		int start, int end, OrderByComparator<Dossier> orderByComparator) {
 		return findByG_GDID(groupId, groupDossierId, start, end,
 			orderByComparator, true);
 	}
 
 	/**
-	 * Returns an ordered range of all the dossiers where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns an ordered range of all the dossiers where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
@@ -22220,27 +22213,19 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @return the ordered range of matching dossiers
 	 */
 	@Override
-	public List<Dossier> findByG_GDID(long groupId, long groupDossierId,
+	public List<Dossier> findByG_GDID(long groupId, String groupDossierId,
 		int start, int end, OrderByComparator<Dossier> orderByComparator,
 		boolean retrieveFromCache) {
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID;
-			finderArgs = new Object[] { groupId, groupDossierId };
-		}
-		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_GDID;
-			finderArgs = new Object[] {
-					groupId, groupDossierId,
-					
-					start, end, orderByComparator
-				};
-		}
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_GDID;
+		finderArgs = new Object[] {
+				groupId, groupDossierId,
+				
+				start, end, orderByComparator
+			};
 
 		List<Dossier> list = null;
 
@@ -22251,7 +22236,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			if ((list != null) && !list.isEmpty()) {
 				for (Dossier dossier : list) {
 					if ((groupId != dossier.getGroupId()) ||
-							(groupDossierId != dossier.getGroupDossierId())) {
+							!StringUtil.wildcardMatches(
+								dossier.getGroupDossierId(), groupDossierId,
+								'_', '%', '\\', true)) {
 						list = null;
 
 						break;
@@ -22275,7 +22262,19 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 			query.append(_FINDER_COLUMN_G_GDID_GROUPID_2);
 
-			query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+			boolean bindGroupDossierId = false;
+
+			if (groupDossierId == null) {
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_1);
+			}
+			else if (groupDossierId.equals("")) {
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_3);
+			}
+			else {
+				bindGroupDossierId = true;
+
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+			}
 
 			if (orderByComparator != null) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
@@ -22299,7 +22298,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 				qPos.add(groupId);
 
-				qPos.add(groupDossierId);
+				if (bindGroupDossierId) {
+					qPos.add(groupDossierId);
+				}
 
 				if (!pagination) {
 					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
@@ -22332,7 +22333,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the first dossier in the ordered set where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the first dossier in the ordered set where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
@@ -22341,7 +22342,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @throws NoSuchDossierException if a matching dossier could not be found
 	 */
 	@Override
-	public Dossier findByG_GDID_First(long groupId, long groupDossierId,
+	public Dossier findByG_GDID_First(long groupId, String groupDossierId,
 		OrderByComparator<Dossier> orderByComparator)
 		throws NoSuchDossierException {
 		Dossier dossier = fetchByG_GDID_First(groupId, groupDossierId,
@@ -22367,7 +22368,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the first dossier in the ordered set where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the first dossier in the ordered set where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
@@ -22375,7 +22376,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
 	 */
 	@Override
-	public Dossier fetchByG_GDID_First(long groupId, long groupDossierId,
+	public Dossier fetchByG_GDID_First(long groupId, String groupDossierId,
 		OrderByComparator<Dossier> orderByComparator) {
 		List<Dossier> list = findByG_GDID(groupId, groupDossierId, 0, 1,
 				orderByComparator);
@@ -22388,7 +22389,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the last dossier in the ordered set where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the last dossier in the ordered set where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
@@ -22397,7 +22398,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @throws NoSuchDossierException if a matching dossier could not be found
 	 */
 	@Override
-	public Dossier findByG_GDID_Last(long groupId, long groupDossierId,
+	public Dossier findByG_GDID_Last(long groupId, String groupDossierId,
 		OrderByComparator<Dossier> orderByComparator)
 		throws NoSuchDossierException {
 		Dossier dossier = fetchByG_GDID_Last(groupId, groupDossierId,
@@ -22423,7 +22424,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the last dossier in the ordered set where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the last dossier in the ordered set where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
@@ -22431,7 +22432,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
 	 */
 	@Override
-	public Dossier fetchByG_GDID_Last(long groupId, long groupDossierId,
+	public Dossier fetchByG_GDID_Last(long groupId, String groupDossierId,
 		OrderByComparator<Dossier> orderByComparator) {
 		int count = countByG_GDID(groupId, groupDossierId);
 
@@ -22450,7 +22451,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the dossiers before and after the current dossier in the ordered set where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param dossierId the primary key of the current dossier
 	 * @param groupId the group ID
@@ -22461,7 +22462,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	 */
 	@Override
 	public Dossier[] findByG_GDID_PrevAndNext(long dossierId, long groupId,
-		long groupDossierId, OrderByComparator<Dossier> orderByComparator)
+		String groupDossierId, OrderByComparator<Dossier> orderByComparator)
 		throws NoSuchDossierException {
 		Dossier dossier = findByPrimaryKey(dossierId);
 
@@ -22491,7 +22492,7 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	protected Dossier getByG_GDID_PrevAndNext(Session session, Dossier dossier,
-		long groupId, long groupDossierId,
+		long groupId, String groupDossierId,
 		OrderByComparator<Dossier> orderByComparator, boolean previous) {
 		StringBundler query = null;
 
@@ -22508,7 +22509,19 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 		query.append(_FINDER_COLUMN_G_GDID_GROUPID_2);
 
-		query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+		boolean bindGroupDossierId = false;
+
+		if (groupDossierId == null) {
+			query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_1);
+		}
+		else if (groupDossierId.equals("")) {
+			query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_3);
+		}
+		else {
+			bindGroupDossierId = true;
+
+			query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+		}
 
 		if (orderByComparator != null) {
 			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
@@ -22580,7 +22593,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 		qPos.add(groupId);
 
-		qPos.add(groupDossierId);
+		if (bindGroupDossierId) {
+			qPos.add(groupDossierId);
+		}
 
 		if (orderByComparator != null) {
 			Object[] values = orderByComparator.getOrderByConditionValues(dossier);
@@ -22601,13 +22616,13 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Removes all the dossiers where groupId = &#63; and groupDossierId = &#63; from the database.
+	 * Removes all the dossiers where groupId = &#63; and groupDossierId LIKE &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
 	 */
 	@Override
-	public void removeByG_GDID(long groupId, long groupDossierId) {
+	public void removeByG_GDID(long groupId, String groupDossierId) {
 		for (Dossier dossier : findByG_GDID(groupId, groupDossierId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dossier);
@@ -22615,15 +22630,15 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	/**
-	 * Returns the number of dossiers where groupId = &#63; and groupDossierId = &#63;.
+	 * Returns the number of dossiers where groupId = &#63; and groupDossierId LIKE &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param groupDossierId the group dossier ID
 	 * @return the number of matching dossiers
 	 */
 	@Override
-	public int countByG_GDID(long groupId, long groupDossierId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_GDID;
+	public int countByG_GDID(long groupId, String groupDossierId) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_GDID;
 
 		Object[] finderArgs = new Object[] { groupId, groupDossierId };
 
@@ -22636,7 +22651,19 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 			query.append(_FINDER_COLUMN_G_GDID_GROUPID_2);
 
-			query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+			boolean bindGroupDossierId = false;
+
+			if (groupDossierId == null) {
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_1);
+			}
+			else if (groupDossierId.equals("")) {
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_3);
+			}
+			else {
+				bindGroupDossierId = true;
+
+				query.append(_FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2);
+			}
 
 			String sql = query.toString();
 
@@ -22651,7 +22678,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 				qPos.add(groupId);
 
-				qPos.add(groupDossierId);
+				if (bindGroupDossierId) {
+					qPos.add(groupDossierId);
+				}
 
 				count = (Long)q.uniqueResult();
 
@@ -22671,7 +22700,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	}
 
 	private static final String _FINDER_COLUMN_G_GDID_GROUPID_2 = "dossier.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2 = "dossier.groupDossierId = ?";
+	private static final String _FINDER_COLUMN_G_GDID_GROUPDOSSIERID_1 = "dossier.groupDossierId IS NULL";
+	private static final String _FINDER_COLUMN_G_GDID_GROUPDOSSIERID_2 = "dossier.groupDossierId LIKE ?";
+	private static final String _FINDER_COLUMN_G_GDID_GROUPDOSSIERID_3 = "(dossier.groupDossierId IS NULL OR dossier.groupDossierId LIKE '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_UID_DS = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
 			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_UID_DS",
@@ -24545,15 +24576,6 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				args);
 
 			args = new Object[] {
-					dossierModelImpl.getGroupId(),
-					dossierModelImpl.getGroupDossierId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_GDID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID,
-				args);
-
-			args = new Object[] {
 					dossierModelImpl.getGroupId(), dossierModelImpl.getUserId(),
 					dossierModelImpl.getDossierStatus()
 				};
@@ -25029,27 +25051,6 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_U_G_GAC_SC_DTNO_DS_O,
 					args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_U_G_GAC_SC_DTNO_DS_O,
-					args);
-			}
-
-			if ((dossierModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						dossierModelImpl.getOriginalGroupId(),
-						dossierModelImpl.getOriginalGroupDossierId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_GDID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID,
-					args);
-
-				args = new Object[] {
-						dossierModelImpl.getGroupId(),
-						dossierModelImpl.getGroupDossierId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_GDID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_GDID,
 					args);
 			}
 

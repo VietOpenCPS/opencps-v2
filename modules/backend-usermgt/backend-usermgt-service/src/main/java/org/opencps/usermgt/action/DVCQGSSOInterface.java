@@ -21,16 +21,23 @@ public interface DVCQGSSOInterface {
 
 	public JSONObject getUserInfo(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
 			String authToken, String state);
-	
-	public String getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
-			String accessToken, String redirectURL, String state);
+
+	public boolean getLogout(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken, String redirectURL, String state);
 
 	public JSONObject doAuth(User user, HttpServletRequest request, HttpServletResponse response,
 			ServiceContext serviceContext, String userInfo) throws Exception;
 
 	public boolean isValidAccessToken(String accessToken);
 
-	public JSONObject doChangeEmail(User user, long companyId, long groupId, HttpServletRequest request, HttpServletResponse response,
-			ServiceContext serviceContext, String oldEmail, String newEmail, String techId);
+	public JSONObject doChangeEmail(User user, long companyId, long groupId, HttpServletRequest request,
+			HttpServletResponse response, ServiceContext serviceContext, String oldEmail, String newEmail,
+			String techId);
+
+	public boolean revoke(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken, String accessToken, String redirectURL, String state);
+
+	public String getLogoutURL(User user, long groupId, HttpServletRequest request, ServiceContext serviceContext,
+			String idToken);
 
 }

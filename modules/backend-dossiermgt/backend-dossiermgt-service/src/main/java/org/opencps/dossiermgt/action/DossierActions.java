@@ -80,14 +80,14 @@ public interface DossierActions {
 
 	public JSONObject getDossierTodo(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, ServiceContext serviceContext);
-	
+
 //	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 //			Sort[] sorts, ServiceContext serviceContext);
 
 	public JSONObject getDossierTodoPermission(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
 			Sort[] sorts, ServiceContext serviceContext);
-	
-	
+
+
 	public Dossier submitPostDossier(long groupId, long dossierId, String referenceUid, ServiceContext context) throws PortalException ;
 
 	public JSONObject getDossierCountTodoPermission(long userId, long companyId, long groupId,
@@ -120,19 +120,19 @@ public interface DossierActions {
 			String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
 			String delegateAddress, String delegateCityCode, String delegateDistrictCode, String delegateWardCode,
 			Long sampleCount, Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal, ServiceContext serviceContext);
-	
+
 //	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 //			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 //			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
 //			String cityName, String districtCode, String districtName, String wardCode, String wardName,
 //			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 //			int viaPostal, String postalAddress, String postalCityCode, String postalCityName, String postalTelNo,
-//			boolean online, boolean notification, String applicantNote, int originality, 
+//			boolean online, boolean notification, String applicantNote, int originality,
 //			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-//			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+//			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate,
 //			Date endorsementDate, Date extendDate,
 //			Date processDate, ServiceContext context) throws PortalException;
-	
+
 	public Dossier publishDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
@@ -140,19 +140,19 @@ public interface DossierActions {
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName,
 			String postalDistrictCode, String postalDistrictName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, 
+			boolean online, boolean notification, String applicantNote, int originality,
 			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate,
-			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate, 
+			Date releaseDate, Date finishDate, Date cancellingDate, Date correctingDate,
 			Date endorsementDate, Date extendDate,
 			Date processDate, String dossierNo, String dossierStatus, String dossierStatusText, String dossierSubStatus, String dossierSubStatusText,
-			long dossierActionId, String submissionNote, String lockState, String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail, 
-			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode, String delegateDistrictName, 
+			long dossierActionId, String submissionNote, String lockState, String delegateName, String delegateIdNo, String delegateTelNo, String delegateEmail,
+			String delegateAddress, String delegateCityCode, String delegateCityName, String delegateDistrictCode, String delegateDistrictName,
 			String delegateWardCode, String delegateWardName, double durationCount, int durationUnit, String dossierName, String processNo,
 			String metaData, Integer vnpostalStauts, String vnpostalProfile, Integer fromViaPostal, ServiceContext context) throws PortalException;
 
 	public List<User> getAssignUsersByStep(long userId, Dossier dossier, ProcessStep ps);
 	public ProcessOption getProcessOption(long serviceProcessId, long dossierTemplateId);
-	
+
 	public Dossier initDossier(long groupId, long dossierId, String referenceUid, int counter, String serviceCode,
 			String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantIdType, String applicantIdNo, String applicantIdDate, String address, String cityCode,
@@ -160,12 +160,12 @@ public interface DossierActions {
 			String contactName, String contactTelNo, String contactEmail, String dossierTemplateNo, String password,
 			int viaPostal, String postalAddress, String postalCityCode, String postalCityName,
 			String postalDistrictCode, String postalDistrictName, String postalTelNo,
-			boolean online, boolean notification, String applicantNote, int originality, 
+			boolean online, boolean notification, String applicantNote, int originality,
 			ServiceInfo service,
 			ServiceProcess serviceProcess,
 			ProcessOption processOption,
 			ServiceContext context) throws PortalException;
-	
+
 	public Dossier initUpdateDossier(long groupId, long id, String applicantName, String applicantIdType,
 			String applicantIdNo, String applicantIdDate, String address, String cityCode, String cityName,
 			String districtCode, String districtName, String wardCode, String wardName, String contactName,
@@ -196,8 +196,8 @@ public interface DossierActions {
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
-			Integer fromViaPostal, ServiceContext serviceContext);
-	
+			Integer fromViaPostal, String formMeta, ServiceContext serviceContext);
+
 	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
 			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
@@ -206,4 +206,8 @@ public interface DossierActions {
 			Date createDate, Date modifiedDate, Date submitDate, Date receiveDate, Date dueDate, Date releaseDate,
 			Date finishDate, String dossierTemplateNo, String dossierTemplateName, Integer vnpostalStatus, String vnpostalProfile,
 			Integer fromViaPostal, ServiceContext serviceContext);
+
+	public Dossier updateDossierVNPost(long groupId,String ma_bien_nhan,int viaPostal,String postalServiceCode,
+		String postalServiceName,String postalAddress,String postalCityCode,String postalCityName,String postalDistrictCode,
+		String postalDistrictName,String postalWardCode,String postalWardName,String postalTelNo);
 }

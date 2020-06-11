@@ -610,6 +610,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		String strUserIdList = (String) params.get(EmployeeTerm.USER_ID_LIST);
 		String employeeName = (String) params.get(EmployeeTerm.FULL_NAME);
 		String jobposCodeSearch = (String) params.get(EmployeeTerm.JOB_POS_CODE);
+		String scopesSearch = (String) params.get(EmployeeTerm.SCOPES_SEARCH);
 
 		Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 
@@ -810,6 +811,25 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNotNull(scopesSearch)) {
+
+			String[] scopesArr = StringUtil.split(scopesSearch);
+			if (scopesArr != null && scopesArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < scopesArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(scopesArr[i]);
+					query.addField(EmployeeTerm.SCOPES_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(scopesSearch);
+				query.addFields(EmployeeTerm.SCOPES_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(
 			Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
@@ -838,6 +858,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 //		String jobposCode = (String) params.get(EmployeeTerm.JOB_POS_CODE);
 		String jobposCodeSearch =
 			(String) params.get(EmployeeTerm.JOB_POS_CODE_SEARCH);
+		String scopesSearch = (String) params.get(EmployeeTerm.SCOPES_SEARCH);
 
 		Indexer<Employee> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
@@ -1018,11 +1039,40 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(jobposCodeSearch)) {
-			MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
+			String[] jobposArr = StringUtil.split(jobposCodeSearch);
+			if (jobposArr != null && jobposArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < jobposArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(jobposArr[i]);
+					query.addField(EmployeeTerm.JOB_POS_CODE_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(jobposCodeSearch);
+				query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
 
-			query.addFields(EmployeeTerm.JOB_POS_CODE_SEARCH);
+		if (Validator.isNotNull(scopesSearch)) {
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String[] scopesArr = StringUtil.split(scopesSearch);
+			if (scopesArr != null && scopesArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < scopesArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(scopesArr[i]);
+					query.addField(EmployeeTerm.SCOPES_SEARCH);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(scopesSearch);
+				query.addFields(EmployeeTerm.SCOPES_SEARCH);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(

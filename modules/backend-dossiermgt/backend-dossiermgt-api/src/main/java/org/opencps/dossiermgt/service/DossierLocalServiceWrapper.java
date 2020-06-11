@@ -359,6 +359,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchDossierByG_DID(
+		long groupId, long dossierId) {
+		return _dossierLocalService.fetchDossierByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Returns the dossier matching the UUID and group.
 	*
@@ -385,7 +391,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 
 	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByG_GDID(
-		long groupId, long groupDossierId) {
+		long groupId, String groupDossierId) {
 		return _dossierLocalService.findByG_GDID(groupId, groupDossierId);
 	}
 
@@ -915,6 +921,39 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
 			fromViaPostal, serviceContext);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier initUpdateDossierMeta(
+		long groupId, long id, String applicantName, String applicantIdType,
+		String applicantIdNo, String applicantIdDate, String address,
+		String cityCode, String cityName, String districtCode,
+		String districtName, String wardCode, String wardName,
+		String contactName, String contactTelNo, String contactEmail,
+		String dossierTemplateNo, Integer viaPostal, String postalAddress,
+		String postalCityCode, String postalCityName,
+		String postalDistrictCode, String postalDistrictName,
+		String postalTelNo, String applicantNote, boolean isSameAsApplicant,
+		String delegateName, String delegateIdNo, String delegateTelNo,
+		String delegateEmail, String delegateAddress, String delegateCityCode,
+		String delegateDistrictCode, String delegateWardCode, Long sampleCount,
+		String dossierName, String briefNote, Integer delegateType,
+		String documentNo, java.util.Date documentDate, int systemId,
+		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
+		String metaData,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+		return _dossierLocalService.initUpdateDossierMeta(groupId, id,
+			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
+			address, cityCode, cityName, districtCode, districtName, wardCode,
+			wardName, contactName, contactTelNo, contactEmail,
+			dossierTemplateNo, viaPostal, postalAddress, postalCityCode,
+			postalCityName, postalDistrictCode, postalDistrictName,
+			postalTelNo, applicantNote, isSameAsApplicant, delegateName,
+			delegateIdNo, delegateTelNo, delegateEmail, delegateAddress,
+			delegateCityCode, delegateDistrictCode, delegateWardCode,
+			sampleCount, dossierName, briefNote, delegateType, documentNo,
+			documentDate, systemId, vnpostalStatus, vnpostalProfile,
+			fromViaPostal, metaData, serviceContext);
 	}
 
 	@Override

@@ -773,7 +773,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.DURATION_COUNT, object.getDurationCount());
 			document.addNumberSortable(DossierTerm.DURATION_UNIT, object.getDurationUnit());
 			document.addNumberSortable(DossierTerm.SAMPLE_COUNT, object.getSampleCount());
-			document.addNumberSortable(DossierTerm.GROUP_DOSSIER_ID, object.getGroupDossierId());
+			//document.addNumberSortable(DossierTerm.GROUP_DOSSIER_ID, object.getGroupDossierId());
+			
+			String strGroupDossierId = object.getGroupDossierId();
+			if (Validator.isNotNull(strGroupDossierId) && strGroupDossierId.contains(StringPool.COMMA)) {
+				strGroupDossierId = StringUtil.replace(strGroupDossierId, StringPool.COMMA, StringPool.SPACE);
+				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID, strGroupDossierId);
+			} else {
+				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID, strGroupDossierId);
+			}
+			
 			// add domainCode to dossier
 			String serviceCode = object.getServiceCode();
 			String domainCode = StringPool.BLANK;

@@ -29,7 +29,7 @@ public class OpenCPSConfigUtil {
 	public static final String OPENCPS_ALLOW_CORS_IPS = "org.opencps.allow.cors.ips";
 	public static final String OPENCPS_AUTO_BETIMES = "org.opencps.auto.betimes";
 	public static final String PORTAL_DOMAIN = "portal.domain";
-
+	public static final String PORTAL_DOCUMENT_URI = "portal.document.uri";
 	public static final String OPENCPS_DOSSIERDOCUMENT_ENABLE = "org.opencps.dossierdocument.enable";
 	public static final String OPENCPS_PUBISHEVENT_ENABLE = "org.opencps.publishevent.enable";
 	public static final String OPENCPS_DLFILEENTRY_ENABLE = "org.opencps.dlfileentry.enable";
@@ -41,6 +41,10 @@ public class OpenCPSConfigUtil {
 	public static final int OPENCPS_DEFAULT_DOSSIER_SECRET_LENGTH = 4;
 	
 	public static final String OPENCPS_MAIL_TO_APPLICANT_FROM = "org.opencps.mailtoapplicant.from";
+	
+	public static String getPortalDocumentURI() {
+		return GetterUtil.getString(PropsUtil.get(PORTAL_DOCUMENT_URI));
+	}
 	
 	public static int getPortalDomain() {
 		return GetterUtil.getInteger(PropsUtil.get(PORTAL_DOMAIN));
