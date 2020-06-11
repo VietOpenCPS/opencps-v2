@@ -47,10 +47,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Wesley Gong
  * @author Daeyoung Song
  */
-@Component(
-//	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
-	immediate = true, service = AutoLogin.class
-)
+//@Component(
+////	configurationPid = "com.liferay.portal.security.sso.cas.configuration.CASConfiguration",
+//	immediate = true, service = AutoLogin.class
+//)
 public class CASAutoLogin extends BaseAutoLogin {
 	public static final String CAS_FORCE_LOGOUT = "CAS_FORCE_LOGOUT";
 

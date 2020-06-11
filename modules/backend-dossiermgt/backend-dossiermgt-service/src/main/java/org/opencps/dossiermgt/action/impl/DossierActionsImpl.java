@@ -4034,47 +4034,53 @@ public class DossierActionsImpl implements DossierActions {
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
-			Integer fromViaPostal, String formMeta, ServiceContext serviceContext) {
+			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
 		try {
+			
+			Date dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
 			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 				String metaData = StringPool.BLANK;
 				if (dossier != null) {
-					JSONObject obj = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
-					JSONObject jsonMeta = JSONFactoryUtil.createJSONObject(formMeta);
+					JSONObject obj = JSONFactoryUtil.createJSONObject();
 
-					Iterator<String> keyIt = jsonMeta.keys();
-					while (keyIt.hasNext()) {
-						String key = keyIt.next();
-						String[] keys = key.split("\\.");
-						JSONObject tempObj = obj;
-						int index = 0;
-						for (int i = 0; i < keys.length; i++) {
-							if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
-								tempObj = tempObj.getJSONObject(keys[i]);
-							} else {
-								index = i;
-								break;
-							}
-						}
-						if (keys.length == 1) {
-							obj.put(key, jsonMeta.get(key));
-						} else {
-							if (index == keys.length - 1) {
-								tempObj.put(keys[index], jsonMeta.get(key));
-							} else {
-								JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
-								mergeObj.put(keys[keys.length - 1], jsonMeta.get(key));
-								for (int i = keys.length - 2; i > index; i--) {
-									JSONObject indexObj = JSONFactoryUtil.createJSONObject();
-									indexObj.put(keys[i], mergeObj);
-									mergeObj = indexObj;
+					if (Validator.isNull(dossier.getMetaData())) {
+						metaData = formMeta;
+					} else {
+						JSONObject jsonMeta = JSONFactoryUtil.createJSONObject(formMeta);
+						Iterator<String> keyIt = jsonMeta.keys();
+						while (keyIt.hasNext()) {
+							String key = keyIt.next();
+							String[] keys = key.split("\\.");
+							JSONObject tempObj = obj;
+							int index = 0;
+							for (int i = 0; i < keys.length; i++) {
+								if (tempObj.has(keys[i]) && tempObj.getJSONObject(keys[i]) != null) {
+									tempObj = tempObj.getJSONObject(keys[i]);
+								} else {
+									index = i;
+									break;
 								}
-								tempObj.put(keys[index], mergeObj);
+							}
+							if (keys.length == 1) {
+								obj.put(key, jsonMeta.get(key));
+							} else {
+								if (index == keys.length - 1) {
+									tempObj.put(keys[index], jsonMeta.get(key));
+								} else {
+									JSONObject mergeObj = JSONFactoryUtil.createJSONObject();
+									mergeObj.put(keys[keys.length - 1], jsonMeta.get(key));
+									for (int i = keys.length - 2; i > index; i--) {
+										JSONObject indexObj = JSONFactoryUtil.createJSONObject();
+										indexObj.put(keys[i], mergeObj);
+										mergeObj = indexObj;
+									}
+									tempObj.put(keys[index], mergeObj);
+								}
 							}
 						}
+						metaData = obj.toJSONString();
 					}
-					metaData = obj.toJSONString();
 				}
 
 				return DossierLocalServiceUtil.initUpdateDossierMeta(groupId, id, applicantName, applicantIdType,
@@ -4083,7 +4089,7 @@ public class DossierActionsImpl implements DossierActions {
 						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, serviceContext);
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, metaData, dueDate, serviceContext);
 			} else {
 				return DossierLocalServiceUtil.initUpdateDossierFull(groupId, id, applicantName, applicantIdType,
 						applicantIdNo, applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode,
@@ -4091,7 +4097,7 @@ public class DossierActionsImpl implements DossierActions {
 						postalCityCode, postalCityName, postalDistrictCode, postalDistrictName, postalTelNo, applicantNote, isSameAsApplicant, delegateName,
 						delegateIdNo, delegateTelNo, delegateEmail, delegateAddress, delegateCityCode, delegateDistrictCode,
 						delegateWardCode, sampleCount, dossierName, briefNote, delegateType, documentNo, documentDate,
-						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, serviceContext);
+						systemId, vnpostalStatus, vnpostalProfile, fromViaPostal, dueDate, serviceContext);
 			}
 
 		} catch (Exception e) {

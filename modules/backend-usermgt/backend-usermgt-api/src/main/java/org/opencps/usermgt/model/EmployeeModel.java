@@ -485,6 +485,21 @@ public interface EmployeeModel extends BaseModel<Employee>, GroupedModel,
 	public void setFileSignPath(String fileSignPath);
 
 	/**
+	 * Returns the job pos title of this employee.
+	 *
+	 * @return the job pos title of this employee
+	 */
+	@AutoEscape
+	public String getJobPosTitle();
+
+	/**
+	 * Sets the job pos title of this employee.
+	 *
+	 * @param jobPosTitle the job pos title of this employee
+	 */
+	public void setJobPosTitle(String jobPosTitle);
+
+	/**
 	 * Returns the scope of this employee.
 	 *
 	 * @return the scope of this employee

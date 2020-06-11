@@ -1374,26 +1374,19 @@ public class DossierManagementImpl implements DossierManagement {
 			//
 			_log.debug("UPDATE DOSSIER: " + input.getCityCode());
 			
-			Dossier dossier = actions.initUpdateDossierFull(
-				groupId, id, input.getApplicantName(),
-				input.getApplicantIdType(), input.getApplicantIdNo(),
-				input.getApplicantIdDate(), input.getAddress(),
-				input.getCityCode(), cityName, input.getDistrictCode(),
-				districtName, input.getWardCode(), wardName,
-				input.getContactName(), input.getContactTelNo(),
-				input.getContactEmail(), input.getDossierTemplateNo(),
-				input.getViaPostal(), input.getPostalAddress(),
-				input.getPostalCityCode(), postalCityName,
-				input.getPostalDistrictCode(), postalDistrictName,
-				input.getPostalTelNo(), input.getApplicantNote(),
-				input.isSameAsApplicant(), input.getDelegateName(),
-				input.getDelegateIdNo(), input.getDelegateTelNo(),
-				input.getDelegateEmail(), input.getDelegateAddress(),
-				input.getDelegateCityCode(), input.getDelegateDistrictCode(),
-				input.getDelegateWardCode(), input.getSampleCount(),
-				input.getDossierName(), input.getBriefNote(), delegateType,
-				documentNo, documentDate, systemId, vnpostalStatus,
-				vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), serviceContext);
+			Dossier dossier = actions.initUpdateDossierFull(groupId, id, input.getApplicantName(),
+					input.getApplicantIdType(), input.getApplicantIdNo(), input.getApplicantIdDate(),
+					input.getAddress(), input.getCityCode(), cityName, input.getDistrictCode(), districtName,
+					input.getWardCode(), wardName, input.getContactName(), input.getContactTelNo(),
+					input.getContactEmail(), input.getDossierTemplateNo(), input.getViaPostal(),
+					input.getPostalAddress(), input.getPostalCityCode(), postalCityName, input.getPostalDistrictCode(),
+					postalDistrictName, input.getPostalTelNo(), input.getApplicantNote(), input.isSameAsApplicant(),
+					input.getDelegateName(), input.getDelegateIdNo(), input.getDelegateTelNo(),
+					input.getDelegateEmail(), input.getDelegateAddress(), input.getDelegateCityCode(),
+					input.getDelegateDistrictCode(), input.getDelegateWardCode(), input.getSampleCount(),
+					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
+					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
+					serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -6366,11 +6359,14 @@ public class DossierManagementImpl implements DossierManagement {
 						GetterUtil.getLong(dossierStr));
 					if (dossier != null) {
 						String strGroupDossierId = dossier.getGroupDossierId();
-						if (Validator.isNotNull(strGroupDossierId)) {
+						if (Validator.isNotNull(strGroupDossierId)
+								&& !strGroupDossierId.contains(String.valueOf(groupDossierId))) {
 							strGroupDossierId += StringPool.COMMA + groupDossierId;
-							dossier.setGroupDossierId(GetterUtil.getString(strGroupDossierId));
+							// dossier.setGroupDossierId(GetterUtil.getString(strGroupDossierId));
+							DossierLocalServiceUtil.updateGroupDossier(dossier, strGroupDossierId);
 						} else {
-							dossier.setGroupDossierId(GetterUtil.getString(groupDossierId));
+							//dossier.setGroupDossierId(GetterUtil.getString(groupDossierId));
+							DossierLocalServiceUtil.updateGroupDossier(dossier, String.valueOf(groupDossierId));
 						}
 						DossierLocalServiceUtil.updateDossier(dossier);
 
@@ -6383,17 +6379,23 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 			else {
+				_log.info("dossierIds: "+dossierIds);
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(
 					GetterUtil.getLong(dossierIds));
+				_log.info("dossier: "+dossier);
 				if (dossier != null) {
 					String strGroupDossierId = dossier.getGroupDossierId();
-					if (Validator.isNotNull(strGroupDossierId)) {
+					if (Validator.isNotNull(strGroupDossierId)
+							&& !strGroupDossierId.contains(String.valueOf(groupDossierId))) {
 						strGroupDossierId += StringPool.COMMA + groupDossierId;
 						dossier.setGroupDossierId(strGroupDossierId);
 					} else {
-						dossier.setGroupDossierId(GetterUtil.getString(groupDossierId));
+						_log.info("groupDossierId: "+ String.valueOf(groupDossierId));
+						dossier.setGroupDossierId(String.valueOf(groupDossierId));
+						
 					}
-					DossierLocalServiceUtil.updateDossier(dossier);
+					dossier = DossierLocalServiceUtil.updateDossier(dossier);
+					_log.info("dossier group: "+dossier.getGroupDossierId());
 				}
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());

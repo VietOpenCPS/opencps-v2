@@ -77,7 +77,7 @@ public class EmployeeLocalServiceUtil {
 		long groupId, String fullName, String employeeNo, int gender,
 		java.util.Date birthdate, String telNo, String mobile, String email,
 		int workingStatus, long mainJobPostId, String title, String scope,
-		boolean isCreateUser, java.util.Date recruitDate,
+		String jobPosTitle, boolean isCreateUser, java.util.Date recruitDate,
 		java.util.Date leaveDate,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws org.opencps.usermgt.exception.DuplicateEmployeeNoException,
@@ -89,7 +89,8 @@ public class EmployeeLocalServiceUtil {
 		return getService()
 				   .addEmployee(userId, groupId, fullName, employeeNo, gender,
 			birthdate, telNo, mobile, email, workingStatus, mainJobPostId,
-			title, scope, isCreateUser, recruitDate, leaveDate, serviceContext);
+			title, scope, jobPosTitle, isCreateUser, recruitDate, leaveDate,
+			serviceContext);
 	}
 
 	public static org.opencps.usermgt.model.Employee adminProcessData(

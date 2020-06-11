@@ -136,7 +136,7 @@
 		<column name="fileSignId" type="long" />
 		<column name="fileCertPath" type="String" />
 		<column name="fileSignPath" type="String" />
-		
+		<column name="jobPosTitle" type="String" />
 		<column name="scope" type="String" />
 		
 		<!-- Order -->
