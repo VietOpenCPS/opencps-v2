@@ -66,6 +66,7 @@ import org.opencps.usermgt.service.persistence.QuestionFinder;
 import org.opencps.usermgt.service.persistence.QuestionPersistence;
 import org.opencps.usermgt.service.persistence.ResourceRolePersistence;
 import org.opencps.usermgt.service.persistence.ResourceUserPersistence;
+import org.opencps.usermgt.service.persistence.SavePickFieldPersistence;
 import org.opencps.usermgt.service.persistence.SyncSchedulerPersistence;
 import org.opencps.usermgt.service.persistence.TrackClientFinder;
 import org.opencps.usermgt.service.persistence.TrackClientPersistence;
@@ -1001,6 +1002,44 @@ public abstract class WorkingUnitLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the save pick field local service.
+	 *
+	 * @return the save pick field local service
+	 */
+	public org.opencps.usermgt.service.SavePickFieldLocalService getSavePickFieldLocalService() {
+		return savePickFieldLocalService;
+	}
+
+	/**
+	 * Sets the save pick field local service.
+	 *
+	 * @param savePickFieldLocalService the save pick field local service
+	 */
+	public void setSavePickFieldLocalService(
+		org.opencps.usermgt.service.SavePickFieldLocalService savePickFieldLocalService) {
+		this.savePickFieldLocalService = savePickFieldLocalService;
+	}
+
+	/**
+	 * Returns the save pick field persistence.
+	 *
+	 * @return the save pick field persistence
+	 */
+	public SavePickFieldPersistence getSavePickFieldPersistence() {
+		return savePickFieldPersistence;
+	}
+
+	/**
+	 * Sets the save pick field persistence.
+	 *
+	 * @param savePickFieldPersistence the save pick field persistence
+	 */
+	public void setSavePickFieldPersistence(
+		SavePickFieldPersistence savePickFieldPersistence) {
+		this.savePickFieldPersistence = savePickFieldPersistence;
+	}
+
+	/**
 	 * Returns the sync scheduler local service.
 	 *
 	 * @return the sync scheduler local service
@@ -1526,6 +1565,10 @@ public abstract class WorkingUnitLocalServiceBaseImpl
 	protected org.opencps.usermgt.service.ResourceUserLocalService resourceUserLocalService;
 	@BeanReference(type = ResourceUserPersistence.class)
 	protected ResourceUserPersistence resourceUserPersistence;
+	@BeanReference(type = org.opencps.usermgt.service.SavePickFieldLocalService.class)
+	protected org.opencps.usermgt.service.SavePickFieldLocalService savePickFieldLocalService;
+	@BeanReference(type = SavePickFieldPersistence.class)
+	protected SavePickFieldPersistence savePickFieldPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.SyncSchedulerLocalService.class)
 	protected org.opencps.usermgt.service.SyncSchedulerLocalService syncSchedulerLocalService;
 	@BeanReference(type = SyncSchedulerPersistence.class)
