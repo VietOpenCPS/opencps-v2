@@ -200,9 +200,9 @@ public class PayGateIntegrationApplication extends Application {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
-		JSONObject result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
+		String result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
 
-		return Response.status(200).entity(result.toJSONString()).build();
+		return Response.status(200).entity(result).build();
 	}
 	
 	@POST

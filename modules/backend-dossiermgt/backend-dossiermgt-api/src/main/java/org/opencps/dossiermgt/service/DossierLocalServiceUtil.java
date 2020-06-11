@@ -352,6 +352,11 @@ public class DossierLocalServiceUtil {
 		return getService().fetchDossier(dossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> fetchDossierByG_DID(
+		long groupId, long dossierId) {
+		return getService().fetchDossierByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Returns the dossier matching the UUID and group.
 	*

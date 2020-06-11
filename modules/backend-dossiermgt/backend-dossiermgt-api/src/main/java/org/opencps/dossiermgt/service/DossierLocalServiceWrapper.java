@@ -359,6 +359,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
 
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchDossierByG_DID(
+		long groupId, long dossierId) {
+		return _dossierLocalService.fetchDossierByG_DID(groupId, dossierId);
+	}
+
 	/**
 	* Returns the dossier matching the UUID and group.
 	*

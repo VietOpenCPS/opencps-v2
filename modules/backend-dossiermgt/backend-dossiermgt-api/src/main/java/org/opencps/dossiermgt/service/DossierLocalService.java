@@ -274,6 +274,9 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchDossierByG_DID(long groupId, long dossierId);
+
 	/**
 	* Returns the dossier matching the UUID and group.
 	*

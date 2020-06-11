@@ -7574,5 +7574,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		return dossier;
-	}	
+	}
+	public List<Dossier> fetchDossierByG_DID(long groupId , long dossierId)
+	{
+		return dossierPersistence.findByG_DID(groupId,dossierId,0,10);
+	}
 }
