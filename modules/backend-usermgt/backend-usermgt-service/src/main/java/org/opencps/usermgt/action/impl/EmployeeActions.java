@@ -929,7 +929,7 @@ public class EmployeeActions implements EmployeeInterface {
 			employee = EmployeeLocalServiceUtil.addEmployee(
 					userId, groupId, fullName, employeeNo, GetterUtil.get(gender, 0),
 					birthDay, telNo, null, email, GetterUtil.get(workingStatus, 0),
-					0l, title, scope, false, null, null, serviceContext);
+					0l, title, scope, jobTitle, false, null, null, serviceContext);
 			isNew = true;
 		} else {
 			if (Validator.isNotNull(fullName)) {
@@ -956,6 +956,10 @@ public class EmployeeActions implements EmployeeInterface {
 			if (Validator.isNotNull(scope)) {
 				employee.setScope(scope);
 			}
+			if (Validator.isNotNull(jobTitle)) {
+				employee.setJobPosTitle(jobTitle);
+			}
+
 			employee = EmployeeLocalServiceUtil.updateEmployee(
 				userId, employee.getEmployeeId(), employee.getFullName(),
 				employee.getEmployeeNo(), employee.getGender(),

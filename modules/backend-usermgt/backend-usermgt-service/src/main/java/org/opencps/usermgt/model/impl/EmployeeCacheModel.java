@@ -64,7 +64,7 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -118,6 +118,8 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 		sb.append(fileCertPath);
 		sb.append(", fileSignPath=");
 		sb.append(fileSignPath);
+		sb.append(", jobPosTitle=");
+		sb.append(jobPosTitle);
 		sb.append(", scope=");
 		sb.append(scope);
 		sb.append("}");
@@ -249,6 +251,13 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 			employeeImpl.setFileSignPath(fileSignPath);
 		}
 
+		if (jobPosTitle == null) {
+			employeeImpl.setJobPosTitle("");
+		}
+		else {
+			employeeImpl.setJobPosTitle(jobPosTitle);
+		}
+
 		if (scope == null) {
 			employeeImpl.setScope("");
 		}
@@ -300,6 +309,7 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 		fileSignId = objectInput.readLong();
 		fileCertPath = objectInput.readUTF();
 		fileSignPath = objectInput.readUTF();
+		jobPosTitle = objectInput.readUTF();
 		scope = objectInput.readUTF();
 	}
 
@@ -404,6 +414,13 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 			objectOutput.writeUTF(fileSignPath);
 		}
 
+		if (jobPosTitle == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(jobPosTitle);
+		}
+
 		if (scope == null) {
 			objectOutput.writeUTF("");
 		}
@@ -438,5 +455,6 @@ public class EmployeeCacheModel implements CacheModel<Employee>, Externalizable 
 	public long fileSignId;
 	public String fileCertPath;
 	public String fileSignPath;
+	public String jobPosTitle;
 	public String scope;
 }

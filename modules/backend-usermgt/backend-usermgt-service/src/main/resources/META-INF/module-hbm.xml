@@ -126,6 +126,7 @@
 		<property name="fileSignId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="fileCertPath" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fileSignPath" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="jobPosTitle" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="scope" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.EmployeeJobPosImpl" table="opencps_employee_jobpos">

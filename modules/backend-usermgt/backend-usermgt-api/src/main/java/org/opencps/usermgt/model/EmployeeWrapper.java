@@ -85,6 +85,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 		attributes.put("fileSignId", getFileSignId());
 		attributes.put("fileCertPath", getFileCertPath());
 		attributes.put("fileSignPath", getFileSignPath());
+		attributes.put("jobPosTitle", getJobPosTitle());
 		attributes.put("scope", getScope());
 
 		return attributes;
@@ -248,6 +249,12 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 			setFileSignPath(fileSignPath);
 		}
 
+		String jobPosTitle = (String)attributes.get("jobPosTitle");
+
+		if (jobPosTitle != null) {
+			setJobPosTitle(jobPosTitle);
+		}
+
 		String scope = (String)attributes.get("scope");
 
 		if (scope != null) {
@@ -398,6 +405,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public long getGroupId() {
 		return _employee.getGroupId();
+	}
+
+	/**
+	* Returns the job pos title of this employee.
+	*
+	* @return the job pos title of this employee
+	*/
+	@Override
+	public String getJobPosTitle() {
+		return _employee.getJobPosTitle();
 	}
 
 	/**
@@ -749,6 +766,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public void setGroupId(long groupId) {
 		_employee.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the job pos title of this employee.
+	*
+	* @param jobPosTitle the job pos title of this employee
+	*/
+	@Override
+	public void setJobPosTitle(String jobPosTitle) {
+		_employee.setJobPosTitle(jobPosTitle);
 	}
 
 	/**

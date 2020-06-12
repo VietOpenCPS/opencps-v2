@@ -2513,6 +2513,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Dossier updateGroupDossier(
+		Dossier dossier, String groupDossierId)
+		throws PortalException {
+
+		dossier.setGroupDossierId(groupDossierId);
+
+		return dossierPersistence.update(dossier);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Dossier updateDossierAction(
 		long groupId, long id, String refId, long dossierActionId,
 		ServiceContext context)
@@ -6773,7 +6783,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		ServiceContext serviceContext) {
+		Date dueDate, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -6944,6 +6954,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (fromViaPostal != null && Validator.isNotNull(fromViaPostal)) {
 			dossier.setFromViaPostal(fromViaPostal);
 		}
+		if (dueDate != null) 
+			dossier.setDueDate(dueDate);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -6965,7 +6977,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData, ServiceContext serviceContext) {
+		String metaData, Date dueDate, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7139,6 +7151,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(metaData)) {
 			dossier.setMetaData(metaData);
 		}
+		if (dueDate != null) 
+			dossier.setDueDate(dueDate);
 
 		return dossierPersistence.update(dossier);
 	}
