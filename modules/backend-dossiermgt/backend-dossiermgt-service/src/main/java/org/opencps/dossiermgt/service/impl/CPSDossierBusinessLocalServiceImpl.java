@@ -4779,7 +4779,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					//_log.debug("Employee : " + employee);
 					if (employee != null && employee.getWorkingStatus() == 1
 							&& (Validator.isNull(employee.getScope()) || (Validator.isNotNull(employee.getScope())
-									&& employee.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
+									&& Arrays.asList(employee.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
 						List<DossierAction> lstDoneActions = dossierActionLocalService
 								.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
 						if (!lstStepActions.isEmpty()) {
@@ -4846,7 +4846,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
-		if (e != null && (Validator.isNull(e.getScope()) || (e.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
 			return true;
 		}
 
