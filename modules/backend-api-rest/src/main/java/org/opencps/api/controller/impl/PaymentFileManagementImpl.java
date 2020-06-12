@@ -55,7 +55,9 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
@@ -330,8 +332,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update info EpaymentProfile of DossierId and referenceUid
 	 * 
-	 * @param form
-	 *            params
+	 * @param formparams
 	 * @return Response
 	 */
 //	@Override
@@ -372,8 +373,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	/**
 	 * Update Payment File Confirm of DossierId and referenceUid
 	 * 
-	 * @param form
-	 *            params
+	 * @param formparams
 	 * @return Response
 	 */
 	@Override
@@ -1236,6 +1236,43 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			_log.error("err in checkHashKeyPay",e);
 			return BusinessExceptionImpl.processException(e);
 		}
+
+	}
+
+	@Override
+	public Response updatePaymentAmount(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,
+		User user,ServiceContext serviceContext,long dossierId,String input)
+	{
+		BackendAuth auth = new BackendAuthImpl();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		long feeAmount ;
+
+		try
+		{
+			if (!auth.isAuth(serviceContext))
+				throw new UnauthenticationException();
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(input);
+
+			Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			DossierActions dossierActions = new DossierActionsImpl();
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,dossierId);
+			if (jsonObject.has("feeAmount") && Validator.isNotNull(dossier) && Validator.isNotNull(paymentFile))
+			{
+				feeAmount = jsonObject.getInt("feeAmount");
+				paymentFile.setPaymentAmount(feeAmount);
+				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				dossierActions.updatePaymentAmountMetaData(groupId,dossierId,feeAmount);
+			}
+
+		}
+		catch(Exception e)
+		{
+			_log.error("err",e);
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		jsonObject.put("status" , "Succeeded");
+		return Response.status(200).entity("ok").build();
 
 	}
 }

@@ -209,4 +209,6 @@ public interface DossierActions {
 	public Dossier updateDossierVNPost(long groupId,String ma_bien_nhan,int viaPostal,String postalServiceCode,
 		String postalServiceName,String postalAddress,String postalCityCode,String postalCityName,String postalDistrictCode,
 		String postalDistrictName,String postalWardCode,String postalWardName,String postalTelNo);
+
+	public Dossier updatePaymentAmountMetaData(long groupId,long dossierId,long paymentAmount );
 }

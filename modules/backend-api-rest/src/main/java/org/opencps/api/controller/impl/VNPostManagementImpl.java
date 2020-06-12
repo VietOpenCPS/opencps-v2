@@ -81,11 +81,14 @@ public class VNPostManagementImpl implements VNPostManagement
 		String postalTelNo = dossierInputModel.getPostalTelNo();
 
 		DossierActions dossierActions = new DossierActionsImpl();
-		dossierActions.updateDossierVNPost(groupId , ma_bien_nhan,viaPostal, postalServiceCode,
+		Dossier dossier = dossierActions.updateDossierVNPost(groupId , ma_bien_nhan,viaPostal, postalServiceCode,
 			postalServiceName, postalAddress, postalCityCode, postalCityName, postalDistrictCode,
 			postalDistrictName, postalWardCode, postalWardName, postalTelNo);
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-		jsonObject.put("result", "succeed");
+		if (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getDossierId()))
+			jsonObject.put("status", "succeed");
+		else
+			jsonObject.put("status","failed");
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 	}

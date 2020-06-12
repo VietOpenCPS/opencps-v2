@@ -4,6 +4,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -53,18 +54,7 @@ import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.DossierPaymentUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.constants.DeliverableTypesTerm;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierStatusConstants;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
-import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
@@ -4315,6 +4305,32 @@ public class DossierActionsImpl implements DossierActions {
 		}
 		_log.debug("err  field null " );
 		return null;
+	}
+
+	@Override public Dossier updatePaymentAmountMetaData(long groupId,long dossierId,long paymentAmount)
+	{
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if (Validator.isNotNull(dossier))
+		{
+			String metaData = dossier.getMetaData();
+			try
+			{
+				JSONObject jsonMetaData;
+				if (Validator.isNotNull(metaData))
+					jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+				else
+					jsonMetaData = JSONFactoryUtil.createJSONObject();
+				long tongSoBan = paymentAmount/ PaymentConfigTerm.PRICE;
+				jsonMetaData.put("TongSoBan", tongSoBan);
+				jsonMetaData.put("tongSoTien",paymentAmount);
+				dossier.setMetaData(jsonMetaData.toString());
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return DossierLocalServiceUtil.updateDossier(dossier);
 	}
 
 }
