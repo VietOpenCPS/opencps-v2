@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3459,7 +3460,7 @@ public class DossierActionsImpl implements DossierActions {
 	}
 
 	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
-		if (e != null && (Validator.isNull(e.getScope()) || (e.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
 			return true;
 		}		
 		
