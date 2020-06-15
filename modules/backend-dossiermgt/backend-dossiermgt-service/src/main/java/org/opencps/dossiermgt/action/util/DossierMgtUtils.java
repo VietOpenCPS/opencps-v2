@@ -663,6 +663,12 @@ public class DossierMgtUtils {
 					result = result && checkIsRoles(splitDuration[1], curUser, dossier);
 				}
 			}
+			if (preCondition.contains(DossierTerm.CONTAIN_MULTIPLE_CHECK)) {
+				String[] splitMultipleCheck = preCondition.split(StringPool.EQUAL);
+				if (splitMultipleCheck.length == 2) {
+					result = result && checkMultipleCheck(splitMultipleCheck[1]);
+				}
+			}
 		}
 
 		return result;
@@ -838,6 +844,16 @@ public class DossierMgtUtils {
 		}
 		
 		return false;
+	}
+	private static boolean checkMultipleCheck(String multipleCheck) {
+		int o = Integer.valueOf(multipleCheck);
+
+		if (o == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	private static boolean checkOriginality(String originality, Dossier dossier) {

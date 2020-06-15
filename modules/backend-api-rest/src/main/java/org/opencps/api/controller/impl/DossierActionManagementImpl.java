@@ -438,6 +438,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
