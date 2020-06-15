@@ -275,7 +275,7 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier fetchDossier(long dossierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Dossier> fetchDossierByG_DID(long groupId, long dossierId);
+	public Dossier fetchDossierByDossierCounter(String dossierCounter);
 
 	/**
 	* Returns the dossier matching the UUID and group.

@@ -1272,7 +1272,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		}
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 		jsonObject.put("status" , "Succeeded");
-		return Response.status(200).entity("ok").build();
+		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}
 }

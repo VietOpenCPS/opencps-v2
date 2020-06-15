@@ -774,6 +774,9 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="vnpostalStatus" />
 		</finder>
+		<finder name="DC" return-type="Dossier">
+			<finder-column name="dossierCounter"/>
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"

@@ -46,16 +46,13 @@ public class VNPostManagementImpl implements VNPostManagement
 			securityCode = receiptCodeSplit[1];
 			dossierId = Long.parseLong(receiptCodeSplit[2]);
 			dossierCounter = Long.parseLong(receiptCodeSplit[3]);
-			List<Dossier> dossiers = DossierLocalServiceUtil.fetchDossierByG_DID(groupId,dossierId);
-			_log.info(dossiers.size());
-			if (Validator.isNotNull(dossiers) && dossiers.size() ==1 && Validator.isNotNull(dossiers.get(0)))
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+			if (Validator.isNotNull(dossier))
 			{
-				Dossier dossier = dossiers.get(0);
 				String password = dossier.getPassword();
 				long counter = dossier.getCounter();
 				if (Validator.isNotNull(password) && securityCode.equals(password) && Validator.isNotNull(counter) && dossierCounter==counter)
 				{
-					_log.info(dossiers.size());
 					DossierDetailModel result = DossierUtils.mappingForGetDetail(dossier,0);
 					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 				}

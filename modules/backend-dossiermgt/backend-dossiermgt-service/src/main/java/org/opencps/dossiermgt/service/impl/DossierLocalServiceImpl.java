@@ -7575,8 +7575,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossier;
 	}
-	public List<Dossier> fetchDossierByG_DID(long groupId , long dossierId)
+	public Dossier fetchDossierByDossierCounter(String dossierCounter)
 	{
-		return dossierPersistence.findByG_DID(groupId,dossierId,0,10);
+//		List<Dossier> dossiers= dossierPersistence.findByDC(dossierCounter);
+//		if (Validator.isNotNull(dossiers) && dossiers.size()==1)
+//			return dossiers.get(0);
+//		else
+			return dossierPersistence.fetchByDC(dossierCounter);
 	}
 }

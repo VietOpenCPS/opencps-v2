@@ -4251,10 +4251,9 @@ public class DossierActionsImpl implements DossierActions {
 			dossierCounter = receiptCodeSplit[3];
 			if (Validator.isNotNull(securityCode) && Validator.isNotNull(dossierId) && Validator.isNotNull(dossierCounter))
 			{
-				List<Dossier> dossiers = DossierLocalServiceUtil.fetchDossierByG_DID(groupId,dossierId);
-				if (Validator.isNotNull(dossiers) && dossiers.size() == 1)
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+				if (Validator.isNotNull(dossier) )
 				{
-					Dossier dossier = dossiers.get(0);
 					if (Validator.isNotNull(viaPostal))
 					{
 						dossier.setViaPostal(viaPostal);

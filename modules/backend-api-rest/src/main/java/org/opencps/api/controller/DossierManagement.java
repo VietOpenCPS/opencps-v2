@@ -1585,5 +1585,23 @@ public interface DossierManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") long id,
 		@BeanParam DossierPublishModel input);
-	
+
+
+	@GET
+	@Path("/counter")
+	@Produces({
+							MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+						})
+	@ApiOperation(value = "Get dossier by dossiers counter", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossiers", response = DossierResultsModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response getDossierByDossierCounter(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @QueryParam("dossierCounter") String dossierCounter);
 }

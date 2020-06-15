@@ -7527,5 +7527,20 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-	}	
+	}
+
+	@Override
+	public Response getDossierByDossierCounter(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,String dossierCounter)
+	{
+		Dossier dossier = DossierLocalServiceUtil.fetchDossierByDossierCounter(dossierCounter);
+		if(Validator.isNotNull(dossier))
+		{
+			DossierDetailModel resutl = DossierUtils.mappingForGetDetail(dossier,0);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(resutl).build();
+		}
+		else
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+
+	}
 }

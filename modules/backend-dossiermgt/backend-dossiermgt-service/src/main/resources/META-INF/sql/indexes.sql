@@ -41,6 +41,7 @@ create unique index IX_8A4E048 on opencps_deliverabletyperole (uuid_[$COLUMN_LEN
 create index IX_43862807 on opencps_documenttype (groupId, typeCode[$COLUMN_LENGTH:255$]);
 create unique index IX_FF8B0A54 on opencps_documenttype (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_93AD8453 on opencps_dossier (dossierCounter[$COLUMN_LENGTH:128$]);
 create index IX_A19EE260 on opencps_dossier (dossierNo[$COLUMN_LENGTH:255$], applicantIdNo[$COLUMN_LENGTH:128$]);
 create index IX_BC4A37EA on opencps_dossier (dossierStatus[$COLUMN_LENGTH:255$], modifiedDate);
 create index IX_6C6803BB on opencps_dossier (groupId, applicantIdNo[$COLUMN_LENGTH:128$], dossierStatus[$COLUMN_LENGTH:255$]);

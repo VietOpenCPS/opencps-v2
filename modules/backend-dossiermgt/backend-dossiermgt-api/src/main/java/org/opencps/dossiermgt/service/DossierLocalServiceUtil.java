@@ -352,9 +352,9 @@ public class DossierLocalServiceUtil {
 		return getService().fetchDossier(dossierId);
 	}
 
-	public static java.util.List<org.opencps.dossiermgt.model.Dossier> fetchDossierByG_DID(
-		long groupId, long dossierId) {
-		return getService().fetchDossierByG_DID(groupId, dossierId);
+	public static org.opencps.dossiermgt.model.Dossier fetchDossierByDossierCounter(
+		String dossierCounter) {
+		return getService().fetchDossierByDossierCounter(dossierCounter);
 	}
 
 	/**
