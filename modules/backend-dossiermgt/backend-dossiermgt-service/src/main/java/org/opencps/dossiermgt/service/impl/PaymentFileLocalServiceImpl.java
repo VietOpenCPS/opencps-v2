@@ -945,4 +945,12 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public List<PaymentFile> findByG(long groupId) {
 		return paymentFilePersistence.findByG(groupId);
 	}
+	
+	public List<PaymentFile> findAll() {
+		return paymentFilePersistence.findAll();
+	}
+	
+	public List<PaymentFile> findByPT(int paymentStatus) {
+		return paymentFilePersistence.findByPT(paymentStatus);
+	}
 }
