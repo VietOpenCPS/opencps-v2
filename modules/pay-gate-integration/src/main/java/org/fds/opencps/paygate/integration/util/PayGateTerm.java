@@ -15,8 +15,8 @@ public class PayGateTerm {
 	public static final String ATTACHMENT_FILENAME_FORMAT = "attachment; filename=\"%s\"";
 	public static final String PNG_TYPE = "image/png";
 	public static final String KEYPAY_DVCQG_PROTOCOL = "KEYPAY_DVCQG_PROTOCOL";
-	public static final String KEYPAY_DVCQG_CREATE_TRANSACTION_ENDPOINT = "KEYPAY_DVCQG_CREATE_TRANSACTION_ENDPOINT";
-	public static final String KEYPAY_DVCQG_DETAIL_TRANSACTION_ENDPOINT = "KEYPAY_DVCQG_DETAIL_TRANSACTION_ENDPOINT";
+	public static final String KEYPAY_DVCQG_CREATE_TRANSACTION_ENDPOINT = "keypay_dvcqg_create_transaction_endpoint";
+	public static final String KEYPAY_DVCQG_DETAIL_TRANSACTION_ENDPOINT = "keypay_dvcqg_detail_transaction_endpoint";
 	public static final String VTP_PROTOCOL = "VTP_QRCODE";
 	public static final String PRIORITY = "priority";
 	public static final String KEY = "key";
