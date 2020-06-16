@@ -763,7 +763,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							actionUser, actionNote, syncType, actionConfig.getInfoType(), payloadObject.toJSONString(),
 							dossier.getServerNo(), state);
 				}
-				//Gửi thông tin hồ sơ để tra cứu
+				//Gá»­i thÃ´ng tin há»“ sÆ¡ Ä‘á»ƒ tra cá»©u
 				if (state == DossierSyncTerm.STATE_NOT_SYNC && actionConfig != null
 						&& actionConfig.getEventType() == ActionConfigTerm.EVENT_TYPE_SENT
 						&& OpenCPSConfigUtil.isPublishEventEnable()) {
@@ -931,7 +931,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					jsonDataStatusText != null ? jsonDataStatusText.getString(curSubStatus) : StringPool.BLANK,
 					curStep.getLockState(), dossierNote, context);
 
-			//Cập nhật cờ đồng bộ ngày tháng sang các hệ thống khác
+			//Cáº­p nháº­t cá»� Ä‘á»“ng bá»™ ngÃ y thÃ¡ng sang cÃ¡c há»‡ thá»‘ng khÃ¡c
 			Map<String, Boolean> resultFlagChanged = updateProcessingDate(dossierAction, previousAction, curStep,
 					dossier, curStatus, curSubStatus, prevStatus,
 					dateOption != null ? dateOption : (actionConfig != null ? actionConfig.getDateOption() : 0), option,
@@ -942,7 +942,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
 
-		//Thiết lập quyền thao tác hồ sơ
+		//Thiáº¿t láº­p quyá»�n thao tÃ¡c há»“ sÆ¡
 
 		int allowAssignUser = proAction.getAllowAssignUser();
 		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
@@ -975,6 +975,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String CREATE_DOCUMENT = "CREATE_DOCUMENT";
 	public static final String CHANGE_DATE = "CHANGE_DATE";
 	public static final String CALL_API = "CALL_API";
+	public static final String MULTIPLE_CHECK = "MULTIPLE_CHECK";
 
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
 			ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
@@ -1020,7 +1021,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			previousAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		}
 
-		//Cập nhật thông tin hồ sơ dựa vào payload truyền vào khi thực hiện thao tác
+		//Cáº­p nháº­t thÃ´ng tin há»“ sÆ¡ dá»±a vÃ o payload truyá»�n vÃ o khi thá»±c hiá»‡n thao tÃ¡c
 		if (Validator.isNotNull(payload)) {
 			JSONObject pl = payloadObject;
 			updateDossierPayload(dossier, pl);
@@ -1189,10 +1190,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Xử lý phiếu thanh toán
+			//Xá»­ lÃ½ phiáº¿u thanh toÃ¡n
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 
-			//Bước sau không có thì mặc định quay lại bước trước đó
+			//BÆ°á»›c sau khÃ´ng cÃ³ thÃ¬ máº·c Ä‘á»‹nh quay láº¡i bÆ°á»›c trÆ°á»›c Ä‘Ã³
 			if (Validator.isNull(postStepCode)) {
 				postStepCode = previousAction.getFromStepCode();
 				ProcessStep backCurStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId,
@@ -1262,7 +1263,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierAction.setNextActionId(newAction.getDossierActionId());
 				dossierActionLocalService.updateDossierAction(dossierAction);
 
-				// chỉ cán bộ thao tác trước đó có moderator = 1
+				// chá»‰ cÃ¡n bá»™ thao tÃ¡c trÆ°á»›c Ä‘Ã³ cÃ³ moderator = 1
 				List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil
 						.getByDossierAndStepCode(dossier.getDossierId(), previousAction.getStepCode());
 
@@ -1291,7 +1292,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						allowAssignUser, newAction, userId, groupId, allowAssignUser);
 
 				if (syncType == 2) {
-					//Tạo thông tin đồng bộ hồ sơ
+					//Táº¡o thÃ´ng tin Ä‘á»“ng bá»™ há»“ sÆ¡
 					createDossierSync(groupId, userId, actionConfig, proAction, newAction, dossier, syncType, option,
 							payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 				}
@@ -1301,7 +1302,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			ProcessStep curStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId, serviceProcessId);
 
-			//Kiểm tra cấu hình cần tạo hồ sơ liên thông
+			//Kiá»ƒm tra cáº¥u hÃ¬nh cáº§n táº¡o há»“ sÆ¡ liÃªn thÃ´ng
 			Dossier hsltDossier = createCrossDossier(groupId, proAction, curStep, previousAction, employee, dossier,
 					user, payloadObject, context);
 			if (Validator.isNotNull(proAction.getCreateDossiers())) {
@@ -1310,14 +1311,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Cập nhật hành động và quyền người dùng với hồ sơ
+			//Cáº­p nháº­t hÃ nh Ä‘á»™ng vÃ  quyá»�n ngÆ°á»�i dÃ¹ng vá»›i há»“ sÆ¡
 			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
 
 			//			dossier = dossierLocalService.updateDossier(dossier);
 
-			//Tạo văn bản đính kèm
+			//Táº¡o vÄƒn báº£n Ä‘Ã­nh kÃ¨m
 			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
 				if (!flagDocument) {
 					createDossierDocument(groupId, userId, actionConfig, dossier, dossierAction, payloadObject,
@@ -1328,7 +1329,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
+			//Kiá»ƒm tra xem cÃ³ gá»­i dá»‹ch vá»¥ váº­n chuyá»ƒn hay khÃ´ng
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
 				vnpostEvent(dossier, dossierAction.getDossierActionId());
 			}
@@ -1354,7 +1355,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Create subcription
 		createSubcription(userId, groupId, dossier, actionConfig, dossierAction, context);
 
-		//Tạo thông tin đồng bộ hồ sơ
+		//Táº¡o thÃ´ng tin Ä‘á»“ng bá»™ há»“ sÆ¡
 		createDossierSync(groupId, userId, actionConfig, proAction, dossierAction, dossier, syncType, option,
 				payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 
@@ -1369,10 +1370,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 
-		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
+		//Thá»±c hiá»‡n thao tÃ¡c lÃªn há»“ sÆ¡ gá»‘c hoáº·c há»“ sÆ¡ liÃªn thÃ´ng trong trÆ°á»�ng há»£p cÃ³ cáº¥u hÃ¬nh mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
 				assignUsers, payment, context);
 
+		// check multiple check in postAction
+		if (Validator.isNotNull(proAction.getPostAction())) {
+			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(proAction.getPostAction());
+			if (jsonPostData != null && jsonPostData.has(MULTIPLE_CHECK)) {
+				String multipleCheck = jsonPostData.getString(MULTIPLE_CHECK);
+				dossier.setMultipleCheck(multipleCheck);
+				}			
+		}
+		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 
@@ -1915,7 +1925,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		//Yêu cầu nộp tạm ứng
+		//YÃªu cáº§u ná»™p táº¡m á»©ng
 		if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 				|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI
 						&& Validator.isNotNull(payment)) {
