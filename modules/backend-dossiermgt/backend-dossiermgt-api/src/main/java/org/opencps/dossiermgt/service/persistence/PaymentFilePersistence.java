@@ -741,6 +741,138 @@ public interface PaymentFilePersistence extends BasePersistence<PaymentFile> {
 	public int countByG(long groupId);
 
 	/**
+	* Returns all the payment files where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @return the matching payment files
+	*/
+	public java.util.List<PaymentFile> findByPT(int paymentStatus);
+
+	/**
+	* Returns a range of all the payment files where paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @return the range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByPT(int paymentStatus, int start,
+		int end);
+
+	/**
+	* Returns an ordered range of all the payment files where paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByPT(int paymentStatus, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the payment files where paymentStatus = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param paymentStatus the payment status
+	* @param start the lower bound of the range of payment files
+	* @param end the upper bound of the range of payment files (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching payment files
+	*/
+	public java.util.List<PaymentFile> findByPT(int paymentStatus, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first payment file in the ordered set where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByPT_First(int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the first payment file in the ordered set where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByPT_First(int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the last payment file in the ordered set where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file
+	* @throws NoSuchPaymentFileException if a matching payment file could not be found
+	*/
+	public PaymentFile findByPT_Last(int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Returns the last payment file in the ordered set where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	*/
+	public PaymentFile fetchByPT_Last(int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator);
+
+	/**
+	* Returns the payment files before and after the current payment file in the ordered set where paymentStatus = &#63;.
+	*
+	* @param paymentFileId the primary key of the current payment file
+	* @param paymentStatus the payment status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next payment file
+	* @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	*/
+	public PaymentFile[] findByPT_PrevAndNext(long paymentFileId,
+		int paymentStatus,
+		com.liferay.portal.kernel.util.OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException;
+
+	/**
+	* Removes all the payment files where paymentStatus = &#63; from the database.
+	*
+	* @param paymentStatus the payment status
+	*/
+	public void removeByPT(int paymentStatus);
+
+	/**
+	* Returns the number of payment files where paymentStatus = &#63;.
+	*
+	* @param paymentStatus the payment status
+	* @return the number of matching payment files
+	*/
+	public int countByPT(int paymentStatus);
+
+	/**
 	* Caches the payment file in the entity cache if it is enabled.
 	*
 	* @param paymentFile the payment file

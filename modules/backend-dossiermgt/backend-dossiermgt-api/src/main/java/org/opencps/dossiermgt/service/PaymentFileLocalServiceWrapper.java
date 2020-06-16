@@ -268,6 +268,11 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findAll() {
+		return _paymentFileLocalService.findAll();
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG(
 		long groupId) {
 		return _paymentFileLocalService.findByG(groupId);
@@ -277,6 +282,12 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG_PT(
 		long groupId, int paymentStatus) {
 		return _paymentFileLocalService.findByG_PT(groupId, paymentStatus);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPT(
+		int paymentStatus) {
+		return _paymentFileLocalService.findByPT(paymentStatus);
 	}
 
 	@Override

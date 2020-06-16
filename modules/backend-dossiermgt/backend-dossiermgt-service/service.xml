@@ -1093,6 +1093,9 @@
         <finder name="G" return-type="Collection">
             <finder-column name="groupId"></finder-column>
         </finder>
+        <finder name="PT" return-type="Collection">
+            <finder-column name="paymentStatus"></finder-column>
+        </finder>
 
 	</entity>
 
