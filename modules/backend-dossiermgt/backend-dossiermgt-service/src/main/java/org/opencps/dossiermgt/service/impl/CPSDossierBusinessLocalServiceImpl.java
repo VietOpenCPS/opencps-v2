@@ -975,6 +975,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String CREATE_DOCUMENT = "CREATE_DOCUMENT";
 	public static final String CHANGE_DATE = "CHANGE_DATE";
 	public static final String CALL_API = "CALL_API";
+	public static final String MULTIPLE_CHECK = "MULTIPLE_CHECK";
 
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
 			ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
@@ -1369,10 +1370,22 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 
+		// check multiple check in postAction
+		if (Validator.isNotNull(proAction.getPostAction())) {
+			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(proAction.getPostAction());
+			if (jsonPostData != null && jsonPostData.has(MULTIPLE_CHECK)) {
+				String multipleCheck = jsonPostData.getString(MULTIPLE_CHECK);
+				if (Validator.isNotNull(multipleCheck)) {
+					dossier.setMultipleCheck(multipleCheck);
+				}
+			}
+		}
+
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
 				assignUsers, payment, context);
 
+		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 
