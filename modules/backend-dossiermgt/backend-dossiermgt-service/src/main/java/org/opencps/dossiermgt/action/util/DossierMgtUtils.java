@@ -666,7 +666,7 @@ public class DossierMgtUtils {
 			if (preCondition.contains(DossierTerm.CONTAIN_MULTIPLE_CHECK)) {
 				String[] splitMultipleCheck = preCondition.split(StringPool.EQUAL);
 				if (splitMultipleCheck.length == 2) {
-					result = result && checkMultipleCheck(splitMultipleCheck[1]);
+					result = result && checkMultipleCheck(splitMultipleCheck[1], dossier.getMultipleCheck());
 				}
 			}
 		}
@@ -845,15 +845,15 @@ public class DossierMgtUtils {
 		
 		return false;
 	}
-	private static boolean checkMultipleCheck(String multipleCheck) {
-		int o = Integer.valueOf(multipleCheck);
+	private static boolean checkMultipleCheck(String multipleCheck, String dossierMultiple) {
+		//int o = Integer.valueOf(multipleCheck);
 
-		if (o == 1) {
+		if (Validator.isNotNull(multipleCheck) && multipleCheck.equalsIgnoreCase(dossierMultiple)) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
+
 	}
 	
 	private static boolean checkOriginality(String originality, Dossier dossier) {
