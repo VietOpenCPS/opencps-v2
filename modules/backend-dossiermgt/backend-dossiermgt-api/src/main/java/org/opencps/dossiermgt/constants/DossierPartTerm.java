@@ -36,6 +36,7 @@ public class DossierPartTerm {
 	public static final String RECORD_COUNT = "recordCount";
 	public static final String RETURNED = "returned";
 	public static final String TP_DIFFERENT = "TP99";
+	public static final String PART_TITLE = "partTitle";
 
 	public static final int DOSSIER_PART_TYPE_INPUT = 1;
 	public static final int DOSSIER_PART_TYPE_OUTPUT = 2;

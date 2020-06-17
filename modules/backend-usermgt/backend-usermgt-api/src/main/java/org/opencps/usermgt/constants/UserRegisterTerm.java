@@ -10,6 +10,7 @@ public class UserRegisterTerm {
 	public static final String GRANT_TYPE = "grant_type";
 	public static final String VALUE_GRANT_TYPE = "client_credentials";
 	
+	public static final String NEW_BASE_URL = "http://api.dongthap.gov.vn";
 	public static final String BASE_URL = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
 	public static final String ENDPOINT_CITIZEN = "/congdan/dangky";
 	public static final String ENDPOINT_BUSINESS = "/doanhnghiep/dangky";
@@ -17,6 +18,9 @@ public class UserRegisterTerm {
 	public static final String ENDPOINT_CITIZEN_ACTIVE = "/congdan/kichhoat";
 	public static final String ENDPOINT_BUSINESS_ACTIVE = "/doanhnghiep/kichhoat";
 	public static final String ENDPOINT_FORGOT = "/quenmatkhau";
+	//
+	public static final String NEW_ENDPOINT_TOKEN = "/api/v1/Authentication/Token";
+	public static final String NEW_ENDPOINT_LOGIN = "/​api​/v1​/congdan/UserLogin";
 
 	//Citizen
 	public static final String EMAIL = "email";
@@ -47,5 +51,8 @@ public class UserRegisterTerm {
 	public static final String TAI_KHOAN = "taiKhoan";
 	public static final String OLD_SECRECT = "matKhauCu";
 	public static final String NEW_SECRECT = "matKhauMoi";
+	//
+	public static final String USER_NAME = "userName";
+	public static final String SECRECT_KEY = "password";
 
 }

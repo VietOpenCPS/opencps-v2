@@ -686,10 +686,10 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		object.setDeliverableAction(objectData.getInt(DossierPartTerm.DELIVERABLE_ACTION));
 		object.setEForm(objectData.getBoolean(DossierPartTerm.EFORM_UPPERCASE));
 		object.setFileMark(objectData.getInt(DossierPartTerm.FILE_MARK));
+		object.setPartTitle(objectData.getString(DossierPartTerm.PART_TITLE));
 
-		dossierPartPersistence.update(object);
+		return dossierPartPersistence.update(object);
 
-		return object;
 	}
 	public DossierPart getByTempAndFileTempNo(long groupId, String templateNo, String fileTemplateNo) {
 		return dossierPartPersistence.fetchByGID_TN_FTN(groupId, templateNo, fileTemplateNo);
