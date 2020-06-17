@@ -528,6 +528,7 @@
 		<property name="deliverableAction" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor" name="eForm" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="fileMark" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="partNameTitle" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierRequestUDImpl" table="opencps_dossierrequests">
 		<id name="dossierRequestId" type="long">
@@ -1106,6 +1107,7 @@
 		<property name="public_" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="govAgencyText" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="isNotarization" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="serviceNameTitle" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ServiceInfoMappingImpl" table="opencps_serviceinfomapping">
 		<id name="serviceInfoMappingId" type="long">

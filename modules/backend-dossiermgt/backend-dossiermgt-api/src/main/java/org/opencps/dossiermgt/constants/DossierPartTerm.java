@@ -34,6 +34,7 @@ public class DossierPartTerm {
 	public static final String FILE_CHECK = "fileCheck";
 	public static final String FILE_COMMENT = "fileComment";
 	public static final String RECORD_COUNT = "recordCount";
+	public static final String PART_NAME_TITLE = "partNameTitle";
 	public static final String RETURNED = "returned";
 	public static final String TP_DIFFERENT = "TP99";
 	public static final String PART_TITLE = "partTitle";

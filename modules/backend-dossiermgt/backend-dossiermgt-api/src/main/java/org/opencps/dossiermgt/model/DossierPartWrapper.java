@@ -84,6 +84,7 @@ public class DossierPartWrapper implements DossierPart,
 		attributes.put("deliverableAction", getDeliverableAction());
 		attributes.put("eForm", isEForm());
 		attributes.put("fileMark", getFileMark());
+		attributes.put("partNameTitle", getPartNameTitle());
 
 		return attributes;
 	}
@@ -232,6 +233,12 @@ public class DossierPartWrapper implements DossierPart,
 
 		if (fileMark != null) {
 			setFileMark(fileMark);
+		}
+
+		String partNameTitle = (String)attributes.get("partNameTitle");
+
+		if (partNameTitle != null) {
+			setPartNameTitle(partNameTitle);
 		}
 	}
 
@@ -398,6 +405,16 @@ public class DossierPartWrapper implements DossierPart,
 	@Override
 	public String getPartName() {
 		return _dossierPart.getPartName();
+	}
+
+	/**
+	* Returns the part name title of this dossier part.
+	*
+	* @return the part name title of this dossier part
+	*/
+	@Override
+	public String getPartNameTitle() {
+		return _dossierPart.getPartNameTitle();
 	}
 
 	/**
@@ -754,6 +771,16 @@ public class DossierPartWrapper implements DossierPart,
 	@Override
 	public void setPartName(String partName) {
 		_dossierPart.setPartName(partName);
+	}
+
+	/**
+	* Sets the part name title of this dossier part.
+	*
+	* @param partNameTitle the part name title of this dossier part
+	*/
+	@Override
+	public void setPartNameTitle(String partNameTitle) {
+		_dossierPart.setPartNameTitle(partNameTitle);
 	}
 
 	/**

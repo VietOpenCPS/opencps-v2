@@ -48,7 +48,8 @@
 		<column name="public_" type="boolean" />
 		<column name="govAgencyText" type="String" />
 		<column name="isNotarization" type="boolean" />
-		
+		<column name="serviceNameTitle" type="String"/>
+
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -314,6 +315,7 @@
 		<column name="deliverableAction" type="int"/>
 		<column name="eForm" type="boolean" />
 		<column name="fileMark" type="int" />
+		<column name="partNameTitle" type="String"/>
 		<!-- Order -->
 
 		<!-- Finder methods -->

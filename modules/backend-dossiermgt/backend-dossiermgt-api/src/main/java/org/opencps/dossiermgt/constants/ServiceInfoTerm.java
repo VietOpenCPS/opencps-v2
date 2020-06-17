@@ -10,6 +10,7 @@ public class ServiceInfoTerm {
 	public static final String DOSSIER_EXT = "dossierText";
 	public static final String CONDITION_TEXT = "conditionText";
 	public static final String DURATION_TEXT = "durationText";
+	public static final String SERVICE_NAME_TITLE = "serviceNameTitle";
 	public static final String APPLICANT_TEXT = "applicantText";
 	public static final String RESULT_TEXT = "resultText";
 	public static final String REGULAR_TEXT = "regularText";

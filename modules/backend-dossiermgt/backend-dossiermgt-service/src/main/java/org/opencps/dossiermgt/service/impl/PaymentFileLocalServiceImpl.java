@@ -444,7 +444,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		Date now = new Date();
 
-		User userAction = userLocalService.getUser(context.getUserId());
+		long userId = context != null && context.getUserId() > 0 ? context.getUserId() : object.getUserId();
+		User userAction = userLocalService.getUser(userId);
 
 		// Update audit fields
 		object.setModifiedDate(now);

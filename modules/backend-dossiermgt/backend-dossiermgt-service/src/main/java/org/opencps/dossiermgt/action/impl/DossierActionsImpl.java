@@ -802,6 +802,9 @@ public class DossierActionsImpl implements DossierActions {
 												serviceProcess.getDueDatePattern());
 										dueDate = dueDatePharse.getDueDate();
 										dossier.setDueDate(dueDate);
+									} else if (Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
+
+										dueDate = null;
 									}
 								}
 							}
