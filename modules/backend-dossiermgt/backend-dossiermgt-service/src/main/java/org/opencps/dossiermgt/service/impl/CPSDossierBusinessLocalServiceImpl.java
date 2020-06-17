@@ -1370,18 +1370,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 
-		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
-		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
-				assignUsers, payment, context);
-
 		// check multiple check in postAction
 		if (Validator.isNotNull(proAction.getPostAction())) {
 			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(proAction.getPostAction());
 			if (jsonPostData != null && jsonPostData.has(MULTIPLE_CHECK)) {
 				String multipleCheck = jsonPostData.getString(MULTIPLE_CHECK);
-				dossier.setMultipleCheck(multipleCheck);
-				}			
+				if (Validator.isNotNull(multipleCheck)) {
+					dossier.setMultipleCheck(multipleCheck);
+				}
+			}
 		}
+
+		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
+		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
+				assignUsers, payment, context);
+
 		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
