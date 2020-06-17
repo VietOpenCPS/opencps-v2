@@ -160,6 +160,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("vnpostalStatus", getVnpostalStatus());
 		attributes.put("vnpostalProfile", getVnpostalProfile());
 		attributes.put("fromViaPostal", getFromViaPostal());
+		attributes.put("multipleCheck", getMultipleCheck());
 
 		return attributes;
 	}
@@ -774,6 +775,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (fromViaPostal != null) {
 			setFromViaPostal(fromViaPostal);
+		}
+
+		String multipleCheck = (String)attributes.get("multipleCheck");
+
+		if (multipleCheck != null) {
+			setMultipleCheck(multipleCheck);
 		}
 	}
 
@@ -1400,6 +1407,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public Date getModifiedDate() {
 		return _dossier.getModifiedDate();
+	}
+
+	/**
+	* Returns the multiple check of this dossier.
+	*
+	* @return the multiple check of this dossier
+	*/
+	@Override
+	public String getMultipleCheck() {
+		return _dossier.getMultipleCheck();
 	}
 
 	/**
@@ -2521,6 +2538,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_dossier.setModifiedDate(modifiedDate);
+	}
+
+	/**
+	* Sets the multiple check of this dossier.
+	*
+	* @param multipleCheck the multiple check of this dossier
+	*/
+	@Override
+	public void setMultipleCheck(String multipleCheck) {
+		_dossier.setMultipleCheck(multipleCheck);
 	}
 
 	@Override

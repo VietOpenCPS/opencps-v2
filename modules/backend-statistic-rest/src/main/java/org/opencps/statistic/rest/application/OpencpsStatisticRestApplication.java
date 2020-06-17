@@ -1839,6 +1839,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				for (String domainCode : mapResults.keySet()) {
 					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
 					groupDomainObj.put("domain", domains.get(domainCode));
+					groupDomainObj.put("domainCode", domainCode);
 					int count = 0;
 					long totalFee = 0;
 					long totalPaymentAmount = 0;
