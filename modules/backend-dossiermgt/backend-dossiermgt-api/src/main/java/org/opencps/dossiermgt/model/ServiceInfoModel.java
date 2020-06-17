@@ -536,6 +536,21 @@ public interface ServiceInfoModel extends BaseModel<ServiceInfo>, GroupedModel,
 	 */
 	public void setIsNotarization(boolean isNotarization);
 
+	/**
+	 * Returns the service name title of this service info.
+	 *
+	 * @return the service name title of this service info
+	 */
+	@AutoEscape
+	public String getServiceNameTitle();
+
+	/**
+	 * Sets the service name title of this service info.
+	 *
+	 * @param serviceNameTitle the service name title of this service info
+	 */
+	public void setServiceNameTitle(String serviceNameTitle);
+
 	@Override
 	public boolean isNew();
 

@@ -91,7 +91,8 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 			{ "deliverableType", Types.VARCHAR },
 			{ "deliverableAction", Types.INTEGER },
 			{ "eForm", Types.BOOLEAN },
-			{ "fileMark", Types.INTEGER }
+			{ "fileMark", Types.INTEGER },
+			{ "partNameTitle", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -120,9 +121,10 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		TABLE_COLUMNS_MAP.put("deliverableAction", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("eForm", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("fileMark", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("partNameTitle", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossierpart (uuid_ VARCHAR(75) null,dossierPartId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateNo VARCHAR(255) null,partNo VARCHAR(255) null,partName VARCHAR(500) null,partTip TEXT null,partType INTEGER,multiple BOOLEAN,formScript TEXT null,formReport TEXT null,sampleData TEXT null,required BOOLEAN,fileTemplateNo VARCHAR(255) null,eSign BOOLEAN,deliverableType VARCHAR(500) null,deliverableAction INTEGER,eForm BOOLEAN,fileMark INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossierpart (uuid_ VARCHAR(75) null,dossierPartId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,templateNo VARCHAR(255) null,partNo VARCHAR(255) null,partName VARCHAR(500) null,partTip TEXT null,partType INTEGER,multiple BOOLEAN,formScript TEXT null,formReport TEXT null,sampleData TEXT null,required BOOLEAN,fileTemplateNo VARCHAR(255) null,eSign BOOLEAN,deliverableType VARCHAR(500) null,deliverableAction INTEGER,eForm BOOLEAN,fileMark INTEGER,partNameTitle VARCHAR(500) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossierpart";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossierPart.dossierPartId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossierpart.dossierPartId ASC";
@@ -211,6 +213,7 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		attributes.put("deliverableAction", getDeliverableAction());
 		attributes.put("eForm", isEForm());
 		attributes.put("fileMark", getFileMark());
+		attributes.put("partNameTitle", getPartNameTitle());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -362,6 +365,12 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 
 		if (fileMark != null) {
 			setFileMark(fileMark);
+		}
+
+		String partNameTitle = (String)attributes.get("partNameTitle");
+
+		if (partNameTitle != null) {
+			setPartNameTitle(partNameTitle);
 		}
 	}
 
@@ -789,6 +798,21 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 	}
 
 	@Override
+	public String getPartNameTitle() {
+		if (_partNameTitle == null) {
+			return "";
+		}
+		else {
+			return _partNameTitle;
+		}
+	}
+
+	@Override
+	public void setPartNameTitle(String partNameTitle) {
+		_partNameTitle = partNameTitle;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DossierPart.class.getName()));
@@ -849,6 +873,7 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		dossierPartImpl.setDeliverableAction(getDeliverableAction());
 		dossierPartImpl.setEForm(isEForm());
 		dossierPartImpl.setFileMark(getFileMark());
+		dossierPartImpl.setPartNameTitle(getPartNameTitle());
 
 		dossierPartImpl.resetOriginalValues();
 
@@ -1072,12 +1097,20 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 
 		dossierPartCacheModel.fileMark = getFileMark();
 
+		dossierPartCacheModel.partNameTitle = getPartNameTitle();
+
+		String partNameTitle = dossierPartCacheModel.partNameTitle;
+
+		if ((partNameTitle != null) && (partNameTitle.length() == 0)) {
+			dossierPartCacheModel.partNameTitle = null;
+		}
+
 		return dossierPartCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1127,6 +1160,8 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 		sb.append(isEForm());
 		sb.append(", fileMark=");
 		sb.append(getFileMark());
+		sb.append(", partNameTitle=");
+		sb.append(getPartNameTitle());
 		sb.append("}");
 
 		return sb.toString();
@@ -1134,7 +1169,7 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(76);
+		StringBundler sb = new StringBundler(79);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DossierPart");
@@ -1236,6 +1271,10 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 			"<column><column-name>fileMark</column-name><column-value><![CDATA[");
 		sb.append(getFileMark());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>partNameTitle</column-name><column-value><![CDATA[");
+		sb.append(getPartNameTitle());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1283,6 +1322,7 @@ public class DossierPartModelImpl extends BaseModelImpl<DossierPart>
 	private int _deliverableAction;
 	private boolean _eForm;
 	private int _fileMark;
+	private String _partNameTitle;
 	private long _columnBitmask;
 	private DossierPart _escapedModel;
 }
