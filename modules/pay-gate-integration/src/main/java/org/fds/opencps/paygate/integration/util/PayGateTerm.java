@@ -84,10 +84,14 @@ public class PayGateTerm {
 	public static final String STATUS = "status";
 	public static final String BILL_INFO = "bill_info";
 	public static final String MADICHVU = "MaDichVu";
+
+	public static final String BANKINFO = "BankInfo";
+	public static final String SERVICE_CODE = "ServiceCode";
 	public static final String TKTHUHUONG = "TKThuHuong";
-	
 	public static final String MANHTHUHUONG = "MaNHThuHuong";
 	public static final String TENTKTHUHUONG = "TenTKThuHuong";
+	public static final String DEFAULT = "default";
+
 	public static final String PHILEPHI = "PhiLePhi";
 	public static final String LOAIPHILEPHI = "LoaiPhiLePhi";
 	
@@ -98,6 +102,7 @@ public class PayGateTerm {
 	public static final String TENDONVI = "TenDonVi";
 	public static final String MAHOSO = "MaHoSo";
 	public static final String MADVC = "MaDVC";
+	public static final String MADVCAPPEND = "MADVCAppend";
 	public static final String TENDVC = "TenDVC";
 	public static final String MATTHC = "MaTTHC";
 	public static final String TENTTHC = "TenTTHC";
@@ -122,7 +127,11 @@ public class PayGateTerm {
 	public static final String DSKHOANNOP = "DSKhoanNop";
 	public static final String NOIDUNG = "NoiDung";
 	public static final String ADDITION_FEE = "addition_fee";
-	public static final String KP_DVCQG_CONFIG = "KP_DVCQG_CONFIG";
+
+	public static final String ERROR_RES_SUCCESS = "0";
+	public static final String ERROR_RES_KEY = "error";
+	public static final String MSG_RES_KEY = "msg";
+	public static final String PAYMENT_URL_RES_KEY = "payment_url";
 
 	public static String buildPathDoAction(String path, long dossierId) {
 

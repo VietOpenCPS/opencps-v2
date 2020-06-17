@@ -2119,6 +2119,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2223,6 +2234,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
 
 					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.KPDVCQG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
