@@ -684,7 +684,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				//addition_fee, client_id, trans_amount, command, transaction_id, version, haskey
 
 				String client_id = schema.getString(PayGateTerm.CLIENT_ID);
-				String addition_fee = String.valueOf(paymentFile.getFeeAmount());
+				String addition_fee = String.valueOf(paymentFile.getShipAmount());
 				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
 				String command = schema.getString(PayGateTerm.COMMAND);
 				String version = schema.getString(PayGateTerm.VERSION);
@@ -696,7 +696,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String transactionId = String.valueOf(paymentFile.getPaymentFileId());
 				data.put(PayGateTerm.CLIENT_ID, schema.getString(PayGateTerm.CLIENT_ID));
 				data.put(PayGateTerm.TRANSACTION_ID, transactionId);
-				data.put(PayGateTerm.TRANS_AMOUNT, String.valueOf(paymentFile.getPaymentAmount()));
+				data.put(PayGateTerm.TRANS_AMOUNT, trans_amount);
 				data.put(PayGateTerm.COMMAND, schema.getString(PayGateTerm.COMMAND));//default PAY
 				data.put(PayGateTerm.VERSION, schema.getString(PayGateTerm.VERSION));// default "3.0"
 				data.put(PayGateTerm.DESCRIPTION, paymentFile.getPaymentNote());//?
@@ -798,14 +798,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (dossier.isOnline()) {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				} else {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				}
 
-				data.put(PayGateTerm.ADDITION_FEE, String.valueOf(paymentFile.getFeeAmount()));
+				data.put(PayGateTerm.ADDITION_FEE, addition_fee);
 
 				String check_sum = PayGateUtil.generateChecksum(addition_fee, client_id, trans_amount, command,
 						transactionId, version, hash_key_1);
@@ -981,6 +981,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public JSONObject kpCallBack(User user, ServiceContext serviceContext, String body) {
 
 		try {
+			_log.info("=======body========" + body);
 			JSONObject data = JSONFactoryUtil.createJSONObject(body);
 
 			if (data != null && data.length() > 0) {
@@ -1033,10 +1034,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String transactionId_tmp = String.valueOf(paymentFile.getPaymentFileId());
 				String version_config = schema.getString(PayGateTerm.VERSION);
 
-				String check_sum_tmp = PayGateUtil.generateChecksum(String.valueOf(paymentFile.getFeeAmount()),
-						client_id_config, String.valueOf(paymentFile.getPaymentAmount()), command_config,
+				String addition_fee = String.valueOf(paymentFile.getShipAmount());
+				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
+				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee,
+						client_id_config, trans_amount, command_config,
 						transactionId_tmp, version_config, hash_key_2);
-
 				if (!check_sum.equals(check_sum_tmp)) {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}

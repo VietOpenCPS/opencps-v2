@@ -214,11 +214,6 @@ public class PayGateIntegrationApplication extends Application {
 			@Context ServiceContext serviceContext,
 			String body) {
 
-		System.out.println("=======body========");
-		System.out.println("=======body========");
-		System.out.println("=======body========");
-		System.out.println("=======body========");
-		System.out.println("=======body========" + body);
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
 		JSONObject result = actionImpl.kpCallBack(user, serviceContext, body);
