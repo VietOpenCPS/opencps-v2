@@ -455,7 +455,8 @@ create table opencps_dossierpart (
 	deliverableType VARCHAR(500) null,
 	deliverableAction INTEGER,
 	eForm BOOLEAN,
-	fileMark INTEGER
+	fileMark INTEGER,
+	partNameTitle VARCHAR(500) null
 );
 
 create table opencps_dossierrequests (
@@ -995,7 +996,8 @@ create table opencps_serviceinfo (
 	maxLevel INTEGER,
 	public_ BOOLEAN,
 	govAgencyText TEXT null,
-	isNotarization BOOLEAN
+	isNotarization BOOLEAN,
+	serviceNameTitle VARCHAR(500) null
 );
 
 create table opencps_serviceinfomapping (

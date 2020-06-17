@@ -785,6 +785,9 @@
 		<field name="deliverableAction" type="int" />
 		<field name="eForm" type="boolean" />
 		<field name="fileMark" type="int" />
+		<field name="partNameTitle" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierRequestUD">
 		<field name="uuid" type="String" />
@@ -1679,6 +1682,9 @@
 			<hint name="max-length">4096</hint>
 		</field>
 		<field name="isNotarization" type="boolean" />
+		<field name="serviceNameTitle" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceInfoMapping">
 		<field name="serviceInfoMappingId" type="long" />

@@ -471,6 +471,21 @@ public interface DossierPartModel extends BaseModel<DossierPart>, GroupedModel,
 	 */
 	public void setFileMark(int fileMark);
 
+	/**
+	 * Returns the part name title of this dossier part.
+	 *
+	 * @return the part name title of this dossier part
+	 */
+	@AutoEscape
+	public String getPartNameTitle();
+
+	/**
+	 * Sets the part name title of this dossier part.
+	 *
+	 * @param partNameTitle the part name title of this dossier part
+	 */
+	public void setPartNameTitle(String partNameTitle);
+
 	@Override
 	public boolean isNew();
 
