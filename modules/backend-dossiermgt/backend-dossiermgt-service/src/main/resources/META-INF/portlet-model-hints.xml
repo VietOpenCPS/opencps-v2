@@ -519,6 +519,7 @@
 			<hint name="max-length">4096</hint>
 		</field>
 		<field name="fromViaPostal" type="int" />
+		<field name="multipleCheck" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />
