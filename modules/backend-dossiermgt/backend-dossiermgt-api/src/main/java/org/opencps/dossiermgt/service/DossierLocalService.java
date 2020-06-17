@@ -274,9 +274,6 @@ public interface DossierLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Dossier fetchDossierByDossierCounter(String dossierCounter);
-
 	/**
 	* Returns the dossier matching the UUID and group.
 	*
@@ -305,6 +302,8 @@ public interface DossierLocalService extends BaseLocalService,
 	public List<Dossier> findByVIAPOSTAL(int viaPostal);
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
+
+	public List<Dossier> findDossierByDay(String date);
 
 	public List<Dossier> findDossierByGroup(long groupId);
 

@@ -586,15 +586,15 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
-				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						dateSort, Sort.STRING_TYPE,
+						dateSort, Sort.LONG_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
 			else {
-				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
 						querySort, Sort.STRING_TYPE,
@@ -606,7 +606,7 @@ public class DossierManagementImpl implements DossierManagement {
 				String querySort;
 				switch (top) {
 				case DossierTerm.RECEIVE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -614,7 +614,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.OVERDUE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -622,7 +622,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.RELEASE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -630,7 +630,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.CANCELLING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -638,7 +638,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.CORRECTING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1060,15 +1060,15 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
-				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						dateSort, Sort.STRING_TYPE,
+						dateSort, Sort.LONG_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
 			else {
-				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
 						querySort, Sort.STRING_TYPE,
@@ -1077,10 +1077,10 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			if (Validator.isNotNull(top)) {
-				String querySort;
+				String querySort ="";
 				switch (top) {
 				case DossierTerm.RECEIVE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1088,7 +1088,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.OVERDUE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1096,7 +1096,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.RELEASE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1104,7 +1104,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.CANCELLING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1112,7 +1112,7 @@ public class DossierManagementImpl implements DossierManagement {
 					};
 					break;
 				case DossierTerm.CORRECTING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
+					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
 							querySort,
@@ -1122,7 +1122,6 @@ public class DossierManagementImpl implements DossierManagement {
 				default:
 					break;
 				}
-
 			}
 
 			JSONObject jsonData = actions.getDossierProcessList(
@@ -7530,14 +7529,22 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
-	public Response getDossierByDossierCounter(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
-		ServiceContext serviceContext,String dossierCounter)
+	public Response getDossierCounterByDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,String date)
 	{
-		Dossier dossier = DossierLocalServiceUtil.fetchDossierByDossierCounter(dossierCounter);
-		if(Validator.isNotNull(dossier))
+		List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
+		if(Validator.isNotNull(dossiers))
 		{
-			DossierDetailModel resutl = DossierUtils.mappingForGetDetail(dossier,0);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(resutl).build();
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+			for (Dossier dossier : dossiers)
+			{
+				String dossierCounter = dossier.getDossierCounter();
+				if(Validator.isNotNull(dossierCounter))
+					jsonArray.put(dossierCounter);
+			}
+			jsonObject.put("dossierCounter", jsonArray);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 		}
 		else
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();

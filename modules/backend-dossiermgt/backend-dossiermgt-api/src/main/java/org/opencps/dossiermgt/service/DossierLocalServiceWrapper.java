@@ -359,12 +359,6 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
 
-	@Override
-	public org.opencps.dossiermgt.model.Dossier fetchDossierByDossierCounter(
-		String dossierCounter) {
-		return _dossierLocalService.fetchDossierByDossierCounter(dossierCounter);
-	}
-
 	/**
 	* Returns the dossier matching the UUID and group.
 	*
@@ -424,6 +418,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByVnpostalStatus(
 		long groupId, int vnpostalStatus) {
 		return _dossierLocalService.findByVnpostalStatus(groupId, vnpostalStatus);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
+		String date) {
+		return _dossierLocalService.findDossierByDay(date);
 	}
 
 	@Override

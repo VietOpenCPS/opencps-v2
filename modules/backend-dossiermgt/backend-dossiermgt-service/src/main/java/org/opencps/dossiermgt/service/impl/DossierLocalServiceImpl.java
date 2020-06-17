@@ -7575,12 +7575,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossier;
 	}
-	public Dossier fetchDossierByDossierCounter(String dossierCounter)
+	public List<Dossier> findDossierByDay(String date)
 	{
-//		List<Dossier> dossiers= dossierPersistence.findByDC(dossierCounter);
-//		if (Validator.isNotNull(dossiers) && dossiers.size()==1)
-//			return dossiers.get(0);
-//		else
-			return dossierPersistence.fetchByDC(dossierCounter);
+			return  dossierFinder.findDossierByDay(date);
 	}
 }

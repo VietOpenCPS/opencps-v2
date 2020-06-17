@@ -352,11 +352,6 @@ public class DossierLocalServiceUtil {
 		return getService().fetchDossier(dossierId);
 	}
 
-	public static org.opencps.dossiermgt.model.Dossier fetchDossierByDossierCounter(
-		String dossierCounter) {
-		return getService().fetchDossierByDossierCounter(dossierCounter);
-	}
-
 	/**
 	* Returns the dossier matching the UUID and group.
 	*
@@ -406,6 +401,11 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByVnpostalStatus(
 		long groupId, int vnpostalStatus) {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
+		String date) {
+		return getService().findDossierByDay(date);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(

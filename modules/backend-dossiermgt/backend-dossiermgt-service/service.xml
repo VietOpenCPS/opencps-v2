@@ -774,7 +774,7 @@
 			<finder-column name="groupId"></finder-column>
 			<finder-column name="vnpostalStatus" />
 		</finder>
-		<finder name="DC" return-type="Dossier">
+		<finder name="DC" return-type="Dossier" where="">
 			<finder-column name="dossierCounter"/>
 		</finder>
 	</entity>
@@ -1094,6 +1094,9 @@
         </finder>
         <finder name="G" return-type="Collection">
             <finder-column name="groupId"></finder-column>
+        </finder>
+        <finder name="PT" return-type="Collection">
+            <finder-column name="paymentStatus"></finder-column>
         </finder>
 
 	</entity>

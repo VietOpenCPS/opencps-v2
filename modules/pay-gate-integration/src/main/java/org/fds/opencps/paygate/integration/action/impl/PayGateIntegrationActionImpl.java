@@ -666,7 +666,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	//Add by TrungNT
 	@Override
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
-		String result = StringPool.BETWEEN;
+		String result = StringPool.BLANK;
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil
@@ -1073,7 +1073,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
-				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY);
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG);
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
 				long dossierActionId = dossier.getDossierActionId();

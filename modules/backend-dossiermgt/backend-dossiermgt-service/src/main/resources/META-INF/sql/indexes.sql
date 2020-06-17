@@ -200,6 +200,7 @@ create unique index IX_C61226E1 on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:7
 create index IX_AB66566A on opencps_paymentfile (dossierId, referenceUid[$COLUMN_LENGTH:75$]);
 create index IX_928D77F1 on opencps_paymentfile (groupId, dossierId);
 create index IX_8EF25743 on opencps_paymentfile (groupId, paymentStatus);
+create index IX_51CA8DC3 on opencps_paymentfile (paymentStatus);
 create index IX_6BE34299 on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C65D9B5B on opencps_paymentfile (uuid_[$COLUMN_LENGTH:75$], groupId);
 

@@ -259,6 +259,10 @@ public class PaymentFileLocalServiceUtil {
 		return getService().fetchPaymentFileByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findAll() {
+		return getService().findAll();
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG(
 		long groupId) {
 		return getService().findByG(groupId);
@@ -267,6 +271,11 @@ public class PaymentFileLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByG_PT(
 		long groupId, int paymentStatus) {
 		return getService().findByG_PT(groupId, paymentStatus);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPT(
+		int paymentStatus) {
+		return getService().findByPT(paymentStatus);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
