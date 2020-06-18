@@ -57,6 +57,7 @@ public class DossierPartSoap implements Serializable {
 		soapModel.setDeliverableAction(model.getDeliverableAction());
 		soapModel.setEForm(model.isEForm());
 		soapModel.setFileMark(model.getFileMark());
+		soapModel.setPartNameTitle(model.getPartNameTitle());
 
 		return soapModel;
 	}
@@ -317,6 +318,14 @@ public class DossierPartSoap implements Serializable {
 		_fileMark = fileMark;
 	}
 
+	public String getPartNameTitle() {
+		return _partNameTitle;
+	}
+
+	public void setPartNameTitle(String partNameTitle) {
+		_partNameTitle = partNameTitle;
+	}
+
 	private String _uuid;
 	private long _dossierPartId;
 	private long _groupId;
@@ -341,4 +350,5 @@ public class DossierPartSoap implements Serializable {
 	private int _deliverableAction;
 	private boolean _eForm;
 	private int _fileMark;
+	private String _partNameTitle;
 }
