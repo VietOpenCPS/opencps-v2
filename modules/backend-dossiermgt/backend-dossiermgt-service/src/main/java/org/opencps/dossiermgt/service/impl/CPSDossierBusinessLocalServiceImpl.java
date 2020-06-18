@@ -5121,8 +5121,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		_log.debug("CREATE DOSSIER 1.X: " + input.getServiceCode() + ", " + input.getGovAgencyCode() + ", "
 				+ input.getDossierTemplateNo());
 
-		dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(), input.getGovAgencyCode(),
-				input.getDossierTemplateNo());
+		//dossierPermission.hasCreateDossier(groupId, user.getUserId(), input.getServiceCode(), input.getGovAgencyCode(),
+		//		input.getDossierTemplateNo());
 
 		//int counter = DossierNumberGenerator.counterDossier(user.getUserId(), groupId);
 		String referenceUid = input.getReferenceUid();
