@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.Base64;
 import java.util.Formatter;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -91,6 +92,18 @@ public class PayGateUtil {
 		result.put("return_msg", return_msg);
 		return result;
 
+	}
+
+	public static String decodeTransactionId (long paymentFileId) {
+		return (paymentFileId + StringPool.UNDERLINE + UUID.randomUUID().toString()).substring(0, 20);
+	}
+
+	public static long getPaymentFileIdByTrans (String transactionId) {
+		if (null == transactionId) {
+			return 0l;
+		} else {
+			return Long.parseLong(transactionId.split(StringPool.UNDERLINE)[0]);
+		}
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(PayGateUtil.class);

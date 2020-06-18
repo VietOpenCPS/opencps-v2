@@ -693,7 +693,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				//TODO validate
 
 				JSONObject data = JSONFactoryUtil.createJSONObject();
-				String transactionId = String.valueOf(paymentFile.getPaymentFileId());
+				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 				data.put(PayGateTerm.CLIENT_ID, schema.getString(PayGateTerm.CLIENT_ID));
 				data.put(PayGateTerm.TRANSACTION_ID, transactionId);
 				data.put(PayGateTerm.TRANS_AMOUNT, trans_amount);
@@ -860,7 +860,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					
 					if(response.has(PayGateTerm.ERROR_RES_KEY) && PayGateTerm.ERROR_RES_SUCCESS.equals(response.getString(PayGateTerm.ERROR_RES_KEY))) {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
-						schema.put(PayGateTerm.PAYMENT_URL_RES_KEY, response.getString(PayGateTerm.PAYMENT_URL_RES_KEY));
+						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 								epaymentProfile.toJSONString(), serviceContext);
@@ -908,7 +908,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				JSONObject data = JSONFactoryUtil.createJSONObject();
 
-				String transactionId = String.valueOf(paymentFile.getPaymentFileId());
+				String transactionId = schema.getString(PayGateTerm.TRANSACTION_ID);
 				data.put(PayGateTerm.CLIENT_ID, schema.getString(PayGateTerm.CLIENT_ID));
 				data.put(PayGateTerm.TRANSACTION_ID, transactionId);
 				data.put(PayGateTerm.COMMAND, schema.getString(PayGateTerm.COMMAND));//default PAY
@@ -1004,7 +1004,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				long paymentFileId = 0;
 
 				if (Validator.isNotNull(transaction_id)) {
-					paymentFileId = GetterUtil.getLong(transaction_id);
+					paymentFileId = PayGateUtil.getPaymentFileIdByTrans(transaction_id);
 				}
 
 				if (paymentFileId <= 0) {
@@ -1031,7 +1031,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String client_id_config = schema.getString(PayGateTerm.CLIENT_ID);
 				String command_config = schema.getString(PayGateTerm.COMMAND);
 				String hash_key_2 = schema.getString(PayGateTerm.HASH_KEY_2);
-				String transactionId_tmp = String.valueOf(paymentFile.getPaymentFileId());
+				String transactionId_tmp = schema.getString(PayGateTerm.TRANSACTION_ID);
 				String version_config = schema.getString(PayGateTerm.VERSION);
 
 				String addition_fee = String.valueOf(paymentFile.getShipAmount());
