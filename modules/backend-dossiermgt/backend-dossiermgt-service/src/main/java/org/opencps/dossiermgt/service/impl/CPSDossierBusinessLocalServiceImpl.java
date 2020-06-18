@@ -975,6 +975,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String CREATE_DOCUMENT = "CREATE_DOCUMENT";
 	public static final String CHANGE_DATE = "CHANGE_DATE";
 	public static final String CALL_API = "CALL_API";
+	public static final String MULTIPLE_CHECK = "MULTIPLE_CHECK";
 
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
 			ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
@@ -1369,10 +1370,22 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			publishEvent(dossier, context, dossierAction.getDossierActionId());
 		}
 
+		// check multiple check in postAction
+		if (Validator.isNotNull(proAction.getPostAction())) {
+			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(proAction.getPostAction());
+			if (jsonPostData != null && jsonPostData.has(MULTIPLE_CHECK)) {
+				String multipleCheck = jsonPostData.getString(MULTIPLE_CHECK);
+				if (Validator.isNotNull(multipleCheck)) {
+					dossier.setMultipleCheck(multipleCheck);
+				}
+			}
+		}
+
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
 		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
 				assignUsers, payment, context);
 
+		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 
@@ -2119,6 +2132,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+				if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.KPDVCQG, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2223,6 +2247,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
 
 					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.KP_DVCQG_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.KPDVCQG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
@@ -4779,7 +4816,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					//_log.debug("Employee : " + employee);
 					if (employee != null && employee.getWorkingStatus() == 1
 							&& (Validator.isNull(employee.getScope()) || (Validator.isNotNull(employee.getScope())
-									&& employee.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
+									&& Arrays.asList(employee.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
 						List<DossierAction> lstDoneActions = dossierActionLocalService
 								.getByDID_U_FSC(dossier.getDossierId(), user.getUserId(), stepCode);
 						if (!lstStepActions.isEmpty()) {
@@ -4846,7 +4883,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private boolean checkGovDossierEmployee(Dossier dossier, Employee e) {
-		if (e != null && (Validator.isNull(e.getScope()) || (e.getScope().indexOf(dossier.getGovAgencyCode()) >= 0))) {
+		if (e != null && (Validator.isNull(e.getScope()) || (Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(dossier.getGovAgencyCode()) >= 0))) {
 			return true;
 		}
 

@@ -48,7 +48,8 @@
 		<column name="public_" type="boolean" />
 		<column name="govAgencyText" type="String" />
 		<column name="isNotarization" type="boolean" />
-		
+		<column name="serviceNameTitle" type="String"/>
+
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -314,6 +315,7 @@
 		<column name="deliverableAction" type="int"/>
 		<column name="eForm" type="boolean" />
 		<column name="fileMark" type="int" />
+		<column name="partNameTitle" type="String"/>
 		<!-- Order -->
 
 		<!-- Finder methods -->
@@ -582,6 +584,7 @@
 		<column name="vnpostalStatus" type="int" />
 		<column name="vnpostalProfile" type="String" />
 		<column name="fromViaPostal" type="int" />
+		<column name="multipleCheck" type="String" />
 		
 		<!-- Order -->
 		
@@ -1091,6 +1094,9 @@
         </finder>
         <finder name="G" return-type="Collection">
             <finder-column name="groupId"></finder-column>
+        </finder>
+        <finder name="PT" return-type="Collection">
+            <finder-column name="paymentStatus"></finder-column>
         </finder>
 
 	</entity>

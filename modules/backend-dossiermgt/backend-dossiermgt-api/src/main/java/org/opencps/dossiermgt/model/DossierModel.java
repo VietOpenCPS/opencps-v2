@@ -1604,6 +1604,21 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setFromViaPostal(int fromViaPostal);
 
+	/**
+	 * Returns the multiple check of this dossier.
+	 *
+	 * @return the multiple check of this dossier
+	 */
+	@AutoEscape
+	public String getMultipleCheck();
+
+	/**
+	 * Sets the multiple check of this dossier.
+	 *
+	 * @param multipleCheck the multiple check of this dossier
+	 */
+	public void setMultipleCheck(String multipleCheck);
+
 	@Override
 	public boolean isNew();
 

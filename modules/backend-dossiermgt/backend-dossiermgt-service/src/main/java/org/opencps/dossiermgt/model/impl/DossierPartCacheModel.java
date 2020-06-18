@@ -65,7 +65,7 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -115,6 +115,8 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 		sb.append(eForm);
 		sb.append(", fileMark=");
 		sb.append(fileMark);
+		sb.append(", partNameTitle=");
+		sb.append(partNameTitle);
 		sb.append("}");
 
 		return sb.toString();
@@ -231,6 +233,13 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 		dossierPartImpl.setEForm(eForm);
 		dossierPartImpl.setFileMark(fileMark);
 
+		if (partNameTitle == null) {
+			dossierPartImpl.setPartNameTitle("");
+		}
+		else {
+			dossierPartImpl.setPartNameTitle(partNameTitle);
+		}
+
 		dossierPartImpl.resetOriginalValues();
 
 		return dossierPartImpl;
@@ -273,6 +282,7 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 		eForm = objectInput.readBoolean();
 
 		fileMark = objectInput.readInt();
+		partNameTitle = objectInput.readUTF();
 	}
 
 	@Override
@@ -379,6 +389,13 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 		objectOutput.writeBoolean(eForm);
 
 		objectOutput.writeInt(fileMark);
+
+		if (partNameTitle == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(partNameTitle);
+		}
 	}
 
 	public String uuid;
@@ -405,4 +422,5 @@ public class DossierPartCacheModel implements CacheModel<DossierPart>,
 	public int deliverableAction;
 	public boolean eForm;
 	public int fileMark;
+	public String partNameTitle;
 }

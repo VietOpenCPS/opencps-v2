@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -105,6 +106,7 @@ import org.opencps.statistic.rest.dto.GetVotingResultResponse;
 import org.opencps.statistic.rest.dto.PersonRequest;
 import org.opencps.statistic.rest.dto.PersonResponse;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
+import org.opencps.statistic.rest.dto.RealtimeData;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
@@ -1504,8 +1506,8 @@ public class OpencpsStatisticRestApplication extends Application {
 	}	
 	
 	@GET
-	@Path("/feereport")
-	public Response feeReport(@HeaderParam("groupId") long groupId,
+	@Path("/feedetail")
+	public Response feeDetail(@HeaderParam("groupId") long groupId,
 			@QueryParam("govAgencyCode") String govAgencyCode,
 			@QueryParam("fromStatisticDate") String fromStatisticDate,
 			@QueryParam("toStatisticDate") String toStatisticDate,
@@ -1517,7 +1519,12 @@ public class OpencpsStatisticRestApplication extends Application {
 		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 				true) };
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		if (groupId > 0) {
+			params.put(Field.GROUP_ID, String.valueOf(groupId));			
+		}
+		else {
+			params.put(Field.GROUP_ID, StringPool.BLANK);
+		}
 		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
 		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
 			
@@ -1594,11 +1601,21 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			List<PaymentFile> lstPfs = null;
-			if (paymentStatus != -1) {
-				lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+			if (groupId > 0) {
+				if (paymentStatus != -1) {
+					lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+				}
+				else {
+					lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+				}				
 			}
 			else {
-				lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+				if (paymentStatus != -1) {
+					lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
+				}
+				else {
+					lstPfs = PaymentFileLocalServiceUtil.findAll();
+				}								
 			}
 			Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
 			for (PaymentFile pf : lstPfs) {
@@ -1607,14 +1624,15 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 			JSONArray results = JSONFactoryUtil.createJSONArray();
 			for (String domainCode : mapResults.keySet()) {
-				JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
-				groupDomainObj.put("domain", domains.get(domainCode));
-				JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+//				JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+//				groupDomainObj.put("domain", domains.get(domainCode));
+//				JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+//				JSONArray groupDomainArr = JSONFactoryUtil.createJSONArray();
 				
 				for (String serviceCode : mapResults.get(domainCode).keySet()) {
-					JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
-					serviceObj.put("service", services.get(serviceCode));
-					JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
+//					JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
+//					serviceObj.put("service", services.get(serviceCode));
+//					JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
 					int count = 1;
 					for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
 						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
@@ -1631,18 +1649,24 @@ public class OpencpsStatisticRestApplication extends Application {
 							dossierObj.put("paymentFee", pf.getFeeAmount());
 							dossierObj.put("paymentAmount", pf.getPaymentAmount());
 							dossierObj.put("totalAmount", (pf.getFeeAmount() + pf.getPaymentAmount()));
-							dossierArr.put(dossierObj);						
+//							dossierArr.put(dossierObj);			
+							dossierObj.put("domainCode", domainCode);
+							dossierObj.put("domainName", domains.get(domainCode));
+							dossierObj.put("serviceCode", serviceCode);
+							dossierObj.put("serviceName", services.get(serviceCode));
+							
+							results.put(dossierObj);
 						}
 					}
-					if (dossierArr.length() > 0) {
-						serviceObj.put("data", dossierArr);						
-						serviceArr.put(serviceObj);
-					}
+//					if (dossierArr.length() > 0) {
+//						serviceObj.put("data", dossierArr);						
+//						serviceArr.put(serviceObj);
+//					}
 				}
-				if (serviceArr.length() > 0) {
-					groupDomainObj.put("data", serviceArr);					
-					results.put(groupDomainObj);
-				}
+//				if (serviceArr.length() > 0) {
+//					groupDomainObj.put("data", serviceArr);					
+//					results.put(groupDomainObj);
+//				}
 			}
 			ResponseBuilder builder = Response.ok(results.toJSONString());
 			return builder.build();
@@ -1667,7 +1691,12 @@ public class OpencpsStatisticRestApplication extends Application {
 		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 				true) };
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-		params.put(Field.GROUP_ID, String.valueOf(groupId));
+		if (groupId > 0) {
+			params.put(Field.GROUP_ID, String.valueOf(groupId));			
+		}
+		else {
+			params.put(Field.GROUP_ID, StringPool.BLANK);
+		}
 		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
 		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
 			
@@ -1734,12 +1763,23 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			List<PaymentFile> lstPfs = null;
-			if (paymentStatus != -1) {
-				lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+			if (groupId > 0) {
+				if (paymentStatus != -1) {
+					lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+				}
+				else {
+					lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+				}
 			}
 			else {
-				lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+				if (paymentStatus != -1) {
+					lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
+				}
+				else {
+					lstPfs = PaymentFileLocalServiceUtil.findAll();
+				}								
 			}
+			
 			Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
 			for (PaymentFile pf : lstPfs) {
 				mapPfs.put(String.valueOf(pf.getDossierId()), pf);
@@ -1749,13 +1789,13 @@ public class OpencpsStatisticRestApplication extends Application {
 			
 			if (Validator.isNotNull(type) && "service".contentEquals(type)) {
 				for (String domainCode : mapResults.keySet()) {
-					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
-					groupDomainObj.put("domain", domains.get(domainCode));
-					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+//					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+//					groupDomainObj.put("domain", domains.get(domainCode));
+//					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
 					
 					for (String serviceCode : mapResults.get(domainCode).keySet()) {
-						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
-						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
+//						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
+//						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
 						int count = 0;
 						long totalFee = 0;
 						long totalPaymentAmount = 0;
@@ -1770,7 +1810,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							}
 						}
 						if (count > 0) {
-							JSONArray paymentArr = JSONFactoryUtil.createJSONArray();
+//							JSONArray paymentArr = JSONFactoryUtil.createJSONArray();
 							JSONObject paymentObj = JSONFactoryUtil.createJSONObject();
 							paymentObj.put("no", 1);
 							paymentObj.put("serviceName", serviceCode + " - " + services.get(serviceCode));
@@ -1778,21 +1818,28 @@ public class OpencpsStatisticRestApplication extends Application {
 							paymentObj.put("totalFeeAmount", totalFee);
 							paymentObj.put("totalPaymentAmount", totalPaymentAmount);
 							paymentObj.put("totalAmount", totalFee + totalPaymentAmount);
-							paymentArr.put(paymentObj);
-							serviceObj.put("data", paymentArr);						
-							serviceArr.put(serviceObj);			
+//							paymentArr.put(paymentObj);
+//							serviceObj.put("data", paymentArr);						
+//							serviceArr.put(serviceObj);	
+							paymentObj.put("domainCode", domainCode);
+							paymentObj.put("domainName", domains.get(domainCode));
+							paymentObj.put("serviceCode", serviceCode);
+							paymentObj.put("serviceName", services.get(serviceCode));
+							
+							results.put(paymentObj);
 						}
 					}
-					if (serviceArr.length() > 0) {
-						groupDomainObj.put("data", serviceArr);					
-						results.put(groupDomainObj);
-					}
+//					if (serviceArr.length() > 0) {
+//						groupDomainObj.put("data", serviceArr);					
+//						results.put(groupDomainObj);
+//					}
 				}				
 			}
 			else {
 				for (String domainCode : mapResults.keySet()) {
 					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
 					groupDomainObj.put("domain", domains.get(domainCode));
+					groupDomainObj.put("domainCode", domainCode);
 					int count = 0;
 					long totalFee = 0;
 					long totalPaymentAmount = 0;
@@ -1827,4 +1874,317 @@ public class OpencpsStatisticRestApplication extends Application {
 		ResponseBuilder builder = Response.ok("");
 		return builder.build();
 	}	
+	
+	@GET
+	@Path("/summary")
+	public Response feeReportSummary(@HeaderParam("groupId") long groupId,
+			@QueryParam("govAgencyCode") String govAgencyCode,
+			@QueryParam("fromStatisticDate") String fromStatisticDate,
+			@QueryParam("toStatisticDate") String toStatisticDate) {
+		DossierActions actions = new DossierActionsImpl();
+		Sort[] sorts = null;
+		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+				true) };
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		if (groupId > 0) {
+			params.put(Field.GROUP_ID, String.valueOf(groupId));			
+		}
+		else {
+			params.put(Field.GROUP_ID, StringPool.BLANK);
+		}
+		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
+		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
+			
+		if (Validator.isNotNull(govAgencyCode)) {
+			params.put(DossierTerm.AGENCYS, govAgencyCode);
+		}
+		if (Validator.isNotNull(fromStatisticDate)) {
+			params.put(DossierTerm.FROM_STATISTIC_DATE, from);
+		}
+		if (Validator.isNotNull(toStatisticDate)) {
+			params.put(DossierTerm.TO_STATISTIC_DATE, to);
+		}				
+		//Add common params
+		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+		params.put(DossierTerm.SYSTEM_ID, strSystemId);
+		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		Date fromDate = APIDateTimeUtils.convertStringToDate(fromStatisticDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
+		Date toDate = APIDateTimeUtils.convertStringToDate(toStatisticDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
+		Company company;
+		try {
+			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			long companyId = company.getCompanyId(); 
+			int startOff = QueryUtil.ALL_POS;
+			int endOff = QueryUtil.ALL_POS;
+			
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			List<GetDossierData> dossierData = new ArrayList<>();
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
+			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+			Map<String, String> govs = new HashMap<String, String>();
+			Map<String, String> services = new HashMap<String, String>();
+			
+			for (Document doc : datas) {
+				String agency = doc.get(DossierTerm.GOV_AGENCY_CODE);
+				String agencyName = doc.get(DossierTerm.GOV_AGENCY_NAME);
+				
+				String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+				String serviceName = doc.get(DossierTerm.SERVICE_NAME);
+				
+				if (!govs.containsKey(agency)) {
+					govs.put(agency, agencyName);
+				}
+				if (!services.containsKey(serviceCode)) {
+					services.put(serviceCode, serviceName);
+				}
+				if (mapResults.get(agency) != null) {
+					Map<String, List<Document>> mapGovs = mapResults.get(agency);
+					List<Document> lstDossiers = null;
+					if (mapGovs.containsKey(serviceCode)) {
+						lstDossiers = mapGovs.get(serviceCode);
+					}
+					else {
+						lstDossiers = new ArrayList<Document>();
+						mapGovs.put(serviceCode, lstDossiers);
+					}
+					lstDossiers.add(doc);
+				}
+				else {
+					Map<String, List<Document>> mapGovs = new HashMap<String, List<Document>>();
+					List<Document> lstDossiers = new ArrayList<Document>();
+					mapGovs.put(serviceCode, lstDossiers);
+					lstDossiers.add(doc);
+					mapResults.put(agency, mapGovs);
+				}
+			}
+			
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			
+				for (String agency : mapResults.keySet()) {
+					JSONObject obj = JSONFactoryUtil.createJSONObject();
+					
+//					JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
+//					groupDomainObj.put("domain", domains.get(domainCode));
+//					JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
+					obj.put("govAgencyCode", agency);
+					obj.put("govAgencyName", govs.get(agency));
+					
+					for (String serviceCode : mapResults.get(agency).keySet()) {
+//						JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
+//						serviceObj.put("service", serviceCode + " - " + services.get(serviceCode));
+						RealtimeData data = new RealtimeData();
+						data.setServiceCode(serviceCode);
+						data.setServiceName(services.get(serviceCode));
+						
+						List<Document> dossiers = mapResults.get(agency).get(serviceCode);
+						updateDossierStatisticData(data, dossiers, fromDate, toDate);
+						
+						obj.put("serviceCode", serviceCode);
+						obj.put("serviceName", services.get(serviceCode));
+						obj.put("totalCount", data.getTotalCount());
+						obj.put("onegateCount", data.getOnegateCount());
+						obj.put("onlineCount", data.getOnlineCount());
+						obj.put("fromViaPostalCount", data.getFromViaPostalCount());
+						obj.put("releaseCount", data.getReleaseCount());
+						obj.put("doneCount", data.getDoneCount());
+						obj.put("doneOnegateCount", data.getDoneOnegateCount());
+						obj.put("doneViaPostalCount", data.getDoneViaPostalCount());
+					}
+					results.put(obj);
+//					if (serviceArr.length() > 0) {
+//						groupDomainObj.put("data", serviceArr);					
+//						results.put(groupDomainObj);
+//					}
+				}				
+			ResponseBuilder builder = Response.ok(results.toJSONString());
+			return builder.build();
+		} catch (PortalException e) {
+			_log.debug(e);
+		}	
+
+		ResponseBuilder builder = Response.ok("");
+		return builder.build();	
+	}
+	
+	public void updateDossierStatisticData(RealtimeData statisticData, List<Document> dossiers,
+			Date fromStatisticDate, Date toStatisticDate) {
+//		int month = LocalDate.now().getMonthValue();
+		//int year = LocalDate.now().getYear();
+		Calendar dateStatistic = Calendar.getInstance();
+		dateStatistic.setTime(fromStatisticDate);
+		for (Document dossierData : dossiers) {
+			Date dueDate = Validator.isNull(dossierData.get(DossierTerm.DUE_DATE))
+					? null
+					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+			Date extendDate = Validator.isNull(dossierData.get(DossierTerm.EXTEND_DATE))
+					? null
+					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.EXTEND_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
+			Date releaseDate = Validator.isNull(dossierData.get(DossierTerm.RELEASE_DATE))
+					? null
+					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.RELEASE_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
+			Date receviedDate = Validator.isNull(dossierData.get(DossierTerm.RECEIVE_DATE))
+					? null
+					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+			Date finishDate = Validator.isNull(dossierData.get(DossierTerm.FINISH_DATE))
+					? null
+					: APIDateTimeUtils.convertStringToDate(dossierData.get(DossierTerm.FINISH_DATE), APIDateTimeUtils._NORMAL_DATE_TIME);
+			int viaPostal = GetterUtil.getInteger(dossierData.get(DossierTerm.VIA_POSTAL));
+//			if (viaPostal != 0)
+//				_log.info("VIA POSTAL STATISTIC: " + viaPostal);
+			if (viaPostal == USED_POSTAL) {
+				statisticData.setViaPostalCount(statisticData.getViaPostalCount() + 1);
+			}
+			else {
+				
+			}
+			boolean online = GetterUtil.getBoolean(dossierData.get(DossierTerm.ONLINE));
+			int fromViaPostal = GetterUtil.getInteger(dossierData.get(DossierTerm.FROM_VIA_POSTAL));
+			
+			if (!online && fromViaPostal > 0) {
+				statisticData.setFromViaPostalCount(statisticData.getFromViaPostalCount() + 1);
+			}
+			Calendar receivedStatistic = Calendar.getInstance();
+			receivedStatistic.setTime(receviedDate);
+			boolean isReceivedSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+			Calendar finishStatistic = Calendar.getInstance();
+			finishStatistic.setTime(receviedDate);
+			boolean isFinishSaturday = (receivedStatistic.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY);
+			if (isReceivedSaturday && isFinishSaturday) {
+				statisticData.setSaturdayCount(statisticData.getSaturdayCount() + 1);
+			}
+			if (isReceivedSaturday) {
+				statisticData.setReceiveDossierSatCount(statisticData.getReceiveDossierSatCount() + 1);
+			}
+			if (isFinishSaturday) {
+				statisticData.setReleaseDossierSatCount(statisticData.getReleaseDossierSatCount() + 1);
+			}
+			int serviceLevel = GetterUtil.getInteger(dossierData.get(DossierTerm.SERVICE_LEVEL));
+			if (LEVEL_3 == serviceLevel) {
+				statisticData.setDossierOnline3Count(statisticData.getDossierOnline3Count() + 1);
+			}
+			if (LEVEL_4 == serviceLevel) {
+				statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
+			}
+			//
+			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
+			String dossierStatus = dossierData.get(DossierTerm.DOSSIER_STATUS);
+			if (dossierStatus.contentEquals(DENIED)) {
+				statisticData.setDeniedCount(statisticData.getDeniedCount() + 1);				
+			} else {
+				// tiep nhan xu ly
+				statisticData.setProcessCount(statisticData.getProcessCount() + 1);
+
+				//if (receviedDate != null && receviedDate.after(getFirstDay(month, year))) {
+				if (receviedDate != null && receviedDate.after(fromStatisticDate)) {
+					// trong ky
+					statisticData.setReceivedCount(statisticData.getReceivedCount() + 1);
+					if (online) {
+						statisticData.setOnlineCount(statisticData.getOnlineCount() + 1);
+					} else {
+						statisticData.setOnegateCount(statisticData.getOnegateCount() + 1);
+					}
+				} else {
+					// ton ky truoc
+					statisticData.setRemainingCount(statisticData.getRemainingCount() + 1);
+				}
+				
+				if (releaseDate == null || releaseDate.after(toStatisticDate)) {
+					// hồ sơ đang xử lý 
+					if (dossierStatus.contentEquals(WAITING) || 
+							dossierStatus.contentEquals(RECEIVING)) {
+						// dang tạm dừng chờ bổ sung
+						statisticData.setWaitingCount(statisticData.getWaitingCount() + 1);
+					} else {
+						// đang xử lý
+						statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
+						if (!PROCESSING.equals(dossierStatus)) {
+							// xử lý nội bộ
+							statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
+						} else {
+							// xử lý ngoài cơ quan
+							statisticData.setInsideCount(statisticData.getInsideCount() + 1);
+						}
+
+						Date now = new Date();
+						if (dueDate != null && !dueDate.after(now.before(toStatisticDate) ? now : toStatisticDate)) {
+							// đang quá hạn
+							statisticData.setOverdueCount(statisticData.getOverdueCount() + 1);
+							if (!PROCESSING.equals(dossierStatus)) {
+								// đang quá hạn và xử lý bên ngoài 
+								statisticData.setInteroperatingCount(statisticData.getInteroperatingCount() + 1);
+							}
+						} else {
+							// đang xử lý còn hạn
+							statisticData.setUndueCount(statisticData.getUndueCount() + 1);
+						}
+					}
+				} else {
+					// ho so da ket thuc trong thang	
+					if (dossierStatus.contentEquals(CANCELLED)) {
+						// ho so da bi rut trong thang
+						statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
+					} else {
+						// hồ sơ đã hoàn thành trong tháng	
+						statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);						
+						if (dossierStatus.contentEquals(UNRESOLVED)) {
+							// từ chối giải quyết => không tính hạn xử lý
+							statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
+						} else { 
+							if (finishDate != null) {
+								// số đã trả kết quả
+								statisticData.setDoneCount(statisticData.getDoneCount() + 1);	
+								if (viaPostal == USED_POSTAL) {
+									statisticData.setDoneViaPostalCount(statisticData.getDoneViaPostalCount() + 1);
+								}
+								else {
+									statisticData.setDoneOnegateCount(statisticData.getDoneOnegateCount() + 1);
+								}
+							} else {
+								statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
+							}
+						}
+
+						// hồ sơ có kết quả hoặc từ chối tính hạn xử lý
+						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
+						// Check condition filter betimes
+						if (dueDate != null) {
+							//Check extendDate != null and releaseDate < dueDate
+							if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
+							//Or check finishDate < dueDate
+							if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
+							
+							//Check overTime condition releaseDate > dueDate
+							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
+						}
+
+						if (overdue==0) {
+							statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
+						} else if (overdue==2) {
+							statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
+							boolean isOvertimeInside = true;
+							if (isOvertimeInside) {
+								statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
+							} else {
+								statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
+							}
+						} else {
+							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
+						}
+					}
+				}
+			}			
+		}
+	}
+
+	private static final int LEVEL_3 = 3;
+	private static final int LEVEL_4 = 4;
+	private static final int USED_POSTAL = 2;
+	public static final String DENIED = "denied";
+	public static final String WAITING = "waiting";
+	public static final String RECEIVING = "receiving";
+	public static final String PROCESSING = "processing";
+	public static final String CANCELLED = "cancelled";
+	public static final String UNRESOLVED = "unresolved";
+
 }

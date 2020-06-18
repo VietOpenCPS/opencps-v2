@@ -444,7 +444,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		Date now = new Date();
 
-		User userAction = userLocalService.getUser(context.getUserId());
+		long userId = context != null && context.getUserId() > 0 ? context.getUserId() : object.getUserId();
+		User userAction = userLocalService.getUser(userId);
 
 		// Update audit fields
 		object.setModifiedDate(now);
@@ -944,5 +945,13 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	
 	public List<PaymentFile> findByG(long groupId) {
 		return paymentFilePersistence.findByG(groupId);
+	}
+	
+	public List<PaymentFile> findAll() {
+		return paymentFilePersistence.findAll();
+	}
+	
+	public List<PaymentFile> findByPT(int paymentStatus) {
+		return paymentFilePersistence.findByPT(paymentStatus);
 	}
 }

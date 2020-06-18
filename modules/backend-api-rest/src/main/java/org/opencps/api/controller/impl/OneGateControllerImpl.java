@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -228,7 +229,7 @@ public class OneGateControllerImpl implements OneGateController {
 									hasPermission = true;
 								}
 								if (e != null) {
-									if (Validator.isNotNull(e.getScope()) && e.getScope().indexOf(serviceConfig.getGovAgencyCode()) < 0) {
+									if (Validator.isNotNull(e.getScope()) && Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(serviceConfig.getGovAgencyCode()) < 0) {
 										hasPermission = false;
 									}
 								}

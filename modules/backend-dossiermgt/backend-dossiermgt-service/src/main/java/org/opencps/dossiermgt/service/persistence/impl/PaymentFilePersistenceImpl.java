@@ -3002,6 +3002,513 @@ public class PaymentFilePersistenceImpl extends BasePersistenceImpl<PaymentFile>
 	}
 
 	private static final String _FINDER_COLUMN_G_GROUPID_2 = "paymentFile.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_PT = new FinderPath(PaymentFileModelImpl.ENTITY_CACHE_ENABLED,
+			PaymentFileModelImpl.FINDER_CACHE_ENABLED, PaymentFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByPT",
+			new String[] {
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT = new FinderPath(PaymentFileModelImpl.ENTITY_CACHE_ENABLED,
+			PaymentFileModelImpl.FINDER_CACHE_ENABLED, PaymentFileImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByPT",
+			new String[] { Integer.class.getName() },
+			PaymentFileModelImpl.PAYMENTSTATUS_COLUMN_BITMASK |
+			PaymentFileModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_PT = new FinderPath(PaymentFileModelImpl.ENTITY_CACHE_ENABLED,
+			PaymentFileModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByPT",
+			new String[] { Integer.class.getName() });
+
+	/**
+	 * Returns all the payment files where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @return the matching payment files
+	 */
+	@Override
+	public List<PaymentFile> findByPT(int paymentStatus) {
+		return findByPT(paymentStatus, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the payment files where paymentStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param paymentStatus the payment status
+	 * @param start the lower bound of the range of payment files
+	 * @param end the upper bound of the range of payment files (not inclusive)
+	 * @return the range of matching payment files
+	 */
+	@Override
+	public List<PaymentFile> findByPT(int paymentStatus, int start, int end) {
+		return findByPT(paymentStatus, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the payment files where paymentStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param paymentStatus the payment status
+	 * @param start the lower bound of the range of payment files
+	 * @param end the upper bound of the range of payment files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching payment files
+	 */
+	@Override
+	public List<PaymentFile> findByPT(int paymentStatus, int start, int end,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		return findByPT(paymentStatus, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the payment files where paymentStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PaymentFileModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param paymentStatus the payment status
+	 * @param start the lower bound of the range of payment files
+	 * @param end the upper bound of the range of payment files (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching payment files
+	 */
+	@Override
+	public List<PaymentFile> findByPT(int paymentStatus, int start, int end,
+		OrderByComparator<PaymentFile> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT;
+			finderArgs = new Object[] { paymentStatus };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_PT;
+			finderArgs = new Object[] {
+					paymentStatus,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<PaymentFile> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<PaymentFile>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PaymentFile paymentFile : list) {
+					if ((paymentStatus != paymentFile.getPaymentStatus())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_PAYMENTFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_PT_PAYMENTSTATUS_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(PaymentFileModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(paymentStatus);
+
+				if (!pagination) {
+					list = (List<PaymentFile>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<PaymentFile>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first payment file in the ordered set where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching payment file
+	 * @throws NoSuchPaymentFileException if a matching payment file could not be found
+	 */
+	@Override
+	public PaymentFile findByPT_First(int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException {
+		PaymentFile paymentFile = fetchByPT_First(paymentStatus,
+				orderByComparator);
+
+		if (paymentFile != null) {
+			return paymentFile;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("paymentStatus=");
+		msg.append(paymentStatus);
+
+		msg.append("}");
+
+		throw new NoSuchPaymentFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the first payment file in the ordered set where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching payment file, or <code>null</code> if a matching payment file could not be found
+	 */
+	@Override
+	public PaymentFile fetchByPT_First(int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		List<PaymentFile> list = findByPT(paymentStatus, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last payment file in the ordered set where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching payment file
+	 * @throws NoSuchPaymentFileException if a matching payment file could not be found
+	 */
+	@Override
+	public PaymentFile findByPT_Last(int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException {
+		PaymentFile paymentFile = fetchByPT_Last(paymentStatus,
+				orderByComparator);
+
+		if (paymentFile != null) {
+			return paymentFile;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("paymentStatus=");
+		msg.append(paymentStatus);
+
+		msg.append("}");
+
+		throw new NoSuchPaymentFileException(msg.toString());
+	}
+
+	/**
+	 * Returns the last payment file in the ordered set where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching payment file, or <code>null</code> if a matching payment file could not be found
+	 */
+	@Override
+	public PaymentFile fetchByPT_Last(int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator) {
+		int count = countByPT(paymentStatus);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PaymentFile> list = findByPT(paymentStatus, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the payment files before and after the current payment file in the ordered set where paymentStatus = &#63;.
+	 *
+	 * @param paymentFileId the primary key of the current payment file
+	 * @param paymentStatus the payment status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next payment file
+	 * @throws NoSuchPaymentFileException if a payment file with the primary key could not be found
+	 */
+	@Override
+	public PaymentFile[] findByPT_PrevAndNext(long paymentFileId,
+		int paymentStatus, OrderByComparator<PaymentFile> orderByComparator)
+		throws NoSuchPaymentFileException {
+		PaymentFile paymentFile = findByPrimaryKey(paymentFileId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PaymentFile[] array = new PaymentFileImpl[3];
+
+			array[0] = getByPT_PrevAndNext(session, paymentFile, paymentStatus,
+					orderByComparator, true);
+
+			array[1] = paymentFile;
+
+			array[2] = getByPT_PrevAndNext(session, paymentFile, paymentStatus,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PaymentFile getByPT_PrevAndNext(Session session,
+		PaymentFile paymentFile, int paymentStatus,
+		OrderByComparator<PaymentFile> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_PAYMENTFILE_WHERE);
+
+		query.append(_FINDER_COLUMN_PT_PAYMENTSTATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(PaymentFileModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(paymentStatus);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(paymentFile);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<PaymentFile> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the payment files where paymentStatus = &#63; from the database.
+	 *
+	 * @param paymentStatus the payment status
+	 */
+	@Override
+	public void removeByPT(int paymentStatus) {
+		for (PaymentFile paymentFile : findByPT(paymentStatus,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(paymentFile);
+		}
+	}
+
+	/**
+	 * Returns the number of payment files where paymentStatus = &#63;.
+	 *
+	 * @param paymentStatus the payment status
+	 * @return the number of matching payment files
+	 */
+	@Override
+	public int countByPT(int paymentStatus) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_PT;
+
+		Object[] finderArgs = new Object[] { paymentStatus };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_PAYMENTFILE_WHERE);
+
+			query.append(_FINDER_COLUMN_PT_PAYMENTSTATUS_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(paymentStatus);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_PT_PAYMENTSTATUS_2 = "paymentFile.paymentStatus = ?";
 
 	public PaymentFilePersistenceImpl() {
 		setModelClass(PaymentFile.class);
@@ -3429,6 +3936,12 @@ public class PaymentFilePersistenceImpl extends BasePersistenceImpl<PaymentFile>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G,
 				args);
 
+			args = new Object[] { paymentFileModelImpl.getPaymentStatus() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_PT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3508,6 +4021,23 @@ public class PaymentFilePersistenceImpl extends BasePersistenceImpl<PaymentFile>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G,
+					args);
+			}
+
+			if ((paymentFileModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						paymentFileModelImpl.getOriginalPaymentStatus()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_PT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT,
+					args);
+
+				args = new Object[] { paymentFileModelImpl.getPaymentStatus() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_PT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_PT,
 					args);
 			}
 		}

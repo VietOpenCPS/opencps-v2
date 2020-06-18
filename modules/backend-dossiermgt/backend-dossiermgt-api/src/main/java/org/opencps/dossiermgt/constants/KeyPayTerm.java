@@ -118,4 +118,6 @@ public class KeyPayTerm {
 	public static final String RECEIVERDISTRICT = "receiverDistrict";
 	public static final String RECEIVEREMAIL = "receiverEmail";
 	public static final String SENDERDESC = "senderDesc";
+	public static final String KP_DVCQG_CONFIG = "KP_DVCQG_CONFIG";
+	public static final String KPDVCQG = "kpdvcqg";
 }

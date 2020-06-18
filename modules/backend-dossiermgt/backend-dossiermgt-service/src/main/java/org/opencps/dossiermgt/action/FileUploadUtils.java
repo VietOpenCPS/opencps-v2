@@ -221,7 +221,8 @@ public class FileUploadUtils {
 		if (file != null && Validator.isNotNull(sourceFileName)) {
 			
 			if(Validator.isNull(fileType)) {
-				fileType = MimeTypesUtil.getContentType(sourceFileName);
+				// fileType = MimeTypesUtil.getContentType(sourceFileName);
+				fileType = MimeTypesUtil.getContentType(file);
 			}
 			
 			String title = getFileName(sourceFileName);
