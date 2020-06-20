@@ -195,13 +195,13 @@ public class PayGateIntegrationApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response kpCreateTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("groupId") long groupId,
-			@QueryParam("dossierId") long dossierId) {
+			@Context ServiceContext serviceContext,
+			@FormParam("dossierId") long dossierId) {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
-
 		return Response.status(200).entity(result).build();
 	}
 	

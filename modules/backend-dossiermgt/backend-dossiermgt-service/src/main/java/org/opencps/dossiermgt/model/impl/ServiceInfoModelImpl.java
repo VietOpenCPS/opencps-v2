@@ -96,7 +96,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 			{ "maxLevel", Types.INTEGER },
 			{ "public_", Types.BOOLEAN },
 			{ "govAgencyText", Types.VARCHAR },
-			{ "isNotarization", Types.BOOLEAN }
+			{ "isNotarization", Types.BOOLEAN },
+			{ "serviceNameTitle", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -130,9 +131,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		TABLE_COLUMNS_MAP.put("public_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("govAgencyText", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("isNotarization", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("serviceNameTitle", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfo (uuid_ VARCHAR(75) null,serviceInfoId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(128) null,serviceName TEXT null,processText TEXT null,methodText TEXT null,dossierText TEXT null,conditionText TEXT null,durationText TEXT null,applicantText TEXT null,resultText TEXT null,regularText TEXT null,feeText TEXT null,administrationCode VARCHAR(128) null,administrationName VARCHAR(500) null,administrationIndex VARCHAR(128) null,domainCode VARCHAR(128) null,domainName TEXT null,domainIndex VARCHAR(128) null,maxLevel INTEGER,public_ BOOLEAN,govAgencyText TEXT null,isNotarization BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serviceinfo (uuid_ VARCHAR(75) null,serviceInfoId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceCode VARCHAR(128) null,serviceName TEXT null,processText TEXT null,methodText TEXT null,dossierText TEXT null,conditionText TEXT null,durationText TEXT null,applicantText TEXT null,resultText TEXT null,regularText TEXT null,feeText TEXT null,administrationCode VARCHAR(128) null,administrationName VARCHAR(500) null,administrationIndex VARCHAR(128) null,domainCode VARCHAR(128) null,domainName TEXT null,domainIndex VARCHAR(128) null,maxLevel INTEGER,public_ BOOLEAN,govAgencyText TEXT null,isNotarization BOOLEAN,serviceNameTitle VARCHAR(500) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serviceinfo";
 	public static final String ORDER_BY_JPQL = " ORDER BY serviceInfo.serviceInfoId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serviceinfo.serviceInfoId ASC";
@@ -224,6 +226,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		attributes.put("public_", isPublic_());
 		attributes.put("govAgencyText", getGovAgencyText());
 		attributes.put("isNotarization", isIsNotarization());
+		attributes.put("serviceNameTitle", getServiceNameTitle());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -406,6 +409,12 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 		if (isNotarization != null) {
 			setIsNotarization(isNotarization);
+		}
+
+		String serviceNameTitle = (String)attributes.get("serviceNameTitle");
+
+		if (serviceNameTitle != null) {
+			setServiceNameTitle(serviceNameTitle);
 		}
 	}
 
@@ -896,6 +905,21 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	}
 
 	@Override
+	public String getServiceNameTitle() {
+		if (_serviceNameTitle == null) {
+			return "";
+		}
+		else {
+			return _serviceNameTitle;
+		}
+	}
+
+	@Override
+	public void setServiceNameTitle(String serviceNameTitle) {
+		_serviceNameTitle = serviceNameTitle;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ServiceInfo.class.getName()));
@@ -961,6 +985,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		serviceInfoImpl.setPublic_(isPublic_());
 		serviceInfoImpl.setGovAgencyText(getGovAgencyText());
 		serviceInfoImpl.setIsNotarization(isIsNotarization());
+		serviceInfoImpl.setServiceNameTitle(getServiceNameTitle());
 
 		serviceInfoImpl.resetOriginalValues();
 
@@ -1243,12 +1268,20 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 		serviceInfoCacheModel.isNotarization = isIsNotarization();
 
+		serviceInfoCacheModel.serviceNameTitle = getServiceNameTitle();
+
+		String serviceNameTitle = serviceInfoCacheModel.serviceNameTitle;
+
+		if ((serviceNameTitle != null) && (serviceNameTitle.length() == 0)) {
+			serviceInfoCacheModel.serviceNameTitle = null;
+		}
+
 		return serviceInfoCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1308,6 +1341,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 		sb.append(getGovAgencyText());
 		sb.append(", isNotarization=");
 		sb.append(isIsNotarization());
+		sb.append(", serviceNameTitle=");
+		sb.append(getServiceNameTitle());
 		sb.append("}");
 
 		return sb.toString();
@@ -1315,7 +1350,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(91);
+		StringBundler sb = new StringBundler(94);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ServiceInfo");
@@ -1437,6 +1472,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 			"<column><column-name>isNotarization</column-name><column-value><![CDATA[");
 		sb.append(isIsNotarization());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>serviceNameTitle</column-name><column-value><![CDATA[");
+		sb.append(getServiceNameTitle());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1486,6 +1525,7 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	private boolean _setOriginalPublic_;
 	private String _govAgencyText;
 	private boolean _isNotarization;
+	private String _serviceNameTitle;
 	private long _columnBitmask;
 	private ServiceInfo _escapedModel;
 }

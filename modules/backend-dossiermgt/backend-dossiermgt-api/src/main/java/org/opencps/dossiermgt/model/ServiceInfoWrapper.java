@@ -89,6 +89,7 @@ public class ServiceInfoWrapper implements ServiceInfo,
 		attributes.put("public_", isPublic_());
 		attributes.put("govAgencyText", getGovAgencyText());
 		attributes.put("isNotarization", isIsNotarization());
+		attributes.put("serviceNameTitle", getServiceNameTitle());
 
 		return attributes;
 	}
@@ -268,6 +269,12 @@ public class ServiceInfoWrapper implements ServiceInfo,
 
 		if (isNotarization != null) {
 			setIsNotarization(isNotarization);
+		}
+
+		String serviceNameTitle = (String)attributes.get("serviceNameTitle");
+
+		if (serviceNameTitle != null) {
+			setServiceNameTitle(serviceNameTitle);
 		}
 	}
 
@@ -559,6 +566,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public String getServiceName() {
 		return _serviceInfo.getServiceName();
+	}
+
+	/**
+	* Returns the service name title of this service info.
+	*
+	* @return the service name title of this service info
+	*/
+	@Override
+	public String getServiceNameTitle() {
+		return _serviceInfo.getServiceNameTitle();
 	}
 
 	/**
@@ -945,6 +962,16 @@ public class ServiceInfoWrapper implements ServiceInfo,
 	@Override
 	public void setServiceName(String serviceName) {
 		_serviceInfo.setServiceName(serviceName);
+	}
+
+	/**
+	* Sets the service name title of this service info.
+	*
+	* @param serviceNameTitle the service name title of this service info
+	*/
+	@Override
+	public void setServiceNameTitle(String serviceNameTitle) {
+		_serviceInfo.setServiceNameTitle(serviceNameTitle);
 	}
 
 	/**
