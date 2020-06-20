@@ -23875,6 +23875,244 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 	private static final String _FINDER_COLUMN_G_VNP_STT_GROUPID_2 = "dossier.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_VNP_STT_VNPOSTALSTATUS_2 = "dossier.vnpostalStatus = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_DC = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByDC",
+			new String[] { String.class.getName() },
+			DossierModelImpl.DOSSIERCOUNTER_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_DC = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByDC",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns the dossier where dossierCounter = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	 *
+	 * @param dossierCounter the dossier counter
+	 * @return the matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByDC(String dossierCounter)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByDC(dossierCounter);
+
+		if (dossier == null) {
+			StringBundler msg = new StringBundler(4);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("dossierCounter=");
+			msg.append(dossierCounter);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchDossierException(msg.toString());
+		}
+
+		return dossier;
+	}
+
+	/**
+	 * Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param dossierCounter the dossier counter
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByDC(String dossierCounter) {
+		return fetchByDC(dossierCounter, true);
+	}
+
+	/**
+	 * Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param dossierCounter the dossier counter
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByDC(String dossierCounter, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { dossierCounter };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_DC, finderArgs,
+					this);
+		}
+
+		if (result instanceof Dossier) {
+			Dossier dossier = (Dossier)result;
+
+			if (!Objects.equals(dossierCounter, dossier.getDossierCounter())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			boolean bindDossierCounter = false;
+
+			if (dossierCounter == null) {
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_1);
+			}
+			else if (dossierCounter.equals("")) {
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_3);
+			}
+			else {
+				bindDossierCounter = true;
+
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindDossierCounter) {
+					qPos.add(dossierCounter);
+				}
+
+				List<Dossier> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_DC, finderArgs,
+						list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"DossierPersistenceImpl.fetchByDC(String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					Dossier dossier = list.get(0);
+
+					result = dossier;
+
+					cacheResult(dossier);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_DC, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (Dossier)result;
+		}
+	}
+
+	/**
+	 * Removes the dossier where dossierCounter = &#63; from the database.
+	 *
+	 * @param dossierCounter the dossier counter
+	 * @return the dossier that was removed
+	 */
+	@Override
+	public Dossier removeByDC(String dossierCounter)
+		throws NoSuchDossierException {
+		Dossier dossier = findByDC(dossierCounter);
+
+		return remove(dossier);
+	}
+
+	/**
+	 * Returns the number of dossiers where dossierCounter = &#63;.
+	 *
+	 * @param dossierCounter the dossier counter
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByDC(String dossierCounter) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_DC;
+
+		Object[] finderArgs = new Object[] { dossierCounter };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			boolean bindDossierCounter = false;
+
+			if (dossierCounter == null) {
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_1);
+			}
+			else if (dossierCounter.equals("")) {
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_3);
+			}
+			else {
+				bindDossierCounter = true;
+
+				query.append(_FINDER_COLUMN_DC_DOSSIERCOUNTER_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindDossierCounter) {
+					qPos.add(dossierCounter);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_1 = "dossier.dossierCounter IS NULL";
+	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_2 = "dossier.dossierCounter = ?";
+	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_3 = "(dossier.dossierCounter IS NULL OR dossier.dossierCounter = '')";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -23936,6 +24174,9 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				dossier.getServiceCode(), dossier.getGovAgencyCode(),
 				dossier.getDossierTemplateNo(), dossier.getOriginDossierId()
 			}, dossier);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DC,
+			new Object[] { dossier.getDossierCounter() }, dossier);
 
 		dossier.resetOriginalValues();
 	}
@@ -24066,6 +24307,13 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			Long.valueOf(1), false);
 		finderCache.putResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID, args,
 			dossierModelImpl, false);
+
+		args = new Object[] { dossierModelImpl.getDossierCounter() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_DC, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_DC, args, dossierModelImpl,
+			false);
 	}
 
 	protected void clearUniqueFindersCache(DossierModelImpl dossierModelImpl,
@@ -24203,6 +24451,23 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 				args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_AN_SC_GAC_DTNO_ODID,
 				args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] { dossierModelImpl.getDossierCounter() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DC, args);
+		}
+
+		if ((dossierModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_DC.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					dossierModelImpl.getOriginalDossierCounter()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_DC, args);
 		}
 	}
 

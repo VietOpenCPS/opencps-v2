@@ -403,6 +403,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
+		String date) {
+		return getService().findDossierByDay(date);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return getService().findDossierByGroup(groupId);

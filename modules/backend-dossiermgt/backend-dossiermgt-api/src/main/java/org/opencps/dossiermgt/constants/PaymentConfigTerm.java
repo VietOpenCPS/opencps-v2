@@ -18,4 +18,6 @@ public class PaymentConfigTerm {
 	public static final String EPAYMENT_CONFIG = "epaymentConfig";
 	
 	public static final String NUM_TO_WORD = "numToWord";
+	public static final long PRICE = 30000;
+
 }

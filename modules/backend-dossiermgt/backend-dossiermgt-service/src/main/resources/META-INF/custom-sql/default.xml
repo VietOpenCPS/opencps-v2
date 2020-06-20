@@ -68,5 +68,12 @@
             [$FILTER_SIGNER_POSITION$]
             [$FILTER_STATUS_CODE$]
         ]]>
-    </sql>    
+    </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.DossierFinder.findDossierByDay">
+        <![CDATA[
+            SELECT d.*
+            FROM   opencps_dossier AS d
+            WHERE  DATE(d.createDate) = ?
+        ]]>
+    </sql>
 </custom-sql>

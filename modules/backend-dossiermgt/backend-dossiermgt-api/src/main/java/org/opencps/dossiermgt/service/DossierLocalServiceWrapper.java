@@ -421,6 +421,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
+		String date) {
+		return _dossierLocalService.findDossierByDay(date);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return _dossierLocalService.findDossierByGroup(groupId);

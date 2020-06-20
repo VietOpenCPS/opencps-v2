@@ -5737,6 +5737,50 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 	public int countByG_VNP_STT(long groupId, int vnpostalStatus);
 
 	/**
+	* Returns the dossier where dossierCounter = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByDC(String dossierCounter)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDC(String dossierCounter);
+
+	/**
+	* Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierCounter the dossier counter
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDC(String dossierCounter, boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where dossierCounter = &#63; from the database.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByDC(String dossierCounter)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where dossierCounter = &#63;.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the number of matching dossiers
+	*/
+	public int countByDC(String dossierCounter);
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier
