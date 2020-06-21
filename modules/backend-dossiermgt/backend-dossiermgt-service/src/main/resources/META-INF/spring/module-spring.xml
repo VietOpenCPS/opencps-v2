@@ -30,6 +30,7 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DocumentTypePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DocumentTypePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierFinderImpl" id="org.opencps.dossiermgt.service.persistence.DossierFinder" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.DossierActionLocalServiceImpl" id="org.opencps.dossiermgt.service.DossierActionLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierActionPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.DossierActionPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.DossierActionFinderImpl" id="org.opencps.dossiermgt.service.persistence.DossierActionFinder" parent="basePersistence" />

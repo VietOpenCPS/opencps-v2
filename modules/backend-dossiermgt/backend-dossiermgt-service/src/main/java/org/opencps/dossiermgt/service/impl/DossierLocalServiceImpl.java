@@ -7574,5 +7574,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		return dossier;
-	}	
+	}
+	public List<Dossier> findDossierByDay(String date)
+	{
+			return  dossierFinder.findDossierByDay(date);
+	}
 }

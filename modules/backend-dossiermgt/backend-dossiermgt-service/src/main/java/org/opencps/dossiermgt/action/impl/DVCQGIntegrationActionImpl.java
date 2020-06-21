@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -104,6 +105,7 @@ import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
+import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.util.DateTimeUtils;
 
 import backend.auth.api.exception.ErrorMsgModel;
@@ -3133,6 +3135,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				return createResponseMessage(result, 404, "error",
 						"Not found server config width protocal: DVCQG_TTKM");
 			}
+			
+			user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
 
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			//String serverNo = config.getString("serverNo");

@@ -450,8 +450,9 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 
 		if (bookingId > 0) {
 			Booking booking = bookingPersistence.fetchByPrimaryKey(bookingId);
-			if (booking.getState() != 4) {
-				//
+//			if (booking.getState() != 4) {
+				//Sửa cho anh trình
+			if (true) {
 				booking.setModifiedDate(now);
 
 				if (Validator.isNotNull(className))
@@ -487,7 +488,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 				int dayNow = calNow.get(Calendar.DAY_OF_YEAR);
 				_log.info("dayUpdate: "+dayUpdate);
 				_log.info("dayNow: "+dayNow);
-				
+
 				if (booking.getState() == 3 || dayUpdate < dayNow) {
 					//Get max count booking in day
 					int countCode = bookingFinder.findBookingMaxByServiceGroupCode(groupId, booking.getServiceGroupCode());
@@ -498,7 +499,7 @@ public class BookingLocalServiceImpl extends BookingLocalServiceBaseImpl {
 						booking.setCount(1);
 					}
 				}
-				
+
 				if (Validator.isNotNull(state))
 					booking.setState(state);
 				booking.setSpeaking(speaking);

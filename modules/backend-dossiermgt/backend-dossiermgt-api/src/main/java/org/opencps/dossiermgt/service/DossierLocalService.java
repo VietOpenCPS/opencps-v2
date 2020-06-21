@@ -303,6 +303,8 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<Dossier> findDossierByDay(String date);
+
 	public List<Dossier> findDossierByGroup(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
