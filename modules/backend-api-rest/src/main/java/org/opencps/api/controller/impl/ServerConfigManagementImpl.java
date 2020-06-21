@@ -52,6 +52,7 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.springframework.web.client.RestTemplate;
 
 public class ServerConfigManagementImpl implements ServerConfigManagement {
 	Log _log = LogFactoryUtil.getLog(ServerConfigManagementImpl.class);
@@ -621,7 +622,6 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 									
 								}
 							}
-							
 							//AUTHEN
 							String authenticate = jsonConfig.getString("authenticate");
 							System.out.println("authenticate: "+authenticate);
