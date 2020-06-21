@@ -686,7 +686,7 @@ public class DossierPartLocalServiceImpl extends DossierPartLocalServiceBaseImpl
 		object.setDeliverableAction(objectData.getInt(DossierPartTerm.DELIVERABLE_ACTION));
 		object.setEForm(objectData.getBoolean(DossierPartTerm.EFORM_UPPERCASE));
 		object.setFileMark(objectData.getInt(DossierPartTerm.FILE_MARK));
-		object.setPartTitle(objectData.getString(DossierPartTerm.PART_TITLE));
+		object.setPartNameTitle(objectData.getString(DossierPartTerm.PART_NAME_TITLE));
 
 		return dossierPartPersistence.update(object);
 

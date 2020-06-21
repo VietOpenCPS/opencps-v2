@@ -13,6 +13,7 @@ public class MessageProcessor {
 		if (ds == null)
 			return null;
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(ds.getGroupId(), ds.getServerNo());
+		System.out.println("sc: "+sc);
 		if (sc == null)
 			return null;
 		

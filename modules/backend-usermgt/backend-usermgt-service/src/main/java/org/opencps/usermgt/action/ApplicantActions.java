@@ -69,6 +69,11 @@ public interface ApplicantActions {
 			String applicantIdType, Date applicantIdDate, String contactEmail, String contactTelNo,
 			ServiceContext serviceContext) throws PortalException;
 
+	public Applicant registerApproved(ServiceContext context, long groupId, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String profile, String password) throws PortalException, SystemException;
+
 	public JSONObject createApplicantAccount(long userId, long companyId, long groupId, long id, String screenName,
 			String email, boolean exist, ServiceContext serviceContext) throws PortalException;
 
