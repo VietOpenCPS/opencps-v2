@@ -639,7 +639,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		if (aplc != null) {
 			applicantId = id;
-		} else {
+		} else if (id > 0) {
 			aplc = ApplicantLocalServiceUtil.fetchByMappingID(id);
 			if (aplc != null) {
 				applicantId = aplc.getApplicantId();
@@ -1175,8 +1175,10 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 								applicantIdNo, applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
 						_log.info("strProfile: " + strProfile);
 						if (Validator.isNull(strProfile) || "ERROR".equalsIgnoreCase(strProfile)) {
+							_log.info("CO VAO KHONG1111 ???");
 							return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}").build();
-						} else if (Validator.isNotNull(strProfile) && "DUPLICATE".equalsIgnoreCase(strProfile)) {
+						} else if (Validator.isNotNull(strProfile) && "DUPLICATE".contentEquals(strProfile)) {
+							_log.info("CO VAO 222222 ???");
 							Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
 									applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address, cityCode,
 									cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
@@ -1185,7 +1187,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 							return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
-						} else if ("SUCCESSFUL".equalsIgnoreCase(strProfile)) {
+						} else if (Validator.isNotNull(strProfile)) {
+							_log.info("CO VAO 33333 ???");
 							Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
 									applicantIdNo, applicantIdDate, contactEmail, address,
 									cityCode, cityName, districtCode, districtName,
@@ -1824,7 +1827,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 		if (aplc != null) {
 			applicantId = id;
-		} else {
+		} else if (id > 0) {
 			aplc = ApplicantLocalServiceUtil.fetchByMappingID(id);
 			if (aplc != null) {
 				applicantId = aplc.getApplicantId();

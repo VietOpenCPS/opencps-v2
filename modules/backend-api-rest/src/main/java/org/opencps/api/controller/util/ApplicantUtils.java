@@ -497,8 +497,8 @@ public class ApplicantUtils {
 				String[] splitAppName = applicantName.split("\\s+");
 				int lengthAppName = splitAppName.length;
 				if (lengthAppName > 3) {
-					jsonBody.put(UserRegisterTerm.HO, splitAppName[0]);
-					jsonBody.put(UserRegisterTerm.TEN, splitAppName[lengthAppName - 1]);
+					jsonBody.put("fisrtName", splitAppName[0]);
+					jsonBody.put("lastName", splitAppName[lengthAppName - 1]);
 					String tenDem = StringPool.BLANK;
 					for (int i = 1; i < splitAppName.length - 1; i++) {
 						if (i == 1) {
@@ -507,19 +507,19 @@ public class ApplicantUtils {
 							tenDem += StringPool.SPACE + splitAppName[i];
 						}
 					}
-					jsonBody.put(UserRegisterTerm.DEM, tenDem);
+					jsonBody.put("middleName", tenDem);
 				} else if (lengthAppName == 3) {
-					jsonBody.put(UserRegisterTerm.HO, splitAppName[0]);
-					jsonBody.put(UserRegisterTerm.DEM, splitAppName[1]);
-					jsonBody.put(UserRegisterTerm.TEN, splitAppName[2]);
+					jsonBody.put("fisrtName", splitAppName[0]);
+					jsonBody.put("middleName", splitAppName[1]);
+					jsonBody.put("lastName", splitAppName[2]);
 				} else if (lengthAppName == 2) {
-					jsonBody.put(UserRegisterTerm.HO, "Công dân");
-					jsonBody.put(UserRegisterTerm.DEM, splitAppName[0]);
-					jsonBody.put(UserRegisterTerm.TEN, splitAppName[1]);
+					jsonBody.put("fisrtName", "Công dân");
+					jsonBody.put("middleName", splitAppName[0]);
+					jsonBody.put("lastName", splitAppName[1]);
 				} else {
-					jsonBody.put(UserRegisterTerm.HO, "Công");
-					jsonBody.put(UserRegisterTerm.DEM, "dân");
-					jsonBody.put(UserRegisterTerm.TEN, splitAppName[0]);
+					jsonBody.put("fisrtName", "Công");
+					jsonBody.put("middleName", "dân");
+					jsonBody.put("lastName", splitAppName[0]);
 				}
 			}
 

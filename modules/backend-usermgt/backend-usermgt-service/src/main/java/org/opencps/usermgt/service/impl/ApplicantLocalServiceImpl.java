@@ -105,7 +105,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	private static Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 	public Applicant fetchByMappingID(long mappingID) {
-		List<Applicant> lstApps = applicantPersistence.findByF_MAPPING_ID(mappingID);
+		List<Applicant> lstApps = mappingID > 0 ? applicantPersistence.findByF_MAPPING_ID(mappingID)
+				: applicantPersistence.findByF_MAPPING_ID(mappingID, 0, 5);
 		Applicant res = (lstApps.size() > 0) ? lstApps.get(0) : null;
 		return res;
 	}

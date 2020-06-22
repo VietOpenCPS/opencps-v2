@@ -132,7 +132,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 
 	@Override
 	public String getApplicantByUserId(ServiceContext serviceContext) throws PortalException {
-		return JSONFactoryUtil.looseSerialize(ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()));
+		return serviceContext.getUserId() > 0 ? JSONFactoryUtil.looseSerialize(ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId())) : StringPool.BLANK;
 	}
 	
 	@Override
@@ -216,7 +216,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	
 	@Override
 	public Applicant getApplicantByMappingUserId(long userId) throws PortalException {
-		return ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		return userId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 	}
 
 	Log _log = LogFactoryUtil.getLog(ApplicantActionsImpl.class);
@@ -884,7 +884,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 		updateUser.setScreenName(screenName);
 		updateUser = UserLocalServiceUtil.updateUser(updateUser);
 		
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId());
+		Applicant applicant = updateUser.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(updateUser.getUserId()) : null;
 		
 		if(applicant != null) {
 			List<Applicant> applicants = ApplicantLocalServiceUtil.findByAppIds(applicant.getApplicantIdNo());
