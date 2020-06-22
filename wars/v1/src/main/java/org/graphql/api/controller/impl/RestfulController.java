@@ -49,10 +49,14 @@ import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,7 +71,9 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
@@ -94,9 +100,12 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.UserRegisterTerm;
+import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.cache.annotation.Cacheable;
@@ -104,7 +113,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -267,6 +275,9 @@ public class RestfulController {
 		String loginMax = PropsUtil.get("opencps.user.login.max");
 		String secretKey = PropsUtil.get("opencps.jwt.secret");
 		String SECRET = Validator.isNotNull(secretKey) ? secretKey : "secret";
+		//Custom login
+		boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+				? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 
 		try {
 
@@ -303,75 +314,538 @@ public class RestfulController {
 				}
 			}
 
-			// Get encoded user and password, comes after "BASIC "
-			String userpassEncoded = strBasic.substring(6);
-			String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
+			_log.info("syncUserLGSP: "+ syncUserLGSP);
+			if (syncUserLGSP) {
+				// Get encoded user and password, comes after "BASIC "
+				String userpassEncoded = strBasic.substring(6);
+				String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
 
-			String account[] = decodetoken.split(":");
+				String account[] = decodetoken.split(":");
 
-			String email = account[0];
-			String password = account[1];
-			emailAddress += email;
-			
-			long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
-					CompanyConstants.AUTH_TYPE_EA);
-			if (userId > 0 && userId != 20103) {
-				checkUserId = userId;
-//				AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
-//						CompanyConstants.AUTH_TYPE_EA);
-				//Remember me false
-				AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
-						CompanyConstants.AUTH_TYPE_EA);
-
-				User user = UserLocalServiceUtil.fetchUser(userId);
-				Algorithm algorithm = Algorithm.HMAC256(SECRET);
-				String token = JWT.create()
-						.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-						.sign(algorithm);
-				response.setHeader("jwt-token", token);
+				String email = account[0];
+				String password = account[1];
+				emailAddress += email;
 				
-				if (userId != 20139) {
-					Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
-
-//					String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-//					
-//					UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
-//					String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
-//					ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
-//					UserTrackerLocalServiceUtil.addUserTracker(
-//							user.getCompanyId(), 
-//							userId, 
-//							new Date(), 
-//							sessionId, 
-//							request.getRemoteAddr(), 
-//							request.getRemoteHost(), 
-//							userAgent, 
-//							userTrackerPath);
-					if (Validator.isNotNull(employee)) {
-
-						if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
-							response.setStatus(HttpServletResponse.SC_OK);
-							return "pending";
-						} else {
-							response.setStatus(HttpServletResponse.SC_OK);
-							return "/c";
-						}
-					} else {
-						if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-							response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
-							response.setStatus(HttpServletResponse.SC_OK);
-							return "pending";
-						} else {
-							response.setStatus(HttpServletResponse.SC_OK);
-							return "ok";
+				//Check applicant authen
+				String passKey = StringPool.BLANK;
+				long applicantId = 0;
+				Applicant app = null;
+				if (Validator.isNotNull(email)) {
+					List<Applicant> appList = ApplicantLocalServiceUtil.findByContactEmailList(email);
+					if (appList != null && appList.size() > 0) {
+						for (Applicant applicant : appList) {
+							if (applicant.getMappingUserId() > 0 && applicant.getGroupId() > 0) {
+								passKey = applicant.getTmpPass();
+								applicantId = applicant.getApplicantId();
+								app = applicant;
+							}
 						}
 					}
-				} else {
-					response.setStatus(HttpServletResponse.SC_OK);
-					return "ok";
 				}
 				
+				if (Validator.isNull(passKey)) {
+					response.setStatus(HttpServletResponse.SC_OK);
+					return "";
+				}
+				
+//				// Create a trust manager that does not validate certificate chains
+//				TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+//					public X509Certificate[] getAcceptedIssuers() {
+//						return null;
+//					}
+//					public void checkClientTrusted(X509Certificate[] certs, String authType) {
+//					}
+//					public void checkServerTrusted(X509Certificate[] certs, String authType) {
+//					}
+//				} };
+//				// Install the all-trusting trust manager
+//				try {
+//					SSLContext sc = SSLContext.getInstance("SSL");
+//					sc.init(null, trustAllCerts, new SecureRandom());
+//					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//				} catch (Exception e) {
+//				}
+				
+				StringBuilder sbToken = new StringBuilder();
+				try {
+
+					URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
+
+					java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
+					conToken.setRequestMethod(HttpMethod.POST);
+					conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+					conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+					conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
+					conToken.setRequestProperty("Content-Length", String.valueOf(0));
+
+					conToken.setUseCaches(false);
+					conToken.setDoInput(true);
+					conToken.setDoOutput(true);
+					
+					OutputStream os = conToken.getOutputStream();
+					os.close();
+
+					BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+
+					int cpToken;
+					while ((cpToken = brfToken.read()) != -1) {
+						sbToken.append((char) cpToken);
+					}
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+
+				if (sbToken != null && Validator.isNotNull(sbToken.toString())) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+							&& jsonToken.has("expiryDate")) {
+
+						String strUrlLogin = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_LOGIN;
+						_log.info("strUrlLogin: "+ strUrlLogin);
+						String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
+						_log.info("authStrEnc: "+ authStrEnc);
+						_log.info("email: "+ email);
+						_log.info("password: "+ password);
+						
+						StringBuilder sbLogin = new StringBuilder();
+						try {
+							URL urlLogin = new URL(strUrlLogin);
+
+							JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+							jsonBody.put(UserRegisterTerm.USER_NAME, email);
+							jsonBody.put(UserRegisterTerm.SECRECT_KEY, password);
+							//
+
+							java.net.HttpURLConnection conLogin = (java.net.HttpURLConnection) urlLogin.openConnection();
+							conLogin.setRequestMethod(HttpMethod.POST);
+							conLogin.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+							conLogin.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+							conLogin.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+							_log.debug("BASIC AUTHEN: " + authStrEnc);
+							conLogin.setRequestProperty("Content-Length",
+									StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+							conLogin.setUseCaches(false);
+							conLogin.setDoInput(true);
+							conLogin.setDoOutput(true);
+							_log.debug("POST DATA: " + jsonBody.toString());
+							OutputStream osLogin = conLogin.getOutputStream();
+							osLogin.write(jsonBody.toString().getBytes());
+							osLogin.close();
+
+							BufferedReader brfLogin = new BufferedReader(new InputStreamReader(conLogin.getInputStream()));
+
+							int cpLogin;
+							while ((cpLogin = brfLogin.read()) != -1) {
+								sbLogin.append((char) cpLogin);
+							}
+							_log.info("RESULT PROXY: " + sbLogin.toString());
+							//
+							if (Validator.isNotNull(sbLogin.toString())) {
+								//
+								_log.error("sbReg:" + sbLogin.toString());
+								JSONObject jsonLogin = JSONFactoryUtil.createJSONObject(sbLogin.toString());
+								if (jsonLogin.has("success")
+										&& jsonLogin.has(UserRegisterTerm.USER_NAME)
+										&& jsonLogin.has("isRequireVerify")
+										&& jsonLogin.has("isRequireChangePassword")) {
+									boolean isSuccess = jsonLogin.getBoolean("success");
+									boolean isRequireVerify = jsonLogin.getBoolean("isRequireVerify");
+									boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
+
+									if (isRequireChangePassword) {
+										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+												CompanyConstants.AUTH_TYPE_EA);
+										_log.info("userId: "+userId);
+										if (userId == 0) {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+													CompanyConstants.AUTH_TYPE_EA);
+											//Update applicant
+											passKey = password;
+											if (app != null) {
+												app.setTmpPass(password);
+												ApplicantLocalServiceUtil.updateApplicant(app);
+											}
+										}
+										if (userId > 0 && userId != 20103) {
+											checkUserId = userId;
+											//Remember me false
+											AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
+													CompanyConstants.AUTH_TYPE_EA);
+
+											User user = UserLocalServiceUtil.fetchUser(userId);
+											Algorithm algorithm = Algorithm.HMAC256(SECRET);
+											String token = JWT.create()
+													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+													.sign(algorithm);
+											response.setHeader("jwt-token", token);
+											
+											if (userId != 20139) {
+												_log.info("changeSecrect: OK");
+												response.setStatus(HttpServletResponse.SC_OK);
+												return "changeSecrect";
+											} else {
+												_log.info("NOT CHANGE OK");
+												response.setStatus(HttpServletResponse.SC_OK);
+												return "ok";
+											}
+											
+										} // Create userId
+//										else {
+//											//Get userInfo
+//											String strUrlInfo = UserRegisterTerm.NEW_BASE_URL
+//													+ UserRegisterTerm.NEW_ENDPOINT_GET_USER + StringPool.FORWARD_SLASH
+//													+ email;
+//											_log.info("strUrlInfo: "+ strUrlInfo);
+//											URL urlInfo = new URL(strUrlInfo);
+//
+//											java.net.HttpURLConnection conInfo = (java.net.HttpURLConnection) urlInfo.openConnection();
+//											conInfo.setRequestMethod(HttpMethod.POST);
+//											conInfo.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+//											conInfo.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+//											conInfo.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+//											_log.debug("BASIC AUTHEN: " + authStrEnc);
+//											conInfo.setRequestProperty("Content-Length", String.valueOf(0));
+//
+//											conInfo.setUseCaches(false);
+//											conInfo.setDoInput(true);
+//											conInfo.setDoOutput(true);
+//											OutputStream osInfo = conInfo.getOutputStream();
+//											osInfo.close();
+//
+//											BufferedReader brfInfo = new BufferedReader(new InputStreamReader(conInfo.getInputStream()));
+//
+//											int cpInfo;
+//											StringBuilder sbInfo = new StringBuilder();
+//											while ((cpInfo = brfInfo.read()) != -1) {
+//												sbInfo.append((char) cpInfo);
+//											}
+//											_log.info("RESULT PROXY: " + sbInfo.toString());
+//											if (Validator.isNotNull(sbInfo.toString())) {
+//												JSONObject jsonInfo = JSONFactoryUtil.createJSONObject(sbInfo.toString());
+//												//
+//												ApplicantActions actions = new ApplicantActionsImpl();
+//												Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+//														applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address, cityCode,
+//														cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+//														StringPool.BLANK, input.getPassword());
+//											}
+//										}
+									} else if (isRequireVerify) {
+//										if (applicantId == 0) {
+//											//Get userInfo
+//											String strUrlInfo = UserRegisterTerm.NEW_BASE_URL
+//													+ UserRegisterTerm.NEW_ENDPOINT_GET_USER + StringPool.FORWARD_SLASH
+//													+ email;
+//											_log.info("strUrlInfo: "+ strUrlInfo);
+//											URL urlInfo = new URL(strUrlInfo);
+//
+//											java.net.HttpURLConnection conInfo = (java.net.HttpURLConnection) urlInfo.openConnection();
+//											conInfo.setRequestMethod(HttpMethod.POST);
+//											conInfo.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+//											conInfo.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+//											conInfo.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+//											_log.debug("BASIC AUTHEN: " + authStrEnc);
+//											conInfo.setRequestProperty("Content-Length", String.valueOf(0));
+//
+//											conInfo.setUseCaches(false);
+//											conInfo.setDoInput(true);
+//											conInfo.setDoOutput(true);
+//											OutputStream osInfo = conInfo.getOutputStream();
+//											osInfo.close();
+//
+//											BufferedReader brfInfo = new BufferedReader(new InputStreamReader(conInfo.getInputStream()));
+//
+//											int cpInfo;
+//											StringBuilder sbInfo = new StringBuilder();
+//											while ((cpInfo = brfInfo.read()) != -1) {
+//												sbInfo.append((char) cpInfo);
+//											}
+//											_log.info("RESULT PROXY: " + sbInfo.toString());
+//											try {
+//												String cityName = StringPool.BLANK;
+//												String districtName = StringPool.BLANK;
+//												String wardName = StringPool.BLANK;
+//												
+//												JSONObject jsonInfo = null;
+//												if (Validator.isNotNull(sbInfo.toString())) {
+//													jsonInfo = JSONFactoryUtil.createJSONObject(sbInfo.toString());
+//													//
+//													
+//												}
+//												String applicantName = jsonInfo.getString("fullName");
+//												String applicantIdType = "citizen";
+//												String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
+//												String address = HtmlUtil.escape(input.getAddress());
+//												String cityCode = HtmlUtil.escape(input.getCityCode());
+//												String districtCode = HtmlUtil.escape(input.getDistrictCode());
+//												String wardCode = HtmlUtil.escape(input.getWardCode());
+//												String contactName = HtmlUtil.escape(input.getContactName());
+//												String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
+//												String contactEmail = HtmlUtil.escape(input.getContactEmail());
+//												String applicantIdDate = input.getApplicantIdDate();
+//
+//												if (Validator.isNotNull(input.getCityCode())) {
+//													cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
+//
+//												}
+//												if (Validator.isNotNull(input.getDistrictCode())) {
+//													districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
+//
+//												}
+//												if (Validator.isNotNull(input.getWardCode())) {
+//													wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
+//
+//												}
+//
+//												boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+//														? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
+//												
+////												if (syncUserLGSP) {
+////													// Create a trust manager that does not validate certificate chains
+////													TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+////														public X509Certificate[] getAcceptedIssuers() {
+////															return null;
+////														}
+////														public void checkClientTrusted(X509Certificate[] certs, String authType) {
+////														}
+////														public void checkServerTrusted(X509Certificate[] certs, String authType) {
+////														}
+////													} };
+////													// Install the all-trusting trust manager
+////													try {
+////														SSLContext sc = SSLContext.getInstance("SSL");
+////														sc.init(null, trustAllCerts, new SecureRandom());
+////														HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+////													} catch (Exception e) {
+////													}
+//									//
+////													//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
+////													String strProfile = StringPool.BLANK;
+////													String strToken = ApplicantUtils.getTokenLGSP();
+////													if (Validator.isNotNull(strToken)) {
+////														JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+////														//
+////														if (jsonToken.has("access_token") && jsonToken.has("token_type")
+////																&& Validator.isNotNull(jsonToken.getString("access_token"))
+////																&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+////															String accessToken = jsonToken.getString("access_token");
+////															String tokenType = jsonToken.getString("token_type");
+//									//
+////															_log.info("accessToken: " + accessToken);
+////															_log.info("tokenType: " + tokenType);
+//									//
+////															// Dang ky tk cong dan
+////															strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
+////																	applicantIdNo, applicantName, applicantIdDate, contactTelNo);
+////															_log.info("strProfile: " + strProfile);
+////															if (Validator.isNull(strProfile)) {
+////																return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+////															}
+////														}
+////													} else {
+////														return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+////													}
+////												}
+//
+//												if (syncUserLGSP) {
+//
+//													String strProfile = StringPool.BLANK;
+//													String strToken = ApplicantUtils.getTokenNewLGSP();
+//													if (Validator.isNotNull(strToken)) {
+//														JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+//														//
+//														if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+//																&& jsonToken.has("expiryDate")) {
+//															String accessToken = jsonToken.getString("token");
+//															String refreshToken = jsonToken.getString("refreshToken");
+//															//String expiryDate = jsonToken.getString("expiryDate");
+//
+//															_log.info("accessToken: " + accessToken);
+//															_log.info("refreshToken: " + refreshToken);
+//
+//															// Dang ky tk cong dan
+//															strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail,
+//																	applicantIdNo, applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
+//															_log.info("strProfile: " + strProfile);
+//															if (Validator.isNull(strProfile) || "ERROR".equalsIgnoreCase(strProfile)) {
+//																return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}").build();
+//															} else if (Validator.isNotNull(strProfile) && "DUPLICATE".equalsIgnoreCase(strProfile)) {
+//																Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+//																		applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address, cityCode,
+//																		cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
+//																		StringPool.BLANK, input.getPassword());
+//																
+//																result = ApplicantUtils.mappingToApplicantModel(applicant);
+//
+//																return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
+//															} else if ("SUCCESSFUL".equalsIgnoreCase(strProfile)) {
+//																Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+//																		applicantIdNo, applicantIdDate, contactEmail, address,
+//																		cityCode, cityName, districtCode, districtName,
+//																		wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
+//																		input.getPassword());
+//																_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+//																result = ApplicantUtils.mappingToApplicantModel(applicant);
+//
+//																return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+//															}
+//														}
+//													} else {
+//														return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+//													}
+//												} else {
+//													Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
+//															applicantIdNo, applicantIdDate, contactEmail, address,
+//															cityCode, cityName, districtCode, districtName,
+//															wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
+//															input.getPassword());
+//													_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
+//													result = ApplicantUtils.mappingToApplicantModel(applicant);
+//
+//													return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+//												}
+//
+//												return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
+//											} catch (Exception e) {
+//												return BusinessExceptionImpl.processException(e);
+//											}
+//										}
+										response.setStatus(HttpServletResponse.SC_OK);
+										response.setHeader("applicantId", String.valueOf(applicantId));
+										return "verify";
+									} else if (isSuccess) {
+										//Sau khi check authen xong
+										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+												CompanyConstants.AUTH_TYPE_EA);
+										if (userId > 0 && userId != 20103) {
+											checkUserId = userId;
+											//Remember me false
+											AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
+													CompanyConstants.AUTH_TYPE_EA);
+
+											User user = UserLocalServiceUtil.fetchUser(userId);
+											Algorithm algorithm = Algorithm.HMAC256(SECRET);
+											String token = JWT.create()
+													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+													.sign(algorithm);
+											response.setHeader("jwt-token", token);
+											
+											if (userId != 20139) {
+												Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+
+												if (Validator.isNotNull(employee)) {
+
+													if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
+														response.setStatus(HttpServletResponse.SC_OK);
+														return "pending";
+													} else {
+														response.setStatus(HttpServletResponse.SC_OK);
+														return "/c";
+													}
+													
+												} else {
+													if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+														response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+														response.setStatus(HttpServletResponse.SC_OK);
+														return "pending";
+													} else {
+														response.setStatus(HttpServletResponse.SC_OK);
+														return "ok";
+													}
+												}
+											} else {
+												response.setStatus(HttpServletResponse.SC_OK);
+												return "ok";
+											}
+											
+										}
+									} else {
+										return "";
+									}
+								}
+							}
+						} catch (Exception e) {
+							_log.error(e);
+							_log.debug("Something went wrong while reading/writing in stream!!");
+						}
+					}
+				}
+				
+				
+			} else {
+				// Get encoded user and password, comes after "BASIC "
+				String userpassEncoded = strBasic.substring(6);
+				String decodetoken = new String(Base64.decode(userpassEncoded), StringPool.UTF8);
+
+				String account[] = decodetoken.split(":");
+
+				String email = account[0];
+				String password = account[1];
+				emailAddress += email;
+				
+				long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+						CompanyConstants.AUTH_TYPE_EA);
+				if (userId > 0 && userId != 20103) {
+					checkUserId = userId;
+//					AuthenticatedSessionManagerUtil.login(request, response, email, password, true,
+//							CompanyConstants.AUTH_TYPE_EA);
+					//Remember me false
+					AuthenticatedSessionManagerUtil.login(request, response, email, password, false,
+							CompanyConstants.AUTH_TYPE_EA);
+
+					User user = UserLocalServiceUtil.fetchUser(userId);
+					Algorithm algorithm = Algorithm.HMAC256(SECRET);
+					String token = JWT.create()
+							.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+							.sign(algorithm);
+					response.setHeader("jwt-token", token);
+					
+					if (userId != 20139) {
+						Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+
+//						String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
+//						
+//						UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId, user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, request.getRemoteAddr());
+//						String userAgent = request.getHeader("User-Agent") != null ? request.getHeader("User-Agent") : StringPool.BLANK;
+//						ArrayList<UserTrackerPath> userTrackerPath = new ArrayList<UserTrackerPath>();
+//						UserTrackerLocalServiceUtil.addUserTracker(
+//								user.getCompanyId(), 
+//								userId, 
+//								new Date(), 
+//								sessionId, 
+//								request.getRemoteAddr(), 
+//								request.getRemoteHost(), 
+//								userAgent, 
+//								userTrackerPath);
+						if (Validator.isNotNull(employee)) {
+
+							if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
+								response.setStatus(HttpServletResponse.SC_OK);
+								return "pending";
+							} else {
+								response.setStatus(HttpServletResponse.SC_OK);
+								return "/c";
+							}
+						} else {
+							if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+								response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+								response.setStatus(HttpServletResponse.SC_OK);
+								return "pending";
+							} else {
+								response.setStatus(HttpServletResponse.SC_OK);
+								return "ok";
+							}
+						}
+					} else {
+						response.setStatus(HttpServletResponse.SC_OK);
+						return "ok";
+					}
+					
+				}
 			}
+			
+			
 
 		} 
 		catch (AuthException ae) {
@@ -853,7 +1327,7 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/users/upload/download/{code}/{className}/{pk}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@RequestMapping(value = "/users/upload/download/{code}/{className}/{pk}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody byte[] downloadFileAttach(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("className") String className, @PathVariable("pk") String pk,
@@ -899,7 +1373,7 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM)
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody byte[] downloadServiceFileTemplate(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("serviceInfoId") long serviceInfoId, @PathVariable("fileTemplateNo") String fileTemplateNo) {
@@ -927,7 +1401,7 @@ public class RestfulController {
 		return null;
 	}
 
-	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@RequestMapping(value = "/filetemplate/{serviceInfoId}/{fileTemplateNo}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_OCTET_STREAM)
 	@ResponseStatus(HttpStatus.OK)
 	public void upDateServiceFileTemplate(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("serviceInfoId") long serviceInfoId, @PathVariable("fileTemplateNo") String fileTemplateNo,
@@ -1043,6 +1517,7 @@ public class RestfulController {
 			method = bundleLoader.getClassLoader().loadClass(serviceName).getMethod("dynamicQuery", DynamicQuery.class,
 					int.class, int.class);
 
+			@SuppressWarnings("unchecked")
 			List<Object[]> list = (List<Object[]>) method.invoke(model, dynamicQuery, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
@@ -1429,7 +1904,7 @@ public class RestfulController {
 		    return ResponseEntity.ok()
 		            .headers(new HttpHeaders())
 		            .contentLength(file.length())
-		            .contentType(MediaType.parseMediaType("application/octet-stream"))
+		            .contentType(org.springframework.http.MediaType.parseMediaType("application/octet-stream"))
 		            .body(resource);
 		}
 		catch (Exception e) {

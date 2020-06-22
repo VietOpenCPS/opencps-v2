@@ -232,6 +232,40 @@ public class ApplicantUtils {
 		return sbToken.toString();
 	}
 
+	public static String getTokenNewLGSP() {
+
+		StringBuilder sbToken = new StringBuilder();
+		try {
+
+			URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
+
+			java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
+			conToken.setRequestMethod(HttpMethod.POST);
+			conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
+			conToken.setRequestProperty("Content-Length", String.valueOf(0));
+
+			conToken.setUseCaches(false);
+			conToken.setDoInput(true);
+			conToken.setDoOutput(true);
+			
+			OutputStream os = conToken.getOutputStream();
+			os.close();
+
+			BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+
+			int cpToken;
+			while ((cpToken = brfToken.read()) != -1) {
+				sbToken.append((char) cpToken);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return sbToken.toString();
+	}
+
 	public static String registerLGSP(String tokenType, String accessToken, String applicantIdType, String contactEmail,
 			String applicantIdNo, String applicantName, String applicantIdDate, String contactTelNo) {
 
@@ -278,8 +312,8 @@ public class ApplicantUtils {
 						jsonBody.put(UserRegisterTerm.TEN, splitAppName[2]);
 					} else if (lengthAppName == 2) {
 						jsonBody.put(UserRegisterTerm.HO, "Công dân");
-						jsonBody.put(UserRegisterTerm.DEM, splitAppName[1]);
-						jsonBody.put(UserRegisterTerm.TEN, splitAppName[2]);
+						jsonBody.put(UserRegisterTerm.DEM, splitAppName[0]);
+						jsonBody.put(UserRegisterTerm.TEN, splitAppName[1]);
 					} else {
 						jsonBody.put(UserRegisterTerm.HO, "Công");
 						jsonBody.put(UserRegisterTerm.DEM, "dân");
@@ -434,6 +468,90 @@ public class ApplicantUtils {
 				_log.error(e);
 				_log.debug("Something went wrong while reading/writing in stream!!");
 			}
+		}
+		return strProfile;
+	}
+
+	public static String registerNewLGSP(String tokenType, String accessToken, String contactEmail,
+			String applicantIdNo, String applicantName, String contactTelNo, String organizationName,
+			String secrectKey) {
+
+		String strProfile = StringPool.BLANK;
+
+		String urlRegister = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_REGISTER;
+		_log.info("urlRegister: "+urlRegister);
+		String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+
+		StringBuilder sbReg = new StringBuilder();
+		try {
+			URL urlValRegister = new URL(urlRegister);
+
+			JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+			jsonBody.put(UserRegisterTerm.USER_NAME, contactEmail);
+			jsonBody.put(UserRegisterTerm.EMAIL, contactEmail);
+			jsonBody.put(UserRegisterTerm.PHONE_NUMBER, contactTelNo);
+			jsonBody.put(UserRegisterTerm.ORGANIZATION_NAME, organizationName);
+			jsonBody.put(UserRegisterTerm.SECRECT_KEY, secrectKey);
+			//
+			if (Validator.isNotNull(applicantName)) {
+				String[] splitAppName = applicantName.split("\\s+");
+				int lengthAppName = splitAppName.length;
+				if (lengthAppName > 3) {
+					jsonBody.put(UserRegisterTerm.HO, splitAppName[0]);
+					jsonBody.put(UserRegisterTerm.TEN, splitAppName[lengthAppName - 1]);
+					String tenDem = StringPool.BLANK;
+					for (int i = 1; i < splitAppName.length - 1; i++) {
+						if (i == 1) {
+							tenDem += splitAppName[1];
+						} else {
+							tenDem += StringPool.SPACE + splitAppName[i];
+						}
+					}
+					jsonBody.put(UserRegisterTerm.DEM, tenDem);
+				} else if (lengthAppName == 3) {
+					jsonBody.put(UserRegisterTerm.HO, splitAppName[0]);
+					jsonBody.put(UserRegisterTerm.DEM, splitAppName[1]);
+					jsonBody.put(UserRegisterTerm.TEN, splitAppName[2]);
+				} else if (lengthAppName == 2) {
+					jsonBody.put(UserRegisterTerm.HO, "Công dân");
+					jsonBody.put(UserRegisterTerm.DEM, splitAppName[0]);
+					jsonBody.put(UserRegisterTerm.TEN, splitAppName[1]);
+				} else {
+					jsonBody.put(UserRegisterTerm.HO, "Công");
+					jsonBody.put(UserRegisterTerm.DEM, "dân");
+					jsonBody.put(UserRegisterTerm.TEN, splitAppName[0]);
+				}
+			}
+
+			java.net.HttpURLConnection conReg = (java.net.HttpURLConnection) urlValRegister.openConnection();
+			conReg.setRequestMethod(HttpMethod.POST);
+			conReg.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conReg.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conReg.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+			_log.info("BASIC AUTHEN: " + authStrEnc);
+			conReg.setRequestProperty(ConstantUtils.CONTENT_LENGTH,
+					StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+			conReg.setUseCaches(false);
+			conReg.setDoInput(true);
+			conReg.setDoOutput(true);
+			_log.info("POST DATA: " + jsonBody.toString());
+			OutputStream osReg = conReg.getOutputStream();
+			osReg.write(jsonBody.toString().getBytes());
+			osReg.close();
+
+			BufferedReader brfReg = new BufferedReader(new InputStreamReader(conReg.getInputStream()));
+
+			int cpReg;
+			while ((cpReg = brfReg.read()) != -1) {
+				sbReg.append((char) cpReg);
+			}
+			_log.info("RESULT PROXY: " + sbReg.toString());
+			//
+			strProfile = sbReg.toString();
+		} catch (Exception e) {
+			_log.error(e);
+			_log.debug("Something went wrong while reading/writing in stream!!");
 		}
 		return strProfile;
 	}
