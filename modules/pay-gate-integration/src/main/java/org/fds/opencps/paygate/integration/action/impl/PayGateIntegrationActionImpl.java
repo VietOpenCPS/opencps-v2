@@ -733,9 +733,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				// TODO: 
 //				MaDonVi,TenDonVi,MaCoQuanQD,TenCoQuanQD
 //
-//				MaDonVi: 000.00.00.G17 TenDonVi: Bộ Xây dựng
+//				MaDonVi: 000.00.00.G17 TenDonVi: Bá»™ XÃ¢y dá»±ng
 //
-//				MaCQ và Ten CQ trùng luôn MaDonVi và TenDonVi
+//				MaCQ vÃ  Ten CQ trÃ¹ng luÃ´n MaDonVi vÃ  TenDonVi
 				// bill_info.put(PayGateTerm.MADONVI, dossier.getGovAgencyCode());
 				// bill_info.put(PayGateTerm.TENDONVI, dossier.getGovAgencyName());
 				bill_info.put(PayGateTerm.MADONVI, schema.getString(PayGateTerm.MADONVI));
@@ -1187,6 +1187,516 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			_log.error(e);
 			return false;
 		}
+	}
+
+	
+	@Override
+	public String ppInitTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
+		
+		String result = StringPool.BLANK;
+
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		
+		if(dossier != null && paymentFile != null) {
+			HttpURLConnection conn = null;
+			try {
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				if (schema == null) {
+					return result;
+				}								
+				JSONObject data = createPaymentPlatformInitTransactionPostParam(groupId, schema, paymentFile, dossier);
+				
+				if (dossier.isOnline()) {
+					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					data.put(PayGateTerm.RETURN_URL, returnUrl);
+				} else {
+					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					data.put(PayGateTerm.RETURN_URL, returnUrl);
+				}
+				
+				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
+				String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT);
+
+				_log.info("payment platform endpoint " + endpoint);
+
+				_log.info("payment platform data " + data);  
+
+				URL url = new URL(endpoint);
+
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/json");
+
+				conn.setInstanceFollowRedirects(true);
+				HttpURLConnection.setFollowRedirects(true);
+				conn.setReadTimeout(60 * 1000);
+
+				byte[] postData = data.toJSONString().getBytes("UTF-8");
+				int postDataLength = postData.length;
+				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+					wr.write(postData);
+				}
+
+				conn.connect();
+
+				try (BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader((conn.getInputStream())))) {
+
+					String output = StringPool.BLANK;
+
+					StringBuilder sb = new StringBuilder();
+
+					while ((output = bufferedReader.readLine()) != null) {
+						sb.append(output);
+					}
+
+					_log.info("response: " + sb.toString());
+
+					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
+					
+					if(response.has(PayGateTerm.MALOI_KEY) && PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
+						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
+						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfile.toJSONString(), serviceContext);
+					}
+					result = sb.toString();
+					_log.info("result " + result);
+				}				
+			}  catch (Exception e) {
+				_log.error(e);
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+		}		
+		return result;
+	}
+	
+	private JSONObject createPaymentPlatformInitTransactionPostParam(long groupId, JSONObject schema, PaymentFile paymentFile, Dossier dossier) {
+		
+		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
+		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
+		String maDoitac = paymentFile.getGovAgencyCode();
+		String maThamchieu = paymentFile.getUuid();
+		String sotien = String.valueOf(paymentFile.getPaymentAmount());
+		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
+		String maKenhthanhtoan = schema.getString(PayGateTerm.MAKENHTHANHTOAN);
+		String maThietbi = schema.getString(PayGateTerm.MATHIETBI);
+		String ngonNgu = schema.getString(PayGateTerm.NGONNGU);
+		String maTiente = schema.getString(PayGateTerm.MATIENTE);
+		String maNganhang = schema.getString(PayGateTerm.MANGANHANG);
+		String thongtinGD = ""; // chua xac dinh
+		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
+		String ip = "";// chua xac dinh
+		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
+		
+		JSONObject data = JSONFactoryUtil.createJSONObject();
+		data.put(PayGateTerm.LOAIBANTIN, loaiBantin);
+		data.put(PayGateTerm.PHIENBAN, phienBan);
+		data.put(PayGateTerm.MADOITAC, maDoitac);
+		data.put(PayGateTerm.MATHAMCHIEU, maThamchieu);
+		data.put(PayGateTerm.SOTIEN, sotien);
+		data.put(PayGateTerm.LOAIHINHTHANHTOAN, loaiHinhthanhtoan);
+		data.put(PayGateTerm.MAKENHTHANHTOAN, maKenhthanhtoan);
+		data.put(PayGateTerm.MATHIETBI, maThietbi);
+		data.put(PayGateTerm.NGONNGU, ngonNgu);
+		data.put(PayGateTerm.MATIENTE, maTiente);
+		data.put(PayGateTerm.MANGANHANG, maNganhang);
+		data.put(PayGateTerm.THONGTINGIAODICH, thongtinGD);
+		data.put(PayGateTerm.THOIGIANGD, thoigianGD);
+		data.put(PayGateTerm.IP, ip);
+		data.put(PayGateTerm.THONGTINBIENLAI, createReceiptInfo(groupId, schema, paymentFile, dossier));
+		
+		String maXacThuc = PayGateUtil.generateChecksum(loaiBantin, phienBan, maDoitac, maThamchieu, sotien,
+				loaiHinhthanhtoan, maKenhthanhtoan, maThietbi, ngonNgu, maTiente, maNganhang, thongtinGD,
+				thoigianGD, ip, hash_key);
+		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
+		
+		return data;
+	}
+	
+	private JSONObject createReceiptInfo(long groupId, JSONObject schema, PaymentFile paymentFile, Dossier dossier) {
+		
+		JSONObject receipt_info = JSONFactoryUtil.createJSONObject();
+		
+		int maDV = schema.getInt(PayGateTerm.MADICHVU);
+		receipt_info.put(PayGateTerm.MADICHVU, maDV); // bb
+		
+		// bb khi madichvu = 2
+		receipt_info.put(PayGateTerm.MADONVI, (maDV == 2) ? schema.getString(PayGateTerm.MADONVI) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENDONVI, (maDV == 2) ? schema.getString(PayGateTerm.TENDONVI) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.MAHOSO, (maDV == 2) ? dossier.getDossierNo() : StringPool.BLANK);
+		
+		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
+				.fetchDVCQGServiceCode(groupId, dossier.getServiceCode());
+		String serviceCodeDVCQG = serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
+				: StringPool.BLANK;
+		receipt_info.put(PayGateTerm.MADVC, (maDV == 2) ? serviceCodeDVCQG + schema.getString(PayGateTerm.MADVCAPPEND) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENDVC, (maDV == 2) ? dossier.getServiceName() : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.MATTHC, (maDV == 2) ? serviceCodeDVCQG : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENTTHC, (maDV == 2) ? dossier.getServiceName() : StringPool.BLANK); 
+		
+		// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
+		JSONObject banksInfo = schema.getJSONObject(PayGateTerm.BANKINFO);
+		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+		if (banksInfo.has(dossier.getServiceCode())) {
+			bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
+		} else {
+			bankInfo = banksInfo.getJSONObject(PayGateTerm.DEFAULT);
+		}
+		receipt_info.put(PayGateTerm.TKTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.TKTHUHUONG) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.MANHTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.MANHTHUHUONG) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENTKTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.TENTKTHUHUONG) : StringPool.BLANK); 
+		
+		JSONArray feeArray = JSONFactoryUtil.createJSONArray();
+		JSONObject fee = JSONFactoryUtil.createJSONObject();
+		fee.put(PayGateTerm.LOAIPHILEPHI, "");
+		fee.put(PayGateTerm.MAPHILEPHI, "");
+		fee.put(PayGateTerm.TENPHILEPHI, banksInfo.getString(PayGateTerm.TENPHILEPHI));
+		fee.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+		feeArray.put(fee);
+		receipt_info.put(PayGateTerm.PHILEPHI, feeArray);
+		
+		// bb khi madichvu = 1
+		receipt_info.put(PayGateTerm.MALOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENLOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.KHOBAC, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.NGAYQD, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.SOQD, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.THOIGIANVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.DIADIEMVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.TENNGUOIVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 				
+		
+		// bb
+		receipt_info.put(PayGateTerm.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote()); 
+		receipt_info.put(PayGateTerm.HOTENNGUOINOP, dossier.getApplicantName());
+		receipt_info.put(PayGateTerm.SOCMNDNGUOINOP, dossier.getDelegateIdNo()); 
+		receipt_info.put(PayGateTerm.DIACHINGUOINOP, dossier.getAddress()); 
+		receipt_info.put(PayGateTerm.MACOQUANQD, schema.getString(PayGateTerm.MACOQUANQD)); 
+		receipt_info.put(PayGateTerm.TENCOQUANQD, schema.getString(PayGateTerm.TENCOQUANQD));
+		
+		JSONArray dskhoannop = JSONFactoryUtil.createJSONArray();
+		JSONObject dskhoannop_obj = JSONFactoryUtil.createJSONObject();
+		dskhoannop_obj.put(PayGateTerm.NOIDUNG, paymentFile.getPaymentNote());
+		dskhoannop_obj.put(PayGateTerm.SOTIEN, String.valueOf(paymentFile.getPaymentAmount()));
+		dskhoannop.put(dskhoannop_obj);
+		receipt_info.put(PayGateTerm.DSKHOANNOP, dskhoannop);
+	
+		receipt_info.put(PayGateTerm.HUYENNGUOINOP, ""); // kbb
+		receipt_info.put(PayGateTerm.TINHNGUOINOP, ""); // kbb
+		receipt_info.put(PayGateTerm.TAIKHOANTHUNSNN, ""); // kbb
+		
+		return receipt_info;
+	}
+
+	@Override
+	public JSONObject ppConfirmTransaction(User user, ServiceContext serviceContext, String body) {
+
+		try {
+			_log.info("=======body========" + body);
+			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+			if (data != null && data.length() > 0) {
+				
+				String loaiBantin = data.getString(PayGateTerm.LOAIBANTIN);
+				String maLoi = data.getString(PayGateTerm.MALOI_KEY);
+				int maDoitac = data.getInt(PayGateTerm.MADOITAC);
+				String maThamchieu = data.getString(PayGateTerm.MATHAMCHIEU);
+				int sotien = data.getInt(PayGateTerm.SOTIEN);
+				String maTiente = data.getString(PayGateTerm.MATIENTE);
+				String maGD = data.getString(PayGateTerm.MAGIAODICH);
+				String maNganhang = data.getString(PayGateTerm.MANGANHANG);
+				String thoigianGD = data.getString(PayGateTerm.THOIGIANGD);
+				String thongtinGD = data.getString(PayGateTerm.THONGTINGIAODICH);
+				String maXacthuc = data.getString(PayGateTerm.MAXACTHUC);
+				// Token, Sothe, Thangthe, Namthe khong xác định
+				long paymentFileId = 0;
+
+				if (Validator.isNotNull(maGD)) {
+					paymentFileId = PayGateUtil.getPaymentFileIdByTrans(maGD);
+				}
+
+				if (paymentFileId <= 0) {
+					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_id = 0");
+				}
+
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+
+				if (paymentFile == null) {
+					return PayGateUtil.createResponseMessage(-1, "error: paymentfile null");
+				}
+
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(paymentFile.getDossierId());
+
+				if (dossier == null) {
+					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
+				}
+				
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				if (schema == null) {
+					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
+				}
+				
+				String hash_key = schema.getString(PayGateTerm.HASH_KEY);
+				String maXacthuc_tmp = PayGateUtil.generateChecksum(loaiBantin, maLoi, maDoitac, maThamchieu,
+						sotien, maTiente,maGD, maNganhang, thongtinGD, thoigianGD, hash_key);
+				
+				if (!maXacthuc.equals(maXacthuc_tmp)) {
+					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
+				}
+				
+				int status = data.getInt(PayGateTerm.STATUS);
+
+				if (status == 0) {
+
+					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, serviceContext);
+
+					if (doAction) {
+						return PayGateUtil.createResponseMessage("00", "Thành công", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
+					} else {
+						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
+					}
+				} else {
+					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
+				}				
+			} else {
+				return PayGateUtil.createResponseMessage(-1, "error: data empty of not found server config");
+			}			
+		} catch (Exception e) {
+			_log.error(e);
+			return PayGateUtil.createResponseMessage(-1, "error: system exception");
+		}
+	}
+
+	private boolean doActionPP(User user, long groupId, Dossier dossier, PaymentFile paymentFile,
+			ServiceContext serviceContext) {
+
+		try {
+
+			JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+					.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+
+			PaymentFileActions actions = new PaymentFileActionsImpl();
+
+			JSONObject action = JSONFactoryUtil.createJSONObject();
+
+			if (dossier.isOnline()) {
+				// TODO: call api doaction to DVC
+				action = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE);
+
+				String actionCode = action.getString(PayGateTerm.ACTION_CODE);
+
+				String url = action.getString(PayGateTerm.URL);
+
+				String username = action.getString(PayGateTerm.USERNAME);
+
+				String pwd = action.getString(PayGateTerm.PWD);
+
+				// Change payment Status = 5
+				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG,
+						JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+
+				HashMap<String, String> properties = new HashMap<String, String>();
+
+				properties.put(Field.GROUP_ID, String.valueOf(groupId));
+
+				String endPoint = PayGateTerm.buildPathDoAction(url, dossier.getDossierId());
+
+				Map<String, Object> params = new HashMap<String, Object>();
+
+				params.put(PayGateTerm.ACTION_CODE, actionCode);
+
+				JSONObject payment = JSONFactoryUtil.createJSONObject();
+				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 3);
+				payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+				payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				params.put(PayGateTerm.PAYMENT, payment.toString());
+
+				long dossierActionId = dossier.getDossierActionId();
+
+				DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+
+				long serviceProcessId = dossierAction.getServiceProcessId();
+
+				String stepCode = dossierAction.getStepCode();
+
+				if (stepCode != null) {
+
+					List<ProcessAction> processActionList = ProcessActionLocalServiceUtil
+							.getProcessActionByG_SPID_PRESC(groupId, serviceProcessId, stepCode);
+
+					for (ProcessAction processAction : processActionList) {
+
+						_log.info(processAction.getActionCode());
+						_log.info(processAction.getRequestPayment());
+						if (processAction.getActionCode().equals(actionCode)) {
+
+							payment = JSONFactoryUtil.createJSONObject();
+							payment.put(PaymentFileTerm.PAYMENT_REQUEST, processAction.getRequestPayment());
+							payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+							payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+							payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+							params.put(PayGateTerm.PAYMENT, payment.toString());
+						}
+					}
+				}
+
+				_log.info("params============" + params);
+				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
+						properties, params, username, pwd);
+
+				_log.info("=====resPostDossier=========" + resPostDossier);
+
+				return true;
+			} else {
+				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG,
+						JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+
+				action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
+
+				HashMap<String, String> properties = new HashMap<String, String>();
+
+				properties.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
+
+				String endPoint = PayGateTerm.buildPathDoAction(action.getString(PayGateTerm.URL),
+						dossier.getDossierId());
+
+				Map<String, Object> params = new HashMap<String, Object>();
+
+				params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
+
+				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
+						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
+
+				_log.info("=====resPostDossier=========" + resPostDossier);
+
+				return true;
+			}
+
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+	}
+
+	@Override
+	public String ppGetReceipt(User user, long groupId, long dossierId, ServiceContext serviceContext) {
+		String result = StringPool.BLANK;
+
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+		
+		if(dossier != null && paymentFile != null) {
+			HttpURLConnection conn = null;
+			try {
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				if (schema == null) {
+					return result;
+				}								
+				JSONObject data = createGetReceiptRequest(paymentFile, schema);
+				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
+				String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT);
+
+				_log.info("payment platform endpoint " + endpoint);
+
+				_log.info("payment platform data " + data);  
+
+				URL url = new URL(endpoint);
+
+				conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("POST");
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
+
+				conn.setRequestProperty("Accept", "application/json");
+				conn.setRequestProperty("Content-Type", "application/json");
+
+				conn.setInstanceFollowRedirects(true);
+				HttpURLConnection.setFollowRedirects(true);
+				conn.setReadTimeout(60 * 1000);
+
+				byte[] postData = data.toJSONString().getBytes("UTF-8");
+				int postDataLength = postData.length;
+				conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+				try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+					wr.write(postData);
+				}
+
+				conn.connect();
+
+				try (BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader((conn.getInputStream())))) {
+
+					String output = StringPool.BLANK;
+
+					StringBuilder sb = new StringBuilder();
+
+					while ((output = bufferedReader.readLine()) != null) {
+						sb.append(output);
+					}
+
+					_log.info("response: " + sb.toString());
+
+					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
+					
+					if(response.has(PayGateTerm.MALOI_KEY) && PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
+						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
+						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
+						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfile.toJSONString(), serviceContext);
+					}
+					result = sb.toString();
+					_log.info("result " + result);
+				}				
+			}  catch (Exception e) {
+				_log.error(e);
+			} finally {
+				if (conn != null) {
+					conn.disconnect();
+				}
+			}
+		}		
+		return result;
+	}
+	
+	private JSONObject createGetReceiptRequest(PaymentFile paymentFile, JSONObject schema) {
+		
+		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
+		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
+		String maDoitac = paymentFile.getGovAgencyCode();
+		String maThamchieu = paymentFile.getUuid();
+		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
+		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
+		
+		JSONObject data = JSONFactoryUtil.createJSONObject();
+		data.put(PayGateTerm.LOAIBANTIN, loaiBantin);
+		data.put(PayGateTerm.PHIENBAN, phienBan);
+		data.put(PayGateTerm.MADOITAC, maDoitac);
+		data.put(PayGateTerm.MATHAMCHIEU, maThamchieu);
+		data.put(PayGateTerm.THOIGIANGD, thoigianGD);
+		
+		String maXacThuc = PayGateUtil.generateChecksum(loaiBantin, phienBan, maDoitac, maThamchieu, 
+				thoigianGD, hash_key);
+		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
+		
+		return data;
 	}
 
 }

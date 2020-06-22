@@ -38,4 +38,10 @@ public interface PayGateIntegrationAction {
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
 	
 	public JSONObject kpViewDetailTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
+	
+	public String ppInitTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
+	
+	public JSONObject ppConfirmTransaction(User user, ServiceContext serviceContext, String body);
+	
+	public String ppGetReceipt(User user, long groupId, long dosssierId, ServiceContext serviceContext);
 }

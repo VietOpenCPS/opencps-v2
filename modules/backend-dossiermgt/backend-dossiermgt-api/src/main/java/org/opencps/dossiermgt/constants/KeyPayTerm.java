@@ -120,4 +120,5 @@ public class KeyPayTerm {
 	public static final String SENDERDESC = "senderDesc";
 	public static final String KP_DVCQG_CONFIG = "KP_DVCQG_CONFIG";
 	public static final String KPDVCQG = "kpdvcqg";
+	public static final String PP_DVCGQ_CONFIG = "PP_DVCGQ_CONFIG";
 }
