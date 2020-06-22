@@ -7526,5 +7526,28 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-	}	
+	}
+
+	@Override
+	public Response getDossierCounterByDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,String date)
+	{
+		List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
+		if(Validator.isNotNull(dossiers))
+		{
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+			for (Dossier dossier : dossiers)
+			{
+				String dossierCounter = dossier.getDossierCounter();
+				if(Validator.isNotNull(dossierCounter))
+					jsonArray.put(dossierCounter);
+			}
+			jsonObject.put("dossierCounter", jsonArray);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
+		}
+		else
+			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+
+	}
 }

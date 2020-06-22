@@ -350,7 +350,7 @@ public interface PaymentFileManagement {
 	@GET
 	@Path("/checkkeypay")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@ApiOperation(value = "Download invoice file")
+	@ApiOperation(value = "check hash code key pay")
 	@ApiResponses(value = {
 		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns"),
 		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
@@ -359,5 +359,20 @@ public interface PaymentFileManagement {
 	public Response checkHashKeyPay(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 		@Context Locale locale, @Context User user, @Context ServiceContext serviceContext ,@BeanParam
 		KeyPayResultInput input);
+
+	@PUT
+	@Path("/{id}/payment/data")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@ApiOperation(value = "addPaymentFileByDosierId", response = PaymentFileInputModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns epaymentprofile was create", response = PaymentFileInputModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not Found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response updatePaymentAmount(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+		@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long dossierId,
+		@ApiParam(value = "body params for post", required = true) @FormParam("input") String input);
 
 }

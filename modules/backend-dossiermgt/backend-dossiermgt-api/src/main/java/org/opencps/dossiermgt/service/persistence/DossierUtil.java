@@ -7092,6 +7092,61 @@ public class DossierUtil {
 	}
 
 	/**
+	* Returns the dossier where dossierCounter = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public static Dossier findByDC(String dossierCounter)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().findByDC(dossierCounter);
+	}
+
+	/**
+	* Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByDC(String dossierCounter) {
+		return getPersistence().fetchByDC(dossierCounter);
+	}
+
+	/**
+	* Returns the dossier where dossierCounter = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param dossierCounter the dossier counter
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public static Dossier fetchByDC(String dossierCounter,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByDC(dossierCounter, retrieveFromCache);
+	}
+
+	/**
+	* Removes the dossier where dossierCounter = &#63; from the database.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the dossier that was removed
+	*/
+	public static Dossier removeByDC(String dossierCounter)
+		throws org.opencps.dossiermgt.exception.NoSuchDossierException {
+		return getPersistence().removeByDC(dossierCounter);
+	}
+
+	/**
+	* Returns the number of dossiers where dossierCounter = &#63;.
+	*
+	* @param dossierCounter the dossier counter
+	* @return the number of matching dossiers
+	*/
+	public static int countByDC(String dossierCounter) {
+		return getPersistence().countByDC(dossierCounter);
+	}
+
+	/**
 	* Caches the dossier in the entity cache if it is enabled.
 	*
 	* @param dossier the dossier

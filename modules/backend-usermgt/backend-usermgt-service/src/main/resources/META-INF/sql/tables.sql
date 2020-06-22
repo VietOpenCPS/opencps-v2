@@ -264,6 +264,17 @@ create table opencps_resourceuser (
 	readonly BOOLEAN
 );
 
+create table opencps_save_pick_field (
+	uuid_ VARCHAR(75) null,
+	fieldPickId LONG not null primary key,
+	groupId LONG,
+	userId LONG,
+	createDate DATE null,
+	modifiedDate DATE null,
+	formData VARCHAR(2048) null,
+	classPK VARCHAR(75) null
+);
+
 create table opencps_sync_scheduler (
 	uuid_ VARCHAR(75) null,
 	syncSchedulerId LONG not null primary key,
