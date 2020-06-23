@@ -7532,22 +7532,41 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDossierCounterByDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
 		ServiceContext serviceContext,String date)
 	{
-		List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
-		if(Validator.isNotNull(dossiers))
-		{
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-			for (Dossier dossier : dossiers)
+		try {
+			List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
+			if(Validator.isNotNull(dossiers))
 			{
-				String dossierCounter = dossier.getDossierCounter();
-				if(Validator.isNotNull(dossierCounter))
-					jsonArray.put(dossierCounter);
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonDossierId = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonGroupId = JSONFactoryUtil.createJSONArray();
+				for (Dossier dossier : dossiers)
+				{
+					String dossierCounter = dossier.getDossierCounter();
+					String dossierId = String.valueOf(dossier.getDossierId());
+					String groupId = String.valueOf(dossier.getGroupId());
+					if(Validator.isNotNull(dossierCounter)){
+						jsonArray.put(dossierCounter);
+					}
+					if(Validator.isNotNull(dossierId)){
+						jsonDossierId.put(dossierId);
+					}
+					if(Validator.isNotNull(groupId)){
+						jsonGroupId.put(groupId);
+					}
+				}
+				jsonObject.put("dossierCounter", jsonArray);
+				jsonObject.put("dossierId", jsonDossierId);
+				jsonObject.put("groupId", jsonGroupId);
+				return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 			}
-			jsonObject.put("dossierCounter", jsonArray);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
+			else
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.info("------ Log Exception ------ " + " " + e.getMessage());
 		}
-		else
-			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		return Response.status(HttpURLConnection.HTTP_OK).build();
 
 	}
 }
