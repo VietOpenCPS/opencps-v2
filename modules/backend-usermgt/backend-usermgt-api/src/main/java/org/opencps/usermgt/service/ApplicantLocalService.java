@@ -398,6 +398,13 @@ public interface ApplicantLocalService extends BaseLocalService,
 		String contactEmail, String profile);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplicantApproved(long groupId, long userId,
+		long applicantId, String applicantIdNo, String applicantName,
+		String applicantIdType, Date applicantIdDate, String contactEmail,
+		String contactTelNo, String secrectKey, ServiceContext context)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public Applicant updateApplication(ServiceContext context, long groupId,
 		long applicantId, String mappingClassName, String mappingClassPK)
 		throws PortalException, SystemException;

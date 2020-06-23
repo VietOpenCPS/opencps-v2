@@ -232,6 +232,17 @@ public class ApplicantActionsImpl implements ApplicantActions {
 	}
 
 	@Override
+	public Applicant registerApproved(ServiceContext context, long groupId, String applicantName, String applicantIdType,
+			String applicantIdNo, String applicantIdDate, String contactEmail, String address, String cityCode,
+			String cityName, String districtCode, String districtName, String wardCode, String wardName,
+			String contactName, String contactTelNo, String profile, String secrectKey) throws PortalException {
+
+		return ApplicantLocalServiceUtil.updateApplicantApproved(groupId, 20139, 0l, applicantIdNo, applicantName,
+				applicantIdType, new Date(), contactEmail, contactTelNo, secrectKey, context);
+
+	}
+
+	@Override
 	public JSONObject createApplicantAccount(long userId, long companyId, long groupId, long id, String screenName,
 			String email, boolean exist, ServiceContext context) throws PortalException {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();

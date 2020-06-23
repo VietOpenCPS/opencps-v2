@@ -800,6 +800,7 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 		}
 		object.setAdministrationCode(objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE));
 		object.setDomainCode(objectData.getString(ServiceInfoTerm.DOMAIN_CODE));
+		object.setServiceNameTitle(objectData.getString(ServiceInfoTerm.SERVICE_NAME_TITLE));
 
 		DictItem adm = DictCollectionUtils.getDictItemByCode(DataMGTConstants.ADMINTRATION_CODE,
 				objectData.getString(ServiceInfoTerm.ADMINISTRATION_CODE), objectData.getLong(Field.GROUP_ID));
@@ -816,9 +817,8 @@ public class ServiceInfoLocalServiceImpl extends ServiceInfoLocalServiceBaseImpl
 			object.setDomainIndex(dom.getTreeIndex());
 		}
 
-		serviceInfoPersistence.update(object);
+		return serviceInfoPersistence.update(object);
 
-		return object;
 	}
 
 	public static final String CLASS_NAME = ServiceInfo.class.getName();

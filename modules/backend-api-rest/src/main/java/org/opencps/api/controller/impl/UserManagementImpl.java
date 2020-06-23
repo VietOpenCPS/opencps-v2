@@ -20,10 +20,14 @@ import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -36,7 +40,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -65,6 +71,7 @@ import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.action.impl.JobposActions;
 import org.opencps.usermgt.action.impl.UserActions;
+import org.opencps.usermgt.constants.UserRegisterTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
@@ -367,6 +374,7 @@ public class UserManagementImpl implements UserManagement {
 					return Response.status(HttpURLConnection.HTTP_NOT_AUTHORITATIVE).entity(error).build();
 				}
 			}
+			
 			Document document = actions.getForgot(groupId, company.getCompanyId(), screenname_email, serviceContext);
 
 			UserAccountModel userAccountModel = UserUtils.mapperUserAccountModel(document);
@@ -433,57 +441,99 @@ public class UserManagementImpl implements UserManagement {
 					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 			if (syncUserLGSP) {
 				//Forgot LGSP
-				String secretKey = StringPool.BLANK;
 				// Create a trust manager that does not validate certificate chains
-				TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-					public X509Certificate[] getAcceptedIssuers() {
-						return null;
-					}
-					public void checkClientTrusted(X509Certificate[] certs, String authType) {
-					}
-					public void checkServerTrusted(X509Certificate[] certs, String authType) {
-					}
-				} };
-				// Install the all-trusting trust manager
-				try {
-					SSLContext sc = SSLContext.getInstance("SSL");
-					sc.init(null, trustAllCerts, new SecureRandom());
-					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-				} catch (Exception e) {
-				}
+//				TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+//					public X509Certificate[] getAcceptedIssuers() {
+//						return null;
+//					}
+//					public void checkClientTrusted(X509Certificate[] certs, String authType) {
+//					}
+//					public void checkServerTrusted(X509Certificate[] certs, String authType) {
+//					}
+//				} };
+//				// Install the all-trusting trust manager
+//				try {
+//					SSLContext sc = SSLContext.getInstance("SSL");
+//					sc.init(null, trustAllCerts, new SecureRandom());
+//					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//				} catch (Exception e) {
+//				}
 				
 				//
-				String strToken = ApplicantUtils.getTokenLGSP();
-				if (Validator.isNotNull(strToken)) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-					//
-					if (jsonToken.has("access_token") && jsonToken.has("token_type")
-							&& Validator.isNotNull(jsonToken.getString("access_token"))
-							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
-						String accessToken = jsonToken.getString("access_token");
-						String tokenType = jsonToken.getString("token_type");
+//				String strToken = ApplicantUtils.getTokenLGSP();
+//				if (Validator.isNotNull(strToken)) {
+//					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+//					//
+//					if (jsonToken.has("access_token") && jsonToken.has("token_type")
+//							&& Validator.isNotNull(jsonToken.getString("access_token"))
+//							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
+//						String accessToken = jsonToken.getString("access_token");
+//						String tokenType = jsonToken.getString("token_type");
+//
+//						_log.info("accessToken: " + accessToken);
+//						_log.info("tokenType: " + tokenType);
+//
+//						// Dang ky tk cong dan
+//						String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
+//						if (Validator.isNull(message)) {
+//							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+//						} else {
+//							JSONObject jsonMessage =  JSONFactoryUtil.createJSONObject(message);
+//							if (jsonMessage != null && jsonMessage.has("matKhau") && jsonMessage.has("taiKhoan")
+//									&& Validator.isNotNull(jsonMessage.getString("matKhau"))
+//									&& Validator.isNotNull(jsonMessage.getString("taiKhoan"))) {
+//								secretKey = jsonMessage.getString("matKhau");
+//								
+//							} else {
+//								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+//							}
+//						}
+//					}
+//				} else {
+//					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+//				}
+				String secretKey = StringPool.BLANK;
+				try {
+					/** Get Token */
+					String strToken = ApplicantUtils.getTokenNewLGSP();
+					_log.debug("RESULT PROXY: " + strToken);
+					if (Validator.isNotNull(strToken)) {
+						JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+						//
+						if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+								&& jsonToken.has("expiryDate")) {
+							String accessToken = jsonToken.getString("token");
+							String refreshToken = jsonToken.getString("refreshToken");
 
-						_log.info("accessToken: " + accessToken);
-						_log.info("tokenType: " + tokenType);
+							_log.info("accessToken: " + accessToken);
+							_log.info("refreshToken: " + refreshToken);
 
-						// Dang ky tk cong dan
-						String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
-						if (Validator.isNull(message)) {
-							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-						} else {
-							JSONObject jsonMessage =  JSONFactoryUtil.createJSONObject(message);
-							if (jsonMessage != null && jsonMessage.has("matKhau") && jsonMessage.has("taiKhoan")
-									&& Validator.isNotNull(jsonMessage.getString("matKhau"))
-									&& Validator.isNotNull(jsonMessage.getString("taiKhoan"))) {
-								secretKey = jsonMessage.getString("matKhau");
-								
-							} else {
-								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+							String strResult = RegisterLGSPUtils.forgotNewLGSP("Bearer", accessToken, screenname_email);
+							
+							boolean flagFogot = false;
+							if (Validator.isNotNull(strResult)) {
+								JSONObject jsonResult = JSONFactoryUtil.createJSONObject(strResult);
+								if (jsonResult != null && jsonResult.has("password") && jsonResult.has("userName")
+										&& Validator.isNotNull(jsonResult.getString("password")) && 
+										Validator.isNotNull(jsonResult.getString("userName"))) {
+									flagFogot = true;
+									secretKey = jsonResult.getString("password");
+								}
+							}
+
+							if (!flagFogot) {
+								ErrorMsgModel error = new ErrorMsgModel();
+								error.setMessage("Change pass error");
+								error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+								error.setDescription("Change pass error");
+								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 							}
 						}
 					}
-				} else {
-					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
+				} catch (Exception e) {
+					_log.error(e);
+					_log.debug("Something went wrong while reading/writing in stream!!");
+					return BusinessExceptionImpl.processException(e);
 				}
 				
 				_log.info("secretKey: "+secretKey);
@@ -761,8 +811,91 @@ public class UserManagementImpl implements UserManagement {
 
 			_log.info("groupId: "+groupId+ "|company.getCompanyId(): "+company.getCompanyId()+"|id: "+id
 					+"oldPass: "+oldPassword+ "|newPassword: "+newPassword);
+			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
+					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
+			if (syncUserLGSP) {
+				StringBuilder sbToken = new StringBuilder();
+				try {
+
+					URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
+
+					java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
+					conToken.setRequestMethod(HttpMethod.POST);
+					conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+					conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+					conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
+					conToken.setRequestProperty("Content-Length", String.valueOf(0));
+
+					conToken.setUseCaches(false);
+					conToken.setDoInput(true);
+					conToken.setDoOutput(true);
+					
+					OutputStream os = conToken.getOutputStream();
+					os.close();
+
+					BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+
+					int cpToken;
+					while ((cpToken = brfToken.read()) != -1) {
+						sbToken.append((char) cpToken);
+					}
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+
+				if (sbToken != null && Validator.isNotNull(sbToken.toString())) {
+					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+							&& jsonToken.has("expiryDate")) {
+
+						String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_PASS;
+						_log.info("strUrlChange: "+ strUrlChange);
+						String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
+						_log.info("authStrEnc: "+ authStrEnc);
+						
+						StringBuilder sbChange = new StringBuilder();
+						try {
+							URL urlChange = new URL(strUrlChange);
+
+							JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+							jsonBody.put(UserRegisterTerm.USER_NAME, user.getEmailAddress());
+							jsonBody.put(UserRegisterTerm.OLD_SECRECT_KEY, oldPassword);
+							jsonBody.put(UserRegisterTerm.SECRECT_KEY, newPassword);
+							//
+
+							java.net.HttpURLConnection conChange = (java.net.HttpURLConnection) urlChange.openConnection();
+							conChange.setRequestMethod(HttpMethod.POST);
+							conChange.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+							conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+							conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+							_log.debug("BASIC AUTHEN: " + authStrEnc);
+							conChange.setRequestProperty("Content-Length",
+									StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+
+							conChange.setUseCaches(false);
+							conChange.setDoInput(true);
+							conChange.setDoOutput(true);
+							_log.debug("POST DATA: " + jsonBody.toString());
+							OutputStream osChange = conChange.getOutputStream();
+							osChange.write(jsonBody.toString().getBytes());
+							osChange.close();
+
+							BufferedReader brfChange = new BufferedReader(new InputStreamReader(conChange.getInputStream()));
+
+							int cpChange;
+							while ((cpChange = brfChange.read()) != -1) {
+								sbChange.append((char) cpChange);
+							}
+							_log.info("RESULT PROXY: " + sbChange.toString());
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+					}
+				}
+			}
 			boolean flag = actions.addChangepass(groupId, company.getCompanyId(), id, oldPassword, newPassword, 0,
 					serviceContext);
+			_log.info("flag: "+flag);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(flag)).build();
 

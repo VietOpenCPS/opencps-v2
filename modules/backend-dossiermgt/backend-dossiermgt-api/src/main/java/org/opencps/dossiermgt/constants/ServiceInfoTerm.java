@@ -41,4 +41,5 @@ public class ServiceInfoTerm {
 	public static final String CFG_SERVER_NO = "SERVER_DVC";
 	public static final String MAPPING = "mapping";
 	public static final String MAPPING_CLASSPK = "mappingClassPK";
+	public static final String SERVICE_TITLE = "serviceTitle";
 }
