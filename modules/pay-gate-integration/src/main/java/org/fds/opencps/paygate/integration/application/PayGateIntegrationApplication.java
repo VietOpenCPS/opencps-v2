@@ -37,7 +37,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/pgi/",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.pgi" }, service = Application.class)
-public class PayGateIntegrationApplication extends Application {
+public class PayGateIntegrationApplication extends Application {  
 
 	@Override
 	public Set<Object> getSingletons() {
@@ -219,5 +219,91 @@ public class PayGateIntegrationApplication extends Application {
 		JSONObject result = actionImpl.kpCallBack(user, serviceContext, body);
 
 		return Response.status(200).entity(result.toJSONString()).build();
+	}
+	
+	/**
+	 * Pp init transaction.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param header the header
+	 * @param company the company
+	 * @param locale the locale
+	 * @param user the user
+	 * @param serviceContext the service context
+	 * @param dossierId the dossier id
+	 * @return the response
+	 */
+	@POST
+	@Path("/ppdvcqg/inittransaction")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({ MediaType.APPLICATION_JSON})
+	public Response ppInitTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@FormParam("dossierId") long dossierId) {
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String result = actionImpl.ppInitTransaction(user, groupId, dossierId, serviceContext);
+		return Response.status(200).entity(result).build();		
+	}
+	
+	/**
+	 * Pp confirm transaction.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param header the header
+	 * @param company the company
+	 * @param locale the locale
+	 * @param user the user
+	 * @param serviceContext the service context
+	 * @param body the body
+	 * @return the response
+	 */
+	@POST
+	@Path("/ppdvcqg/paymentconfirm")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response ppConfirmTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			String body) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.ppConfirmTransaction(user, serviceContext, body);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+	
+	/**
+	 * Gets the receipt.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param header the header
+	 * @param company the company
+	 * @param locale the locale
+	 * @param user the user
+	 * @param serviceContext the service context
+	 * @param dossierId the dossier id
+	 * @return the receipt
+	 */
+	@POST
+	@Path("/ppdvcqg/paymentreceipt")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getReceipt(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@FormParam("dossierId") long dossierId) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		String result = actionImpl.ppGetReceipt(user, groupId, dossierId, serviceContext);
+		return Response.status(200).entity(result).build();	
 	}
 }
