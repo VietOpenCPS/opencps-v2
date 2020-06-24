@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="pay.gate.integration.dvc.model.ApdungDVC">
+		<field name="uuid" type="String" />
+		<field name="apdungDVCId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="maTTHC" type="String" />
+		<field name="maCQTH" type="String" />
+		<field name="mucdo" type="int" />
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
+	<model name="pay.gate.integration.dvc.model.PhiLePhi">
+		<field name="uuid" type="String" />
+		<field name="phiLePhiId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="loaiPLP" type="String" />
+		<field name="maPLP" type="String" />
+		<field name="tenPLP" type="String" />
+		<field name="soTien" type="long" />
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
+	<model name="pay.gate.integration.dvc.model.ServiceConfigMapping">
+		<field name="uuid" type="String" />
+		<field name="serviceConfigMappingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="maDVC" type="String" />
+		<field name="tenDVC" type="String" />
+		<field name="maTTHC" type="String" />
+		<field name="tenTTHC" type="String" />
+		<field name="tenCQBH" type="String" />
+		<field name="tenLinhVuc" type="String" />
+		<field name="apdungDVC" type="String" />
+	</model>
+</model-hints>
