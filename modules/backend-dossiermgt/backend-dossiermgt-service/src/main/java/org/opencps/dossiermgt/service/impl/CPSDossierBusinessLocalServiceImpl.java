@@ -3219,6 +3219,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
+			String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dateOption);
+			dossier.setMetaData(metadata);
+			bResult.put(DossierTerm.META_DATA, true);
 			bResult.put(DossierTerm.DUE_DATE, true);
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		} else //Update counter and dossierNo
@@ -8199,6 +8202,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return oldDossier;
 	}
 
+	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, int dateOption) {
+
+		try {
+			JSONObject metaData = Validator.isNotNull(dossier.getMetaData()) ?
+				JSONFactoryUtil.createJSONObject(dossier.getMetaData()) :
+					JSONFactoryUtil.createJSONObject();
+			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
+			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
+			System.out.println("===============metaData==========" +metaData);
+			return metaData.toJSONString();
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return StringPool.BLANK;
+	}
 	private Dossier setDossierNoNDueDate(Dossier dossier, ServiceProcess serviceProcess, ProcessOption option,
 			boolean setDossierNo, boolean setDueDate, Date dueDateStart, LinkedHashMap<String, Object> params) {
 
