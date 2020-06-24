@@ -107,18 +107,9 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.HolidayUtils;
-import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.DossierFileActions;
-import org.opencps.dossiermgt.action.DossierMarkActions;
-import org.opencps.dossiermgt.action.DossierSyncActions;
-import org.opencps.dossiermgt.action.FileUploadUtils;
-import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
-import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
-import org.opencps.dossiermgt.action.impl.DossierPermission;
-import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
+import org.opencps.dossiermgt.action.*;
+
+import org.opencps.dossiermgt.action.impl.*;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
@@ -141,51 +132,9 @@ import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceProcessTerm;
 import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierLog;
-import org.opencps.dossiermgt.model.DossierMark;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.DossierSync;
-import org.opencps.dossiermgt.model.DossierTemplate;
-import org.opencps.dossiermgt.model.DossierUser;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
-import org.opencps.dossiermgt.model.ProcessSequence;
-import org.opencps.dossiermgt.model.ProcessStep;
-import org.opencps.dossiermgt.model.ProcessStepRole;
-import org.opencps.dossiermgt.model.PublishQueue;
-import org.opencps.dossiermgt.model.ServiceConfig;
-import org.opencps.dossiermgt.model.ServiceInfo;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.model.StepConfig;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
-import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
-import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
@@ -7549,5 +7498,35 @@ public class DossierManagementImpl implements DossierManagement {
 		else
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 
+	}
+
+	@Override public Response updateState(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,long id,String codeNumber,int state)
+	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date now = new Date();
+		String codeNumberArray[] = codeNumber.split(",");
+		BookingActions bookingActions = new BookingActionsImpl();
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONArray updated=JSONFactoryUtil.createJSONArray();
+		for (String cn:codeNumberArray )
+		{
+			Booking booking = bookingActions.getByCodeNumber(cn);
+			if (Validator.isNotNull(booking))
+			{
+				Date checkinDate = booking.getCheckinDate();
+				long classPK = booking.getClassPK();
+				if (dateFormat.format(checkinDate).equals(dateFormat.format(now)) && id == classPK)
+				{
+					booking.setState(state);
+					Booking bookingResult = BookingLocalServiceUtil.updateBooking(booking);
+					if (Validator.isNotNull(bookingResult))
+						updated.put(cn);
+				}
+			}
+		}
+		result.put("status",true);
+		result.put("codeNumberUpdated",updated);
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
 	}
 }

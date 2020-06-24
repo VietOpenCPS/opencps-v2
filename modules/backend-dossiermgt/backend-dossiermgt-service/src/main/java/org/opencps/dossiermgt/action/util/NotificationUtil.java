@@ -13,7 +13,7 @@ public class NotificationUtil {
 			}
 		}
 		
-		return true;
+		return false;
 	}
 
 	public static boolean isSendEmail(String condition) {
@@ -24,6 +24,6 @@ public class NotificationUtil {
 			}
 		}
 		
-		return true;
-	}	
+		return false;
+	}
 }

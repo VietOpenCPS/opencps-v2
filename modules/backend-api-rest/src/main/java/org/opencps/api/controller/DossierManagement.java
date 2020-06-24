@@ -1604,4 +1604,20 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @QueryParam("date") String date);
+
+	@PUT
+	@Path("/{id}/booking")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@ApiOperation(value = "Update a state by codeNumber", response = String.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was updated", response = String.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+	public Response updateState(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext, @PathParam("id") long id,@FormParam("codeNumber") String codeNumber,@FormParam("state") int state);
 }
