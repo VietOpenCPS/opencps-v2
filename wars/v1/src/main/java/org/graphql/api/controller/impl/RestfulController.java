@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.octo.captcha.service.CaptchaServiceException;
@@ -108,6 +109,8 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.util.SendMailLGSPUtils;
+import org.opencps.usermgt.service.util.ServiceProps;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -532,185 +535,14 @@ public class RestfulController {
 //											}
 //										}
 									} else if (isRequireVerify) {
-//										if (applicantId == 0) {
-//											//Get userInfo
-//											String strUrlInfo = UserRegisterTerm.NEW_BASE_URL
-//													+ UserRegisterTerm.NEW_ENDPOINT_GET_USER + StringPool.FORWARD_SLASH
-//													+ email;
-//											_log.info("strUrlInfo: "+ strUrlInfo);
-//											URL urlInfo = new URL(strUrlInfo);
-//
-//											java.net.HttpURLConnection conInfo = (java.net.HttpURLConnection) urlInfo.openConnection();
-//											conInfo.setRequestMethod(HttpMethod.POST);
-//											conInfo.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-//											conInfo.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-//											conInfo.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-//											_log.debug("BASIC AUTHEN: " + authStrEnc);
-//											conInfo.setRequestProperty("Content-Length", String.valueOf(0));
-//
-//											conInfo.setUseCaches(false);
-//											conInfo.setDoInput(true);
-//											conInfo.setDoOutput(true);
-//											OutputStream osInfo = conInfo.getOutputStream();
-//											osInfo.close();
-//
-//											BufferedReader brfInfo = new BufferedReader(new InputStreamReader(conInfo.getInputStream()));
-//
-//											int cpInfo;
-//											StringBuilder sbInfo = new StringBuilder();
-//											while ((cpInfo = brfInfo.read()) != -1) {
-//												sbInfo.append((char) cpInfo);
-//											}
-//											_log.info("RESULT PROXY: " + sbInfo.toString());
-//											try {
-//												String cityName = StringPool.BLANK;
-//												String districtName = StringPool.BLANK;
-//												String wardName = StringPool.BLANK;
-//												
-//												JSONObject jsonInfo = null;
-//												if (Validator.isNotNull(sbInfo.toString())) {
-//													jsonInfo = JSONFactoryUtil.createJSONObject(sbInfo.toString());
-//													//
-//													
-//												}
-//												String applicantName = jsonInfo.getString("fullName");
-//												String applicantIdType = "citizen";
-//												String applicantIdNo = HtmlUtil.escape(input.getApplicantIdNo());
-//												String address = HtmlUtil.escape(input.getAddress());
-//												String cityCode = HtmlUtil.escape(input.getCityCode());
-//												String districtCode = HtmlUtil.escape(input.getDistrictCode());
-//												String wardCode = HtmlUtil.escape(input.getWardCode());
-//												String contactName = HtmlUtil.escape(input.getContactName());
-//												String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
-//												String contactEmail = HtmlUtil.escape(input.getContactEmail());
-//												String applicantIdDate = input.getApplicantIdDate();
-//
-//												if (Validator.isNotNull(input.getCityCode())) {
-//													cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
-//
-//												}
-//												if (Validator.isNotNull(input.getDistrictCode())) {
-//													districtName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getDistrictCode());
-//
-//												}
-//												if (Validator.isNotNull(input.getWardCode())) {
-//													wardName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getWardCode());
-//
-//												}
-//
-//												boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
-//														? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
-//												
-////												if (syncUserLGSP) {
-////													// Create a trust manager that does not validate certificate chains
-////													TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-////														public X509Certificate[] getAcceptedIssuers() {
-////															return null;
-////														}
-////														public void checkClientTrusted(X509Certificate[] certs, String authType) {
-////														}
-////														public void checkServerTrusted(X509Certificate[] certs, String authType) {
-////														}
-////													} };
-////													// Install the all-trusting trust manager
-////													try {
-////														SSLContext sc = SSLContext.getInstance("SSL");
-////														sc.init(null, trustAllCerts, new SecureRandom());
-////														HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-////													} catch (Exception e) {
-////													}
-//									//
-////													//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
-////													String strProfile = StringPool.BLANK;
-////													String strToken = ApplicantUtils.getTokenLGSP();
-////													if (Validator.isNotNull(strToken)) {
-////														JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-////														//
-////														if (jsonToken.has("access_token") && jsonToken.has("token_type")
-////																&& Validator.isNotNull(jsonToken.getString("access_token"))
-////																&& Validator.isNotNull(jsonToken.getString("token_type"))) {
-////															String accessToken = jsonToken.getString("access_token");
-////															String tokenType = jsonToken.getString("token_type");
-//									//
-////															_log.info("accessToken: " + accessToken);
-////															_log.info("tokenType: " + tokenType);
-//									//
-////															// Dang ky tk cong dan
-////															strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
-////																	applicantIdNo, applicantName, applicantIdDate, contactTelNo);
-////															_log.info("strProfile: " + strProfile);
-////															if (Validator.isNull(strProfile)) {
-////																return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-////															}
-////														}
-////													} else {
-////														return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-////													}
-////												}
-//
-//												if (syncUserLGSP) {
-//
-//													String strProfile = StringPool.BLANK;
-//													String strToken = ApplicantUtils.getTokenNewLGSP();
-//													if (Validator.isNotNull(strToken)) {
-//														JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-//														//
-//														if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-//																&& jsonToken.has("expiryDate")) {
-//															String accessToken = jsonToken.getString("token");
-//															String refreshToken = jsonToken.getString("refreshToken");
-//															//String expiryDate = jsonToken.getString("expiryDate");
-//
-//															_log.info("accessToken: " + accessToken);
-//															_log.info("refreshToken: " + refreshToken);
-//
-//															// Dang ky tk cong dan
-//															strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail,
-//																	applicantIdNo, applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
-//															_log.info("strProfile: " + strProfile);
-//															if (Validator.isNull(strProfile) || "ERROR".equalsIgnoreCase(strProfile)) {
-//																return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}").build();
-//															} else if (Validator.isNotNull(strProfile) && "DUPLICATE".equalsIgnoreCase(strProfile)) {
-//																Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
-//																		applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address, cityCode,
-//																		cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
-//																		StringPool.BLANK, input.getPassword());
-//																
-//																result = ApplicantUtils.mappingToApplicantModel(applicant);
-//
-//																return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
-//															} else if ("SUCCESSFUL".equalsIgnoreCase(strProfile)) {
-//																Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-//																		applicantIdNo, applicantIdDate, contactEmail, address,
-//																		cityCode, cityName, districtCode, districtName,
-//																		wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
-//																		input.getPassword());
-//																_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
-//																result = ApplicantUtils.mappingToApplicantModel(applicant);
-//
-//																return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-//															}
-//														}
-//													} else {
-//														return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-//													}
-//												} else {
-//													Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-//															applicantIdNo, applicantIdDate, contactEmail, address,
-//															cityCode, cityName, districtCode, districtName,
-//															wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
-//															input.getPassword());
-//													_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
-//													result = ApplicantUtils.mappingToApplicantModel(applicant);
-//
-//													return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-//												}
-//
-//												return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(result).build();
-//											} catch (Exception e) {
-//												return BusinessExceptionImpl.processException(e);
-//											}
-//										}
+										if (app != null) {
+											String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+											app.setActivationCode(activationCode);
+											ApplicantLocalServiceUtil.updateApplicant(app);
+											//Send activeCode
+											SendMailLGSPUtils.sendMailVerifyAcc(app, activationCode,
+													GetterUtil.getLong(request.getHeader("groupId")));
+										}
 										response.setStatus(HttpServletResponse.SC_OK);
 										response.setHeader("applicantId", String.valueOf(applicantId));
 										return "verify";

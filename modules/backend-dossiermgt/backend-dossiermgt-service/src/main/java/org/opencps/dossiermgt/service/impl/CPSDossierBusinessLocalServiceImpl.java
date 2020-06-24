@@ -3018,7 +3018,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		//Check verification
 		if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(curStatus)) {
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			Applicant checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
 			if (checkApplicant != null && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 				if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
 						|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
@@ -3094,7 +3094,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			Applicant checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
 			if (checkApplicant != null) {
 				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
 						DossierTerm.DOSSIER_STATUS_RECEIVING);
@@ -5569,7 +5569,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -5712,7 +5712,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
 
 			//Check verification applicant
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			Applicant checkApplicant = user.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId()) : null;
 			if (checkApplicant != null) {
 				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(groupId, user.getUserId(),
 						DossierTerm.DOSSIER_STATUS_RECEIVING);
@@ -5953,7 +5953,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -6449,7 +6449,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -7834,7 +7834,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),

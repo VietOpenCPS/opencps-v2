@@ -173,7 +173,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 			
 		}
 		
-		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		applicant = userId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 		
 		if (Validator.isNotNull(applicant)) {
 			return applicant.getApplicantName();
