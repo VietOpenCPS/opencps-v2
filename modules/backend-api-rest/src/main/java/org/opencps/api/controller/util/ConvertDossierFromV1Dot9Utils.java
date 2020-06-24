@@ -501,8 +501,8 @@ public class ConvertDossierFromV1Dot9Utils {
 
 	public static void insertUserDossierDvc(long mappingID, long dossierId) {
 
-		Applicant applicant =
-			ApplicantLocalServiceUtil.fetchByMappingID(mappingID);
+		Applicant applicant = mappingID > 0 ?
+			ApplicantLocalServiceUtil.fetchByMappingID(mappingID) : null;
 		if (Validator.isNotNull(applicant)) {
 
 			DossierUserActions duActions = new DossierUserActionsImpl();;

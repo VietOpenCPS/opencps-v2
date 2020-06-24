@@ -66,6 +66,7 @@ public class OneMinute extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) {
+		_log.info("=======START SEND NOTIFICATION: ====== : isRunning: "+ isRunning);
 		if (!isRunning) {
 			isRunning = true;
 		}
@@ -79,6 +80,7 @@ public class OneMinute extends BaseMessageListener {
 			_log.debug(e);
 		}
 		isRunning = false;
+		_log.info("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
 	}
 
 	private void doProcessNotification(Message message) {
@@ -114,7 +116,7 @@ public class OneMinute extends BaseMessageListener {
 							Result resultSendSMS = new Result("Success", new Long(1));
 							if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
 
-								if ("BCT".equalsIgnoreCase(agencySMS)) {
+								if ("BCT".contentEquals(agencySMS)) {
 									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
 											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
@@ -163,7 +165,7 @@ public class OneMinute extends BaseMessageListener {
 							} */
 
 							_log.info("notificationQueue.getNotificationType(): "+notificationQueue.getNotificationType());
-							if ("BCT".equalsIgnoreCase(agencySMS)) {
+							if ("BCT".contentEquals(agencySMS)) {
 									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
 											messageEntry.getEmailSubject(), messageEntry.getToTelNo());

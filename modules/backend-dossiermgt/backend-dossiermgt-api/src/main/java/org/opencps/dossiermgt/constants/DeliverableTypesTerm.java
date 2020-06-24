@@ -14,6 +14,7 @@ public class DeliverableTypesTerm {
 	public static final String GOV_AGENCIES = "govAgencies";
 	public static final String TYPE_CODE = "typeCode";
 	public static final String TYPE_NAME = "typeName";
+	public static final String TABLE_CONFIG = "tableConfig";
 	
 	public static final String DELIVERABLES_KEY = "deliverables";
 	public static final String DELIVERABLE_CODE_KEY = "deliverableCode";

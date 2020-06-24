@@ -349,10 +349,11 @@ public class DossierManagementImpl implements DossierManagement {
 			String follow = query.getFollow();
 			String applicantFollowIdNo = null;
 			if (Boolean.valueOf(follow)) {
-				Applicant applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(userId);
-				if (applicant != null) {
-					applicantFollowIdNo = applicant.getApplicantIdNo();
+				if (userId > 0) {
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+					if (applicant != null) {
+						applicantFollowIdNo = applicant.getApplicantIdNo();
+					}
 				}
 			}
 

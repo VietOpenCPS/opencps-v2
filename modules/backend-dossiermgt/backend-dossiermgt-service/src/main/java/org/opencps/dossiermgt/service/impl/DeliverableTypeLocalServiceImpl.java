@@ -362,6 +362,7 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 		object.setMappingData(objectData.getString(DeliverableTypesTerm.MAPPING_DATA));
 		object.setDocSync(objectData.getInt(DeliverableTypesTerm.DOC_SYNC));
 		object.setGovAgencies(objectData.getString(DeliverableTypesTerm.GOV_AGENCIES));
+		object.setTableConfig(objectData.getString(DeliverableTypesTerm.TABLE_CONFIG));
 
 		deliverableTypePersistence.update(object);
 

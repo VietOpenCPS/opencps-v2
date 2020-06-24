@@ -236,7 +236,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 				//_log.info("menuConfigList: "+JSONFactoryUtil.looseSerialize(menuConfigList));
 			}
 			//Applicant
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			Applicant applicant = user.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId()) : null;
 			if (applicant != null) {
 				JobPos job = JobPosLocalServiceUtil.getByJobCode(groupId, SystemManagementConstants.APPLICANT);
 				if (job != null) {

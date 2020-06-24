@@ -17,6 +17,20 @@ public class UserRegisterTerm {
 	public static final String ENDPOINT_CITIZEN_ACTIVE = "/congdan/kichhoat";
 	public static final String ENDPOINT_BUSINESS_ACTIVE = "/doanhnghiep/kichhoat";
 	public static final String ENDPOINT_FORGOT = "/quenmatkhau";
+	//
+	public static final String NEW_BASE_URL = "http://api.dongthap.gov.vn";
+	public static final String NEW_ENDPOINT_TOKEN = "/api/v1/Authentication/Token";
+	public static final String NEW_ENDPOINT_LOGIN = "/api/v1/congdan/UserLogin";
+	public static final String NEW_ENDPOINT_REGISTER = "/api/v1/congdan/UserRegister";
+	public static final String NEW_ENDPOINT_CHANGE_PASS = "/api/v1/congdan/UserChangePassword";
+	public static final String NEW_ENDPOINT_RESET_PASS = "/api/v1/congdan/UserResetPasswordAuto";
+	public static final String NEW_ENDPOINT_VERIFY_OTP = "/​api​/v1​/congdan/VerifyOpt";
+	public static final String NEW_ENDPOINT_GET_OTP = "/​api​/v1​/congdan/GetOtp";
+	public static final String NEW_ENDPOINT_SEND_SMS_OTP = "/​api​/v1​/congdan/SendSmsOtp";
+	public static final String NEW_ENDPOINT_GET_USER = "/api/v1/congdan/GetUser";
+	public static final String NEW_ENDPOINT_VERIFY_OTP_USER = "/​api​/v1​/congdan/VerifyOptUser";
+	public static final String NEW_ENDPOINT_VERIFY_USER = "/api/v1/congdan/VerifyUser";
+	public static final String NEW_ENDPOINT_SEND_EMAIL_OTP = "/​api​/v1​/congdan/SendEmailOtp";
 
 	//Citizen
 	public static final String EMAIL = "email";
@@ -47,5 +61,11 @@ public class UserRegisterTerm {
 	public static final String TAI_KHOAN = "taiKhoan";
 	public static final String OLD_SECRECT = "matKhauCu";
 	public static final String NEW_SECRECT = "matKhauMoi";
+	//
+	public static final String USER_NAME = "userName";
+	public static final String OLD_SECRECT_KEY = "oldPassword";
+	public static final String SECRECT_KEY = "password";
+	public static final String PHONE_NUMBER = "phoneNumber";
+	public static final String ORGANIZATION_NAME = "organizationName";
 
 }

@@ -493,6 +493,19 @@ public class ApplicantLocalServiceUtil {
 			contactName, contactTelNo, contactEmail, profile);
 	}
 
+	public static org.opencps.usermgt.model.Applicant updateApplicantApproved(
+		long groupId, long userId, long applicantId, String applicantIdNo,
+		String applicantName, String applicantIdType,
+		java.util.Date applicantIdDate, String contactEmail,
+		String contactTelNo, String secrectKey,
+		com.liferay.portal.kernel.service.ServiceContext context)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateApplicantApproved(groupId, userId, applicantId,
+			applicantIdNo, applicantName, applicantIdType, applicantIdDate,
+			contactEmail, contactTelNo, secrectKey, context);
+	}
+
 	public static org.opencps.usermgt.model.Applicant updateApplication(
 		com.liferay.portal.kernel.service.ServiceContext context, long groupId,
 		long applicantId, String mappingClassName, String mappingClassPK)

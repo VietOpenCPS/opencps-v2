@@ -3039,7 +3039,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		//Check verification
 		if (DossierTerm.DOSSIER_STATUS_DONE.contentEquals(curStatus)) {
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			Applicant checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
 			if (checkApplicant != null && dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
 				if (checkApplicant.getVerification() == ApplicantTerm.LOCKED
 						|| checkApplicant.getVerification() == ApplicantTerm.LOCKED_DOSSIER) {
@@ -3115,7 +3115,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		if (DossierTerm.DOSSIER_STATUS_RECEIVING.contentEquals(dossier.getDossierStatus())
 				&& dossier.getOriginality() == DossierTerm.ORIGINALITY_DVCTT) {
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId());
+			Applicant checkApplicant = dossier.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(dossier.getUserId()) : null;
 			if (checkApplicant != null) {
 				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(dossier.getGroupId(), dossier.getUserId(),
 						DossierTerm.DOSSIER_STATUS_RECEIVING);
@@ -3240,6 +3240,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
+			String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dateOption);
+			dossier.setMetaData(metadata);
+			bResult.put(DossierTerm.META_DATA, true);
 			bResult.put(DossierTerm.DUE_DATE, true);
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		} else //Update counter and dossierNo
@@ -3668,6 +3671,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
 						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle());
 					}
 				}
 				jsonMark.put(DossierPartTerm.PART_NO, partNo);
@@ -3788,8 +3792,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			si = ServiceInfoLocalServiceUtil.getByCode(dossier.getGroupId(), dossier.getServiceCode());
 			if (si != null) {
 				jsonData.put(ServiceInfoTerm.IS_NOTARIZATION, si.isIsNotarization());
+				jsonData.put(ServiceInfoTerm.SERVICE_NAME_TITLE, si.getServiceNameTitle());
 			} else {
 				jsonData.put(ServiceInfoTerm.IS_NOTARIZATION, false);
+				jsonData.put(ServiceInfoTerm.SERVICE_NAME_TITLE, StringPool.BLANK);
 			}
 		} catch (PortalException e) {
 			_log.debug(e);
@@ -5587,7 +5593,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -5730,7 +5736,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 8: " + (System.currentTimeMillis() - start) + " ms");
 
 			//Check verification applicant
-			Applicant checkApplicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+			Applicant checkApplicant = user.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId()) : null;
 			if (checkApplicant != null) {
 				int countDossier = DossierLocalServiceUtil.countByG_UID_DS(groupId, user.getUserId(),
 						DossierTerm.DOSSIER_STATUS_RECEIVING);
@@ -5971,7 +5977,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -6467,7 +6473,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -7852,7 +7858,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug("CREATE DOSSIER 3: " + (System.currentTimeMillis() - start) + " ms");
 
 			if (originality != DossierTerm.ORIGINALITY_LIENTHONG) {
-				Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId());
+				Applicant applicant = serviceContext.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(serviceContext.getUserId()) : null;
 				if (applicant != null) {
 					updateApplicantInfo(dossier, applicant.getApplicantIdDate(), applicant.getApplicantIdNo(),
 							applicant.getApplicantIdType(), applicant.getApplicantName(), applicant.getAddress(),
@@ -8217,6 +8223,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return oldDossier;
 	}
 
+	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, int dateOption) {
+
+		try {
+			JSONObject metaData = Validator.isNotNull(dossier.getMetaData()) ?
+				JSONFactoryUtil.createJSONObject(dossier.getMetaData()) :
+					JSONFactoryUtil.createJSONObject();
+			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
+			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
+			System.out.println("===============metaData==========" +metaData);
+			return metaData.toJSONString();
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return StringPool.BLANK;
+	}
 	private Dossier setDossierNoNDueDate(Dossier dossier, ServiceProcess serviceProcess, ProcessOption option,
 			boolean setDossierNo, boolean setDueDate, Date dueDateStart, LinkedHashMap<String, Object> params) {
 

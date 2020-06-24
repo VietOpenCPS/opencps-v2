@@ -366,6 +366,104 @@ public class RegisterLGSPUtils {
 		return 0;
 	}
 
+	public static boolean activeUserNewLGSP(JSONObject jsonToken, long groupId, String tmpSecrect,
+			String contactEmail) throws Exception {
+
+		String accessToken = jsonToken.getString("token");
+		String refreshToken = jsonToken.getString("refreshToken");
+		//String expiryDate = jsonToken.getString("expiryDate");
+
+		_log.info("accessToken: " + accessToken);
+		_log.info("refreshToken: " + refreshToken);
+
+		// Dang ky tk cong dan
+		//
+		String urlActive = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_VERIFY_USER;
+		
+		_log.info("urlActive: "+urlActive);
+		String authStrEnc = "Bearer" + StringPool.SPACE + accessToken;
+
+		StringBuilder sbActive = new StringBuilder();
+		try {
+			URL urlValActive = new URL(urlActive);
+
+			java.net.HttpURLConnection conActive = (java.net.HttpURLConnection) urlValActive.openConnection();
+			conActive.setRequestMethod(HttpMethod.POST);
+			conActive.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conActive.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conActive.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+			conActive.setRequestProperty("username", contactEmail);
+			_log.debug("BASIC AUTHEN: " + authStrEnc);
+			conActive.setRequestProperty("Content-Length", String.valueOf(0));
+
+			conActive.setUseCaches(false);
+			conActive.setDoInput(true);
+			conActive.setDoOutput(true);
+			
+			OutputStream os = conActive.getOutputStream();
+			os.close();
+
+			BufferedReader brfAc = new BufferedReader(new InputStreamReader(conActive.getInputStream()));
+
+			int cpActive;
+			while ((cpActive = brfAc.read()) != -1) {
+				sbActive.append((char) cpActive);
+			}
+			_log.info("RESULT PROXY: " + sbActive.toString());
+			//
+			return Validator.isNotNull(sbActive.toString()) ? Boolean.valueOf(sbActive.toString()) : false;
+		} catch (IOException e) {
+			_log.error(e);
+			_log.debug("Something went wrong while reading/writing in stream!!");
+		}
+		return false;
+	}
+
+	public static String forgotNewLGSP(String tokenType, String accessToken, String contactEmail) throws Exception {
+
+		_log.info("accessToken: " + accessToken);
+		// Dang ky tk cong dan
+		String urlReset = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_RESET_PASS;
+		
+		_log.info("urlReset: "+urlReset);
+		String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+
+		StringBuilder sbReset = new StringBuilder();
+		try {
+			URL urlValReset = new URL(urlReset);
+
+			java.net.HttpURLConnection conReset = (java.net.HttpURLConnection) urlValReset.openConnection();
+			conReset.setRequestMethod(HttpMethod.POST);
+			conReset.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			conReset.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			conReset.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+			conReset.setRequestProperty("username", contactEmail);
+			_log.debug("BASIC AUTHEN: " + authStrEnc);
+			conReset.setRequestProperty("Content-Length", String.valueOf(0));
+
+			conReset.setUseCaches(false);
+			conReset.setDoInput(true);
+			conReset.setDoOutput(true);
+			
+			OutputStream os = conReset.getOutputStream();
+			os.close();
+
+			BufferedReader brfReset = new BufferedReader(new InputStreamReader(conReset.getInputStream()));
+
+			int cpReset;
+			while ((cpReset = brfReset.read()) != -1) {
+				sbReset.append((char) cpReset);
+			}
+			_log.info("RESULT PROXY: " + sbReset.toString());
+			//
+			return Validator.isNotNull(sbReset.toString()) ? sbReset.toString() : StringPool.BLANK;
+		} catch (IOException e) {
+			_log.error(e);
+			_log.debug("Something went wrong while reading/writing in stream!!");
+		}
+		return StringPool.BLANK;
+	}
+
 	public static boolean changePassLGSP(String matKhau, String tmpSecrect, String contactEmail, String authStrEnc) {
 
 		try {

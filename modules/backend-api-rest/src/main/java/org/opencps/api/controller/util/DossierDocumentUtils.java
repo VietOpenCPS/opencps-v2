@@ -654,8 +654,8 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.PART_NAME, part.getPartName());
 						jsonMark.put(DossierPartTerm.PART_TIP, part.getPartTip());
 						jsonMark.put(DossierPartTerm.PART_TYPE, part.getPartType());
+						jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle() !=null ? part.getPartNameTitle() : StringPool.BLANK);
 					}
-					jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle() !=null ? part.getPartNameTitle() : StringPool.BLANK);
 
 				}
 				jsonMark.put(DossierPartTerm.PART_NO, partNo);
@@ -688,7 +688,7 @@ public class DossierDocumentUtils {
 						jsonMark.put(DossierPartTerm.FILE_CHECK, dossierMark.getFileCheck());
 						jsonMark.put(DossierPartTerm.FILE_COMMENT, dossierMark.getFileComment());
 						jsonMark.put(DossierPartTerm.RECORD_COUNT, dossierMark.getRecordCount());
-						jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle() !=null ? part.getPartNameTitle() : StringPool.BLANK);
+						jsonMark.put(DossierPartTerm.PART_NAME_TITLE, part.getPartNameTitle() != null ? part.getPartNameTitle() : StringPool.BLANK);
 //						String strDossierMark = JSONFactoryUtil.looseSerialize(dossierMark);
 						dossierMarkArr.put(jsonMark);
 					}
@@ -751,7 +751,7 @@ public class DossierDocumentUtils {
 			}
 			else {
 				jsonData.put(ServiceInfoTerm.IS_NOTARIZATION, false);
-				jsonData.put(ServiceInfoTerm.SERVICE_NAME_TITLE, false);
+				jsonData.put(ServiceInfoTerm.SERVICE_NAME_TITLE, StringPool.BLANK);
 			}
 		} catch (PortalException e) {
 			_log.debug(e);

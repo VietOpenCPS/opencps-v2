@@ -471,8 +471,8 @@ public class UserActions implements UserInterface {
 					? employee.getTelNo() : StringPool.BLANK);
 		}
 		else {
-			applicant =
-				ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+			applicant = mappingUserId > 0 ? 
+				ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 			if (applicant != null) {
 				document.addTextSortable(
 					UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -635,8 +635,8 @@ public class UserActions implements UserInterface {
 						? employee.getTelNo() : StringPool.BLANK);
 			}
 			else {
-				applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				applicant = mappingUserId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 				if (applicant != null) {
 					document.addTextSortable(
 						UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -763,8 +763,8 @@ public class UserActions implements UserInterface {
 						? employee.getTelNo() : StringPool.BLANK);
 			}
 			else {
-				applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				applicant = mappingUserId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 				if (applicant != null) {
 					document.addTextSortable(
 						UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -777,6 +777,9 @@ public class UserActions implements UserInterface {
 					document.addTextSortable(
 						UserTerm.CONTACT_TELNO, Validator.isNotNull(applicant)
 							? applicant.getContactTelNo() : StringPool.BLANK);
+					//Update applicant
+					applicant.setTmpPass(secretKey);
+					ApplicantLocalServiceUtil.updateApplicant(applicant);
 				}
 			}
 
@@ -892,8 +895,8 @@ public class UserActions implements UserInterface {
 					}
 					else {
 						// update application
-						Applicant applicant =
-							ApplicantLocalServiceUtil.fetchByMappingID(id);
+						Applicant applicant = id > 0 ? 
+							ApplicantLocalServiceUtil.fetchByMappingID(id) : null;
 						if (applicant != null) {
 							email = applicant.getContactEmail();
 							phone = applicant.getContactTelNo();
@@ -958,12 +961,14 @@ public class UserActions implements UserInterface {
 
 		boolean flag =
 			getCheckpass(groupId, companyId, id, oldPassword, serviceContext);
-		// _log.info("flag: "+flag);
+		_log.info("flag: "+flag);
 		String phone = StringPool.BLANK;
 		
 		if (flag) {
 			try {
 
+				_log.info("type: "+type);
+				_log.info("id: "+id);
 				User user = UserLocalServiceUtil.updatePassword(
 					id, newPassword, newPassword, Boolean.FALSE);
 				// _log.info("User: "+user);
@@ -979,11 +984,18 @@ public class UserActions implements UserInterface {
 				}
 				else {
 					// update employee
-					Applicant applicant =
-						ApplicantLocalServiceUtil.fetchByMappingID(id);
+					Applicant applicant = id > 0 ? 
+						ApplicantLocalServiceUtil.fetchByMappingID(id) : null;
+					_log.info("applicant: "+applicant);
 
-					email += applicant.getContactEmail();
-					phone = applicant.getContactTelNo();
+					if (applicant != null) {
+						email += applicant.getContactEmail();
+						phone = applicant.getContactTelNo();
+						//Update applicant
+						_log.info("---UPDATE PASS APPLICANT----");
+						applicant.setTmpPass(newPassword);
+						ApplicantLocalServiceUtil.updateApplicant(applicant);
+					}
 					// _log.info("email: "+email);
 				}
 
@@ -1271,8 +1283,8 @@ public class UserActions implements UserInterface {
 			}
 			else {
 
-				Applicant applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(userId);
+				Applicant applicant = userId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 
 				if (Validator.isNotNull(applicant)) {
 

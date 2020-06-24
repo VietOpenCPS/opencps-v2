@@ -105,7 +105,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 	private static Log _log = LogFactoryUtil.getLog(ApplicantLocalServiceImpl.class);
 
 	public Applicant fetchByMappingID(long mappingID) {
-		List<Applicant> lstApps = applicantPersistence.findByF_MAPPING_ID(mappingID);
+		List<Applicant> lstApps = mappingID > 0 ? applicantPersistence.findByF_MAPPING_ID(mappingID)
+				: applicantPersistence.findByF_MAPPING_ID(mappingID, 0, 5);
 		Applicant res = (lstApps.size() > 0) ? lstApps.get(0) : null;
 		return res;
 	}
@@ -1563,6 +1564,121 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			applicant.setMappingUserId(mappingUserId);
 			applicant.setActivationCode(activationCode);
 			applicant.setTmpPass(secretCode);
+
+		} else {
+			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
+
+			applicant.setModifiedDate(now);
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+
+			if (Validator.isNotNull(applicantName))
+				applicant.setApplicantName(applicantName);
+
+			if (Validator.isNotNull(applicantIdType))
+				applicant.setApplicantIdType(applicantIdType);
+
+			if (Validator.isNotNull(applicantIdNo))
+				applicant.setApplicantIdNo(applicantIdNo);
+
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+
+			if (Validator.isNotNull(contactTelNo))
+				applicant.setContactTelNo(contactTelNo);
+
+			if (Validator.isNotNull(contactEmail))
+				applicant.setContactEmail(contactEmail);
+		}
+
+		return applicantPersistence.update(applicant);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public Applicant updateApplicantApproved(long groupId, long userId, long applicantId, String applicantIdNo,
+			String applicantName, String applicantIdType, Date applicantIdDate, String contactEmail,
+			String contactTelNo, String secrectKey, ServiceContext context) throws PortalException {
+
+		Date now = new Date();
+		User auditUser = userPersistence.fetchByPrimaryKey(userId);
+		Applicant applicant = null;
+		if (applicantId == 0) {
+
+			applicantId = counterLocalService.increment(Applicant.class.getName());
+			applicant = applicantPersistence.create(applicantId);
+
+			Role roleDefault = RoleLocalServiceUtil.getRole(auditUser.getCompanyId(), ServiceProps.APPLICANT_ROLE_NAME);
+
+			String activationCode = StringPool.BLANK;
+
+			boolean autoPassword = false;
+			boolean autoScreenName = true;
+			boolean sendEmail = false;
+
+			long[] groupIds = new long[] { groupId };
+			long[] organizationIds = null;
+			long[] roleIds = null;
+			long[] userGroupIds = null;
+
+			String screenName = null;
+
+			String firstName = (ApplicantTerm.APPLICANTIDTYPE_CITIZEN.equals(applicantIdType) ? MessageUtil.getMessage(
+					ConfigConstants.HEADER_USER)
+					: (ApplicantTerm.APPLICANTIDTYPE_BUSINESS.equals(applicantIdType) ? MessageUtil.getMessage(
+							ConfigConstants.HEADER_COMPANY) : MessageUtil.getMessage(
+									ConfigConstants.HEADER_BUSSINESS)));
+			String lastName = applicantName;
+
+			UserMgtUtils.SplitName spn = UserMgtUtils.splitName(firstName, lastName);
+
+			// add default role
+			if (Validator.isNotNull(roleDefault)) {
+				roleIds = new long[] { roleDefault.getRoleId() };
+			}
+
+			Role adminRole = RoleLocalServiceUtil.getRole(auditUser.getCompanyId(), ServiceProps.ADM_ROLE_NAME);
+			List<User> adminUsers = userLocalService.getRoleUsers(adminRole.getRoleId());
+			long creatorUserId = 0;
+			if (adminUsers.size() != 0) {
+				creatorUserId = adminUsers.get(0).getUserId();
+			}
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 20);
+
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH); // jan = 0, dec = 11
+			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
+			// spn.getFirstName() + "," + spn.getMidName());
+			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, auditUser.getCompanyId(),
+					autoPassword, secrectKey, secrectKey, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
+					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
+					dayOfMonth, year, ServiceProps.APPLICANT_JOB_TITLE, groupIds, organizationIds, roleIds,
+					userGroupIds, sendEmail, context);
+			// mappingUser.getFullName());
+			userLocalService.updateStatus(mappingUser.getUserId(), WorkflowConstants.STATUS_APPROVED, context);
+			//
+
+			long mappingUserId = mappingUser.getUserId();
+
+			// Add audit field
+			applicant.setCreateDate(now);
+			applicant.setModifiedDate(now);
+			applicant.setCompanyId(context.getCompanyId());
+			applicant.setUserId(context.getUserId());
+			applicant.setUserName(auditUser.getFullName());
+			applicant.setGroupId(groupId);
+
+			applicant.setApplicantName(applicantName);
+			applicant.setApplicantIdType(applicantIdType);
+			applicant.setApplicantIdNo(applicantIdNo);
+			if (Validator.isNotNull(applicantIdDate))
+				applicant.setApplicantIdDate(applicantIdDate);
+			applicant.setContactTelNo(contactTelNo);
+			applicant.setContactEmail(contactEmail);
+			applicant.setMappingUserId(mappingUserId);
+			applicant.setActivationCode(activationCode);
+			applicant.setTmpPass(secrectKey);
 
 		} else {
 			applicant = applicantPersistence.fetchByPrimaryKey(applicantId);
