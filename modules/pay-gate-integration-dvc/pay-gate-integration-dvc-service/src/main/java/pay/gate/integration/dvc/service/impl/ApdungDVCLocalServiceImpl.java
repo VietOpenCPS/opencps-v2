@@ -14,7 +14,13 @@
 
 package pay.gate.integration.dvc.service.impl;
 
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.Date;
+
 import pay.gate.integration.dvc.model.ApdungDVC;
+import pay.gate.integration.dvc.model.ServiceConfigMapping;
 import pay.gate.integration.dvc.service.base.ApdungDVCLocalServiceBaseImpl;
 
 /**
@@ -41,4 +47,5 @@ public class ApdungDVCLocalServiceImpl extends ApdungDVCLocalServiceBaseImpl {
 	public ApdungDVC getApdungDVCByTTHCCQTHMD(String maTTHC, String maCQTH, int mucdo) {
 		return apdungDVCPersistence.fetchByF_TTHC_CQTH_MD(maTTHC, maCQTH, mucdo);
 	}
+
 }

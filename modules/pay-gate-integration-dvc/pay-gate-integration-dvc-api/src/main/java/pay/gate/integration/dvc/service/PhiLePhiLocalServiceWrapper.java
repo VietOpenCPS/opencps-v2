@@ -274,6 +274,13 @@ public class PhiLePhiLocalServiceWrapper implements PhiLePhiLocalService,
 		return _phiLePhiLocalService.getPhiLePhis(start, end);
 	}
 
+	@Override
+	public java.util.List<pay.gate.integration.dvc.model.PhiLePhi> getPhiLePhis(
+		long groupId, long serviceConfigMappingId) {
+		return _phiLePhiLocalService.getPhiLePhis(groupId,
+			serviceConfigMappingId);
+	}
+
 	/**
 	* Returns all the phi le phis matching the UUID and company.
 	*

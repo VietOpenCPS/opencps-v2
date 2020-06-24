@@ -210,6 +210,11 @@ public class ApdungDVCLocalServiceUtil {
 		return getService().getApdungDVC(apdungDVCId);
 	}
 
+	public static pay.gate.integration.dvc.model.ApdungDVC getApdungDVCByTTHCCQTHMD(
+		String maTTHC, String maCQTH, int mucdo) {
+		return getService().getApdungDVCByTTHCCQTHMD(maTTHC, maCQTH, mucdo);
+	}
+
 	/**
 	* Returns the apdung dvc matching the UUID and group.
 	*

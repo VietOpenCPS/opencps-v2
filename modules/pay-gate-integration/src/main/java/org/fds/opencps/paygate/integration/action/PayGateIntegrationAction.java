@@ -46,4 +46,6 @@ public interface PayGateIntegrationAction {
 	public JSONObject ppConfirmTransaction(User user, ServiceContext serviceContext, String body);
 	
 	public String ppGetReceipt(User user, long groupId, long dosssierId, ServiceContext serviceContext);
+	
+	public String doSyncServiceConfig(JSONObject jsonObject, long groupId, ServiceContext context);
 }

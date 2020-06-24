@@ -1,5 +1,8 @@
 package org.fds.opencps.paygate.integration.application;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -30,8 +33,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
 import org.fds.opencps.paygate.integration.action.impl.PayGateIntegrationActionImpl;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
+import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
@@ -306,4 +312,22 @@ public class PayGateIntegrationApplication extends Application {
 		String result = actionImpl.ppGetReceipt(user, groupId, dossierId, serviceContext);
 		return Response.status(200).entity(result).build();	
 	}
+	
+	@POST
+	@Path("/syncserviceconfig")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncServiceConfig(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, String data) throws PortalException {
+		
+		PayGateIntegrationAction payGateAction = new PayGateIntegrationActionImpl();
+		DVCQGIntegrationAction dvcqgAction = new DVCQGIntegrationActionImpl();
+		JSONObject jsonObject = dvcqgAction.doSyncServiceConfig(user, serviceContext, JSONFactoryUtil.createJSONObject(data));
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		
+		String result = payGateAction.doSyncServiceConfig(jsonObject, groupId, serviceContext);
+		return Response.status(200).entity(result).build();	
+	}
+	
 }

@@ -15,14 +15,21 @@
 package pay.gate.integration.dvc.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.exception.SystemException;
 
 import java.util.Date;
 
 import aQute.bnd.annotation.ProviderType;
+import pay.gate.integration.dvc.model.ApdungDVC;
 import pay.gate.integration.dvc.model.ServiceConfigMapping;
 import pay.gate.integration.dvc.service.base.ServiceConfigMappingLocalServiceBaseImpl;
 
@@ -48,20 +55,25 @@ public class ServiceConfigMappingLocalServiceImpl
 	 *
 	 * Never reference this class directly. Always use {@link pay.gate.integration.dvc.service.ServiceConfigMappingLocalServiceUtil} to access the service config mapping local service.
 	 */
-	
-	@Indexable(type = IndexableType.REINDEX)
-	public ServiceConfigMapping initServiceConfigMaping(long groupId, long serviceConfigMappingId,
+	@Override
+	@Transactional(isolation = Isolation.PORTAL, rollbackFor = { PortalException.class, SystemException.class })
+	public ServiceConfigMapping initServiceConfigMaping(long groupId, long serviceConfigMappingId, long apdungDVCId, 
 			String maDVC, String tenDVC,String maTTHC, String tenTTHC, String tenCQBH, String tenLinhVuc,
-			String apdungDVC, ServiceContext context) throws PortalException {
+			String apdungDVC, String maCQTH, int mucdo, ServiceContext context) throws PortalException {
 		ServiceConfigMapping serviceConfigMapping = null;
+		ApdungDVC apdungDVC2 = null;
 		Date now = new Date();
 		long userId = context.getUserId();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
-		if (serviceConfigMappingId == 0) {
+		if (serviceConfigMappingId == 0 && apdungDVCId == 0) {
+			
 			serviceConfigMappingId = counterLocalService.increment(ServiceConfigMapping.class.getName());
 			serviceConfigMapping = serviceConfigMappingPersistence.create(serviceConfigMappingId);
 			
-			// common field
+			apdungDVCId = counterLocalService.increment(ApdungDVC.class.getName());
+			apdungDVC2 = apdungDVCPersistence.create(apdungDVCId);
+			
+			// common field service config mapping
 			serviceConfigMapping.setCreateDate(now);
 			serviceConfigMapping.setModifiedDate(now);
 			serviceConfigMapping.setCompanyId(context.getCompanyId());
@@ -69,7 +81,7 @@ public class ServiceConfigMappingLocalServiceImpl
 			serviceConfigMapping.setUserId(userId);
 			serviceConfigMapping.setUserName(auditUser.getFullName());
 			
-			// extend field
+			// extend field service config mapping
 			serviceConfigMapping.setMaDVC(maDVC);
 			serviceConfigMapping.setTenDVC(tenDVC);
 			serviceConfigMapping.setMaTTHC(maTTHC);
@@ -80,11 +92,33 @@ public class ServiceConfigMappingLocalServiceImpl
 			
 			// insert service config mapping instance to db
 			serviceConfigMapping = serviceConfigMappingPersistence.update(serviceConfigMapping);
-		}
+			
+			// common field apdungDVC
+			JSONArray apdungDVCArray = JSONFactoryUtil.createJSONArray(apdungDVC);
+			for (int i =0; i< apdungDVCArray.length(); i++) {
+				
+				apdungDVC2.setCreateDate(now);
+				apdungDVC2.setModifiedDate(now);
+				apdungDVC2.setCompanyId(context.getCompanyId());
+				apdungDVC2.setGroupId(groupId);
+				apdungDVC2.setUserId(userId);
+				apdungDVC2.setUserName(auditUser.getFullName());
+				
+				// extend field
+				apdungDVC2.setMaTTHC(maTTHC);
+				apdungDVC2.setMaCQTH(maCQTH);
+				apdungDVC2.setMucdo(mucdo);
+				apdungDVC2.setServiceConfigMappingId(serviceConfigMappingId);
+				
+				// insert apdungDVC instance to db
+				apdungDVC2 = apdungDVCPersistence.update(apdungDVC2);
+				i++;
+			}
+			
+		}		
 		return serviceConfigMapping;		
 	}
 	
-	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfigMapping removeServiceConfigMapping(long groupId, long serviceConfigMappingId) throws PortalException {
 		ServiceConfigMapping serviceConfigMapping = null;
 		if(serviceConfigMappingId != 0) {

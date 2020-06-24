@@ -216,6 +216,13 @@ public class ApdungDVCLocalServiceWrapper implements ApdungDVCLocalService,
 		return _apdungDVCLocalService.getApdungDVC(apdungDVCId);
 	}
 
+	@Override
+	public pay.gate.integration.dvc.model.ApdungDVC getApdungDVCByTTHCCQTHMD(
+		String maTTHC, String maCQTH, int mucdo) {
+		return _apdungDVCLocalService.getApdungDVCByTTHCCQTHMD(maTTHC, maCQTH,
+			mucdo);
+	}
+
 	/**
 	* Returns the apdung dvc matching the UUID and group.
 	*

@@ -264,6 +264,11 @@ public class PhiLePhiLocalServiceUtil {
 		return getService().getPhiLePhis(start, end);
 	}
 
+	public static java.util.List<pay.gate.integration.dvc.model.PhiLePhi> getPhiLePhis(
+		long groupId, long serviceConfigMappingId) {
+		return getService().getPhiLePhis(groupId, serviceConfigMappingId);
+	}
+
 	/**
 	* Returns all the phi le phis matching the UUID and company.
 	*

@@ -87,6 +87,7 @@ import pay.gate.integration.dvc.service.PhiLePhiLocalServiceUtil;
 import pay.gate.integration.dvc.service.ServiceConfigMappingLocalServiceUtil;
 import pay.gate.integration.dvc.service.impl.ApdungDVCLocalServiceImpl;
 import pay.gate.integration.dvc.service.impl.PhiLePhiLocalServiceImpl;
+import pay.gate.integration.dvc.service.impl.ServiceConfigMappingLocalServiceImpl;
 
 /**
  * @author trungnt
@@ -1737,6 +1738,30 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
 		
 		return data;
+	}
+
+	@Override
+	public String doSyncServiceConfig(JSONObject jsonObject, long groupId, ServiceContext context) {
+		String result = StringPool.BLANK;
+		
+		String maDVC = jsonObject.getString("MADVC");
+		String tenDVC = jsonObject.getString("TENDVC");
+		String maTTHC = jsonObject.getString("MATTHC");
+		String tenTTHC = jsonObject.getString("TENTTHC");
+		String tenCQBH = jsonObject.getString("TENCOQUANBANHANH");
+		String tenLinhVuc = jsonObject.getString("TENLINHVUC");
+		JSONObject apdungDVCObject = jsonObject.getJSONObject("APDUNGDVC");
+		String apdungDVC = apdungDVCObject.toJSONString();
+		String maCQTH = apdungDVCObject.getString("MACOQUANTHUCHIEN");
+		int mucdo = apdungDVCObject.getInt("MUCDO");
+		try {
+			ServiceConfigMapping serviceConfigMapping = 
+					new ServiceConfigMappingLocalServiceImpl().initServiceConfigMaping(groupId, 0, 0, maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc, apdungDVC, maCQTH, mucdo, context);
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

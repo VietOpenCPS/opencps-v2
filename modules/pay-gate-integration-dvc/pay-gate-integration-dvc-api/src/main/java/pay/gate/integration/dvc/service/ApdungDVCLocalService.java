@@ -194,6 +194,10 @@ public interface ApdungDVCLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ApdungDVC getApdungDVC(long apdungDVCId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ApdungDVC getApdungDVCByTTHCCQTHMD(String maTTHC, String maCQTH,
+		int mucdo);
+
 	/**
 	* Returns the apdung dvc matching the UUID and group.
 	*

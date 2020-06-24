@@ -281,13 +281,15 @@ public interface ServiceConfigMappingLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getServiceConfigMappingsCount();
 
-	@Indexable(type = IndexableType.REINDEX)
+	@Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
+		PortalException.class, SystemException.class}
+	)
 	public ServiceConfigMapping initServiceConfigMaping(long groupId,
-		long serviceConfigMappingId, String maDVC, String tenDVC,
-		String maTTHC, String tenTTHC, String tenCQBH, String tenLinhVuc,
-		String apdungDVC, ServiceContext context) throws PortalException;
+		long serviceConfigMappingId, long apdungDVCId, String maDVC,
+		String tenDVC, String maTTHC, String tenTTHC, String tenCQBH,
+		String tenLinhVuc, String apdungDVC, String maCQTH, int mucdo,
+		ServiceContext context) throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public ServiceConfigMapping removeServiceConfigMapping(long groupId,
 		long serviceConfigMappingId) throws PortalException;
 

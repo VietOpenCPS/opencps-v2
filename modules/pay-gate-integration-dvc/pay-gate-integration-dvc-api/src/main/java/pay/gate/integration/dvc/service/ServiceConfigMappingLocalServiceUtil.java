@@ -307,15 +307,15 @@ public class ServiceConfigMappingLocalServiceUtil {
 	}
 
 	public static pay.gate.integration.dvc.model.ServiceConfigMapping initServiceConfigMaping(
-		long groupId, long serviceConfigMappingId, String maDVC, String tenDVC,
-		String maTTHC, String tenTTHC, String tenCQBH, String tenLinhVuc,
-		String apdungDVC,
-		com.liferay.portal.kernel.service.ServiceContext context)
+		long groupId, long serviceConfigMappingId, long apdungDVCId,
+		String maDVC, String tenDVC, String maTTHC, String tenTTHC,
+		String tenCQBH, String tenLinhVuc, String apdungDVC, String maCQTH,
+		int mucdo, com.liferay.portal.kernel.service.ServiceContext context)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .initServiceConfigMaping(groupId, serviceConfigMappingId,
-			maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc, apdungDVC,
-			context);
+			apdungDVCId, maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc,
+			apdungDVC, maCQTH, mucdo, context);
 	}
 
 	public static pay.gate.integration.dvc.model.ServiceConfigMapping removeServiceConfigMapping(

@@ -238,6 +238,9 @@ public interface PhiLePhiLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PhiLePhi> getPhiLePhis(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PhiLePhi> getPhiLePhis(long groupId, long serviceConfigMappingId);
+
 	/**
 	* Returns all the phi le phis matching the UUID and company.
 	*
