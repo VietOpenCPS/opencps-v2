@@ -287,8 +287,8 @@ public interface ServiceConfigMappingLocalService extends BaseLocalService,
 	public ServiceConfigMapping initServiceConfigMaping(long groupId,
 		long serviceConfigMappingId, long apdungDVCId, String maDVC,
 		String tenDVC, String maTTHC, String tenTTHC, String tenCQBH,
-		String tenLinhVuc, String apdungDVC, String maCQTH, int mucdo,
-		ServiceContext context) throws PortalException;
+		String tenLinhVuc, String apdungDVC, ServiceContext context)
+		throws PortalException;
 
 	public ServiceConfigMapping removeServiceConfigMapping(long groupId,
 		long serviceConfigMappingId) throws PortalException;

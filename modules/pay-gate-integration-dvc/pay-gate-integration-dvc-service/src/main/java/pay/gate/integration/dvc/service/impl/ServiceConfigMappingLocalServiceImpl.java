@@ -59,9 +59,9 @@ public class ServiceConfigMappingLocalServiceImpl
 	@Transactional(isolation = Isolation.PORTAL, rollbackFor = { PortalException.class, SystemException.class })
 	public ServiceConfigMapping initServiceConfigMaping(long groupId, long serviceConfigMappingId, long apdungDVCId, 
 			String maDVC, String tenDVC,String maTTHC, String tenTTHC, String tenCQBH, String tenLinhVuc,
-			String apdungDVC, String maCQTH, int mucdo, ServiceContext context) throws PortalException {
+			String apdungDVC, ServiceContext context) throws PortalException {
+		
 		ServiceConfigMapping serviceConfigMapping = null;
-		ApdungDVC apdungDVC2 = null;
 		Date now = new Date();
 		long userId = context.getUserId();
 		User auditUser = userPersistence.fetchByPrimaryKey(userId);
@@ -70,8 +70,7 @@ public class ServiceConfigMappingLocalServiceImpl
 			serviceConfigMappingId = counterLocalService.increment(ServiceConfigMapping.class.getName());
 			serviceConfigMapping = serviceConfigMappingPersistence.create(serviceConfigMappingId);
 			
-			apdungDVCId = counterLocalService.increment(ApdungDVC.class.getName());
-			apdungDVC2 = apdungDVCPersistence.create(apdungDVCId);
+			
 			
 			// common field service config mapping
 			serviceConfigMapping.setCreateDate(now);
@@ -95,7 +94,15 @@ public class ServiceConfigMappingLocalServiceImpl
 			
 			// common field apdungDVC
 			JSONArray apdungDVCArray = JSONFactoryUtil.createJSONArray(apdungDVC);
+			
 			for (int i =0; i< apdungDVCArray.length(); i++) {
+				JSONObject apdungDVCObject = apdungDVCArray.getJSONObject(i);
+				String maCQTH = apdungDVCObject.getString("MACOQUANTHUCHIEN");
+				int mucdo = apdungDVCObject.getInt("MUCDO");
+				
+				ApdungDVC apdungDVC2 = null;
+				apdungDVCId = counterLocalService.increment(ApdungDVC.class.getName());
+				apdungDVC2 = apdungDVCPersistence.create(apdungDVCId);
 				
 				apdungDVC2.setCreateDate(now);
 				apdungDVC2.setModifiedDate(now);

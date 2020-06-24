@@ -1752,11 +1752,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String tenLinhVuc = jsonObject.getString("TENLINHVUC");
 		JSONObject apdungDVCObject = jsonObject.getJSONObject("APDUNGDVC");
 		String apdungDVC = apdungDVCObject.toJSONString();
-		String maCQTH = apdungDVCObject.getString("MACOQUANTHUCHIEN");
-		int mucdo = apdungDVCObject.getInt("MUCDO");
 		try {
 			ServiceConfigMapping serviceConfigMapping = 
-					new ServiceConfigMappingLocalServiceImpl().initServiceConfigMaping(groupId, 0, 0, maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc, apdungDVC, maCQTH, mucdo, context);
+					new ServiceConfigMappingLocalServiceImpl().initServiceConfigMaping(groupId, 0, 0, maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc, apdungDVC, context);
 		} catch (PortalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
