@@ -245,7 +245,7 @@ public class PayGateIntegrationApplication extends Application {
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		String result = actionImpl.ppInitTransaction(user, groupId, dossierId, serviceContext);
+		String result = actionImpl.ppInitTransaction(user, groupId, dossierId, serviceContext, request);
 		return Response.status(200).entity(result).build();		
 	}
 	
