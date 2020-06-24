@@ -66,6 +66,7 @@ public class OneMinute extends BaseMessageListener {
 	
 	@Override
 	protected void doReceive(Message message) {
+		_log.info("=======START SEND NOTIFICATION: ====== : isRunning: "+ isRunning);
 		if (!isRunning) {
 			isRunning = true;
 		}
@@ -79,6 +80,7 @@ public class OneMinute extends BaseMessageListener {
 			_log.debug(e);
 		}
 		isRunning = false;
+		_log.info("------- END SEND NOTIFICATION: ------: isRunning: "+ isRunning);
 	}
 
 	private void doProcessNotification(Message message) {

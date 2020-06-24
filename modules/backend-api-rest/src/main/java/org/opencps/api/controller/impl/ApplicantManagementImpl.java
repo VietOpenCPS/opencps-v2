@@ -1165,39 +1165,50 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							&& jsonToken.has("expiryDate")) {
 						String accessToken = jsonToken.getString("token");
 						String refreshToken = jsonToken.getString("refreshToken");
-						//String expiryDate = jsonToken.getString("expiryDate");
+						// String expiryDate = jsonToken.getString("expiryDate");
 
 						_log.info("accessToken: " + accessToken);
 						_log.info("refreshToken: " + refreshToken);
 
 						// Dang ky tk cong dan
-						strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail,
-								applicantIdNo, applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
+						strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail, applicantIdNo,
+								applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
 						_log.info("strProfile: " + strProfile);
-						if (Validator.isNull(strProfile) || "ERROR".equalsIgnoreCase(strProfile)) {
+						if (Validator.isNull(strProfile) || "ERROR".equals(strProfile)) {
 							_log.info("CO VAO KHONG1111 ???");
-							return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}").build();
-						} else if (Validator.isNotNull(strProfile) && "DUPLICATE".contentEquals(strProfile)) {
-							_log.info("CO VAO 222222 ???");
-							Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
-									applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address, cityCode,
-									cityName, districtCode, districtName, wardCode, wardName, contactName, contactTelNo,
-									StringPool.BLANK, input.getPassword());
-							
-							result = ApplicantUtils.mappingToApplicantModel(applicant);
-
-							return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
+							return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED).entity("{Register error}")
+									.build();
 						} else if (Validator.isNotNull(strProfile)) {
-							_log.info("CO VAO 33333 ???");
-							Applicant applicant = actions.register(serviceContext, groupId, applicantName, applicantIdType,
-									applicantIdNo, applicantIdDate, contactEmail, address,
-									cityCode, cityName, districtCode, districtName,
-									wardCode, wardName, contactName, contactTelNo, StringPool.BLANK,
-									input.getPassword());
-							_log.info("Success register applicant: " + (applicant != null ? applicant.getApplicantName() + "," + applicant.getContactEmail() : "FAILED"));
-							result = ApplicantUtils.mappingToApplicantModel(applicant);
+							JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(strProfile);
+							_log.info("jsonProfile: " + jsonProfile);
+							if (jsonProfile != null && jsonProfile.has("result")) {
+								String strResult = jsonProfile.getString("result");
+								_log.info("strResult: "+strResult);
 
-							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+								if ("DUPLICATE".equals(strResult)) {
+									_log.info("CO VAO 222222 ???");
+									Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
+											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+											contactTelNo, StringPool.BLANK, input.getPassword());
+
+									result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+									return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
+								} else if ("SUCCESSFUL".equals(strResult)) {
+									_log.info("CO VAO 33333 ???");
+									Applicant applicant = actions.register(serviceContext, groupId, applicantName,
+											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
+											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+											contactTelNo, StringPool.BLANK, input.getPassword());
+									_log.info("Success register applicant: " + (applicant != null
+											? applicant.getApplicantName() + "," + applicant.getContactEmail()
+											: "FAILED"));
+									result = ApplicantUtils.mappingToApplicantModel(applicant);
+
+									return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+								}
+							}
 						}
 					}
 				} else {
