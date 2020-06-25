@@ -43,7 +43,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 @Component(immediate = true, property = { JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/secure/pgi/",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=OpenCPS.pgi" }, service = Application.class)
-public class PayGateIntegrationApplication extends Application {  
+public class PayGateIntegrationApplication extends Application {
 
 	@Override
 	public Set<Object> getSingletons() {
@@ -201,8 +201,7 @@ public class PayGateIntegrationApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response kpCreateTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@FormParam("dossierId") long dossierId) {
+			@Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId) {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
@@ -210,15 +209,14 @@ public class PayGateIntegrationApplication extends Application {
 		String result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
 		return Response.status(200).entity(result).build();
 	}
-	
+
 	@POST
 	@Path("/kpdvcqg/paymentconfirm")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response kpCallback(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			String body) {
+			@Context ServiceContext serviceContext, String body) {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
@@ -226,7 +224,7 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
-	
+
 	/**
 	 * Pp init transaction.
 	 *
@@ -242,19 +240,18 @@ public class PayGateIntegrationApplication extends Application {
 	 */
 	@POST
 	@Path("/ppdvcqg/inittransaction")
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-	@Produces({ MediaType.APPLICATION_JSON})
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response ppInitTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@FormParam("dossierId") long dossierId) {
+			@Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId) {
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String result = actionImpl.ppInitTransaction(user, groupId, dossierId, serviceContext, request);
-		return Response.status(200).entity(result).build();		
+		return Response.status(200).entity(result).build();
 	}
-	
+
 	/**
 	 * Pp confirm transaction.
 	 *
@@ -274,8 +271,7 @@ public class PayGateIntegrationApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response ppConfirmTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			String body) {
+			@Context ServiceContext serviceContext, String body) {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
@@ -283,7 +279,7 @@ public class PayGateIntegrationApplication extends Application {
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
-	
+
 	/**
 	 * Gets the receipt.
 	 *
@@ -303,31 +299,30 @@ public class PayGateIntegrationApplication extends Application {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getReceipt(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext,
-			@FormParam("dossierId") long dossierId) {
+			@Context ServiceContext serviceContext, @FormParam("dossierId") long dossierId) {
 
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String result = actionImpl.ppGetReceipt(user, groupId, dossierId, serviceContext);
-		return Response.status(200).entity(result).build();	
+		return Response.status(200).entity(result).build();
 	}
-	
+
 	@POST
 	@Path("/syncserviceconfig")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response doSyncServiceConfig(@Context HttpServletRequest request, @Context HttpServletResponse response,
 			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, String data) throws PortalException {
-		
+			@Context ServiceContext serviceContext, String requestBody) throws PortalException {
+
 		PayGateIntegrationAction payGateAction = new PayGateIntegrationActionImpl();
-		DVCQGIntegrationAction dvcqgAction = new DVCQGIntegrationActionImpl();
-		JSONObject jsonObject = dvcqgAction.doSyncServiceConfig(user, serviceContext, JSONFactoryUtil.createJSONObject(data));
+
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
-		String result = payGateAction.doSyncServiceConfig(jsonObject, groupId, serviceContext);
-		return Response.status(200).entity(result).build();	
+
+		JSONObject result = payGateAction.doSyncServiceConfig(user, groupId, requestBody, serviceContext);
+
+		return Response.status(200).entity(result.toJSONString()).build();
 	}
-	
+
 }
