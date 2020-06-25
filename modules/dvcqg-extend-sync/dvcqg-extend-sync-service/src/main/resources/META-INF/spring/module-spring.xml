@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="opencps.dvcqg.extend.sync.service.impl.ApplicableInfoLocalServiceImpl" id="opencps.dvcqg.extend.sync.service.ApplicableInfoLocalService" />
+	<bean class="opencps.dvcqg.extend.sync.service.persistence.impl.ApplicableInfoPersistenceImpl" id="opencps.dvcqg.extend.sync.service.persistence.ApplicableInfoPersistence" parent="basePersistence" />
+	<bean class="opencps.dvcqg.extend.sync.service.impl.PaymentFeeInfoLocalServiceImpl" id="opencps.dvcqg.extend.sync.service.PaymentFeeInfoLocalService" />
+	<bean class="opencps.dvcqg.extend.sync.service.persistence.impl.PaymentFeeInfoPersistenceImpl" id="opencps.dvcqg.extend.sync.service.persistence.PaymentFeeInfoPersistence" parent="basePersistence" />
+	<bean class="opencps.dvcqg.extend.sync.service.impl.ServiceConfigMappingLocalServiceImpl" id="opencps.dvcqg.extend.sync.service.ServiceConfigMappingLocalService" />
+	<bean class="opencps.dvcqg.extend.sync.service.persistence.impl.ServiceConfigMappingPersistenceImpl" id="opencps.dvcqg.extend.sync.service.persistence.ServiceConfigMappingPersistence" parent="basePersistence" />
+</beans>

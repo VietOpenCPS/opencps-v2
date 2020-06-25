@@ -35,7 +35,6 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -54,6 +53,7 @@ import org.opencps.datamgt.model.DictItemMapping;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
@@ -72,22 +72,15 @@ import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.comparator.DictItemComparator;
 import org.opencps.dossiermgt.service.impl.ServiceInfoLocalServiceImpl;
 
-import pay.gate.integration.dvc.model.ApdungDVC;
-import pay.gate.integration.dvc.model.PhiLePhi;
-import pay.gate.integration.dvc.model.ServiceConfigMapping;
-import pay.gate.integration.dvc.model.impl.PhiLePhiImpl;
-import pay.gate.integration.dvc.service.ApdungDVCLocalServiceUtil;
-import pay.gate.integration.dvc.service.PhiLePhiLocalService;
-import pay.gate.integration.dvc.service.PhiLePhiLocalServiceUtil;
-import pay.gate.integration.dvc.service.ServiceConfigMappingLocalServiceUtil;
-import pay.gate.integration.dvc.service.impl.ApdungDVCLocalServiceImpl;
-import pay.gate.integration.dvc.service.impl.PhiLePhiLocalServiceImpl;
-import pay.gate.integration.dvc.service.impl.ServiceConfigMappingLocalServiceImpl;
+import opencps.dvcqg.extend.sync.model.ApplicableInfo;
+import opencps.dvcqg.extend.sync.model.PaymentFeeInfo;
+import opencps.dvcqg.extend.sync.model.ServiceConfigMapping;
+import opencps.dvcqg.extend.sync.service.ApplicableInfoLocalServiceUtil;
+import opencps.dvcqg.extend.sync.service.PaymentFeeInfoLocalServiceUtil;
+import opencps.dvcqg.extend.sync.service.ServiceConfigMappingLocalServiceUtil;
 
 /**
  * @author trungnt
@@ -690,7 +683,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
 		String result = StringPool.BLANK;
 
-
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 
@@ -699,7 +691,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			HttpURLConnection conn = null;
 			try {
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return result;
 				}
@@ -754,11 +747,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
 				// TODO: 
-//				MaDonVi,TenDonVi,MaCoQuanQD,TenCoQuanQD
-//
-//				MaDonVi: 000.00.00.G17 TenDonVi: Bá»™ XÃ¢y dá»±ng
-//
-//				MaCQ vÃ  Ten CQ trÃ¹ng luÃ´n MaDonVi vÃ  TenDonVi
+				//				MaDonVi,TenDonVi,MaCoQuanQD,TenCoQuanQD
+				//
+				//				MaDonVi: 000.00.00.G17 TenDonVi: Bá»™ XÃ¢y dá»±ng
+				//
+				//				MaCQ vÃ  Ten CQ trÃ¹ng luÃ´n MaDonVi vÃ  TenDonVi
 				// bill_info.put(PayGateTerm.MADONVI, dossier.getGovAgencyCode());
 				// bill_info.put(PayGateTerm.TENDONVI, dossier.getGovAgencyName());
 				bill_info.put(PayGateTerm.MADONVI, schema.getString(PayGateTerm.MADONVI));
@@ -789,11 +782,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				bill_info.put(PayGateTerm.TINHNGUOINOP, "");//ko bb
 
 				//lay trong dictItem
-//				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
-//				String macoquanqd = serviceInfo != null ? serviceInfo.getAdministrationCode() : StringPool.BLANK;
-//				String tencoquanqd = serviceInfo != null ? serviceInfo.getAdministrationName() : StringPool.BLANK;
-//				bill_info.put(PayGateTerm.MACOQUANQD, macoquanqd);//ko xd
-//				bill_info.put(PayGateTerm.TENCOQUANQD, tencoquanqd);
+				//				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
+				//				String macoquanqd = serviceInfo != null ? serviceInfo.getAdministrationCode() : StringPool.BLANK;
+				//				String tencoquanqd = serviceInfo != null ? serviceInfo.getAdministrationName() : StringPool.BLANK;
+				//				bill_info.put(PayGateTerm.MACOQUANQD, macoquanqd);//ko xd
+				//				bill_info.put(PayGateTerm.TENCOQUANQD, tencoquanqd);
 				// TODO: fix MACOQUANQD TENCOQUANQD
 				bill_info.put(PayGateTerm.MACOQUANQD, schema.getString(PayGateTerm.MACOQUANQD));//ko xd
 				bill_info.put(PayGateTerm.TENCOQUANQD, schema.getString(PayGateTerm.TENCOQUANQD));
@@ -821,10 +814,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (dossier.isOnline()) {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE)
+							.getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				} else {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE)
+							.getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				}
 
@@ -879,14 +874,15 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					_log.info("response: " + sb.toString());
 
-					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
-					
-					if(response.has(PayGateTerm.ERROR_RES_KEY) && PayGateTerm.ERROR_RES_SUCCESS.equals(response.getString(PayGateTerm.ERROR_RES_KEY))) {
+					JSONObject response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+					if (response.has(PayGateTerm.ERROR_RES_KEY)
+							&& PayGateTerm.ERROR_RES_SUCCESS.equals(response.getString(PayGateTerm.ERROR_RES_KEY))) {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
-						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-								epaymentProfile.toJSONString(), serviceContext);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
+								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
 					result = sb.toString();
 					_log.info("result " + result);
@@ -916,7 +912,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			HttpURLConnection conn = null;
 			try {
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return result;
 				}
@@ -1046,7 +1043,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
 				}
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
 				}
@@ -1059,9 +1057,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String addition_fee = String.valueOf(paymentFile.getShipAmount());
 				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
-				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee,
-						client_id_config, trans_amount, command_config,
-						transactionId_tmp, version_config, hash_key_2);
+				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee, client_id_config, trans_amount,
+						command_config, transactionId_tmp, version_config, hash_key_2);
 				if (!check_sum.equals(check_sum_tmp)) {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
@@ -1212,38 +1209,42 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		}
 	}
 
-	
 	@Override
-	public String ppInitTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext, HttpServletRequest request) {
-		
+	public String ppInitTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext,
+			HttpServletRequest request) {
+
 		String result = StringPool.BLANK;
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-		
-		if(dossier != null && paymentFile != null) {
+
+		if (dossier != null && paymentFile != null) {
 			HttpURLConnection conn = null;
 			try {
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 				if (schema == null) {
 					return result;
-				}								
-				JSONObject data = createPaymentPlatformInitTransactionPostParam(groupId, schema, paymentFile, dossier, request);
-				
+				}
+				JSONObject data = createPaymentPlatformInitTransactionPostParam(groupId, schema, paymentFile, dossier,
+						request);
+
 				if (dossier.isOnline()) {
-					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_ONLINE)
+							.getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				} else {
-					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE)
+							.getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				}
-				
+
 				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 				String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT);
 
 				_log.info("payment platform endpoint " + endpoint);
 
-				_log.info("payment platform data " + data);  
+				_log.info("payment platform data " + data);
 
 				URL url = new URL(endpoint);
 
@@ -1281,31 +1282,33 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					_log.info("response: " + sb.toString());
 
-					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
-					
-					if(response.has(PayGateTerm.MALOI_KEY) && PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
+					JSONObject response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+					if (response.has(PayGateTerm.MALOI_KEY)
+							&& PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-								epaymentProfile.toJSONString(), serviceContext);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
+								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
 					result = sb.toString();
 					_log.info("result " + result);
-				}				
-			}  catch (Exception e) {
+				}
+			} catch (Exception e) {
 				_log.error(e);
 			} finally {
 				if (conn != null) {
 					conn.disconnect();
 				}
 			}
-		}		
+		}
 		return result;
 	}
-	
-	private JSONObject createPaymentPlatformInitTransactionPostParam(long groupId, JSONObject schema, PaymentFile paymentFile, Dossier dossier, HttpServletRequest request) throws PortalException {
-		
+
+	private JSONObject createPaymentPlatformInitTransactionPostParam(long groupId, JSONObject schema,
+			PaymentFile paymentFile, Dossier dossier, HttpServletRequest request) throws PortalException {
+
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
 		String maDoitac = paymentFile.getGovAgencyCode();
@@ -1321,7 +1324,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
 		String ip = request.getLocalAddr();
 		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
-		
+
 		JSONObject data = JSONFactoryUtil.createJSONObject();
 		data.put(PayGateTerm.LOAIBANTIN, loaiBantin);
 		data.put(PayGateTerm.PHIENBAN, phienBan);
@@ -1338,49 +1341,55 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		data.put(PayGateTerm.THOIGIANGD, thoigianGD);
 		data.put(PayGateTerm.IP, ip);
 		data.put(PayGateTerm.THONGTINBIENLAI, createReceiptInfo(groupId, schema, paymentFile, dossier));
-		
+
 		String maXacThuc = PayGateUtil.generateChecksum(loaiBantin, phienBan, maDoitac, maThamchieu, sotien,
-				loaiHinhthanhtoan, maKenhthanhtoan, maThietbi, ngonNgu, maTiente, maNganhang, thongtinGD,
-				thoigianGD, ip, hash_key);
+				loaiHinhthanhtoan, maKenhthanhtoan, maThietbi, ngonNgu, maTiente, maNganhang, thongtinGD, thoigianGD,
+				ip, hash_key);
 		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
-		
+
 		return data;
 	}
-	
-	private JSONObject createReceiptInfo(long groupId, JSONObject schema, PaymentFile paymentFile, Dossier dossier) throws PortalException {
-		
+
+	private JSONObject createReceiptInfo(long groupId, JSONObject schema, PaymentFile paymentFile, Dossier dossier)
+			throws PortalException {
+
 		JSONObject receipt_info = JSONFactoryUtil.createJSONObject();
-		
+
 		int maDV = schema.getInt(PayGateTerm.MADICHVU);
 		receipt_info.put(PayGateTerm.MADICHVU, maDV); // bb
-		
+
 		// bb khi madichvu = 2
-		receipt_info.put(PayGateTerm.MADONVI, (maDV == 2) ? schema.getString(PayGateTerm.MADONVI) : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENDONVI, (maDV == 2) ? schema.getString(PayGateTerm.TENDONVI) : StringPool.BLANK); 
+		receipt_info.put(PayGateTerm.MADONVI, (maDV == 2) ? schema.getString(PayGateTerm.MADONVI) : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENDONVI, (maDV == 2) ? schema.getString(PayGateTerm.TENDONVI) : StringPool.BLANK);
 		receipt_info.put(PayGateTerm.MAHOSO, (maDV == 2) ? dossier.getDossierNo() : StringPool.BLANK);
-		
-		
-		
-		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
-				.fetchDVCQGServiceCode(groupId, dossier.getServiceCode());
+
+		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
+				dossier.getServiceCode());
 		String serviceCodeDVCQG = serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
 				: StringPool.BLANK;
-		
-		DictCollection collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY", groupId);
-		
-		DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, dossier.getGovAgencyCode(), collection.getDictCollectionId());
-		
-		ServiceInfo serviceInfo = new ServiceInfoLocalServiceImpl().getByCode(groupId, serviceInfoMapping.getServiceCode());
-		
-		ApdungDVC apdungDVC = new ApdungDVCLocalServiceImpl().getApdungDVCByTTHCCQTHMD(serviceCodeDVCQG, itemMapping.getItemCodeDVCQG(), serviceInfo.getMaxLevel());
-		
-		ServiceConfigMapping serviceConfigMapping = ServiceConfigMappingLocalServiceUtil.fetchServiceConfigMapping(apdungDVC.getServiceConfigMappingId());
-		
-		receipt_info.put(PayGateTerm.MADVC, (maDV == 2) ? serviceConfigMapping.getMaDVC() : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENDVC, (maDV == 2) ? serviceConfigMapping.getTenDVC() : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.MATTHC, (maDV == 2) ? serviceConfigMapping.getMaTTHC() : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENTTHC, (maDV == 2) ? serviceConfigMapping.getTenTTHC() : StringPool.BLANK); 
-		
+
+		DictCollection collection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode("GOVERNMENT_AGENCY",
+				groupId);
+
+		DictItemMapping itemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId,
+				dossier.getGovAgencyCode(), collection.getDictCollectionId());
+
+		ServiceInfo serviceInfo = new ServiceInfoLocalServiceImpl().getByCode(groupId,
+				serviceInfoMapping.getServiceCode());
+
+		ApplicableInfo applicableInfo = ApplicableInfoLocalServiceUtil.fetchByG_SC_GC_SL(groupId, serviceCodeDVCQG,
+				itemMapping.getItemCodeDVCQG(), serviceInfo.getMaxLevel());
+
+		ServiceConfigMapping serviceConfigMapping = ServiceConfigMappingLocalServiceUtil
+				.fetchServiceConfigMapping(applicableInfo.getServiceConfigMappingId());
+
+		receipt_info.put(PayGateTerm.MADVC,
+				(maDV == 2) ? serviceConfigMapping.getServiceConfigCode() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENDVC,
+				(maDV == 2) ? serviceConfigMapping.getServiceConfigName() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.MATTHC, (maDV == 2) ? serviceConfigMapping.getServiceCode() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENTTHC, (maDV == 2) ? serviceConfigMapping.getServiceName() : StringPool.BLANK);
+
 		// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
 		JSONObject banksInfo = schema.getJSONObject(PayGateTerm.BANKINFO);
 		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
@@ -1389,53 +1398,59 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		} else {
 			bankInfo = banksInfo.getJSONObject(PayGateTerm.DEFAULT);
 		}
-		receipt_info.put(PayGateTerm.TKTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.TKTHUHUONG) : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.MANHTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.MANHTHUHUONG) : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENTKTHUHUONG, (maDV == 2) ? bankInfo.getString(PayGateTerm.TENTKTHUHUONG) : StringPool.BLANK); 
-		
+		receipt_info.put(PayGateTerm.TKTHUHUONG,
+				(maDV == 2) ? bankInfo.getString(PayGateTerm.TKTHUHUONG) : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.MANHTHUHUONG,
+				(maDV == 2) ? bankInfo.getString(PayGateTerm.MANHTHUHUONG) : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENTKTHUHUONG,
+				(maDV == 2) ? bankInfo.getString(PayGateTerm.TENTKTHUHUONG) : StringPool.BLANK);
 
-		List<PhiLePhi> phiLePhis = new PhiLePhiLocalServiceImpl().getPhiLePhis(groupId, serviceConfigMapping.getServiceConfigMappingId());
-		List<PhiLePhi> phiLePhi = phiLePhis.stream().map(philephi -> {
-			PhiLePhi phi = new PhiLePhiImpl();
-			phi.setMaPLP(philephi.getMaPLP());
-			phi.setTenPLP(philephi.getTenPLP());
-			phi.setLoaiPLP(philephi.getLoaiPLP());
-			phi.setSoTien(philephi.getSoTien());
-			
-			return phi;
-		})
-				.collect(Collectors.toList());
+		List<PaymentFeeInfo> paymentFeeInfos = PaymentFeeInfoLocalServiceUtil
+				.findByServiceConfigMappingId(serviceConfigMapping.getServiceConfigMappingId());
+
+		JSONArray phiLePhi = JSONFactoryUtil.createJSONArray();
+
+		if (paymentFeeInfos != null) {
+			for (PaymentFeeInfo paymentFeeInfo : paymentFeeInfos) {
+				JSONObject _tm = JSONFactoryUtil.createJSONObject();
+				_tm.put(PayGateTerm.LOAIPHILEPHI, paymentFeeInfo.getType());
+				_tm.put(PayGateTerm.MAPHILEPHI, paymentFeeInfo.getPaymentFeeCode());
+				_tm.put(PayGateTerm.TENPHILEPHI, paymentFeeInfo.getPaymentFeeName());
+				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
+			}
+		}
+
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
-		
+
 		// bb khi madichvu = 1
-		receipt_info.put(PayGateTerm.MALOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENLOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.KHOBAC, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.NGAYQD, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.SOQD, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.THOIGIANVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.DIADIEMVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 
-		receipt_info.put(PayGateTerm.TENNGUOIVIPHAM, (maDV == 1) ? "" : StringPool.BLANK); 				
-		
+		receipt_info.put(PayGateTerm.MALOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENLOAIHINHTHUPHAT, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.KHOBAC, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.NGAYQD, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.SOQD, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.THOIGIANVIPHAM, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.DIADIEMVIPHAM, (maDV == 1) ? "" : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENNGUOIVIPHAM, (maDV == 1) ? "" : StringPool.BLANK);
+
 		// bb
-		receipt_info.put(PayGateTerm.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote()); 
+		receipt_info.put(PayGateTerm.NOIDUNGTHANHTOAN, paymentFile.getPaymentNote());
 		receipt_info.put(PayGateTerm.HOTENNGUOINOP, dossier.getApplicantName());
-		receipt_info.put(PayGateTerm.SOCMNDNGUOINOP, dossier.getDelegateIdNo()); 
-		receipt_info.put(PayGateTerm.DIACHINGUOINOP, dossier.getAddress()); 
-		receipt_info.put(PayGateTerm.MACOQUANQD, schema.getString(PayGateTerm.MACOQUANQD)); 
+		receipt_info.put(PayGateTerm.SOCMNDNGUOINOP, dossier.getDelegateIdNo());
+		receipt_info.put(PayGateTerm.DIACHINGUOINOP, dossier.getAddress());
+		receipt_info.put(PayGateTerm.MACOQUANQD, schema.getString(PayGateTerm.MACOQUANQD));
 		receipt_info.put(PayGateTerm.TENCOQUANQD, schema.getString(PayGateTerm.TENCOQUANQD));
-		
+
 		JSONArray dskhoannop = JSONFactoryUtil.createJSONArray();
 		JSONObject dskhoannop_obj = JSONFactoryUtil.createJSONObject();
 		dskhoannop_obj.put(PayGateTerm.NOIDUNG, paymentFile.getPaymentNote());
 		dskhoannop_obj.put(PayGateTerm.SOTIEN, String.valueOf(paymentFile.getPaymentAmount()));
 		dskhoannop.put(dskhoannop_obj);
 		receipt_info.put(PayGateTerm.DSKHOANNOP, dskhoannop);
-	
+
 		receipt_info.put(PayGateTerm.HUYENNGUOINOP, ""); // kbb
 		receipt_info.put(PayGateTerm.TINHNGUOINOP, ""); // kbb
 		receipt_info.put(PayGateTerm.TAIKHOANTHUNSNN, ""); // kbb
-		
+
 		return receipt_info;
 	}
 
@@ -1446,7 +1461,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			_log.info("=======body========" + body);
 			JSONObject data = JSONFactoryUtil.createJSONObject(body);
 			if (data != null && data.length() > 0) {
-				
+
 				String loaiBantin = data.getString(PayGateTerm.LOAIBANTIN);
 				String maLoi = data.getString(PayGateTerm.MALOI_KEY);
 				int maDoitac = data.getInt(PayGateTerm.MADOITAC);
@@ -1480,20 +1495,21 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				if (dossier == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
 				}
-				
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 				if (schema == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
 				}
-				
+
 				String hash_key = schema.getString(PayGateTerm.HASH_KEY);
-				String maXacthuc_tmp = PayGateUtil.generateChecksum(loaiBantin, maLoi, maDoitac, maThamchieu,
-						sotien, maTiente,maGD, maNganhang, thongtinGD, thoigianGD, hash_key);
-				
+				String maXacthuc_tmp = PayGateUtil.generateChecksum(loaiBantin, maLoi, maDoitac, maThamchieu, sotien,
+						maTiente, maGD, maNganhang, thongtinGD, thoigianGD, hash_key);
+
 				if (!maXacthuc.equals(maXacthuc_tmp)) {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
-				
+
 				int status = data.getInt(PayGateTerm.STATUS);
 
 				if (status == 0) {
@@ -1501,16 +1517,19 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, serviceContext);
 
 					if (doAction) {
-						return PayGateUtil.createResponseMessage("00", "Thành công", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
+						return PayGateUtil.createResponseMessage("00", "Thành công", Integer.valueOf(maDoitac),
+								maThamchieu, thoigianGD, maXacthuc);
 					} else {
-						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
+						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac),
+								maThamchieu, thoigianGD, maXacthuc);
 					}
 				} else {
-					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac), maThamchieu, thoigianGD, maXacthuc);
-				}				
+					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac),
+							maThamchieu, thoigianGD, maXacthuc);
+				}
 			} else {
 				return PayGateUtil.createResponseMessage(-1, "error: data empty of not found server config");
-			}			
+			}
 		} catch (Exception e) {
 			_log.error(e);
 			return PayGateUtil.createResponseMessage(-1, "error: system exception");
@@ -1642,21 +1661,22 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
-		
-		if(dossier != null && paymentFile != null) {
+
+		if (dossier != null && paymentFile != null) {
 			HttpURLConnection conn = null;
 			try {
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 				if (schema == null) {
 					return result;
-				}								
+				}
 				JSONObject data = createGetReceiptRequest(paymentFile, schema);
 				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 				String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT);
 
 				_log.info("payment platform endpoint " + endpoint);
 
-				_log.info("payment platform data " + data);  
+				_log.info("payment platform data " + data);
 
 				URL url = new URL(endpoint);
 
@@ -1694,72 +1714,150 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					_log.info("response: " + sb.toString());
 
-					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
-					
-					if(response.has(PayGateTerm.MALOI_KEY) && PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
+					JSONObject response = JSONFactoryUtil.createJSONObject(sb.toString());
+
+					if (response.has(PayGateTerm.MALOI_KEY)
+							&& PayGateTerm.MALOI_SUCCESS.equals(response.getString(PayGateTerm.MALOI_KEY))) {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-								epaymentProfile.toJSONString(), serviceContext);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
+								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
 					result = sb.toString();
 					_log.info("result " + result);
-				}				
-			}  catch (Exception e) {
+				}
+			} catch (Exception e) {
 				_log.error(e);
 			} finally {
 				if (conn != null) {
 					conn.disconnect();
 				}
 			}
-		}		
+		}
 		return result;
 	}
-	
+
 	private JSONObject createGetReceiptRequest(PaymentFile paymentFile, JSONObject schema) {
-		
+
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
 		String maDoitac = paymentFile.getGovAgencyCode();
 		String maThamchieu = paymentFile.getUuid();
 		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
 		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
-		
+
 		JSONObject data = JSONFactoryUtil.createJSONObject();
 		data.put(PayGateTerm.LOAIBANTIN, loaiBantin);
 		data.put(PayGateTerm.PHIENBAN, phienBan);
 		data.put(PayGateTerm.MADOITAC, maDoitac);
 		data.put(PayGateTerm.MATHAMCHIEU, maThamchieu);
 		data.put(PayGateTerm.THOIGIANGD, thoigianGD);
-		
-		String maXacThuc = PayGateUtil.generateChecksum(loaiBantin, phienBan, maDoitac, maThamchieu, 
-				thoigianGD, hash_key);
+
+		String maXacThuc = PayGateUtil.generateChecksum(loaiBantin, phienBan, maDoitac, maThamchieu, thoigianGD,
+				hash_key);
 		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
-		
+
 		return data;
 	}
 
 	@Override
-	public String doSyncServiceConfig(JSONObject jsonObject, long groupId, ServiceContext context) {
-		String result = StringPool.BLANK;
-		
-		String maDVC = jsonObject.getString("MADVC");
-		String tenDVC = jsonObject.getString("TENDVC");
-		String maTTHC = jsonObject.getString("MATTHC");
-		String tenTTHC = jsonObject.getString("TENTTHC");
-		String tenCQBH = jsonObject.getString("TENCOQUANBANHANH");
-		String tenLinhVuc = jsonObject.getString("TENLINHVUC");
-		JSONObject apdungDVCObject = jsonObject.getJSONObject("APDUNGDVC");
-		String apdungDVC = apdungDVCObject.toJSONString();
+	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		DVCQGIntegrationActionImpl dvcqgAction = new DVCQGIntegrationActionImpl();
+
 		try {
-			ServiceConfigMapping serviceConfigMapping = 
-					new ServiceConfigMappingLocalServiceImpl().initServiceConfigMaping(groupId, 0, 0, maDVC, tenDVC, maTTHC, tenTTHC, tenCQBH, tenLinhVuc, apdungDVC, context);
-		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JSONObject serviceConfigData = dvcqgAction.doSyncServiceConfig(user, context,
+					JSONFactoryUtil.createJSONObject(requestBody));
+
+			if (serviceConfigData == null || serviceConfigData.length() == 0) {
+				return createResponseMessage(result, 404, "error", "not found serverconfig");
+			}
+
+			if (serviceConfigData != null && serviceConfigData.has("data")) {
+
+				JSONArray data = serviceConfigData.getJSONArray("data");
+
+				for (int i = 0; i < data.length(); i++) {
+
+					JSONObject obj = data.getJSONObject(i);
+					String serviceConfigCode = obj.getString("MADVC");
+					String serviceConfigName = obj.getString("TENDVC");
+					String serviceCode = obj.getString("MATTHC");
+					String serviceName = obj.getString("TENTTHC");
+					String govAgencyName = obj.getString("TENCOQUANBANHANH");
+					String domainName = obj.getString("TENLINHVUC");
+					JSONArray applicableInfoObj = obj.getJSONArray("APDUNGDVC");
+
+					JSONObject serviceInfoDetail = dvcqgAction.getServiceInfoDVCQGDetail(user, groupId, context,
+							serviceCode);
+
+					JSONArray paymentFeeInfoObj = JSONFactoryUtil.createJSONArray();
+
+					if (serviceInfoDetail.has("error_code")
+							&& GetterUtil.getInteger(serviceInfoDetail.getString("error_code")) == 0) {
+
+						JSONArray resultTmp = serviceInfoDetail.getJSONArray("result");
+
+						if (resultTmp != null) {
+
+							JSONObject _tmp = resultTmp.getJSONObject(0);
+
+							if (_tmp.has("CACHTHUCTHUCHIEN")) {
+
+								JSONArray cachthucthuchien_arr = _tmp.getJSONArray("CACHTHUCTHUCHIEN");
+
+								if (cachthucthuchien_arr != null) {
+									for (int j = 0; j < cachthucthuchien_arr.length(); j++) {
+										JSONObject cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(j);
+
+										JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
+
+										if (thoigian_arr != null) {
+
+											for (int t = 0; t < thoigian_arr.length(); t++) {
+
+												JSONObject thoigian_obj = thoigian_arr.getJSONObject(t);
+
+												JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
+
+												if (philephi_arr != null && philephi_arr.length() > 0) {
+													for (int p = 0; p < philephi_arr.length(); p++) {
+														paymentFeeInfoObj.put(philephi_arr.getJSONObject(p));
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+
+						}
+					}
+
+					ServiceConfigMappingLocalServiceUtil.addServiceConfigMaping(groupId, serviceConfigCode,
+							serviceConfigName, serviceCode, serviceName, govAgencyName, domainName, applicableInfoObj,
+							paymentFeeInfoObj, context);
+				}
+
+				return createResponseMessage(result, 200, "success", "sync serverconfig success");
+			}
+
+			return createResponseMessage(result, 404, "error", "can't get data");
+
+		} catch (Exception e) {
+			_log.error(e);
+			return createResponseMessage(result, 500, "error", "system error");
 		}
-		return result;
+
 	}
 
+	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
+		object.put("status", status);
+		object.put("message", message);
+		object.put("description", desc);
+		return object;
+	}
 }
