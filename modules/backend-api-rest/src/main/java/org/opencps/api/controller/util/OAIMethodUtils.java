@@ -1,7 +1,6 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -20,6 +19,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,6 +39,7 @@ import org.opencps.api.oai.model.oaipmh.OMRole;
 import org.opencps.api.oai.model.oaipmh.OMRoles;
 import org.opencps.api.oai.model.oaipmh.RecordType;
 import org.opencps.api.oai.model.oaipmh.RequestType;
+import org.opencps.api.oai.model.oaipmh.ResumptionTokenType;
 import org.opencps.api.oai.model.oaipmh.VerbType;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
@@ -57,6 +58,7 @@ public class OAIMethodUtils {
 	private static final Log _log = LogFactoryUtil.getLog(OAIMethodUtils.class);
 
 	public static String OAI = "oai";
+	public static int PAGE_SIZE = 100;
 	public static String OPS_USER = "OPS_USER";
 	public static String OPS_ROLE = "OPS_ROLE";
 	public static String OPS_DELI_TYPE = "OPS_DELI_TYPE";
@@ -132,35 +134,35 @@ public class OAIMethodUtils {
 		}
 		results.setResponseDate(xmlGregorianCalendar);
 
-		ListRecordsType listRecordsType = buildRecords(query.getSet(), query.getMetadataPrefix());
+		ListRecordsType listRecordsType = buildRecords(query.getSet(), query.getMetadataPrefix(), query.getResumptionToken());
 		results.setListRecords(listRecordsType);
 
 		return results;
 	}
 
-	private ListRecordsType buildRecords(String set, String metadataPrefix) {
+	private ListRecordsType buildRecords(String set, String companyId, String pageNum) {
 		ListRecordsType results = new ListRecordsType();
 
 		if (OPS_USER.equals(set)) {
 
 			_log.debug("RUN getUserListRecords");
-			return getUserListRecords(metadataPrefix);
+			return getUserListRecords(companyId, pageNum);
 
 		} else if (OPS_ROLE.equals(set)) {
 
 			_log.debug("RUN getRoleListRecords");
-			return getRoleListRecords(metadataPrefix);
+			return getRoleListRecords(companyId, pageNum);
 
 		} else if (OPS_DELI_TYPE.equals(set)) {
 
 			_log.debug("RUN getDeliverableTypeListRecords");
-			return getDeliverableTypeListRecords(metadataPrefix);
+			return getDeliverableTypeListRecords(companyId, pageNum);
 		}
 
 		return results;
 	}
 
-	private ListRecordsType getUserListRecords(String metadataPrefix) {
+	private ListRecordsType getUserListRecords(String companyId, String page) {
 
 		ListRecordsType results = new ListRecordsType();
 
@@ -172,14 +174,17 @@ public class OAIMethodUtils {
 			Indexer<Employee> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Employee.class);
 			BooleanQuery booleanQuery = null;
 
-			long companyId = Validator.isNotNull(metadataPrefix) ? Long.parseLong(metadataPrefix) : 20099;
-			searchContext.setCompanyId(companyId);
+			long companyIdValid = GetterUtil.getLong(companyId, 20099);
+			int pageValid = GetterUtil.getInteger(page, 0);
+			searchContext.setCompanyId(companyIdValid);
 			searchContext.addFullQueryEntryClassName(Employee.class.getName());
 			searchContext.setEntryClassNames(new String[] { Employee.class.getName() });
 			searchContext.setAttribute("paginationType", "regular");
 			searchContext.setLike(true);
-			searchContext.setStart(QueryUtil.ALL_POS);
-			searchContext.setEnd(QueryUtil.ALL_POS);
+			int start = pageValid * PAGE_SIZE;
+			int end = start + PAGE_SIZE;
+			searchContext.setStart(start);
+			searchContext.setEnd(end);
 			searchContext.setAndSearch(true);
 			searchContext.setSorts(sorts);
 
@@ -187,9 +192,17 @@ public class OAIMethodUtils {
 			booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Employee.class.getName());
 
 			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+			long completeListSize = IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 			List<Document> listDocument = hits.toList();
 
 			_log.debug("listDocument.size=" + listDocument.size());
+			if (listDocument.size() == PAGE_SIZE && completeListSize > end) {
+
+				ResumptionTokenType rusumptionToken = new ResumptionTokenType();
+				rusumptionToken.setValue(String.valueOf(pageValid + 1));
+				rusumptionToken.setCompleteListSize(new BigInteger(String.valueOf(completeListSize)));
+				results.setResumptionToken(rusumptionToken);
+			}
 			OMEmployee oMEmployee = null;
 			OMRoles oMRoles = null;
 			OMRole oMRole = null;
@@ -256,7 +269,7 @@ public class OAIMethodUtils {
 		return results;
 	}
 
-	private ListRecordsType getRoleListRecords(String metadataPrefix) {
+	private ListRecordsType getRoleListRecords(String companyId, String page) {
 
 		ListRecordsType results = new ListRecordsType();
 
@@ -268,14 +281,17 @@ public class OAIMethodUtils {
 			Indexer<JobPos> indexer = IndexerRegistryUtil.nullSafeGetIndexer(JobPos.class);
 			BooleanQuery booleanQuery = null;
 
-			long companyId = Validator.isNotNull(metadataPrefix) ? Long.parseLong(metadataPrefix) : 20099;
-			searchContext.setCompanyId(companyId);
+			long companyIdValid = GetterUtil.getLong(companyId, 20099);
+			int pageValid = GetterUtil.getInteger(page, 0);
+			searchContext.setCompanyId(companyIdValid);
 			searchContext.addFullQueryEntryClassName(JobPos.class.getName());
 			searchContext.setEntryClassNames(new String[] { JobPos.class.getName() });
 			searchContext.setAttribute("paginationType", "regular");
 			searchContext.setLike(true);
-			searchContext.setStart(QueryUtil.ALL_POS);
-			searchContext.setEnd(QueryUtil.ALL_POS);
+			int start = pageValid * PAGE_SIZE;
+			int end = start + PAGE_SIZE;
+			searchContext.setStart(start);
+			searchContext.setEnd(end);
 			searchContext.setAndSearch(true);
 			searchContext.setSorts(sorts);
 
@@ -284,8 +300,16 @@ public class OAIMethodUtils {
 
 			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
 			List<Document> listDocument = hits.toList();
+			long completeListSize = IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
 
 			_log.debug("listDocument.size=" + listDocument.size());
+			if (listDocument.size() == PAGE_SIZE && completeListSize > end) {
+
+				ResumptionTokenType rusumptionToken = new ResumptionTokenType();
+				rusumptionToken.setValue(String.valueOf(pageValid + 1));
+				rusumptionToken.setCompleteListSize(new BigInteger(String.valueOf(completeListSize)));
+				results.setResumptionToken(rusumptionToken);
+			}
 			OMRole oMRole = null;
 
 			for (Document document : listDocument) {
@@ -325,14 +349,15 @@ public class OAIMethodUtils {
 		return results;
 	}
 
-	private ListRecordsType getDeliverableTypeListRecords(String metadataPrefix) {
+	private ListRecordsType getDeliverableTypeListRecords(String companyId, String page) {
 
 		ListRecordsType results = new ListRecordsType();
 
 		try {
 
-			long companyId = Validator.isNotNull(metadataPrefix) ? Long.parseLong(metadataPrefix) : 20099;
-			List<DeliverableType> deliverableTypes = DeliverableTypeLocalServiceUtil.getAllDeliverableTypes(companyId);
+			long companyIdValid = GetterUtil.getLong(companyId, 20099);
+			long pageValid = GetterUtil.getInteger(page, 0);
+			List<DeliverableType> deliverableTypes = DeliverableTypeLocalServiceUtil.getAllDeliverableTypes(companyIdValid);
 			OMDeliverableType oMDeliverableType = null;
 
 			_log.debug("listDocument.size=" + deliverableTypes.size());
