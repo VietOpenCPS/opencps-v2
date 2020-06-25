@@ -6,6 +6,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.io.File;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author trungnt
  *
@@ -38,4 +40,12 @@ public interface PayGateIntegrationAction {
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
 	
 	public JSONObject kpViewDetailTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
+	
+	public String ppInitTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext, HttpServletRequest request);
+	
+	public JSONObject ppConfirmTransaction(User user, ServiceContext serviceContext, String body);
+	
+	public String ppGetReceipt(User user, long groupId, long dosssierId, ServiceContext serviceContext);
+	
+	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context);
 }

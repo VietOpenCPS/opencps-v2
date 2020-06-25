@@ -1,0 +1,10 @@
+Bundle-Name: dvcqg-extend-sync-api
+Bundle-SymbolicName: dvcqg.extend.sync.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	pay.gate.integration.dvc.exception,\
+	pay.gate.integration.dvc.model,\
+	pay.gate.integration.dvc.service,\
+	pay.gate.integration.dvc.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../dvcqg-extend-sync-service/service.xml

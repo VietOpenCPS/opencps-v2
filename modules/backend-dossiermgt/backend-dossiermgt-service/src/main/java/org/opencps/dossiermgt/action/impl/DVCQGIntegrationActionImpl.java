@@ -105,7 +105,6 @@ import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
-import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.opencps.usermgt.service.util.DateTimeUtils;
 
 import backend.auth.api.exception.ErrorMsgModel;
@@ -156,14 +155,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
-		}else {
+		} else {
 			//danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
 			_mServiceCode = _oServiceCode;
 		}
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
-		if(dossier.getSystemId() == 5) {
+		if (dossier.getSystemId() == 5) {
 			object.put("MaHoSo", dossier.getReferenceUid());
-		}else {
+		} else {
 			object.put("MaHoSo", dossier.getDossierNo());
 		}
 		object.put("MaHoSo", dossier.getDossierNo());
@@ -336,16 +335,16 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
-		}else {
+		} else {
 			//danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
 			_mServiceCode = _oServiceCode;
 		}
-		
+
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
 
-		if(dossier.getSystemId() == 5) {
+		if (dossier.getSystemId() == 5) {
 			object.put("MaHoSo", dossier.getReferenceUid());
-		}else {
+		} else {
 			object.put("MaHoSo", dossier.getDossierNo());
 		}
 		object.put("MaTTHC", _mServiceCode);
@@ -3135,7 +3134,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				return createResponseMessage(result, 404, "error",
 						"Not found server config width protocal: DVCQG_TTKM");
 			}
-			
+
 			user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
 
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -3280,6 +3279,44 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 	}
 
+	@Override
+	public JSONObject doSyncServiceConfig(User user, ServiceContext serviceContext, JSONObject data) {
+
+		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		JSONArray responseData = JSONFactoryUtil.createJSONArray();
+
+		if (serverConfigs != null && !serverConfigs.isEmpty()) {
+			try {
+				ServerConfig serverConfig = serverConfigs.get(0);
+				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+				String accessToken = getAccessToken(serverConfig.getCompanyId(), serverConfig.getGroupId(), "dvcqg",
+						config);
+
+				JSONObject body = JSONFactoryUtil.createJSONObject();
+
+				body.put("service", "LayDVC");
+
+				JSONObject serviceProcess = getSharingData(config, body, accessToken);
+
+				if (serviceProcess.has("data")) {
+					responseData = serviceProcess.getJSONArray("data");
+				}
+
+			} catch (Exception e) {
+				_log.error(e);
+
+			}
+		}
+
+		result.put("total", responseData.length());
+		result.put("data", responseData);
+
+		return result;
+	}
+
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
 		object.put("status", status);
 		object.put("message", message);
@@ -3288,4 +3325,5 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private String _DEFAULT_CLASS_NAME = "dvcqg";
+
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="opencps.dvcqg.extend.sync.model.ApplicableInfo">
+		<field name="uuid" type="String" />
+		<field name="applicableInfoId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceLevel" type="int" />
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
+	<model name="opencps.dvcqg.extend.sync.model.PaymentFeeInfo">
+		<field name="uuid" type="String" />
+		<field name="paymentFeeInfoId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="type" type="String" />
+		<field name="paymentFeeCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="paymentFeeName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="amount" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
+	<model name="opencps.dvcqg.extend.sync.model.ServiceConfigMapping">
+		<field name="uuid" type="String" />
+		<field name="serviceConfigMappingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceConfigCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceConfigName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceCode" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="serviceName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="govAgencyName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="domainName" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+	</model>
+</model-hints>
