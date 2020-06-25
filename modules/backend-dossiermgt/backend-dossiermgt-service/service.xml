@@ -7,7 +7,7 @@
 	<author>huymq</author>
 	<namespace>dossiermgt</namespace>
 	<entity name="ServiceInfo" table="opencps_serviceinfo"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" uuid="true" cache-enabled="false">
 
 		<!-- PK fields -->
 
@@ -83,7 +83,7 @@
 	</entity>
 
 	<entity name="ServiceFileTemplate" table="opencps_services_filetemplates"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -122,7 +122,7 @@
 	</entity>
 
 	<entity name="EForm" table="opencps_eform"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 		<column name="eFormId" primary="true" type="long" />
@@ -168,7 +168,7 @@
 	</entity>
 
 	<entity name="Booking" table="opencps_booking"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 		<column name="bookingId" primary="true" type="long" />
@@ -225,7 +225,7 @@
 	</entity>
 
 	<entity name="DossierTemplate" table="opencps_dossiertemplate"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -279,7 +279,7 @@
 	</entity>
 
 	<entity name="DossierPart" table="opencps_dossierpart"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -356,7 +356,7 @@
 	</entity>
 
 	<entity name="ServiceConfig" table="opencps_serviceconfig"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -414,7 +414,7 @@
 	</entity>
 
 	<entity name="ProcessOption" table="opencps_processoption"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -470,7 +470,7 @@
 	</entity>
 
 	<entity name="Dossier" table="opencps_dossier" local-service="true"
-		remote-service="false" uuid="true">
+		remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -783,7 +783,7 @@
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -970,7 +970,7 @@
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -1017,7 +1017,7 @@
 	</entity>
 
 	<entity name="PaymentFile" table="opencps_paymentfile"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -1105,7 +1105,7 @@
 	</entity>
 
 	<entity name="PaymentConfig" table="opencps_paymentconfig"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -1157,7 +1157,7 @@
 	</entity>
 
 	<entity local-service="true" name="ServiceProcess"
-		remote-service="false" table="opencps_serviceprocess" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_serviceprocess" uuid="true">
 
 		<column name="serviceProcessId" type="long" primary="true" />
 		<!-- Audit fields -->
@@ -1214,7 +1214,7 @@
 	</entity>
 
 	<entity local-service="true" name="ConfigCounter"
-		remote-service="false" table="opencps_configcounter" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_configcounter" uuid="true">
 
 		<column name="configCounterId" type="long" primary="true" />
 		<!-- Audit fields -->
@@ -1241,7 +1241,7 @@
 	</entity>
 
 	<entity local-service="true" name="ServiceProcessRole"
-		remote-service="false" table="opencps_serviceprocessrole" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_serviceprocessrole" uuid="true">
 
 		<column name="serviceProcessId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
@@ -1261,7 +1261,7 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="ProcessStep" remote-service="false"
+	<entity local-service="true" name="ProcessStep" remote-service="false" cache-enabled="false"
 		table="opencps_processstep" uuid="true">
 
 		<column name="processStepId" type="long" primary="true" />
@@ -1329,7 +1329,7 @@
 
 	</entity>
 	
-	<entity local-service="true" name="ProcessPlugin" remote-service="false"
+	<entity local-service="true" name="ProcessPlugin" remote-service="false" cache-enabled="false"
 		table="opencps_process_plugin" uuid="true">
 
 		<column name="processPluginId" type="long" primary="true" />
@@ -1357,7 +1357,7 @@
 	</entity>
 
 	<entity local-service="true" name="ProcessStepRole"
-		remote-service="false" table="opencps_processsteprole" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_processsteprole" uuid="true">
 
 		<column name="processStepId" type="long" primary="true" />
 		<column name="roleId" type="long" primary="true" />
@@ -1379,7 +1379,7 @@
 
 	</entity>
 	
-	<entity local-service="true" name="ProcessSequence" remote-service="false"
+	<entity local-service="true" name="ProcessSequence" remote-service="false" cache-enabled="false"
 		table="opencps_processsequence" uuid="true">
 		
 		<column name="processSequenceId" type="long" primary="true" />
@@ -1421,7 +1421,7 @@
 	</entity>	
 	
 	<entity local-service="true" name="DossierRequestUD"
-		remote-service="false" table="opencps_dossierrequests" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossierrequests" uuid="true">
 
 		<column name="dossierRequestId" type="long" primary="true" />
 
@@ -1463,7 +1463,7 @@
 	</entity>
 	
 	<entity local-service="true" name="ProcessAction"
-		remote-service="false" table="opencps_processaction" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_processaction" uuid="true">
 
 		<column name="processActionId" type="long" primary="true" />
 		<!-- Audit fields -->
@@ -1580,7 +1580,7 @@
 	</entity>
 
 	<entity local-service="true" name="DossierAction"
-		remote-service="false" table="opencps_dossieraction" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossieraction" uuid="true">
 
 		<column name="dossierActionId" type="long" primary="true" />
 		<!-- Audit fields -->
@@ -1705,7 +1705,7 @@
 	</entity>
 
 	<entity local-service="true" name="DossierUser"
-		remote-service="false" table="opencps_dossieruser" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossieruser" uuid="true">
 
 		<column name="dossierId" type="long" primary="true" />
 		<column name="userId" type="long" primary="true" />
@@ -1726,7 +1726,7 @@
 	</entity>
 
 	<entity local-service="true" name="DossierActionUser"
-		remote-service="false" table="opencps_dossieractionuser" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossieractionuser" uuid="true">
 
 		<column name="dossierActionId" type="long" primary="true" />
 		<column name="userId" type="long" primary="true" />
@@ -1790,7 +1790,7 @@
 	</entity>
 
 	<entity local-service="true" name="DossierActionSync"
-		remote-service="false" table="opencps_dossieractionsync" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossieractionsync" uuid="true">
 
 		<column name="dossierActionSyncId" type="long" primary="true" />
 
@@ -1816,7 +1816,7 @@
 	</entity>
 
 	<entity local-service="true" name="DossierStatistic"
-		remote-service="false" table="opencps_dossierstatistic" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_dossierstatistic" uuid="true">
 
 		<column name="dossierStatisticId" type="long" primary="true" />
 
@@ -1871,7 +1871,7 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="Registration" remote-service="false"
+	<entity local-service="true" name="Registration" remote-service="false" cache-enabled="false"
 		table="opencps_registration" uuid="true">
 
 		<column name="registrationId" type="long" primary="true" />
@@ -1950,7 +1950,7 @@
 	</entity>
 
 	<entity local-service="true" name="RegistrationLog"
-		remote-service="false" table="opencps_registrationlog" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_registrationlog" uuid="true">
 
 		<column name="registrationLogId" type="long" primary="true" />
 
@@ -1979,7 +1979,7 @@
 	</entity>
 
 	<entity local-service="true" name="RegistrationForm"
-		remote-service="false" table="opencps_registrationform" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_registrationform" uuid="true">
 
 		<column name="registrationFormId" type="long" primary="true" />
 
@@ -2040,7 +2040,7 @@
 	</entity>
 
 	<entity local-service="true" name="DeliverableType"
-		remote-service="false" table="opencps_deliverabletype" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_deliverabletype" uuid="true">
 
 		<column name="deliverableTypeId" type="long" primary="true" />
 
@@ -2079,7 +2079,7 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="Deliverable" remote-service="false"
+	<entity local-service="true" name="Deliverable" remote-service="false" cache-enabled="false"
 		table="opencps_deliverable" uuid="true">
 
 		<column name="deliverableId" type="long" primary="true" />
@@ -2152,7 +2152,7 @@
 	</entity>
 
 	<entity local-service="true" name="DeliverableLog"
-		remote-service="false" table="opencps_deliverablelog" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_deliverablelog" uuid="true">
 
 		<column name="deliverableLogId" type="long" primary="true" />
 
@@ -2183,7 +2183,7 @@
 	</entity>
 
 	<entity local-service="true" name="RegistrationTemplates"
-		remote-service="false" table="opencps_registrationtemplate" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_registrationtemplate" uuid="true">
 
 		<column name="registrationTemplateId" type="long" primary="true" />
 
@@ -2233,7 +2233,7 @@
 	</entity>
 
 	<entity local-service="true" name="UserInfoLog"
-		remote-service="false" table="opencps_userinfolog" uuid="true">
+		remote-service="false" cache-enabled="false" table="opencps_userinfolog" uuid="true">
 
 		<column name="userLogId" type="long" primary="true" />
 
@@ -2251,7 +2251,7 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="DossierMark" remote-service="false"
+	<entity local-service="true" name="DossierMark" remote-service="false" cache-enabled="false"
 		table="opencps_dossiermark" uuid="true">
 
 		<column name="dossierMarkId" type="long" primary="true" />
@@ -2288,7 +2288,7 @@
 		</finder>
 	</entity>
 	
-	<entity local-service="true" name="ActionConfig" remote-service="false"
+	<entity local-service="true" name="ActionConfig" remote-service="false" cache-enabled="false"
 		table="opencps_actionconfig" uuid="true">
 
 		<column name="actionConfigId" type="long" primary="true" />
@@ -2336,7 +2336,7 @@
 		
 	</entity>
 	
-	<entity local-service="true" name="StepConfig" remote-service="false"
+	<entity local-service="true" name="StepConfig" remote-service="false" cache-enabled="false"
 		table="opencps_stepconfig" uuid="true">
 
 		<column name="stepConfigId" type="long" primary="true" />
@@ -2386,7 +2386,7 @@
 		
 	</entity>
 	
-	<entity local-service="true" name="MenuConfig" remote-service="false"
+	<entity local-service="true" name="MenuConfig" remote-service="false" cache-enabled="false"
 		table="opencps_menuconfig" uuid="true">
 
 		<column name="menuConfigId" type="long" primary="true" />
@@ -2429,7 +2429,7 @@
 		
 	</entity>
 	
-	<entity local-service="true" name="MenuRole" remote-service="false"
+	<entity local-service="true" name="MenuRole" remote-service="false" cache-enabled="false"
 		table="opencps_menurole" uuid="true">
 
 		<column name="menuRoleId" type="long" primary="true"/>
@@ -2459,7 +2459,7 @@
 
 	</entity>
 
-	<entity local-service="true" name="DocumentType" remote-service="false"
+	<entity local-service="true" name="DocumentType" remote-service="false" cache-enabled="false"
 		table="opencps_documenttype" uuid="true">
 
 		<column name="DocumentTypeId" type="long" primary="true" />
@@ -2491,7 +2491,7 @@
 		</finder>
 	</entity>
 
-	<entity local-service="true" name="DossierSync" remote-service="false"
+	<entity local-service="true" name="DossierSync" remote-service="false" cache-enabled="false"
 		table="opencps_dossiersync" uuid="true">
 
 		<column name="DossierSyncId" type="long" primary="true" />
@@ -2562,7 +2562,7 @@
         </finder>               
 	</entity>
 	
-	<entity local-service="true" name="DossierDocument" remote-service="false"
+	<entity local-service="true" name="DossierDocument" remote-service="false" cache-enabled="false"
 		table="opencps_dossierdocument" uuid="true">
 
 		<column name="DossierDocumentId" type="long" primary="true" />
@@ -2607,7 +2607,7 @@
 	</entity>
 
 	<entity name="PublishQueue" table="opencps_publish_queue"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -2664,7 +2664,7 @@
 	</entity>
 		
 	<entity name="DeliverableTypeRole" table="opencps_deliverabletyperole"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 
@@ -2705,10 +2705,10 @@
 	</entity>
 	
 	<entity local-service="true" name="CPSDossierBusiness"
-		remote-service="false">
+		remote-service="false" cache-enabled="false">
 	</entity>
 	
-	<entity local-service="true" name="ServiceInfoMapping" remote-service="false" uuid="false" table="opencps_serviceinfomapping">
+	<entity local-service="true" name="ServiceInfoMapping" remote-service="false" cache-enabled="false" uuid="false" table="opencps_serviceinfomapping">
 
 		<!-- PK fields -->
 
@@ -2751,7 +2751,7 @@
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
 	</entity>
 	
-	<entity local-service="true" name="DossierStatusMapping" remote-service="false" uuid="false" table="opencps_dossierstatusmapping">
+	<entity local-service="true" name="DossierStatusMapping" remote-service="false" cache-enabled="false" uuid="false" table="opencps_dossierstatusmapping">
 
 		<!-- PK fields -->
 
@@ -2797,7 +2797,7 @@
 		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
 	</entity>
 
-	<entity local-service="true" name="Notarization" remote-service="false" uuid="false" table="opencps_notarization">
+	<entity local-service="true" name="Notarization" remote-service="false" cache-enabled="false" uuid="false" table="opencps_notarization">
 
 		<!-- PK fields -->
 
@@ -2839,7 +2839,7 @@
 	</entity>
 		
 
-  <entity local-service="true" remote-service="false"
+  <entity local-service="true" remote-service="false" cache-enabled="false"
 		name="AccessToken" table="opencps_accesstoken">
 				<!-- PK fields -->
 
@@ -2868,7 +2868,7 @@
         </finder>
   </entity>
 <entity name="NewsBoard" table="opencps_newsboard"
-		local-service="true" remote-service="false" uuid="true">
+		local-service="true" remote-service="false" cache-enabled="false" uuid="true">
 
 		<!-- PK fields -->
 		<column name="newsBoardId" primary="true" type="long" />

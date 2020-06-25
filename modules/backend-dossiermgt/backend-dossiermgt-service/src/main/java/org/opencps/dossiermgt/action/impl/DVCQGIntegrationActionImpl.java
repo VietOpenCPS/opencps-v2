@@ -3052,6 +3052,17 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		String MaTTHC = data.getString("MaTTHC");//bb
+		try {
+			JSONObject tmpConfig = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			if(tmpConfig.has("groupId")) {
+				groupId = tmpConfig.getLong("groupId");
+			}
+		}catch (Exception e) {
+			_log.error(e);
+			return createResponseMessage(result, 500, "error", "Can't parse server config");
+		}
+		_log.debug(">>>>> GroupId: " + groupId);
+		
 		ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
 		if (mapping == null) {
 			return createResponseMessage(result, 404, "error", "Not found serviceInfo mapping with: " + MaTTHC);
