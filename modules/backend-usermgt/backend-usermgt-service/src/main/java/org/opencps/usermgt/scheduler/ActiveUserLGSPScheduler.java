@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author trungnt
  */
-@Component(immediate = true, service = ActiveUserLGSPScheduler.class)
+//@Component(immediate = true, service = ActiveUserLGSPScheduler.class)
 public class ActiveUserLGSPScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	//Time engine dossier

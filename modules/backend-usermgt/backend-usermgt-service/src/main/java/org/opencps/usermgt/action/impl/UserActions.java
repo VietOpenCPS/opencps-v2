@@ -471,8 +471,8 @@ public class UserActions implements UserInterface {
 					? employee.getTelNo() : StringPool.BLANK);
 		}
 		else {
-			applicant =
-				ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+			applicant = mappingUserId > 0 ? 
+				ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 			if (applicant != null) {
 				document.addTextSortable(
 					UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -635,8 +635,8 @@ public class UserActions implements UserInterface {
 						? employee.getTelNo() : StringPool.BLANK);
 			}
 			else {
-				applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				applicant = mappingUserId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 				if (applicant != null) {
 					document.addTextSortable(
 						UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -763,8 +763,8 @@ public class UserActions implements UserInterface {
 						? employee.getTelNo() : StringPool.BLANK);
 			}
 			else {
-				applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				applicant = mappingUserId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 				if (applicant != null) {
 					document.addTextSortable(
 						UserTerm.USER_ID, String.valueOf(mappingUserId));
@@ -895,8 +895,8 @@ public class UserActions implements UserInterface {
 					}
 					else {
 						// update application
-						Applicant applicant =
-							ApplicantLocalServiceUtil.fetchByMappingID(id);
+						Applicant applicant = id > 0 ? 
+							ApplicantLocalServiceUtil.fetchByMappingID(id) : null;
 						if (applicant != null) {
 							email = applicant.getContactEmail();
 							phone = applicant.getContactTelNo();
@@ -984,8 +984,8 @@ public class UserActions implements UserInterface {
 				}
 				else {
 					// update employee
-					Applicant applicant =
-						ApplicantLocalServiceUtil.fetchByMappingID(id);
+					Applicant applicant = id > 0 ? 
+						ApplicantLocalServiceUtil.fetchByMappingID(id) : null;
 					_log.info("applicant: "+applicant);
 
 					if (applicant != null) {
@@ -1283,8 +1283,8 @@ public class UserActions implements UserInterface {
 			}
 			else {
 
-				Applicant applicant =
-					ApplicantLocalServiceUtil.fetchByMappingID(userId);
+				Applicant applicant = userId > 0 ? 
+					ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 
 				if (Validator.isNotNull(applicant)) {
 

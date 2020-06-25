@@ -768,37 +768,40 @@ public class DossierActionsImpl implements DossierActions {
 					Date dueDate = null;
 					if (dossier.getDueDate() != null) {
 						dueDate = dossier.getDueDate();
+						_log.info("dueDate============" + dueDate);
 					} else {
+
 						Double durationCount = serviceProcess.getDurationCount();
-						if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+
+						JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
+						String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
+						if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
+							JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
+							if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
+								String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
+								if (Validator.isNotNull(strDateOption) && (
+										Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
+									
+									DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
+											serviceProcess.getDueDatePattern());
+									dueDate = dueDatePharse.getDueDate();
+									dossier.setDueDate(dueDate);
+								} else if (Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
+
+									dueDate = null;
+								}
+							}
+						} else if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 							
 							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							dueDate = dueDateUtils.getDueDate();
 							dossier.setDueDate(dueDate);
-							
-							JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
-							String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
-							if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
-								JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
-								if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
-									String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
-									if (Validator.isNotNull(strDateOption) && (
-											Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
-											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
-											|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
-										
-										DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
-												serviceProcess.getDueDatePattern());
-										dueDate = dueDatePharse.getDueDate();
-										dossier.setDueDate(dueDate);
-									} else if (Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
-
-										dueDate = null;
-									}
-								}
-							}
 						}
+						_log.info("dueDate============" + dueDate);
+						_log.info("processAction============" + processAction);
 					}
 
 					receivingObj.put(DossierTerm.DUE_DATE, dueDate != null ? dueDate.getTime() : 0l);

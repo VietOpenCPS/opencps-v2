@@ -37,7 +37,7 @@ public class DossierListennerUltils {
 			String content;
 			String notificationType = StringPool.BLANK;
 			String payload = DossierLogUtils.createPayload(null, null, model);
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
+			Applicant applicant = model.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId()) : null;
 			ServiceContext serviceContext = new ServiceContext();
 
 			serviceContext.setCompanyId(model.getCompanyId());
@@ -104,7 +104,7 @@ public class DossierListennerUltils {
 		try {
 
 			String notificationType = model.getNotificationType();
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
+			Applicant applicant = model.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId()) : null;
 			JSONObject messageKey = JSONFactoryUtil.createJSONObject();
 			messageKey.put(DossierListenerMessageKeys.DOSSIER_ID, model.getDossierId());
 
@@ -159,7 +159,7 @@ public class DossierListennerUltils {
 		try {
 
 			String notificationType = isUpdated ? NotificationType.REGISTRATION_02 : NotificationType.REGISTRATION_01;
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId());
+			Applicant applicant = model.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(model.getUserId()) : null;
 			JSONObject messageKey = JSONFactoryUtil.createJSONObject();
 			messageKey.put(RegistrationListenerMessageKeys.REGISTRATION_ID, model.getRegistrationId());
 

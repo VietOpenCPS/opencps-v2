@@ -112,7 +112,7 @@ public class OpenCPSAPIParsing {
 		MenuConfigItemResult object = new MenuConfigItemResult();
 		List<MenuConfigItem> data = new ArrayList<>();
 		
-		Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+		Applicant applicant = user.getUserId() > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId()) : null;
 		if (applicant == null) {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 			if (employee != null) {

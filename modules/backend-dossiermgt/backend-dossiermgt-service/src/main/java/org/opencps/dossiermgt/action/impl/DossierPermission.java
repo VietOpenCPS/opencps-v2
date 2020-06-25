@@ -29,7 +29,7 @@ public class DossierPermission {
 	
 	public boolean isCitizen(long userId) {
 		try {
-			Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+			Applicant applicant = userId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 			if (applicant != null) {
 				return true;
 			}

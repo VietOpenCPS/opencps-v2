@@ -28,7 +28,7 @@ public class OCPSUserUtils {
 
 		Employee employee = null;
 
-		applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+		applicant = userId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 
 		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 

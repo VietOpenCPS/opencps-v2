@@ -565,7 +565,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 
 			} else if ("mapping".equalsIgnoreCase(state)) {
 				mappingUserId = user.getUserId();
-				applicant = ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId);
+				applicant = mappingUserId > 0 ? ApplicantLocalServiceUtil.fetchByMappingID(mappingUserId) : null;
 				if (applicant == null) {
 					return createErrorMessage("not found applicant with userId = " + mappingUserId, 404);
 				}
