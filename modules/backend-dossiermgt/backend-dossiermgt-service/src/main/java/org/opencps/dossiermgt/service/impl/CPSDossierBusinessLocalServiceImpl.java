@@ -1608,10 +1608,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				notificationType = actionConfig.getNotificationType();
 			}
 			_log.info("NOTIFICATION TYPE: " + notificationType + ", CONDITION: " + preCondition);
+
+			//			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE,
+				groupId + StringPool.UNDERLINE + notificationType);
+			Notificationtemplate notiTemplate = null;
+			//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (notiCache == null) {
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,
+					notificationType);
+				if (notiTemplate != null) {
+					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE, groupId + StringPool.UNDERLINE + notificationType,
+						(Serializable) notiTemplate, ttl);
+				}
+			} else {
+				notiTemplate = (Notificationtemplate) notiCache;
+			}
+
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+
 			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
 			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
-			boolean isSendNotiSMS = true;
-			boolean isSendNotiEmail = true;
+			boolean isSendNotiSMS = notiTemplate.getSendSMS();
+			boolean isSendNotiEmail = notiTemplate.getSendEmail();
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
 					if (isSendSMS) {
@@ -1625,27 +1646,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					isSendNotiSMS = isSendSMS;
 					isSendNotiEmail = isSendEmail;
 				}
-			}
-
-			//			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE,
-					groupId + StringPool.UNDERLINE + notificationType);
-			Notificationtemplate notiTemplate = null;
-			//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			if (notiCache == null) {
-				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,
-						notificationType);
-				if (notiTemplate != null) {
-					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE, groupId + StringPool.UNDERLINE + notificationType,
-							(Serializable) notiTemplate, ttl);
+				if(preCondition.contains(DossierTerm.CONTAIN_ORIGINAL)) {
+					int originalityDossier = dossier.getOriginality();
+					int originality ;
+					String split[] = preCondition.split(",");
+					for (int i = 0; i < split.length; i++)
+					{
+						if (split[i].contains(DossierTerm.CONTAIN_ORIGINAL))
+						{
+							String oriSplit[] =split[i].split(StringPool.EQUAL);
+							originality = Integer.valueOf(oriSplit[1]);
+							if (originality!=originalityDossier)
+							{
+								isSendNotiSMS = false;
+								isSendNotiEmail = false;
+							}
+						}
+					}
 				}
-			} else {
-				notiTemplate = (Notificationtemplate) notiCache;
 			}
 
-			Date now = new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(now);
+
 
 			if (notiTemplate != null) {
 				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
@@ -3220,6 +3241,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
+			String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dateOption);
+			dossier.setMetaData(metadata);
+			bResult.put(DossierTerm.META_DATA, true);
 			bResult.put(DossierTerm.DUE_DATE, true);
 			dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 		} else //Update counter and dossierNo
@@ -8200,6 +8224,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return oldDossier;
 	}
 
+	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, int dateOption) {
+
+		try {
+			JSONObject metaData = Validator.isNotNull(dossier.getMetaData()) ?
+				JSONFactoryUtil.createJSONObject(dossier.getMetaData()) :
+					JSONFactoryUtil.createJSONObject();
+			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
+			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
+			System.out.println("===============metaData==========" +metaData);
+			return metaData.toJSONString();
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return StringPool.BLANK;
+	}
 	private Dossier setDossierNoNDueDate(Dossier dossier, ServiceProcess serviceProcess, ProcessOption option,
 			boolean setDossierNo, boolean setDueDate, Date dueDateStart, LinkedHashMap<String, Object> params) {
 
