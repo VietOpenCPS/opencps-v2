@@ -614,12 +614,19 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 									if (classPKUpdate.contains("{classPK}")) {
 										classPKUpdate = classPKUpdate.replace("{classPK}", Validator.isNotNull(classPKInput) ? URLEncoder.encode(String.valueOf(classPKInput), "UTF-8") : StringPool.BLANK);
 									}
-									
+
 									jsonBodyData.put("className", classNameUpdate);
 									jsonBodyData.put("classPK", classPKUpdate);
 									System.out.println("className: "+classNameUpdate);
 									System.out.println("classPK: "+classPKUpdate);
-									
+
+									Iterator<?> keys = jsonBody.keys();
+									while (keys.hasNext())
+									{
+										String key = (String) keys.next();
+										Object value = jsonBody.getString(key);
+										jsonBodyData.put(key,value);
+									}
 								}
 							}
 							//AUTHEN

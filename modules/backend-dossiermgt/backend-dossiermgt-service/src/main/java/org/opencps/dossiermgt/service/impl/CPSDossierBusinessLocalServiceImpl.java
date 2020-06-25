@@ -1607,10 +1607,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				notificationType = actionConfig.getNotificationType();
 			}
 			_log.info("NOTIFICATION TYPE: " + notificationType + ", CONDITION: " + preCondition);
+
+			//			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE,
+				groupId + StringPool.UNDERLINE + notificationType);
+			Notificationtemplate notiTemplate = null;
+			//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
+			if (notiCache == null) {
+				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,
+					notificationType);
+				if (notiTemplate != null) {
+					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE, groupId + StringPool.UNDERLINE + notificationType,
+						(Serializable) notiTemplate, ttl);
+				}
+			} else {
+				notiTemplate = (Notificationtemplate) notiCache;
+			}
+
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+
 			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
 			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
-			boolean isSendNotiSMS = true;
-			boolean isSendNotiEmail = true;
+			boolean isSendNotiSMS = notiTemplate.getSendSMS();
+			boolean isSendNotiEmail = notiTemplate.getSendEmail();
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
 					if (isSendSMS) {
@@ -1624,27 +1645,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					isSendNotiSMS = isSendSMS;
 					isSendNotiEmail = isSendEmail;
 				}
-			}
-
-			//			Notificationtemplate notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			Serializable notiCache = cache.getFromCache(CACHE_NOTIFICATION_TEMPLATE,
-					groupId + StringPool.UNDERLINE + notificationType);
-			Notificationtemplate notiTemplate = null;
-			//			notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, actionConfig.getNotificationType());
-			if (notiCache == null) {
-				notiTemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,
-						notificationType);
-				if (notiTemplate != null) {
-					cache.addToCache(CACHE_NOTIFICATION_TEMPLATE, groupId + StringPool.UNDERLINE + notificationType,
-							(Serializable) notiTemplate, ttl);
+				if(preCondition.contains(DossierTerm.CONTAIN_ORIGINAL)) {
+					int originalityDossier = dossier.getOriginality();
+					int originality ;
+					String split[] = preCondition.split(",");
+					for (int i = 0; i < split.length; i++)
+					{
+						if (split[i].contains(DossierTerm.CONTAIN_ORIGINAL))
+						{
+							String oriSplit[] =split[i].split(StringPool.EQUAL);
+							originality = Integer.valueOf(oriSplit[1]);
+							if (originality!=originalityDossier)
+							{
+								isSendNotiSMS = false;
+								isSendNotiEmail = false;
+							}
+						}
+					}
 				}
-			} else {
-				notiTemplate = (Notificationtemplate) notiCache;
 			}
 
-			Date now = new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(now);
+
 
 			if (notiTemplate != null) {
 				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
