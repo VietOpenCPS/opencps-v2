@@ -1,7 +1,7 @@
 package org.graphql.api.controller.impl;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+//import com.auth0.jwt.JWT;
+//import com.auth0.jwt.algorithms.Algorithm;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -102,6 +102,7 @@ import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.UserRegisterTerm;
+import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -477,11 +478,11 @@ public class RestfulController {
 													CompanyConstants.AUTH_TYPE_EA);
 
 											User user = UserLocalServiceUtil.fetchUser(userId);
-											Algorithm algorithm = Algorithm.HMAC256(SECRET);
-											String token = JWT.create()
-													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-													.sign(algorithm);
-											response.setHeader("jwt-token", token);
+//											Algorithm algorithm = Algorithm.HMAC256(SECRET);
+//											String token = JWT.create()
+//													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+//													.sign(algorithm);
+//											response.setHeader("jwt-token", token);
 											
 											if (userId != 20139) {
 												_log.info("changeSecrect: OK");
@@ -557,11 +558,11 @@ public class RestfulController {
 													CompanyConstants.AUTH_TYPE_EA);
 
 											User user = UserLocalServiceUtil.fetchUser(userId);
-											Algorithm algorithm = Algorithm.HMAC256(SECRET);
-											String token = JWT.create()
-													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-													.sign(algorithm);
-											response.setHeader("jwt-token", token);
+//											Algorithm algorithm = Algorithm.HMAC256(SECRET);
+//											String token = JWT.create()
+//													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+//													.sign(algorithm);
+//											response.setHeader("jwt-token", token);
 											
 											if (userId != 20139) {
 												Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
@@ -627,11 +628,11 @@ public class RestfulController {
 							CompanyConstants.AUTH_TYPE_EA);
 
 					User user = UserLocalServiceUtil.fetchUser(userId);
-					Algorithm algorithm = Algorithm.HMAC256(SECRET);
-					String token = JWT.create()
-							.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
-							.sign(algorithm);
-					response.setHeader("jwt-token", token);
+//					Algorithm algorithm = Algorithm.HMAC256(SECRET);
+//					String token = JWT.create()
+//							.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
+//							.sign(algorithm);
+//					response.setHeader("jwt-token", token);
 					
 					if (userId != 20139) {
 						Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
@@ -1393,7 +1394,7 @@ public class RestfulController {
 
 	@RequestMapping(value = "/users/{id}", produces = { "application/json",
 			"application/xml" }, method = RequestMethod.GET)
-	public ResponseEntity<UsersUserItem> getUserById(HttpServletRequest request, 
+	public ResponseEntity<UsersUserItem> getUserById(HttpServletRequest request, HttpServletResponse response,
 			@ApiParam(value = "id của user", required = true) @PathVariable("id") String id) {
 
 		if (Validator.isNull(id)) {
@@ -1415,6 +1416,9 @@ public class RestfulController {
 			if (Validator.isNull(userData)) {
 				throw new OpenCPSNotFoundException(User.class.getName());
 			}
+
+			String token = GraphQLUtils.buildTokenLogin(userData, groupId);
+			response.setHeader("jwt-token", token);
 
 			return new ResponseEntity<UsersUserItem>(JSONFactoryUtil.looseDeserialize(userData, UsersUserItem.class),
 					HttpStatus.OK);
