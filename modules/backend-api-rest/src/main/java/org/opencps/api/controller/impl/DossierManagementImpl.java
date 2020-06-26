@@ -1223,6 +1223,7 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, long id,
 		DossierInputModel input) {
 
+		_log.info("TRACE_LOG_INFO input upadte Dossier: "+JSONFactoryUtil.looseSerialize(input));
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
 
@@ -1340,6 +1341,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+			_log.info("TRACE_LOG_INFO result upadte Dossier: "+JSONFactoryUtil.looseSerialize(result));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -1574,6 +1576,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			_log.info("TRACE_LOG_INFO doAction Dossier: "+JSONFactoryUtil.looseSerialize(dossier));
+			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
 
 			_log.debug("LamTV-input: " + JSONFactoryUtil.looseSerialize(input));
 			_log.debug(
