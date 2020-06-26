@@ -988,7 +988,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject();
 		User user = userLocalService.fetchUser(userId);
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		_log.debug("dossier doAction: "+JSONFactoryUtil.looseSerialize(dossier));
+		_log.info("TRACE_LOG_INFO doAction CPS dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
 				groupId + StringPool.UNDERLINE + userId);
@@ -1260,6 +1260,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				dossier.setDossierActionId(newAction.getDossierActionId());
 				dossierLocalService.updateDossier(dossier);
+				_log.info("TRACE_LOG_INFO doAction CPS Update L1 dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 				//update
 				dossierAction.setNextActionId(newAction.getDossierActionId());
 				dossierActionLocalService.updateDossierAction(dossierAction);
@@ -1389,6 +1390,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
+		_log.info("TRACE_LOG_INFO doAction CPS L2 dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 
 		//		Indexer<Dossier> indexer = IndexerRegistryUtil
 		//				.nullSafeGetIndexer(Dossier.class);
