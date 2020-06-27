@@ -2881,7 +2881,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
-						dossier.getRegisterBookCode());
+						dossier.getRegisterBookCode(), dossier.getGovAgencyCode());
 				dossier.setCounter(counterCode);
 			}
 
@@ -2938,7 +2938,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
-						dossier.getRegisterBookCode());
+						dossier.getRegisterBookCode(), dossier.getGovAgencyCode());
 				dossier.setCounter(counterCode);
 			}
 
@@ -8269,7 +8269,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (setDossierNo) {
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
 				long counterCode = DossierNumberGenerator.countByRegiterBookCode(dossier.getGroupId(),
-						dossier.getRegisterBookCode());
+						dossier.getRegisterBookCode(), dossier.getGovAgencyCode());
 				dossier.setCounter(counterCode);
 			}
 
