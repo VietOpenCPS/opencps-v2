@@ -61,11 +61,12 @@ public class StatisticsReportScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-			_log.info("OpenCPS PUBLISH STATISTICS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
 			Date now = new Date();
 			Calendar c = Calendar.getInstance();
 			c.setTime(now);
+			
+			_log.info("START OpenCPS PUBLISH STATISTICS IS  : " + now);
 	
 			int month = c.get(Calendar.MONTH) + 1;
 			int year = c.get(Calendar.YEAR);
@@ -118,6 +119,7 @@ public class StatisticsReportScheduler extends BaseMessageListener {
 					_log.debug(e);
 				}
 			}
+			_log.info("END OpenCPS PUBLISH STATISTICS IS  : " + now);
 			_log.info("OpenCPS PUBlISH STATISTICS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {

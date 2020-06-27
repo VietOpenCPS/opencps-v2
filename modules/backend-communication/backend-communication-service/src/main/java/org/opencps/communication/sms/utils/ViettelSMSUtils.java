@@ -81,14 +81,14 @@ public class ViettelSMSUtils {
 					configObj.getString(SendSMSTerm.COMMAND_CODE), body,
 					configObj.getString(SendSMSTerm.CONTENT_TYPE));
 			}
-			else {
-
-				// handle with hashCode
-				portType = locator.getCcApiPort();
-				result = portType.wsCpMt(
-					DEFAULT_USER, DEFAULT_SECRET, DEFAULT_CP_CODE, DEFAULT_REQUEST_ID, toTelNo,
-					toTelNo, DEFAULT_SERVICE_ID, DEFAULT_COMMAND_CODE, body, DEFAULT_CONTENT_TYPE);
-			}
+//			else {
+//
+//				// handle with hashCode
+//				portType = locator.getCcApiPort();
+//				result = portType.wsCpMt(
+//					DEFAULT_USER, DEFAULT_SECRET, DEFAULT_CP_CODE, DEFAULT_REQUEST_ID, toTelNo,
+//					toTelNo, DEFAULT_SERVICE_ID, DEFAULT_COMMAND_CODE, body, DEFAULT_CONTENT_TYPE);
+//			}
 		}
 
 		return result;
