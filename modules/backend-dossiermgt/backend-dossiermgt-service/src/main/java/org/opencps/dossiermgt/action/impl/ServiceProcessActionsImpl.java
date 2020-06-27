@@ -424,7 +424,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 		long assignUserId, String assignUserName, Integer requestPayment,
 		String paymentFee, String createDossierFiles, String returnDossierFiles,
 		boolean eSignature, String signatureType, String createDossiers,
-		ServiceContext serviceContext)
+		String postAction, ServiceContext serviceContext)
 		throws PortalException {
 
 		ProcessActionLocalServiceUtil.updateProcessActionDB(
@@ -432,7 +432,7 @@ public class ServiceProcessActionsImpl implements ServiceProcessActions {
 			preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser,
 			assignUserId, assignUserName, requestPayment, paymentFee,
 			createDossierFiles, returnDossierFiles, eSignature, signatureType,
-			createDossiers, serviceContext);
+			createDossiers, postAction, serviceContext);
 	}
 
 	@Override
