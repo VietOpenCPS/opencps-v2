@@ -42,6 +42,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
+import org.fds.opencps.paygate.integration.util.KeypayDVCQGTerm;
+import org.fds.opencps.paygate.integration.util.KeypayDVCQGUtils;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.fds.opencps.paygate.integration.util.PayGateUtil;
 import org.opencps.communication.model.ServerConfig;
@@ -1067,6 +1069,55 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return PayGateUtil.createResponseMessage(-1, "error: system exception");
+		}
+	}
+
+	@Override
+	public JSONObject dptracuuthanhtoanhs(User user, ServiceContext serviceContext, String body) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		try {
+			_log.info("=======body========" + body);
+			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+			String dossierNo = data.getString(PayGateTerm.MAHOSO);
+			Dossier dossier = null;
+			PaymentFile paymentFile = null;
+
+			if (Validator.isNotNull(dossierNo)) {
+				dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+			}
+
+			if (Validator.isNull(dossierNo) || Validator.isNull(dossier)) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			} else  if (Validator.isNotNull(dossier)) {
+				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			}
+
+			if (Validator.isNull(paymentFile) || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			}
+
+
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+			if (schema == null) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			}
+
+			response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_TT);
+			response.put(KeypayDVCQGTerm.MESSAGE_KEY, KeypayDVCQGUtils.dptracuuthanhtoanhs(dossier, paymentFile, schema));
+			return response;
+
+		} catch (Exception e) {
+			_log.error(e);
+			response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
+			response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+			return response;
 		}
 	}
 
