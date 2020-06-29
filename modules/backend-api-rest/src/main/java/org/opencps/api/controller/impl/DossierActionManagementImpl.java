@@ -525,7 +525,7 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 	public Response getActionPayload(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
-		DossierActionSearchModel query, String id, String actionId) {
+		DossierActionSearchModel query, String id, String actionId, boolean isActionCode) {
 
 		try {
 			long groupId =
@@ -539,11 +539,15 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 				query.setStart(-1);
 				query.setEnd(-1);
 			}
-			ProcessAction proAction =
-				ProcessActionLocalServiceUtil.fetchProcessAction(
-					GetterUtil.getInteger(actionId));
-			String actionCode =
-				(proAction != null) ? proAction.getActionCode() : actionId;
+			String actionCode = actionId;
+			if (!isActionCode) {
+
+				ProcessAction proAction =
+					ProcessActionLocalServiceUtil.fetchProcessAction(
+						GetterUtil.getInteger(actionId));
+				actionCode =
+					(proAction != null) ? proAction.getActionCode() : actionId;
+			}
 
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
