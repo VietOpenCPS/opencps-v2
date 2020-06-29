@@ -66,7 +66,8 @@ import javax.xml.bind.annotation.XmlType;
     "className",
     "classPK",
     "_dossierId",
-    "_dossierCounter"
+    "_dossierCounter",
+		"imageName"
 })
 @XmlRootElement(name = "ServerConfigSearchModel")
 public class ServerConfigSearchModel {
@@ -122,6 +123,8 @@ public class ServerConfigSearchModel {
     protected String _dossierId;
 	@QueryParam("_dossierCounter")
     protected String _dossierCounter;
+	@QueryParam("imageName")
+		protected String imageName;
 
     /**
      * Gets the value of the keyword property.
@@ -394,6 +397,10 @@ public class ServerConfigSearchModel {
 	public void setClassPK(String classPK) {
 		this.classPK = classPK;
 	}
+
+	public String getImageName(){ return imageName; }
+
+	public void setImageName(String imageName){ this.imageName = imageName; }
 
 	public String get_dossierId() {
 		return _dossierId;
