@@ -549,6 +549,7 @@ public class RestfulController {
 										return "verify";
 									} else if (isSuccess) {
 										//Sau khi check authen xong
+										_log.info("passKey: "+ passKey);
 										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
 												CompanyConstants.AUTH_TYPE_EA);
 										if (userId > 0 && userId != 20103) {

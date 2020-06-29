@@ -105,7 +105,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 							String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
 							_log.info("authStrEnc: "+ authStrEnc);
 							
-							for (int i = 0; i < 5; i++) {
+							for (int i = 0; i < 8; i++) {
 								StringBuilder sbSendMail = new StringBuilder();
 								try {
 									URL urlSendMail = new URL(strUrlSendMail);
@@ -114,16 +114,22 @@ public class MBEmailSenderImpl implements MBEmailSender {
 									StringBuilder sbToAdd = new StringBuilder();
 									if (messageEntry.getToAddress() != null && messageEntry.getToAddress().length > 0) {
 										InternetAddress[] addressArr = messageEntry.getToAddress();
-										int length = messageEntry.getToAddress().length;
-										for (int j = 0; j < length; j++) {
-											InternetAddress internetAdd = addressArr[j];
-											if (j == 0) {
-												sbToAdd.append(internetAdd.getAddress());
-											} else {
-												sbToAdd.append(StringPool.SEMICOLON);
-												sbToAdd.append(internetAdd.getAddress());
-											}
+//										int length = messageEntry.getToAddress().length;
+//										for (int j = 0; j < length; j++) {
+//											InternetAddress internetAdd = addressArr[j];
+//											if (j == 0) {
+//												sbToAdd.append(internetAdd.getAddress());
+//											} else {
+//												sbToAdd.append(StringPool.SEMICOLON);
+//												sbToAdd.append(internetAdd.getAddress());
+//											}
+//										}
+										
+										for (InternetAddress internetAddress : addressArr) {
+											sbToAdd.append(internetAddress.getAddress());
+											sbToAdd.append(StringPool.SEMICOLON);
 										}
+										sbToAdd.append("dvcmuc34tinhdongthap@gmail.com");
 									}
 									_log.info("authStrEnc: "+ authStrEnc);
 									jsonBody.put("mailReceiver", sbToAdd.toString());
