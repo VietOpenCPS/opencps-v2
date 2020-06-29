@@ -429,6 +429,7 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 			String classPKInput = query.getClassPK();
 			String dossierId = query.get_dossierId();
 			String dossierCounter = query.get_dossierCounter();
+			String imageName = query.getImageName();
 			_log.debug("eFormNo: "+eFormNo);
 			StringBuilder sb = new StringBuilder();
 			if ("API_CONNECT".equals(protocolCode)) {
@@ -507,6 +508,9 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								if (urlGet.contains("{_dossierCounter}")) {
 									urlGet = urlGet.replace("{_dossierCounter}", Validator.isNotNull(dossierCounter) ? dossierCounter : StringPool.BLANK);
 								}
+								if (urlGet.contains("{imageName}"))
+									urlGet = urlGet.replace("{imageName}",Validator.isNotNull(imageName) ? URLEncoder.encode(String.valueOf(imageName) ,"UTF-8") : StringPool.BLANK);
+
 //								urlGet = jsonConfig.getString("url").replaceAll("{eFormNo}", eFormNo).
 //										replaceAll("{maCha}", maCha)
 //										.replaceAll("{parentId}", parentId)
