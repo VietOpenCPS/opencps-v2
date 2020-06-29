@@ -527,7 +527,7 @@ public class ProcessActionLocalServiceWrapper
 		long assignUserId, String assignUserName, Integer requestPayment,
 		String paymentFee, String createDossierFiles,
 		String returnDossierFiles, boolean eSignature, String signatureType,
-		String createDossiers,
+		String createDossiers, String postAction,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _processActionLocalService.updateProcessActionDB(userId,
@@ -535,7 +535,7 @@ public class ProcessActionLocalServiceWrapper
 			postStepCode, autoEvent, preCondition, allowAssignUser,
 			assignUserId, assignUserName, requestPayment, paymentFee,
 			createDossierFiles, returnDossierFiles, eSignature, signatureType,
-			createDossiers, serviceContext);
+			createDossiers, postAction, serviceContext);
 	}
 
 	@Override

@@ -508,8 +508,6 @@ public class DossierMgtUtils {
 	public static boolean checkPreCondition(String[] preConditions, Dossier dossier, User curUser) {
 		boolean result = true;
 		
-		
-		
 		for (String preCondition : preConditions) {
 			
 			preCondition = preCondition.trim();
@@ -628,14 +626,14 @@ public class DossierMgtUtils {
 				String[] splitRoles = preCondition.split(StringPool.EQUAL);
 				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 				if (splitRoles.length == 2) {
-					result = result && checkRoleDone(splitRoles[1], dossier);
+					result = result && checkRoleDone(splitRoles[1], curUser, dossier);
 				}																			
 			}
 			if (preCondition.contains(DossierTerm.CONTAIN_ROLE_CODE)) {
 				String[] splitRoles = preCondition.split(StringPool.EQUAL);
 				System.out.println(splitRoles[0] + StringPool.COMMA + splitRoles[1]);
 				if (splitRoles.length == 2) {
-					result = result && checkRoleCode(splitRoles[1], dossier);
+					result = result && checkRoleCode(splitRoles[1], curUser, dossier);
 				}
 			}
 			if (preCondition.contains(DossierTerm.CONTAIN_WAITING_OVERDUE_THAN)) {
@@ -773,25 +771,26 @@ public class DossierMgtUtils {
 		return false;
 	}
 
-	private static boolean checkRoleDone(String roleCode, Dossier dossier) {
+	private static boolean checkRoleDone(String roleCode, User user, Dossier dossier) {
 		JobPos jobPos = JobPosLocalServiceUtil.getByJobCode(dossier.getGroupId(), roleCode);
 		if (jobPos != null) {
 			List<DossierActionUser> dActionUsers = DossierActionUserLocalServiceUtil.getListUser(dossier.getDossierActionId());
 			
 			boolean flag = false;
 			for (DossierActionUser dau : dActionUsers) {
-				User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
-
-				List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(u.getUserId());
-				for (Role r : lstRoles) {
-					if (r.getRoleId() == jobPos.getMappingRoleId()) {
-						flag = true;
-						break;
+				if (dau.getUserId() == user.getUserId()) {
+					List<Role> lstRoles = RoleLocalServiceUtil.getUserRoles(user.getUserId());
+					for (Role r : lstRoles) {
+						if (r.getRoleId() == jobPos.getMappingRoleId()) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						return true;
 					}
 				}
-				if (flag) {
-					return true;
-				}
+				//User u = UserLocalServiceUtil.fetchUser(dau.getUserId());
 			}
 			
 			return flag;
@@ -801,19 +800,19 @@ public class DossierMgtUtils {
 		}
 	}
 
-	private static boolean checkRoleCode(String roleCode, Dossier dossier) {
+	private static boolean checkRoleCode(String roleCode, User user, Dossier dossier) {
 		boolean flag = false;
 		if (Validator.isNotNull(roleCode)) {
 			if (roleCode.contains(StringPool.PLUS)) {
 				String[] splitRole = StringUtil.split(StringPool.PLUS);
 				if (splitRole != null && splitRole.length > 0) {
 					for (String role : splitRole) {
-						flag = checkRoleDone(role, dossier);
+						flag = checkRoleDone(role, user, dossier);
 						if (flag) break;
 					}
 				}
 			} else {
-				flag = checkRoleDone(roleCode, dossier);
+				flag = checkRoleDone(roleCode, user, dossier);
 			}
 		}
 		return flag;
