@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -54,7 +55,9 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ModelKeysDeliverable;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.constants.JobPosTerm;
@@ -78,7 +81,7 @@ public class OAIMethodUtils {
 	public static String OPS_DELI = "OPS_DELI";
 	String domain = PropsUtil.get("company.default.web.id");
 
-	private String identifierBuider (String identifierCode, String identifierValue) {
+	private String identifierBuider(String identifierCode, String identifierValue) {
 		return OAI + StringPool.COLON + domain + StringPool.COLON + identifierCode + StringPool.FORWARD_SLASH
 				+ identifierValue;
 	}
@@ -154,13 +157,14 @@ public class OAIMethodUtils {
 		results.setResponseDate(xmlGregorianCalendar);
 
 		ListRecordsType listRecordsType = buildRecords(query.getSet(), query.getMetadataPrefix(),
-				query.getResumptionToken(), query.getFrom(), query.getUntil());
+				query.getResumptionToken(), query.getFrom(), query.getUntil(), query.getDeliverableType());
 		results.setListRecords(listRecordsType);
 
 		return results;
 	}
 
-	private ListRecordsType buildRecords(String set, String companyId, String pageNum, String from, String until) {
+	private ListRecordsType buildRecords(String set, String companyId, String pageNum, String from, String until,
+			String deliverableType) {
 		ListRecordsType results = new ListRecordsType();
 
 		if (OPS_USER.equals(set)) {
@@ -180,7 +184,7 @@ public class OAIMethodUtils {
 		} else if (OPS_DELI.equals(set)) {
 
 			_log.debug("RUN getDeliverableListRecords");
-			return getDeliverableListRecords(companyId, pageNum, from, until);
+			return getDeliverableListRecords(companyId, pageNum, from, until, deliverableType);
 		}
 
 		return results;
@@ -216,6 +220,14 @@ public class OAIMethodUtils {
 			if (Validator.isNotNull(from) && Validator.isNotNull(until)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
 						APIDateTimeUtils.timeZone2Lucene(from), APIDateTimeUtils.timeZone2Lucene(until), true, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(from)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						APIDateTimeUtils.timeZone2Lucene(from), null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(until)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						null, APIDateTimeUtils.timeZone2Lucene(until), false, true);
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 
@@ -276,7 +288,7 @@ public class OAIMethodUtils {
 				HeaderType headerType = new HeaderType();
 				headerType.setIdentifier(identifierBuider(OPS_USER, document.get(EmployeeTerm.EMPLOYEE_NO)));
 				headerType.setDatestamp(Validator.isNotNull(document.getDate(Field.MODIFIED_DATE))
-						? APIDateTimeUtils.convertDateToString(document.getDate(Field.MODIFIED_DATE),
+						? APIDateTimeUtils._dateToString(document.getDate(Field.MODIFIED_DATE),
 								APIDateTimeUtils.ISO8601)
 						: StringPool.BLANK);
 
@@ -327,6 +339,14 @@ public class OAIMethodUtils {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
 						APIDateTimeUtils.timeZone2Lucene(from), APIDateTimeUtils.timeZone2Lucene(until), true, true);
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(from)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						APIDateTimeUtils.timeZone2Lucene(from), null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(until)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						null, APIDateTimeUtils.timeZone2Lucene(until), false, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 
 			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -359,7 +379,7 @@ public class OAIMethodUtils {
 				HeaderType headerType = new HeaderType();
 				headerType.setIdentifier(identifierBuider(OPS_ROLE, document.get(JobPosTerm.JOBPOS_ID)));
 				headerType.setDatestamp(Validator.isNotNull(document.getDate(Field.MODIFIED_DATE))
-						? APIDateTimeUtils.convertDateToString(document.getDate(Field.MODIFIED_DATE),
+						? APIDateTimeUtils._dateToString(document.getDate(Field.MODIFIED_DATE),
 								APIDateTimeUtils.ISO8601)
 						: StringPool.BLANK);
 
@@ -379,7 +399,8 @@ public class OAIMethodUtils {
 		return results;
 	}
 
-	private ListRecordsType getDeliverableListRecords(String companyId, String page, String from, String until) {
+	private ListRecordsType getDeliverableListRecords(String companyId, String page, String from, String until,
+			String deliverableType) {
 
 		ListRecordsType results = new ListRecordsType();
 
@@ -410,6 +431,19 @@ public class OAIMethodUtils {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
 						APIDateTimeUtils.timeZone2Lucene(from), APIDateTimeUtils.timeZone2Lucene(until), true, true);
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(from)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						APIDateTimeUtils.timeZone2Lucene(from), null, true, false);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			} else if (Validator.isNotNull(until)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(Field.MODIFIED_DATE,
+						null, APIDateTimeUtils.timeZone2Lucene(until), false, true);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			if (Validator.isNotNull(deliverableType)) {
+				MultiMatchQuery query = new MultiMatchQuery(deliverableType);
+				query.addFields(DeliverableTerm.DELIVERABLE_TYPE);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 
 			Hits hits = IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -434,7 +468,7 @@ public class OAIMethodUtils {
 				oMDeliverable = new OMDeliverable();
 				oMDeliverable.setGroupId(Long.parseLong(groupId));
 				oMDeliverable.setDeliverableId(Long.parseLong(deliverableId));
-				oMDeliverable.setModifiedDate(document.get(Field.MODIFIED_DATE));
+				oMDeliverable.setModifiedDate(String.valueOf(document.getDate(Field.MODIFIED_DATE).getTime()));
 				oMDeliverable.setDeliverableCode(document.get(DeliverableTerm.DELIVERABLE_CODE));
 				oMDeliverable.setDeliverableName(document.get(DeliverableTerm.DELIVERABLE_NAME));
 				oMDeliverable.setDeliverableType(document.get(DeliverableTerm.DELIVERABLE_TYPE));
@@ -448,21 +482,22 @@ public class OAIMethodUtils {
 				oMDeliverable.setFormReport(document.get(DeliverableTerm.FORM_REPORT));
 				oMDeliverable.setIssueDate(document.get(DeliverableTerm.ISSUE_DATE));
 				long expire = GetterUtil.getLong(document.get(DeliverableTerm.EXPIRE_DATE));
-				oMDeliverable.setExpireDate(GetterUtil.getString(expire));
+				oMDeliverable.setExpireDate(String.valueOf(expire));
 				oMDeliverable.setRevalidate(document.get(DeliverableTerm.REVALIDATE));
 				int deliverableState = GetterUtil.getInteger(document.get(DeliverableTerm.DELIVERABLE_STATE));
 				if (deliverableState == 1 && expire > 0 && new Date().getTime() > deliverableState) {
 
 					deliverableState = 2;
 				}
-				oMDeliverable.setDeliverableState(GetterUtil.getString(deliverableState));
-				oMDeliverable.setDossierId(Long.parseLong(document.get(DossierTerm.DOSSIER_ID)));
+				oMDeliverable.setDeliverableState(String.valueOf(deliverableState));
+				long dossierId = GetterUtil.getLong(document.get(DossierTerm.DOSSIER_ID));
+				oMDeliverable.setDossierId(dossierId);
 				oMDeliverable.setDomain(PropValues.PORTAL_DOMAIN);
 
 				long fileEntryId = 0;
 				if (Validator.isNotNull(document.get(DeliverableTerm.FILE_ATTACHS))) {
 					String fileEntrys = document.get(DeliverableTerm.FILE_ATTACHS);
-					String [] files = fileEntrys.split(StringPool.COMMA);
+					String[] files = fileEntrys.split(StringPool.COMMA);
 					fileEntryId = GetterUtil.getLong(files[files.length - 1]);
 				} else {
 					fileEntryId = GetterUtil.getLong(document.get(ModelKeysDeliverable.FILEENTRYID));
@@ -476,10 +511,19 @@ public class OAIMethodUtils {
 					oMDeliverable.setFilePath(StringPool.BLANK);
 				}
 
+				oMDeliverable.setReferenceUid(StringPool.BLANK);
+				if (dossierId > 0) {
+
+					Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+					if (Validator.isNotNull(dossier)) {
+						oMDeliverable.setReferenceUid(dossier.getReferenceUid());
+					}
+				}
+
 				HeaderType headerType = new HeaderType();
 				headerType.setIdentifier(identifierBuider(OPS_DELI, document.get(DeliverableTerm.DELIVERABLE_ID)));
 				headerType.setDatestamp(Validator.isNotNull(document.getDate(Field.MODIFIED_DATE))
-						? APIDateTimeUtils.convertDateToString(document.getDate(Field.MODIFIED_DATE),
+						? APIDateTimeUtils._dateToString(document.getDate(Field.MODIFIED_DATE),
 								APIDateTimeUtils.ISO8601)
 						: StringPool.BLANK);
 
@@ -515,10 +559,10 @@ public class OAIMethodUtils {
 			for (DeliverableType deliverableType : deliverableTypes) {
 
 				String createDate = Validator.isNotNull(deliverableType.getCreateDate()) ? APIDateTimeUtils
-						.convertDateToString(deliverableType.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
+						._dateToString(deliverableType.getCreateDate(), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK;
 				String modifiedDate = Validator.isNotNull(deliverableType.getModifiedDate()) ? APIDateTimeUtils
-						.convertDateToString(deliverableType.getModifiedDate(), APIDateTimeUtils._TIMESTAMP)
+						._dateToString(deliverableType.getModifiedDate(), APIDateTimeUtils._TIMESTAMP)
 						: StringPool.BLANK;
 
 				oMDeliverableType = new OMDeliverableType(deliverableType.getDeliverableTypeId(),
@@ -532,7 +576,8 @@ public class OAIMethodUtils {
 						deliverableType.getGovAgencies());
 
 				HeaderType headerType = new HeaderType();
-				headerType.setIdentifier(identifierBuider(OPS_DELI_TYPE, oMDeliverableType.getDeliverableTypeId().toString()));
+				headerType.setIdentifier(
+						identifierBuider(OPS_DELI_TYPE, oMDeliverableType.getDeliverableTypeId().toString()));
 				headerType.setDatestamp(modifiedDate);
 
 				MetadataType metadataType = new MetadataType();

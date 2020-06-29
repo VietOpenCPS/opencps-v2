@@ -22,7 +22,8 @@ public class APIDateTimeUtils {
 	public static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
 
 	public static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
-	public static final String ISO8601 = "yyyy-MM-dd'T'hh:mm:ss'Z'";
+	// public static final String ISO8601 = "yyyy-MM-dd'T'hh:mm:ss'Z'";
+	public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	public static String _dateToString(Date date, String format) {
 
@@ -44,7 +45,7 @@ public class APIDateTimeUtils {
 		if (GetterUtil.getLong(date) > 0) {
 			return new SimpleDateFormat(LUCENE_DATE_FORMAT).format(new Date(GetterUtil.getLong(date)));
 		} else {
-			Date d = Date.from(ZonedDateTime.parse(date).toInstant());
+			Date d = _stringToDate(date, ISO8601);
 			return new SimpleDateFormat(LUCENE_DATE_FORMAT).format(d);
 		}
 	}

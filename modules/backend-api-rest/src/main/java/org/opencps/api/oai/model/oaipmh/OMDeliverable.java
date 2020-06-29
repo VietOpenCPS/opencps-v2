@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 		"createDate", "modifiedDate", "deliverableCode", "deliverableName", "deliverableType", "govAgencyCode", "govAgencyName",
 		"applicantIdNo", "applicantName", "subject", "formData", "formScript", "formScriptFileId", "formReport", "formReportFileId",
 		"issueDate", "expireDate",
-		"revalidate", "deliverableState", "fileEntryId", "docSync", "dossierId", "fileAttachs", "domain", "filePath" })
+		"revalidate", "deliverableState", "fileEntryId", "docSync", "dossierId", "fileAttachs", "domain", "filePath", "referenceUid" })
 public class OMDeliverable {
 
 	@XmlElement(required = true)
@@ -46,7 +46,14 @@ public class OMDeliverable {
 	protected String fileAttachs;
 	protected String domain;
 	protected String filePath;
+	protected String referenceUid;
 
+	public String getReferenceUid() {
+		return referenceUid;
+	}
+	public void setReferenceUid(String referenceUid) {
+		this.referenceUid = referenceUid;
+	}
 	public String getDomain() {
 		return domain;
 	}

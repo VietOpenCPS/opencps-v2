@@ -53,7 +53,7 @@ public class GraphQLUtils {
 					roles.add(jobPos.getJobPosCode());
 				}
 				String token = JWT.create()
-						.withClaim("screenName", user.getString(UserTerm.SCREEN_NAME))
+						.withClaim("username", user.getString(UserTerm.SCREEN_NAME))
 						.withClaim("fullName", user.getString(UserTerm.EMPLOYEE_FULLNAME))
 						.withClaim("email", user.getString(UserTerm.EMPLOYEE_EMAIL))
 						.withArrayClaim("role", roles.toArray(new String[0]))
