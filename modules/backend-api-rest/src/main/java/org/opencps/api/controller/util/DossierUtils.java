@@ -1197,10 +1197,14 @@ public class DossierUtils {
 	public static Dossier getDossier(String id, long groupId) {
 		long dossierId = GetterUtil.getLong(id);
 		if (dossierId > 0) {
-			return DossierLocalServiceUtil.fetchDossier(dossierId);
+			try {
+				return DossierLocalServiceUtil.getDossier(dossierId);
+			} catch (PortalException e) {
+				return null;
+			}
 		} else {
 
-			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(id);
+			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, id);
 			if (dossier == null) {
 				return DossierLocalServiceUtil.getByRef(groupId, id);
 			} else {

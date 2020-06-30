@@ -78,6 +78,72 @@ public class RegisterLGSPUtils {
 		return sbToken.toString();
 	}
 
+//	public static String getTokenNewLGSP() {
+//		StringBuilder sbToken = new StringBuilder();
+//		
+//		LGSPToken tokenLGPS = LGSPTokenLocalServiceUtil.fetchByTokenType("Bearer");
+//		if (tokenLGPS != null) {
+//			Date now = new Date();
+//			Date expiryDate = tokenLGPS.getExpiryDate();
+//			_log.info("now: "+now);
+//			_log.info("expiryDate: "+expiryDate);
+//			if (now.before(expiryDate) && Validator.isNotNull(tokenLGPS.getToken())) {
+//				return tokenLGPS.getToken();
+//			}
+//		} else {
+//			try {
+//				URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
+//
+//				java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
+//				conToken.setRequestMethod(HttpMethod.POST);
+//				conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+//				conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+//				conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
+//				conToken.setRequestProperty("Content-Length", String.valueOf(0));
+//
+//				conToken.setUseCaches(false);
+//				conToken.setDoInput(true);
+//				conToken.setDoOutput(true);
+//				
+//				OutputStream os = conToken.getOutputStream();
+//				os.close();
+//
+//				BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+//
+//				int cpToken;
+//				while ((cpToken = brfToken.read()) != -1) {
+//					sbToken.append((char) cpToken);
+//				}
+//			} catch (Exception e) {
+//				_log.debug(e);
+//			}
+//			// Update Token
+//			if (Validator.isNotNull(sbToken.toString())) {
+//				JSONObject jsonToken = null;
+//				try {
+//					jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+//						&& jsonToken.has("expiryDate")) {
+//					String token = jsonToken.getString("token");
+//					String refreshToken = jsonToken.getString("token");
+//					String strExpiryDate = jsonToken.getString("expiryDate");
+//					
+//					//APIDateTimeUtils._NORMAL_DATE
+//					
+//					
+//				}
+//			}
+//		}
+//		
+//		
+//
+//		return sbToken.toString();
+//	}
+
 	public static String registerLGSP(String tokenType, String accessToken, String applicantIdType, String contactEmail,
 			String applicantIdNo, String applicantName, String applicantIdDate, String contactTelNo) {
 
@@ -410,6 +476,38 @@ public class RegisterLGSPUtils {
 				sbActive.append((char) cpActive);
 			}
 			_log.info("RESULT PROXY: " + sbActive.toString());
+			if (Validator.isNotNull(sbActive.toString())) {
+				if (Boolean.valueOf(sbActive.toString())) {
+					return true;
+				} else {
+					String urlGetUser = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_GET_USER
+							+ StringPool.FORWARD_SLASH + contactEmail;
+					
+					URL urlValUser = new URL(urlGetUser);
+					java.net.HttpURLConnection conGetUser = (java.net.HttpURLConnection) urlValUser.openConnection();
+					conGetUser.setRequestMethod(HttpMethod.GET);
+					conGetUser.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+					conGetUser.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+					conGetUser.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+
+					BufferedReader brfUser = new BufferedReader(new InputStreamReader(conGetUser.getInputStream()));
+
+					int cpUser;
+					StringBuilder sbUser = new StringBuilder();
+					while ((cpUser = brfUser.read()) != -1) {
+						sbUser.append((char) cpUser);
+					}
+					if (Validator.isNotNull(sbUser.toString())) {
+						JSONObject jsonUser = JSONFactoryUtil.createJSONObject(sbUser.toString());
+						if (jsonUser != null && jsonUser.has("userName") && contactEmail.equals(jsonUser.getString("userName"))) {
+							return true;
+						}
+					}
+				}
+				
+			} else {
+				return false;
+			}
 			//
 			return Validator.isNotNull(sbActive.toString()) ? Boolean.valueOf(sbActive.toString()) : false;
 		} catch (IOException e) {

@@ -274,6 +274,18 @@
 			<hint name="max-length">512</hint>
 		</field>
 	</model>
+	<model name="org.opencps.usermgt.model.LGSPToken">
+		<field name="uuid" type="String" />
+		<field name="tokenId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="token" type="String">
+			<hint name="max-length">5000</hint>
+		</field>
+		<field name="tokenType" type="String" />
+		<field name="refreshToken" type="String" />
+		<field name="expiryDate" type="Date" />
+	</model>
 	<model name="org.opencps.usermgt.model.OfficeSite">
 		<field name="uuid" type="String" />
 		<field name="officeSiteId" type="long" />

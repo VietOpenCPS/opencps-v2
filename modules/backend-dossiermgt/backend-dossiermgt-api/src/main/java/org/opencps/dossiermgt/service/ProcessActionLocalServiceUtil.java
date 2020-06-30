@@ -492,7 +492,7 @@ public class ProcessActionLocalServiceUtil {
 		long assignUserId, String assignUserName, Integer requestPayment,
 		String paymentFee, String createDossierFiles,
 		String returnDossierFiles, boolean eSignature, String signatureType,
-		String createDossiers,
+		String createDossiers, String postAction,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
@@ -500,7 +500,8 @@ public class ProcessActionLocalServiceUtil {
 			actionCode, actionName, preStepCode, postStepCode, autoEvent,
 			preCondition, allowAssignUser, assignUserId, assignUserName,
 			requestPayment, paymentFee, createDossierFiles, returnDossierFiles,
-			eSignature, signatureType, createDossiers, serviceContext);
+			eSignature, signatureType, createDossiers, postAction,
+			serviceContext);
 	}
 
 	public static ProcessActionLocalService getService() {

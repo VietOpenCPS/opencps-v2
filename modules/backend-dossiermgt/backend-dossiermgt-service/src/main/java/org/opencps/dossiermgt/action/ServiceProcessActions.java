@@ -102,7 +102,7 @@ public interface ServiceProcessActions {
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
 			int allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
-			String createDossiers, ServiceContext serviceContext) throws PortalException;
+			String createDossiers, String postAction, ServiceContext serviceContext) throws PortalException;
 
 	public boolean deleteAllProcessAction(long userId, long groupId, long serviceProcessId,
 			ServiceContext serviceContext);

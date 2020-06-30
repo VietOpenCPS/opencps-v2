@@ -1173,7 +1173,7 @@
 							<xsd:element name="postAction">
 								<xsd:simpleType>
 									<xsd:restriction base="xsd:string">
-										<xsd:maxLength value="255"></xsd:maxLength>
+										<xsd:maxLength value="20000"></xsd:maxLength>
 									</xsd:restriction>
 								</xsd:simpleType>
 							</xsd:element>

@@ -11,6 +11,7 @@
 	<import class="org.opencps.usermgt.model.HmacAuthen" />
 	<import class="org.opencps.usermgt.model.JobPos" />
 	<import class="org.opencps.usermgt.model.JobPosWork" />
+	<import class="org.opencps.usermgt.model.LGSPToken" />
 	<import class="org.opencps.usermgt.model.OfficeSite" />
 	<import class="org.opencps.usermgt.model.Preferences" />
 	<import class="org.opencps.usermgt.model.Question" />
@@ -206,6 +207,18 @@
 		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
 		<property name="jobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="checklistCat" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="org.opencps.usermgt.model.impl.LGSPTokenImpl" table="opencps_lgsp_token">
+		<id name="tokenId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property column="uuid_" name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="token" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="tokenType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="refreshToken" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="expiryDate" type="org.hibernate.type.TimestampType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.OfficeSiteImpl" table="opencps_officesite">
 		<id name="officeSiteId" type="long">
