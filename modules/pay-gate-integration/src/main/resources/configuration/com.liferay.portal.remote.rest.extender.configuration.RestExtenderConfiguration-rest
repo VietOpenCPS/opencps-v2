@@ -1,0 +1,2 @@
+contextPath=/pgi
+jaxRsApplicationFilterStrings=(component.name=org.fds.opencps.paygate.integration.application.PayGateIntegrationApplication)

@@ -158,4 +158,12 @@ public interface DVCQGIManagement {
 			@Context HttpServletResponse response, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext, String body);
 
+	
+	@POST
+	@Path("/syncserviceconfig")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response doSyncServiceConfig(@Context HttpServletRequest request,
+			@Context HttpServletResponse response, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext, String body);
 }

@@ -1,0 +1,35 @@
+protocol: VTP_QRCODE
+
+config:
+{
+  "priority": {
+    "key": "PRIORITY",
+    "value": "BankPlus"
+  },
+  "version": {
+    "key": "VERSION",
+    "value": "1.0"
+  },
+  "type": {
+    "key": "TYPE",
+    "value": "PAY_BILL"
+  },
+  "billcode": {
+    "key": "BILLCODE",
+    "value": "00001"
+  },
+  "order_id": {
+    "key": "ORDER_ID",
+    "value": "00001"
+  },
+  "amount": {
+    "key": "AMOUNT",
+    "value": "20000"
+  },
+  "merchant_code": {
+    "key": "MERCHANT_CODE",
+    "value": "FDS"
+  },
+  "access_code": "???",
+  "hash_key": "???"
+}

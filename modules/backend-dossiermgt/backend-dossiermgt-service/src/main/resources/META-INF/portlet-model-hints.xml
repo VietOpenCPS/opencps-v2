@@ -46,6 +46,20 @@
 		</field>
 		<field name="dateOption" type="int" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.ApplicableInfo">
+		<field name="uuid" type="String" />
+		<field name="applicableInfoId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceCode" type="String" />
+		<field name="govAgencyCode" type="String" />
+		<field name="serviceLevel" type="int" />
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.Booking">
 		<field name="uuid" type="String" />
 		<field name="bookingId" type="long" />
@@ -881,6 +895,21 @@
 			<hint name="max-length">65535</hint>
 		</field>
 	</model>
+	<model name="org.opencps.dossiermgt.model.PaymentFeeInfo">
+		<field name="uuid" type="String" />
+		<field name="paymentFeeInfoId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="type" type="String" />
+		<field name="paymentFeeCode" type="String" />
+		<field name="paymentFeeName" type="String" />
+		<field name="amount" type="String" />
+		<field name="serviceConfigMappingId" type="long" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.PaymentFile">
 		<field name="uuid" type="String" />
 		<field name="paymentFileId" type="long" />
@@ -1326,6 +1355,22 @@
 		<field name="forBusiness" type="boolean" />
 		<field name="postService" type="boolean" />
 		<field name="registration" type="boolean" />
+	</model>
+	<model name="org.opencps.dossiermgt.model.ServiceConfigMapping">
+		<field name="uuid" type="String" />
+		<field name="serviceConfigMappingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="serviceConfigCode" type="String" />
+		<field name="serviceConfigName" type="String" />
+		<field name="serviceCode" type="String" />
+		<field name="serviceName" type="String" />
+		<field name="govAgencyName" type="String" />
+		<field name="domainName" type="String" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ServiceFileTemplate">
 		<field name="uuid" type="String" />

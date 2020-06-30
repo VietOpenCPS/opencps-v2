@@ -1,22 +1,5 @@
 package org.opencps.dossiermgt.action.impl;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -58,7 +41,9 @@ import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
+import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierFileUtils;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.model.AccessToken;
 import org.opencps.dossiermgt.model.ActionConfig;
@@ -67,6 +52,7 @@ import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.DossierStatusMapping;
+import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
@@ -83,6 +69,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
@@ -93,6 +80,33 @@ import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 import org.opencps.usermgt.service.util.DateTimeUtils;
+
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import backend.auth.api.exception.ErrorMsgModel;
 
@@ -115,7 +129,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
-	
+
 	private String convertDate2String(Date date) {
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(LUCENE_DATE_FORMAT);
@@ -134,7 +148,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	private JSONObject createSyncDossierBodyRequest(long groupId, Dossier dossier, JSONObject config,
-			String accessToken) {
+			String accessToken, HttpServletRequest request) {
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		String _oServiceCode = dossier.getServiceCode();
 		String _mServiceCode = StringPool.BLANK;
@@ -142,9 +156,16 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
+		} else {
+			// danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
+			_mServiceCode = _oServiceCode;
 		}
-		_log.info("-------------->>>> " + _mServiceCode +  StringPool.PIPE + _oServiceCode +  StringPool.PIPE + groupId);
-
+		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
+		if (dossier.getSystemId() == 5) {
+			object.put("MaHoSo", dossier.getReferenceUid());
+		} else {
+			object.put("MaHoSo", dossier.getDossierNo());
+		}
 		object.put("MaHoSo", dossier.getDossierNo());
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
@@ -152,7 +173,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		body.put("maTTHC", _mServiceCode);
 
 		JSONObject serviceInfo = getSharingData(config, body, accessToken);
-		//get TenTTHC, MaLinhVuc, TenLinhVuc
+		// get TenTTHC, MaLinhVuc, TenLinhVuc
 		String TenTTHC = StringPool.BLANK;
 		String MaLinhVuc = StringPool.BLANK;
 		String TenLinhVuc = StringPool.BLANK;
@@ -168,8 +189,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("TenTTHC", TenTTHC);
 		object.put("MaLinhVuc", MaLinhVuc);
 		object.put("TenLinhVuc", TenLinhVuc);
-		//object.put("SoBienNhan", ""); //ko bb
-		object.put("ChuHoSo", dossier.getContactName()); //ko bb
+		// object.put("SoBienNhan", ""); //ko bb
+		object.put("ChuHoSo", dossier.getContactName()); // ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
 			if ("business".equals(dossier.getApplicantIdType())) {
@@ -178,77 +199,136 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		String madoituong = StringPool.BLANK;
-		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
-		object.put("MaDoiTuong", madoituong); //ko bb
-		object.put("ThongTinKhac", ""); //ko bb
+		object.put("MaDoiTuong", madoituong); // ko bb
+		object.put("ThongTinKhac", ""); // ko bb
 		object.put("Email", dossier.getContactEmail());
-		object.put("Fax", dossier.getContactTelNo()); //ko bb
+		object.put("Fax", dossier.getContactTelNo()); // ko bb
 		object.put("SoDienThoai", dossier.getContactTelNo());
 		object.put("TrichYeuHoSo", dossier.getDossierNote());
 		object.put("NgayTiepNhan", convertDate2String(dossier.getReceiveDate()));
 		object.put("NgayHenTra", convertDate2String(dossier.getDueDate()));
 		object.put("TrangThaiHoSo", getMappingStatus(groupId, dossier));
-		object.put("NgayTra", convertDate2String(dossier.getFinishDate()));//ko bb
-		object.put("ThongTinTra", "");//ko bb
+		object.put("NgayTra", convertDate2String(dossier.getFinishDate()));// ko bb
+		object.put("ThongTinTra", "");// ko bb
 		int HinhThuc = 0;
 		if (dossier.getViaPostal() != 0 && dossier.getViaPostal() != 1) {
 			HinhThuc = 1;
 		}
 		object.put("HinhThuc", String.valueOf(HinhThuc));
-		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));//ko bb
+		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());//ko bb
-
-		JSONArray TaiLieuNop = JSONFactoryUtil.createJSONArray();
-		object.put("TaiLieuNop", TaiLieuNop);//ko bb
-		//object.put("TepDinhKemId", "");
-		//object.put("TenTepDinhKem", "");
-		//object.put("IsDeleted", "");
-		//object.put("MaThanhPhanHoSo", "");
-		//object.put("DuongDanTaiTepTin", "");
+		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachLePhi", DanhSachLePhi);//ko bb
-		//object.put("TenPhiLePhi", "");
-		//object.put("MaPhiLePhi", "");
-		//object.put("HinhThucThu", "");
-		//object.put("Gia", "");
-		//object.put("LoaiPhiLePhi", "");
+		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
+		// object.put("TenPhiLePhi", "");
+		// object.put("MaPhiLePhi", "");
+		// object.put("HinhThucThu", "");
+		// object.put("Gia", "");
+		// object.put("LoaiPhiLePhi", "");
 
 		JSONArray DanhSachTepDinhKemKhac = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachTepDinhKemKhac", DanhSachTepDinhKemKhac);//ko bb
-		//object.put("TenGiayTo", "");
-		//object.put("SoLuong", "");
-		//object.put("LoaiGiayTo", "");
+		object.put("DanhSachTepDinhKemKhac", DanhSachTepDinhKemKhac);// ko bb
+		// object.put("TenGiayTo", "");
+		// object.put("SoLuong", "");
+		// object.put("LoaiGiayTo", "");
 
 		JSONArray DanhSachHoSoBoSung = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachHoSoBoSung", DanhSachHoSoBoSung);//ko bb
-		//object.put("HoSoBoSungId", "");
-		//object.put("NguoiYeuCauBoSung", "");
-		//object.put("NoiDungBoSung", "");
-		//object.put("NgayBoSung", "");
-		//object.put("NguoiTiepNhanBoSung", "");
-		//object.put("ThongTinTiepNhan", "");
-		//object.put("NgayTiepNhanBoSung", "");
-		//object.put("TrangThaiBoSung", "");
-		//object.put("DanhSachGiayToBoSung", "");
-		//object.put("DanhSachLePhiBoSung", "");
-		//object.put("NgayHenTraTruoc", "");
-		//object.put("NgayHenTraMoi", "");
-		JSONArray DanhSachGiayToKetQua = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachGiayToKetQua", DanhSachGiayToKetQua);//ko bb
-		//object.put("TenGiayTo", "");
-		//object.put("MaThanhPhanHoSo", "");
-		//object.put("GiayToId", "");
-		//object.put("DuongDanTepTinKetQua", "");
+		object.put("DanhSachHoSoBoSung", DanhSachHoSoBoSung);// ko bb
+		// object.put("HoSoBoSungId", "");
+		// object.put("NguoiYeuCauBoSung", "");
+		// object.put("NoiDungBoSung", "");
+		// object.put("NgayBoSung", "");
+		// object.put("NguoiTiepNhanBoSung", "");
+		// object.put("ThongTinTiepNhan", "");
+		// object.put("NgayTiepNhanBoSung", "");
+		// object.put("TrangThaiBoSung", "");
+		// object.put("DanhSachGiayToBoSung", "");
+		// object.put("DanhSachLePhiBoSung", "");
+		// object.put("NgayHenTraTruoc", "");
+		// object.put("NgayHenTraMoi", "");
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+
+		if (dossierFiles != null) {
+			JSONArray DanhSachGiayToKetQua = JSONFactoryUtil.createJSONArray();
+			JSONObject data = null;
+
+			JSONArray TaiLieuNop = JSONFactoryUtil.createJSONArray();
+
+			for (DossierFile dossierFile : dossierFiles) {
+				if (!dossierFile.isRemoved() && dossierFile.getFileEntryId() > 0
+						&& dossierFile.getDossierPartType() > 0) {
+					try {
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+						String url = StringPool.BLANK;
+						if (request != null) {
+							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
+									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+						} else {
+							StringBundler sb = new StringBundler(11);
+							sb.append(OpenCPSConfigUtil.getPortalDocumentURI());
+							sb.append(PortalUtil.getPathContext());
+							sb.append("/documents/");
+							sb.append(fileEntry.getRepositoryId());
+							sb.append(StringPool.SLASH);
+							sb.append(fileEntry.getFolderId());
+							sb.append(StringPool.SLASH);
+
+							String fileName = fileEntry.getFileName();
+
+							sb.append(URLCodec.encodeURL(HtmlUtil.unescape(fileName)));
+
+							sb.append(StringPool.SLASH);
+							sb.append(URLCodec.encodeURL(fileEntry.getUuid()));
+
+							sb.append("?t=" + System.currentTimeMillis() + "&download=true");
+
+							url = sb.toString();
+						}
+
+						_log.debug("===> file URL " + url);
+
+						if (Validator.isNotNull(url)) {
+							data = JSONFactoryUtil.createJSONObject();
+							if (dossierFile.getDossierPartType() == 2) {
+								data.put("TenGiayTo", dossierFile.getDisplayName());
+								// data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", "");
+								data.put("GiayToId", String.valueOf(dossierFile.getDossierFileId()));
+								data.put("DuongDanTepTinKetQua", url);
+								DanhSachGiayToKetQua.put(data);
+							} else {
+								data.put("TenTepDinhKem", dossierFile.getDisplayName());
+								// data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("MaThanhPhanHoSo", "");
+								data.put("TepDinhKemId", String.valueOf(dossierFile.getDossierFileId()));
+								data.put("DuongDanTaiTepTin", url);
+								data.put("IsDeleted", "False");
+								TaiLieuNop.put(data);
+							}
+						}
+
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
+			}
+
+			object.put("DanhSachGiayToKetQua", DanhSachGiayToKetQua);// ko bb
+
+			object.put("TaiLieuNop", TaiLieuNop);// ko bb
+
+		}
 
 		return object;
 	}
 
-	private JSONObject createSyncDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig) {
+	private JSONObject createSyncDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig,
+			HttpServletRequest request) {
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		String _oServiceCode = dossier.getServiceCode();
 		String _mServiceCode = StringPool.BLANK;
@@ -256,17 +336,25 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_oServiceCode);
 		if (serviceInfoMapping != null) {
 			_mServiceCode = serviceInfoMapping.getServiceCodeDVCQG();
+		} else {
+			// danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
+			_mServiceCode = _oServiceCode;
 		}
-		//_log.info("-------------->>>> " + _mServiceCode + "|" + _oServiceCode + "|" + groupId);
 
-		object.put("MaHoSo", dossier.getDossierNo());
+		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
+
+		if (dossier.getSystemId() == 5) {
+			object.put("MaHoSo", dossier.getReferenceUid());
+		} else {
+			object.put("MaHoSo", dossier.getDossierNo());
+		}
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put("service", "LayThuTuc");
 		body.put("maTTHC", _mServiceCode);
 
 		JSONObject serviceInfo = getSharingData(serverConfig, body);
-		//get TenTTHC, MaLinhVuc, TenLinhVuc
+		// get TenTTHC, MaLinhVuc, TenLinhVuc
 		String TenTTHC = StringPool.BLANK;
 		String MaLinhVuc = StringPool.BLANK;
 		String TenLinhVuc = StringPool.BLANK;
@@ -282,8 +370,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("TenTTHC", TenTTHC);
 		object.put("MaLinhVuc", MaLinhVuc);
 		object.put("TenLinhVuc", TenLinhVuc);
-		//object.put("SoBienNhan", ""); //ko bb
-		object.put("ChuHoSo", dossier.getContactName()); //ko bb
+		// object.put("SoBienNhan", ""); //ko bb
+		object.put("ChuHoSo", dossier.getContactName()); // ko bb
 		int LoaiDoiTuong = 1;
 		if (Validator.isNotNull(dossier.getApplicantIdType())) {
 			if ("business".equals(dossier.getApplicantIdType())) {
@@ -293,71 +381,126 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
 		String madoituong = StringPool.BLANK;
-		if(applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
 			madoituong = applicant.getMappingClassPK();
 		}
-		object.put("MaDoiTuong", madoituong); //ko bb
-		object.put("ThongTinKhac", ""); //ko bb
+		object.put("MaDoiTuong", madoituong); // ko bb
+		object.put("ThongTinKhac", ""); // ko bb
 		object.put("Email", dossier.getContactEmail());
-		object.put("Fax", dossier.getContactTelNo()); //ko bb
+		object.put("Fax", dossier.getContactTelNo()); // ko bb
 		object.put("SoDienThoai", dossier.getContactTelNo());
 		object.put("TrichYeuHoSo", dossier.getDossierNote());
 		object.put("NgayTiepNhan", convertDate2String(dossier.getReceiveDate()));
 		object.put("NgayHenTra", convertDate2String(dossier.getDueDate()));
 		object.put("TrangThaiHoSo", getMappingStatus(groupId, dossier));
-		object.put("NgayTra", convertDate2String(dossier.getFinishDate()));//ko bb
-		object.put("ThongTinTra", "");//ko bb
+		object.put("NgayTra", convertDate2String(dossier.getFinishDate()));// ko bb
+		object.put("ThongTinTra", "");// ko bb
 		int HinhThuc = 0;
 		if (dossier.getViaPostal() != 0 && dossier.getViaPostal() != 1) {
 			HinhThuc = 1;
 		}
 		object.put("HinhThuc", String.valueOf(HinhThuc));
-		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));//ko bb
+		object.put("NgayKetThucXuLy", convertDate2String(dossier.getReleaseDate()));// ko bb
 		object.put("DonViXuLy", dossier.getGovAgencyName());
-		object.put("GhiChu", dossier.getDossierNote());//ko bb
-
-		JSONArray TaiLieuNop = JSONFactoryUtil.createJSONArray();
-		object.put("TaiLieuNop", TaiLieuNop);//ko bb
-		//object.put("TepDinhKemId", "");
-		//object.put("TenTepDinhKem", "");
-		//object.put("IsDeleted", "");
-		//object.put("MaThanhPhanHoSo", "");
-		//object.put("DuongDanTaiTepTin", "");
+		object.put("GhiChu", dossier.getDossierNote());// ko bb
 
 		JSONArray DanhSachLePhi = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachLePhi", DanhSachLePhi);//ko bb
-		//object.put("TenPhiLePhi", "");
-		//object.put("MaPhiLePhi", "");
-		//object.put("HinhThucThu", "");
-		//object.put("Gia", "");
-		//object.put("LoaiPhiLePhi", "");
+		object.put("DanhSachLePhi", DanhSachLePhi);// ko bb
+		// object.put("TenPhiLePhi", "");
+		// object.put("MaPhiLePhi", "");
+		// object.put("HinhThucThu", "");
+		// object.put("Gia", "");
+		// object.put("LoaiPhiLePhi", "");
 
 		JSONArray DanhSachTepDinhKemKhac = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachTepDinhKemKhac", DanhSachTepDinhKemKhac);//ko bb
-		//object.put("TenGiayTo", "");
-		//object.put("SoLuong", "");
-		//object.put("LoaiGiayTo", "");
+		object.put("DanhSachTepDinhKemKhac", DanhSachTepDinhKemKhac);// ko bb
+		// object.put("TenGiayTo", "");
+		// object.put("SoLuong", "");
+		// object.put("LoaiGiayTo", "");
 
 		JSONArray DanhSachHoSoBoSung = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachHoSoBoSung", DanhSachHoSoBoSung);//ko bb
-		//object.put("HoSoBoSungId", "");
-		//object.put("NguoiYeuCauBoSung", "");
-		//object.put("NoiDungBoSung", "");
-		//object.put("NgayBoSung", "");
-		//object.put("NguoiTiepNhanBoSung", "");
-		//object.put("ThongTinTiepNhan", "");
-		//object.put("NgayTiepNhanBoSung", "");
-		//object.put("TrangThaiBoSung", "");
-		//object.put("DanhSachGiayToBoSung", "");
-		//object.put("DanhSachLePhiBoSung", "");
-		//object.put("NgayHenTraTruoc", "");
-		//object.put("NgayHenTraMoi", "");
-		JSONArray DanhSachGiayToKetQua = JSONFactoryUtil.createJSONArray();
-		object.put("DanhSachGiayToKetQua", DanhSachGiayToKetQua);//ko bb
-		//object.put("TenGiayTo", "");
-		//object.put("MaThanhPhanHoSo", "");
-		//object.put("GiayToId", "");
-		//object.put("DuongDanTepTinKetQua", "");
+		object.put("DanhSachHoSoBoSung", DanhSachHoSoBoSung);// ko bb
+		// object.put("HoSoBoSungId", "");
+		// object.put("NguoiYeuCauBoSung", "");
+		// object.put("NoiDungBoSung", "");
+		// object.put("NgayBoSung", "");
+		// object.put("NguoiTiepNhanBoSung", "");
+		// object.put("ThongTinTiepNhan", "");
+		// object.put("NgayTiepNhanBoSung", "");
+		// object.put("TrangThaiBoSung", "");
+		// object.put("DanhSachGiayToBoSung", "");
+		// object.put("DanhSachLePhiBoSung", "");
+		// object.put("NgayHenTraTruoc", "");
+		// object.put("NgayHenTraMoi", "");
+
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+
+		if (dossierFiles != null) {
+			JSONArray DanhSachGiayToKetQua = JSONFactoryUtil.createJSONArray();
+			JSONObject data = null;
+
+			JSONArray TaiLieuNop = JSONFactoryUtil.createJSONArray();
+
+			for (DossierFile dossierFile : dossierFiles) {
+				if (!dossierFile.isRemoved() && dossierFile.getFileEntryId() > 0
+						&& dossierFile.getDossierPartType() > 0) {
+					try {
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+						String url = StringPool.BLANK;
+						if (request != null) {
+							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
+									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+						} else {
+							StringBundler sb = new StringBundler(11);
+							sb.append(OpenCPSConfigUtil.getPortalDocumentURI());
+							sb.append(PortalUtil.getPathContext());
+							sb.append("/documents/");
+							sb.append(fileEntry.getRepositoryId());
+							sb.append(StringPool.SLASH);
+							sb.append(fileEntry.getFolderId());
+							sb.append(StringPool.SLASH);
+
+							String fileName = fileEntry.getFileName();
+
+							sb.append(URLCodec.encodeURL(HtmlUtil.unescape(fileName)));
+
+							sb.append(StringPool.SLASH);
+							sb.append(URLCodec.encodeURL(fileEntry.getUuid()));
+
+							sb.append("?t=" + System.currentTimeMillis() + "&download=true");
+
+							url = sb.toString();
+						}
+						_log.debug("===> file URL " + url);
+						if (Validator.isNotNull(url)) {
+							data = JSONFactoryUtil.createJSONObject();
+							if (dossierFile.getDossierPartType() == 2) {
+								data.put("TenGiayTo", dossierFile.getDisplayName());
+								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("GiayToId", String.valueOf(dossierFile.getDossierFileId()));
+								data.put("DuongDanTepTinKetQua", url);
+								DanhSachGiayToKetQua.put(data);
+							} else {
+								data.put("TenTepDinhKem", dossierFile.getDisplayName());
+								data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+								data.put("TepDinhKemId", String.valueOf(dossierFile.getDossierFileId()));
+								data.put("DuongDanTaiTepTin", url);
+								data.put("IsDeleted", "False");
+								TaiLieuNop.put(data);
+							}
+						}
+
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
+			}
+
+			object.put("DanhSachGiayToKetQua", DanhSachGiayToKetQua);// ko bb
+
+			object.put("TaiLieuNop", TaiLieuNop);// ko bb
+
+		}
 
 		return object;
 	}
@@ -368,14 +511,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossier.getDossierActionId());
 		object.put("NguoiXuLy", dossierAction != null ? dossierAction.getActionUser() : StringPool.BLANK);
-		object.put("ChucDanh", "");//ko bb
+		object.put("ChucDanh", "");// ko bb
 		object.put("ThoiDiemXuLy",
 				dossierAction != null ? convertDate2String(dossierAction.getCreateDate()) : StringPool.BLANK);
-		object.put("PhongBanXuLy", "");//ko bb
+		object.put("PhongBanXuLy", "");// ko bb
 		object.put("NoiDungXuLy", dossierAction != null ? dossierAction.getActionNote() : StringPool.BLANK);
 		object.put("TrangThai", getMappingStatus(groupId, dossier));
-		object.put("NgayBatDau", "");//ko bb
-		object.put("NgayKetThucTheoQuyDinh", "");//ko bb
+		object.put("NgayBatDau", "");// ko bb
+		object.put("NgayKetThucTheoQuyDinh", "");// ko bb
 
 		return object;
 	}
@@ -570,7 +713,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					data.put("service", "LayDanhMucLinhVuc");
 				}
 				qajson = getSharingDictCollection(serverConfig, data);
-				//_log.info("-->>>>>>>>>>>>>>>>>>>>> " + qajson);
+				// _log.info("-->>>>>>>>>>>>>>>>>>>>> " + qajson);
 				if (qajson.has("error_code") && qajson.getInt("error_code") == 0 && qajson.has("result")
 						&& qajson.getJSONArray("result").length() > 0) {
 
@@ -615,7 +758,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 										StringPool.BLANK, serviceContext);
 							}
 
-							//_log.info("------>>>>> " + serviceContext.getScopeGroupId() + "|" + malinhvuc);
+							// _log.info("------>>>>> " + serviceContext.getScopeGroupId() + "|" +
+							// malinhvuc);
 
 							item = JSONFactoryUtil.createJSONObject();
 							item.put("dictItemId", dictItem.getDictItemId());
@@ -646,7 +790,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					result.put("total", resultData.length());
 					result.put("data", resultData);
 
-					//_log.info("---------------->>>>>>>> result " + result.toString());
+					// _log.info("---------------->>>>>>>> result " + result.toString());
 				}
 			} catch (Exception e) {
 				_log.error(e);
@@ -769,20 +913,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					hovaten = qaobj.getString("HOVATEN");
 				}
 
-				/*String diachi = StringPool.BLANK;
-				if (qajson.has("DIACHI")) {
-					diachi = qaobj.getString("DIACHI");
-				}*/
+				/*
+				 * String diachi = StringPool.BLANK; if (qajson.has("DIACHI")) { diachi =
+				 * qaobj.getString("DIACHI"); }
+				 */
 
 				String thudientu = StringPool.BLANK;
 				if (qajson.has("THUDIENTU")) {
 					thudientu = qaobj.getString("THUDIENTU");
 				}
 
-				/*String sodienthoai = StringPool.BLANK;
-				if (qajson.has("SODIENTHOAI")) {
-					sodienthoai = qaobj.getString("SODIENTHOAI");
-				}*/
+				/*
+				 * String sodienthoai = StringPool.BLANK; if (qajson.has("SODIENTHOAI")) {
+				 * sodienthoai = qaobj.getString("SODIENTHOAI"); }
+				 */
 
 				String matthcdp = StringPool.BLANK;
 				if (qajson.has("MATTHCDP")) {
@@ -802,12 +946,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				String domainCode = StringPool.BLANK;
 
 				String domainCodeTemp = StringPool.BLANK;
-				//Dung cho phuong an replace
+				// Dung cho phuong an replace
 				if (Validator.isNotNull(malinhvuc)) {
-					//domainCode = malinhvuc;
+					// domainCode = malinhvuc;
 					domainCodeTemp = malinhvuc;
 				} else {
-					//domainCode = matthcdp;
+					// domainCode = matthcdp;
 					domainCodeTemp = matthcdp;
 				}
 
@@ -837,7 +981,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						"dvcqg_question", String.valueOf(hoidapid));
 
 				List<Long> traloiids = new ArrayList<Long>();
-				//chua dong bo
+				// chua dong bo
 				if (question == null) {
 					question = QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(),
 							serviceContext.getScopeGroupId(), 0,
@@ -847,7 +991,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 							"dvcqg_question", String.valueOf(hoidapid), 1);
 
 				} else {
-					//da dong bo ->dong bo lai va lay d/s cau tra loi da dong bo
+					// da dong bo ->dong bo lai va lay d/s cau tra loi da dong bo
 
 					QuestionLocalServiceUtil.updateQuestion(serviceContext.getCompanyId(),
 							serviceContext.getScopeGroupId(), question.getQuestionId(),
@@ -886,7 +1030,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				item.put("subDomainName", question.getSubDomainName());
 				resultData.put(item);
 
-				//dong bo cau tra loi
+				// dong bo cau tra loi
 				if (traloiid > 0 && Validator.isNotNull(noidungtraloi) && !traloiids.contains(traloiid)) {
 
 					AnswerLocalServiceUtil.updateAnswer(user.getUserId(), serviceContext.getScopeGroupId(), 0,
@@ -931,11 +1075,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		HttpURLConnection conn = null;
 
 		try {
+			_log.debug("config: " + config.toJSONString());
+
 			String adapter_url = config.getString("adapter_url");
 			String auth_endpoint = config.getString("auth_endpoint");
 			String username = config.getString("username");
 			String password = config.getString("password");
 			String dstcode = config.getString("dstcode");
+			_log.debug("dstcode: " + dstcode);
 			JSONObject body = JSONFactoryUtil.createJSONObject();
 
 			body.put("username", username);
@@ -1003,7 +1150,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private String getAccessToken(ServerConfig serverConfig) {
 
-		//HttpURLConnection conn = null;
+		// HttpURLConnection conn = null;
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -1013,11 +1160,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			_log.error(e);
 			return StringPool.BLANK;
 		}
-		//		finally {
-		//			if (conn != null) {
-		//				conn.disconnect();
-		//			}
-		//		}
+		// finally {
+		// if (conn != null) {
+		// conn.disconnect();
+		// }
+		// }
 	}
 
 	@Override
@@ -1028,6 +1175,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			ServerConfig serverConfig = serverConfigs.get(0);
 
 			String accessToken = getAccessToken(serverConfig);
+
+			/*
+			 * HttpSession session = request.getSession();
+			 * 
+			 * String accessToken = (String)session.getAttribute("ACCESS_TOKEN");
+			 * 
+			 * if(Validator.isNull(accessToken)) {
+			 * 
+			 * accessToken = getAccessToken(serverConfig);
+			 * 
+			 * session.setAttribute("ACCESS_TOKEN", accessToken); }
+			 */
 
 			return accessToken;
 
@@ -1278,7 +1437,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			for (Map.Entry<String, String> entry : map.entrySet()) {
 				String key = entry.getKey();
 				String name = entry.getValue().replaceAll("[.,\\-_:;\\\"\\']", "").toLowerCase();
-				//_log.info(key + "|" + name);
+				// _log.info(key + "|" + name);
 				Map<CharSequence, Integer> vectorB = null;
 				if (_serviceInfoMapChars.containsKey(key)) {
 					vectorB = _serviceInfoMapChars.get(key);
@@ -1290,7 +1449,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 
 				Double weightIndex = documentsSimilarity.cosineSimilarity(vectorA, vectorB);
-				//_log.info(weightIndex);
+				// _log.info(weightIndex);
 				JSONObject item = null;
 				if (_serviceInfoMapItems != null && _serviceInfoMapItems.containsKey(key)) {
 					item = _serviceInfoMapItems.get(key);
@@ -1511,13 +1670,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			body.put("session", accessToken);
 			body.put("madonvi", madonvi);
+
 			Iterator<String> keys = data.keys();
 			while (keys.hasNext()) {
 				String key = keys.next();
 				body.put(key, data.get(key));
 			}
 
+			_log.info("body2 " + body);
+
 			String endpoint = adapter_url + integration_endpoint;
+
+			_log.info("endpoint2 " + endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -1553,7 +1717,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					sb.append(output);
 				}
 
-				//System.out.println("response: " + sb.toString());
+				// System.out.println("response: " + sb.toString());
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
 
@@ -1599,7 +1763,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				body.put(key, data.get(key));
 			}
 
+			_log.info("body1 " + body);
+
 			String endpoint = adapter_url + integration_endpoint;
+
+			_log.info("endpoint1 " + endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -1726,7 +1894,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					sb.append(output);
 				}
 
-				//System.out.println("response: " + sb.toString());
+				// System.out.println("response: " + sb.toString());
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());
 
@@ -1923,7 +2091,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	@Override
 	public JSONObject syncDossier(User user, long groupId, ServiceContext serviceContext, String strDossierId,
-			String isUpdating) {
+			String isUpdating, HttpServletRequest request) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(strDossierId)) {
@@ -1936,7 +2104,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					if (dossier == null) {
 						continue;
 					}
-					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, serverConfig);
+					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, serverConfig, request);
 					_log.debug(synsObject.toJSONString());
 					synsObjects.put(synsObject);
 				}
@@ -1952,7 +2120,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
-	public JSONObject syncDossierAndDossierStatus(long groupId, Dossier dossier) throws JSONException {
+	public JSONObject syncDossierAndDossierStatus(long groupId, Dossier dossier, HttpServletRequest request)
+			throws JSONException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -1964,7 +2133,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			JSONArray synsObjects = JSONFactoryUtil.createJSONArray();
 			if (Validator.isNotNull(accessToken)) {
 				boolean hasSync = hasSyncDossier(dossier.getDossierNo(), config, accessToken);
-				JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken);
+				JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken, request);
 
 				synsObjects.put(synsObject);
 				_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
@@ -1996,7 +2165,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	}
 
 	@Override
-	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId) {
+	public JSONObject syncDossierStatus(User user, long groupId, ServiceContext serviceContext, String strDossierId,
+			HttpServletRequest request) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(strDossierId)) {
@@ -2024,277 +2194,182 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
-	/*@Deprecated
-	@Override
-	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes) {
-		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-		_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" + serverConfigs.size());
-		if (serverConfigs != null && !serverConfigs.isEmpty() && Validator.isNotNull(serviceCodes)) {
-			try {
-				ServerConfig serverConfig = serverConfigs.get(0);
-				JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-				String accessToken = getAccessToken(config);
-				String[] arrayServiceCode = StringUtil.split(serviceCodes);
-	
-				JSONObject body = JSONFactoryUtil.createJSONObject();
-	
-				body.put("service", "LayThuTuc");
-	
-				for (String serviceCode : arrayServiceCode) {
-					ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
-							.fetchDVCQGServiceCode(groupId, serviceCode);
-					ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
-					if (serviceInfoMapping != null && Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG())
-							&& serviceInfo != null) {
-	
-						body.put("maTTHC", serviceInfoMapping.getServiceCodeDVCQG());
-	
-						JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
-	
-						if (serviceInfoDVCQG != null && serviceInfoDVCQG.has("result")) {
-							JSONArray results = serviceInfoDVCQG.getJSONArray("result");
-							if (results.length() > 0) {
-								JSONObject _tmp = results.getJSONObject(0);
-								StringBuffer sb = null;
-								//TENTTHC
-								String tentthc = _tmp.getString("TENTTHC");
-								serviceInfo.setServiceName(tentthc);
-								//TRINHTUTHUCHIEN
-								sb = new StringBuffer();
-								if (_tmp.has("TRINHTUTHUCHIEN")) {
-									JSONArray trinhtuthuchien_arr = _tmp.getJSONArray("TRINHTUTHUCHIEN");
-									if (trinhtuthuchien_arr != null) {
-										for (int i = 0; i < trinhtuthuchien_arr.length(); i++) {
-											JSONObject trinhtuthuchien_obj = trinhtuthuchien_arr.getJSONObject(i);
-											String truonghop = trinhtuthuchien_obj.getString("TRUONGHOP");
-											sb.append(truonghop + "<br>");
-											JSONArray trinhtu_arr = trinhtuthuchien_obj.getJSONArray("TRINHTU");
-											if (trinhtu_arr != null) {
-												for (int j = 0; j < trinhtu_arr.length(); j++) {
-													String tentrinhtu = trinhtu_arr.getJSONObject(j)
-															.getString("TENTRINHTU");
-													sb.append(tentrinhtu + "<br>");
-												}
-											}
-										}
-	
-									}
-								}
-								serviceInfo.setProcessText(sb.toString());
-	
-								//CACHTHUCTHUCHIEN
-								sb = new StringBuffer();
-								String durationText = StringPool.BLANK;
-								String feeText = StringPool.BLANK;
-								if (_tmp.has("CACHTHUCTHUCHIEN")) {
-									JSONArray cachthucthuchien_arr = _tmp.getJSONArray("CACHTHUCTHUCHIEN");
-									if (cachthucthuchien_arr != null) {
-										for (int i = 0; i < cachthucthuchien_arr.length(); i++) {
-											JSONObject cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(i);
-											int kenh = cachthucthuchien_obj.getInt("KENH");
-											String nhankenh = "Trực tiếp";
-											if (kenh == 2) {
-												nhankenh = "Trực tuyến";
-											} else if (kenh == 3) {
-												nhankenh = "Nộp qua bưu chính công ích";
-											}
-											sb.append(nhankenh + ":<br>");
-	
-											JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
-	
-											if (thoigian_arr != null) {
-												for (int j = 0; j < thoigian_arr.length(); j++) {
-													JSONObject thoigian_obj = thoigian_arr.getJSONObject(j);
-													int thoigiangiaiquyet = thoigian_obj.getInt("THOIGIANGIAIQUYET");
-													String donvitinh = thoigian_obj.getString("DONVITINH");
-													String mota = thoigian_obj.getString("MOTA");
-													sb.append("- Thời gian giải quyết: " + thoigiangiaiquyet + " "
-															+ donvitinh + (Validator.isNotNull(mota) ? "(" + mota + ")"
-																	: StringPool.BLANK)
-															+ "<br>");
-													durationText += nhankenh + ":" + "- Thời gian giải quyết: "
-															+ thoigiangiaiquyet + " " + donvitinh + "<br>";
-													JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
-													if (philephi_arr != null && philephi_arr.length() > 0) {
-														String maphilephi = philephi_arr.getJSONObject(0)
-																.getString("MAPHILEPHI");
-														double sotien = philephi_arr.getJSONObject(0)
-																.getDouble("SOTIEN");
-														String donvi = philephi_arr.getJSONObject(0).getString("DONVI");
-														String lephimota = philephi_arr.getJSONObject(0)
-																.getString("MOTA");
-														feeText += nhankenh + ":" + maphilephi + ", " + sotien + " "
-																+ donvi
-																+ (Validator.isNotNull(lephimota)
-																		? "(" + lephimota + ")"
-																		: StringPool.BLANK)
-																+ "<br>";
-													}
-												}
-											}
-										}
-									}
-								}
-								serviceInfo.setMethodText(sb.toString());
-								//durationText
-								serviceInfo.setDurationText(durationText);
-								//feeText
-								serviceInfo.setFeeText(feeText);
-	
-								//YEUCAU
-								String yeucau = StringPool.BLANK;
-								if (_tmp.has("YEUCAU")) {
-									yeucau = _tmp.getString("YEUCAU");
-								}
-								serviceInfo.setConditionText(yeucau);
-	
-								//MOTADOITUONGTHUCHIEN
-								String motadoituongthuchien = StringPool.BLANK;
-								if (_tmp.has("MOTADOITUONGTHUCHIEN")) {
-									motadoituongthuchien = _tmp.getString("MOTADOITUONGTHUCHIEN");
-								}
-								serviceInfo.setApplicantText(motadoituongthuchien);
-	
-								//KETQUATHUCHIEN
-								sb = new StringBuffer();
-								if (_tmp.has("KETQUATHUCHIEN")) {
-									JSONArray ketquathuchien_arr = _tmp.getJSONArray("KETQUATHUCHIEN");
-									if (ketquathuchien_arr != null) {
-										for (int i = 0; i < ketquathuchien_arr.length(); i++) {
-											JSONObject ketquathuchien_obj = ketquathuchien_arr.getJSONObject(i);
-											String maketqua = ketquathuchien_obj.getString("MAKETQUA");
-											String tenketqua = ketquathuchien_obj.getString("TENKETQUA");
-											sb.append("- Mã kết quả:" + maketqua + "<br>");
-											sb.append("- Kết quả:" + tenketqua + "<br>");
-										}
-	
-									}
-	
-								}
-								serviceInfo.setResultText(sb.toString());
-	
-								//CANCUPHAPLY
-								sb = new StringBuffer();
-								if (_tmp.has("CANCUPHAPLY")) {
-									JSONArray cancuphaply_arr = _tmp.getJSONArray("CANCUPHAPLY");
-									if (cancuphaply_arr != null) {
-										for (int i = 0; i < cancuphaply_arr.length(); i++) {
-											JSONObject cancuphaply_obj = cancuphaply_arr.getJSONObject(i);
-											String sovanban = cancuphaply_obj.getString("SOVANBAN");
-											String tenvanban = cancuphaply_obj.getString("TENVANBAN");
-											sb.append("- Số văn bản: " + sovanban + "<br>");
-											sb.append("- Tên văn bản: " + tenvanban + "<br>");
-										}
-	
-									}
-	
-								}
-								serviceInfo.setRegularText(sb.toString());
-	
-								//TRANGTHAI
-								boolean public_ = true;
-								if (_tmp.has("TRANGTHAI")) {
-									int trangthai = _tmp.getInt("TRANGTHAI");
-									if (trangthai != 1) {
-										public_ = false;
-									}
-								}
-								serviceInfo.setPublic_(public_);
-	
-								//COQUANTHUCHIEN
-								sb = new StringBuffer();
-								if (_tmp.has("COQUANTHUCHIEN")) {
-									JSONArray coquanthuchien_arr = _tmp.getJSONArray("COQUANTHUCHIEN");
-									if (coquanthuchien_arr != null) {
-										for (int i = 0; i < coquanthuchien_arr.length(); i++) {
-											JSONObject coquanthuchien_obj = coquanthuchien_arr.getJSONObject(i);
-											String tendonvi = coquanthuchien_obj.getString("TENDONVI");
-											String madonvi = coquanthuchien_obj.getString("MADONVI");
-											sb.append("- Tên đơn vị: " + tendonvi + "<br>");
-											sb.append("- Mã đơn vị: " + madonvi + "<br>");
-										}
-									}
-								}
-	
-								serviceInfo.setGovAgencyText(sb.toString());
-	
-								ServiceInfoLocalServiceUtil.updateServiceInfo(serviceInfo);
-	
-								//THANHPHANHOSO
-								List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
-										.getByServiceInfoId(serviceInfo.getServiceInfoId());
-								if (serviceFileTemplates != null) {
-									for (ServiceFileTemplate serviceFileTemplate : serviceFileTemplates) {
-										ServiceFileTemplateLocalServiceUtil.removeServiceFileTemplate(
-												serviceInfo.getServiceInfoId(),
-												serviceFileTemplate.getFileTemplateNo());
-									}
-								}
-	
-								if (_tmp.has("THANHPHANHOSO")) {
-									JSONArray thanhphanhoso_arr = _tmp.getJSONArray("THANHPHANHOSO");
-									ServiceInfoActions actions = new ServiceInfoActionsImpl();
-									if (thanhphanhoso_arr != null) {
-										for (int i = 0; i < thanhphanhoso_arr.length(); i++) {
-											JSONObject thanhphanhoso_obj = thanhphanhoso_arr.getJSONObject(i);
-											JSONArray giayto_arr = thanhphanhoso_obj.getJSONArray("GIAYTO");
-											if (giayto_arr != null) {
-												for (int j = 0; j < giayto_arr.length(); j++) {
-													JSONObject giayto_obj = giayto_arr.getJSONObject(j);
-													String magiayto = giayto_obj.getString("MAGIAYTO");
-													String tenmaudon = giayto_obj.getString("TENMAUDON");
-													String link = giayto_obj.getString("URL");
-													String tengiayto = giayto_obj.getString("TENGIAYTO");
-	
-													if (Validator.isNotNull(link) && Validator.isNotNull(magiayto)) {
-														InputStream in = null;
-														URLConnection connection = null;
-														try {
-															URL url = new URL(link);
-															connection = url.openConnection();
-															in = connection.getInputStream();
-															String mimeType = URLConnection
-																	.guessContentTypeFromStream(in);
-															//String mimeType = MimeTypesUtil.getContentType(tenmaudon);
-															actions.addServiceFileTemplate(user.getUserId(), groupId,
-																	serviceInfo.getServiceInfoId(), magiayto, tengiayto,
-																	tenmaudon, in, mimeType,
-																	connection.getContentLength(), serviceContext);
-	
-														} catch (Exception e) {
-															_log.error(e);
-														} finally {
-															if (in != null) {
-																in.close();
-															}
-														}
-	
-													}
-	
-												}
-											}
-										}
-									}
-								}
-								result.put(serviceCode, true);
-							} else {
-								result.put(serviceCode, false);
-							}
-	
-						} else {
-							result.put(serviceCode, false);
-						}
-					}
-				}
-			} catch (Exception e) {
-				_log.error(e);
-	
-			}
-		}
-	
-		return result;
-	}*/
+	/*
+	 * @Deprecated
+	 * 
+	 * @Override public JSONObject syncServiceInfo(User user, long groupId,
+	 * ServiceContext serviceContext, String serviceCodes) { List<ServerConfig>
+	 * serverConfigs =
+	 * ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION"); JSONObject
+	 * result = JSONFactoryUtil.createJSONObject();
+	 * _log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
+	 * serverConfigs.size()); if (serverConfigs != null && !serverConfigs.isEmpty()
+	 * && Validator.isNotNull(serviceCodes)) { try { ServerConfig serverConfig =
+	 * serverConfigs.get(0); JSONObject config =
+	 * JSONFactoryUtil.createJSONObject(serverConfig.getConfigs()); String
+	 * accessToken = getAccessToken(config); String[] arrayServiceCode =
+	 * StringUtil.split(serviceCodes);
+	 * 
+	 * JSONObject body = JSONFactoryUtil.createJSONObject();
+	 * 
+	 * body.put("service", "LayThuTuc");
+	 * 
+	 * for (String serviceCode : arrayServiceCode) { ServiceInfoMapping
+	 * serviceInfoMapping = ServiceInfoMappingLocalServiceUtil
+	 * .fetchDVCQGServiceCode(groupId, serviceCode); ServiceInfo serviceInfo =
+	 * ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode); if
+	 * (serviceInfoMapping != null &&
+	 * Validator.isNotNull(serviceInfoMapping.getServiceCodeDVCQG()) && serviceInfo
+	 * != null) {
+	 * 
+	 * body.put("maTTHC", serviceInfoMapping.getServiceCodeDVCQG());
+	 * 
+	 * JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
+	 * 
+	 * if (serviceInfoDVCQG != null && serviceInfoDVCQG.has("result")) { JSONArray
+	 * results = serviceInfoDVCQG.getJSONArray("result"); if (results.length() > 0)
+	 * { JSONObject _tmp = results.getJSONObject(0); StringBuffer sb = null;
+	 * //TENTTHC String tentthc = _tmp.getString("TENTTHC");
+	 * serviceInfo.setServiceName(tentthc); //TRINHTUTHUCHIEN sb = new
+	 * StringBuffer(); if (_tmp.has("TRINHTUTHUCHIEN")) { JSONArray
+	 * trinhtuthuchien_arr = _tmp.getJSONArray("TRINHTUTHUCHIEN"); if
+	 * (trinhtuthuchien_arr != null) { for (int i = 0; i <
+	 * trinhtuthuchien_arr.length(); i++) { JSONObject trinhtuthuchien_obj =
+	 * trinhtuthuchien_arr.getJSONObject(i); String truonghop =
+	 * trinhtuthuchien_obj.getString("TRUONGHOP"); sb.append(truonghop + "<br>");
+	 * JSONArray trinhtu_arr = trinhtuthuchien_obj.getJSONArray("TRINHTU"); if
+	 * (trinhtu_arr != null) { for (int j = 0; j < trinhtu_arr.length(); j++) {
+	 * String tentrinhtu = trinhtu_arr.getJSONObject(j) .getString("TENTRINHTU");
+	 * sb.append(tentrinhtu + "<br>"); } } }
+	 * 
+	 * } } serviceInfo.setProcessText(sb.toString());
+	 * 
+	 * //CACHTHUCTHUCHIEN sb = new StringBuffer(); String durationText =
+	 * StringPool.BLANK; String feeText = StringPool.BLANK; if
+	 * (_tmp.has("CACHTHUCTHUCHIEN")) { JSONArray cachthucthuchien_arr =
+	 * _tmp.getJSONArray("CACHTHUCTHUCHIEN"); if (cachthucthuchien_arr != null) {
+	 * for (int i = 0; i < cachthucthuchien_arr.length(); i++) { JSONObject
+	 * cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(i); int kenh =
+	 * cachthucthuchien_obj.getInt("KENH"); String nhankenh = "Trực tiếp"; if (kenh
+	 * == 2) { nhankenh = "Trực tuyến"; } else if (kenh == 3) { nhankenh =
+	 * "Nộp qua bưu chính công ích"; } sb.append(nhankenh + ":<br>");
+	 * 
+	 * JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
+	 * 
+	 * if (thoigian_arr != null) { for (int j = 0; j < thoigian_arr.length(); j++) {
+	 * JSONObject thoigian_obj = thoigian_arr.getJSONObject(j); int
+	 * thoigiangiaiquyet = thoigian_obj.getInt("THOIGIANGIAIQUYET"); String
+	 * donvitinh = thoigian_obj.getString("DONVITINH"); String mota =
+	 * thoigian_obj.getString("MOTA"); sb.append("- Thời gian giải quyết: " +
+	 * thoigiangiaiquyet + " " + donvitinh + (Validator.isNotNull(mota) ? "(" + mota
+	 * + ")" : StringPool.BLANK) + "<br>"); durationText += nhankenh + ":" +
+	 * "- Thời gian giải quyết: " + thoigiangiaiquyet + " " + donvitinh + "<br>";
+	 * JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI"); if
+	 * (philephi_arr != null && philephi_arr.length() > 0) { String maphilephi =
+	 * philephi_arr.getJSONObject(0) .getString("MAPHILEPHI"); double sotien =
+	 * philephi_arr.getJSONObject(0) .getDouble("SOTIEN"); String donvi =
+	 * philephi_arr.getJSONObject(0).getString("DONVI"); String lephimota =
+	 * philephi_arr.getJSONObject(0) .getString("MOTA"); feeText += nhankenh + ":" +
+	 * maphilephi + ", " + sotien + " " + donvi + (Validator.isNotNull(lephimota) ?
+	 * "(" + lephimota + ")" : StringPool.BLANK) + "<br>"; } } } } } }
+	 * serviceInfo.setMethodText(sb.toString()); //durationText
+	 * serviceInfo.setDurationText(durationText); //feeText
+	 * serviceInfo.setFeeText(feeText);
+	 * 
+	 * //YEUCAU String yeucau = StringPool.BLANK; if (_tmp.has("YEUCAU")) { yeucau =
+	 * _tmp.getString("YEUCAU"); } serviceInfo.setConditionText(yeucau);
+	 * 
+	 * //MOTADOITUONGTHUCHIEN String motadoituongthuchien = StringPool.BLANK; if
+	 * (_tmp.has("MOTADOITUONGTHUCHIEN")) { motadoituongthuchien =
+	 * _tmp.getString("MOTADOITUONGTHUCHIEN"); }
+	 * serviceInfo.setApplicantText(motadoituongthuchien);
+	 * 
+	 * //KETQUATHUCHIEN sb = new StringBuffer(); if (_tmp.has("KETQUATHUCHIEN")) {
+	 * JSONArray ketquathuchien_arr = _tmp.getJSONArray("KETQUATHUCHIEN"); if
+	 * (ketquathuchien_arr != null) { for (int i = 0; i <
+	 * ketquathuchien_arr.length(); i++) { JSONObject ketquathuchien_obj =
+	 * ketquathuchien_arr.getJSONObject(i); String maketqua =
+	 * ketquathuchien_obj.getString("MAKETQUA"); String tenketqua =
+	 * ketquathuchien_obj.getString("TENKETQUA"); sb.append("- Mã kết quả:" +
+	 * maketqua + "<br>"); sb.append("- Kết quả:" + tenketqua + "<br>"); }
+	 * 
+	 * }
+	 * 
+	 * } serviceInfo.setResultText(sb.toString());
+	 * 
+	 * //CANCUPHAPLY sb = new StringBuffer(); if (_tmp.has("CANCUPHAPLY")) {
+	 * JSONArray cancuphaply_arr = _tmp.getJSONArray("CANCUPHAPLY"); if
+	 * (cancuphaply_arr != null) { for (int i = 0; i < cancuphaply_arr.length();
+	 * i++) { JSONObject cancuphaply_obj = cancuphaply_arr.getJSONObject(i); String
+	 * sovanban = cancuphaply_obj.getString("SOVANBAN"); String tenvanban =
+	 * cancuphaply_obj.getString("TENVANBAN"); sb.append("- Số văn bản: " + sovanban
+	 * + "<br>"); sb.append("- Tên văn bản: " + tenvanban + "<br>"); }
+	 * 
+	 * }
+	 * 
+	 * } serviceInfo.setRegularText(sb.toString());
+	 * 
+	 * //TRANGTHAI boolean public_ = true; if (_tmp.has("TRANGTHAI")) { int
+	 * trangthai = _tmp.getInt("TRANGTHAI"); if (trangthai != 1) { public_ = false;
+	 * } } serviceInfo.setPublic_(public_);
+	 * 
+	 * //COQUANTHUCHIEN sb = new StringBuffer(); if (_tmp.has("COQUANTHUCHIEN")) {
+	 * JSONArray coquanthuchien_arr = _tmp.getJSONArray("COQUANTHUCHIEN"); if
+	 * (coquanthuchien_arr != null) { for (int i = 0; i <
+	 * coquanthuchien_arr.length(); i++) { JSONObject coquanthuchien_obj =
+	 * coquanthuchien_arr.getJSONObject(i); String tendonvi =
+	 * coquanthuchien_obj.getString("TENDONVI"); String madonvi =
+	 * coquanthuchien_obj.getString("MADONVI"); sb.append("- Tên đơn vị: " +
+	 * tendonvi + "<br>"); sb.append("- Mã đơn vị: " + madonvi + "<br>"); } } }
+	 * 
+	 * serviceInfo.setGovAgencyText(sb.toString());
+	 * 
+	 * ServiceInfoLocalServiceUtil.updateServiceInfo(serviceInfo);
+	 * 
+	 * //THANHPHANHOSO List<ServiceFileTemplate> serviceFileTemplates =
+	 * ServiceFileTemplateLocalServiceUtil
+	 * .getByServiceInfoId(serviceInfo.getServiceInfoId()); if (serviceFileTemplates
+	 * != null) { for (ServiceFileTemplate serviceFileTemplate :
+	 * serviceFileTemplates) {
+	 * ServiceFileTemplateLocalServiceUtil.removeServiceFileTemplate(
+	 * serviceInfo.getServiceInfoId(), serviceFileTemplate.getFileTemplateNo()); } }
+	 * 
+	 * if (_tmp.has("THANHPHANHOSO")) { JSONArray thanhphanhoso_arr =
+	 * _tmp.getJSONArray("THANHPHANHOSO"); ServiceInfoActions actions = new
+	 * ServiceInfoActionsImpl(); if (thanhphanhoso_arr != null) { for (int i = 0; i
+	 * < thanhphanhoso_arr.length(); i++) { JSONObject thanhphanhoso_obj =
+	 * thanhphanhoso_arr.getJSONObject(i); JSONArray giayto_arr =
+	 * thanhphanhoso_obj.getJSONArray("GIAYTO"); if (giayto_arr != null) { for (int
+	 * j = 0; j < giayto_arr.length(); j++) { JSONObject giayto_obj =
+	 * giayto_arr.getJSONObject(j); String magiayto =
+	 * giayto_obj.getString("MAGIAYTO"); String tenmaudon =
+	 * giayto_obj.getString("TENMAUDON"); String link = giayto_obj.getString("URL");
+	 * String tengiayto = giayto_obj.getString("TENGIAYTO");
+	 * 
+	 * if (Validator.isNotNull(link) && Validator.isNotNull(magiayto)) { InputStream
+	 * in = null; URLConnection connection = null; try { URL url = new URL(link);
+	 * connection = url.openConnection(); in = connection.getInputStream(); String
+	 * mimeType = URLConnection .guessContentTypeFromStream(in); //String mimeType =
+	 * MimeTypesUtil.getContentType(tenmaudon);
+	 * actions.addServiceFileTemplate(user.getUserId(), groupId,
+	 * serviceInfo.getServiceInfoId(), magiayto, tengiayto, tenmaudon, in, mimeType,
+	 * connection.getContentLength(), serviceContext);
+	 * 
+	 * } catch (Exception e) { _log.error(e); } finally { if (in != null) {
+	 * in.close(); } }
+	 * 
+	 * }
+	 * 
+	 * } } } } } result.put(serviceCode, true); } else { result.put(serviceCode,
+	 * false); }
+	 * 
+	 * } else { result.put(serviceCode, false); } } } } catch (Exception e) {
+	 * _log.error(e);
+	 * 
+	 * } }
+	 * 
+	 * return result; }
+	 */
 
 	@Override
 	public JSONObject syncServiceInfo(User user, long groupId, ServiceContext serviceContext, String serviceCodes,
@@ -2302,7 +2377,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray responseData = JSONFactoryUtil.createJSONArray();
-		//_log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" + serverConfigs.size());
+		// _log.info("-->>>>>>>> syncServiceInfo: " + serverConfigs + "|" +
+		// serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			try {
 				ServerConfig serverConfig = serverConfigs.get(0);
@@ -2394,7 +2470,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return result;
 	}
 
-	//TODO
+	// TODO
 	private JSONObject syncServiceInfo(User user, long groupId, JSONObject config, String serviceCodeDVCQG,
 			ServiceInfo serviceInfo, long domainCollectionId, long govAgencyCollectionId, JSONObject body,
 			String accessToken, ServiceContext serviceContext, String type) {
@@ -2405,7 +2481,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		JSONObject serviceInfoDVCQG = getSharingData(config, body, accessToken);
 
-		//String _oldServiceCode = serviceInfo.getServiceCode();
+		// String _oldServiceCode = serviceInfo.getServiceCode();
 
 		if (serviceInfoDVCQG != null && serviceInfoDVCQG.has("result")) {
 			JSONArray results = serviceInfoDVCQG.getJSONArray("result");
@@ -2414,11 +2490,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				JSONObject _tmp = results.getJSONObject(0);
 				StringBuffer sb = null;
 				_log.debug("syncServiceInfo " + _tmp.toJSONString());
-				//TENTTHC
+				// TENTTHC
 				String tentthc = _tmp.getString("TENTTHC");
 				serviceInfo.setServiceName(tentthc);
 
-				//MATTHC
+				// MATTHC
 				String matthc = _tmp.getString("MATTHC");
 
 				if ("sync".equalsIgnoreCase(type)) {
@@ -2431,7 +2507,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setServiceCode(matthc);
 
-				//TRINHTUTHUCHIEN
+				// TRINHTUTHUCHIEN
 				sb = new StringBuffer();
 				if (_tmp.has("TRINHTUTHUCHIEN")) {
 					JSONArray trinhtuthuchien_arr = _tmp.getJSONArray("TRINHTUTHUCHIEN");
@@ -2453,7 +2529,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setProcessText(sb.toString());
 
-				//LINHVUCTHUCHIEN
+				// LINHVUCTHUCHIEN
 				String malinhvuc = StringPool.BLANK;
 				String tenlinhvuc = StringPool.BLANK;
 				if (_tmp.has("LINHVUCTHUCHIEN")) {
@@ -2479,7 +2555,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				serviceInfo.setDomainCode(malinhvuc);
 				serviceInfo.setDomainName(tenlinhvuc);
 
-				//MACOQUANCONGBO
+				// MACOQUANCONGBO
 				String macoquancongbo = _tmp.getString("MACOQUANCONGBO");
 				String tencoquancongbo = StringPool.BLANK;
 
@@ -2496,7 +2572,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				serviceInfo.setAdministrationName(tencoquancongbo);
 				serviceInfo.setAdministrationCode(macoquancongbo);
 
-				//CACHTHUCTHUCHIEN
+				// CACHTHUCTHUCHIEN
 				sb = new StringBuffer();
 				String durationText = StringPool.BLANK;
 				String feeText = StringPool.BLANK;
@@ -2544,27 +2620,28 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 				}
 				serviceInfo.setMethodText(sb.toString());
-				//durationText
+				// durationText
 				serviceInfo.setDurationText(durationText);
-				//feeText
+				// feeText
 				serviceInfo.setFeeText(feeText);
 
-				//YEUCAU
+				// YEUCAU
 				String yeucau = StringPool.BLANK;
 				if (_tmp.has("YEUCAU")) {
 					yeucau = _tmp.getString("YEUCAU");
 				}
 				serviceInfo.setConditionText(yeucau);
 
-				//MOTADOITUONGTHUCHIEN
-				/*String motadoituongthuchien = StringPool.BLANK;
-				if (_tmp.has("MOTADOITUONGTHUCHIEN")) {
-					
-					motadoituongthuchien = _tmp.getString("MOTADOITUONGTHUCHIEN");
-					_log.debug("MOTADOITUONGTHUCHIEN " + motadoituongthuchien);
-				}*/
+				// MOTADOITUONGTHUCHIEN
+				/*
+				 * String motadoituongthuchien = StringPool.BLANK; if
+				 * (_tmp.has("MOTADOITUONGTHUCHIEN")) {
+				 * 
+				 * motadoituongthuchien = _tmp.getString("MOTADOITUONGTHUCHIEN");
+				 * _log.debug("MOTADOITUONGTHUCHIEN " + motadoituongthuchien); }
+				 */
 
-				//DOITUONGTHUCHIEN
+				// DOITUONGTHUCHIEN
 				sb = new StringBuffer();
 				if (_tmp.has("DOITUONGTHUCHIEN")) {
 					_log.debug("DOITUONGTHUCHIEN " + _tmp.getJSONArray("DOITUONGTHUCHIEN"));
@@ -2581,7 +2658,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setApplicantText(sb.toString());
 
-				//KETQUATHUCHIEN
+				// KETQUATHUCHIEN
 				sb = new StringBuffer();
 				if (_tmp.has("KETQUATHUCHIEN")) {
 					JSONArray ketquathuchien_arr = _tmp.getJSONArray("KETQUATHUCHIEN");
@@ -2599,7 +2676,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setResultText(sb.toString());
 
-				//CANCUPHAPLY
+				// CANCUPHAPLY
 				sb = new StringBuffer();
 				if (_tmp.has("CANCUPHAPLY")) {
 					JSONArray cancuphaply_arr = _tmp.getJSONArray("CANCUPHAPLY");
@@ -2617,7 +2694,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setRegularText(sb.toString());
 
-				//TRANGTHAI
+				// TRANGTHAI
 				boolean public_ = true;
 				if (_tmp.has("TRANGTHAI")) {
 					int trangthai = _tmp.getInt("TRANGTHAI");
@@ -2627,7 +2704,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 				serviceInfo.setPublic_(public_);
 
-				//COQUANTHUCHIEN
+				// COQUANTHUCHIEN
 				sb = new StringBuffer();
 				if (_tmp.has("COQUANTHUCHIEN")) {
 					JSONArray coquanthuchien_arr = _tmp.getJSONArray("COQUANTHUCHIEN");
@@ -2669,7 +2746,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 
 				try {
-					//THANHPHANHOSO
+					// THANHPHANHOSO
 					List<ServiceFileTemplate> serviceFileTemplates = ServiceFileTemplateLocalServiceUtil
 							.getByServiceInfoId(serviceInfo.getServiceInfoId());
 					if (serviceFileTemplates != null) {
@@ -2702,7 +2779,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 												connection = url.openConnection();
 												in = connection.getInputStream();
 												String mimeType = URLConnection.guessContentTypeFromStream(in);
-												//String mimeType = MimeTypesUtil.getContentType(tenmaudon);
+												// String mimeType = MimeTypesUtil.getContentType(tenmaudon);
 												actions.addServiceFileTemplate(user.getUserId(),
 														serviceContext.getScopeGroupId(),
 														serviceInfo.getServiceInfoId(), magiayto, tengiayto, tenmaudon,
@@ -2750,7 +2827,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	public void syncFAQToDVCQG() {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
-		//JSONObject result = JSONFactoryUtil.createJSONObject();
+		// JSONObject result = JSONFactoryUtil.createJSONObject();
 		_log.info("-->>>>>>>> syncFAQToDVCQG: " + serverConfigs + "|" + serverConfigs.size());
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
 			ServerConfig serverConfig = serverConfigs.get(0);
@@ -2771,9 +2848,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						item.put("NOIDUNG", question.getContent());
 						item.put("MADONVI", question.getGovAgencyCode());
 						item.put("TENDONVI", question.getGovAgencyName());
-						//Answer answer = AnswerLocalServiceUtil.fi
-						//item.put("TRALOIID", question.getGovAgencyName());
-						//item.put("NOIDUNGTRALOI", question.getGovAgencyName());
+						// Answer answer = AnswerLocalServiceUtil.fi
+						// item.put("TRALOIID", question.getGovAgencyName());
+						// item.put("NOIDUNGTRALOI", question.getGovAgencyName());
 						data.put(item);
 					}
 
@@ -2816,15 +2893,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					}
 					body.put("data", data);
 					JSONObject result = syncData(serverConfig, body);
-					/*if (result.has("error_code") && result.getInt("error_code") == 0) {
-						for (int i = 0; i < data.length(); i++) {
-							JSONObject _tmp = data.getJSONObject(i);
-							long questionId = _tmp.getLong("HOIDAPID");
-							Question question = QuestionLocalServiceUtil.fetchQuestion(questionId);
-							question.setSynced(1);
-							QuestionLocalServiceUtil.updateQuestion(question);
-						}
-					}*/
+					/*
+					 * if (result.has("error_code") && result.getInt("error_code") == 0) { for (int
+					 * i = 0; i < data.length(); i++) { JSONObject _tmp = data.getJSONObject(i);
+					 * long questionId = _tmp.getLong("HOIDAPID"); Question question =
+					 * QuestionLocalServiceUtil.fetchQuestion(questionId); question.setSynced(1);
+					 * QuestionLocalServiceUtil.updateQuestion(question); } }
+					 */
 				}
 			} catch (Exception e) {
 				_log.error(e);
@@ -2886,20 +2961,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			return createResponseMessage(result, 500, "error", "Can't get techId");
 		}
 
-		String MaHoSo = data.getString("MaHoSo");//bb
-		
-		if(Validator.isNull(MaHoSo)) {
+		String MaHoSo = data.getString("MaHoSo");// bb
+
+		if (Validator.isNull(MaHoSo)) {
 			return createResponseMessage(result, 500, "error", "MaHoSo empty");
 		}
-		
-		String MaTTHC = data.getString("MaTTHC");//bb
+
+		String MaTTHC = data.getString("MaTTHC");// bb
 		ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
 		if (mapping == null) {
 			return createResponseMessage(result, 404, "error", "Not found serviceInfo mapping with: " + MaTTHC);
 		}
-		//String SoVanBan = data.getString("SoVanBan");
-		//String NgayNopHoSo = data.getString("NgayNopHoSo");
-		String TenThuongNhan = data.getString("TenThuongNhan");//bb
+		// String SoVanBan = data.getString("SoVanBan");
+		// String NgayNopHoSo = data.getString("NgayNopHoSo");
+		String TenThuongNhan = data.getString("TenThuongNhan");// bb
 		JSONObject DiaChiDoanhNghiep_obj = data.getJSONObject("DiaChiDoanhNghiep");
 		String MaTinh = StringPool.BLANK;
 		String MaHuyen = StringPool.BLANK;
@@ -2913,25 +2988,26 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		String DienThoai = data.getString("DienThoai");
-		//String Fax = data.getString("Fax");
+		// String Fax = data.getString("Fax");
 		String Email = data.getString("Email");
 		String NguoiLienHe = data.getString("NguoiLienHe");
-		//String SoDienThoaiNguoiLienHe = data.getString("SoDienThoaiNguoiLienHe");
+		// String SoDienThoaiNguoiLienHe = data.getString("SoDienThoaiNguoiLienHe");
 		String TenChuongTrinhKhuyenMai = data.getString("TenChuongTrinhKhuyenMai");
-		//String HinhThucKhuyenMai = data.getString("HinhThucKhuyenMai");
-		//String ThoiGianKhuyenMaiTu = data.getString("ThoiGianKhuyenMaiTu");
-		//String ThoiGianKhuyenMaiDen = data.getString("ThoiGianKhuyenMaiDen");
-		//String HangHoaDichVuKhuyenMai = data.getString("HangHoaDichVuKhuyenMai");
-		//String SoLuongHangHoaDichVu = data.getString("SoLuongHangHoaDichVu");
-		//String KhachHang = data.getString("KhachHang");
-		//String CoCauGiaiThuong = data.getString("CoCauGiaiThuong");
-		//String TongGiaTriHangHoa = data.getString("TongGiaTriHangHoa");
-		//String NoiDungChiTiet = data.getString("NoiDungChiTiet");
-		//String TenCacThuongNhanCungThucHien = data.getString("TenCacThuongNhanCungThucHien");
+		// String HinhThucKhuyenMai = data.getString("HinhThucKhuyenMai");
+		// String ThoiGianKhuyenMaiTu = data.getString("ThoiGianKhuyenMaiTu");
+		// String ThoiGianKhuyenMaiDen = data.getString("ThoiGianKhuyenMaiDen");
+		// String HangHoaDichVuKhuyenMai = data.getString("HangHoaDichVuKhuyenMai");
+		// String SoLuongHangHoaDichVu = data.getString("SoLuongHangHoaDichVu");
+		// String KhachHang = data.getString("KhachHang");
+		// String CoCauGiaiThuong = data.getString("CoCauGiaiThuong");
+		// String TongGiaTriHangHoa = data.getString("TongGiaTriHangHoa");
+		// String NoiDungChiTiet = data.getString("NoiDungChiTiet");
+		// String TenCacThuongNhanCungThucHien =
+		// data.getString("TenCacThuongNhanCungThucHien");
 		String TenTepDonDangKy = data.getString("TenTepDonDangKy");
-		String TepDonDangKy = data.getString("TepDonDangKy");//base64
+		String TepDonDangKy = data.getString("TepDonDangKy");// base64
 
-		//find applicant
+		// find applicant
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, MaSoThue);
 
 		if (applicant != null && Validator.isNull(applicant.getMappingClassPK())) {
@@ -2961,14 +3037,15 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 		}
 
-		//create dossier
+		// create dossier
 
 		try {
 			serverConfig = null;
-			ServerConfigLocalServiceUtil.getByProtocol("DVCQG_TTKM");
+			serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_TTKM");
 
 			if (serverConfigs != null && !serverConfigs.isEmpty()) {
 				serverConfig = serverConfigs.get(0);
+				_log.debug("serverConfig " + serverConfig);
 			}
 
 			if (serverConfig == null) {
@@ -2976,8 +3053,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						"Not found server config width protocal: DVCQG_TTKM");
 			}
 
+			user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
+
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-			//String serverNo = config.getString("serverNo");
+			// String serverNo = config.getString("serverNo");
 			String serviceCode = config.getString("serviceCode");
 			String govAgencyCode = config.getString("govAgencyCode");
 			String dossierTemplateNo = config.getString("dossierTemplateNo");
@@ -3022,14 +3101,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			inputModel.setDossierName(TenChuongTrinhKhuyenMai);
 
-			//inputModel.setMetaData(metaData);
+			// inputModel.setMetaData(metaData);
+
+			serviceContext.setUserId(applicant.getMappingUserId());
+
+			serviceContext.setSignedIn(true);
+
+			_log.debug("applicant.getMappingUserId() " + serviceContext.getUserId());
+
+			_log.debug("applicant " + JSONFactoryUtil.looseSerialize(applicant));
 
 			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
 					inputModel);
 
 			_log.debug(JSONFactoryUtil.looseSerialize(dossier));
 
-			//update file
+			// update file
 			addDossierFileAttachment(groupId, dossier.getDossierId(), dossierTemplateNo, TenTepDonDangKy, TepDonDangKy,
 					serviceContext);
 
@@ -3045,12 +3132,22 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				}
 			}
 
-			//post action
+			dossier.setReferenceUid(MaHoSo);
+			// 5: tu he thong dvcqg
+			dossier.setSystemId(5);
+
+			dossier = DossierLocalServiceUtil.updateDossier(dossier);
+
+			// post action
 
 			DossierActions actions = new DossierActionsImpl();
 			ProcessOption option = getProcessOption(serviceCode, govAgencyCode, dossierTemplateNo, groupId);
 			ErrorMsgModel errorModel = new ErrorMsgModel();
-			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, null, actionCode,
+
+			ProcessAction processAction = DossierActionUtils.getProcessAction(groupId, dossier, actionCode,
+					option.getServiceProcessId());
+
+			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
 
@@ -3098,6 +3195,111 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 
 		}
+	}
+
+	@Override
+	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		ServerConfig serverConfig = null;
+		try {
+
+			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+
+			if (serverConfigs != null && !serverConfigs.isEmpty()) {
+				serverConfig = serverConfigs.get(0);
+			}
+
+			if (serverConfig == null) {
+				return createResponseMessage(result, 404, "error",
+						"Not found server config width protocal: DVCQG_INTEGRATION");
+			}
+
+			JSONObject body = JSONFactoryUtil.createJSONObject(requestBody);
+
+			body.put("service", "LayDVC");
+
+			JSONObject serviceConfigData = getSharingData(serverConfig, body);
+
+			_log.info("serviceConfigData: " + serviceConfigData.toJSONString());
+
+			if (serviceConfigData == null || serviceConfigData.length() == 0) {
+				return createResponseMessage(result, 404, "error", "can't get data");
+			}
+
+			JSONArray data = serviceConfigData.getJSONObject("result").getJSONArray("data");
+
+			for (int i = 0; i < data.length(); i++) {
+
+				JSONObject obj = data.getJSONObject(i);
+				String serviceConfigCode = obj.getString("MADVC");
+				String serviceConfigName = obj.getString("TENDVC");
+				String serviceCode = obj.getString("MATTHC");
+				String serviceName = obj.getString("TENTTHC");
+				String govAgencyName = obj.getString("TENCOQUANBANHANH");
+				String domainName = obj.getString("TENLINHVUC");
+				JSONArray applicableInfoObj = obj.getJSONArray("APDUNGDVC");
+
+				JSONObject serviceInfoDetail = getServiceInfoDVCQGDetail(user, groupId, context, serviceCode);
+
+				_log.info("serviceInfoDetail " + serviceInfoDetail.toJSONString());
+
+				JSONArray paymentFeeInfoObj = JSONFactoryUtil.createJSONArray();
+
+				if (serviceInfoDetail.has("error_code")
+						&& GetterUtil.getInteger(serviceInfoDetail.getString("error_code")) == 0) {
+
+					JSONArray resultTmp = serviceInfoDetail.getJSONArray("result");
+
+					if (resultTmp != null) {
+
+						JSONObject _tmp = resultTmp.getJSONObject(0);
+
+						if (_tmp.has("CACHTHUCTHUCHIEN")) {
+
+							JSONArray cachthucthuchien_arr = _tmp.getJSONArray("CACHTHUCTHUCHIEN");
+
+							if (cachthucthuchien_arr != null) {
+								for (int j = 0; j < cachthucthuchien_arr.length(); j++) {
+									JSONObject cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(j);
+
+									JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
+
+									if (thoigian_arr != null) {
+
+										for (int t = 0; t < thoigian_arr.length(); t++) {
+
+											JSONObject thoigian_obj = thoigian_arr.getJSONObject(t);
+
+											JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
+
+											if (philephi_arr != null && philephi_arr.length() > 0) {
+												for (int p = 0; p < philephi_arr.length(); p++) {
+													paymentFeeInfoObj.put(philephi_arr.getJSONObject(p));
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+					}
+				}
+
+				ServiceConfigMappingLocalServiceUtil.addServiceConfigMaping(groupId, serviceConfigCode,
+						serviceConfigName, serviceCode, serviceName, govAgencyName, domainName, applicableInfoObj,
+						paymentFeeInfoObj, context);
+			}
+
+			return createResponseMessage(result, 200, "success", "sync serverconfig success");
+
+		} catch (Exception e) {
+			_log.error(e);
+			return createResponseMessage(result, 500, "error", "system error");
+		}
+
 	}
 
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {

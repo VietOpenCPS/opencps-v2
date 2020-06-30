@@ -11,6 +11,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.AccessTokenPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.AccessTokenPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ActionConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ActionConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ActionConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ActionConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ApplicableInfoLocalServiceImpl" id="org.opencps.dossiermgt.service.ApplicableInfoLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ApplicableInfoPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ApplicableInfoPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.BookingLocalServiceImpl" id="org.opencps.dossiermgt.service.BookingLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.BookingPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.BookingPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.BookingFinderImpl" id="org.opencps.dossiermgt.service.persistence.BookingFinder" parent="basePersistence" />
@@ -70,6 +72,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.MenuRolePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.MenuRolePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.PaymentConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.PaymentFeeInfoLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentFeeInfoLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentFeeInfoPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentFeeInfoPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.PaymentFileLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentFileLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentFilePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentFilePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ProcessActionLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessActionLocalService" />
@@ -96,6 +100,8 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.RegistrationTemplatesPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ServiceConfigLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceConfigLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.impl.ServiceConfigMappingLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceConfigMappingLocalService" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceConfigMappingPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceConfigMappingPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ServiceFileTemplateLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceFileTemplateLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ServiceFileTemplatePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ServiceInfoLocalServiceImpl" id="org.opencps.dossiermgt.service.ServiceInfoLocalService" />
