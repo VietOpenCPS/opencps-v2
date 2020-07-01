@@ -6901,9 +6901,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossier = dossierLocalService.getByRef(groupId, id);
 		}
 
-		if (Validator.isNull(dossierTemplateNo))
-			dossierTemplateNo = (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getDossierTemplateNo())) ? dossier.getDossierTemplateNo() : StringPool.BLANK;
-
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;
 
 		long originDossierId = dossier.getOriginDossierId();
