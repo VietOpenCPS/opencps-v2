@@ -184,12 +184,6 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
 			}
-			if (Validator.isNull(dossierTemplateNo))
-			{
-				long idDossier = Long.parseLong(id);
-				Dossier dossier = DossierLocalServiceUtil.fetchDossier(idDossier);
-				dossierTemplateNo = (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getDossierTemplateNo())) ? dossier.getDossierTemplateNo() : StringPool.BLANK;
-			}
 
 			DossierFile dossierFile =
 				CPSDossierBusinessLocalServiceUtil.addDossierFileByDossierId(
