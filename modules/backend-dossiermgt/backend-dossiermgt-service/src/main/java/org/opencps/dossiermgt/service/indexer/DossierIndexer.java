@@ -847,6 +847,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.VNPOSTAL_STATUS, object.getVnpostalStatus());
 			document.addTextSortable(DossierTerm.VNPOSTAL_PROFILE, object.getVnpostalProfile());
 			document.addNumberSortable(DossierTerm.FROM_VIA_POSTAL, object.getFromViaPostal());
+			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
 
 		} catch (Exception e) {
 			_log.error(e);

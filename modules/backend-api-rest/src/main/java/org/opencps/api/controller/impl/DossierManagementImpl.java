@@ -534,6 +534,14 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
 
+			String donvigui = query.getDonvigui();
+			if(Validator.isNotNull(donvigui)) {
+				params.put(DossierTerm.DON_VI_GUI, donvigui);
+			}
+			String donvinhan = query.getDonvinhan();
+			if(Validator.isNotNull(donvinhan)){
+				params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
@@ -611,7 +619,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -1084,7 +1092,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.getData().addAll(
 					DossierUtils.mappingForGetList(
 						(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-						query.getAssigned()));
+						query.getAssigned(),query));
 			}
 			else {
 				results.setTotal(0);
@@ -2751,7 +2759,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -2906,7 +2914,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
