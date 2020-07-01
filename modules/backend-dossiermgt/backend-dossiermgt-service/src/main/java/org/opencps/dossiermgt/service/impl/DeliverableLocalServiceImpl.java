@@ -19,7 +19,6 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -50,7 +49,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +67,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
@@ -76,11 +75,8 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalService;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
-import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
@@ -1381,18 +1377,6 @@ public class DeliverableLocalServiceImpl
 		if (deliverableId > 0) {
 
 			object = deliverablePersistence.fetchByPrimaryKey(deliverableId);
-			//
-			try {
-				JSONObject jsonDeli =
-					JSONFactoryUtil.createJSONObject(object.getFormData());
-				if (jsonDeli != null && jsonDeli.has(DeliverableTerm.FILE_ATTACH)) {
-					flagAttach = jsonDeli.getBoolean(DeliverableTerm.FILE_ATTACH);
-				}
-			}
-			catch (JSONException e) {
-				_log.debug(e);
-			}
-
 		}
 		else {
 
@@ -1410,163 +1394,98 @@ public class DeliverableLocalServiceImpl
 		object.setUserId(objectData.getLong(Field.USER_ID));
 		object.setUserName(objectData.getString(Field.USER_NAME));
 
-		//
+		// merge formData -> object
+		if (objectData.has(DeliverableTerm.FORM_DATA)) {
+			
+			objectData = DossierMgtUtils.mergeObject(objectData.toJSONString(), objectData.getString(DeliverableTerm.FORM_DATA));
+		}
+		object.setFormData(objectData.getString(DeliverableTerm.FORM_DATA));
+		object.setDeliverableCode(objectData.getString(DeliverableTerm.DELIVERABLE_CODE));
+		object.setDeliverableName(objectData.getString(DeliverableTerm.DELIVERABLE_NAME));
+		object.setSubject(objectData.getString(DeliverableTerm.SUBJECT));
+		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
+		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		// new field to save QD
+		object.setFormReport(objectData.getString(DeliverableTerm.FILE_ATTACHS));
+		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
+
 		String deliverableType = objectData.getString(DeliverableTerm.DELIVERABLE_TYPE);
 		object.setDeliverableType(deliverableType);
-		object.setGovAgencyCode(objectData.getString(DossierTerm.GOV_AGENCY_CODE));
-		//
-		String govAgencyName = objectData.getString(DossierTerm.GOV_AGENCY_NAME);
-		if (Validator.isNull(govAgencyName)) {
-			govAgencyName = getDictItemName(
-				groupId, ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY),
-				objectData.getString(DossierTerm.GOV_AGENCY_CODE));
-		}
-
-		object.setGovAgencyName(govAgencyName);
-		// applicant
-		// String applicantIdNo = objectData.getString("applicantIdNo");
-		// String applicantIdName = objectData.getString("applicantName");
-		// object.setApplicantIdNo(applicantIdNo);
-
-		// if (Validator.isNull(applicantIdName)) {
-		// Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0,
-		// applicantIdNo);
-		// if (applicant != null) {
-		// applicantIdName = applicant.getApplicantName();
-		// }
-		// }
-		// object.setApplicantName(applicantIdName);
-		// object.setSubject(objectData.getString("subject"));
-		// long expireDateLong = objectData.getLong("expireDate");
-		// long issueDateLong = objectData.getLong("issueDate");
-		// long revalidateLong = objectData.getLong("revalidate");
-		// if (expireDateLong > 0)
-		// object.setExpireDate(new Date(expireDateLong));
-		// if (issueDateLong > 0)
-		// object.setIssueDate(new Date(issueDateLong));
-		// if (revalidateLong > 0)
-		// object.setRevalidate(new Date(revalidateLong));
-		//
-		JSONObject jsonData = null;
-		try {
-			jsonData = JSONFactoryUtil.createJSONObject(
-				objectData.getString(ConstantUtils.FORM_DATA));
-
-			String deliverableCode = jsonData.getString(DeliverableTerm.DELIVERABLE_CODE);
-			if (Validator.isNotNull(deliverableCode)) {
-				object.setDeliverableCode(deliverableCode);
-			}
-			//
-			String deliverableName = jsonData.getString(DeliverableTerm.DELIVERABLE_NAME);
-			if (Validator.isNotNull(deliverableName)) {
-				object.setDeliverableName(deliverableName);
-			}
-			else {
-				DeliverableType deliType =
-					deliverableTypePersistence.fetchByG_DLT(
-						groupId, deliverableType);
-				if (deliType != null) {
-					object.setDeliverableName(deliType.getTypeName());
-				}
-			}
-			//
-			String applicantName = jsonData.getString(ApplicantTerm.APPLICANTNAME);
-			if (Validator.isNotNull(applicantName)) {
-				object.setApplicantName(applicantName);
-			}
-			//
-			String applicantIdNo = jsonData.getString(ApplicantTerm.APPLICANTIDNO);
-			if (Validator.isNotNull(applicantIdNo)) {
-				object.setApplicantIdNo(applicantIdNo);
-			}
-			//
-			String subject = jsonData.getString(DeliverableTerm.SUBJECT);
-			if (Validator.isNotNull(subject)) {
-				object.setSubject(subject);
-			}
-			//
-			String deliverableState = jsonData.getString(DeliverableTerm.DELIVERABLE_STATE);
-			if (Validator.isNotNull(deliverableState)) {
-				object.setDeliverableState(Integer.valueOf(deliverableState));
-			}
-			else {
-				object.setDeliverableState(1);
-			}
-			//
-			SimpleDateFormat sdf =
-				new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE);
-			String strExpireDate = jsonData.getString(DeliverableTerm.EXPIRE_DATE);
-			String strIssueDate = jsonData.getString(DeliverableTerm.ISSUE_DATE);
-			String strRevalidate = jsonData.getString(DeliverableTerm.REVALIDATE);
-			if (Validator.isNotNull(strExpireDate)) {
-				Date expireDate = sdf.parse(strExpireDate);
-				if (expireDate != null) {
-					object.setExpireDate(expireDate);
-				}
-			}
-			//
-			if (Validator.isNotNull(strIssueDate)) {
-				Date issueDate = sdf.parse(strIssueDate);
-				if (issueDate != null) {
-					object.setIssueDate(issueDate);
-				}
-			}
-			//
-			if (Validator.isNotNull(strRevalidate)) {
-				Date revaliDate = sdf.parse(strRevalidate);
-				if (revaliDate != null) {
-					object.setRevalidate(revaliDate);
-				}
-			}
-
-		}
-		catch (JSONException e1) {
-			_log.debug(e1);
-		}
-		catch (java.text.ParseException e2) {
-			_log.debug(e2);
-		}
-
-		if (jsonData != null) {
-			jsonData.put(DeliverableTerm.FILE_ATTACH, flagAttach);
-			object.setFormData(jsonData.toJSONString());
-		}
-		else {
-			object.setFormData(StringPool.BLANK);
-		}
-
-		//
-		long formScriptFileId = 0;
-		long formReportFileId = 0;
 		if (Validator.isNotNull(deliverableType)) {
 			DeliverableType deliType =
 				DeliverableTypeLocalServiceUtil.getByCode(
 					groupId, deliverableType);
 			if (deliType != null) {
-				formScriptFileId = deliType.getFormScriptFileId();
-				formReportFileId = deliType.getFormReportFileId();
+				object.setFormScriptFileId(deliType.getFormScriptFileId());
+				object.setFormReportFileId(deliType.getFormReportFileId());
+				object.setDeliverableName(Validator.isNull(object.getDeliverableName()) ?
+						deliType.getTypeName() : object.getDeliverableName());
 			}
 		}
-		object.setFormScriptFileId(formScriptFileId);
-		object.setFormReportFileId(formReportFileId);
+		//
+		String govAgencyCode = objectData.getString(DeliverableTerm.GOV_AGENCY_CODE, StringPool.BLANK);
+		String govAgencyName = objectData.getString(DeliverableTerm.GOV_AGENCY_NAME, StringPool.BLANK);
+		if (Validator.isNull(govAgencyName) || !govAgencyCode.equals(object.getGovAgencyCode())) {
+			govAgencyName = getDictItemName(
+				groupId, ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY),
+				objectData.getString(DeliverableTerm.GOV_AGENCY_CODE));
+		}
+		object.setGovAgencyCode(govAgencyCode);
+		object.setGovAgencyName(govAgencyName);
 
-		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
-		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		// applicant
+		String applicantIdNo = objectData.getString(DeliverableTerm.APPLICANT_ID_NO, StringPool.BLANK);
+		String applicantIdName = objectData.getString(DeliverableTerm.APPLICANT_NAME, StringPool.BLANK);
+		if (Validator.isNull(applicantIdName) || !applicantIdNo.equals(object.getApplicantIdNo())) {
+			Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(0, applicantIdNo);
+			if (applicant != null) {
+				applicantIdName = applicant.getApplicantName();
+			}
+		}
+		object.setApplicantIdNo(applicantIdNo);
+		object.setApplicantName(applicantIdName);
 
-		// new field to save QD
-		object.setFormReport(objectData.getString(DeliverableTerm.FILE_ATTACHS));
+		if (!objectData.has(DeliverableTerm.EXPIRE_DATE)) {
+
+			object.setExpireDate(null);
+		} else if (objectData.getLong(DeliverableTerm.EXPIRE_DATE) > 0) {
+
+			object.setExpireDate(new Date(objectData.getLong(DeliverableTerm.EXPIRE_DATE)));
+		} else {
+			object.setExpireDate(DossierMgtUtils._stringToDate(objectData.getString(DeliverableTerm.EXPIRE_DATE), APIDateTimeUtils._NORMAL_DATE));
+		}
+		if (!objectData.has(DeliverableTerm.ISSUE_DATE)) {
+
+			object.setIssueDate(new Date());
+		} else if (objectData.getLong(DeliverableTerm.ISSUE_DATE) > 0) {
+
+			object.setIssueDate(new Date(objectData.getLong(DeliverableTerm.ISSUE_DATE)));
+		} else {
+			object.setIssueDate(DossierMgtUtils._stringToDate(objectData.getString(DeliverableTerm.ISSUE_DATE), APIDateTimeUtils._NORMAL_DATE));
+		}
+		if (!objectData.has(DeliverableTerm.REVALIDATE)) {
+
+			object.setRevalidate(null);
+		} else if (objectData.getLong(DeliverableTerm.REVALIDATE) > 0) {
+
+			object.setRevalidate(new Date(objectData.getLong(DeliverableTerm.REVALIDATE)));
+		} else {
+			object.setRevalidate(DossierMgtUtils._stringToDate(objectData.getString(DeliverableTerm.REVALIDATE), APIDateTimeUtils._NORMAL_DATE));
+		}
+
+		flagAttach = objectData.getBoolean(DeliverableTerm.FILE_ATTACH);
 
 		object = deliverablePersistence.update(object);
 
 		if (!flagAttach) {
 			String result = StringPool.BLANK;
-			if (formReportFileId > 0) {
+			if (object.getFormReportFileId() > 0) {
 				InputStream is = null;
 
 				try {
 					DLFileEntry dlFileEntry =
 						DLFileEntryLocalServiceUtil.getFileEntry(
-							formReportFileId);
+								object.getFormReportFileId());
 
 					is = dlFileEntry.getContentStream();
 
@@ -1595,11 +1514,8 @@ public class DeliverableLocalServiceImpl
 			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
 			msgData.put(Field.CLASS_PK, object.getDeliverableId());
 			msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
-			msgData.put(
-					ConstantUtils.FORM_DATA,
-				jsonData != null ? jsonData.toJSONString() : StringPool.BLANK);
+			msgData.put( ConstantUtils.FORM_DATA, objectData);
 			msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
-
 			message.put(ConstantUtils.MSG_ENG, msgData);
 			MessageBusUtil.sendMessage(
 					ConstantUtils.JASPER_DESTINATION, message);

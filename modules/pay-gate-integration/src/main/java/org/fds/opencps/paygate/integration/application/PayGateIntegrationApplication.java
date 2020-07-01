@@ -204,7 +204,7 @@ public class PayGateIntegrationApplication extends Application {
 		String result = actionImpl.kpCreateTransaction(user, groupId, dossierId, serviceContext);
 		return Response.status(200).entity(result).build();
 	}
-	
+
 	@POST
 	@Path("/kpdvcqg/paymentconfirm")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
@@ -217,6 +217,22 @@ public class PayGateIntegrationApplication extends Application {
 		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
 
 		JSONObject result = actionImpl.kpCallBack(user, serviceContext, body);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
+	@POST
+	@Path("/kpdvcqg/dptracuuthanhtoanhs")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response dptracuuthanhtoanhs(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			String body) {
+
+		PayGateIntegrationActionImpl actionImpl = new PayGateIntegrationActionImpl();
+
+		JSONObject result = actionImpl.dptracuuthanhtoanhs(user, serviceContext, body);
 
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
