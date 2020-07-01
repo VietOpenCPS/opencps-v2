@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "user",
     "role",
     "deliverableType",
+    "deliverable",
 })
 public class MetadataType {
 
@@ -51,6 +52,8 @@ public class MetadataType {
     protected OMRole role;
 	@XmlElement(name = "DeliverableType")
     protected OMDeliverableType deliverableType;
+	@XmlElement(name = "Deliverable")
+    protected OMDeliverable deliverable;
 
     /**
      * Gets the value of the user property.
@@ -122,6 +125,22 @@ public class MetadataType {
      */
     public void setDeliverableType(OMDeliverableType value) {
         this.deliverableType = value;
+    }
+
+    public OMDeliverable getDeliverable() {
+        return deliverable;
+    }
+
+    /**
+     * Sets the value of the user property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Object }
+     *     
+     */
+    public void setDeliverable(OMDeliverable value) {
+        this.deliverable = value;
     }
 
 }

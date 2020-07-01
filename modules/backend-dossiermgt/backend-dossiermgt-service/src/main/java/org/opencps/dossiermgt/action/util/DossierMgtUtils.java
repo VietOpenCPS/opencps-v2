@@ -18,9 +18,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.opencps.communication.model.ServerConfig;
@@ -64,6 +67,58 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 public class DossierMgtUtils {
 	private static final Log _log = LogFactoryUtil.getLog(DossierMgtUtils.class);
 	
+	public static String _dateToString(Date date, String format) {
+
+		return new SimpleDateFormat(format).format(date);
+	}
+
+	public static Date _stringToDate(String dateStr, String format) {
+
+		try {
+
+			return new SimpleDateFormat(format).parse(dateStr);
+		}
+		catch (ParseException e) {
+
+			return null;
+		}
+	}
+	
+	public static JSONObject mergeObject(String oldObj, String newObj) {
+
+		JSONObject mergedObj = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			JSONObject o1 = Validator.isNotNull(oldObj)
+				? JSONFactoryUtil.createJSONObject(oldObj)
+				: JSONFactoryUtil.createJSONObject();
+			JSONObject o2 = Validator.isNotNull(newObj)
+				? JSONFactoryUtil.createJSONObject(newObj)
+				: JSONFactoryUtil.createJSONObject();
+			Iterator i1 = o1.keys();
+			Iterator i2 = o2.keys();
+			String tmp_key;
+			while (i1.hasNext()) {
+				tmp_key = (String) i1.next();
+				mergedObj.put(tmp_key, o1.get(tmp_key));
+			}
+			while (i2.hasNext()) {
+				tmp_key = (String) i2.next();
+				// only update if not null
+				if (Validator.isNotNull(o2.get(tmp_key))) {
+					mergedObj.put(tmp_key, o2.get(tmp_key));
+				}
+			}
+		}
+		catch (Exception e) {
+			// e.printStackTrace();
+			_log.error(e);
+		}
+
+		return mergedObj;
+	}
+
 	public static JSONObject convertDossierToJSON(Dossier dossier, long dossierActionId) {
 		JSONObject obj = JSONFactoryUtil.createJSONObject();
 		
