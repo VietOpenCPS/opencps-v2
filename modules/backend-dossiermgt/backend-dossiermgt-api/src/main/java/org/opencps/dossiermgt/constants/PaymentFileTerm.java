@@ -56,4 +56,6 @@ public class PaymentFileTerm {
 	public static final String KEYPAY = "KEYPAY";
 	public static final String PAYMENT = "payment";
 	public static final String PAYMENT_METHOD_VIETTEL_PAY = "ViettelPay";
+	public static final String PAYMENT_METHOD_KEYPAY_DVCQG = "KeyPayDVCQG";
+	public static final String PAYMENT_METHOD_PAY_PLAT_DVCQG = "PayPlatDVCQG";
 }

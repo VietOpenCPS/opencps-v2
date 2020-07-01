@@ -1,16 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
@@ -19,10 +8,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DVCQGIManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.usermgt.model.Question;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
+
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 public class DVCQGIManagementImpl implements DVCQGIManagement {
 
@@ -39,11 +40,11 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 
-			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating);
+			JSONObject result = actionImpl.syncDossier(user, groupId, serviceContext, strDossierId, isUpdating, request);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("error").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_JSON_ERROR)).build();
 		}
 	}
 
@@ -56,11 +57,11 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 
-			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId);
+			JSONObject result = actionImpl.syncDossierStatus(user, groupId, serviceContext, strDossierId, request);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("error").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_JSON_ERROR)).build();
 		}
 	}
 
@@ -71,7 +72,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		serviceContext.setScopeGroupId(groupId);
 		serviceContext.setCompanyId(company.getCompanyId());
-		String result = actionImpl.getAccessToken(user, request, response, serviceContext);
+		String result = actionImpl.getAccessToken(user, request, response,  serviceContext);
 
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 	}
@@ -90,7 +91,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("request body incorrect").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_REQUESTBODYINCORRECT)).build();
 		}
 	}
 
@@ -106,7 +107,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);
-			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity("request body incorrect").build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_REQUESTBODYINCORRECT)).build();
 		}
 	}
 
@@ -315,6 +316,29 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		
 		try {
 			JSONObject result = actionImpl.doCreateDossierFromDVCQG(company, user, groupId, serviceContext, JSONFactoryUtil.createJSONObject(body));
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
+
+	@Override
+	public Response doSyncServiceConfig(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		serviceContext.setScopeGroupId(groupId);
+		
+		serviceContext.setCompanyId(company.getCompanyId());
+		
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		
+		_log.debug("doSyncServiceConfig " + body);
+		
+		try {
+			JSONObject result = actionImpl.doSyncServiceConfig(user, groupId, body, serviceContext);
 			return Response.status(200).entity(result.toJSONString()).build();
 		} catch (Exception e) {
 			_log.error(e);

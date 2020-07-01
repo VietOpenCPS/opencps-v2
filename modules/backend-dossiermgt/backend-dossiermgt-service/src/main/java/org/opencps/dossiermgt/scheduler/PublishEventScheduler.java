@@ -198,24 +198,26 @@ public class PublishEventScheduler extends BaseMessageListener {
 		}
 		//add by TrungNt
 		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-
+			_log.info("AAAAAA");
 			try {
-
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-
-				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier);
-				_log.debug(result.toJSONString());
-				if (result.has("error_code") && result.getString("error_code").equals("0")) {
-					PublishQueueLocalServiceUtil.updatePublishQueue(sc.getGroupId(), pq.getPublishQueueId(), 2,
-							dossier.getDossierId(), sc.getServerNo(), StringPool.BLANK,
-							PublishQueueTerm.STATE_RECEIVED_ACK, 0, String.valueOf(dossier.getDossierNo()),
-							result.toJSONString(), new ServiceContext());
+				
+				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
+				_log.info("result DVCQG: "+result);
+				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(
+							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
+							sc.getServerNo(), StringPool.BLANK, PublishQueueTerm.STATE_RECEIVED_ACK, 0, 
+							String.valueOf(dossier.getDossierNo()), result.toJSONString(),
+							new ServiceContext());	
 					return true;
 				}
-
+				
+				return false;
+					
 			} catch (Exception e) {
 				_log.error(e);
-			}
+			}				
 		}
 		return true;
 	}

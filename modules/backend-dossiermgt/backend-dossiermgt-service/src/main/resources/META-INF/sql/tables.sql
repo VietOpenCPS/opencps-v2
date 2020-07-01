@@ -37,6 +37,21 @@ create table opencps_actionconfig (
 	dateOption INTEGER
 );
 
+create table opencps_applicableInfo (
+	uuid_ VARCHAR(75) null,
+	applicableInfoId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	serviceCode VARCHAR(75) null,
+	govAgencyCode VARCHAR(75) null,
+	serviceLevel INTEGER,
+	serviceConfigMappingId LONG
+);
+
 create table opencps_booking (
 	uuid_ VARCHAR(75) null,
 	bookingId LONG not null primary key,
@@ -655,6 +670,22 @@ create table opencps_paymentconfig (
 	epaymentConfig TEXT null
 );
 
+create table opencps_paymentfeeinfo (
+	uuid_ VARCHAR(75) null,
+	paymentFeeInfoId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	type_ VARCHAR(75) null,
+	paymentFeeCode VARCHAR(75) null,
+	paymentFeeName VARCHAR(75) null,
+	amount VARCHAR(75) null,
+	serviceConfigMappingId LONG
+);
+
 create table opencps_paymentfile (
 	uuid_ VARCHAR(75) null,
 	paymentFileId LONG not null primary key,
@@ -941,6 +972,23 @@ create table opencps_serviceconfig (
 	forBusiness BOOLEAN,
 	postService BOOLEAN,
 	registration BOOLEAN
+);
+
+create table opencps_serviceconfigmapping (
+	uuid_ VARCHAR(75) null,
+	serviceConfigMappingId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	serviceConfigCode VARCHAR(75) null,
+	serviceConfigName VARCHAR(75) null,
+	serviceCode VARCHAR(75) null,
+	serviceName VARCHAR(75) null,
+	govAgencyName VARCHAR(75) null,
+	domainName VARCHAR(75) null
 );
 
 create table opencps_serviceinfo (

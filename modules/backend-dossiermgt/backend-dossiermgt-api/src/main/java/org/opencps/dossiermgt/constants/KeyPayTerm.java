@@ -112,10 +112,13 @@ public class KeyPayTerm {
 	public static final String ORDERNUMBER = "orderNumber";
 	public static final String SENDERNAME = "senderName";
 	public static final String RECEIVERNAME = "receiverName";
-	public static final String RECEIVERADDRESS = " receiverAddress";
+	public static final String RECEIVERADDRESS = "receiverAddress";
 	public static final String RECEIVERTEL = "receiverTel";
 	public static final String RECEIVERPROVINCE = "receiverProvince";
 	public static final String RECEIVERDISTRICT = "receiverDistrict";
 	public static final String RECEIVEREMAIL = "receiverEmail";
 	public static final String SENDERDESC = "senderDesc";
+	public static final String KP_DVCQG_CONFIG = "KP_DVCQG_CONFIG";
+	public static final String KPDVCQG = "kpdvcqg";
+	public static final String PP_DVCGQ_CONFIG = "PP_DVCGQ_CONFIG";
 }

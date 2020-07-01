@@ -1,8 +1,13 @@
-Bundle-Name: pay-gate-integration
-Bundle-SymbolicName: pgi
+Bundle-Name: rest-pay-gate-integration
+Bundle-SymbolicName: org.opencps.rest.pgi
 Bundle-Version: 1.0.0
 Liferay-Configuration-Path: /configuration
 Export-Package: \
 	com.google.zxing.*,\
 	com.beust.jcommander,\
-	com.beust.jcommander.validators
+	com.beust.jcommander.validators,\
+	org.opencps.dossiermgt.lgsp.model,\
+	org.opencps.dossiermgt.action,\
+	org.opencps.dossiermgt.rest.utils,\
+	org.opencps.dossiermgt.service.impl,\
+	org.opencps.dossiermgt.*
