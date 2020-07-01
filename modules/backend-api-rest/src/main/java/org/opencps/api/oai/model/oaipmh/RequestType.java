@@ -77,6 +77,9 @@ public class RequestType {
     @XmlAttribute(name = "resumptionToken")
     @QueryParam(value = "resumptionToken")
     protected String resumptionToken;
+    @XmlAttribute(name = "deliverableType")
+    @QueryParam(value = "deliverableType")
+    protected String deliverableType;
 
     /**
      * Gets the value of the value property.
@@ -268,6 +271,30 @@ public class RequestType {
      */
     public void setResumptionToken(String value) {
         this.resumptionToken = value;
+    }
+
+    /**
+     * Gets the value of the resumptionToken property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDeliverableType() {
+        return deliverableType;
+    }
+
+    /**
+     * Sets the value of the resumptionToken property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void seteliverableType(String value) {
+        this.deliverableType = value;
     }
 
 }

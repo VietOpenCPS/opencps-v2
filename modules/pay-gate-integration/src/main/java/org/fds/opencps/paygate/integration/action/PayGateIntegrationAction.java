@@ -36,6 +36,8 @@ public interface PayGateIntegrationAction {
 	public JSONObject kpCallBack(User user, ServiceContext serviceContext, String body);
 	
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
-	
+
 	public JSONObject kpViewDetailTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext);
+	
+	public JSONObject dptracuuthanhtoanhs(User user, ServiceContext serviceContext, String body);
 }

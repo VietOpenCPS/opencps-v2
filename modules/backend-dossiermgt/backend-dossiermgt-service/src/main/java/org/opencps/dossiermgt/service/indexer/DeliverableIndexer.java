@@ -130,9 +130,10 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					// document.addKeyword(
 					// keyValue[0].toString() + "_data",
 					// keyValue[1].toString());
-					document.addKeyword(
-							keyValue[0].toString().toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA,
-							keyValue[1].toString().toLowerCase());
+					String indexKey = keyValue[0].toString().toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA;
+					if (indexKey.indexOf("_id") != 0) {
+						document.addKeyword(indexKey, keyValue[1].toString().toLowerCase());
+					}
 				}
 			}
 		}
@@ -144,7 +145,10 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 			while (keys.hasNext()) {
 				String key = keys.next();
-				document.addTextSortable(key + StringPool.UNDERLINE + ConstantUtils.DATA, jsonObject.getString(key));
+				String indexKey = key + StringPool.UNDERLINE + ConstantUtils.DATA;
+				if (indexKey.indexOf("_id") != 0) {
+					document.addTextSortable(indexKey, jsonObject.getString(key));
+				}
 			}
 		} catch (Exception e) {
 			_log.error(e);
