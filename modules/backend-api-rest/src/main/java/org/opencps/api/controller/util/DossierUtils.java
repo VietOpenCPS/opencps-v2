@@ -538,7 +538,7 @@ public class DossierUtils {
 			}
 			Integer userIdDossier = Integer.parseInt(doc.get(DossierTerm.USER_ID));
 			if(Validator.isNotNull(query.getDonvigui())){
-				if(query.getDonvigui().startsWith(DossierTerm.SCOPE_)){
+				if(query.getDonvigui().equals(DossierTerm.SCOPE_)){
 					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
 					if(Validator.isNotNull(employee)){
 						model.setMetaData(employee.getScope());
@@ -548,7 +548,7 @@ public class DossierUtils {
 				}
 			}
 			if(Validator.isNotNull(query.getDonvinhan())){
-				if(query.getDonvinhan().startsWith(DossierTerm.SCOPE_)){
+				if(query.getDonvinhan().equals(DossierTerm.SCOPE_)){
 					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
 					if(Validator.isNotNull(employee)){
 						model.setMetaData(employee.getScope());
