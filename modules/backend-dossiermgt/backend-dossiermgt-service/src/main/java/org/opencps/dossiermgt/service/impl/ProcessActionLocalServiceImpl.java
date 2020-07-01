@@ -609,7 +609,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 			String actionName, String preStepCode, String postStepCode, String autoEvent, String preCondition,
 			int allowAssignUser, long assignUserId, String assignUserName, Integer requestPayment, String paymentFee,
 			String createDossierFiles, String returnDossierFiles, boolean eSignature, String signatureType,
-			String createDossiers, ServiceContext serviceContext) throws PortalException {
+			String createDossiers, String postAction, ServiceContext serviceContext) throws PortalException {
 
 		Date now = new Date();
 		User userAction = userLocalService.getUser(userId);
@@ -642,6 +642,7 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		object.setESignature(eSignature);
 		object.setSignatureType(signatureType);
 		object.setCreateDossiers(createDossiers);
+		object.setPostAction(postAction);
 
 		return processActionPersistence.update(object);
 

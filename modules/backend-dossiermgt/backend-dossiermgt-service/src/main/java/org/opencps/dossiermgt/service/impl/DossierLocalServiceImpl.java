@@ -2584,7 +2584,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier getByRef(long groupId, String refId) {
 
-		return dossierPersistence.fetchByG_REF(groupId, refId);
+		try {
+			return dossierPersistence.findByG_REF(groupId, refId);
+		} catch (NoSuchDossierException e) {
+			return null;
+		}
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -6214,7 +6218,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier getByDossierNo(long groupId, String dossierNo) {
 
-		return dossierPersistence.fetchByG_DN(groupId, dossierNo);
+		try {
+			return dossierPersistence.findByG_DN(groupId, dossierNo);
+		} catch (NoSuchDossierException e) {
+			return null;
+		}
 	}
 
 	// super_admin Generators

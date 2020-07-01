@@ -286,18 +286,22 @@ public class RestfulController {
 		try {
 
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
+			_log.info("jCaptchaResponse: "+jCaptchaResponse);
 			if (Validator.isNotNull(jCaptchaResponse)) {
 				
 				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 				String captchaId = request.getSession().getId();
+				_log.info("captchaId: "+captchaId);
 				try {
 					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+					_log.info("isResponseCorrect: "+isResponseCorrect);
 					if (!isResponseCorrect) {
 						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 						return "captcha";
 					}
 				} catch (CaptchaServiceException e) {
 					_log.debug(e);
+					_log.info("ERROR AUTHEN LOGIN: "+e);
 					response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 					return "captcha";
 				}
@@ -683,7 +687,7 @@ public class RestfulController {
 
 		} 
 		catch (AuthException ae) {
-//			System.out.println("AUTH EXCEPTION: " + checkUserId);
+			//System.out.println("AUTH EXCEPTION: " + checkUserId);
 			_log.debug(ae);
 
 			try {

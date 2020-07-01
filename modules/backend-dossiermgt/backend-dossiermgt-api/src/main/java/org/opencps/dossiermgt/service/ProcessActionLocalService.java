@@ -402,5 +402,6 @@ public interface ProcessActionLocalService extends BaseLocalService,
 		String assignUserName, Integer requestPayment, String paymentFee,
 		String createDossierFiles, String returnDossierFiles,
 		boolean eSignature, String signatureType, String createDossiers,
-		ServiceContext serviceContext) throws PortalException;
+		String postAction, ServiceContext serviceContext)
+		throws PortalException;
 }

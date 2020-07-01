@@ -52,6 +52,9 @@ create index IX_F3E0B05E on opencps_jobpos (groupId, title[$COLUMN_LENGTH:255$])
 create index IX_20408734 on opencps_jobpos (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6EE94AB6 on opencps_jobpos (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create unique index IX_42C3A548 on opencps_lgsp_token (tokenType[$COLUMN_LENGTH:75$]);
+create index IX_D07481B9 on opencps_lgsp_token (uuid_[$COLUMN_LENGTH:75$]);
+
 create index IX_20BCFC05 on opencps_officesite (groupId, siteGroupId);
 create index IX_31C5CE40 on opencps_officesite (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_72ECE4C2 on opencps_officesite (uuid_[$COLUMN_LENGTH:75$], groupId);
