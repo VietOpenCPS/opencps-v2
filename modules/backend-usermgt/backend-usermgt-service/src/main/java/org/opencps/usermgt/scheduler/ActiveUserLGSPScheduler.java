@@ -120,7 +120,8 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 							_log.info("tokenType: " + tokenType);
 							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
 
-							boolean flagChange = RegisterLGSPUtils.changePassLGSP(oldSecrect, aplc.getTmpPass(), contactEmail, authStrEnc);
+							//boolean flagChange = RegisterLGSPUtils.changePassLGSP(oldSecrect, aplc.getTmpPass(), contactEmail, authStrEnc);
+							boolean flagChange = false;
 							if (!flagChange) {
 								retry += 1;
 								//Update sync scheduler

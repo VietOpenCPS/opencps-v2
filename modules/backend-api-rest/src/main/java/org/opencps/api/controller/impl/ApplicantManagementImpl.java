@@ -1764,8 +1764,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 					_log.info("tokenType: " + tokenType);
 
 					// Dang ky tk cong dan
-					strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
-							applicantIdNo, applicantName, applicantIdDate, contactTelNo);
+//					strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
+//							applicantIdNo, applicantName, applicantIdDate, contactTelNo);
 					_log.info("strProfile: " + strProfile);
 					if (Validator.isNull(strProfile)) {
 						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
@@ -1876,8 +1876,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 							&& Validator.isNotNull(jsonToken.getString("access_token"))
 							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
 
-						int resultLGSP = RegisterLGSPUtils.activeUserLGSP(jsonToken, aplc.getGroupId(), aplc.getProfile(),
-								aplc.getTmpPass(), aplc.getContactEmail(), aplc.getApplicantIdType());
+//						int resultLGSP = RegisterLGSPUtils.activeUserLGSP(jsonToken, aplc.getGroupId(), aplc.getProfile(),
+//								aplc.getTmpPass(), aplc.getContactEmail(), aplc.getApplicantIdType());
+						int resultLGSP = 0;
 						if (resultLGSP == 0 || resultLGSP == 1) {
 							ErrorMsgModel error = new ErrorMsgModel();
 							error.setMessage("Active error");
