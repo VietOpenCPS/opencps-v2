@@ -1389,7 +1389,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		// check multiple check in postAction
-		if (Validator.isNotNull(proAction.getPostAction())) {
+		if (proAction != null && Validator.isNotNull(proAction.getPostAction())) {
 			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(proAction.getPostAction());
 			if (jsonPostData != null && jsonPostData.has(MULTIPLE_CHECK)) {
 				String multipleCheck = jsonPostData.getString(MULTIPLE_CHECK);
@@ -6916,13 +6916,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		long dossierId = GetterUtil.getLong(id);
 		Dossier dossier = null;
 
-		if (dossierId != 0) {
+//		if (dossierId != 0) {
+//			dossier = dossierLocalService.fetchDossier(dossierId);
+//			if (Validator.isNull(dossier)) {
+//				dossier = dossierLocalService.getByRef(groupId, id);
+//			}
+//		} else {
+//			dossier = dossierLocalService.getByRef(groupId, id);
+//		}
+		if (dossierId > 0) {
 			dossier = dossierLocalService.fetchDossier(dossierId);
-			if (Validator.isNull(dossier)) {
-				dossier = dossierLocalService.getByRef(groupId, id);
-			}
 		} else {
-			dossier = dossierLocalService.getByRef(groupId, id);
+			dossier = dossierLocalService.getByDossierNo(groupId, id);
+			if (dossier == null) {
+				dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+			}
 		}
 
 		DataHandler dataHandler = (file != null) ? file.getDataHandler() : null;

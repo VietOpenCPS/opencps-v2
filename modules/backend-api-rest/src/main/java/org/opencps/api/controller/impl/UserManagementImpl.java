@@ -1102,7 +1102,8 @@ public class UserManagementImpl implements UserManagement {
 					_log.info("tokenType: " + tokenType);
 
 					// Dang ky tk cong dan
-					String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
+					//String message = RegisterLGSPUtils.forgotLGSP(jsonToken, screenname_email);
+					String message = "";
 					if (Validator.isNull(message)) {
 						return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 					} else {
