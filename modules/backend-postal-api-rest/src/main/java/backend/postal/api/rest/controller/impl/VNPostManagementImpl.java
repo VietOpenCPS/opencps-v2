@@ -94,6 +94,9 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
 		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		if (config == null) {
+			config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		}
 		//_log.info("sendPostalRequest groupId ============= " + groupId);
 		//_log.info("sendPostalRequest lstsc ============= " + JSONFactoryUtil.looseSerialize(config));
 
@@ -140,7 +143,9 @@ public class VNPostManagementImpl implements VNPostManagement {
 
 		String serverNo = VnPostTerm.getVNPostServerNo(input.getGovAgencyCode());
 		VNPostServerConfigModel config = getServerConfig(groupId, serverNo, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
-
+		if (config == null) {
+			config = getServerConfig(groupId, VnPostTerm.SERVER_CONFIG_VIA_POSTAL_SERVERNO_D, VnPostTerm.SERVER_CONFIG_VIA_POSTAL);
+		}
 		if (config == null) {
 			return null;
 		} else {
