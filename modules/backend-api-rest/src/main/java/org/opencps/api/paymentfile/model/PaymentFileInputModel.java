@@ -83,7 +83,9 @@ import javax.xml.bind.annotation.XmlType;
     "invoicePayload",
     "einvoice",
     "confirmFileEntryId",
-    "paymentStatus"
+    "paymentStatus",
+    "govAgencyCode",
+    "govAgencyName"
 })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
@@ -157,8 +159,30 @@ public class PaymentFileInputModel {
 	@DefaultValue("0")
 	@FormParam(value = "paymentStatus")
     protected Integer paymentStatus;
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyCode")
+    protected String govAgencyCode;
+	@DefaultValue(StringPool.BLANK)
+	@FormParam(value = "govAgencyName")
+    protected String govAgencyName;
+	
+    public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
 
-    /**
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return

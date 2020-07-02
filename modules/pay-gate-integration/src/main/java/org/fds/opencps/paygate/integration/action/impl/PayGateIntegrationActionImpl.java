@@ -1315,9 +1315,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	private JSONObject createPaymentPlatformInitTransactionPostParam(long groupId, JSONObject schema,
 			PaymentFile paymentFile, Dossier dossier, HttpServletRequest request) throws PortalException {
 
-		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
+		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN_INIT);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
-		String maDoitac = paymentFile.getGovAgencyCode();
+		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
+				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
 		String maThamchieu = paymentFile.getUuid();
 		String sotien = String.valueOf(paymentFile.getPaymentAmount());
 		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
@@ -1365,9 +1366,16 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		receipt_info.put(PayGateTerm.MADICHVU, maDV); // bb
 
 		// bb khi madichvu = 2
-		receipt_info.put(PayGateTerm.MADONVI, (maDV == 2) ? schema.getString(PayGateTerm.MADONVI) : StringPool.BLANK);
-		receipt_info.put(PayGateTerm.TENDONVI, (maDV == 2) ? schema.getString(PayGateTerm.TENDONVI) : StringPool.BLANK);
-		receipt_info.put(PayGateTerm.MAHOSO, (maDV == 2) ? dossier.getDossierNo() : StringPool.BLANK);
+		if (maDV == 2) {
+			// TODO: can check lai
+			receipt_info.put(PayGateTerm.MADONVI, (maDV == 2) ? schema.getString(PayGateTerm.MADONVI) : StringPool.BLANK);
+			receipt_info.put(PayGateTerm.TENDONVI, (maDV == 2) ? schema.getString(PayGateTerm.TENDONVI) : StringPool.BLANK);
+			receipt_info.put(PayGateTerm.MAHOSO, (maDV == 2) ? dossier.getDossierNo() : StringPool.BLANK);
+		} else {
+			receipt_info.put(PayGateTerm.MADONVI, StringPool.BLANK);
+			receipt_info.put(PayGateTerm.TENDONVI, StringPool.BLANK);
+			receipt_info.put(PayGateTerm.MAHOSO, StringPool.BLANK);
+		}
 
 		ServiceInfoMapping serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 				dossier.getServiceCode());
@@ -1390,7 +1398,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		
 		_log.info(groupId + "|" + serviceCodeDVCQG + "|" + itemMapping.getItemCodeDVCQG() + "|" + serviceInfo.getMaxLevel());
 
-		ApplicableInfo applicableInfo = ApplicableInfoLocalServiceUtil.fetchByG_SC_GC_SL(groupId, serviceCodeDVCQG,
+		ApplicableInfo applicableInfo = ApplicableInfoLocalServiceUtil.fetchByG_SC_GC_SL(0, serviceCodeDVCQG,
 				itemMapping.getItemCodeDVCQG(), serviceInfo.getMaxLevel());
 
 		ServiceConfigMapping serviceConfigMapping = ServiceConfigMappingLocalServiceUtil
@@ -1755,7 +1763,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
-		String maDoitac = paymentFile.getGovAgencyCode();
+		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
+				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
 		String maThamchieu = paymentFile.getUuid();
 		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
 		String hash_key = schema.getString(PayGateTerm.HASH_KEY);

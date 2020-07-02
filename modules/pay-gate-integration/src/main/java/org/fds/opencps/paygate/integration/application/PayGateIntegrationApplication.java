@@ -266,7 +266,7 @@ public class PayGateIntegrationApplication extends Application {
 	 * @return the response
 	 */
 	@POST
-	@Path("/ppdvcqg/paymentconfirm")
+	@Path("/ppdvcqg/dpnhankqthanhtoanhs")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response ppConfirmTransaction(@Context HttpServletRequest request, @Context HttpServletResponse response,

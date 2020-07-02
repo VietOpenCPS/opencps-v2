@@ -587,6 +587,8 @@ public class PaymentFileUtils {
 		model.setReferenceUid(input.getReferenceUid());
 		model.setServiceAmount(input.getServiceAmount());
 		model.setShipAmount(input.getShipAmount());
+		model.setGovAgencyCode(input.getGovAgencyCode());
+		model.setGovAgencyName(input.getGovAgencyName());
 		
 		return model;
 	}

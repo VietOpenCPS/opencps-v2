@@ -136,6 +136,9 @@ public class PayGateTerm {
 	
 	// add by PhucHN
 	public static final String LOAIBANTIN = "LoaiBanTin";
+	public static final String LOAIBANTIN_INIT = "LoaiBanTinInit";
+	public static final String LOAIBANTIN_GET_BILL = "LoaiBanTinGetBill";
+	public static final String LOAIBANTIN_CONFIRM = "LoaiBanTinConfirm";
 	public static final String PHIENBAN = "PhienBan";
 	public static final String MADOITAC = "MaDoiTac";
 	public static final String MATHAMCHIEU = "MaThamChieu";
@@ -153,7 +156,7 @@ public class PayGateTerm {
 	
 	public static final String MALOI_KEY = "MaLoi";
 	public static final String MALOI_SUCCESS = "00";
-	public static final String PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT = "paymentplatform_dvcqg_init_tracsaction_endpoint";
+	public static final String PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT = "paymentplatform_dvcqg_init_transaction_endpoint";
 	public static final String MAGIAODICH = "MaGiaoDich";
 	public static final String PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT = "paymentplatform_dvcgq_get_receipt_endpoint";
 
