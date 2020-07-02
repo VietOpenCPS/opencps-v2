@@ -3005,16 +3005,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 
 		if (serverConfig == null) {
+			_log.info("ttkm result: " + "Not found server config width protocal: DVCQG_INTEGRATION");
 			return createResponseMessage(result, -1, "Not found server config width protocal: DVCQG_INTEGRATION");
 		}
 
 		if (data == null) {
+			_log.info("ttkm result: " + "Data empty");
 			return createResponseMessage(result, -1, "Data empty");
 		}
 
 		String MaSoThue = data.getString("MaSoThue");
 
 		if (Validator.isNull(MaSoThue)) {
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "MaSoThue empty");
 			return createResponseMessage(result, -1, "MaSoThue empty");
 		}
 
@@ -3032,20 +3036,28 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		if (searchObj != null && GetterUtil.getInteger(searchObj.getString("error_code")) == 0) {
 			JSONArray searchResultObj = searchObj.getJSONArray("result");
 			if (searchResultObj == null || searchResultObj.length() == 0) {
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Can't get techId");
 				return createResponseMessage(result, -1, "Can't get techId");
 			}
 			techId = searchResultObj.getJSONObject(0).getString("TECHNICALID");
 			if (Validator.isNull(techId)) {
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Can't get techId");
 				return createResponseMessage(result, -1, "Can't get techId");
 			}
 
 		} else {
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "Can't get techId");
 			return createResponseMessage(result, -1, "Can't get techId");
 		}
 
 		String MaHoSo = data.getString("MaHoSo");//bb
 
 		if (Validator.isNull(MaHoSo)) {
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "MaHoSo empty");
 			return createResponseMessage(result, -1, "MaHoSo empty");
 		}
 
@@ -3067,8 +3079,11 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			serviceContext.setScopeGroupId(groupId != 0 ? groupId : serverConfig.getGroupId());
 
 		} catch (Exception e) {
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "Can't parse server config: " + MaHoSo);
 			_log.error(e);
-			return createResponseMessage(result, -1, "Can't parse server config");
+			
+			return createResponseMessage(result, -1, MaHoSo + "| Can't parse server config");
 		}
 
 		_log.info("GroupId: " + groupId + "|" + serviceContext.getScopeGroupId() + "|" + serviceContext.getCompanyId()
@@ -3077,7 +3092,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		ServiceInfoMapping mapping = ServiceInfoMappingLocalServiceUtil.fetchByGID_SCDVCQG(groupId, MaTTHC);
 
 		if (mapping == null) {
-			return createResponseMessage(result, -1, "Not found serviceInfo mapping with: " + MaTTHC);
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "Not found serviceInfo| " + MaHoSo);
+			return createResponseMessage(result, -1, MaHoSo + "| Not found serviceInfo mapping with: " + MaTTHC);
 		}
 		//String SoVanBan = data.getString("SoVanBan");
 		//String NgayNopHoSo = data.getString("NgayNopHoSo");
@@ -3121,8 +3138,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
 						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
 			} catch (Exception e) {
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Can't update applicant mappingClassPK |" + MaHoSo);
 				_log.error(e);
-				return createResponseMessage(result, -1, "Can't update applicant mappingClassPK");
+				return createResponseMessage(result, -1, MaHoSo + "| Can't update applicant mappingClassPK");
 			}
 		} else if (applicant == null) {
 
@@ -3138,8 +3157,10 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
 						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
 			} catch (Exception e) {
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Can't create applicant|" + MaHoSo);
 				_log.error(e);
-				return createResponseMessage(result, -1, "Can't create applicant");
+				return createResponseMessage(result, -1, MaHoSo + "| Can't create applicant");
 			}
 		}
 
@@ -3155,7 +3176,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 
 			if (serverConfig == null) {
-				return createResponseMessage(result, -1, "Not found server config width protocal: DVCQG_TTKM");
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Not found server config width protocal: DVCQG_TTKM|" + MaHoSo);
+				return createResponseMessage(result, -1, MaHoSo + "| Not found server config width protocal: DVCQG_TTKM");
 			}
 
 			user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
@@ -3170,7 +3193,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			ActionConfig actConfig = ActionConfigLocalServiceUtil.getByCode(groupId, actionCode);
 
 			if (actConfig == null) {
-				return createResponseMessage(result, -1, "Not found ActionConfig");
+				_log.info("ttkm data: " + data.toJSONString());
+				_log.info("ttkm result: " + "Not found ActionConfig|" + MaHoSo);
+				return createResponseMessage(result, -1, MaHoSo + "| Not found ActionConfig");
 			}
 
 			DossierInputModel inputModel = new DossierInputModel();
@@ -3218,8 +3243,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			try {
 				Dossier tmp = DossierLocalServiceUtil.getByRef(groupId, MaHoSo);
 				if (tmp != null) {
-					_log.info("Duplicate refId " + MaHoSo);
-					return createResponseMessage(result, 1, "duplicate refId");
+					_log.info("ttkm data: " + data.toJSONString());
+					_log.info("ttkm result: " + "duplicate refId|" + MaHoSo);
+					return createResponseMessage(result, 1, MaHoSo + "| duplicate refId");
 				}
 			} catch (Exception e) {
 
@@ -3264,12 +3290,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			actions.doAction(groupId, applicant.getMappingUserId(), dossier, option, processAction, actionCode,
 					applicant.getApplicantName(), StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 					StringPool.BLANK, actConfig.getSyncType(), serviceContext, errorModel);
-
-			return createResponseMessage(result, 0, "create dossier success");
+			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
+			return createResponseMessage(result, 0, MaHoSo + "| create dossier success");
 
 		} catch (Exception e) {
+			_log.info("ttkm data: " + data.toJSONString());
+			_log.info("ttkm result: " + "create dossier error|" + MaHoSo);
 			_log.error(e);
-			return createResponseMessage(result, -1, "create dossier error");
+			return createResponseMessage(result, -1, MaHoSo + "| create dossier error");
 		}
 
 	}
@@ -3320,9 +3348,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private JSONObject createResponseMessage(JSONObject object, int errorCode, String message) {
 		object.put("error_code", errorCode);
 		object.put("message", message);
-
-		_log.info("Result >>>>>: " + object.toJSONString());
-
 		return object;
 	}
 
