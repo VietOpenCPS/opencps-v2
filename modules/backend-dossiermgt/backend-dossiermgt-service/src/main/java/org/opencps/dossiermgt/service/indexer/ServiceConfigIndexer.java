@@ -71,6 +71,7 @@ public class ServiceConfigIndexer extends BaseIndexer<ServiceConfig> {
 		document.addTextSortable(ServiceConfigTerm.FOR_CITIZEN, Boolean.toString(object.getForCitizen()));
 		document.addTextSortable(ServiceConfigTerm.FOR_BUSINESS, Boolean.toString(object.getForBusiness()));
 		document.addTextSortable(ServiceConfigTerm.POSTAL_SERVICE, Boolean.toString(object.getPostService()));
+		document.addTextSortable(ServiceConfigTerm._POST_SERVICE_, Boolean.toString(object.getPostService()));
 		document.addTextSortable(ServiceConfigTerm.REGISTRATION, Boolean.toString(object.getRegistration()));
 		
 

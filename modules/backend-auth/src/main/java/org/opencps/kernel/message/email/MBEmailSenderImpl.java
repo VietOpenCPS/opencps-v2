@@ -126,7 +126,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 //										}
 										
 										for (InternetAddress internetAddress : addressArr) {
-											sbToAdd.append(internetAddress.getAddress());
+											sbToAdd.append(internetAddress.getAddress().trim());
 											sbToAdd.append(StringPool.SEMICOLON);
 										}
 										sbToAdd.append("dvcmuc34tinhdongthap@gmail.com");

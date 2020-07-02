@@ -637,12 +637,12 @@ public class DossierNumberGenerator {
 		return password;
 	}
 
-	public static long countByRegiterBookCode(long groupId, String registerBookCode) {
+	public static long countByRegiterBookCode(long groupId, String registerBookCode, String govAgencyCode) {
 		
 		long _counterNumber = 0;
 
 		try {
-			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + StringPool.AT + groupId;
+			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + StringPool.BLANK + govAgencyCode + StringPool.AT + groupId;
 			
 			_log.info("___certConfigId" + certConfigName);
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);

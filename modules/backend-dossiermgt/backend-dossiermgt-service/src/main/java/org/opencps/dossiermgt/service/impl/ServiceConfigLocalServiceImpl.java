@@ -687,7 +687,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		object.setServiceUrl(objectData.getString(ServiceConfigTerm.SERVICE_URL));
 		object.setForBusiness(objectData.getBoolean(ServiceConfigTerm.FOR_BUSINESS));
 		object.setForCitizen(objectData.getBoolean(ServiceConfigTerm.FOR_CITIZEN));
-		object.setPostService(objectData.getBoolean(ServiceConfigTerm.POSTAL_SERVICE));
+		object.setPostService(objectData.getBoolean(ServiceConfigTerm._POST_SERVICE_));
 		object.setRegistration(objectData.getBoolean(ServiceConfigTerm.REGISTRATION));
 		object.setServiceInfoId(objectData.getLong(ServiceConfigTerm.SERVICEINFO_ID));
 		object.setServiceLevel(objectData.getInt(ServiceConfigTerm.SERVICE_LEVEL));
