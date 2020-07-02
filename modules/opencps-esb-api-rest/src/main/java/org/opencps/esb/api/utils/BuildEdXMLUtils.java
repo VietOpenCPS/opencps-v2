@@ -21,6 +21,7 @@ import com.inet.xml.ed.header.OtherInfo;
 import com.inet.xml.ed.header.PromulgationInfo;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -87,16 +88,18 @@ public class BuildEdXMLUtils {
 					"0909888888", "055851111", "www.hochiminh.gov.vn");
 
 			List<Organization> toes = Lists.newArrayList(to1);
-			Code code = new Code(dossier.getDossierNo(), "TV-TEST");
+			Code code = new Code(dossier.getDossierNo(), "Hồ sơ liên thông");
 			PromulgationInfo promulgationInfo = new PromulgationInfo(govAgencyName, dossier.getCreateDate());
 			DocumentType docType = new DocumentType(1, "Cong van");
 			//SignerInfo signerInfo = new SignerInfo("TL. Chủ tịch", "Chánh văn phòng UBND thành phố", "Nguyen Thanh");
 			//OtherInfo otherInfo = new OtherInfo(0, "", "", 1, 1, "", false, dossier.getDossierNo());
 
 			MessageHeader headerEd = new MessageHeader(from, toes, code, promulgationInfo, docType,
+					dossier.getGovAgencyCode() + StringPool.FORWARD_SLASH + dossier.getApplicantName()
+							+ StringPool.FORWARD_SLASH + dossier.getDossierNo(),
 					Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
-					"", null, dossier.getDueDate(), null, null);
-			headerEd.setDocumentId("VPCP-00021");
+					null, dossier.getDueDate(), null, null);
+			headerEd.setApplicationType("MCDT_DT");
 			headerEd.addToPlace("Cac bo va co quan ngang bo");
 			headerEd.addToPlace("Uy ban nhan dan cac tinh, TP");
 			// header.setResponseFor(new ResponseFor("00.99.H29", "33/2015/QĐ-UBND", new
