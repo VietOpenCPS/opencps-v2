@@ -533,14 +533,28 @@ public class DossierManagementImpl implements DossierManagement {
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
-
+			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 			String donvigui = query.getDonvigui();
 			if(Validator.isNotNull(donvigui)) {
-				params.put(DossierTerm.DON_VI_GUI, donvigui);
+				if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+					if (Validator.isNotNull(employee)) {
+						params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+					}
+				} else {
+					params.put(DossierTerm.DON_VI_GUI, donvigui);
+				}
 			}
+			//Don vi nhan
 			String donvinhan = query.getDonvinhan();
-			if(Validator.isNotNull(donvinhan)){
-				params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+			if(Validator.isNotNull(donvinhan)) {
+				if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+					if (Validator.isNotNull(employee)) {
+						params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+					}
+				} else {
+					params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+				}
 			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {

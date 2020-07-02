@@ -536,27 +536,29 @@ public class DossierUtils {
 			} else {
 				model.setFromViaPostal(0);
 			}
-			Integer userIdDossier = Integer.parseInt(doc.get(DossierTerm.USER_ID));
-			if(Validator.isNotNull(query.getDonvigui())){
-				if(query.getDonvigui().equals(DossierTerm.SCOPE_)){
-					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
-					if(Validator.isNotNull(employee)){
-						model.setDonvigui(employee.getScope());
-					}
-				}else{
-						model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
-				}
-			}
-			if(Validator.isNotNull(query.getDonvinhan())){
-				if(query.getDonvinhan().equals(DossierTerm.SCOPE_)){
-					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
-					if(Validator.isNotNull(employee)){
-						model.setDonvinhan(employee.getScope());
-					}
-				}else{
-					model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
-				}
-			}
+//			Integer userIdDossier = Integer.parseInt(doc.get(DossierTerm.USER_ID));
+//			if(Validator.isNotNull(query.getDonvigui())){
+//				if(query.getDonvigui().equals(DossierTerm.SCOPE_)){
+//					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
+//					if(Validator.isNotNull(employee)){
+//						model.setDonvigui(employee.getScope());
+//					}
+//				}else{
+//						model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
+//				}
+//			}
+//			if(Validator.isNotNull(query.getDonvinhan())){
+//				if(query.getDonvinhan().equals(DossierTerm.SCOPE_)){
+//					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
+//					if(Validator.isNotNull(employee)){
+//						model.setDonvinhan(employee.getScope());
+//					}
+//				}else{
+//					model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
+//				}
+//			}
+			model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
+			model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			ouputs.add(model);
 		}
