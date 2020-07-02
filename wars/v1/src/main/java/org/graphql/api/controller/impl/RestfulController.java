@@ -462,10 +462,11 @@ public class RestfulController {
 									boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
 
 									if (isRequireChangePassword) {
-										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-												CompanyConstants.AUTH_TYPE_EA);
-										_log.info("userId: "+userId);
-										if (userId == 0) {
+										long userId = 0;
+										try {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+													CompanyConstants.AUTH_TYPE_EA);
+										} catch (PortalException e) {
 											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 													CompanyConstants.AUTH_TYPE_EA);
 											//Update applicant
@@ -475,6 +476,17 @@ public class RestfulController {
 												ApplicantLocalServiceUtil.updateApplicant(app);
 											}
 										}
+										_log.info("userId: "+userId);
+//										if (userId == 0) {
+//											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+//													CompanyConstants.AUTH_TYPE_EA);
+//											//Update applicant
+//											passKey = password;
+//											if (app != null) {
+//												app.setTmpPass(password);
+//												ApplicantLocalServiceUtil.updateApplicant(app);
+//											}
+//										}
 										if (userId > 0 && userId != 20103) {
 											checkUserId = userId;
 											//Remember me false
@@ -554,8 +566,14 @@ public class RestfulController {
 									} else if (isSuccess) {
 										//Sau khi check authen xong
 										_log.info("passKey: "+ passKey);
-										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-												CompanyConstants.AUTH_TYPE_EA);
+										long userId = 0;
+										try {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+													CompanyConstants.AUTH_TYPE_EA);
+										} catch (PortalException e) {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+													CompanyConstants.AUTH_TYPE_EA);
+										}
 										if (userId > 0 && userId != 20103) {
 											checkUserId = userId;
 											//Remember me false
