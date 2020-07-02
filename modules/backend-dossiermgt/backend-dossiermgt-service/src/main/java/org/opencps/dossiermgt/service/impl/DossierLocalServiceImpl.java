@@ -2940,10 +2940,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
 					? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL)) : null;
 
-		String congvanden = params.get(DossierTerm.DON_VI_GUI) !=null
+		String donvigui = params.get(DossierTerm.DON_VI_GUI) !=null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_GUI)) : null;
 
-		String congvandi = params.get(DossierTerm.DON_VI_NHAN) !=null
+		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) !=null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN)) : null;
 
 		Indexer<Dossier> indexer =
@@ -2988,7 +2988,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			delegate, vnpostalStatus, fromViaPostal,
-			booleanCommon,congvanden,congvandi);
+			booleanCommon,donvigui,donvinhan);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3143,10 +3143,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL))
 				: null;
 
-		String congvanden = params.get(DossierTerm.DON_VI_GUI) != null
+		String donvigui = params.get(DossierTerm.DON_VI_GUI) != null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_GUI))
 				: null;
-		String congvandi = params.get(DossierTerm.DON_VI_NHAN) != null
+		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) != null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN))
 				: null;
 		
@@ -3189,7 +3189,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			delegate, vnpostalStatus, fromViaPostal,
-			booleanCommon,congvanden,congvandi);
+			booleanCommon,donvigui,donvinhan);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3319,7 +3319,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String documentNo, String documentDate, String strSystemId,
 		Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 		String delegate, Integer vnpostalStatus, Integer fromViaPostal,
-		BooleanQuery booleanQuery,String congvanden, String congvandi)
+		BooleanQuery booleanQuery,String donvigui, String donvinhan)
 		throws ParseException {
 
 		//Dossier Counter
@@ -3350,27 +3350,31 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.FROM_VIA_POSTAL);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-		if (Validator.isNotNull(congvanden)) {
-			String[] keywordArr = congvanden.split(StringPool.COMMA);
-			BooleanQuery query = new BooleanQueryImpl();
+		if (Validator.isNotNull(donvigui)) {
+			String[] keywordArr = donvigui.split(StringPool.COMMA);
+			BooleanQuery subQuery = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-				WildcardQuery wildQuery = new WildcardQueryImpl(
-						DossierTerm.META_DATA,
-						key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
+//				WildcardQuery wildQuery = new WildcardQueryImpl(
+//						DossierTerm.META_DATA,
+//						key.toLowerCase() + StringPool.STAR);
+				MultiMatchQuery query = new MultiMatchQuery(key);
+				query.addField(DossierTerm.DON_VI_GUI);
+				subQuery.add(query, BooleanClauseOccur.MUST);
 			}
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
-		if (Validator.isNotNull(congvandi)) {
-			String[] keywordArr = congvandi.split(StringPool.COMMA);
-			BooleanQuery query = new BooleanQueryImpl();
+		if (Validator.isNotNull(donvinhan)) {
+			String[] keywordArr = donvinhan.split(StringPool.COMMA);
+			BooleanQuery subQuery = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-				WildcardQuery wildQuery = new WildcardQueryImpl(
-						DossierTerm.META_DATA,
-						key.toLowerCase() + StringPool.STAR);
-				query.add(wildQuery, BooleanClauseOccur.MUST);
+//				WildcardQuery wildQuery = new WildcardQueryImpl(
+//						DossierTerm.META_DATA,
+//						key.toLowerCase() + StringPool.STAR);
+				MultiMatchQuery query = new MultiMatchQuery(key);
+				query.addField(DossierTerm.DON_VI_NHAN);
+				subQuery.add(query, BooleanClauseOccur.MUST);
 			}
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
 
 		// System Id

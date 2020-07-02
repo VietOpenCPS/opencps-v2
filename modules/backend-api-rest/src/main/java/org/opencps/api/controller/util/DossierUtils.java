@@ -541,22 +541,23 @@ public class DossierUtils {
 				if(query.getDonvigui().equals(DossierTerm.SCOPE_)){
 					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
 					if(Validator.isNotNull(employee)){
-						model.setMetaData(employee.getScope());
+						model.setDonvigui(employee.getScope());
 					}
 				}else{
-					model.setMetaData(doc.get(DossierTerm.META_DATA));
+						model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
 				}
 			}
 			if(Validator.isNotNull(query.getDonvinhan())){
 				if(query.getDonvinhan().equals(DossierTerm.SCOPE_)){
 					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
 					if(Validator.isNotNull(employee)){
-						model.setMetaData(employee.getScope());
+						model.setDonvinhan(employee.getScope());
 					}
 				}else{
-					model.setMetaData(doc.get(DossierTerm.META_DATA));
+					model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
 				}
 			}
+			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			ouputs.add(model);
 		}
 
