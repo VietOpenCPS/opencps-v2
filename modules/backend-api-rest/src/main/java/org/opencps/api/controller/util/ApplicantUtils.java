@@ -497,7 +497,7 @@ public class ApplicantUtils {
 				String[] splitAppName = applicantName.split("\\s+");
 				int lengthAppName = splitAppName.length;
 				if (lengthAppName > 3) {
-					jsonBody.put("fisrtName", splitAppName[0]);
+					jsonBody.put("firstname", splitAppName[0]);
 					jsonBody.put("lastName", splitAppName[lengthAppName - 1]);
 					String tenDem = StringPool.BLANK;
 					for (int i = 1; i < splitAppName.length - 1; i++) {
@@ -509,15 +509,15 @@ public class ApplicantUtils {
 					}
 					jsonBody.put("middleName", tenDem);
 				} else if (lengthAppName == 3) {
-					jsonBody.put("fisrtName", splitAppName[0]);
+					jsonBody.put("firstname", splitAppName[0]);
 					jsonBody.put("middleName", splitAppName[1]);
 					jsonBody.put("lastName", splitAppName[2]);
 				} else if (lengthAppName == 2) {
-					jsonBody.put("fisrtName", "Công dân");
+					jsonBody.put("firstname", "Công dân");
 					jsonBody.put("middleName", splitAppName[0]);
 					jsonBody.put("lastName", splitAppName[1]);
 				} else {
-					jsonBody.put("fisrtName", "Công");
+					jsonBody.put("firstname", "Công");
 					jsonBody.put("middleName", "dân");
 					jsonBody.put("lastName", splitAppName[0]);
 				}
