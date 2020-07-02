@@ -1288,6 +1288,7 @@ public class ProcessUpdateDBUtils {
 				boolean eSignature = false;
 				String signatureType;
 				String createDossiers;
+				String postAction;
 				for (ProcessAction processAction : processActionList) {
 					actionCode = processAction.getActionCode();
 					actionName = processAction.getActionName();
@@ -1305,11 +1306,12 @@ public class ProcessUpdateDBUtils {
 					eSignature = processAction.isESignature();
 					signatureType = processAction.getSignatureType();
 					createDossiers = processAction.getCreateDossiers();
+					postAction = processAction.getPostAction();
 					//
 					actionService.updateProcessActionDB(userId, groupId, serviceProcessId, actionCode,
 							actionName, preStepCode, postStepCode, autoEvent, preCondition, allowAssignUser,
 							assignUserId, assignUserName, requestPayment, paymentFee, createDossierFiles, returnDossierFiles,
-							eSignature, signatureType, createDossiers, serviceContext);
+							eSignature, signatureType, createDossiers, postAction, serviceContext);
 				}
 			}
 		} catch (Exception e) {

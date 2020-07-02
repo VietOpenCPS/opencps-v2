@@ -286,18 +286,22 @@ public class RestfulController {
 		try {
 
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
+			_log.info("jCaptchaResponse: "+jCaptchaResponse);
 			if (Validator.isNotNull(jCaptchaResponse)) {
 				
 				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
 				String captchaId = request.getSession().getId();
+				_log.info("captchaId: "+captchaId);
 				try {
 					boolean isResponseCorrect = instance.validateResponseForID(captchaId, jCaptchaResponse);
+					_log.info("isResponseCorrect: "+isResponseCorrect);
 					if (!isResponseCorrect) {
 						response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 						return "captcha";
 					}
 				} catch (CaptchaServiceException e) {
 					_log.debug(e);
+					_log.info("ERROR AUTHEN LOGIN: "+e);
 					response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
 					return "captcha";
 				}
@@ -458,10 +462,11 @@ public class RestfulController {
 									boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
 
 									if (isRequireChangePassword) {
-										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-												CompanyConstants.AUTH_TYPE_EA);
-										_log.info("userId: "+userId);
-										if (userId == 0) {
+										long userId = 0;
+										try {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+													CompanyConstants.AUTH_TYPE_EA);
+										} catch (PortalException e) {
 											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 													CompanyConstants.AUTH_TYPE_EA);
 											//Update applicant
@@ -471,6 +476,17 @@ public class RestfulController {
 												ApplicantLocalServiceUtil.updateApplicant(app);
 											}
 										}
+										_log.info("userId: "+userId);
+//										if (userId == 0) {
+//											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+//													CompanyConstants.AUTH_TYPE_EA);
+//											//Update applicant
+//											passKey = password;
+//											if (app != null) {
+//												app.setTmpPass(password);
+//												ApplicantLocalServiceUtil.updateApplicant(app);
+//											}
+//										}
 										if (userId > 0 && userId != 20103) {
 											checkUserId = userId;
 											//Remember me false
@@ -550,8 +566,14 @@ public class RestfulController {
 									} else if (isSuccess) {
 										//Sau khi check authen xong
 										_log.info("passKey: "+ passKey);
-										long userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-												CompanyConstants.AUTH_TYPE_EA);
+										long userId = 0;
+										try {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+													CompanyConstants.AUTH_TYPE_EA);
+										} catch (PortalException e) {
+											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+													CompanyConstants.AUTH_TYPE_EA);
+										}
 										if (userId > 0 && userId != 20103) {
 											checkUserId = userId;
 											//Remember me false
@@ -683,7 +705,7 @@ public class RestfulController {
 
 		} 
 		catch (AuthException ae) {
-//			System.out.println("AUTH EXCEPTION: " + checkUserId);
+			//System.out.println("AUTH EXCEPTION: " + checkUserId);
 			_log.debug(ae);
 
 			try {

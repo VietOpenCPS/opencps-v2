@@ -70,7 +70,9 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 		else {
 			return;
 		}
+		Date nowLog = new Date();
 		try {
+			_log.info("START TRACE LOG PERSON TIME: " + nowLog);
 			//OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -142,6 +144,7 @@ public class PersonStatisticSheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
+		_log.info("END TRACE LOG PERSON TIME: " + nowLog);
 		isRunning = false;
 	}
 

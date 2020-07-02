@@ -183,7 +183,7 @@ public class OneMinute extends BaseMessageListener {
 						}
 
 						if(messageEntry.isSendEmail()){
-							_log.debug("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
+							_log.info("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
 							MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
 						}
 						if(messageEntry.isSendNotify() || messageEntry.isSendZalo()){

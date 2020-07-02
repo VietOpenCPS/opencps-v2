@@ -3059,7 +3059,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				long tmpUerId = tmpConfig.getLong("userId");
 				serviceContext.setUserId(tmpUerId);
 				_log.debug("tmpUerId: " + tmpUerId);
-				serviceContext.setScopeGroupId(tmpUerId != 0 ? tmpUerId : serverConfig.getUserId());
+				//serviceContext.setScopeGroupId(tmpUerId != 0 ? tmpUerId : serverConfig.getUserId());
 			}
 
 			serviceContext.setCompanyId(serverConfig.getCompanyId());

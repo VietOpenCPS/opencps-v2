@@ -75,7 +75,9 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 		else {
 			return;
 		}
+		Date nowLog = new Date();
 		try {
+			_log.info("START TRACE LOG VOTING TIME: " + nowLog);
 //			System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 			
 			OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
@@ -184,6 +186,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
+		_log.info("END TRACE LOG VOTING TIME: " + nowLog);
 		isRunning = false;
 	}
 

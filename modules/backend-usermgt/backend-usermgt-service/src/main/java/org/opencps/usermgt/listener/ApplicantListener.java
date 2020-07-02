@@ -89,7 +89,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 		
 		try {
 
-			_log.info("Applicant Log trigger!");
+			_log.info("Applicant Log trigger!: "+model.getContactEmail());
 			if (model.getMappingUserId() > 0) {
 				if (Validator.isNotNull(model.getActivationCode())) {
 					NotificationQueue queue = null;
@@ -146,7 +146,8 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 					
 					queue.setExpireDate(cal.getTime());
 					
-					NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+					NotificationQueue notiQueue = NotificationQueueLocalServiceUtil.addNotificationQueue(queue);
+					_log.info("notiQueue: "+ notiQueue);
 					
 					//binhth add user applicant to siteGroup
 					

@@ -120,8 +120,10 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			return;
 		}
 		long startTime = System.currentTimeMillis();
+		Date nowLog = new Date();
 		try {
-			_log.info("STATISTICS START TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+			_log.info("START TRACE LOG STATISTICS TIME: " + nowLog);
+			_log.info("START STATISTICS TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			
@@ -558,6 +560,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		catch (Exception e) {
 			_log.error(e);
 		}
+		_log.info("END TRACE LOG STATISTICS TIME: " + nowLog);
 		_log.info("STATISTICS END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 
 		isRunningDossier = false;

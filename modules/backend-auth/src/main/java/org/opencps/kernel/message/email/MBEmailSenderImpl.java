@@ -52,7 +52,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					break;
 				}
 			}
-			_log.debug("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
+			_log.info("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
 			
 			if (needSendEmail) {
 				
@@ -103,7 +103,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 							String strUrlSendMail = "http://api.dongthap.gov.vn/api/v1/congdan/SendEmailMulti";
 							_log.info("strUrlSendMail: "+ strUrlSendMail);
 							String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
-							_log.info("authStrEnc: "+ authStrEnc);
+							//_log.info("authStrEnc: "+ authStrEnc);
 							
 							for (int i = 0; i < 8; i++) {
 								StringBuilder sbSendMail = new StringBuilder();
@@ -126,12 +126,12 @@ public class MBEmailSenderImpl implements MBEmailSender {
 //										}
 										
 										for (InternetAddress internetAddress : addressArr) {
-											sbToAdd.append(internetAddress.getAddress());
+											sbToAdd.append(internetAddress.getAddress().trim());
 											sbToAdd.append(StringPool.SEMICOLON);
 										}
 										sbToAdd.append("dvcmuc34tinhdongthap@gmail.com");
 									}
-									_log.info("authStrEnc: "+ authStrEnc);
+									_log.info("sbToAdd: "+ sbToAdd.toString());
 									jsonBody.put("mailReceiver", sbToAdd.toString());
 									jsonBody.put("receiverName", messageEntry.getToAddress()[0].getAddress());
 									jsonBody.put("content", messageEntry.getEmailBody());
