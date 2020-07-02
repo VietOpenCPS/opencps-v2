@@ -3240,6 +3240,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3) && serviceProcess != null) {
 
+			if (!DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+				dossier.setLockState(StringPool.BLANK);
+			}
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
