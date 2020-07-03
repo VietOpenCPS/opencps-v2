@@ -7314,22 +7314,22 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getEinvoice())) {
 				paymentFile.setEinvoice(input.getEinvoice());
 			}
-			if (Validator.isNotNull(input.getPaymentAmount())) {
+			if (input.getPaymentAmount() != null) {
 				paymentFile.setPaymentAmount(input.getPaymentAmount());
 			}
 			if (Validator.isNotNull(input.getPaymentMethod())) {
 				paymentFile.setPaymentMethod(input.getPaymentMethod());
 			}
-			if (Validator.isNotNull(input.getServiceAmount())) {
+			if (input.getServiceAmount() != null) {
 				paymentFile.setServiceAmount(input.getServiceAmount());
 			}
-			if (Validator.isNotNull(input.getShipAmount())) {
+			if (input.getShipAmount() != null) {
 				paymentFile.setShipAmount(input.getShipAmount());
 			}
-			if (Validator.isNotNull(input.getAdvanceAmount())) {
+			if (input.getAdvanceAmount() != null) {
 				paymentFile.setAdvanceAmount(input.getAdvanceAmount());
 			}
-			if (Validator.isNotNull(input.getFeeAmount())) {
+			if (input.getFeeAmount() != null) {
 				paymentFile.setFeeAmount(input.getFeeAmount());
 			}
 			if (Validator.isNotNull(input.getPaymentNote())) {
