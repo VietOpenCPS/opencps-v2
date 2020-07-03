@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -477,6 +480,70 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			jsObj.put(ConstantUtils.API_JSON_STATUS, MessageUtil.getMessage(ConstantUtils.API_JSON_STATUS_ERROR));
 
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(jsObj.toString()).build();
+		}
+	}
+	
+	@Override
+	public Response getCounter(HttpServletRequest request, HttpHeaders header,
+			Company company, Locale locale, User user,
+			ServiceContext serviceContext, String registerBookCode,
+			String govAgencyCode) {
+
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+//			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
+//			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + govAgencyCode + StringPool.AT + groupId;
+			
+			_log.info("___certConfigId" + certConfigName);
+
+			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);
+
+			if (Validator.isNotNull(counterConfig)) {
+				return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(counterConfig.getCurrentId())).build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(0)).build();
+			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	@Override
+	public Response updateCounter(HttpServletRequest request, HttpHeaders header,
+			Company company, Locale locale, User user,
+			ServiceContext serviceContext,
+			String registerBookCode, String govAgencyCode,
+			 int countNum) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		try {
+//			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+//				return Response.status(HttpURLConnection.HTTP_UNAUTHORIZED)
+//						.entity(MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
+//			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + govAgencyCode + StringPool.AT + groupId;
+			
+			_log.info("___certConfigId" + certConfigName);
+			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);
+
+			if (Validator.isNull(counterConfig)) {
+				counterConfig = CounterLocalServiceUtil.createCounter(certConfigName);
+			}
+			counterConfig.setCurrentId(countNum);
+			CounterLocalServiceUtil.updateCounter(counterConfig);
+			return Response.status(HttpURLConnection.HTTP_OK).entity(String.valueOf(counterConfig.getCurrentId())).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 
