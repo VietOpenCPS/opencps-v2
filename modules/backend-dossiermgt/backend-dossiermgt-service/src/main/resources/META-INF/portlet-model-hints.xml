@@ -520,6 +520,7 @@
 		</field>
 		<field name="fromViaPostal" type="int" />
 		<field name="multipleCheck" type="String" />
+		<field name="paymentDate" type="Date" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

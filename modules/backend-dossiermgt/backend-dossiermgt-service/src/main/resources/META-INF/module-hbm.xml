@@ -349,6 +349,7 @@
 		<property name="vnpostalProfile" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="fromViaPostal" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="multipleCheck" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="paymentDate" type="org.hibernate.type.TimestampType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">

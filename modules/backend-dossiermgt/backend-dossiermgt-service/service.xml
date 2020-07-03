@@ -585,6 +585,7 @@
 		<column name="vnpostalProfile" type="String" />
 		<column name="fromViaPostal" type="int" />
 		<column name="multipleCheck" type="String" />
+		<column name="paymentDate" type="Date"/>
 		
 		<!-- Order -->
 		

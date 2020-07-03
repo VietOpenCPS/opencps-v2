@@ -161,6 +161,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("vnpostalProfile", getVnpostalProfile());
 		attributes.put("fromViaPostal", getFromViaPostal());
 		attributes.put("multipleCheck", getMultipleCheck());
+		attributes.put("paymentDate", getPaymentDate());
 
 		return attributes;
 	}
@@ -781,6 +782,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (multipleCheck != null) {
 			setMultipleCheck(multipleCheck);
+		}
+
+		Date paymentDate = (Date)attributes.get("paymentDate");
+
+		if (paymentDate != null) {
+			setPaymentDate(paymentDate);
 		}
 	}
 
@@ -1487,6 +1494,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getPassword() {
 		return _dossier.getPassword();
+	}
+
+	/**
+	* Returns the payment date of this dossier.
+	*
+	* @return the payment date of this dossier
+	*/
+	@Override
+	public Date getPaymentDate() {
+		return _dossier.getPaymentDate();
 	}
 
 	/**
@@ -2623,6 +2640,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setPassword(String password) {
 		_dossier.setPassword(password);
+	}
+
+	/**
+	* Sets the payment date of this dossier.
+	*
+	* @param paymentDate the payment date of this dossier
+	*/
+	@Override
+	public void setPaymentDate(Date paymentDate) {
+		_dossier.setPaymentDate(paymentDate);
 	}
 
 	/**

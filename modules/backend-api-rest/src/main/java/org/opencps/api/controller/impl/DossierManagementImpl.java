@@ -1576,6 +1576,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(Long.parseLong(id),groupId);
 			_log.info("TRACE_LOG_INFO doAction Dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
 
@@ -1588,6 +1589,16 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.debug(
 					"Dossier: " + dossier + ", action code: " +
 						input.getActionCode());
+				if (Validator.isNotNull(paymentFile))
+				{
+					int paymentStatus =  paymentFile.getPaymentStatus();
+					if (Validator.isNotNull(paymentStatus) && paymentStatus== 5 )
+					{
+						dossier.setPaymentDate(new Date());
+						DossierLocalServiceUtil.updateDossier(dossier);
+					}
+				}
+
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(
 						groupId, dossier.getDossierId(),

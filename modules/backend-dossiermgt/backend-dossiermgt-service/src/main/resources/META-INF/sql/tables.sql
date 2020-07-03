@@ -283,7 +283,8 @@ create table opencps_dossier (
 	vnpostalStatus INTEGER,
 	vnpostalProfile TEXT null,
 	fromViaPostal INTEGER,
-	multipleCheck VARCHAR(75) null
+	multipleCheck VARCHAR(75) null,
+	paymentDate DATE null
 );
 
 create table opencps_dossieraction (

@@ -1619,6 +1619,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setMultipleCheck(String multipleCheck);
 
+	/**
+	 * Returns the payment date of this dossier.
+	 *
+	 * @return the payment date of this dossier
+	 */
+	public Date getPaymentDate();
+
+	/**
+	 * Sets the payment date of this dossier.
+	 *
+	 * @param paymentDate the payment date of this dossier
+	 */
+	public void setPaymentDate(Date paymentDate);
+
 	@Override
 	public boolean isNew();
 

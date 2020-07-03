@@ -135,6 +135,7 @@ public class DossierSoap implements Serializable {
 		soapModel.setVnpostalProfile(model.getVnpostalProfile());
 		soapModel.setFromViaPostal(model.getFromViaPostal());
 		soapModel.setMultipleCheck(model.getMultipleCheck());
+		soapModel.setPaymentDate(model.getPaymentDate());
 
 		return soapModel;
 	}
@@ -1019,6 +1020,14 @@ public class DossierSoap implements Serializable {
 		_multipleCheck = multipleCheck;
 	}
 
+	public Date getPaymentDate() {
+		return _paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		_paymentDate = paymentDate;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1121,4 +1130,5 @@ public class DossierSoap implements Serializable {
 	private String _vnpostalProfile;
 	private int _fromViaPostal;
 	private String _multipleCheck;
+	private Date _paymentDate;
 }
