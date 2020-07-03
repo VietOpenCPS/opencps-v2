@@ -1649,8 +1649,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
 			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
-			boolean isSendNotiSMS = notiTemplate.getSendSMS();
-			boolean isSendNotiEmail = notiTemplate.getSendEmail();
+			boolean isSendNotiSMS = true;
+			boolean isSendNotiEmail = true;
+			if (notiTemplate != null) {
+				isSendNotiSMS = notiTemplate.getSendSMS();
+				isSendNotiEmail = notiTemplate.getSendEmail();
+			}
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
 					if (isSendSMS) {
@@ -1683,8 +1687,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 				}
 			}
-
-
 
 			if (notiTemplate != null) {
 				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
@@ -3256,6 +3258,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3) && serviceProcess != null) {
 
+			if (!DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+				dossier.setLockState(StringPool.BLANK);
+			}
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
