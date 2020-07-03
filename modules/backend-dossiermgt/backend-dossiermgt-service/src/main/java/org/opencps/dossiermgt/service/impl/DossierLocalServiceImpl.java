@@ -3359,7 +3359,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //						key.toLowerCase() + StringPool.STAR);
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_GUI);
-				subQuery.add(query, BooleanClauseOccur.MUST);
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
 			}
 			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
@@ -3372,7 +3372,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 //						key.toLowerCase() + StringPool.STAR);
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_NHAN);
-				subQuery.add(query, BooleanClauseOccur.MUST);
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
 			}
 			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
