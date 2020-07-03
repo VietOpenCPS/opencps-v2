@@ -1688,8 +1688,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 
-
-
 			if (notiTemplate != null) {
 				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
 					cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
