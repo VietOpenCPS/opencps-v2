@@ -1649,8 +1649,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
 			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
-			boolean isSendNotiSMS = notiTemplate.getSendSMS();
-			boolean isSendNotiEmail = notiTemplate.getSendEmail();
+			boolean isSendNotiSMS = true;
+			boolean isSendNotiEmail = true;
+			if (notiTemplate != null) {
+				isSendNotiSMS = notiTemplate.getSendSMS();
+				isSendNotiEmail = notiTemplate.getSendEmail();
+			}
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
 					if (isSendSMS) {
