@@ -642,7 +642,7 @@ public class DossierNumberGenerator {
 		long _counterNumber = 0;
 
 		try {
-			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + StringPool.AT + groupId;
+			String certConfigName = ConstantsUtils.PRE_FIX_COUNTER + registerBookCode + govAgencyCode + StringPool.AT + groupId;
 			
 			_log.info("___certConfigId" + certConfigName);
 			Counter counterConfig = CounterLocalServiceUtil.fetchCounter(certConfigName);

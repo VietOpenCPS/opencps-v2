@@ -2041,6 +2041,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			conn.setReadTimeout(60 * 1000);
 
 			byte[] postData = body.toJSONString().getBytes("UTF-8");
+			_log.debug("body:" + body.toJSONString());
 			int postDataLength = postData.length;
 			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
 			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
