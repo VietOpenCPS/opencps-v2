@@ -29,7 +29,7 @@ test-results
 gradle-local.properties
 
 **/.DS_Store
-
+/wars/opencps-store/
 /wars/child-opencps-theme
 /wars/child-opencps-vue/
 /wars/parent-opencps-theme/
