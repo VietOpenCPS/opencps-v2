@@ -32,6 +32,7 @@ gradle-local.properties
 
 /wars/child-opencps-theme
 /wars/child-opencps-vue/
+/wars/parent-opencps-theme/
 
 **/**/.settings
 gradle.properties
