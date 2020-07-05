@@ -128,6 +128,7 @@ import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.constants.DossierPartTerm;
 import org.opencps.dossiermgt.constants.DossierSyncTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -1785,6 +1786,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						paymentFee, dossier.getDossierId());
 				JSONObject epaymentProfileJsonNew = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				epaymentProfileJsonNew.put("keypayUrl", generatorPayURL);
+				PaymentConfig paymentConfig = paymentConfigLocalService.getPaymentConfigByGovAgencyCode(groupId,
+						dossier.getGovAgencyCode());
+				JSONObject epaymentConfigJSON = paymentConfig != null
+						? JSONFactoryUtil.createJSONObject(paymentConfig.getEpaymentConfig())
+						: JSONFactoryUtil.createJSONObject();
+				if (epaymentConfigJSON.has(KeyPayTerm.PP_DVCGQ_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.PP_KPDVCQG, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -1856,17 +1872,25 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put("serviceAmount", serviceAmount);
 					epaymentProfileJSON.put("paymentNote", paymentNote);
 					epaymentProfileJSON.put("paymentFee", paymentFee);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
 
 				} catch (IOException e) {
 					_log.error(e);
 				}
 
-			} else {
-				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-						epaymentProfileJSON.toJSONString(), context);
 			}
+			_log.info("==========VTPayTerm.KP_DVCQG_CONFIG========" + epaymentConfigJSON);
+			if (epaymentConfigJSON.has(KeyPayTerm.PP_DVCGQ_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					epaymentProfileJSON.toJSONString(), context);
 		}
 		return oldPaymentFile;
 	}
@@ -6624,6 +6648,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getPaymentNote())) {
 				paymentFile.setPaymentNote(input.getPaymentNote());
+			}
+			if (Validator.isNotNull(input.getGovAgencyCode())) {
+				paymentFile.setGovAgencyCode(input.getGovAgencyCode());
+			}
+			if (Validator.isNotNull(input.getGovAgencyName())) {
+				paymentFile.setGovAgencyName(input.getGovAgencyName());
 			}
 
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);

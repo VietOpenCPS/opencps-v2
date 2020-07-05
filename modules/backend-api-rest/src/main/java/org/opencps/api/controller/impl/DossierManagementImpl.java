@@ -537,14 +537,14 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						DossierTerm.CREATE_DATE + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
 			else {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						query.getSort() + "_sortable", Sort.STRING_TYPE,
+						query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
@@ -554,35 +554,35 @@ public class DossierManagementImpl implements DossierManagement {
 				case "receive":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.RECEIVE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "overdue":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.DUE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "release":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.RELEASE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "cancelling":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.CANCELLING_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "corecting":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.CORRECTING_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
@@ -963,14 +963,14 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						DossierTerm.CREATE_DATE + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
 			else {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						query.getSort() + "_sortable", Sort.STRING_TYPE,
+						query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
@@ -980,35 +980,35 @@ public class DossierManagementImpl implements DossierManagement {
 				case "receive":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.RECEIVE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.RECEIVE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "overdue":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.DUE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.DUE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "release":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.RELEASE_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.RELEASE_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "cancelling":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.CANCELLING_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.CANCELLING_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
 				case "corecting":
 					sorts = new Sort[] {
 						SortFactoryUtil.create(
-							DossierTerm.CORRECTING_DATE_TIMESTAMP + "_sortable",
+							DossierTerm.CORRECTING_DATE_TIMESTAMP + "_Number_sortable",
 							Sort.LONG_TYPE, false)
 					};
 					break;
@@ -2148,7 +2148,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					"modifiedDate" + "_sortable", Sort.STRING_TYPE, false)
+					"modifiedDate" + "_String_sortable", Sort.STRING_TYPE, false)
 			};
 
 			JSONObject jsonData = actions.getDossiers(
@@ -2616,7 +2616,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					query.getSort() + "_sortable", Sort.STRING_TYPE,
+					query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder()))
 			};
 
@@ -2778,7 +2778,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			Sort[] sorts = new Sort[] {
 				SortFactoryUtil.create(
-					query.getSort() + "_sortable", Sort.STRING_TYPE,
+					query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder()))
 			};
 
@@ -4157,14 +4157,14 @@ public class DossierManagementImpl implements DossierManagement {
 			if (Validator.isNull(query.getSort())) {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						DossierTerm.CREATE_DATE + "_sortable", Sort.STRING_TYPE,
+						DossierTerm.CREATE_DATE + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}
 			else {
 				sorts = new Sort[] {
 					SortFactoryUtil.create(
-						query.getSort() + "_sortable", Sort.STRING_TYPE,
+						query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder()))
 				};
 			}

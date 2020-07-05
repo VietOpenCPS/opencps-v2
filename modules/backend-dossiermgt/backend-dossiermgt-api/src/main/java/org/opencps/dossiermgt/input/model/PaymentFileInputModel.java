@@ -32,8 +32,26 @@ public class PaymentFileInputModel {
     protected String einvoice;
     protected Long confirmFileEntryId;
     protected Integer paymentStatus;
+    protected String govAgencyCode;
+    protected String govAgencyName;
 
-    /**
+    public String getGovAgencyCode() {
+		return govAgencyCode;
+	}
+
+	public void setGovAgencyCode(String govAgencyCode) {
+		this.govAgencyCode = govAgencyCode;
+	}
+
+	public String getGovAgencyName() {
+		return govAgencyName;
+	}
+
+	public void setGovAgencyName(String govAgencyName) {
+		this.govAgencyName = govAgencyName;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return

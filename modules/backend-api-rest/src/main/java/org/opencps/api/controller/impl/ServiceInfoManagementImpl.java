@@ -153,7 +153,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_Number_sortable", Sort.INT_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else if (Validator.isNotNull(query.getSort())) {
-				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
+				sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_String_sortable", Sort.STRING_TYPE,
 						GetterUtil.getBoolean(query.getOrder())) };
 			} else {
 				sorts = new Sort[] { SortFactoryUtil.create(ServiceInfoTerm.SERVICE_CODE_SEARCH + "_String_sortable",
