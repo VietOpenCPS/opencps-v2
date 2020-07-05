@@ -41,6 +41,10 @@ wars/parent-opencps-vue/
 **/**/.settings
 gradle.properties
 
+modules/backend-admin-config/backend-admin-config-api/src/
+modules/backend-jasper-process/backend-jasper-process-api/src/
+modules/backend-kyso-process/backend-kyso-process-api/src/
+modules/opencps-smsprocess/opencps-smsprocess-api/src/
 
 modules/opencps-smsprocess/opencps-smsprocess-service/src/main/java/org/opencps/sms/model/
 modules/opencps-smsprocess/opencps-smsprocess-service/src/main/java/org/opencps/sms/service/base/
