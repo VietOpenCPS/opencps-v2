@@ -1,6 +1,7 @@
 
 package org.opencps.kernel.message.email;
 
+import backend.service.IntegrateLgsp;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.kernel.service.MailServiceUtil;
@@ -37,7 +38,15 @@ import org.osgi.service.component.annotations.Component;
 @Component(immediate = true, service = MBEmailSenderImpl.class)
 public class MBEmailSenderImpl implements MBEmailSender {
 	private Log _log = LogFactoryUtil.getLog(MBEmailSenderImpl.class);
-	
+	private IntegrateLgsp integrateLgsp;
+
+	public MBEmailSenderImpl(IntegrateLgsp integrateLgsp) {
+		this.integrateLgsp = integrateLgsp;
+	}
+	public MBEmailSenderImpl() {
+
+	}
+
 	@Override
 	public void send(
 		MBMessageEntry messageEntry, String portletId,
@@ -124,7 +133,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 //												sbToAdd.append(internetAdd.getAddress());
 //											}
 //										}
-										
+
 										for (InternetAddress internetAddress : addressArr) {
 											sbToAdd.append(internetAddress.getAddress().trim());
 											sbToAdd.append(StringPool.SEMICOLON);
@@ -201,7 +210,24 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		}
 
 	}
-	
+
+	@Override
+	public boolean send(MBMessageEntry messageEntry, String contactEmail) {
+		try {
+			String tokenLGSP = integrateLgsp.getToken();
+			if(tokenLGSP.isEmpty()) {
+				return false;
+			}
+			integrateLgsp.sendMail(tokenLGSP, messageEntry, contactEmail);
+
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+
+		return true;
+	}
+
 	@BeanReference(type = MailService.class)
 	protected MailService mailService;
 

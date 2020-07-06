@@ -1,6 +1,8 @@
 package org.opencps.api.controller.impl;
 
+import backend.utils.SendMailUtils;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -25,12 +27,17 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -92,6 +99,7 @@ import org.opencps.api.usermgt.model.ApplicantModel;
 import org.opencps.api.usermgt.model.ApplicantResultsModel;
 import org.opencps.api.usermgt.model.ApplicantSearchModel;
 import org.opencps.api.usermgt.model.ProfileInputModel;
+import org.opencps.api.v21.model.NotificationTemplateList;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -99,12 +107,14 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.auth.utils.DLFolderUtil;
+import org.opencps.communication.constants.MailVariables;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -115,7 +125,11 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.kernel.message.MBMessageEntry;
+import org.opencps.kernel.message.email.MBEmailSenderFactoryUtil;
 import org.opencps.kernel.prop.PropValues;
+import org.opencps.kernel.template.MessageDataModel;
+import org.opencps.kernel.template.freemarker.TemplateProcessor;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -127,12 +141,14 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
+import org.reflections.util.Utils;
 import vn.gov.ngsp.DKDN.GTVT.IDoanhNghiep;
 import vn.gov.ngsp.DKDN.GTVT.IToken;
 import vn.gov.ngsp.DKDN.GTVT.Models.MToken;
 
 public class ApplicantManagementImpl implements ApplicantManagement {
-
+	private final String USER_03 = "USER-03";
+	private final String USER_05 = "USER-05";
 	@Override
 	public Response register(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 			ServiceContext serviceContext, ApplicantInputModel input) {
@@ -190,6 +206,134 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		}
 
 	}
+
+	@Override
+	public Response sendEmail(Company company, HttpHeaders header, ServiceContext serviceContext, NotificationTemplateList.NotificationTemplate input, String id) {
+		try {
+			if (header.getHeaderString(Field.GROUP_ID) == null || header.getHeaderString(Field.GROUP_ID).isEmpty()) {
+				_log.error("Group Id not found");
+				throw new Exception("Group Id not found");
+			}
+
+			if (input.getNotificationType() == null || input.getNotificationType().isEmpty()) {
+				_log.error("Notification Type not found");
+				throw new Exception("Notification Type not found");
+			}
+
+			if (id == null || id.isEmpty()) {
+				_log.error("Id user not found");
+				throw new Exception("Id user not found");
+			}
+			String notificationType = input.getNotificationType();
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+			Notificationtemplate notificationTemplate = NotificationtemplateLocalServiceUtil.findByF_TYPE_INTER(
+					groupId, notificationType,
+					NotificationTemplateTerm.MINUTELY);
+			if (notificationTemplate == null) {
+				_log.error("Notification template not found");
+				throw new Exception("Notification template not found");
+			}
+
+			ApplicantActions actions = new ApplicantActionsImpl();
+			Applicant applicant;
+			String payloadString;
+			String contactEmail;
+
+			//Case resend email confirm account
+			if (SendMailUtils.isNumeric(id)) {
+				long idLong = Long.parseLong(id);
+				applicant = actions.getApplicantDetail(null, idLong);
+				if (applicant == null) {
+					_log.error("Applicant not found");
+					throw new Exception("Applicant not found");
+				}
+				String activeCode    = applicant.getActivationCode() != null ? applicant.getActivationCode() : "";
+				contactEmail         = applicant.getContactEmail() != null ? applicant.getContactEmail() : "";
+				String applicantName = applicant.getApplicantName() != null ? applicant.getApplicantName() : "";
+
+				//create payload to parse to email body
+				payloadString = "{\"Applicant\": {\"applicantId\": \"" + id + "\",\"applicantName\": \" "+ applicantName +"\",\"activationCode\": \""+ activeCode +"\"}}";
+
+			} else {
+				contactEmail = id;
+				//case resend protected code or password (case forgot pass)
+				User user = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), contactEmail);
+				if (user == null) {
+					_log.error("Email not in system");
+					throw new Exception("Email not in system");
+				}
+				String secretKey = "";
+
+				//Get secretKey
+				if (notificationType.equals(USER_05)) {
+					secretKey = user.getDigest() != null ? user.getDigest() : "";
+				} else if (notificationType.equals(USER_03)) {
+					applicant = actions.getApplicantByMappingUserId(user.getUserId());
+					if (applicant == null) {
+						_log.error("Applicant not found");
+						throw new Exception("Applicant not found");
+					}
+					secretKey = applicant.getTmpPass() != null? applicant.getTmpPass() : "";
+				} else {
+					_log.error("Notification Type invalid");
+					throw new Exception("Notification Type invalid");
+				}
+
+				if (secretKey.isEmpty()) {
+					_log.error("Secret Key not found");
+					throw new Exception("Secret Key not found");
+				}
+				//create payload to parse to email body
+				payloadString = "{\"User\":{\"secretKey\" : \""+ secretKey +"\"}}";
+			}
+
+			MBMessageEntry messageEntry = createMBMessageEntry(notificationTemplate, serviceContext, payloadString);
+			MBEmailSenderFactoryUtil.send(messageEntry, contactEmail);
+			return null;
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	private MBMessageEntry createMBMessageEntry(Notificationtemplate template,
+													  ServiceContext serviceContext, String payload) {
+		String emailSubject      = template.getEmailSubject() != null ? template.getEmailSubject() : "";
+		String emailBodyTemplate = template.getEmailBody() != null ? template.getEmailBody() : "";
+
+		String guestBaseUrl = StringPool.BLANK;
+		Object payloadObj   = null;
+
+		try {
+			Group group = GroupLocalServiceUtil.getGroup(
+					serviceContext.getScopeGroupId());
+
+			guestBaseUrl = PropValues.PORTAL_DOMAIN +
+					PortalUtil.getPathFriendlyURLPublic() +
+					group.getFriendlyURL();
+
+			payloadObj = JSONFactoryUtil.looseDeserialize(payload);
+
+			MessageDataModel dataModel = new MessageDataModel();
+			dataModel.setPayload(payloadObj);
+			dataModel.setGuestBaseUrl(guestBaseUrl);
+			dataModel.setSubActiveUrl(MailVariables.SUB_URL_ACTIVE);
+
+			TemplateProcessor emailBodyTemplateProcessor =
+					new TemplateProcessor(emailBodyTemplate);
+			String emailBody = emailBodyTemplateProcessor.process(dataModel);
+
+			MBMessageEntry messageEntry = new MBMessageEntry();
+			messageEntry.setEmailBody(emailBody);
+			messageEntry.setEmailSubject(emailSubject);
+			return messageEntry;
+
+		} catch (Exception e) {
+			_log.error(e);
+			return null;
+		}
+	}
+
 
 	protected String getDictItemName(long groupId, String collectionCode, String itemCode) {
 
@@ -1595,7 +1739,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			        Calendar cal = Calendar.getInstance();
 			        cal.setTime(now);
 			        if ("minutely".equals(notiTemplate.getInterval())) {
-				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());					
+				        cal.add(Calendar.MINUTE, notiTemplate.getExpireDuration());
 					}
 					else if ("hourly".equals(notiTemplate.getInterval())) {
 				        cal.add(Calendar.HOUR, notiTemplate.getExpireDuration());										
