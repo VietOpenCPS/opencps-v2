@@ -3061,7 +3061,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				return createResponseMessage(result, -1, MaHoSo + "| Can't update applicant mappingClassPK");
 			}
 		} else if (applicant == null) {
-			String tmpEmail = StringPool.BLANK;
+			String tmpEmail = Email;
 			try {
 				String cityName = StringPool.BLANK;
 				String districtName = StringPool.BLANK;
@@ -3082,7 +3082,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				if (autoEmail) {
 					tmpEmail = techId + "-ttkm@dvcqg.gov.vn";
 				}
-				
+				_log.info("Email: " + Email);
 				_log.info("tmpEmail: " + tmpEmail);
 
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId, 0L, TenThuongNhan,
