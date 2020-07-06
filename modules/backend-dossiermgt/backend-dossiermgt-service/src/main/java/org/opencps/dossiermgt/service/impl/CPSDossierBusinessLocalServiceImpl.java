@@ -1952,6 +1952,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setBriefNote(obj.getString(DossierTerm.BRIEF_NOTE));
 			}
 		}
+		if (obj.has(DossierTerm.REGISTER_BOOK_CODE)) {
+			if (!obj.getString(DossierTerm.REGISTER_BOOK_CODE).equals(dossier.getRegisterBookCode())) {
+				dossier.setRegisterBookCode(obj.getString(DossierTerm.REGISTER_BOOK_CODE));
+			}
+		}
+		if (obj.has(DossierTerm.COUNTER)) {
+			long counter = Validator.isNotNull(obj.getString(DossierTerm.COUNTER))
+					? Integer.valueOf(obj.getString(DossierTerm.COUNTER))
+					: 0;
+			if (counter != dossier.getCounter()) {
+				dossier.setCounter(counter);
+			}
+		}
 	}
 
 	private void processPaymentFile(long groupId, long userId, String payment, ProcessOption option,
@@ -4299,7 +4312,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			//Update payload
 			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(StringPool.BLANK).length > 1) {
+					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 				String serverNo = null;
 				if (syncType == 1) {
 					serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];
