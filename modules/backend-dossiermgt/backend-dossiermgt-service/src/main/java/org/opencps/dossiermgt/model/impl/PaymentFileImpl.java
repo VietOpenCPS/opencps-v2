@@ -34,4 +34,6 @@ public class PaymentFileImpl extends PaymentFileBaseImpl {
 	 */
 	public PaymentFileImpl() {
 	}
+
+
 }
