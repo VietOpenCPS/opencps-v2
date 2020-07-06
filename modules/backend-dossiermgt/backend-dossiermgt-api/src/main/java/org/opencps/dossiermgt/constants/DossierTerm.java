@@ -381,4 +381,7 @@ public class DossierTerm {
     public static final String VNPOSTAL_STATUS = "vnpostalStatus";
     public static final String VNPOSTAL_PROFILE = "vnpostalProfile";
     public static final String FROM_VIA_POSTAL = "fromViaPostal";
+	public static final String DON_VI_GUI = "donvigui";
+	public static final String DON_VI_NHAN = "donvinhan";
+	public static final String SCOPE_ = "_scope";
 }
