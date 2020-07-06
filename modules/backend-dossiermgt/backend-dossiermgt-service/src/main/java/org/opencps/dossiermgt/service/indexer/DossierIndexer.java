@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -19,15 +21,15 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.TimeComingUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
@@ -847,6 +849,24 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.VNPOSTAL_STATUS, object.getVnpostalStatus());
 			document.addTextSortable(DossierTerm.VNPOSTAL_PROFILE, object.getVnpostalProfile());
 			document.addNumberSortable(DossierTerm.FROM_VIA_POSTAL, object.getFromViaPostal());
+			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
+
+			String metaData = object.getMetaData();
+			if (Validator.isNotNull(metaData)) {
+				try {
+					JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+					Iterator<String> keys = jsonMetaData.keys();
+					// Key: donvigui || donvinhan
+					while (keys.hasNext()) {
+						String key = keys.next();
+						String value = jsonMetaData.getString(key);
+						document.addTextSortable(key, value);
+					}
+				} catch (JSONException e) {
+					_log.debug(e.getMessage());
+					e.printStackTrace();
+				}
+			}
 
 		} catch (Exception e) {
 			_log.error(e);
