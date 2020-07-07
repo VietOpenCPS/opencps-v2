@@ -463,6 +463,14 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						dossier, serviceProcess);
 				payloadData.put(DossierTerm.SUBMISSION_NOTE, submissionNoteObj.toJSONString());
 			}
+			//Add registerBookCode
+			if (Validator.isNotNull(dossier.getRegisterBookCode())) {
+				payloadData.put(DossierTerm.REGISTER_BOOK_CODE, dossier.getRegisterBookCode());
+			}
+			if (dossier.getCounter() > 0) {
+				payloadData.put(DossierTerm.COUNTER, dossier.getCounter());
+			}
+
 			actionModel.setPayload(payloadData.toJSONString());
 		} catch (Exception e) {
 			actionModel.setPayload(dossierSync.getPayload());

@@ -533,7 +533,29 @@ public class DossierManagementImpl implements DossierManagement {
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
-
+			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+			String donvigui = query.getDonvigui();
+			if(Validator.isNotNull(donvigui)) {
+				if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+					if (Validator.isNotNull(employee)) {
+						params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+					}
+				} else {
+					params.put(DossierTerm.DON_VI_GUI, donvigui);
+				}
+			}
+			//Don vi nhan
+			String donvinhan = query.getDonvinhan();
+			if(Validator.isNotNull(donvinhan)) {
+				if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+					if (Validator.isNotNull(employee)) {
+						params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+					}
+				} else {
+					params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+				}
+			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
@@ -611,7 +633,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -1084,7 +1106,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.getData().addAll(
 					DossierUtils.mappingForGetList(
 						(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-						query.getAssigned()));
+						query.getAssigned(),query));
 			}
 			else {
 				results.setTotal(0);
@@ -2762,7 +2784,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -2917,7 +2939,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -7497,22 +7519,41 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDossierCounterByDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
 		ServiceContext serviceContext,String date)
 	{
-		List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
-		if(Validator.isNotNull(dossiers))
-		{
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-			for (Dossier dossier : dossiers)
+		try {
+			List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
+			if(Validator.isNotNull(dossiers))
 			{
-				String dossierCounter = dossier.getDossierCounter();
-				if(Validator.isNotNull(dossierCounter))
-					jsonArray.put(dossierCounter);
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonDossierId = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonGroupId = JSONFactoryUtil.createJSONArray();
+				for (Dossier dossier : dossiers)
+				{
+					String dossierCounter = dossier.getDossierCounter();
+					String dossierId = String.valueOf(dossier.getDossierId());
+					String groupId = String.valueOf(dossier.getGroupId());
+					if(Validator.isNotNull(dossierCounter)){
+						jsonArray.put(dossierCounter);
+					}
+					if(Validator.isNotNull(dossierId)){
+						jsonDossierId.put(dossierId);
+					}
+					if(Validator.isNotNull(groupId)){
+						jsonGroupId.put(groupId);
+					}
+				}
+				jsonObject.put("dossierCounter", jsonArray);
+				jsonObject.put("dossierId", jsonDossierId);
+				jsonObject.put("groupId", jsonGroupId);
+				return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 			}
-			jsonObject.put("dossierCounter", jsonArray);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
+			else
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.info("------ Log Exception ------ " + " " + e.getMessage());
 		}
-		else
-			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		return Response.status(HttpURLConnection.HTTP_OK).build();
 
 	}
 
