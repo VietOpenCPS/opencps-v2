@@ -114,6 +114,7 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
@@ -268,8 +269,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 
-			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String createDossiers = proAction.getCreateDossiers();
+			if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
+				
+			}
+			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
@@ -1577,6 +1581,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		try {
 			JSONObject dossierObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+			String serviceNameUnsigned = StringPool.BLANK;
+			if (Validator.isNotNull(dossier.getServiceName())) {
+				serviceNameUnsigned = AccentUtils.removeAccent(dossier.getServiceName());
+			}
+			dossierObj.put("serviceNameUnsigned", serviceNameUnsigned);
+			String govAgencyNameUnsigned = StringPool.BLANK;
+			if (Validator.isNotNull(dossier.getGovAgencyName())) {
+				govAgencyNameUnsigned = AccentUtils.removeAccent(dossier.getGovAgencyName());
+			}
+			dossierObj.put("govAgencyNameUnsigned", govAgencyNameUnsigned);
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
