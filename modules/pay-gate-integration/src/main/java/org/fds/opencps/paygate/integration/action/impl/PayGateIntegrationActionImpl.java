@@ -1232,15 +1232,15 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONObject data = createPaymentPlatformInitTransactionPostParam(groupId, schema, paymentFile, dossier,
 						request);
 
-				if (dossier.isOnline()) {
-					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_ONLINE)
-							.getString(PayGateTerm.URL_DOMAIN);
-					data.put(PayGateTerm.RETURN_URL, returnUrl);
-				} else {
-					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE)
-							.getString(PayGateTerm.URL_DOMAIN);
-					data.put(PayGateTerm.RETURN_URL, returnUrl);
-				}
+//				if (dossier.isOnline()) {
+//					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_ONLINE)
+//							.getString(PayGateTerm.URL_DOMAIN);
+//					data.put(PayGateTerm.RETURN_URL, returnUrl);
+//				} else {
+//					String returnUrl = schema.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE)
+//							.getString(PayGateTerm.URL_DOMAIN);
+//					data.put(PayGateTerm.RETURN_URL, returnUrl);
+//				}
 
 				String transactionId = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 				String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT);
@@ -1319,7 +1319,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
 		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
 				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
-		String maThamchieu = paymentFile.getUuid();
+		String maThamchieu = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 		String sotien = String.valueOf(paymentFile.getPaymentAmount());
 		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
 		String maKenhthanhtoan = schema.getString(PayGateTerm.MAKENHTHANHTOAN);
@@ -1327,7 +1327,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String ngonNgu = schema.getString(PayGateTerm.NGONNGU);
 		String maTiente = schema.getString(PayGateTerm.MATIENTE);
 		String maNganhang = schema.getString(PayGateTerm.MANGANHANG);
-		String thongtinGD = paymentFile.getPaymentNote();
+		String thongtinGD = schema.getString(PayGateTerm.THONGTINGIAODICH);
 		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
 		String ip = request.getLocalAddr();
 		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
@@ -1533,9 +1533,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
 
-				int status = data.getInt(PayGateTerm.STATUS);
+				// int status = data.getInt(PayGateTerm.STATUS);
 
-				if (status == 0) {
+				if ("00".equals(maLoi)) {
 
 					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, serviceContext);
 
@@ -1767,7 +1767,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
 		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
 				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
-		String maThamchieu = paymentFile.getUuid();
+		String maThamchieu = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 		String thoigianGD = PayGateUtil.convertDate(paymentFile.getCreateDate(), "yyyyMMddHHmmss");
 		String hash_key = schema.getString(PayGateTerm.HASH_KEY);
 
