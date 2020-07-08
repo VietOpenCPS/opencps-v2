@@ -1598,7 +1598,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
-			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(Long.parseLong(id),groupId);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId,Long.parseLong(id));
 			_log.info("TRACE_LOG_INFO doAction Dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
 
