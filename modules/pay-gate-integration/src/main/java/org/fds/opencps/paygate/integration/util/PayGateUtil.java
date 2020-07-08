@@ -6,6 +6,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -50,11 +53,35 @@ public class PayGateUtil {
 	public static String generateChecksum(String addition_fee, String client_id, String trans_amount, String command,
 			String transaction_id, String version, String haskey) {
 		String checksum = addition_fee + "|" + client_id + "|" + command + "|" + trans_amount + "|" + transaction_id
-				+ "|" + version;
-		return hmacSHA256Hex(haskey, checksum);
+				+ "|" + version + "|" + haskey;
+		return sha256(checksum);
 
 	}
 
+	private static String bytesToHex(byte[] hash) {
+	    StringBuffer hexString = new StringBuffer();
+	    for (int i = 0; i < hash.length; i++) {
+	    String hex = Integer.toHexString(0xff & hash[i]);
+	    if(hex.length() == 1) hexString.append('0');
+	        hexString.append(hex);
+	    }
+	    return hexString.toString();
+	}
+	public static String sha256 (String originalString) {
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		final byte[] hashbytes = digest.digest(
+		  originalString.getBytes(StandardCharsets.UTF_8));
+		String sha3_256hex = bytesToHex(hashbytes);
+		System.out.println("======originalString=====" + originalString);
+		System.out.println("======originalString=====" + sha3_256hex);
+		return sha3_256hex;
+	}
 	public static String hmacSHA256Hex(String key, String value) {
 		String encryptValue = StringPool.BLANK;
 		try {
@@ -115,12 +142,12 @@ public class PayGateUtil {
 		
 		String checksum = loaiBantin + "|" + phienBan + "|" + maDoitac + "|" + maThamchieu + "|" + sotien
 				+ "|" + loaiHinhthanhtoan + "|" + maKenhthanhtoan + "|" + maThietbi + "|" + ngonNgu 
-				+ "|" + maTiente + "|" + maNganhang + "|" + thongtinGD + "|" + thoigianGD + "|" + ip;
-		return hmacSHA256Hex(haskey, checksum);
+				+ "|" + maTiente + "|" + maNganhang + "|" + thongtinGD + "|" + thoigianGD + "|" + ip + "|" + haskey;
+		return sha256(checksum);
 
 	}
 	
-	public static JSONObject createResponseMessage(String errCode, String errMsg, int partnerCode, 
+	public static JSONObject createResponseMessage(String errCode, String errMsg, String partnerCode, 
 			String refferenceCode, String transactionTime, String verificationCode) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		result.put("MaLoi", errCode);
@@ -133,19 +160,19 @@ public class PayGateUtil {
 
 	}
 	
-	public static String generateChecksum(String loaiBantin, String maLoi, int maDoitac, String maThamchieu,
+	public static String generateChecksum(String loaiBantin, String maLoi, String maDoitac, String maThamchieu,
 			int sotien, String maTiente, String maGD, String maNganhang, String thongtinGD, String thoigianGD, String haskey) {
 		
-		String checksum = loaiBantin + "|" + maDoitac + "|" + maThamchieu + "|" + sotien
-				+ "|" + maTiente + "|" + maNganhang + "|" + thongtinGD + "|" + thoigianGD + "|";
-		return hmacSHA256Hex(haskey, checksum);
+		String checksum = loaiBantin + "|" + maLoi + "|"  + maDoitac + "|" + maThamchieu + "|" + sotien
+				+ "|" + maTiente + "|" + maGD + "|" + maNganhang + "|" + thoigianGD + "|" + thongtinGD + "|" + haskey;
+		return sha256(checksum);
 	}
 	
 	public static String generateChecksum(String loaiBantin, String phienBan, String maDoitac,
 			String maThamchieu, String thoigianGD, String hashkey) {
 		
-		String checksum = loaiBantin + "|" +  phienBan + "|" + maDoitac + "|" + maThamchieu + "|" + thoigianGD;
-		return hmacSHA256Hex(hashkey, checksum);
+		String checksum = loaiBantin + "|" +  phienBan + "|" + maDoitac + "|" + maThamchieu + "|" + thoigianGD + "|" + hashkey;
+		return sha256(checksum);
 	}
 	
 	public static String convertDate(Date date, String dateTemplate) {

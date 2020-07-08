@@ -1485,7 +1485,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String loaiBantin = data.getString(PayGateTerm.LOAIBANTIN);
 				String maLoi = data.getString(PayGateTerm.MALOI_KEY);
-				int maDoitac = data.getInt(PayGateTerm.MADOITAC);
+				String maDoitac = StringPool.BLANK;
 				String maThamchieu = data.getString(PayGateTerm.MATHAMCHIEU);
 				int sotien = data.getInt(PayGateTerm.SOTIEN);
 				String maTiente = data.getString(PayGateTerm.MATIENTE);
@@ -1497,8 +1497,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				// Token, Sothe, Thangthe, Namthe khong xác định
 				long paymentFileId = 0;
 
-				if (Validator.isNotNull(maGD)) {
-					paymentFileId = PayGateUtil.getPaymentFileIdByTrans(maGD);
+				if (Validator.isNotNull(maThamchieu)) {
+					paymentFileId = PayGateUtil.getPaymentFileIdByTrans(maThamchieu);
 				}
 
 				if (paymentFileId <= 0) {
@@ -1512,7 +1512,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				}
 
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(paymentFile.getDossierId());
-
+			
 				if (dossier == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
 				}
@@ -1523,6 +1523,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
 				}
 
+				maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
+						paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
 				String hash_key = schema.getString(PayGateTerm.HASH_KEY);
 				String maXacthuc_tmp = PayGateUtil.generateChecksum(loaiBantin, maLoi, maDoitac, maThamchieu, sotien,
 						maTiente, maGD, maNganhang, thongtinGD, thoigianGD, hash_key);
@@ -1538,14 +1540,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					boolean doAction = doActionPP(user, paymentFile.getGroupId(), dossier, paymentFile, serviceContext);
 
 					if (doAction) {
-						return PayGateUtil.createResponseMessage("00", "Thành công", Integer.valueOf(maDoitac),
+						return PayGateUtil.createResponseMessage("00", "Thành công", maDoitac,
 								maThamchieu, thoigianGD, maXacthuc);
 					} else {
-						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac),
+						return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
 								maThamchieu, thoigianGD, maXacthuc);
 					}
 				} else {
-					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", Integer.valueOf(maDoitac),
+					return PayGateUtil.createResponseMessage("99", "Các lỗi khác", maDoitac,
 							maThamchieu, thoigianGD, maXacthuc);
 				}
 			} else {
