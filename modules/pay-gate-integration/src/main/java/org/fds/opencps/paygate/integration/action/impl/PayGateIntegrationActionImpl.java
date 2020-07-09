@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -1004,22 +1003,39 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String check_sum = data.getString(PayGateTerm.CHECK_SUM);
 
 				long paymentFileId = 0;
+				Dossier dossier = null;
+				PaymentFile paymentFile = null;
 
 				if (Validator.isNotNull(transaction_id)) {
 					paymentFileId = PayGateUtil.getPaymentFileIdByTrans(transaction_id);
 				}
 
 				if (paymentFileId <= 0) {
-					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_id = 0");
-				}
+					String dossierNo = data.getString(PayGateTerm.MAHOSO);
 
-				PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+					if (Validator.isNotNull(dossierNo)) {
+						dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+					}
+
+					if (dossier == null) {
+						return PayGateUtil.createResponseMessage(-1, "error: dossier_null");
+					} else {
+
+						paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+						if (paymentFile == null) {
+							return PayGateUtil.createResponseMessage(-1, "error: paymentfile_null");
+						}
+						paymentFileId = paymentFile.getPaymentFileId();
+					}
+				} else {
+					paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+				}
 
 				if (paymentFile == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile null");
 				}
 
-				Dossier dossier = DossierLocalServiceUtil.fetchDossier(paymentFile.getDossierId());
+				dossier = DossierLocalServiceUtil.fetchDossier(paymentFile.getDossierId());
 
 				if (dossier == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
