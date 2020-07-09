@@ -44,6 +44,7 @@
 		</field>
 		<field name="publicationDate" type="Date" />
 		<field name="expireDate" type="Date" />
+		<field name="priority" type="int" />
 	</model>
 	<model name="org.opencps.communication.model.Notificationtemplate">
 		<field name="notificationTemplateId" type="long" />
@@ -84,6 +85,7 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="grouping" type="boolean" />
+		<field name="priority" type="int" />
 	</model>
 	<model name="org.opencps.communication.model.ServerConfig">
 		<field name="serverConfigId" type="long" />

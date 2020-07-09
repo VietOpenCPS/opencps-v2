@@ -513,6 +513,7 @@ public class UserActions implements UserInterface {
 			queue.setModifiedDate(now);
 			queue.setGroupId(groupId);
 			queue.setCompanyId(user.getCompanyId());
+			queue.setPriority(ConfigConstants.PRIORITY_FORGOT_PASS);
 
 			queue.setNotificationType(NotificationType.USER_05);
 			queue.setClassName(User.class.getName());
@@ -667,6 +668,7 @@ public class UserActions implements UserInterface {
 			queue.setModifiedDate(now);
 			queue.setGroupId(groupId);
 			queue.setCompanyId(user.getCompanyId());
+			queue.setPriority(ConfigConstants.PRIORITY_FORGOT_PASS);
 
 			queue.setNotificationType(NotificationType.USER_03);
 			queue.setClassName(User.class.getName());

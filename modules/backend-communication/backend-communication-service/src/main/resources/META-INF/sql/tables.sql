@@ -16,7 +16,8 @@ create table opencps_notificationqueue (
 	toEmail VARCHAR(255) null,
 	toTelNo VARCHAR(255) null,
 	publicationDate DATE null,
-	expireDate DATE null
+	expireDate DATE null,
+	priority INTEGER
 );
 
 create table opencps_notificationtemplate (
@@ -39,7 +40,8 @@ create table opencps_notificationtemplate (
 	userUrlPattern VARCHAR(1024) null,
 	guestUrlPattern VARCHAR(1024) null,
 	interval_ VARCHAR(255) null,
-	grouping BOOLEAN
+	grouping BOOLEAN,
+	priority INTEGER
 );
 
 create table opencps_serverconfig (
