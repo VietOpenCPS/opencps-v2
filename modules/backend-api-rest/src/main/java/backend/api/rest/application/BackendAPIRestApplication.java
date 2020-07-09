@@ -184,7 +184,7 @@ public class BackendAPIRestApplication extends Application {
 
 		singletons.add(new SaveFieldPickManagementImpl());
 		singletons.add(new VNPostManagementImpl());
-		singletons.add(new DossierStatisticManagementImpl());
+//		singletons.add(new DossierStatisticManagementImpl());
 		
 		singletons.add(this);
 

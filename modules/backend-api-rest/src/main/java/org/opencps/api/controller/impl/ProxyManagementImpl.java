@@ -177,7 +177,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
-			_log.debug("exception :" +e );
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
