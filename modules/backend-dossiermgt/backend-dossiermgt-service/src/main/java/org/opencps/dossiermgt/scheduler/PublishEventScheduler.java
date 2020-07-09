@@ -207,7 +207,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		}
 		//add by TrungNt
 		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("AAAAAA");
+			
 			try {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				

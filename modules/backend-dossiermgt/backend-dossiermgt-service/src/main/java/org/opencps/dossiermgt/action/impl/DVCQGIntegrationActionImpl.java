@@ -159,12 +159,9 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			// danh cho truong hop cau hinh ma ttch tren opencps = ma tthc tren dvcqg
 			_mServiceCode = _oServiceCode;
 		}
-		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
-		if (dossier.getSystemId() == 5) {
-			object.put("MaHoSo", dossier.getReferenceUid());
-		} else {
-			object.put("MaHoSo", dossier.getDossierNo());
-		}
+
+		object.put("MaHoSo", dossier.getDossierNo());
+
 		object.put("MaHoSo", dossier.getDossierNo());
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
@@ -342,11 +339,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		_log.debug("-------------->>>> " + _mServiceCode + StringPool.PIPE + _oServiceCode + StringPool.PIPE + groupId);
 
-		if (dossier.getSystemId() == 5) {
-			object.put("MaHoSo", dossier.getReferenceUid());
-		} else {
-			object.put("MaHoSo", dossier.getDossierNo());
-		}
+		object.put("MaHoSo", dossier.getDossierNo());
+
 		object.put("MaTTHC", _mServiceCode);
 		JSONObject body = JSONFactoryUtil.createJSONObject();
 		body.put("service", "LayThuTuc");
@@ -498,6 +492,94 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			object.put("DanhSachGiayToKetQua", DanhSachGiayToKetQua);// ko bb
 
 			object.put("TaiLieuNop", TaiLieuNop);// ko bb
+
+		}
+
+		return object;
+	}
+
+	private JSONObject createSyncTTKMDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig,
+			HttpServletRequest request) {
+
+		JSONObject object = JSONFactoryUtil.createJSONObject();
+		object.put("MaHoSo", dossier.getReferenceUid());
+		object.put("MaHoSoDonVi", dossier.getDossierNo());
+		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
+		String madoituong = StringPool.BLANK;
+		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+			madoituong = applicant.getMappingClassPK();
+		}
+		object.put("MaDoiTuong", madoituong); // ko bb
+		object.put("NoiDung", dossier.getDossierNote());// ko bb
+		object.put("NgayXuLy", convertDate2String(dossier.getReceiveDate()));
+
+		int trangthai = GetterUtil.getInteger(getMappingStatus(groupId, dossier));
+
+		if (trangthai == 4) {
+			trangthai = 2;
+		} else if (trangthai == 3) {
+			trangthai = 5;
+		}
+
+		object.put("TrangThai", String.valueOf(trangthai));
+
+		List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.getAllDossierFile(dossier.getDossierId());
+
+		if (dossierFiles != null) {
+
+			JSONObject data = null;
+
+			JSONArray taiLieuXuLy = JSONFactoryUtil.createJSONArray();
+
+			for (DossierFile dossierFile : dossierFiles) {
+				if (!dossierFile.isRemoved() && dossierFile.getFileEntryId() > 0
+						&& dossierFile.getDossierPartType() > 0) {
+					try {
+						FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(dossierFile.getFileEntryId());
+						String url = StringPool.BLANK;
+						if (request != null) {
+							url = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(),
+									(ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY), StringPool.BLANK);
+						} else {
+							StringBundler sb = new StringBundler(11);
+							sb.append(OpenCPSConfigUtil.getPortalDocumentURI());
+							sb.append(PortalUtil.getPathContext());
+							sb.append("/documents/");
+							sb.append(fileEntry.getRepositoryId());
+							sb.append(StringPool.SLASH);
+							sb.append(fileEntry.getFolderId());
+							sb.append(StringPool.SLASH);
+
+							String fileName = fileEntry.getFileName();
+
+							sb.append(URLCodec.encodeURL(HtmlUtil.unescape(fileName)));
+
+							sb.append(StringPool.SLASH);
+							sb.append(URLCodec.encodeURL(fileEntry.getUuid()));
+
+							sb.append("?t=" + System.currentTimeMillis() + "&download=true");
+
+							url = sb.toString();
+						}
+						_log.debug("===> file URL " + url);
+						if (Validator.isNotNull(url)) {
+							data = JSONFactoryUtil.createJSONObject();
+							data.put("TenTepDinhKem", dossierFile.getDisplayName());
+							data.put("MaThanhPhanHoSo", dossierFile.getDossierPartNo());
+							data.put("TepDinhKemId", String.valueOf(dossierFile.getDossierFileId()));
+							data.put("DuongDanTaiTepTin", url);
+							data.put("IsDeleted", "False");
+							taiLieuXuLy.put(data);
+
+						}
+
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				}
+			}
+
+			object.put("TaiLieuXuLy", taiLieuXuLy);// ko bb
 
 		}
 
@@ -2095,18 +2177,26 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					if (dossier == null) {
 						continue;
 					}
+
+					if (dossier.getSystemId() == 5) {
+
+						continue;
+					}
+
 					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, serverConfig, request);
 					_log.debug(synsObject.toJSONString());
 					synsObjects.put(synsObject);
 				}
 			}
 
-			JSONObject body = JSONFactoryUtil.createJSONObject();
-			body.put("isUpdating", isUpdating);
-			body.put("service", "DongBoHoSoMC");
-			body.put("data", synsObjects);
+			if (synsObjects.length() > 0) {
+				JSONObject body = JSONFactoryUtil.createJSONObject();
+				body.put("isUpdating", isUpdating);
+				body.put("service", "DongBoHoSoMC");
+				body.put("data", synsObjects);
+				result = syncData(serverConfig, body);
+			}
 
-			return syncData(serverConfig, body);
 		}
 		return result;
 	}
@@ -2123,32 +2213,46 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 			JSONArray synsObjects = JSONFactoryUtil.createJSONArray();
 			if (Validator.isNotNull(accessToken)) {
-				boolean hasSync = hasSyncDossier(dossier.getDossierNo(), config, accessToken);
-				JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken, request);
 
-				synsObjects.put(synsObject);
-				_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
-				JSONObject body = JSONFactoryUtil.createJSONObject();
-
-				if (hasSync) {
-					body.put("isUpdating", "True");
-				} else {
-					body.put("isUpdating", "False");
-				}
-				body.put("data", synsObjects);
-				body.put("service", "DongBoHoSoMC");
-				result = syncData(serverConfig, body);
-				_log.debug("syncDossierAndDossierStatus " + result.toJSONString());
-				if (result.has("error_code") && GetterUtil.getInteger(result.getString("error_code")) == 0) {
-					body = JSONFactoryUtil.createJSONObject();
-					synsObjects = JSONFactoryUtil.createJSONArray();
-					JSONObject _tmp = createSyncDossierStatusBodyRequest(groupId, dossier);
-					synsObjects.put(_tmp);
-					_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
-					body.put("service", "CapNhatTienDoHoSoMC");
-					body.put("data", synsObjects);
+				if (dossier.getSystemId() == 5) {
+					JSONObject synsObject = createSyncTTKMDossierBodyRequest(groupId, dossier, serverConfig, request);
+					JSONObject body = JSONFactoryUtil.createJSONObject();
+					body.put("service", "DongBoTrangThaiHoSo");
+					body.put("type", "2");
+					body.put("data", synsObject);
+					_log.info("DongBoTrangThaiHoSoTTKM: " + synsObject.toJSONString());
 					result = syncData(serverConfig, body);
+
+				} else {
+					boolean hasSync = hasSyncDossier(dossier.getDossierNo(), config, accessToken);
+					JSONObject synsObject = createSyncDossierBodyRequest(groupId, dossier, config, accessToken,
+							request);
+
+					synsObjects.put(synsObject);
+					_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
+					JSONObject body = JSONFactoryUtil.createJSONObject();
+
+					if (hasSync) {
+						body.put("isUpdating", "True");
+					} else {
+						body.put("isUpdating", "False");
+					}
+					body.put("data", synsObjects);
+					body.put("service", "DongBoHoSoMC");
+					result = syncData(serverConfig, body);
+					_log.debug("syncDossierAndDossierStatus " + result.toJSONString());
+					if (result.has("error_code") && GetterUtil.getInteger(result.getString("error_code")) == 0) {
+						body = JSONFactoryUtil.createJSONObject();
+						synsObjects = JSONFactoryUtil.createJSONArray();
+						JSONObject _tmp = createSyncDossierStatusBodyRequest(groupId, dossier);
+						synsObjects.put(_tmp);
+						_log.debug("syncDossierAndDossierStatus synsObjects " + synsObjects.toJSONString());
+						body.put("service", "CapNhatTienDoHoSoMC");
+						body.put("data", synsObjects);
+						result = syncData(serverConfig, body);
+					}
 				}
+
 			}
 
 		}
@@ -2883,7 +2987,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 					}
 					body.put("data", data);
-					JSONObject result = syncData(serverConfig, body);
+					syncData(serverConfig, body);
 					/*
 					 * if (result.has("error_code") && result.getInt("error_code") == 0) { for (int
 					 * i = 0; i < data.length(); i++) { JSONObject _tmp = data.getJSONObject(i);
@@ -3075,7 +3179,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				} else {
 					User tmpUser = UserLocalServiceUtil.fetchUserByEmailAddress(serverConfig.getCompanyId(), Email);
 					if (tmpUser != null) {
-						//duplicate email
+						// duplicate email
 						autoEmail = true;
 					}
 				}
@@ -3093,13 +3197,13 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 				applicant = ApplicantLocalServiceUtil.updateApplication(serviceContext, groupId,
 						applicant.getApplicantId(), _DEFAULT_CLASS_NAME, techId);
-				
-				if(Validator.isNotNull(Email)) {
-					//keep original email for applicant
+
+				if (Validator.isNotNull(Email)) {
+					// keep original email for applicant
 					applicant.setContactEmail(Email);
 					applicant = ApplicantLocalServiceUtil.updateApplicant(applicant);
 				}
-				
+
 			} catch (Exception e) {
 				data.remove("TepDonDangKy");
 				_log.info("ttkm data: " + data.toJSONString());
@@ -3286,13 +3390,6 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 
 		}
-	}
-
-	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
-		object.put("status", status);
-		object.put("message", message);
-		object.put("description", desc);
-		return object;
 	}
 
 	private JSONObject createResponseMessage(JSONObject object, int errorCode, String message) {
