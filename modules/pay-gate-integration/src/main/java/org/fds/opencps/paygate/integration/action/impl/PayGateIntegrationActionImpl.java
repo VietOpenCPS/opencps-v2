@@ -1033,14 +1033,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String client_id_config = schema.getString(PayGateTerm.CLIENT_ID);
 				String command_config = schema.getString(PayGateTerm.COMMAND);
 				String hash_key_2 = schema.getString(PayGateTerm.HASH_KEY_2);
-				String transactionId_tmp = schema.getString(PayGateTerm.TRANSACTION_ID);
+				// String transactionId_tmp = schema.getString(PayGateTerm.TRANSACTION_ID);
 				String version_config = schema.getString(PayGateTerm.VERSION);
 
 				String addition_fee = String.valueOf(paymentFile.getShipAmount());
 				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
 				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee,
 						client_id_config, trans_amount, command_config,
-						transactionId_tmp, version_config, hash_key_2);
+						transaction_id, version_config, hash_key_2);
 				if (!check_sum.equals(check_sum_tmp)) {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
