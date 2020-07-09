@@ -2104,12 +2104,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
 
-		String paymentFee = Validator.isNotNull(oldPaymentFile.getPaymentFee()) ? oldPaymentFile.getPaymentFee() : StringPool.BLANK;
-		Long feeAmount = Validator.isNotNull(oldPaymentFile.getFeeAmount()) ? oldPaymentFile.getFeeAmount() : 0l,
-			serviceAmount =  Validator.isNotNull(oldPaymentFile.getServiceAmount()) ? oldPaymentFile.getServiceAmount() : 0l,
+		String paymentFee =  StringPool.BLANK;
+		Long feeAmount =  0l, serviceAmount =  0l, shipAmount =  0l;
+		String paymentNote =  StringPool.BLANK;
+		long advanceAmount = 0l;
+		if (Validator.isNotNull(oldPaymentFile))
+		{
+			paymentFee = Validator.isNotNull(oldPaymentFile.getPaymentFee()) ? oldPaymentFile.getPaymentFee() : StringPool.BLANK;
+			feeAmount = Validator.isNotNull(oldPaymentFile.getFeeAmount()) ? oldPaymentFile.getFeeAmount() : 0l;
+			serviceAmount = Validator.isNotNull(oldPaymentFile.getServiceAmount()) ? oldPaymentFile.getServiceAmount() : 0l;
 			shipAmount = Validator.isNotNull(oldPaymentFile.getShipAmount()) ? oldPaymentFile.getShipAmount() : 0l;
-		String paymentNote = Validator.isNotNull(oldPaymentFile.getPaymentNote()) ? oldPaymentFile.getPaymentNote() : StringPool.BLANK;
-		long advanceAmount = Validator.isNotNull(oldPaymentFile.getAdvanceAmount()) ? oldPaymentFile.getAdvanceAmount() : 0l;
+			paymentNote = Validator.isNotNull(oldPaymentFile.getPaymentNote()) ? oldPaymentFile.getPaymentNote() : StringPool.BLANK;
+			advanceAmount = Validator.isNotNull(oldPaymentFile.getAdvanceAmount()) ? oldPaymentFile.getAdvanceAmount() : 0l;
+		}
 		//long paymentAmount = 0l;
 		String epaymentProfile = StringPool.BLANK;
 		String bankInfo = StringPool.BLANK;
