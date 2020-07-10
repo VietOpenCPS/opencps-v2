@@ -283,6 +283,7 @@ public class DossierTerm {
 	public static final String REGISTER = "register";
 	public static final int ORIGINALITY_HSLT = 4;
 	public static final String GROUP_DOSSIER_ID = "groupDossierId";
+	public static final String GROUP_DOSSIER_ID_HS = "groupDossierIdHs";
 	public static final String APPLICANT_FOLLOW_ID_NO = "applicantFollowIdNo";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	
@@ -381,4 +382,8 @@ public class DossierTerm {
     public static final String VNPOSTAL_STATUS = "vnpostalStatus";
     public static final String VNPOSTAL_PROFILE = "vnpostalProfile";
     public static final String FROM_VIA_POSTAL = "fromViaPostal";
+	public static final String DON_VI_GUI = "donvigui";
+	public static final String DON_VI_NHAN = "donvinhan";
+	public static final String SCOPE_ = "_scope";
+	public static final String FIRTSCOPE = "firtscope";
 }

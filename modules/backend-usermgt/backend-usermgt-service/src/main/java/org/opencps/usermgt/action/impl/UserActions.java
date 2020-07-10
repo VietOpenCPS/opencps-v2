@@ -1234,6 +1234,7 @@ public class UserActions implements UserInterface {
 					UserTerm.EMPLOYEE_MAIN_JOBPOS_ID, employee.getMainJobPostId());
 				result.put(UserTerm.EMPLOYEE_MAIN_JOBPOS_NAME, StringPool.BLANK);
 				result.put(UserTerm.TITLE, employee.getTitle());
+				result.put(UserTerm.SCOPE, employee.getScope());
 
 				EmployeeJobPos employeeJobPos =
 					EmployeeJobPosLocalServiceUtil.fetchEmployeeJobPos(

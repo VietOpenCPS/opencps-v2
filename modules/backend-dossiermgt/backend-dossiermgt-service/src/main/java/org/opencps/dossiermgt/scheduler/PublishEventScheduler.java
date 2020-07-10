@@ -109,7 +109,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 	private boolean processPublish(PublishQueue pq) {
 		long dossierId = pq.getDossierId();
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
-		if (Validator.isNotNull(dossier.getOriginDossierId()) && (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
+		if (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getOriginDossierId()) && (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
 			return true;
 		}
 		_log.info("pq: "+JSONFactoryUtil.looseSerialize(pq));
@@ -209,7 +209,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		}
 		//add by TrungNt
 		else if (ServerConfigTerm.DVCQG_INTEGRATION.equals(sc.getProtocol())) {
-			_log.info("AAAAAA");
+			
 			try {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				

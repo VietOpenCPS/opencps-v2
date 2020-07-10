@@ -14,6 +14,31 @@
 
 package org.opencps.usermgt.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.opencps.backend.usermgt.service.util.ConfigConstants;
+import org.opencps.backend.usermgt.service.util.ConfigProps;
+import org.opencps.datamgt.constants.DataMGTConstants;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.utils.DictCollectionUtils;
+import org.opencps.usermgt.constants.ApplicantTerm;
+import org.opencps.usermgt.exception.DuplicateApplicantIdException;
+import org.opencps.usermgt.exception.DuplicateContactEmailException;
+import org.opencps.usermgt.exception.NoApplicantIdDateException;
+import org.opencps.usermgt.exception.NoApplicantIdNoException;
+import org.opencps.usermgt.exception.NoApplicantIdTypeException;
+import org.opencps.usermgt.exception.NoApplicantNameException;
+import org.opencps.usermgt.exception.NoSuchApplicantException;
+import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
+import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.usermgt.service.util.MessageUtil;
+import org.opencps.usermgt.service.util.ServiceProps;
+import org.opencps.usermgt.service.util.UserMgtUtils;
+
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
@@ -49,31 +74,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.opencps.backend.usermgt.service.util.ConfigConstants;
-import org.opencps.backend.usermgt.service.util.ConfigProps;
-import org.opencps.datamgt.constants.DataMGTConstants;
-import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.usermgt.constants.ApplicantTerm;
-import org.opencps.usermgt.exception.DuplicateApplicantIdException;
-import org.opencps.usermgt.exception.DuplicateContactEmailException;
-import org.opencps.usermgt.exception.NoApplicantIdDateException;
-import org.opencps.usermgt.exception.NoApplicantIdNoException;
-import org.opencps.usermgt.exception.NoApplicantIdTypeException;
-import org.opencps.usermgt.exception.NoApplicantNameException;
-import org.opencps.usermgt.exception.NoSuchApplicantException;
-import org.opencps.usermgt.model.Applicant;
-import org.opencps.usermgt.service.base.ApplicantLocalServiceBaseImpl;
-import org.opencps.usermgt.service.util.DateTimeUtils;
-import org.opencps.usermgt.service.util.MessageUtil;
-import org.opencps.usermgt.service.util.ServiceProps;
-import org.opencps.usermgt.service.util.UserMgtUtils;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -417,6 +417,7 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 			// _log.info("CREATE APPLICANT: " + spn.getLastName() + "," +
 			// spn.getFirstName() + "," + spn.getMidName());
+			_log.info("Appicant LastName: " + spn.getLastName() + "|" + spn.getLastName().length());
 			User mappingUser = userLocalService.addUserWithWorkflow(creatorUserId, context.getCompanyId(), autoPassword,
 					password, password, autoScreenName, screenName, contactEmail, 0l, StringPool.BLANK,
 					LocaleUtil.getDefault(), spn.getFirstName(), spn.getMidName(), spn.getLastName(), 0, 0, true, month,
@@ -430,7 +431,6 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 				mappingUser.setStatus(WorkflowConstants.STATUS_PENDING);
 			}
 			
-
 			long mappingUserId = mappingUser.getUserId();
 
 			// Add audit field

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -69,6 +70,12 @@ public interface DictItemMappingLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public DictItemMapping addDictItemMapping(DictItemMapping dictItemMapping);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItemMapping adminProcessData(JSONObject objectData);
+
+	@Indexable(type = IndexableType.DELETE)
+	public DictItemMapping adminProcessDelete(Long id);
 
 	/**
 	* Creates a new dict item mapping with the primary key. Does not add the dict item mapping to the database.

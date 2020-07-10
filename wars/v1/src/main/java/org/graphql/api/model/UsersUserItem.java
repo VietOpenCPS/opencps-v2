@@ -144,6 +144,17 @@ public class UsersUserItem {
 	@JsonProperty("govAgencyName")
 	private String govAgencyName = null;
 
+	@JsonProperty("scope")
+	private String scope = null;
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
 	public String getGovAgencyCode() {
 		return govAgencyCode;
 	}

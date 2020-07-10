@@ -533,7 +533,58 @@ public class DossierManagementImpl implements DossierManagement {
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
-
+			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+			String donvigui = query.getDonvigui();
+			if(Validator.isNotNull(donvigui)) {
+				String[] donviguiArr = donvigui.split(StringPool.COMMA);
+			//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
+				boolean firtScopeDVG = false;
+				for (String key : donviguiArr) {
+					if (key.equals(DossierTerm.FIRTSCOPE)) {
+						firtScopeDVG = true;
+					}
+				}
+				if (firtScopeDVG) {
+					if (Validator.isNotNull(employee)) {
+					    String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						params.put(DossierTerm.DON_VI_GUI, employeeArr[0]);
+					}
+				} else {
+					if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+						if (Validator.isNotNull(employee)) {
+							params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+						}
+					} else {
+						params.put(DossierTerm.DON_VI_GUI, donvigui);
+					}
+				}
+			}
+			//Don vi nhan
+			String donvinhan = query.getDonvinhan();
+			if(Validator.isNotNull(donvinhan)) {
+				String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
+				boolean firtScopeDVN = false;
+				for (String key : donvinhanArr) {
+					if (key.equals(DossierTerm.FIRTSCOPE)) {
+						firtScopeDVN = true;
+					}
+				}
+				if (firtScopeDVN) {
+					if (Validator.isNotNull(employee)) {
+						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
+					}
+				} else {
+					if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+						if (Validator.isNotNull(employee)) {
+							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+						}
+					} else {
+						params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+					}
+				}
+			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
@@ -611,7 +662,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -996,6 +1047,9 @@ public class DossierManagementImpl implements DossierManagement {
 			// Add param original
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
+			if(Validator.isNotNull(query.getGroupDossierIdHs())){
+				params.put(DossierTerm.GROUP_DOSSIER_ID_HS, query.getGroupDossierIdHs());
+			}
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
 			Integer vnpostalStatus = query.getVnpostalStatus();
@@ -1084,7 +1138,7 @@ public class DossierManagementImpl implements DossierManagement {
 				results.getData().addAll(
 					DossierUtils.mappingForGetList(
 						(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-						query.getAssigned()));
+						query.getAssigned(),query));
 			}
 			else {
 				results.setTotal(0);
@@ -1576,6 +1630,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
 			_log.info("TRACE_LOG_INFO doAction Dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
 
@@ -1588,6 +1643,7 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.debug(
 					"Dossier: " + dossier + ", action code: " +
 						input.getActionCode());
+
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(
 						groupId, dossier.getDossierId(),
@@ -2751,7 +2807,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -2906,7 +2962,7 @@ public class DossierManagementImpl implements DossierManagement {
 			results.getData().addAll(
 				DossierUtils.mappingForGetList(
 					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned()));
+					query.getAssigned(),query));
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
@@ -6295,6 +6351,34 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 
 	@Override
+	public Response removeGroupDossierId(
+			HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			long groupDossierId, long dossierId) {
+		try {
+			String groupDossierIdNew = "";
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(
+					GetterUtil.getLong(dossierId));
+			if(Validator.isNotNull(dossier)){
+				String[] groupDossierIdArr = dossier.getGroupDossierId().split(StringPool.COMMA);
+				for (String groupDossierIdStr : groupDossierIdArr) {
+					if(!groupDossierIdStr.equals(String.valueOf(groupDossierId))){
+						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
+					}
+				}
+				groupDossierIdNew = groupDossierIdNew.substring(1);
+				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
+				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.error(e.getMessage());
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(ConstantUtils.API_JSON_EMPTY_ERROR).build();
+		}
+		return null;
+	}
+
+	@Override
 	public Response updateDossierInGroup(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext,
@@ -7486,22 +7570,41 @@ public class DossierManagementImpl implements DossierManagement {
 	public Response getDossierCounterByDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
 		ServiceContext serviceContext,String date)
 	{
-		List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
-		if(Validator.isNotNull(dossiers))
-		{
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-			for (Dossier dossier : dossiers)
+		try {
+			List<Dossier> dossiers = DossierLocalServiceUtil.findDossierByDay(date);
+			if(Validator.isNotNull(dossiers))
 			{
-				String dossierCounter = dossier.getDossierCounter();
-				if(Validator.isNotNull(dossierCounter))
-					jsonArray.put(dossierCounter);
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonDossierId = JSONFactoryUtil.createJSONArray();
+				JSONArray jsonGroupId = JSONFactoryUtil.createJSONArray();
+				for (Dossier dossier : dossiers)
+				{
+					String dossierCounter = dossier.getDossierCounter();
+					String dossierId = String.valueOf(dossier.getDossierId());
+					String groupId = String.valueOf(dossier.getGroupId());
+					if(Validator.isNotNull(dossierCounter)){
+						jsonArray.put(dossierCounter);
+					}
+					if(Validator.isNotNull(dossierId)){
+						jsonDossierId.put(dossierId);
+					}
+					if(Validator.isNotNull(groupId)){
+						jsonGroupId.put(groupId);
+					}
+				}
+				jsonObject.put("dossierCounter", jsonArray);
+				jsonObject.put("dossierId", jsonDossierId);
+				jsonObject.put("groupId", jsonGroupId);
+				return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
 			}
-			jsonObject.put("dossierCounter", jsonArray);
-			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonObject.toString()).build();
+			else
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.info("------ Log Exception ------ " + " " + e.getMessage());
 		}
-		else
-			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+		return Response.status(HttpURLConnection.HTTP_OK).build();
 
 	}
 

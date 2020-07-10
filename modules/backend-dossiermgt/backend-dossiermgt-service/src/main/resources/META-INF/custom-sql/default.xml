@@ -76,4 +76,13 @@
             WHERE  DATE(d.createDate) = ?
         ]]>
     </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.PaymentFileFinder.findSumPaymentAmountDay">
+        <![CDATA[
+            SELECT sum(p.paymentAmount) as sumPaymentAmount
+            FROM   opencps_paymentfile AS p
+            WHERE  p.paymentStatus = 5
+                [$FILTER_GROUP_ID$]
+                AND DATE(p.modifiedDate) = DATE([$DATE$]) ;
+        ]]>
+    </sql>
 </custom-sql>

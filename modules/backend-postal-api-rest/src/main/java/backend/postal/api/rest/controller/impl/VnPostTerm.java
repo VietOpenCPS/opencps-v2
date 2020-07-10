@@ -4,6 +4,7 @@ public class VnPostTerm {
 	
 	public static final String SERVER_CONFIG_EINVOICE = "EINVOICE";
 	public static final String SERVER_CONFIG_VIA_POSTAL = "VIA_POSTAL";
+	public static final String SERVER_CONFIG_VIA_POSTAL_SERVERNO_D = "VNPOST";
 	
 	public static final String MIME_HEADER_SOAPACTION = "http://tempuri.org/Fs_NH_GTGT";
 	public static final String MIME_HEADER_CONTENT_TYPE = "text/xml; charset=utf-8";
