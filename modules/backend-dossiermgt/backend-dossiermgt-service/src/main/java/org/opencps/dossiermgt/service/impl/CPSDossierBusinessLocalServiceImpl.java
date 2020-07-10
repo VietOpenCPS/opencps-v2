@@ -1564,6 +1564,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode,
 					actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		}
+		//Integrate TTTT
+		this.integrateTTTT(dossier, context, dossierAction.getDossierActionId());
 
 		return dossierAction;
 	}
@@ -3997,6 +3999,25 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		_log.info("=============create collectVnpostEvent============");
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);
+	}
+
+	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
+		//Add tich hop Thong tin truyen thong
+		try{
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
+					dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+				}
+			}
+		}catch(Exception e) {
+			_log.error(e);
+		}
 	}
 
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
