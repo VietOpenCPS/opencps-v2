@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(207);
+		StringBundler sb = new StringBundler(205);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -270,8 +270,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(fromViaPostal);
 		sb.append(", multipleCheck=");
 		sb.append(multipleCheck);
-		sb.append(", paymentDate=");
-		sb.append(paymentDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -879,13 +877,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setMultipleCheck(multipleCheck);
 		}
 
-		if (paymentDate == Long.MIN_VALUE) {
-			dossierImpl.setPaymentDate(null);
-		}
-		else {
-			dossierImpl.setPaymentDate(new Date(paymentDate));
-		}
-
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -1016,7 +1007,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 		fromViaPostal = objectInput.readInt();
 		multipleCheck = objectInput.readUTF();
-		paymentDate = objectInput.readLong();
 	}
 
 	@Override
@@ -1550,8 +1540,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		else {
 			objectOutput.writeUTF(multipleCheck);
 		}
-
-		objectOutput.writeLong(paymentDate);
 	}
 
 	public String uuid;
@@ -1656,5 +1644,4 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String vnpostalProfile;
 	public int fromViaPostal;
 	public String multipleCheck;
-	public long paymentDate;
 }
