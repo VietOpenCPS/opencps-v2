@@ -1102,7 +1102,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
 			}
 
-			_log.info(dossier);
+			_log.info("=======body========dossier" + dossier);
 			if (Validator.isNull(dossierNo) || Validator.isNull(dossier)) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
@@ -1111,7 +1111,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 			}
 
-			_log.info(paymentFile);
+			_log.info("=======body========paymentFile" + paymentFile);
 			if (Validator.isNull(paymentFile) || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
@@ -1121,6 +1121,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 			schema = schema != null ? schema : 
 				JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+			_log.info("=======body========schema" + schema);
 			if (schema == null) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
