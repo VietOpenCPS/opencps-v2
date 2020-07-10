@@ -541,16 +541,11 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			}
 			String actionCode = actionId;
 			if (!isActionCode) {
-
-				ProcessAction proAction =
-					ProcessActionLocalServiceUtil.fetchProcessAction(
-						GetterUtil.getInteger(actionId));
-				actionCode =
-					(proAction != null) ? proAction.getActionCode() : actionId;
+				ProcessAction proAction = ProcessActionLocalServiceUtil.fetchProcessAction(GetterUtil.getInteger(actionId));
+				actionCode = (proAction != null) ? proAction.getActionCode() : actionId;
 			}
 
-			LinkedHashMap<String, Object> params =
-				new LinkedHashMap<String, Object>();
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossierId));
@@ -559,27 +554,22 @@ public class DossierActionManagementImpl implements DossierActionManagement {
 			params.put(DossierActionTerm.AUTO, query.getAuto());
 
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
-			Sort[] sorts = new Sort[] {
-				SortFactoryUtil.create(
-					querySort, Sort.STRING_TYPE,
-					GetterUtil.getBoolean(query.getOrder()))
-			};
+			Sort[] sorts = new Sort[] {SortFactoryUtil.create(querySort, Sort.STRING_TYPE,GetterUtil.getBoolean(query.getOrder()))};
 
 			DossierActions actions = new DossierActionsImpl();
 
-			JSONArray jsonData = actions.getPayloadNextActions(
-				user.getUserId(), company.getCompanyId(), groupId, params,
+			JSONArray jsonData = actions.getPayloadNextActions(user.getUserId(), company.getCompanyId(), groupId, params,
 				sorts, query.getStart(), query.getEnd(), serviceContext);
-
+			_log.debug(jsonData);
 			DossierResultPayLoadModel result = new DossierResultPayLoadModel();
 			if (jsonData != null && jsonData.length() > 0) {
 				result.setTotal(jsonData.length());
-				result.getData().addAll(
-					DossierActionUtils.mappingToPayLoadNextActions(jsonData));
+				result.getData().addAll(DossierActionUtils.mappingToPayLoadNextActions(jsonData));
 			}
 			else {
 				result.setTotal(0);
 			}
+			_log.debug(result);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
 		}

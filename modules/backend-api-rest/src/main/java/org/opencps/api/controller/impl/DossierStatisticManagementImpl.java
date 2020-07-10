@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierStatisticManagement;
 import org.opencps.api.controller.util.DossierStatisticUtils;
@@ -26,6 +27,7 @@ import org.opencps.dossiermgt.action.DossierStatisticAction;
 import org.opencps.dossiermgt.action.impl.DossierStatisticActionImpl;
 import org.opencps.dossiermgt.constants.DossierStatisticTerm;
 import org.opencps.dossiermgt.model.DossierStatistic;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.WorkingUnit;
@@ -156,6 +158,22 @@ public class DossierStatisticManagementImpl implements DossierStatisticManagemen
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getPaymentDossierStatisticDay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
+		ServiceContext serviceContext,String date)
+	{
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		_log.info("groupId: " + groupId+"| Date: " + date);
+		String sumPaymentAmount = PaymentFileLocalServiceUtil.findSumPaymentAmountDay(groupId,date);
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("sumPaymentAmount", sumPaymentAmount);
+
+
+		_log.info(result.toString());
+		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
 	}
 
 }

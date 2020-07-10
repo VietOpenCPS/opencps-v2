@@ -76,6 +76,7 @@
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentConfigPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.PaymentFileLocalServiceImpl" id="org.opencps.dossiermgt.service.PaymentFileLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentFilePersistenceImpl" id="org.opencps.dossiermgt.service.persistence.PaymentFilePersistence" parent="basePersistence" />
+	<bean class="org.opencps.dossiermgt.service.persistence.impl.PaymentFileFinderImpl" id="org.opencps.dossiermgt.service.persistence.PaymentFileFinder" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ProcessActionLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessActionLocalService" />
 	<bean class="org.opencps.dossiermgt.service.persistence.impl.ProcessActionPersistenceImpl" id="org.opencps.dossiermgt.service.persistence.ProcessActionPersistence" parent="basePersistence" />
 	<bean class="org.opencps.dossiermgt.service.impl.ProcessOptionLocalServiceImpl" id="org.opencps.dossiermgt.service.ProcessOptionLocalService" />
