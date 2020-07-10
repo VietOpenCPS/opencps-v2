@@ -44,6 +44,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.fds.opencps.paygate.integration.action.PayGateIntegrationAction;
+import org.fds.opencps.paygate.integration.util.KeypayDVCQGTerm;
+import org.fds.opencps.paygate.integration.util.KeypayDVCQGUtils;
 import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.fds.opencps.paygate.integration.util.PayGateUtil;
 import org.opencps.communication.model.ServerConfig;
@@ -80,7 +82,6 @@ import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
-import org.opencps.dossiermgt.service.impl.ServiceInfoLocalServiceImpl;
 
 /**
  * @author trungnt
@@ -683,6 +684,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public String kpCreateTransaction(User user, long groupId, long dossierId, ServiceContext serviceContext) {
 		String result = StringPool.BLANK;
 
+
 		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 		PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 
@@ -691,8 +693,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			HttpURLConnection conn = null;
 			try {
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return result;
 				}
@@ -747,11 +748,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
 				// TODO: 
-				//				MaDonVi,TenDonVi,MaCoQuanQD,TenCoQuanQD
-				//
-				//				MaDonVi: 000.00.00.G17 TenDonVi: Bá»™ XÃ¢y dá»±ng
-				//
-				//				MaCQ vÃ  Ten CQ trÃ¹ng luÃ´n MaDonVi vÃ  TenDonVi
+//				MaDonVi,TenDonVi,MaCoQuanQD,TenCoQuanQD
+//
+//				MaDonVi: 000.00.00.G17 TenDonVi: Bộ Xây dựng
+//
+//				MaCQ và Ten CQ trùng luôn MaDonVi và TenDonVi
 				// bill_info.put(PayGateTerm.MADONVI, dossier.getGovAgencyCode());
 				// bill_info.put(PayGateTerm.TENDONVI, dossier.getGovAgencyName());
 				bill_info.put(PayGateTerm.MADONVI, schema.getString(PayGateTerm.MADONVI));
@@ -782,11 +783,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				bill_info.put(PayGateTerm.TINHNGUOINOP, "");//ko bb
 
 				//lay trong dictItem
-				//				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
-				//				String macoquanqd = serviceInfo != null ? serviceInfo.getAdministrationCode() : StringPool.BLANK;
-				//				String tencoquanqd = serviceInfo != null ? serviceInfo.getAdministrationName() : StringPool.BLANK;
-				//				bill_info.put(PayGateTerm.MACOQUANQD, macoquanqd);//ko xd
-				//				bill_info.put(PayGateTerm.TENCOQUANQD, tencoquanqd);
+//				ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, dossier.getServiceCode());
+//				String macoquanqd = serviceInfo != null ? serviceInfo.getAdministrationCode() : StringPool.BLANK;
+//				String tencoquanqd = serviceInfo != null ? serviceInfo.getAdministrationName() : StringPool.BLANK;
+//				bill_info.put(PayGateTerm.MACOQUANQD, macoquanqd);//ko xd
+//				bill_info.put(PayGateTerm.TENCOQUANQD, tencoquanqd);
 				// TODO: fix MACOQUANQD TENCOQUANQD
 				bill_info.put(PayGateTerm.MACOQUANQD, schema.getString(PayGateTerm.MACOQUANQD));//ko xd
 				bill_info.put(PayGateTerm.TENCOQUANQD, schema.getString(PayGateTerm.TENCOQUANQD));
@@ -814,12 +815,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONObject config = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (dossier.isOnline()) {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE)
-							.getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE).getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				} else {
-					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE)
-							.getString(PayGateTerm.URL_DOMAIN);
+					String returnUrl = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE).getString(PayGateTerm.URL_DOMAIN);
 					data.put(PayGateTerm.RETURN_URL, returnUrl);
 				}
 
@@ -874,15 +873,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					_log.info("response: " + sb.toString());
 
-					JSONObject response = JSONFactoryUtil.createJSONObject(sb.toString());
-
-					if (response.has(PayGateTerm.ERROR_RES_KEY)
-							&& PayGateTerm.ERROR_RES_SUCCESS.equals(response.getString(PayGateTerm.ERROR_RES_KEY))) {
+					JSONObject  response = JSONFactoryUtil.createJSONObject(sb.toString());
+					
+					if(response.has(PayGateTerm.ERROR_RES_KEY) && PayGateTerm.ERROR_RES_SUCCESS.equals(response.getString(PayGateTerm.ERROR_RES_KEY))) {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
-						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
-								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
+						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+								epaymentProfile.toJSONString(), serviceContext);
 					}
 					result = sb.toString();
 					_log.info("result " + result);
@@ -912,8 +910,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			HttpURLConnection conn = null;
 			try {
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return result;
 				}
@@ -1043,8 +1040,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					return PayGateUtil.createResponseMessage(-1, "error: dossier null");
 				}
 
-				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-						.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				if (schema == null) {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
 				}
@@ -1052,13 +1048,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				String client_id_config = schema.getString(PayGateTerm.CLIENT_ID);
 				String command_config = schema.getString(PayGateTerm.COMMAND);
 				String hash_key_2 = schema.getString(PayGateTerm.HASH_KEY_2);
-				String transactionId_tmp = schema.getString(PayGateTerm.TRANSACTION_ID);
+				// String transactionId_tmp = schema.getString(PayGateTerm.TRANSACTION_ID);
 				String version_config = schema.getString(PayGateTerm.VERSION);
 
 				String addition_fee = String.valueOf(paymentFile.getShipAmount());
 				String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
-				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee, client_id_config, trans_amount,
-						command_config, transactionId_tmp, version_config, hash_key_2);
+				String check_sum_tmp = PayGateUtil.generateChecksum(addition_fee,
+						client_id_config, trans_amount, command_config,
+						transaction_id, version_config, hash_key_2);
 				if (!check_sum.equals(check_sum_tmp)) {
 					return PayGateUtil.createResponseMessage(-1, "error: check_sum invalid");
 				}
@@ -1087,6 +1084,58 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		} catch (Exception e) {
 			_log.error(e);
 			return PayGateUtil.createResponseMessage(-1, "error: system exception");
+		}
+	}
+
+	@Override
+	public JSONObject dptracuuthanhtoanhs(User user, ServiceContext serviceContext, String body) {
+
+		JSONObject response = JSONFactoryUtil.createJSONObject();
+		try {
+			_log.info("=======body========" + body);
+			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+			String dossierNo = data.getString(PayGateTerm.MAHOSO);
+			Dossier dossier = null;
+			PaymentFile paymentFile = null;
+
+			if (Validator.isNotNull(dossierNo)) {
+				dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+			}
+
+			_log.info(dossier);
+			if (Validator.isNull(dossierNo) || Validator.isNull(dossier)) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			} else  if (Validator.isNotNull(dossier)) {
+				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			}
+
+			_log.info(paymentFile);
+			if (Validator.isNull(paymentFile) || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			}
+
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+			schema = schema != null ? schema : 
+				JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+			if (schema == null) {
+				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
+				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+				return response;
+			}
+
+			response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_TT);
+			response.put(KeypayDVCQGTerm.MESSAGE_KEY, KeypayDVCQGUtils.dptracuuthanhtoanhs(dossier, paymentFile, schema));
+			return response;
+
+		} catch (Exception e) {
+			_log.error(e);
+			response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
+			response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
+			return response;
 		}
 	}
 
