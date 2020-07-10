@@ -2945,7 +2945,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) !=null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN)) : null;
-
+		String groupDossierIdHs =
+				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2988,7 +2989,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			delegate, vnpostalStatus, fromViaPostal,
-			booleanCommon,donvigui,donvinhan);
+			booleanCommon,donvigui,donvinhan,groupDossierIdHs);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3149,6 +3150,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String donvinhan = params.get(DossierTerm.DON_VI_NHAN) != null
 				? GetterUtil.getString(params.get(DossierTerm.DON_VI_NHAN))
 				: null;
+		String groupDossierIdHs =
+				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS)) != null
+						? GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS))
+						: null;
+
 		
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -3189,7 +3195,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 			documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 			delegate, vnpostalStatus, fromViaPostal,
-			booleanCommon,donvigui,donvinhan);
+			booleanCommon,donvigui,donvinhan,groupDossierIdHs);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3319,7 +3325,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String documentNo, String documentDate, String strSystemId,
 		Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 		String delegate, Integer vnpostalStatus, Integer fromViaPostal,
-		BooleanQuery booleanQuery,String donvigui, String donvinhan)
+		BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs)
 		throws ParseException {
 
 		//Dossier Counter
@@ -3354,9 +3360,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String[] keywordArr = donvigui.split(StringPool.COMMA);
 			BooleanQuery subQuery = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-//				WildcardQuery wildQuery = new WildcardQueryImpl(
-//						DossierTerm.META_DATA,
-//						key.toLowerCase() + StringPool.STAR);
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_GUI);
 				subQuery.add(query, BooleanClauseOccur.SHOULD);
@@ -3367,9 +3370,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String[] keywordArr = donvinhan.split(StringPool.COMMA);
 			BooleanQuery subQuery = new BooleanQueryImpl();
 			for (String key : keywordArr) {
-//				WildcardQuery wildQuery = new WildcardQueryImpl(
-//						DossierTerm.META_DATA,
-//						key.toLowerCase() + StringPool.STAR);
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_NHAN);
 				subQuery.add(query, BooleanClauseOccur.SHOULD);
@@ -4622,6 +4622,31 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				MultiMatchQuery query = new MultiMatchQuery(groupDossierId);
 				query.addFields(DossierTerm.GROUP_DOSSIER_ID);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+		if (Validator.isNotNull(groupDossierIdHs)) {
+			if (groupDossierIdHs.contains(StringPool.COMMA)) {
+				String[] groupDossierArr = StringUtil.split(groupDossierIdHs);
+
+				if (groupDossierArr != null && groupDossierArr.length > 0) {
+					BooleanQuery subQuery = new BooleanQueryImpl();
+					for (int i = 0; i < groupDossierArr.length; i++) {
+						MultiMatchQuery query =
+								new MultiMatchQuery(groupDossierArr[i]);
+						query.addField(DossierTerm.GROUP_DOSSIER_ID);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+					booleanQuery.add(subQuery, BooleanClauseOccur.MUST_NOT);
+				}
+				else {
+					MultiMatchQuery query = new MultiMatchQuery(groupDossierIdHs);
+					query.addFields(DossierTerm.GROUP_DOSSIER_ID);
+					booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+				}
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(groupDossierIdHs);
+				query.addFields(DossierTerm.GROUP_DOSSIER_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 		}
 
