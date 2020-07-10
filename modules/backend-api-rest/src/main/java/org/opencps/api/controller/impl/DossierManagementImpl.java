@@ -537,23 +537,52 @@ public class DossierManagementImpl implements DossierManagement {
 			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 			String donvigui = query.getDonvigui();
 			if(Validator.isNotNull(donvigui)) {
-				if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+				String[] donviguiArr = donvigui.split(StringPool.COMMA);
+			//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
+				boolean firtScopeDVG = false;
+				for (String key : donviguiArr) {
+					if (key.equals(DossierTerm.FIRTSCOPE)) {
+						firtScopeDVG = true;
+					}
+				}
+				if (firtScopeDVG) {
 					if (Validator.isNotNull(employee)) {
-						params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+					    String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						params.put(DossierTerm.DON_VI_GUI, employeeArr[0]);
 					}
 				} else {
-					params.put(DossierTerm.DON_VI_GUI, donvigui);
+					if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+						if (Validator.isNotNull(employee)) {
+							params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+						}
+					} else {
+						params.put(DossierTerm.DON_VI_GUI, donvigui);
+					}
 				}
 			}
 			//Don vi nhan
 			String donvinhan = query.getDonvinhan();
 			if(Validator.isNotNull(donvinhan)) {
-				if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+				String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
+				boolean firtScopeDVN = false;
+				for (String key : donvinhanArr) {
+					if (key.equals(DossierTerm.FIRTSCOPE)) {
+						firtScopeDVN = true;
+					}
+				}
+				if (firtScopeDVN) {
 					if (Validator.isNotNull(employee)) {
-						params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
 					}
 				} else {
-					params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+					if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+						if (Validator.isNotNull(employee)) {
+							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+						}
+					} else {
+						params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+					}
 				}
 			}
 			Sort[] sorts = null;
@@ -1018,6 +1047,9 @@ public class DossierManagementImpl implements DossierManagement {
 			// Add param original
 			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
 			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
+			if(Validator.isNotNull(query.getGroupDossierIdHs())){
+				params.put(DossierTerm.GROUP_DOSSIER_ID_HS, query.getGroupDossierIdHs());
+			}
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
 			Integer vnpostalStatus = query.getVnpostalStatus();
@@ -1598,6 +1630,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			Dossier dossier = DossierUtils.getDossier(id, groupId);
+
 			_log.info("TRACE_LOG_INFO doAction Dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 			_log.info("TRACE_LOG_INFO doAction dueDate: "+dueDate);
 
@@ -1610,6 +1643,7 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.debug(
 					"Dossier: " + dossier + ", action code: " +
 						input.getActionCode());
+
 				if (Validator.isNotNull(dueDate)) {
 					DossierLocalServiceUtil.updateDueDate(
 						groupId, dossier.getDossierId(),
@@ -6314,6 +6348,34 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		return true;
+	}
+
+	@Override
+	public Response removeGroupDossierId(
+			HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			long groupDossierId, long dossierId) {
+		try {
+			String groupDossierIdNew = "";
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(
+					GetterUtil.getLong(dossierId));
+			if(Validator.isNotNull(dossier)){
+				String[] groupDossierIdArr = dossier.getGroupDossierId().split(StringPool.COMMA);
+				for (String groupDossierIdStr : groupDossierIdArr) {
+					if(!groupDossierIdStr.equals(String.valueOf(groupDossierId))){
+						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
+					}
+				}
+				groupDossierIdNew = groupDossierIdNew.substring(1);
+				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
+				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.error(e.getMessage());
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(ConstantUtils.API_JSON_EMPTY_ERROR).build();
+		}
+		return null;
 	}
 
 	@Override

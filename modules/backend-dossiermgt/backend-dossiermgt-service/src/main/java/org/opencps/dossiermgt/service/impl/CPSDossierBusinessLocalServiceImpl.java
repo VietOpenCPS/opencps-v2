@@ -2244,10 +2244,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			ProcessAction proAction, DossierAction previousAction, Dossier dossier, ServiceContext context)
 			throws PortalException {
 
-		String paymentFee = StringPool.BLANK;
-		Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
-		String paymentNote = StringPool.BLANK;
+		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+
+		String paymentFee =  StringPool.BLANK;
+		Long feeAmount =  0l, serviceAmount =  0l, shipAmount =  0l;
+		String paymentNote =  StringPool.BLANK;
 		long advanceAmount = 0l;
+		if (Validator.isNotNull(oldPaymentFile))
+		{
+			paymentFee = Validator.isNotNull(oldPaymentFile.getPaymentFee()) ? oldPaymentFile.getPaymentFee() : StringPool.BLANK;
+			feeAmount = Validator.isNotNull(oldPaymentFile.getFeeAmount()) ? oldPaymentFile.getFeeAmount() : 0l;
+			serviceAmount = Validator.isNotNull(oldPaymentFile.getServiceAmount()) ? oldPaymentFile.getServiceAmount() : 0l;
+			shipAmount = Validator.isNotNull(oldPaymentFile.getShipAmount()) ? oldPaymentFile.getShipAmount() : 0l;
+			paymentNote = Validator.isNotNull(oldPaymentFile.getPaymentNote()) ? oldPaymentFile.getPaymentNote() : StringPool.BLANK;
+			advanceAmount = Validator.isNotNull(oldPaymentFile.getAdvanceAmount()) ? oldPaymentFile.getAdvanceAmount() : 0l;
+		}
 		//long paymentAmount = 0l;
 		String epaymentProfile = StringPool.BLANK;
 		String bankInfo = StringPool.BLANK;
@@ -2293,7 +2304,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} catch (ParseException e) {
 			_log.debug(e);
 		}
-		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+
 
 		if (oldPaymentFile != null) {
 			if (Validator.isNotNull(paymentMethod)) {

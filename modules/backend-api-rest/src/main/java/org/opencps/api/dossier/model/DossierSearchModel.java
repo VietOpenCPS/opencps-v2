@@ -286,7 +286,16 @@ public class DossierSearchModel {
     protected String donvigui;
 	@QueryParam(value = "donvinhan")
     protected String donvinhan;
+	@QueryParam(value = "groupDossierIdHs")
+	protected String groupDossierIdHs;
 
+	public String getGroupDossierIdHs() {
+		return groupDossierIdHs;
+	}
+
+	public void setGroupDossierIdHs(String groupDossierIdHs) {
+		this.groupDossierIdHs = groupDossierIdHs;
+	}
 
 	public String getDonvigui() {
 		return donvigui;

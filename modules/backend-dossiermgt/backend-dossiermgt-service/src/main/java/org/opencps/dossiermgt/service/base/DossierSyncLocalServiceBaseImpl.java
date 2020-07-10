@@ -80,6 +80,7 @@ import org.opencps.dossiermgt.service.persistence.NewsBoardPersistence;
 import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
 import org.opencps.dossiermgt.service.persistence.NotarizationPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.PaymentFileFinder;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessOptionPersistence;
@@ -1701,6 +1702,24 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the payment file finder.
+	 *
+	 * @return the payment file finder
+	 */
+	public PaymentFileFinder getPaymentFileFinder() {
+		return paymentFileFinder;
+	}
+
+	/**
+	 * Sets the payment file finder.
+	 *
+	 * @param paymentFileFinder the payment file finder
+	 */
+	public void setPaymentFileFinder(PaymentFileFinder paymentFileFinder) {
+		this.paymentFileFinder = paymentFileFinder;
+	}
+
+	/**
 	 * Returns the process action local service.
 	 *
 	 * @return the process action local service
@@ -2743,6 +2762,8 @@ public abstract class DossierSyncLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.PaymentFileLocalService paymentFileLocalService;
 	@BeanReference(type = PaymentFilePersistence.class)
 	protected PaymentFilePersistence paymentFilePersistence;
+	@BeanReference(type = PaymentFileFinder.class)
+	protected PaymentFileFinder paymentFileFinder;
 	@BeanReference(type = org.opencps.dossiermgt.service.ProcessActionLocalService.class)
 	protected org.opencps.dossiermgt.service.ProcessActionLocalService processActionLocalService;
 	@BeanReference(type = ProcessActionPersistence.class)

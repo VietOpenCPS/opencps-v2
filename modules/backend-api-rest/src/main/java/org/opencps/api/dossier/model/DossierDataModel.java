@@ -215,7 +215,8 @@ import javax.xml.bind.annotation.XmlType;
     "vnpostalProfile",
     "fromViaPostal",
 	"donvigui",
-	"donvinhan"
+	"donvinhan",
+	"groupDossierIdHs"
 })
 public class DossierDataModel {
 
@@ -337,6 +338,15 @@ public class DossierDataModel {
     protected Integer fromViaPostal;
     protected String donvinhan;
     protected String donvigui;
+	protected Long groupDossierIdHs;
+
+	public Long getGroupDossierIdHs() {
+		return groupDossierIdHs;
+	}
+
+	public void setGroupDossierIdHs(Long groupDossierIdHs) {
+		this.groupDossierIdHs = groupDossierIdHs;
+	}
 
 	public String getDonvinhan() {
 		return donvinhan;

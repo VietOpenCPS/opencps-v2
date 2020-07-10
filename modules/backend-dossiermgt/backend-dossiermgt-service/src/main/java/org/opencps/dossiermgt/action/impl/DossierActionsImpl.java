@@ -4032,7 +4032,8 @@ public class DossierActionsImpl implements DossierActions {
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
 			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
 		try {
-			Date dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
+			Date dueDate = new Date();
+			dueDate.setTime(Long.parseLong(strDueDate));
 			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 				String metaData = StringPool.BLANK;

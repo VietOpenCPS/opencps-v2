@@ -82,6 +82,7 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -126,6 +127,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallStatisticRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
+import org.opencps.statistic.rest.fee.model.FeeSearchModel;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.service.DossierStatisticManualFinderService;
@@ -1508,35 +1510,84 @@ public class OpencpsStatisticRestApplication extends Application {
 	@GET
 	@Path("/feedetail")
 	public Response feeDetail(@HeaderParam("groupId") long groupId,
-			@QueryParam("govAgencyCode") String govAgencyCode,
-			@QueryParam("fromStatisticDate") String fromStatisticDate,
-			@QueryParam("toStatisticDate") String toStatisticDate,
-			@QueryParam("start") int start,
-			@QueryParam("end") int end,
-			@QueryParam("paymentStatus") int paymentStatus) {
+			@BeanParam FeeSearchModel query) {
+		
 		DossierActions actions = new DossierActionsImpl();
 		Sort[] sorts = null;
 		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 				true) };
+		
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		
 		if (groupId > 0) {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));			
 		}
 		else {
 			params.put(Field.GROUP_ID, StringPool.BLANK);
 		}
-		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromStatisticDate);
-		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toStatisticDate);
-			
-		if (Validator.isNotNull(govAgencyCode)) {
-			params.put(DossierTerm.AGENCYS, govAgencyCode);
+		
+		String keywordSearch = query.getKeyword();
+		String keySearch = StringPool.BLANK;
+		if (Validator.isNotNull(keywordSearch)) {
+			keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
 		}
+		params.put(Field.KEYWORD_SEARCH, keySearch);
+		
+		if (Validator.isNotNull(query.getGovAgencyCode())) {
+			params.put(DossierTerm.AGENCYS, query.getGovAgencyCode());
+		}
+		
+		
+		String fromDueDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromDueDate());
+		String toDueDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToDueDate());
+		if (Validator.isNotNull(fromDueDate)) {
+			params.put(DossierTerm.FROM_DUEDATE, fromDueDate);
+		}
+		if (Validator.isNotNull(toDueDate)) {
+			params.put(DossierTerm.TO_DUEDATE, toDueDate);
+		}
+		
+		String fromReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReceiveDate());
+		String toReceiveDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReceiveDate());
+		if (Validator.isNotNull(fromReceiveDate)) {
+			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
+		}
+		if (Validator.isNotNull(toReceiveDate)) {
+			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
+		}
+		
+		String fromReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromReleaseDate());
+		String toReleaseDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToReleaseDate());
+		if (Validator.isNotNull(fromReleaseDate)) {
+			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+		}
+		if (Validator.isNotNull(toReleaseDate)) {
+			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
+		}
+		
+		String fromFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromFinishDate());
+		String toFinishDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToFinishDate());
+		if (Validator.isNotNull(fromFinishDate)) {
+			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
+		}
+		if (Validator.isNotNull(toFinishDate)) {
+			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+		}
+		
+		String fromStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromStatisticDate());
+		String toStatisticDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToStatisticDate());
 		if (Validator.isNotNull(fromStatisticDate)) {
-			params.put(DossierTerm.FROM_STATISTIC_DATE, from);
+			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
 		}
 		if (Validator.isNotNull(toStatisticDate)) {
-			params.put(DossierTerm.TO_STATISTIC_DATE, to);
-		}				
+			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
+		}
+		
+		if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+			query.setStart(QueryUtil.ALL_POS);
+			query.setEnd(QueryUtil.ALL_POS);
+		}
+				
 		//Add common params
 		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 		params.put(DossierTerm.SYSTEM_ID, strSystemId);
@@ -1546,20 +1597,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		try {
 			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 			long companyId = company.getCompanyId(); 
-			int startOff = QueryUtil.ALL_POS;
-			int endOff = QueryUtil.ALL_POS;
-			
-			if (start != 0) {
-				startOff = start;			
-			}
-			else {
-			}
-			if (end != 0) {
-				endOff = end;
-			}
-			else {
-			}
-			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
 			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
 			List<GetDossierData> dossierData = new ArrayList<>();
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
@@ -1601,6 +1639,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				}
 			}
 			List<PaymentFile> lstPfs = null;
+			int paymentStatus = query.getPaymentStatus();
 			if (groupId > 0) {
 				if (paymentStatus != -1) {
 					lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
@@ -1638,6 +1677,28 @@ public class OpencpsStatisticRestApplication extends Application {
 						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
 						if (mapPfs.containsKey(dossierId)) {
 							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+
+							String dossierMetaData = doc.get(DossierTerm.META_DATA);
+							JSONObject metaData = JSONFactoryUtil.createJSONObject(dossierMetaData);
+							if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment"))
+							{
+								JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
+								_log.warn("err mutiplie dossierFilePayments[] " );
+								for (int i = 0; i < dossierFilePayments.length() ; i++)
+								{
+									JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
+									if (Validator.isNotNull(dossierFilePayment))
+									{
+										String donGia = dossierFilePayment.getString("don_gia");
+										String recordCount = dossierFilePayment.getString("recordCount");
+										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount))
+										{
+											dossierObj.put("don_gia",donGia);
+											dossierObj.put("recordCount",recordCount);
+										}
+									}
+								}
+							}
 							dossierObj.put("no", count++);
 							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
 							dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
@@ -1647,13 +1708,15 @@ public class OpencpsStatisticRestApplication extends Application {
 							String paymentDate = APIDateTimeUtils.convertDateToString(pf.getModifiedDate(), APIDateTimeUtils._NORMAL_DATE_TIME);
 							dossierObj.put("paymentDate", paymentDate);
 							dossierObj.put("paymentFee", pf.getFeeAmount());
+							dossierObj.put("serviceAmount", pf.getServiceAmount());
 							dossierObj.put("paymentAmount", pf.getPaymentAmount());
-							dossierObj.put("totalAmount", (pf.getFeeAmount() + pf.getPaymentAmount()));
+							dossierObj.put("totalAmount",  pf.getPaymentAmount());
 //							dossierArr.put(dossierObj);			
 							dossierObj.put("domainCode", domainCode);
 							dossierObj.put("domainName", domains.get(domainCode));
 							dossierObj.put("serviceCode", serviceCode);
 							dossierObj.put("serviceName", services.get(serviceCode));
+							dossierObj.put("dossierCounter",doc.get(DossierTerm.DOSSIER_COUNTER));
 							
 							results.put(dossierObj);
 						}

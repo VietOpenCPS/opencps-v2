@@ -151,7 +151,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 			        }
 			        if (dataType != null && "binary".contentEquals(dataType)) {
 					    byte[] bytes = readAllBytes(conn.getInputStream());
-					    
+					   _log.debug("byte result:" + bytes != null);
 						return Response.status(HttpURLConnection.HTTP_OK).entity(bytes).
 								header(HttpHeaders.CONTENT_TYPE, conn.getContentType())
 								.build();			        			        	
@@ -163,12 +163,13 @@ public class ProxyManagementImpl implements ProxyManagement {
 					    while ((cp = brf.read()) != -1) {
 					      sb.append((char) cp);
 					    }
+					    _log.debug("sb.tostring : "+ sb.toString());
 						return Response.status(HttpURLConnection.HTTP_OK).entity(sb.toString()).
 								build();			        			        	
 			        }
 			    }
 				catch (IOException e) {
-					_log.error(e);
+					_log.error("err ",e);
 					_log.debug("Something went wrong while reading/writing in stream!!");
 				}
 			    //return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("").build();
@@ -176,6 +177,7 @@ public class ProxyManagementImpl implements ProxyManagement {
 				return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(StringPool.BLANK).build();
 		}
 		catch (Exception e) {
+			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
