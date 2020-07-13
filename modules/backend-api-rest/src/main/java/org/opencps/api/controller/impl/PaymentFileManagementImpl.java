@@ -947,6 +947,21 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		        	jsonData.put(ConstantUtils.PAYMENTFILE_JSON_GOV_ADDRESS_KEY, StringPool.BLANK);
 		        }
 
+		     // TODO: PP continue
+				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
+						|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+					JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+					JSONObject banksInfo = schema.getJSONObject("BankInfo");
+					JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+					if (banksInfo.has(dossier.getServiceCode())) {
+						bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
+					} else {
+						bankInfo = banksInfo.getJSONObject("default");
+					}
+					jsonData.put("TKThuHuong", bankInfo.get("TKThuHuong"));
+					jsonData.put("MaNHThuHuong", bankInfo.get("MaNHThuHuong"));
+					jsonData.put("TenTKThuHuong", bankInfo.get("TenTKThuHuong"));
+				}
 				//formData = mapper.writeValueAsString(map);
 				_log.info("PREVIEW PAYMENTFILE FORMDATA ============================== " + jsonData);
 				
@@ -1120,6 +1135,21 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				jsonData.put("govAddress", workingUnit.getAddress());
 			} else {
 				jsonData.put("govAddress", "");
+			}
+			// TODO: PP continue
+			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
+					|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
+				JSONObject banksInfo = schema.getJSONObject("BankInfo");
+				JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+				if (banksInfo.has(dossier.getServiceCode())) {
+					bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
+				} else {
+					bankInfo = banksInfo.getJSONObject("default");
+				}
+				jsonData.put("TKThuHuong", bankInfo.get("TKThuHuong"));
+				jsonData.put("MaNHThuHuong", bankInfo.get("MaNHThuHuong"));
+				jsonData.put("TenTKThuHuong", bankInfo.get("TenTKThuHuong"));
 			}
 
 			//formData = mapper.writeValueAsString(map);

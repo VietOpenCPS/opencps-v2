@@ -350,7 +350,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
-			_log.debug(dossier);
+			_log.info(dossier);
 
 			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -487,10 +487,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
 					HashMap<String, String> properties = new HashMap<String, String>();
-					properties.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
+					properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 
 					String endPoint = PayGateTerm.buildPathDoAction(action.getString(PayGateTerm.URL),
-							dossier.getDossierId());
+							dossier.getReferenceUid());
 
 					Map<String, Object> params = new HashMap<String, Object>();
 					params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
@@ -608,7 +608,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			HashMap<String, String> properties = new HashMap<String, String>();
 			properties.put(Field.GROUP_ID, String.valueOf(groupId));
 
-			String endPoint = PayGateTerm.buildPathDoAction(url, dossier.getDossierId());
+			String endPoint = PayGateTerm.buildPathDoAction(url, String.valueOf(dossier.getDossierId()));
 
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put(PayGateTerm.ACTION_CODE, actionCode);
@@ -1065,7 +1065,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				if (status == 0) {
 
-					boolean doAction = doAction(user, paymentFile.getGroupId(), dossier, paymentFile, serviceContext);
+					boolean doAction = doAction(user, paymentFile.getGroupId(), dossier, paymentFile, data, serviceContext);
 
 					if (doAction) {
 						return PayGateUtil.createResponseMessage(0, "success");
@@ -1137,7 +1137,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		}
 	}
 
-	private boolean doAction(User user, long groupId, Dossier dossier, PaymentFile paymentFile,
+	private boolean doAction(User user, long groupId, Dossier dossier, PaymentFile paymentFile, JSONObject paymentConfirm,
 			ServiceContext serviceContext) {
 
 		try {
@@ -1164,13 +1164,13 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				// Change payment Status = 5
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
 						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG,
-						JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+						paymentConfirm.toJSONString(), serviceContext);
 
 				HashMap<String, String> properties = new HashMap<String, String>();
 
-				properties.put(Field.GROUP_ID, String.valueOf(groupId));
+				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 
-				String endPoint = PayGateTerm.buildPathDoAction(url, dossier.getDossierId());
+				String endPoint = PayGateTerm.buildPathDoAction(url, String.valueOf(dossier.getDossierId()));
 
 				Map<String, Object> params = new HashMap<String, Object>();
 
@@ -1227,16 +1227,16 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			} else {
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
 						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG,
-						JSONFactoryUtil.createJSONObject().toJSONString(), serviceContext);
+						paymentConfirm.toJSONString(), serviceContext);
 
 				action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
 
 				HashMap<String, String> properties = new HashMap<String, String>();
 
-				properties.put(Field.GROUP_ID, String.valueOf(dossier.getGroupId()));
+				properties.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 
 				String endPoint = PayGateTerm.buildPathDoAction(action.getString(PayGateTerm.URL),
-						dossier.getDossierId());
+						dossier.getReferenceUid());
 
 				Map<String, Object> params = new HashMap<String, Object>();
 
