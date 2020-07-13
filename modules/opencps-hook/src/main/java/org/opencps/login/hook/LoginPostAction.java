@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 /**
  * 
  * @author binhth
- * @see LoginPostAction.class
+ * @see LoginPostAction
  */
 @Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class LoginPostAction implements LifecycleAction {

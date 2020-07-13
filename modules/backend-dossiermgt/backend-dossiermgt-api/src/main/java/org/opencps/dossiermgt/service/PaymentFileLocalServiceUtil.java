@@ -278,6 +278,10 @@ public class PaymentFileLocalServiceUtil {
 		return getService().findByPT(paymentStatus);
 	}
 
+	public static String findSumPaymentAmountDay(long groupId, String date) {
+		return getService().findSumPaymentAmountDay(groupId, date);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
 	}

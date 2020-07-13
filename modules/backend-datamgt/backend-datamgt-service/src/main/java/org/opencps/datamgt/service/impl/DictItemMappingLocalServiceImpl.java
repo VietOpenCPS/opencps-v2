@@ -14,13 +14,23 @@
 
 package org.opencps.datamgt.service.impl;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
 
+import org.opencps.datamgt.constants.DictItemTerm;
+import org.opencps.datamgt.exception.NoSuchDictItemException;
+import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemMapping;
 import org.opencps.datamgt.service.base.DictItemMappingLocalServiceBaseImpl;
 
@@ -74,5 +84,54 @@ public class DictItemMappingLocalServiceImpl
 	public List<DictItemMapping> findByF_GID_CID(long groupId, long collectionId){
 		return dictItemMappingPersistence.findByF_GID_CID(groupId, collectionId);
 	}
-	
+
+	// super_admin Generators
+	@Indexable(type = IndexableType.DELETE)
+	public DictItemMapping adminProcessDelete(Long id) {
+
+		DictItemMapping object = dictItemMappingPersistence.fetchByPrimaryKey(id);
+
+		if (Validator.isNull(object)) {
+			return null;
+		} else {
+			dictItemMappingPersistence.remove(object);
+		}
+
+		return object;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	public DictItemMapping adminProcessData(JSONObject objectData) {
+
+		DictItemMapping object = null;
+
+		if (objectData.getLong("mappingId") > 0) {
+
+			object = dictItemMappingPersistence.fetchByPrimaryKey(objectData.getLong("mappingId"));
+
+			object.setModifiedDate(new Date());
+
+		} else {
+
+			long id = CounterLocalServiceUtil.increment(DictItemMapping.class.getName());
+
+			object = dictItemMappingPersistence.create(id);
+
+			object.setGroupId(objectData.getLong(Field.GROUP_ID));
+			object.setCompanyId(objectData.getLong(Field.COMPANY_ID));
+			object.setCreateDate(new Date());
+			object.setModifiedDate(new Date());
+
+		}
+
+		object.setUserId(objectData.getLong(DictItemTerm.USER_ID));
+		object.setUserName(objectData.getString(Field.USER_NAME));
+
+		object.setItemCode(objectData.getString(DictItemTerm.ITEM_CODE));
+		object.setItemCodeDVCQG(objectData.getString("itemCodeDVCQG"));
+		object.setCollectionId(objectData.getLong("collectionId"));
+
+		return dictItemMappingPersistence.update(object);
+
+	}
 }

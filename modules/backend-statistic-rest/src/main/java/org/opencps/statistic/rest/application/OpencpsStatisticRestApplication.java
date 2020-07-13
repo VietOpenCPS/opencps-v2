@@ -1677,6 +1677,28 @@ public class OpencpsStatisticRestApplication extends Application {
 						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
 						if (mapPfs.containsKey(dossierId)) {
 							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+
+							String dossierMetaData = doc.get(DossierTerm.META_DATA);
+							JSONObject metaData = JSONFactoryUtil.createJSONObject(dossierMetaData);
+							if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment"))
+							{
+								JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
+								_log.warn("err mutiplie dossierFilePayments[] " );
+								for (int i = 0; i < dossierFilePayments.length() ; i++)
+								{
+									JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
+									if (Validator.isNotNull(dossierFilePayment))
+									{
+										String donGia = dossierFilePayment.getString("don_gia");
+										String recordCount = dossierFilePayment.getString("recordCount");
+										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount))
+										{
+											dossierObj.put("don_gia",donGia);
+											dossierObj.put("recordCount",recordCount);
+										}
+									}
+								}
+							}
 							dossierObj.put("no", count++);
 							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
 							dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
@@ -1694,6 +1716,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							dossierObj.put("domainName", domains.get(domainCode));
 							dossierObj.put("serviceCode", serviceCode);
 							dossierObj.put("serviceName", services.get(serviceCode));
+							dossierObj.put("dossierCounter",doc.get(DossierTerm.DOSSIER_COUNTER));
 							
 							results.put(dossierObj);
 						}
