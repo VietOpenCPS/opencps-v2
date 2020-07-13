@@ -288,6 +288,26 @@ public class DossierSearchModel {
     protected String donvinhan;
 	@QueryParam(value = "groupDossierIdHs")
 	protected String groupDossierIdHs;
+	@QueryParam(value = "groupServiceCode")
+	protected boolean groupServiceCode;
+	@QueryParam(value = "searchGovAgencyCode")
+	protected String searchGovAgencyCode;
+
+	public String getSearchGovAgencyCode() {
+		return searchGovAgencyCode;
+	}
+
+	public void setSearchGovAgencyCode(String searchGovAgencyCode) {
+		this.searchGovAgencyCode = searchGovAgencyCode;
+	}
+
+	public boolean isGroupServiceCode() {
+		return groupServiceCode;
+	}
+
+	public void setGroupServiceCode(boolean groupServiceCode) {
+		this.groupServiceCode = groupServiceCode;
+	}
 
 	public String getGroupDossierIdHs() {
 		return groupDossierIdHs;

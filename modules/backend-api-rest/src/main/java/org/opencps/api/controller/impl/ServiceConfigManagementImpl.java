@@ -503,7 +503,7 @@ public class ServiceConfigManagementImpl implements ServiceConfigManagement {
 		}
 		List<ServiceConfig> lstTempConfigs = new ArrayList<ServiceConfig>();
 		try {
-			lstTempConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+			lstTempConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId,"",user.getUserId());
 		}
 		catch (Exception e) {
 			_log.debug(e);
