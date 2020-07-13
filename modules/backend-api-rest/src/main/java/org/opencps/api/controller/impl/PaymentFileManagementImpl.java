@@ -1186,15 +1186,11 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	public Response checkHashKeyPay(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
 		ServiceContext serviceContext, KeyPayResultInput input)
 	{
-		BackendAuth auth = new BackendAuthImpl();
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String paymentMerchantSecureKey = StringPool.BLANK;
 
 		try
 		{
-			if (!auth.isAuth(serviceContext))
-				throw new UnauthenticationException();
-
 			String dossierId = input.getDossierId();
 			Dossier dossier = DossierUtils.getDossier(dossierId,groupId);
 			String govAgencyCode = dossier.getGovAgencyCode();

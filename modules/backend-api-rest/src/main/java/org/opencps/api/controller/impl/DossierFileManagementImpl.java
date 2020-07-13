@@ -184,6 +184,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
 			}
+
 			DossierFile dossierFile =
 				CPSDossierBusinessLocalServiceUtil.addDossierFileByDossierId(
 					groupId, company, user, serviceContext, file, id,

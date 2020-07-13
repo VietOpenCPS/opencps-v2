@@ -39,5 +39,6 @@ public interface ESBEgovManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
 	public Response getESBCounter(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("dossierId") String dossierId);
+			@Context ServiceContext serviceContext, @QueryParam("dossierId") String dossierId,
+			@QueryParam("dossierNo") String dossierNo);
 }

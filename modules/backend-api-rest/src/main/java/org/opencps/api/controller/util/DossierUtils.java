@@ -508,6 +508,9 @@ public class DossierUtils {
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
+			if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS))) {
+				model.setGroupDossierIdHs(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS)));
+			}
 			model.setDelegateType(GetterUtil.getInteger(doc.get(DossierTerm.DELEGATE_TYPE)));
 			model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
 			if (Validator.isNotNull(doc.get(DossierTerm.DOCUMENT_DATE))) {

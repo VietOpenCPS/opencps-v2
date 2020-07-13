@@ -781,8 +781,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			if (Validator.isNotNull(strGroupDossierId) && strGroupDossierId.contains(StringPool.COMMA)) {
 				strGroupDossierId = StringUtil.replace(strGroupDossierId, StringPool.COMMA, StringPool.SPACE);
 				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID, strGroupDossierId);
+				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID_HS, strGroupDossierId);
 			} else {
 				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID, strGroupDossierId);
+				document.addTextSortable(DossierTerm.GROUP_DOSSIER_ID_HS, strGroupDossierId);
 			}
 			
 			// add domainCode to dossier

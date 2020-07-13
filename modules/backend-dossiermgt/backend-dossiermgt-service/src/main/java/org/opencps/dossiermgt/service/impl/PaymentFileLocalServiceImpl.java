@@ -938,6 +938,11 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		return paymentFile;
 	}
+	public String findSumPaymentAmountDay(long groupId,String date)
+	{
+		_log.info("groupId" + groupId + "date " +date);
+		return paymentFileFinder.findSumPaymentAmountDay(groupId,date,0,2);
+	}
 	
 	public List<PaymentFile> findByG_PT(long groupId, int paymentStatus) {
 		return paymentFilePersistence.findByG_PT(groupId, paymentStatus);

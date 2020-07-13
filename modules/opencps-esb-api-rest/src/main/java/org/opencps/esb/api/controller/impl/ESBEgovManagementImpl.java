@@ -1,10 +1,7 @@
 package org.opencps.esb.api.controller.impl;
 
-import com.inet.api.AuthClientException;
 import com.inet.api.iws.services.knobstick.KnobstickServiceAsync;
 import com.inet.api.iws.services.knobstick.KnobstickServiceAsyncClient;
-import com.inet.api.iws.services.knobstick.model.CheckSendKnobstickStatusRequest;
-import com.inet.api.iws.services.knobstick.model.CheckSendKnobstickStatusResult;
 import com.inet.api.iws.services.knobstick.model.DeliverKnobstickRequest;
 import com.inet.api.iws.services.knobstick.model.SendKnobstickRequest;
 import com.inet.api.iws.services.knobstick.model.SendKnobstickResult;
@@ -23,7 +20,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +39,7 @@ public class ESBEgovManagementImpl implements ESBEgovManagement{
 	private static final Log _log = LogFactoryUtil.getLog(ESBEgovManagementImpl.class);
 	@Override
 	public Response getESBCounter(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-			User user, ServiceContext serviceContext, String id) {
+			User user, ServiceContext serviceContext, String id, String dossierNo) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long dossierId = GetterUtil.getLong(id);
@@ -56,10 +52,7 @@ public class ESBEgovManagementImpl implements ESBEgovManagement{
 			}
 			if (dossier != null) {
 				System.out.println("dossier: " + JSONFactoryUtil.looseSerialize(dossier));
-				
-				// Noi dung file edxml
-				Content content = BuildEdXMLUtils.buildEdXMLSender(dossier, groupId);
-				System.out.println(" Content: " + content.toString());
+
 				// Send message
 				HoraeCredentialsProvider credentialsProvider = new HoraeCredentialsProvider();
 				ClientConfigurationProvider clientConfigurationProvider = new ClientConfigurationProvider();
@@ -72,6 +65,11 @@ public class ESBEgovManagementImpl implements ESBEgovManagement{
 
 				GetSlotResult slotResult = slotServiceAsync.requestSlot(new GetSlotRequest().withType("edoc"));
 				System.out.println("Slot information = [" + slotResult + "]");
+				
+				// Noi dung file edxml
+				Content content = BuildEdXMLUtils.buildEdXMLSender(dossier, dossierNo, groupId);
+//				Content content = BuildEdXMLUtils.getContent();
+				System.out.println(" Content: " + content.toString());
 
 				if (content != null && slotResult != null) {
 					SendKnobstickResult result = knobstickService
@@ -87,8 +85,8 @@ public class ESBEgovManagementImpl implements ESBEgovManagement{
 					}
 					
 					// check send
-					CheckSendKnobstickStatusResult result111 = knobstickService.checkSendKnobstickStatus(
-							new CheckSendKnobstickStatusRequest().withKnobstickId(result.getKnobstick().getId()));
+					//CheckSendKnobstickStatusResult result111 = knobstickService.checkSendKnobstickStatus(
+					//		new CheckSendKnobstickStatusRequest().withKnobstickId(result.getKnobstick().getId()));
 				}
 
 

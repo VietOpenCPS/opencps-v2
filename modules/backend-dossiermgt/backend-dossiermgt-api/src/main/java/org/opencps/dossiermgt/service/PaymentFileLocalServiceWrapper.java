@@ -291,6 +291,11 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public String findSumPaymentAmountDay(long groupId, String date) {
+		return _paymentFileLocalService.findSumPaymentAmountDay(groupId, date);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _paymentFileLocalService.getActionableDynamicQuery();
 	}
