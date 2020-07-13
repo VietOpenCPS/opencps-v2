@@ -541,7 +541,7 @@ public class DossierManagementImpl implements DossierManagement {
 			//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
 				boolean firtScopeDVG = false;
 				for (String key : donviguiArr) {
-					if (key.equals(DossierTerm.FIRTSCOPE)) {
+					if (key.equals(DossierTerm.FIRSTSCOPE)) {
 						firtScopeDVG = true;
 					}
 				}
@@ -566,7 +566,7 @@ public class DossierManagementImpl implements DossierManagement {
 				String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
 				boolean firtScopeDVN = false;
 				for (String key : donvinhanArr) {
-					if (key.equals(DossierTerm.FIRTSCOPE)) {
+					if (key.equals(DossierTerm.FIRSTSCOPE)) {
 						firtScopeDVN = true;
 					}
 				}

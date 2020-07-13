@@ -2265,6 +2265,600 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	private static final String _FINDER_COLUMN_G__GROUPID_2 = "serviceConfig.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SERVICE_CODE =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByG_SERVICE_CODE",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByG_SERVICE_CODE",
+			new String[] { Long.class.getName(), String.class.getName() },
+			ServiceConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			ServiceConfigModelImpl.GOVAGENCYCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_SERVICE_CODE = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SERVICE_CODE",
+			new String[] { Long.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @return the matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode) {
+		return findByG_SERVICE_CODE(groupId, govAgencyCode, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @return the range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end) {
+		return findByG_SERVICE_CODE(groupId, govAgencyCode, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		return findByG_SERVICE_CODE(groupId, govAgencyCode, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE;
+			finderArgs = new Object[] { groupId, govAgencyCode };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_SERVICE_CODE;
+			finderArgs = new Object[] {
+					groupId, govAgencyCode,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceConfig>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceConfig serviceConfig : list) {
+					if ((groupId != serviceConfig.getGroupId()) ||
+							!Objects.equals(govAgencyCode,
+								serviceConfig.getGovAgencyCode())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SERVICE_CODE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (!pagination) {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByG_SERVICE_CODE_First(long groupId,
+		String govAgencyCode, OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByG_SERVICE_CODE_First(groupId,
+				govAgencyCode, orderByComparator);
+
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the first service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByG_SERVICE_CODE_First(long groupId,
+		String govAgencyCode, OrderByComparator<ServiceConfig> orderByComparator) {
+		List<ServiceConfig> list = findByG_SERVICE_CODE(groupId, govAgencyCode,
+				0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByG_SERVICE_CODE_Last(long groupId,
+		String govAgencyCode, OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByG_SERVICE_CODE_Last(groupId,
+				govAgencyCode, orderByComparator);
+
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByG_SERVICE_CODE_Last(long groupId,
+		String govAgencyCode, OrderByComparator<ServiceConfig> orderByComparator) {
+		int count = countByG_SERVICE_CODE(groupId, govAgencyCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServiceConfig> list = findByG_SERVICE_CODE(groupId, govAgencyCode,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param serviceConfigId the primary key of the current service config
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next service config
+	 * @throws NoSuchServiceConfigException if a service config with the primary key could not be found
+	 */
+	@Override
+	public ServiceConfig[] findByG_SERVICE_CODE_PrevAndNext(
+		long serviceConfigId, long groupId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = findByPrimaryKey(serviceConfigId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ServiceConfig[] array = new ServiceConfigImpl[3];
+
+			array[0] = getByG_SERVICE_CODE_PrevAndNext(session, serviceConfig,
+					groupId, govAgencyCode, orderByComparator, true);
+
+			array[1] = serviceConfig;
+
+			array[2] = getByG_SERVICE_CODE_PrevAndNext(session, serviceConfig,
+					groupId, govAgencyCode, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ServiceConfig getByG_SERVICE_CODE_PrevAndNext(Session session,
+		ServiceConfig serviceConfig, long groupId, String govAgencyCode,
+		OrderByComparator<ServiceConfig> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+		query.append(_FINDER_COLUMN_G_SERVICE_CODE_GROUPID_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(serviceConfig);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ServiceConfig> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the service configs where groupId = &#63; and govAgencyCode = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 */
+	@Override
+	public void removeByG_SERVICE_CODE(long groupId, String govAgencyCode) {
+		for (ServiceConfig serviceConfig : findByG_SERVICE_CODE(groupId,
+				govAgencyCode, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(serviceConfig);
+		}
+	}
+
+	/**
+	 * Returns the number of service configs where groupId = &#63; and govAgencyCode = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param govAgencyCode the gov agency code
+	 * @return the number of matching service configs
+	 */
+	@Override
+	public int countByG_SERVICE_CODE(long groupId, String govAgencyCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_SERVICE_CODE;
+
+		Object[] finderArgs = new Object[] { groupId, govAgencyCode };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_G_SERVICE_CODE_GROUPID_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_SERVICE_CODE_GROUPID_2 = "serviceConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_1 = "serviceConfig.govAgencyCode IS NULL";
+	private static final String _FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_2 = "serviceConfig.govAgencyCode = ?";
+	private static final String _FINDER_COLUMN_G_SERVICE_CODE_GOVAGENCYCODE_3 = "(serviceConfig.govAgencyCode IS NULL OR serviceConfig.govAgencyCode = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SID =
 		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
@@ -4304,6 +4898,15 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 			args = new Object[] {
 					serviceConfigModelImpl.getGroupId(),
+					serviceConfigModelImpl.getGovAgencyCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SERVICE_CODE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE,
+				args);
+
+			args = new Object[] {
+					serviceConfigModelImpl.getGroupId(),
 					serviceConfigModelImpl.getServiceInfoId()
 				};
 
@@ -4384,6 +4987,29 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_,
+					args);
+			}
+
+			if ((serviceConfigModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serviceConfigModelImpl.getOriginalGroupId(),
+						serviceConfigModelImpl.getOriginalGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SERVICE_CODE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE,
+					args);
+
+				args = new Object[] {
+						serviceConfigModelImpl.getGroupId(),
+						serviceConfigModelImpl.getGovAgencyCode()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_SERVICE_CODE,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_SERVICE_CODE,
 					args);
 			}
 
