@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,6 +61,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.utils.DictCollectionUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.exception.HasExsistException;
 import org.opencps.dossiermgt.exception.RequiredAgencyCodeException;
@@ -73,6 +75,9 @@ import org.opencps.dossiermgt.model.impl.ServiceConfigImpl;
 import org.opencps.dossiermgt.service.base.ServiceConfigLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.persistence.EmployeeUtil;
 
 /**
  * The implementation of the service config local service.
@@ -125,10 +130,20 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 
 	int ttl = OpenCPSConfigUtil.getCacheTTL();
 	
-	public List<ServiceConfig> getByGroupId(long groupId) throws PortalException, SystemException {
+	public List<ServiceConfig> getByGroupId(long groupId,String searchGovAgencyCode,long userId) throws PortalException, SystemException {
 		Serializable lstServiceConfigs = null;
+		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		String[] employeeArr = employee.getScope().split(StringPool.COMMA);
 		try {
-			lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.BLANK);
+			if(Validator.isNotNull(searchGovAgencyCode)) {
+				if (searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)) {
+					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + employeeArr[0]);
+				}else{
+					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + searchGovAgencyCode);
+				}
+			}else{
+				lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + StringPool.BLANK);
+			}
 		} catch (PortalException e) {
 			_log.debug(e);
 		}
@@ -136,8 +151,26 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			return (List<ServiceConfig>)lstServiceConfigs;
 		}
 		else {
-			List<ServiceConfig> tempServiceConfigs = serviceConfigPersistence.findByG_(groupId);
-			if (tempServiceConfigs != null) {
+			List<ServiceConfig> tempServiceConfigs = new ArrayList<>();
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			if(Validator.isNotNull(searchGovAgencyCode)){
+				if(searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)){
+					if(Validator.isNotNull(employee)){
+//						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						tempServiceConfigs = serviceConfigPersistence.findByG_SERVICE_CODE(groupId,employeeArr[0]);
+						cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+								groupId + employeeArr[0], (Serializable)tempServiceConfigs, ttl);
+					}
+				}else{
+					if(Validator.isNotNull(employee)){
+						tempServiceConfigs = serviceConfigPersistence.findByG_SERVICE_CODE(groupId,searchGovAgencyCode);
+						cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
+								groupId + searchGovAgencyCode, (Serializable)tempServiceConfigs, ttl);
+					}
+				}
+			}
+			else {
+				tempServiceConfigs = serviceConfigPersistence.findByG_(groupId);
 				cache.addToCache(SERVICE_CONFIG_CACHE_NAME,
 						groupId + StringPool.BLANK, (Serializable)tempServiceConfigs, ttl);
 			}
