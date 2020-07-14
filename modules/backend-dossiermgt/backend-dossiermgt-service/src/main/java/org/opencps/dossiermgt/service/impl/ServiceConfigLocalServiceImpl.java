@@ -133,7 +133,9 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	public List<ServiceConfig> getByGroupId(long groupId,String searchGovAgencyCode,long userId) throws PortalException, SystemException {
 		Serializable lstServiceConfigs = null;
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-		String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+		String scope = employee != null ? employee.getScope(): StringPool.BLANK;
+		
+		String[] employeeArr = Validator.isNotNull(scope) ? scope.split(StringPool.COMMA) : null;
 		try {
 			if(Validator.isNotNull(searchGovAgencyCode)) {
 				if (searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)) {
