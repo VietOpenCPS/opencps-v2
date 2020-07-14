@@ -348,7 +348,7 @@ public interface PaymentFileManagement {
 			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id,
 			@ApiParam(value = "body params for post", required = true) @BeanParam PaymentFileInputModel input);
 
-	@GET
+	@POST
 	@Path("/checkkeypay")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@ApiOperation(value = "check hash code key pay")

@@ -1184,11 +1184,11 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 		}
 		else {
 
-			int checkExitsEmp = employeePersistence.countByF_email(objectData.getLong("groupId"), objectData.getString("email"));
+			int checkExitsEmp = employeePersistence.countByF_email(objectData.getLong(Field.GROUP_ID), objectData.getString(EmployeeTerm.EMAIL));
 			if (checkExitsEmp > 0) {
 				throw new DuplicateEmployeeEmailException("email_exits");
 			} else {
-				checkExitsEmp = employeePersistence.countByF_employeeNo(objectData.getLong("groupId"), objectData.getString("employeeNo"));
+				checkExitsEmp = employeePersistence.countByF_employeeNo(objectData.getLong(Field.GROUP_ID), objectData.getString(EmployeeTerm.EMPLOYEE_NO));
 				if (checkExitsEmp > 0) {
 					throw new DuplicateEmployeeEmailException("employeeNo_exits");
 				}
@@ -1216,6 +1216,15 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			//user = UserLocalServiceUtil.fetchUser(20139);
 			//_log.info("userHe Thong: "+JSONFactoryUtil.looseSerialize(user));
 			//User
+		} else if (objectData.getInt(EmployeeTerm.WORKING_STATUS) == EmployeeTerm.WORKING_STATUS_WORKED) {
+
+			List<Employee> emps = employeePersistence.findByEmail(objectData.getString(EmployeeTerm.EMAIL));
+			for (Employee e : emps) {
+				if (e.getMappingUserId() > 0) {
+					object.setMappingUserId(e.getMappingUserId());
+					break;
+				}
+			}
 		}
 
 		object.setUserId(objectData.getLong(EmployeeTerm.USER_ID));
@@ -1274,7 +1283,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			}
 		}
 		_log.debug("object" + object);
-		_log.debug("objectData" + objectData);
+		_log.debug("objectData" + objectData.toJSONString());
 		return employeePersistence.update(object);
 
 	}

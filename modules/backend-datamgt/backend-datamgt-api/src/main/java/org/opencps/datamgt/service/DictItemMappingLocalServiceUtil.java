@@ -54,6 +54,16 @@ public class DictItemMappingLocalServiceUtil {
 		return getService().addDictItemMapping(dictItemMapping);
 	}
 
+	public static org.opencps.datamgt.model.DictItemMapping adminProcessData(
+		com.liferay.portal.kernel.json.JSONObject objectData) {
+		return getService().adminProcessData(objectData);
+	}
+
+	public static org.opencps.datamgt.model.DictItemMapping adminProcessDelete(
+		Long id) {
+		return getService().adminProcessDelete(id);
+	}
+
 	/**
 	* Creates a new dict item mapping with the primary key. Does not add the dict item mapping to the database.
 	*

@@ -114,6 +114,7 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierPermission;
 import org.opencps.dossiermgt.action.impl.DossierUserActionsImpl;
+import org.opencps.dossiermgt.action.util.AccentUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConfigCounterNumberGenerator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
@@ -268,8 +269,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//Create new HSLT
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 
-			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String createDossiers = proAction.getCreateDossiers();
+			if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
+				
+			}
+			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, proAction.getCreateDossiers());
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
 			String dossierTemplateNo = dossier.getDossierTemplateNo();
@@ -1081,129 +1085,129 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							dateOption = Integer.valueOf(strDateOption);
 						}
 					}
-					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CALL_API));
-					if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
-						String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
-						if (Validator.isNotNull(serverNo)) {
-							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
-							if (serverConfig != null) {
-								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-								//
-								String method = StringPool.BLANK;
-								if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
-									method = configObj.getString(KeyPayTerm.METHOD);
-									System.out.println("method: " + method);
-								}
-								//params
-								JSONObject jsonParams = null;
-								if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
-									jsonParams = JSONFactoryUtil
-											.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
-								}
-								if (jsonParams != null) {
-									JSONObject jsonHeader = JSONFactoryUtil
-											.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
-									JSONObject jsonBody = JSONFactoryUtil
-											.createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
-
-									String authStrEnc = StringPool.BLANK;
-									String apiUrl = StringPool.BLANK;
-									StringBuilder sb = new StringBuilder();
-									try {
-										URL urlVal = null;
-										String groupIdRequest = StringPool.BLANK;
-										StringBuilder postData = new StringBuilder();
-										Iterator<?> keys = jsonBody.keys();
-										while (keys.hasNext()) {
-											String key = (String) keys.next();
-											if (!StringPool.BLANK.equals(postData.toString())) {
-												postData.append(StringPool.AMPERSAND);
-											}
-											postData.append(key);
-											postData.append(StringPool.EQUAL);
-											postData.append(jsonBody.get(key));
-										}
-
-										if (configObj.has(SyncServerTerm.SERVER_USERNAME)
-												&& configObj.has(SyncServerTerm.SERVER_SECRET)
-												&& Validator
-														.isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
-												&& Validator
-														.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
-											authStrEnc = Base64.getEncoder()
-													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
-															+ StringPool.COLON
-															+ configObj.getString(SyncServerTerm.SERVER_SECRET))
-																	.getBytes());
-										}
-										if (configObj.has(SyncServerTerm.SERVER_URL)) {
-											apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
-											if (apiUrl.contains("{_dossierId}")) {
-												apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossierId));
-											}
-											if (apiUrl.contains("{_dossierCounter}")) {
-												apiUrl = apiUrl.replace("{_dossierCounter}",
-														String.valueOf(dossier.getDossierCounter()));
-											}
-										}
-										if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
-											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
-										}
-										if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
-											if (jsonHeader.has(Field.GROUP_ID)) {
-												groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
-											}
-										}
-
-										if (HttpMethods.GET.equals(method)) {
-											if (Validator.isNotNull(postData.toString())) {
-												urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
-											} else {
-												urlVal = new URL(apiUrl);
-											}
-										} else {
-											urlVal = new URL(apiUrl);
-										}
-										_log.debug("API URL: " + apiUrl);
-										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
-												.openConnection();
-										conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
-										conn.setRequestMethod(method);
-										conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-										if (Validator.isNotNull(authStrEnc)) {
-											conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
-										}
-										if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
-											conn.setRequestProperty(HttpHeaders.CONTENT_TYPE,
-													MediaType.APPLICATION_FORM_URLENCODED);
-											conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, StringPool.BLANK
-													+ Integer.toString(postData.toString().getBytes().length));
-
-											conn.setUseCaches(false);
-											conn.setDoInput(true);
-											conn.setDoOutput(true);
-											_log.debug("POST DATA: " + postData.toString());
-											OutputStream os = conn.getOutputStream();
-											os.write(postData.toString().getBytes());
-											os.close();
-										}
-
-										BufferedReader brf = new BufferedReader(
-												new InputStreamReader(conn.getInputStream()));
-
-										int cp;
-										while ((cp = brf.read()) != -1) {
-											sb.append((char) cp);
-										}
-										_log.debug("RESULT PROXY: " + sb.toString());
-									} catch (IOException e) {
-										_log.debug(e);
-										//_log.debug("Something went wrong while reading/writing in stream!!");
-									}
-								}
-							}
-						}
-					}
+//					JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CALL_API));
+//					if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
+//						String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
+//						if (Validator.isNotNull(serverNo)) {
+//							ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+//							if (serverConfig != null) {
+//								JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+//								//
+//								String method = StringPool.BLANK;
+//								if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
+//									method = configObj.getString(KeyPayTerm.METHOD);
+//									System.out.println("method: " + method);
+//								}
+//								//params
+//								JSONObject jsonParams = null;
+//								if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
+//									jsonParams = JSONFactoryUtil
+//											.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
+//								}
+//								if (jsonParams != null) {
+//									JSONObject jsonHeader = JSONFactoryUtil
+//											.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
+//									JSONObject jsonBody = JSONFactoryUtil
+//											.createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
+//
+//									String authStrEnc = StringPool.BLANK;
+//									String apiUrl = StringPool.BLANK;
+//									StringBuilder sb = new StringBuilder();
+//									try {
+//										URL urlVal = null;
+//										String groupIdRequest = StringPool.BLANK;
+//										StringBuilder postData = new StringBuilder();
+//										Iterator<?> keys = jsonBody.keys();
+//										while (keys.hasNext()) {
+//											String key = (String) keys.next();
+//											if (!StringPool.BLANK.equals(postData.toString())) {
+//												postData.append(StringPool.AMPERSAND);
+//											}
+//											postData.append(key);
+//											postData.append(StringPool.EQUAL);
+//											postData.append(jsonBody.get(key));
+//										}
+//
+//										if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+//												&& configObj.has(SyncServerTerm.SERVER_SECRET)
+//												&& Validator
+//														.isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
+//												&& Validator
+//														.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
+//											authStrEnc = Base64.getEncoder()
+//													.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+//															+ StringPool.COLON
+//															+ configObj.getString(SyncServerTerm.SERVER_SECRET))
+//																	.getBytes());
+//										}
+//										if (configObj.has(SyncServerTerm.SERVER_URL)) {
+//											apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+//											if (apiUrl.contains("{_dossierId}")) {
+//												apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossierId));
+//											}
+//											if (apiUrl.contains("{_dossierCounter}")) {
+//												apiUrl = apiUrl.replace("{_dossierCounter}",
+//														String.valueOf(dossier.getDossierCounter()));
+//											}
+//										}
+//										if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+//											groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+//										}
+//										if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
+//											if (jsonHeader.has(Field.GROUP_ID)) {
+//												groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
+//											}
+//										}
+//
+//										if (HttpMethods.GET.equals(method)) {
+//											if (Validator.isNotNull(postData.toString())) {
+//												urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+//											} else {
+//												urlVal = new URL(apiUrl);
+//											}
+//										} else {
+//											urlVal = new URL(apiUrl);
+//										}
+//										_log.debug("API URL: " + apiUrl);
+//										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+//												.openConnection();
+//										conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
+//										conn.setRequestMethod(method);
+//										conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+//										if (Validator.isNotNull(authStrEnc)) {
+//											conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
+//										}
+//										if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
+//											conn.setRequestProperty(HttpHeaders.CONTENT_TYPE,
+//													MediaType.APPLICATION_FORM_URLENCODED);
+//											conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, StringPool.BLANK
+//													+ Integer.toString(postData.toString().getBytes().length));
+//
+//											conn.setUseCaches(false);
+//											conn.setDoInput(true);
+//											conn.setDoOutput(true);
+//											_log.debug("POST DATA: " + postData.toString());
+//											OutputStream os = conn.getOutputStream();
+//											os.write(postData.toString().getBytes());
+//											os.close();
+//										}
+//
+//										BufferedReader brf = new BufferedReader(
+//												new InputStreamReader(conn.getInputStream()));
+//
+//										int cp;
+//										while ((cp = brf.read()) != -1) {
+//											sb.append((char) cp);
+//										}
+//										_log.debug("RESULT PROXY: " + sb.toString());
+//									} catch (IOException e) {
+//										_log.debug(e);
+//										//_log.debug("Something went wrong while reading/writing in stream!!");
+//									}
+//								}
+//							}
+//						}
+//					}
 				}
 			}
 
@@ -1315,6 +1319,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							payloadObject, flagChanged, actionCode, actionUser, actionNote, serviceProcess, context);
 				}
 
+				if (Validator.isNotNull(postAction)) {
+					processPostAction(postAction, groupId, dossier);
+				}
+
 				return newAction;
 			}
 
@@ -1397,6 +1405,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					dossier.setMultipleCheck(multipleCheck);
 				}
 			}
+			//Call API postAction
+			processPostAction(proAction.getPostAction(), groupId, dossier);
 		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
@@ -1495,6 +1505,142 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 	}
 
+	//Post Action
+	private void processPostAction(String postAction, long groupId, Dossier dossier) throws JSONException {
+		if (Validator.isNotNull(postAction)) {
+			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
+			if (jsonPostData != null) {
+				JSONObject jsonCallAPI = JSONFactoryUtil.createJSONObject(jsonPostData.getString(CALL_API));
+				if (jsonCallAPI != null && jsonCallAPI.has(DossierTerm.SERVER_NO)) {
+					String serverNo = jsonCallAPI.getString(DossierTerm.SERVER_NO);
+					if (Validator.isNotNull(serverNo)) {
+						ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(groupId, serverNo);
+						if (serverConfig != null) {
+							JSONObject configObj = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+							//
+							String method = StringPool.BLANK;
+							if (configObj != null && configObj.has(KeyPayTerm.METHOD)) {
+								method = configObj.getString(KeyPayTerm.METHOD);
+								System.out.println("method: " + method);
+							}
+							//params
+							JSONObject jsonParams = null;
+							if (configObj != null && configObj.has(KeyPayTerm.PARAMS)) {
+								jsonParams = JSONFactoryUtil
+										.createJSONObject(configObj.getString(KeyPayTerm.PARAMS));
+							}
+							if (jsonParams != null) {
+								JSONObject jsonHeader = JSONFactoryUtil
+										.createJSONObject(jsonParams.getString(KeyPayTerm.HEADER));
+								JSONObject jsonBody = JSONFactoryUtil
+										.createJSONObject(jsonParams.getString(KeyPayTerm.BODY));
+
+								String authStrEnc = StringPool.BLANK;
+								String apiUrl = StringPool.BLANK;
+								StringBuilder sb = new StringBuilder();
+								try {
+									URL urlVal = null;
+									String groupIdRequest = StringPool.BLANK;
+									StringBuilder postData = new StringBuilder();
+									Iterator<?> keys = jsonBody.keys();
+									while (keys.hasNext()) {
+										String key = (String) keys.next();
+										if (!StringPool.BLANK.equals(postData.toString())) {
+											postData.append(StringPool.AMPERSAND);
+										}
+										postData.append(key);
+										postData.append(StringPool.EQUAL);
+										postData.append(jsonBody.get(key));
+									}
+
+									if (configObj.has(SyncServerTerm.SERVER_USERNAME)
+											&& configObj.has(SyncServerTerm.SERVER_SECRET)
+											&& Validator
+													.isNotNull(configObj.getString(SyncServerTerm.SERVER_USERNAME))
+											&& Validator
+													.isNotNull(configObj.getString(SyncServerTerm.SERVER_SECRET))) {
+										authStrEnc = Base64.getEncoder()
+												.encodeToString((configObj.getString(SyncServerTerm.SERVER_USERNAME)
+														+ StringPool.COLON
+														+ configObj.getString(SyncServerTerm.SERVER_SECRET))
+																.getBytes());
+									}
+									if (configObj.has(SyncServerTerm.SERVER_URL)) {
+										apiUrl = configObj.getString(SyncServerTerm.SERVER_URL);
+										if (apiUrl.contains("{_dossierId}")) {
+											apiUrl = apiUrl.replace("{_dossierId}", String.valueOf(dossier.getDossierId()));
+										}
+										if (apiUrl.contains("{_dossierCounter}")) {
+											apiUrl = apiUrl.replace("{_dossierCounter}",
+													String.valueOf(dossier.getDossierCounter()));
+										}
+										if (apiUrl.contains("{_dossierNo}")) {
+											apiUrl = apiUrl.replace("{_dossierNo}",
+													String.valueOf(dossier.getDossierNo()));
+										}
+									}
+									if (configObj.has(SyncServerTerm.SERVER_GROUP_ID)) {
+										groupIdRequest = configObj.getString(SyncServerTerm.SERVER_GROUP_ID);
+									}
+									if (jsonHeader != null && Validator.isNotNull(groupIdRequest)) {
+										if (jsonHeader.has(Field.GROUP_ID)) {
+											groupIdRequest = String.valueOf(jsonHeader.getLong(Field.GROUP_ID));
+										}
+									}
+
+									if (HttpMethods.GET.equals(method)) {
+										if (Validator.isNotNull(postData.toString())) {
+											urlVal = new URL(apiUrl + StringPool.QUESTION + postData.toString());
+										} else {
+											urlVal = new URL(apiUrl);
+										}
+									} else {
+										urlVal = new URL(apiUrl);
+									}
+									_log.debug("API URL: " + apiUrl);
+									java.net.HttpURLConnection conn = (java.net.HttpURLConnection) urlVal
+											.openConnection();
+									conn.setRequestProperty(Field.GROUP_ID, groupIdRequest);
+									conn.setRequestMethod(method);
+									conn.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+									if (Validator.isNotNull(authStrEnc)) {
+										conn.setRequestProperty(HttpHeaders.AUTHORIZATION, "Basic " + authStrEnc);
+									}
+									if (HttpMethods.POST.equals(method) || HttpMethods.PUT.equals(method)) {
+										conn.setRequestProperty(HttpHeaders.CONTENT_TYPE,
+												MediaType.APPLICATION_FORM_URLENCODED);
+										conn.setRequestProperty(HttpHeaders.CONTENT_LENGTH, StringPool.BLANK
+												+ Integer.toString(postData.toString().getBytes().length));
+
+										conn.setUseCaches(false);
+										conn.setDoInput(true);
+										conn.setDoOutput(true);
+										_log.debug("POST DATA: " + postData.toString());
+										OutputStream os = conn.getOutputStream();
+										os.write(postData.toString().getBytes());
+										os.close();
+									}
+
+									BufferedReader brf = new BufferedReader(
+											new InputStreamReader(conn.getInputStream()));
+
+									int cp;
+									while ((cp = brf.read()) != -1) {
+										sb.append((char) cp);
+									}
+									_log.debug("RESULT PROXY: " + sb.toString());
+								} catch (IOException e) {
+									_log.debug(e);
+									//_log.debug("Something went wrong while reading/writing in stream!!");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private JSONObject buildNotificationPayload(Dossier dossier, JSONObject payloadObject) {
 		JSONObject returnObject;
 		try {
@@ -1579,6 +1725,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		try {
 			JSONObject dossierObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+			String serviceNameUnsigned = StringPool.BLANK;
+			if (Validator.isNotNull(dossier.getServiceName())) {
+				serviceNameUnsigned = AccentUtils.removeAccent(dossier.getServiceName());
+			}
+			dossierObj.put("serviceNameUnsigned", serviceNameUnsigned);
+			String govAgencyNameUnsigned = StringPool.BLANK;
+			if (Validator.isNotNull(dossier.getGovAgencyName())) {
+				govAgencyNameUnsigned = AccentUtils.removeAccent(dossier.getGovAgencyName());
+			}
+			dossierObj.put("govAgencyNameUnsigned", govAgencyNameUnsigned);
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
@@ -1651,8 +1807,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			boolean isSendSMS = NotificationUtil.isSendSMS(preCondition);
 			boolean isSendEmail = NotificationUtil.isSendEmail(preCondition);
-			boolean isSendNotiSMS = notiTemplate.getSendSMS();
-			boolean isSendNotiEmail = notiTemplate.getSendEmail();
+			boolean isSendNotiSMS = true;
+			boolean isSendNotiEmail = true;
+			if (notiTemplate != null) {
+				isSendNotiSMS = notiTemplate.getSendSMS();
+				isSendNotiEmail = notiTemplate.getSendEmail();
+			}
 			if (Validator.isNotNull(preCondition)) {
 				if (!DossierMgtUtils.checkPreCondition(new String[] { preCondition }, dossier, null)) {
 					if (isSendSMS) {
@@ -1685,8 +1845,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 				}
 			}
-
-
 
 			if (notiTemplate != null) {
 				if (KeyPayTerm.MINUTELY.equals(notiTemplate.getInterval())) {
@@ -1954,6 +2112,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setBriefNote(obj.getString(DossierTerm.BRIEF_NOTE));
 			}
 		}
+		if (obj.has(DossierTerm.REGISTER_BOOK_CODE)) {
+			if (!obj.getString(DossierTerm.REGISTER_BOOK_CODE).equals(dossier.getRegisterBookCode())) {
+				dossier.setRegisterBookCode(obj.getString(DossierTerm.REGISTER_BOOK_CODE));
+			}
+		}
+		if (obj.has(DossierTerm.COUNTER)) {
+			long counter = Validator.isNotNull(obj.getString(DossierTerm.COUNTER))
+					? Integer.valueOf(obj.getString(DossierTerm.COUNTER))
+					: 0;
+			if (counter != dossier.getCounter()) {
+				dossier.setCounter(counter);
+			}
+		}
 	}
 
 	private void processPaymentFile(long groupId, long userId, String payment, ProcessOption option,
@@ -2075,10 +2246,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			ProcessAction proAction, DossierAction previousAction, Dossier dossier, ServiceContext context)
 			throws PortalException {
 
-		String paymentFee = StringPool.BLANK;
-		Long feeAmount = 0l, serviceAmount = 0l, shipAmount = 0l;
-		String paymentNote = StringPool.BLANK;
+		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+
+		String paymentFee =  StringPool.BLANK;
+		Long feeAmount =  0l, serviceAmount =  0l, shipAmount =  0l;
+		String paymentNote =  StringPool.BLANK;
 		long advanceAmount = 0l;
+		if (Validator.isNotNull(oldPaymentFile))
+		{
+			paymentFee = Validator.isNotNull(oldPaymentFile.getPaymentFee()) ? oldPaymentFile.getPaymentFee() : StringPool.BLANK;
+			feeAmount = Validator.isNotNull(oldPaymentFile.getFeeAmount()) ? oldPaymentFile.getFeeAmount() : 0l;
+			serviceAmount = Validator.isNotNull(oldPaymentFile.getServiceAmount()) ? oldPaymentFile.getServiceAmount() : 0l;
+			shipAmount = Validator.isNotNull(oldPaymentFile.getShipAmount()) ? oldPaymentFile.getShipAmount() : 0l;
+			paymentNote = Validator.isNotNull(oldPaymentFile.getPaymentNote()) ? oldPaymentFile.getPaymentNote() : StringPool.BLANK;
+			advanceAmount = Validator.isNotNull(oldPaymentFile.getAdvanceAmount()) ? oldPaymentFile.getAdvanceAmount() : 0l;
+		}
 		//long paymentAmount = 0l;
 		String epaymentProfile = StringPool.BLANK;
 		String bankInfo = StringPool.BLANK;
@@ -2124,7 +2306,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		} catch (ParseException e) {
 			_log.debug(e);
 		}
-		PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
+
 
 		if (oldPaymentFile != null) {
 			if (Validator.isNotNull(paymentMethod)) {
@@ -3258,6 +3440,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
 				|| dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3) && serviceProcess != null) {
 
+			if (!DossierTerm.PAUSE_OVERDUE_LOCK_STATE.equals(dossier.getLockState())) {
+
+				dossier.setLockState(StringPool.BLANK);
+			}
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
@@ -4320,7 +4506,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			int state = DossierActionUtils.getSyncState(syncType, dossier);
 			//Update payload
 			if (Validator.isNotNull(dossier.getServerNo())
-					&& dossier.getServerNo().split(StringPool.BLANK).length > 1) {
+					&& dossier.getServerNo().split(StringPool.COMMA).length > 1) {
 				String serverNo = null;
 				if (syncType == 1) {
 					serverNo = dossier.getServerNo().split(StringPool.COMMA)[0].split(StringPool.AT)[0];

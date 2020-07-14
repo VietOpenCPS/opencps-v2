@@ -213,7 +213,10 @@ import javax.xml.bind.annotation.XmlType;
     "dossierCounter",
     "vnpostalStatus",
     "vnpostalProfile",
-    "fromViaPostal"
+    "fromViaPostal",
+	"donvigui",
+	"donvinhan",
+	"groupDossierIdHs"
 })
 public class DossierDataModel {
 
@@ -333,6 +336,33 @@ public class DossierDataModel {
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
     protected Integer fromViaPostal;
+    protected String donvinhan;
+    protected String donvigui;
+	protected Long groupDossierIdHs;
+
+	public Long getGroupDossierIdHs() {
+		return groupDossierIdHs;
+	}
+
+	public void setGroupDossierIdHs(Long groupDossierIdHs) {
+		this.groupDossierIdHs = groupDossierIdHs;
+	}
+
+	public String getDonvinhan() {
+		return donvinhan;
+	}
+
+	public void setDonvinhan(String donvinhan) {
+		this.donvinhan = donvinhan;
+	}
+
+	public String getDonvigui() {
+		return donvigui;
+	}
+
+	public void setDonvigui(String donvigui) {
+		this.donvigui = donvigui;
+	}
 
 	public Integer getFromViaPostal() {
 		return fromViaPostal;

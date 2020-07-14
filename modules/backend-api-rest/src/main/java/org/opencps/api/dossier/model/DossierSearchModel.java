@@ -282,6 +282,36 @@ public class DossierSearchModel {
     protected Integer vnpostalStatus;
     @QueryParam(value = "fromViaPostal")
     protected Integer fromViaPostal;
+	@QueryParam(value = "donvigui")
+    protected String donvigui;
+	@QueryParam(value = "donvinhan")
+    protected String donvinhan;
+	@QueryParam(value = "groupDossierIdHs")
+	protected String groupDossierIdHs;
+
+	public String getGroupDossierIdHs() {
+		return groupDossierIdHs;
+	}
+
+	public void setGroupDossierIdHs(String groupDossierIdHs) {
+		this.groupDossierIdHs = groupDossierIdHs;
+	}
+
+	public String getDonvigui() {
+		return donvigui;
+	}
+
+	public void setDonvigui(String donvigui) {
+		this.donvigui = donvigui;
+	}
+
+	public String getDonvinhan() {
+		return donvinhan;
+	}
+
+	public void setDonvinhan(String donvinhan) {
+		this.donvinhan = donvinhan;
+	}
 
 	public Integer getFromViaPostal() {
 		return fromViaPostal;

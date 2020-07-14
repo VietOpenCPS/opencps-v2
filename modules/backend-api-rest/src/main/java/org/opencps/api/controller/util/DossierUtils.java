@@ -19,17 +19,16 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.models.auth.In;
 import org.opencps.api.constants.ConstantUtils;
-import org.opencps.api.dossier.model.DossierActionDetailModel;
-import org.opencps.api.dossier.model.DossierDataModel;
-import org.opencps.api.dossier.model.DossierDataPublishModel;
-import org.opencps.api.dossier.model.DossierDetailModel;
+import org.opencps.api.dossier.model.*;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -78,7 +77,7 @@ public class DossierUtils {
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 
-	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, Integer assigned) {
+	public static List<DossierDataModel> mappingForGetList(List<Document> docs, long  userId, Integer assigned, DossierSearchModel query) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 
 		for (Document doc : docs) {
@@ -509,6 +508,9 @@ public class DossierUtils {
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
+			if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS))) {
+				model.setGroupDossierIdHs(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS)));
+			}
 			model.setDelegateType(GetterUtil.getInteger(doc.get(DossierTerm.DELEGATE_TYPE)));
 			model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
 			if (Validator.isNotNull(doc.get(DossierTerm.DOCUMENT_DATE))) {
@@ -537,10 +539,43 @@ public class DossierUtils {
 			} else {
 				model.setFromViaPostal(0);
 			}
+//			Integer userIdDossier = Integer.parseInt(doc.get(DossierTerm.USER_ID));
+//			if(Validator.isNotNull(query.getDonvigui())){
+//				if(query.getDonvigui().equals(DossierTerm.SCOPE_)){
+//					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
+//					if(Validator.isNotNull(employee)){
+//						model.setDonvigui(employee.getScope());
+//					}
+//				}else{
+//						model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
+//				}
+//			}
+//			if(Validator.isNotNull(query.getDonvinhan())){
+//				if(query.getDonvinhan().equals(DossierTerm.SCOPE_)){
+//					Employee employee = getEmployeeByG_User(model.getGroupId(), userIdDossier);
+//					if(Validator.isNotNull(employee)){
+//						model.setDonvinhan(employee.getScope());
+//					}
+//				}else{
+//					model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
+//				}
+//			}
+			model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
+			model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
+			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			ouputs.add(model);
 		}
 
 		return ouputs;
+	}
+	private static Employee getEmployeeByG_User(Integer groupId, Integer userId){
+		try {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			return employee;
+		}catch (Exception e){
+			_log.info("EXCEPTION" + e.getMessage());
+			return null;
+		}
 	}
 
 	public static String calculatorStepOverDue(double durationCount, int durationUnit, double overdue, long groupId) {
