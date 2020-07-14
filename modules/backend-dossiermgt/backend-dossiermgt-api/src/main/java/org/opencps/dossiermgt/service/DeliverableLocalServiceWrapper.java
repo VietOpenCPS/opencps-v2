@@ -109,6 +109,16 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		return _deliverableLocalService.countLucene(params, searchContext);
 	}
 
+	@Override
+	public long countLucene(String keywords, String groupId, String type,
+		java.util.Map<String, String> mapFilter,
+		com.liferay.portal.kernel.search.SearchContext searchContext)
+		throws com.liferay.portal.kernel.search.ParseException,
+			com.liferay.portal.kernel.search.SearchException {
+		return _deliverableLocalService.countLucene(keywords, groupId, type,
+			mapFilter, searchContext);
+	}
+
 	/**
 	* Creates a new deliverable with the primary key. Does not add the deliverable to the database.
 	*
@@ -505,6 +515,17 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.searchLucene(params, sorts, start, end,
 			searchContext);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.Hits searchLucene(String keywords,
+		String groupId, String type, java.util.Map<String, String> mapFilter,
+		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
+		com.liferay.portal.kernel.search.SearchContext searchContext)
+		throws com.liferay.portal.kernel.search.ParseException,
+			com.liferay.portal.kernel.search.SearchException {
+		return _deliverableLocalService.searchLucene(keywords, groupId, type,
+			mapFilter, sorts, start, end, searchContext);
 	}
 
 	@Override
