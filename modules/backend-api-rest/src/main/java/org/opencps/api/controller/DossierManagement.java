@@ -161,7 +161,7 @@ public interface DossierManagement {
 		@BeanParam DossierInputModel input);
 
 	@PUT
-	@Path("/{dossierNo}")
+	@Path("/{dossierNo}/dossierNo")
 	@Consumes({
 			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
 			MediaType.APPLICATION_FORM_URLENCODED
