@@ -28,8 +28,12 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.session.AuthenticatedSessionManagerUtil;
@@ -64,9 +68,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -91,6 +97,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -102,7 +109,6 @@ import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePK;
 import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.UserRegisterTerm;
-import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.EmployeeJobPos;
@@ -1493,6 +1499,7 @@ public class RestfulController {
 			@QueryParam("keyword") String keyword,
 			@QueryParam("formDataKey") String formDataKey) {
 
+		System.out.println("VAO CHUAE :"+request.getAttribute(WebKeys.USER_ID));
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		try {
@@ -1594,6 +1601,113 @@ public class RestfulController {
 
 				} catch (JSONException e) {
 					_log.debug(e);
+				}
+
+			}
+
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return result.toJSONString();
+	}
+
+	@RequestMapping(value = "/deliverable/test/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	public String getDeliverableTest(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
+			@QueryParam("keyword") String keyword,
+			@QueryParam("formDataKey") String formDataKey) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			long userId = 0;
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
+
+				long groupId = 0;
+
+				if (Validator.isNotNull(request.getHeader("groupId"))) {
+					groupId = Long.valueOf(request.getHeader("groupId"));
+				}
+
+//				String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE,
+//						DeliverableTerm.DELIVERABLE_NAME, DeliverableTerm.GOV_AGENCY_NAME,
+//						DeliverableTerm.APPLICANT_NAME, DeliverableTerm.DELIVERABLE_CODE_SEARCH };
+				String queryBuilder = StringPool.BLANK;
+				String queryBuilderLike = StringPool.BLANK;
+				//StringBuilder sbBuilder = new StringBuilder();
+				Map<String, String> mapFilter = null;
+				String keySearch = null;
+				if (Validator.isNotNull(keyword)) {
+					// LamTV_Process search LIKE
+					keySearch = SpecialCharacterUtils.splitSpecial(keyword);
+				} else {
+					//DeliverableTypesActions actions = new DeliverableTypesActionsImpl();
+					DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.getByTypeCode(type, groupId);
+					
+
+					JSONArray filterData = JSONFactoryUtil.createJSONArray(deliverableType.getDataConfig());
+
+					if (filterData != null && filterData.length() > 0) {
+						mapFilter = new HashMap<String, String>();
+						//
+						for (int i = 0; i < filterData.length(); i++) {
+							JSONObject jsonDetail = filterData.getJSONObject(i);
+							if (Validator.isNotNull(request.getParameter(jsonDetail.getString("fieldName")))) {
+
+								if ("like".equals(jsonDetail.getString("compare"))) {
+
+									mapFilter.put(jsonDetail.getString("fieldName") + "@LIKE",
+											request.getParameter(jsonDetail.getString("fieldName")));
+
+								} else {
+									mapFilter.put(jsonDetail.getString("fieldName") + "@EQUAL",
+											request.getParameter(jsonDetail.getString("fieldName")));
+
+								}
+
+							}
+
+						}
+					}
+					
+				}
+
+				String queryDataFrom = GraphQLUtils.buildDeliverableSearchDataForm(formDataKey);
+
+				System.out.println("queryBuilderLike:" + queryBuilderLike);
+				System.out.println("queryBuilder:" + queryBuilder);
+				if (Validator.isNull(end) || end == 0) {
+					start = -1;
+					end = -1;
+					// size = -1;
+				}
+
+				Hits hits = null;
+
+				SearchContext searchContext = new SearchContext();
+				searchContext.setCompanyId(20099);
+
+				Sort[] sorts = new Sort[] { SortFactoryUtil.create("issueDate_Number_sortable", Sort.LONG_TYPE, true) };
+				try {
+
+					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
+							start, end, searchContext);
+
+					System.out.println("hits: " + hits);
+					result.put(ConstantUtils.DATA, hits.toList());
+
+					long total = DeliverableLocalServiceUtil.countLucene(keySearch, String.valueOf(groupId), type, mapFilter,
+							searchContext);
+
+					result.put(ConstantUtils.TOTAL, total);
+					System.out.println("total: " + total);
+
+				} catch (Exception e) {
+					_log.error(e);
 				}
 
 			}

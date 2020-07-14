@@ -385,5 +385,6 @@ public class DossierTerm {
 	public static final String DON_VI_GUI = "donvigui";
 	public static final String DON_VI_NHAN = "donvinhan";
 	public static final String SCOPE_ = "_scope";
-	public static final String FIRTSCOPE = "firtscope";
+	public static final String FIRSTSCOPE = "firstscope";
+	public static final String _FIRSTSCOPE = "_firstscope";
 }

@@ -217,7 +217,8 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 	public List<ServiceConfig> getByGovAgencyCode(String govAgencyCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ServiceConfig> getByGroupId(long groupId)
+	public List<ServiceConfig> getByGroupId(long groupId,
+		String searchGovAgencyCode, long userId)
 		throws PortalException, SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
