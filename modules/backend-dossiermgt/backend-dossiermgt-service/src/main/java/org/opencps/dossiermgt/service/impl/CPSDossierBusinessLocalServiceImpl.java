@@ -2123,6 +2123,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setCounter(counter);
 			}
 		}
+		if (obj.has(DossierTerm.VIA_POSTAL)) {
+			if (obj.getInt(DossierTerm.VIA_POSTAL) != dossier.getViaPostal()) {
+				dossier.setViaPostal(obj.getInt(DossierTerm.VIA_POSTAL));
+			}
+		}
 	}
 
 	private void processPaymentFile(long groupId, long userId, String payment, ProcessOption option,
