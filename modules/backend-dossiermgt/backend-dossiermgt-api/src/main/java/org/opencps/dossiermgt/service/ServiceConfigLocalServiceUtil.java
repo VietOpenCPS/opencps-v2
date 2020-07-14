@@ -240,10 +240,10 @@ public class ServiceConfigLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> getByGroupId(
-		long groupId,String searchGovAgencyCode,long userId)
+		long groupId, String searchGovAgencyCode, long userId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().getByGroupId(groupId,searchGovAgencyCode,userId);
+		return getService().getByGroupId(groupId, searchGovAgencyCode, userId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> getByLevel(

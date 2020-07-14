@@ -169,8 +169,18 @@ public class MBEmailSenderImpl implements MBEmailSender {
 											break;
 										}
 									}
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e1) {
+										System.out.println("Time not delay");
+									}
 									//
 								} catch (Exception e) {
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e1) {
+										System.out.println("Time not delay");
+									}
 									_log.debug(e);
 								}
 							}
