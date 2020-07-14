@@ -51,6 +51,7 @@ import java.io.Serializable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for Deliverable. Methods of this
@@ -116,6 +117,10 @@ public interface DeliverableLocalService extends BaseLocalService,
 
 	public long countLucene(LinkedHashMap<String, Object> params,
 		SearchContext searchContext) throws ParseException, SearchException;
+
+	public long countLucene(String keywords, String groupId, String type,
+		Map<String, String> mapFilter, SearchContext searchContext)
+		throws ParseException, SearchException;
 
 	/**
 	* Creates a new deliverable with the primary key. Does not add the deliverable to the database.
@@ -383,6 +388,11 @@ public interface DeliverableLocalService extends BaseLocalService,
 	public Hits searchLucene(LinkedHashMap<String, Object> params,
 		Sort[] sorts, int start, int end, SearchContext searchContext)
 		throws ParseException, SearchException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Hits searchLucene(String keywords, String groupId, String type,
+		Map<String, String> mapFilter, Sort[] sorts, int start, int end,
+		SearchContext searchContext) throws ParseException, SearchException;
 
 	public void setOccurs(List<BooleanClauseOccur> occurs);
 

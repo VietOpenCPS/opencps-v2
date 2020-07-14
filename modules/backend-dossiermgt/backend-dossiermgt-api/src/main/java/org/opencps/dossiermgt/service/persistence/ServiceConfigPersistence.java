@@ -557,6 +557,154 @@ public interface ServiceConfigPersistence extends BasePersistence<ServiceConfig>
 	public int countByG_(long groupId);
 
 	/**
+	* Returns all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @return the matching service configs
+	*/
+	public java.util.List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode);
+
+	/**
+	* Returns a range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param start the lower bound of the range of service configs
+	* @param end the upper bound of the range of service configs (not inclusive)
+	* @return the range of matching service configs
+	*/
+	public java.util.List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end);
+
+	/**
+	* Returns an ordered range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param start the lower bound of the range of service configs
+	* @param end the upper bound of the range of service configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service configs
+	*/
+	public java.util.List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the service configs where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param start the lower bound of the range of service configs
+	* @param end the upper bound of the range of service configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service configs
+	*/
+	public java.util.List<ServiceConfig> findByG_SERVICE_CODE(long groupId,
+		String govAgencyCode, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service config
+	* @throws NoSuchServiceConfigException if a matching service config could not be found
+	*/
+	public ServiceConfig findByG_SERVICE_CODE_First(long groupId,
+		String govAgencyCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException;
+
+	/**
+	* Returns the first service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service config, or <code>null</code> if a matching service config could not be found
+	*/
+	public ServiceConfig fetchByG_SERVICE_CODE_First(long groupId,
+		String govAgencyCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator);
+
+	/**
+	* Returns the last service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service config
+	* @throws NoSuchServiceConfigException if a matching service config could not be found
+	*/
+	public ServiceConfig findByG_SERVICE_CODE_Last(long groupId,
+		String govAgencyCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException;
+
+	/**
+	* Returns the last service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service config, or <code>null</code> if a matching service config could not be found
+	*/
+	public ServiceConfig fetchByG_SERVICE_CODE_Last(long groupId,
+		String govAgencyCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator);
+
+	/**
+	* Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param serviceConfigId the primary key of the current service config
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next service config
+	* @throws NoSuchServiceConfigException if a service config with the primary key could not be found
+	*/
+	public ServiceConfig[] findByG_SERVICE_CODE_PrevAndNext(
+		long serviceConfigId, long groupId, String govAgencyCode,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException;
+
+	/**
+	* Removes all the service configs where groupId = &#63; and govAgencyCode = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	*/
+	public void removeByG_SERVICE_CODE(long groupId, String govAgencyCode);
+
+	/**
+	* Returns the number of service configs where groupId = &#63; and govAgencyCode = &#63;.
+	*
+	* @param groupId the group ID
+	* @param govAgencyCode the gov agency code
+	* @return the number of matching service configs
+	*/
+	public int countByG_SERVICE_CODE(long groupId, String govAgencyCode);
+
+	/**
 	* Returns all the service configs where groupId = &#63; and serviceInfoId = &#63;.
 	*
 	* @param groupId the group ID

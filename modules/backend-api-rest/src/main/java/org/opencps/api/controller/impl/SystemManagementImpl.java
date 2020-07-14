@@ -385,7 +385,7 @@ public class SystemManagementImpl implements SystemManagement {
 		if (groupId != 0) {
 			List<ServiceConfig> lstScs;
 			try {
-				lstScs = ServiceConfigLocalServiceUtil.getByGroupId(groupId);
+				lstScs = ServiceConfigLocalServiceUtil.getByGroupId(groupId,"",0);
 				for (ServiceConfig sc : lstScs) {
 					ServiceInfo si = ServiceInfoLocalServiceUtil.fetchServiceInfo(sc.getServiceInfoId());
 					if (si == null) {

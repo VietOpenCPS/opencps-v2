@@ -4034,13 +4034,12 @@ public class DossierActionsImpl implements DossierActions {
 		try {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			Date dueDate = new Date();
-			if (Validator.isNotNull(strDueDate) )
-			{
+			if (Validator.isNotNull(strDueDate) && GetterUtil.getLong(strDueDate) > 0) {
 				Long longDueDate = Long.parseLong(strDueDate);
 				dueDate.setTime(longDueDate);
+			} else {
+				dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
 			}
-			else
-				dueDate = dossier.getDueDate();
 
 			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {
 

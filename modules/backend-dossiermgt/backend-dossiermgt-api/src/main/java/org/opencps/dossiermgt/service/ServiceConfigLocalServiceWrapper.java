@@ -255,10 +255,11 @@ public class ServiceConfigLocalServiceWrapper
 
 	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ServiceConfig> getByGroupId(
-		long groupId)
+		long groupId, String searchGovAgencyCode, long userId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return _serviceConfigLocalService.getByGroupId(groupId);
+		return _serviceConfigLocalService.getByGroupId(groupId,
+			searchGovAgencyCode, userId);
 	}
 
 	@Override
