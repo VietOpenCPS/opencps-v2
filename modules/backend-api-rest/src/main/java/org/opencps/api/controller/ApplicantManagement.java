@@ -67,7 +67,8 @@ public interface ApplicantManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return notification email sent successfully", response = ApplicantModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class) })
-	public Response sendEmail(@Context Company company, @Context HttpHeaders header, @Context ServiceContext serviceContext,
+	public Response sendEmail(@Context HttpServletRequest request,@Context Locale locale, @Context User user,
+							  @Context Company company, @Context HttpHeaders header, @Context ServiceContext serviceContext,
 							  @BeanParam NotificationTemplateList.NotificationTemplate input, @PathParam("id") String id);
 
 

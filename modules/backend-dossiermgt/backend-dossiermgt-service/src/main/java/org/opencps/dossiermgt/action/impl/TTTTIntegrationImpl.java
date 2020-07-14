@@ -2,12 +2,15 @@ package org.opencps.dossiermgt.action.impl;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.TTTTIntegrationAction;
 import org.opencps.dossiermgt.constants.IntegrateTTTTConstants;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.scheduler.PublishEventScheduler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +22,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 
 public class TTTTIntegrationImpl implements TTTTIntegrationAction {
-
+    private Log _log = LogFactoryUtil.getLog(PublishEventScheduler.class);
     @Override
     public boolean syncDoActionDossier(Dossier dossier) throws Exception{
         List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(ServerConfigTerm.TTTT_INTEGRATION);
@@ -46,7 +49,7 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
             if(response.getStatusCode().value() < 200 || response.getStatusCode().value() > 300) {
                 throw new Exception("Something happened on TTTT server with response: " + response.getStatusCode().value());
             }
-
+            _log.info("Sync data to TTTT successfully");
             return true;
         } catch (Exception e) {
             throw new Exception(e);

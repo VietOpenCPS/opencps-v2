@@ -208,8 +208,33 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 	}
 
 	@Override
-	public Response sendEmail(Company company, HttpHeaders header, ServiceContext serviceContext, NotificationTemplateList.NotificationTemplate input, String id) {
+	public Response sendEmail(HttpServletRequest request, Locale locale, User userGlobal, Company company, HttpHeaders header,
+							  ServiceContext serviceContext, NotificationTemplateList.NotificationTemplate input, String id) {
 		try {
+			//Using notifyMessage for captcha
+			if (input.getNotifyMessage() == null || input.getNotifyMessage().isEmpty()) {
+				_log.error("Captcha not found");
+				throw new Exception("Captcha not found");
+			}
+			String captchaType = PropValues.CAPTCHA_TYPE;
+			boolean isCaptchaValid;
+			if (Validator.isNotNull(captchaType) && "jcaptcha".contentEquals(captchaType)) {
+				ImageCaptchaService instance = CaptchaServiceSingleton.getInstance();
+				String captchaId = request.getSession().getId();
+				String jCaptchaResponse = input.getNotifyMessage();
+				isCaptchaValid = instance.validateResponseForID(captchaId, jCaptchaResponse);
+
+			} else {
+				ApplicantActionsImpl actionsImpl = new ApplicantActionsImpl();
+				isCaptchaValid = actionsImpl.validateSimpleCaptcha(request, header, company, locale, userGlobal,
+						serviceContext, input.getNotifyMessage());
+			}
+
+			if (!isCaptchaValid) {
+				_log.error("Captcha not found");
+				throw new Exception("Captcha is invalid");
+			}
+
 			if (header.getHeaderString(Field.GROUP_ID) == null || header.getHeaderString(Field.GROUP_ID).isEmpty()) {
 				_log.error("Group Id not found");
 				throw new Exception("Group Id not found");
@@ -224,6 +249,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				_log.error("Id user not found");
 				throw new Exception("Id user not found");
 			}
+
 			String notificationType = input.getNotificationType();
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -290,7 +316,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			MBMessageEntry messageEntry = createMBMessageEntry(notificationTemplate, serviceContext, payloadString);
 			MBEmailSenderFactoryUtil.send(messageEntry, contactEmail);
-			return null;
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

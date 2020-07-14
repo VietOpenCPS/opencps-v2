@@ -226,6 +226,7 @@ public class NotificationTemplateList {
         @XmlElement(required = true)
         protected String interval;
         @XmlElement(required = true)
+        @FormParam(value = "notifyMessage")
         protected String notifyMessage;
         protected boolean sendNotification;
 
