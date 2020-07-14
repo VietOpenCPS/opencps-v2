@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -534,7 +535,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
 			}
 			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
-			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,userId);
 			String donvigui = query.getDonvigui();
 			if(Validator.isNotNull(donvigui)) {
 				String[] donviguiArr = donvigui.split(StringPool.COMMA);
@@ -1401,6 +1402,50 @@ public class DossierManagementImpl implements DossierManagement {
 
 		}
 		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updateDossierByDossierNo(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+											 ServiceContext serviceContext, String dossierNo, DossierInputModel input) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+		DossierDetailModel result = new DossierDetailModel();
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			_log.info("===================== groupId " + groupId);
+
+			_log.info("===================== dossierNo " + dossierNo);
+
+			_log.info("===================== postalCodeSend " + input.getPostalCodeSend());
+
+			String postalCodeSend = input.getPostalCodeSend();
+
+			 Dossier dossier  = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
+
+			_log.debug("UPDATE DOSSIER: " );
+
+			if ( Validator.isNull(dossier.getDossierNo())) {
+				dossier.setViaPostal(input.getViaPostal());
+			}
+			if ( Validator.isNull(postalCodeSend)) {
+				dossier.setPostalCodeSend(postalCodeSend);
+			}
+
+			if(dossier != null) {
+				Dossier dossierUpdate = DossierLocalServiceUtil.updateDossier(dossier);
+				result = DossierUtils.mappingForGetDetail(dossierUpdate, user.getUserId());
+				_log.info("TRACE_LOG_INFO result upadte Dossier: "+JSONFactoryUtil.looseSerialize(result));
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		}catch (Exception e){
+			e.printStackTrace();
+			_log.error(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

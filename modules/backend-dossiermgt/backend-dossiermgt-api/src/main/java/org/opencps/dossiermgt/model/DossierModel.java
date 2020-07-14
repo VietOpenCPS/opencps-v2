@@ -1619,6 +1619,36 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setMultipleCheck(String multipleCheck);
 
+	/**
+	 * Returns the postal code send of this dossier.
+	 *
+	 * @return the postal code send of this dossier
+	 */
+	@AutoEscape
+	public String getPostalCodeSend();
+
+	/**
+	 * Sets the postal code send of this dossier.
+	 *
+	 * @param postalCodeSend the postal code send of this dossier
+	 */
+	public void setPostalCodeSend(String postalCodeSend);
+
+	/**
+	 * Returns the postal code received of this dossier.
+	 *
+	 * @return the postal code received of this dossier
+	 */
+	@AutoEscape
+	public String getPostalCodeReceived();
+
+	/**
+	 * Sets the postal code received of this dossier.
+	 *
+	 * @param postalCodeReceived the postal code received of this dossier
+	 */
+	public void setPostalCodeReceived(String postalCodeReceived);
+
 	@Override
 	public boolean isNew();
 

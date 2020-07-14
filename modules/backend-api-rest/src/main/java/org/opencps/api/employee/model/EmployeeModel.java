@@ -75,7 +75,8 @@ import javax.xml.bind.annotation.XmlType;
     "jobPosts",
     "mappingUser",
     "recruitDate",
-    "leaveDate"
+    "leaveDate",
+    "scope"
 })
 @XmlRootElement(name = "EmployeeModel")
 public class EmployeeModel {
@@ -102,6 +103,15 @@ public class EmployeeModel {
     
     protected List<JobPosts> jobPosts;
     protected List<MappingUser> mappingUser;
+    protected String scope;
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
     /**
      * Gets the value of the employeeId property.

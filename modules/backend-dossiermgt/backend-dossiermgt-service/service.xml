@@ -589,6 +589,8 @@
 		<column name="vnpostalProfile" type="String" />
 		<column name="fromViaPostal" type="int" />
 		<column name="multipleCheck" type="String" />
+		<column name="postalCodeSend" type="String" />
+		<column name="postalCodeReceived" type="String" />
 		
 		<!-- Order -->
 		
@@ -701,6 +703,10 @@
 		</finder>
 		<finder return-type="Dossier" name="DO_NO">
 			<finder-column name="dossierNo" />
+		</finder>
+		<finder return-type="Dossier" name="DO_NO_GROUP">
+			<finder-column name="dossierNo" />
+			<finder-column name="groupId" />
 		</finder>
 
 		<finder return-type="Collection" name="G_AN">

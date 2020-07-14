@@ -283,7 +283,9 @@ create table opencps_dossier (
 	vnpostalStatus INTEGER,
 	vnpostalProfile TEXT null,
 	fromViaPostal INTEGER,
-	multipleCheck VARCHAR(75) null
+	multipleCheck VARCHAR(75) null,
+	postalCodeSend VARCHAR(75) null,
+	postalCodeReceived VARCHAR(75) null
 );
 
 create table opencps_dossieraction (
