@@ -19,6 +19,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -53,11 +54,11 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -70,6 +71,7 @@ import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.exception.NoSuchDeliverableException;
@@ -1551,6 +1553,129 @@ public class DeliverableLocalServiceImpl
 			return StringPool.BLANK;
 		}
 
+	}
+
+	//Search V1 custom
+	@SuppressWarnings("deprecation")
+	public Hits searchLucene(String keywords, String groupId, String type, Map<String, String> mapFilter, Sort[] sorts, int start, int end,
+			SearchContext searchContext) throws ParseException, SearchException {
+
+		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
+		searchContext.setLike(true);
+		searchContext.setStart(start);
+		searchContext.setEnd(end);
+		searchContext.setAndSearch(true);
+		searchContext.setSorts(sorts);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		// Search follow params default
+		BooleanQuery booleanCommon = processSearchCommon(
+			keywords, groupId, type, mapFilter, booleanQuery);
+		// Search follow param input
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.search(searchContext, booleanCommon);
+	}
+
+	@SuppressWarnings("deprecation")
+	public long countLucene(
+		String keywords, String groupId, String type, Map<String, String> mapFilter, SearchContext searchContext)
+		throws ParseException, SearchException {
+
+		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
+
+		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+		searchContext.setEntryClassNames(new String[] { CLASS_NAME });
+		searchContext.setAttribute(ConstantsTerm.PAGINATION_TYPE, ConstantsTerm.REGULAR);
+		searchContext.setLike(true);
+		searchContext.setAndSearch(true);
+
+		BooleanQuery booleanQuery = null;
+
+		if (Validator.isNotNull(keywords)) {
+			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+		} else {
+			booleanQuery = indexer.getFullQuery(searchContext);
+		}
+
+		// Search follow params default
+		BooleanQuery booleanCommon = processSearchCommon(
+			keywords, groupId, type, mapFilter, booleanQuery);
+		// Search follow param input
+		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+
+		return IndexSearcherHelperUtil.searchCount(searchContext, booleanCommon);
+	}
+
+	private BooleanQuery processSearchCommon(String keywords, String groupId, String type,
+			Map<String, String> mapFilter, BooleanQuery booleanQuery) throws ParseException {
+
+		// LamTV: Process search LIKE
+		if (Validator.isNotNull(keywords)) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] {
+					DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
+					DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+					DeliverableTerm.DELIVERABLE_CODE_SEARCH
+			};
+
+			//String keySearch = SpecialCharacterUtils.splitSpecial(keywords);
+			String[] keywordArr = keywords.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+						fieldSearch,
+						StringPool.STAR + key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(groupId)) {
+			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(groupId));
+			query.addFields(Field.GROUP_ID);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(type)) {
+			MultiMatchQuery query = new MultiMatchQuery(type);
+			query.addFields(DeliverableTerm.DELIVERABLE_TYPE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (mapFilter != null) {
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			for (Map.Entry<String, String> entry : mapFilter.entrySet()) {
+				String key = entry.getKey();
+				if (key.contains("@LIKE")) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(
+							key.split("@")[0],
+							StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+					queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+				} else if (key.contains("@EQUAL")) {
+					MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
+					query.addFields(key.split("@")[0]);
+					queryBool.add(query, BooleanClauseOccur.MUST);
+				}
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+		}
+
+		return booleanQuery;
 	}
 
 	private static Log _log =
