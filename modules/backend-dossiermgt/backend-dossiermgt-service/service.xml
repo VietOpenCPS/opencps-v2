@@ -396,6 +396,10 @@
 		<finder return-type="Collection" name="G_">
 			<finder-column name="groupId"/>
 		</finder>
+		<finder return-type="Collection" name="G_SERVICE_CODE">
+			<finder-column name="groupId"/>
+			<finder-column name="govAgencyCode"/>
+		</finder>
 
 		<finder return-type="Collection" name="F_GID_SID">
 			<finder-column name="groupId" />
