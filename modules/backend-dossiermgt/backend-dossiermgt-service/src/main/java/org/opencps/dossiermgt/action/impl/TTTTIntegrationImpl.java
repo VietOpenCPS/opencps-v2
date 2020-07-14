@@ -22,7 +22,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 
 public class TTTTIntegrationImpl implements TTTTIntegrationAction {
-    private Log _log = LogFactoryUtil.getLog(PublishEventScheduler.class);
+    private Log _log = LogFactoryUtil.getLog(TTTTIntegrationImpl.class);
     @Override
     public boolean syncDoActionDossier(Dossier dossier) throws Exception{
         List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(ServerConfigTerm.TTTT_INTEGRATION);
