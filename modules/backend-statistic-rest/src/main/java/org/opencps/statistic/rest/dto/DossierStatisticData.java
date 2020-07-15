@@ -325,6 +325,13 @@ public class DossierStatisticData {
 	private int releaseDossierSatCount;
 	private String groupAgencyCode;
 	private int fromViaPostalCount;
+	private int onlineBetimesCount = 0;
+	private int onlineOntimeCount = 0;
+	private int onlineOvertimeCount = 0;
+	private int onegateBetimesCount = 0;
+	private int onegateOntimeCount = 0;
+	private int onegateOvertimeCount = 0;
+	
 	
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
@@ -389,4 +396,53 @@ public class DossierStatisticData {
 	public void setSaturdayCount(int saturdayCount) {
 		this.saturdayCount = saturdayCount;
 	}
+
+	public int getOnlineBetimesCount() {
+		return onlineBetimesCount;
+	}
+
+	public void setOnlineBetimesCount(int onlineBetimesCount) {
+		this.onlineBetimesCount = onlineBetimesCount;
+	}
+
+	public int getOnlineOntimeCount() {
+		return onlineOntimeCount;
+	}
+
+	public void setOnlineOntimeCount(int onlineOntimeCount) {
+		this.onlineOntimeCount = onlineOntimeCount;
+	}
+
+	public int getOnlineOvertimeCount() {
+		return onlineOvertimeCount;
+	}
+
+	public void setOnlineOvertimeCount(int onlineOvertimeCount) {
+		this.onlineOvertimeCount = onlineOvertimeCount;
+	}
+
+	public int getOnegateBetimesCount() {
+		return onegateBetimesCount;
+	}
+
+	public void setOnegateBetimesCount(int onegateBetimesCount) {
+		this.onegateBetimesCount = onegateBetimesCount;
+	}
+
+	public int getOnegateOntimeCount() {
+		return onegateOntimeCount;
+	}
+
+	public void setOnegateOntimeCount(int onegateOntimeCount) {
+		this.onegateOntimeCount = onegateOntimeCount;
+	}
+
+	public int getOnegateOvertimeCount() {
+		return onegateOvertimeCount;
+	}
+
+	public void setOnegateOvertimeCount(int onegateOvertimeCount) {
+		this.onegateOvertimeCount = onegateOvertimeCount;
+	}
+		
 }

@@ -178,6 +178,25 @@ public class StatisticEngineFetchEntry {
 					} else {
 						statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
 					}
+					
+					if (!dossierData.getOnline()) {
+						if (overdue == 0) {
+							statisticData.setOnlineBetimesCount(statisticData.getOnlineBetimesCount() + 1);
+						} else if (overdue == 2) {
+							statisticData.setOnlineOvertimeCount(statisticData.getOnlineOntimeCount() + 1);
+						} else {
+							statisticData.setOnlineOntimeCount(statisticData.getOnlineOntimeCount() + 1);
+						}
+					} else {
+						if (overdue == 0) {
+							statisticData.setOnegateBetimesCount(statisticData.getOnegateBetimesCount() + 1);
+						} else if (overdue == 2) {
+							statisticData.setOnegateOvertimeCount(statisticData.getOnegateOvertimeCount() + 1);
+						} else {
+							statisticData.setOnegateOntimeCount(statisticData.getOnegateOntimeCount() + 1);
+						}
+					}
+					
 				}
 			}
 		}
