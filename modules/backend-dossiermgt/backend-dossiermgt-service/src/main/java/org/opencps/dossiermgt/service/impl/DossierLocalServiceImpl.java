@@ -4349,7 +4349,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addFields(DossierTerm.DOMAIN_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
+		}		
 
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(domainName)) {
