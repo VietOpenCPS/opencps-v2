@@ -7525,6 +7525,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				paymentFile.setApproveDatetime(APIDateTimeUtils.convertStringToDate(input.getApproveDatetime(), APIDateTimeUtils._TIMESTAMP));
 			}else {
 				paymentFile.setApproveDatetime(new Date());
+				System.out.println("HIIIIIIIIIIIIIIIIIIIII:" + paymentFile);
 			}
 
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
