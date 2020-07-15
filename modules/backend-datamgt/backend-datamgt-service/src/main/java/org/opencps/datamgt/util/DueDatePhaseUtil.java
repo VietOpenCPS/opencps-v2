@@ -21,9 +21,17 @@ public class DueDatePhaseUtil {
 	int dateOption;
 	long groupId;
 	private Date startDate;
+	private Date receiveDate;
+	private double duration;
 	private Date dueDate;
 	private String dueDatePhases;
 
+	public double getDuration() {
+		return duration;
+	}
+	public Date getReceiveDate() {
+		return receiveDate;
+	}
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -88,6 +96,8 @@ public class DueDatePhaseUtil {
 		calStartDate.add(Calendar.DATE, allDay);
 		DueDateUtils dueDateUtil = new DueDateUtils(calStartDate.getTime(), workDay, 0, this.groupId);
 		this.dueDate = dueDateUtil.getDueDate();
+		this.receiveDate = this.startDate;
+		this.duration = allDay + workDay;
 	}
 
 	private void setByDayOfWeek(JSONObject phase) {
