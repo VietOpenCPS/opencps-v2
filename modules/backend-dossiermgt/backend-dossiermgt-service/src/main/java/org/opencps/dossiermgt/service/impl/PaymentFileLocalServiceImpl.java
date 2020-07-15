@@ -404,6 +404,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setBankInfo(bankInfo);
 		paymentFile.setPaymentStatus(paymentStatus);
 		paymentFile.setPaymentMethod(paymentMethod);
+		paymentFile.setApproveDatetime(now);
 
 		paymentFilePersistence.update(paymentFile);
 
@@ -695,6 +696,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
 			paymentFile.setPaymentStatus(requestPayment);
+			paymentFile.setApproveDatetime(new Date());
 			if (Validator.isNotNull(paymentNote))
 				paymentFile.setPaymentNote(paymentNote);
 			if (requestPayment == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG) {
@@ -863,6 +865,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setBankInfo(input.getBankInfo());
 		paymentFile.setPaymentStatus(input.getPaymentStatus());
 		paymentFile.setPaymentMethod(input.getPaymentMethod());
+		paymentFile.setApproveDatetime(now);
 
 		paymentFilePersistence.update(paymentFile);
 		

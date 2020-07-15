@@ -7521,12 +7521,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getPaymentNote())) {
 				paymentFile.setPaymentNote(input.getPaymentNote());
 			}
-			if (Validator.isNotNull(input.getApproveDatetime())) {
-				paymentFile.setApproveDatetime(APIDateTimeUtils.convertStringToDate(input.getApproveDatetime(), APIDateTimeUtils._TIMESTAMP));
-			}else {
-				paymentFile.setApproveDatetime(new Date());
-				System.out.println("HIIIIIIIIIIIIIIIIIIIII:" + paymentFile);
-			}
+			paymentFile.setApproveDatetime(new Date());
 
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
 		}
