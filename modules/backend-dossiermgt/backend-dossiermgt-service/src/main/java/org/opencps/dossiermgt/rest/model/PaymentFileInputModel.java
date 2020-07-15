@@ -71,7 +71,8 @@ import javax.xml.bind.annotation.XmlType;
     "advanceAmount",
     "shipAmount",
     "serviceAmount",
-    "paymentMethod"
+    "paymentMethod",
+    "confirmPayload"
 })
 @XmlRootElement(name = "PaymentFileInputModel")
 public class PaymentFileInputModel {
@@ -95,8 +96,17 @@ public class PaymentFileInputModel {
     protected Long shipAmount;
     protected Long serviceAmount;
     protected String paymentMethod;
+    protected String confirmPayload;
 
-    /**
+    public String getConfirmPayload() {
+		return confirmPayload;
+	}
+
+	public void setConfirmPayload(String confirmPayload) {
+		this.confirmPayload = confirmPayload;
+	}
+
+	/**
      * Gets the value of the referenceUid property.
      * 
      * @return
