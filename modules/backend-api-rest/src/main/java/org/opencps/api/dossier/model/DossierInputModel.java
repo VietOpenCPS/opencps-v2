@@ -125,7 +125,9 @@ import javax.xml.bind.annotation.XmlType;
 	"vnpostalProfile",
 	"fromViaPostal",
 	// Custom form
-	"formMeta"
+	"formMeta",
+	"postalCodeSend",
+	"postalCodeReceived"
 })
 @XmlRootElement(name = "DossierInputModel")
 public class DossierInputModel {
@@ -270,6 +272,26 @@ public class DossierInputModel {
 	protected Integer fromViaPostal;
 	@FormParam(value = "formMeta")
 	protected String formMeta;
+	@FormParam(value = "postalCodeSend")
+	protected String postalCodeSend;
+	@FormParam(value = "postalCodeReceived")
+	protected String postalCodeReceived;
+
+	public String getPostalCodeSend() {
+		return postalCodeSend;
+	}
+
+	public void setPostalCodeSend(String postalCodeSend) {
+		this.postalCodeSend = postalCodeSend;
+	}
+
+	public String getPostalCodeReceived() {
+		return postalCodeReceived;
+	}
+
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		this.postalCodeReceived = postalCodeReceived;
+	}
 
 	public String getFormMeta() {
 		return formMeta;

@@ -161,6 +161,8 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("vnpostalProfile", getVnpostalProfile());
 		attributes.put("fromViaPostal", getFromViaPostal());
 		attributes.put("multipleCheck", getMultipleCheck());
+		attributes.put("postalCodeSend", getPostalCodeSend());
+		attributes.put("postalCodeReceived", getPostalCodeReceived());
 
 		return attributes;
 	}
@@ -781,6 +783,18 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 
 		if (multipleCheck != null) {
 			setMultipleCheck(multipleCheck);
+		}
+
+		String postalCodeSend = (String)attributes.get("postalCodeSend");
+
+		if (postalCodeSend != null) {
+			setPostalCodeSend(postalCodeSend);
+		}
+
+		String postalCodeReceived = (String)attributes.get("postalCodeReceived");
+
+		if (postalCodeReceived != null) {
+			setPostalCodeReceived(postalCodeReceived);
 		}
 	}
 
@@ -1517,6 +1531,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public String getPostalCityName() {
 		return _dossier.getPostalCityName();
+	}
+
+	/**
+	* Returns the postal code received of this dossier.
+	*
+	* @return the postal code received of this dossier
+	*/
+	@Override
+	public String getPostalCodeReceived() {
+		return _dossier.getPostalCodeReceived();
+	}
+
+	/**
+	* Returns the postal code send of this dossier.
+	*
+	* @return the postal code send of this dossier
+	*/
+	@Override
+	public String getPostalCodeSend() {
+		return _dossier.getPostalCodeSend();
 	}
 
 	/**
@@ -2653,6 +2687,26 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setPostalCityName(String postalCityName) {
 		_dossier.setPostalCityName(postalCityName);
+	}
+
+	/**
+	* Sets the postal code received of this dossier.
+	*
+	* @param postalCodeReceived the postal code received of this dossier
+	*/
+	@Override
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		_dossier.setPostalCodeReceived(postalCodeReceived);
+	}
+
+	/**
+	* Sets the postal code send of this dossier.
+	*
+	* @param postalCodeSend the postal code send of this dossier
+	*/
+	@Override
+	public void setPostalCodeSend(String postalCodeSend) {
+		_dossier.setPostalCodeSend(postalCodeSend);
 	}
 
 	/**

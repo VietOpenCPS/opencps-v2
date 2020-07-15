@@ -7460,6 +7460,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.fetchByDO_NO(dossierNo);
 	}
+	public Dossier fetchByDO_NO_GROUP(String dossierNo, long groupId) {
+
+		return dossierPersistence.fetchByDO_NO_GROUP(dossierNo, groupId);
+	}
 	
 	public List<Dossier> findByG_UID_DS(long groupId, long userId, String dossierStatus) {
 		return dossierPersistence.findByG_UID_DS(groupId, userId, dossierStatus);

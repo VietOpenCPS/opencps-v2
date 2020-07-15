@@ -51,11 +51,14 @@ import org.opencps.api.employee.model.EmployeeJobposResults;
 import org.opencps.api.employee.model.EmployeeModel;
 import org.opencps.api.employee.model.EmployeeResults;
 import org.opencps.api.error.model.ErrorMsg;
+import org.opencps.api.user.model.UserResults;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.usermgt.action.EmployeeInterface;
+import org.opencps.usermgt.action.UserInterface;
 import org.opencps.usermgt.action.impl.EmployeeActions;
+import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.EmployeeJobPosTerm;
 import org.opencps.usermgt.constants.EmployeeTerm;
 import org.opencps.usermgt.model.Employee;
@@ -64,6 +67,7 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.EmployeeJobPosLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.persistence.EmployeeUtil;
 import org.opencps.usermgt.utils.DateTimeUtils;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -576,6 +580,24 @@ public class EmployeeManagementImpl implements EmployeeManagement {
 				result.getEmployeeModel().addAll(EmployeeUtils.mapperEmployeeList((List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getEmployeeByGroupId(HttpServletRequest request, HttpHeaders header, Company company,
+										 Locale locale, User user, ServiceContext serviceContext) {
+
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+			Employee employee = EmployeeUtil.fetchByF_mappingUserId(groupId,user.getUserId());
+
+			EmployeeModel employeeModel = EmployeeUtils.mapperEmployeeModel(employee);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(employeeModel).build();
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

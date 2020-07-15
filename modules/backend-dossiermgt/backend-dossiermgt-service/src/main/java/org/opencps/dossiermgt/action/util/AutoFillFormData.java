@@ -245,7 +245,29 @@ public class AutoFillFormData {
 					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
 					}
-
+//					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
+					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
+						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
+						if(Validator.isNotNull(dossier.getMetaData())) {
+							try {
+								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+								Iterator<String> keys = jsonMetaData.keys();
+								// Key: key || value
+								boolean check = true;
+								while (keys.hasNext() && check) {
+									String key = keys.next();
+									String valueMeta = jsonMetaData.getString(key);
+									if(key.equals(metaDataV)){
+										jsonMap.put(entry.getKey(), valueMeta);
+										check = false;
+									}
+								}
+							} catch (JSONException e) {
+								_log.debug(e.getMessage());
+								e.printStackTrace();
+							}
+						}
+					}
 				} else if (value.startsWith(StringPool.UNDERLINE) && value.contains(StringPool.COLON)) {
 					String resultBinding = StringPool.BLANK;
 					String[] valueSplit = value.split(StringPool.COLON);
