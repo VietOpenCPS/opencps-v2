@@ -1668,13 +1668,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				params.put(PayGateTerm.ACTION_CODE, actionCode);
 
 				JSONObject payment = JSONFactoryUtil.createJSONObject();
-				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 3);
+				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 5);
 				payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
 				payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
 				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
 				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
 				long dossierActionId = dossier.getDossierActionId();
@@ -1703,6 +1704,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 							payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
 							payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
 							payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+							payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
 							params.put(PayGateTerm.PAYMENT, payment.toString());
 						}
 					}
@@ -1717,7 +1719,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				return true;
 			} else {
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
-						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG,
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG,
 						confirmPayload.toJSONString(), serviceContext);
 
 				action = config.getJSONObject(PayGateTerm.ACTION_IS_NOT_ONLINE);
@@ -1732,7 +1734,18 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				Map<String, Object> params = new HashMap<String, Object>();
 
 				params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
+				JSONObject payment = JSONFactoryUtil.createJSONObject();
+				payment.put(PaymentFileTerm.PAYMENT_REQUEST, 5);
+				payment.put(PaymentFileTerm.ADVANCE_AMOUNT, paymentFile.getAdvanceAmount());
+				payment.put(PaymentFileTerm.FEE_AMOUNT, paymentFile.getFeeAmount());
+				payment.put(PaymentFileTerm.PAYMENT_NOTE, paymentFile.getPaymentNote());
+				payment.put(PaymentFileTerm.SERVICE_AMOUNT, paymentFile.getServiceAmount());
+				payment.put(PaymentFileTerm.SHIP_AMOUNT, paymentFile.getShipAmount());
+				payment.put(PaymentFileTerm.PAYMENT_METHOD, PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG);
+				payment.put(PaymentFileTerm.CONFIRM_PAYLOAD, confirmPayload.toJSONString());
+				params.put(PayGateTerm.PAYMENT, payment.toString());
 
+				_log.info(endPoint);
 				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
 

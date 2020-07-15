@@ -400,6 +400,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
 				pfiModel.setEinvoice(paymentFile.getEinvoice());
 				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
+				pfiModel.setConfirmPayload(paymentFile.getConfirmPayload());
 				
 				client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			}
@@ -1084,6 +1085,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
 			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
+			pfiModel.setConfirmPayload(paymentFile.getConfirmPayload());
 			
 			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			
