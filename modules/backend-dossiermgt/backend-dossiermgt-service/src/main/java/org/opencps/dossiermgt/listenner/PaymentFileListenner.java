@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.util.Date;
+
 @Component(immediate = true, service = ModelListener.class)
 public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 
@@ -91,6 +93,11 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 			
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
+			
+			if (modelBeforeUpdate.getPaymentStatus() != model.getPaymentStatus() && model.getPaymentStatus() == 5) {
+		        model.setApproveDatetime(new Date());
+		        PaymentFileLocalServiceUtil.updatePaymentFile(model);
+		      }
 		} catch (SystemException | PortalException e) {
 //			e.printStackTrace();
 			_log.error(e);
