@@ -1409,6 +1409,7 @@ public class DeliverableLocalServiceImpl
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
 		// new field to save QD
 		object.setFormReport(objectData.getString(DeliverableTerm.FILE_ATTACHS));
+		object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
 		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
 
 		String deliverableType = objectData.getString(DeliverableTerm.DELIVERABLE_TYPE);
