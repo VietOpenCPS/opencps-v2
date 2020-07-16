@@ -23,7 +23,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -35,9 +37,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
@@ -50,6 +54,8 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
@@ -805,6 +811,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
 		
 		try {
+			_log.info("======input payment create=============" + input);
 			PaymentFile paymentFile = CPSDossierBusinessLocalServiceUtil.createPaymentFileByDossierId(groupId, serviceContext, id, PaymentFileUtils.convertFormModelToInputModel(input));		
 
 			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
@@ -1106,6 +1113,64 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			PaymentFileInputModel result = PaymentFileUtils.mappingToPaymentFileInputModel(paymentFile);
 	
 			return Response.status(200).entity(result).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	@Override
+	public Response downloadInvoiceFileDVCQG(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
+
+			_log.info(PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG +"===========dossierId, referenceUid=======" + dossierId + referenceUid);
+			_log.info("===========paymentFile=======" + paymentFile);
+			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
+
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
+
+			} else if (paymentFile != null && PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())){
+				
+				JSONObject payload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
+				String url = payload.getString("UrlBienLai");
+				JSONObject ppConfig = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				String ssEndpoint = ppConfig.getString("ss_endpoint");
+				String ssEndpointTerm = ppConfig.getString("ss_endpoint_term");
+				url = StringUtils.replaceOnce(url, ssEndpointTerm, ssEndpoint);
+				_log.info("endpoint get invoice: " + url);
+				InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
+				return Response.ok(file).header(
+							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}

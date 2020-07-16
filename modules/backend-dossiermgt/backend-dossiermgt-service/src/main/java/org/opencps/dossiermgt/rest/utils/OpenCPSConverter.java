@@ -1177,6 +1177,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getPaymentMethod())) {
 	    	params.put(PaymentFileTerm.PAYMENT_METHOD, model.getPaymentMethod());
 	    }
+	    if (Validator.isNotNull(model.getConfirmPayload())) {
+	    	params.put(PaymentFileTerm.CONFIRM_PAYLOAD, model.getConfirmPayload());
+	    }
 	    
 	    return params;
 	}	

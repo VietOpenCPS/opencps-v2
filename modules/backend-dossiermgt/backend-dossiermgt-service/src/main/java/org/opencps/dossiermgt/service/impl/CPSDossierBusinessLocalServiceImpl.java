@@ -1624,7 +1624,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			throws PortalException {
 		//		long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
 		//		ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
-
+		String paymentMethod = "";
+		String confirmPayload = "";
+		try {
+			JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
+			if (paymentObj.has("paymentMethod")) {
+				paymentMethod = paymentObj.getString("paymentMethod");
+			}
+			if (paymentObj.has("confirmPayload")) {
+				confirmPayload = paymentObj.getString("confirmPayload");
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
 		//Yêu cầu nộp tạm ứng
 		if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_NOP_TAM_UNG
 				|| proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_YEU_CAU_QUYET_TOAN_PHI
@@ -1671,10 +1683,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 
 			if (Validator.isNotNull(oldPaymentFile)) {
-				String paymentMethod = "";
-				if (intpaymentMethod != 0) {
-					paymentMethod = checkPaymentMethod(intpaymentMethod);
-				}
+//				String paymentMethod = "";
+//				if (intpaymentMethod != 0) {
+//					paymentMethod = checkPaymentMethod(intpaymentMethod);
+//				}
 				if (Validator.isNotNull(resultObj)) {
 					oldPaymentFile.setEinvoice(resultObj.toString());
 					oldPaymentFile.setInvoicePayload(params.toString());
@@ -1702,18 +1714,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 				if (oldPaymentFile != null) {
 					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+					if (Validator.isNotNull(confirmPayload)) {
+						oldPaymentFile.setConfirmPayload(confirmPayload);
+					}
+					if (Validator.isNotNull(paymentMethod)) {
+						oldPaymentFile.setPaymentMethod(paymentMethod);
+					}
 					paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 				}
 			}
 		} else if (proAction.getRequestPayment() == ProcessActionTerm.REQUEST_PAYMENT_BAO_DA_NOP_PHI) {
 			PaymentFile oldPaymentFile = paymentFileLocalService.getByDossierId(groupId, dossier.getDossierId());
-			int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
-			String paymentMethod = checkPaymentMethod(intpaymentMethod);
+//			int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
+//			String paymentMethod = checkPaymentMethod(intpaymentMethod);
 			if (oldPaymentFile != null) {
 				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
 				//				oldPaymentFile.setPaymentMethod(paymentMethod);
 				if (Validator.isNotNull(paymentMethod)) {
 					oldPaymentFile.setPaymentMethod(paymentMethod);
+				}
+				if (Validator.isNotNull(confirmPayload)) {
+					oldPaymentFile.setConfirmPayload(confirmPayload);
 				}
 				paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 			}
@@ -6654,6 +6675,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 			if (Validator.isNotNull(input.getGovAgencyName())) {
 				paymentFile.setGovAgencyName(input.getGovAgencyName());
+			}
+			if (Validator.isNotNull(input.getPaymentNote())) {
+				paymentFile.setPaymentNote(input.getPaymentNote());
+			}
+			if (Validator.isNotNull(input.getConfirmPayload())) {
+				paymentFile.setConfirmPayload(input.getConfirmPayload());
 			}
 
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);

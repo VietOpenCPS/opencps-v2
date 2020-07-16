@@ -162,7 +162,7 @@ public class PayGateTerm {
 
 	
 
-	public static String buildPathDoAction(String path, long dossierId) {
+	public static String buildPathDoAction(String path, String dossierId) {
 
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
 	};
