@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -61,7 +62,9 @@ import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -117,24 +120,11 @@ import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.constants.DossierActionUserTerm;
-import org.opencps.dossiermgt.constants.DossierDocumentTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierLogTerm;
-import org.opencps.dossiermgt.constants.DossierSyncTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
-import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
-import org.opencps.dossiermgt.constants.PublishQueueTerm;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceProcessTerm;
-import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -7668,45 +7658,56 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierSearchModel query = new DossierSearchModel();
 		LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
+		HashMap<String, String> properties = new HashMap<String, String>();
+		InvokeREST callRest = new InvokeREST();
+		String baseUrl =ConstantUtils.SERVICE_API_CLS;
+		String path = StringPool.FORWARD_SLASH + ConstantUtils.TOKEN_CLS + StringPool.FORWARD_SLASH + postalCode  ;
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			if (Validator.isNotNull(postalCode)) {
-				String data = "";
-				//String data = checkPostalCode(postalCode);
-				if (Validator.isNotNull(data)) {
-					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(data);
-					JSONArray soCongVanArray = jsonObject.getJSONArray("SoCongVan");
-					JSONArray statusArray = jsonObject.getJSONArray("status");
-					Iterator<Object> soCongVanIterator = soCongVanArray.iterator();
-					Iterator<Object> statusIterator = statusArray.iterator();
-					// Trạng thái 1 || 2 || 3 là mã tờ khai
-					// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
-					Sort[] sorts = null;
-					if (Validator.isNotNull(statusIterator)) {
-						if ("1".equals(statusIterator) || "2".equals(statusIterator) || "3".equals(statusIterator)) {
-							String maToKhai = soCongVanIterator.next().toString();
+				JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
+						baseUrl, path, "",
+						"", properties, serviceContext);
 
-							params.put(DossierTerm.MA_TO_KHAI, maToKhai);
+				System.out.println("===========" + baseUrl + " " + path);
+				if (Validator.isNotNull(resultObj)) {
+					if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+						throw new RuntimeException(
+								"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
+					} else {
+						JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
 
-							JSONObject jsonData = actions.getDossiers(
-									user.getUserId(), company.getCompanyId(), groupId, params,
-									sorts, query.getStart(), query.getEnd(), serviceContext);
+						for (int i = 0; i < arrayData.length(); i++) {
+							JSONObject object = arrayData.getJSONObject(i);
 
-							results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-							results.getData().addAll(
-									DossierUtils.mappingForGetList(
-											(List<Document>) jsonData.get(ConstantUtils.DATA), user.getUserId(),
-											null,query));
-						} else {
-							if (Validator.isNotNull(soCongVanIterator)) {
-								String maHS = soCongVanIterator.next().toString();
-								Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(maHS, groupId);
-								if (dossier != null) {
-									Dossier dossierDetail = DossierLocalServiceUtil.updateDossier(dossier);
-									if (dossierDetail != null) {
-										result = DossierUtils.mappingForGetDetail(dossierDetail, user.getUserId());
+							String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
+							String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
+							// Trạng thái 1 || 2 || 3 là mã tờ khai
+							// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+
+							Sort[] sorts = null;
+							if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
+								if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
+									String maToKhai = soCongvan;
+
+									params.put(DossierTerm.MA_TO_KHAI, maToKhai);
+
+									JSONObject jsonData = actions.getDossiers(
+											user.getUserId(), company.getCompanyId(), groupId, params,
+											sorts, query.getStart(), query.getEnd(), serviceContext);
+
+									results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+									results.getData().addAll(
+											DossierUtils.mappingForGetList(
+													(List<Document>) jsonData.get(ConstantUtils.DATA), user.getUserId(),
+													null, query));
+								} else {
+									String maHS = soCongvan;
+									Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(maHS, groupId);
+									if (dossier != null) {
+										result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
+										_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));
 									}
-									_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));
 								}
 							}
 						}
@@ -7720,19 +7721,6 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-//	public String checkPostalCode(String postalCode){
-//		final String serverUrl = "https://tiepnhanhoso.vnpost.vn/serviceApi/v1/GetInforToCucLanhSu/{key}/{mabuugui}";
-//		String url =serverUrl;
-//		RestTemplate restTemplate = new RestTemplate();
-//		HttpHeaders httpHeaders = (HttpHeaders) new org.springframework.http.HttpHeaders();
-//		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(url);
-//
-//		uriBuilder.queryParam("key","WMPH3Q-O6HMMU-RKDA4Z-JBS49B");
-//		uriBuilder.queryParam("mabuugui", postalCode);
-//
-//		HttpEntity request = new HttpEntity(httpHeaders);
-//		return restTemplate.getForObject(uriBuilder.toUriString(),String.class,request);
-//	}
 
 	@Override public Response updateState(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 										  ServiceContext serviceContext, long id, String codeNumber, int state)

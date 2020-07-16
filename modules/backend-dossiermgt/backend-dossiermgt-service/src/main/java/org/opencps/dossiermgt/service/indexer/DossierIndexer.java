@@ -450,10 +450,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// DossierAction fields
 			long dossierObjectActionId = object.getDossierActionId();
 			int originality = object.getOriginality();
-			String dossierNoTT = "000.00.17.G11.200715.00003";
-			if (dossierNoTT.equals(object.getDossierNo())){
 				if (dossierObjectActionId != 0 && originality > 0) {
-
 					DossierAction dossierAction = DossierActionLocalServiceUtil
 							.fetchDossierAction(dossierObjectActionId);
 
@@ -559,7 +556,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					//Add userActionId
 					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
 				}
-		}
+
 
 			// add text fields
 

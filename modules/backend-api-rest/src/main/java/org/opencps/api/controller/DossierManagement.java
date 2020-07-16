@@ -1668,7 +1668,7 @@ public interface DossierManagement {
 	public Response getDossierByPostalCodeSend(
 			@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, @QueryParam("postalCode") String postalCode);
+			@Context ServiceContext serviceContext, @PathParam("postalCode") String postalCode);
 
 
 	@PUT
