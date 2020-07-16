@@ -393,4 +393,6 @@ public class DossierTerm {
 	public static final int VIA_POSTAL_SENDED = 3;
 	public static final int VIA_POSTAL_RECEIVED = 4;
 	
+	public static final String FIRSTSCOPE = "firstscope";
+	public static final String _FIRSTSCOPE = "_firstscope";
 }

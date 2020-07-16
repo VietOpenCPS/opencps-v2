@@ -330,6 +330,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
 					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+					params.put(DossierTerm.DOMAIN_CODE, domain);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId(); 
@@ -1675,7 +1676,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					int count = 1;
 					for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
 						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
-						if (mapPfs.containsKey(dossierId)) {
+						if (mapPfs.containsKey(dossierId) && doc.hasField(DossierTerm.FINISH_DATE)) {
 							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
 
 							String dossierMetaData = doc.get(DossierTerm.META_DATA);
@@ -1705,8 +1706,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
 							dossierObj.put("address", address);
 							PaymentFile pf = mapPfs.get(dossierId);
-							String paymentDate = APIDateTimeUtils.convertDateToString(pf.getModifiedDate(), APIDateTimeUtils._NORMAL_DATE_TIME);
-							dossierObj.put("paymentDate", paymentDate);
+							dossierObj.put("paymentDate", doc.get(DossierTerm.FINISH_DATE));
 							dossierObj.put("paymentFee", pf.getFeeAmount());
 							dossierObj.put("serviceAmount", pf.getServiceAmount());
 							dossierObj.put("paymentAmount", pf.getPaymentAmount());
