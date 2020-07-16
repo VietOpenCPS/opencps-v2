@@ -245,6 +245,8 @@ public class DossierTerm {
 	public static final String ACTION_CODE_GOTO = "9999";
 	public static final int CONSTANT_INDEX_ORIGINALITY = 99;
 	public static final String DATE_OPTION = "dateOption";
+	public static final String DATE_OPTION_RECEIVER = "dateOptionReceiver";
+	public static final String DATE_OPTION_DURATION = "dateOptionDuration";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
 	public static final int DATE_OPTION_TWO = 2;
