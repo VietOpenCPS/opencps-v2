@@ -2123,7 +2123,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setCounter(counter);
 			}
 		}
-		if (obj.has(DossierTerm.VIA_POSTAL)) {
+		if (obj.has(DossierTerm.VIA_POSTAL) && Validator.isNotNull(DossierTerm.VIA_POSTAL)) {
 			if (obj.getInt(DossierTerm.VIA_POSTAL) != dossier.getViaPostal()) {
 				dossier.setViaPostal(obj.getInt(DossierTerm.VIA_POSTAL));
 			}
