@@ -1652,6 +1652,25 @@ public interface DossierManagement {
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @QueryParam("date") String date);
 
+	@GET
+	@Path("/{postalCode}/postalCodeSend")
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get list dossiers by postalCode", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list DossierCounter", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response getDossierByPostalCodeSend(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @QueryParam("postalCode") String postalCode);
+
+
 	@PUT
 	@Path("/{id}/booking")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED})

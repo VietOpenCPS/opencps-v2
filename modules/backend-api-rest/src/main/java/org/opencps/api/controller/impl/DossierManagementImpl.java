@@ -148,6 +148,9 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -1424,22 +1427,25 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info("===================== postalCodeSend " + input.getPostalCodeSend());
 
 			String postalCodeSend = input.getPostalCodeSend();
+			int viaPostal = input.getViaPostal();
 
 			 Dossier dossier  = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
 
-			_log.debug("UPDATE DOSSIER: " );
+			_log.debug("UPDATE DOSSIER: " + dossier.getDossierNo());
 
-			if ( Validator.isNull(dossier.getDossierNo())) {
-				dossier.setViaPostal(input.getViaPostal());
+			if ( Validator.isNotNull(viaPostal)) {
+				dossier.setViaPostal(viaPostal);
 			}
-			if ( Validator.isNull(postalCodeSend)) {
+			if ( Validator.isNotNull(postalCodeSend)) {
 				dossier.setPostalCodeSend(postalCodeSend);
 			}
 
 			if(dossier != null) {
 				Dossier dossierUpdate = DossierLocalServiceUtil.updateDossier(dossier);
-				result = DossierUtils.mappingForGetDetail(dossierUpdate, user.getUserId());
-				_log.info("TRACE_LOG_INFO result upadte Dossier: "+JSONFactoryUtil.looseSerialize(result));
+				if(dossierUpdate !=null) {
+					result = DossierUtils.mappingForGetDetail(dossierUpdate, user.getUserId());
+				}
+				_log.info("TRACE_LOG_INFO result upadte Dossier: "+ JSONFactoryUtil.looseSerialize(result));
 			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -7653,8 +7659,82 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
-	@Override public Response updateState(HttpServletRequest request,HttpHeaders header,Company company,Locale locale,User user,
-		ServiceContext serviceContext,long id,String codeNumber,int state)
+	@Override
+	public Response getDossierByPostalCodeSend(HttpServletRequest request, HttpHeaders header, Company company,
+											   Locale locale, User user, ServiceContext serviceContext, String postalCode) {
+		DossierDetailModel result = new DossierDetailModel();
+		DossierActions actions = new DossierActionsImpl();
+		DossierResultsModel results = new DossierResultsModel();
+		DossierSearchModel query = new DossierSearchModel();
+		LinkedHashMap<String, Object> params =
+				new LinkedHashMap<String, Object>();
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if (Validator.isNotNull(postalCode)) {
+				String data = checkPostalCode(postalCode);
+				if (Validator.isNotNull(data)) {
+					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(data);
+					JSONArray soCongVanArray = jsonObject.getJSONArray("SoCongVan");
+					JSONArray statusArray = jsonObject.getJSONArray("status");
+					Iterator<Object> soCongVanIterator = soCongVanArray.iterator();
+					Iterator<Object> statusIterator = statusArray.iterator();
+					// Trạng thái 1 || 2 || 3 là mã tờ khai
+					// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+					Sort[] sorts = null;
+					if (Validator.isNotNull(statusIterator)) {
+						if ("1".equals(statusIterator) || "2".equals(statusIterator) || "3".equals(statusIterator)) {
+							String maToKhai = soCongVanIterator.next().toString();
+
+							params.put(DossierTerm.MA_TO_KHAI, maToKhai);
+
+							JSONObject jsonData = actions.getDossiers(
+									user.getUserId(), company.getCompanyId(), groupId, params,
+									sorts, query.getStart(), query.getEnd(), serviceContext);
+
+							results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+							results.getData().addAll(
+									DossierUtils.mappingForGetList(
+											(List<Document>) jsonData.get(ConstantUtils.DATA), user.getUserId(),
+											null,query));
+						} else {
+							if (Validator.isNotNull(soCongVanIterator)) {
+								String maHS = soCongVanIterator.next().toString();
+								Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(maHS, groupId);
+								if (dossier != null) {
+									Dossier dossierDetail = DossierLocalServiceUtil.updateDossier(dossier);
+									if (dossierDetail != null) {
+										result = DossierUtils.mappingForGetDetail(dossierDetail, user.getUserId());
+									}
+									_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));
+								}
+							}
+						}
+					}
+				}
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			_log.info("------ Log Exception ------ " + " " + e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	public String checkPostalCode(String postalCode){
+		final String serverUrl = "https://tiepnhanhoso.vnpost.vn/serviceApi/v1/GetInforToCucLanhSu/{key}/{mabuugui}";
+		String url =serverUrl;
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = (HttpHeaders) new org.springframework.http.HttpHeaders();
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(url);
+
+		uriBuilder.queryParam("key","WMPH3Q-O6HMMU-RKDA4Z-JBS49B");
+		uriBuilder.queryParam("mabuugui", postalCode);
+
+		HttpEntity request = new HttpEntity(httpHeaders);
+		return restTemplate.getForObject(uriBuilder.toUriString(),String.class,request);
+	}
+
+	@Override public Response updateState(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+										  ServiceContext serviceContext, long id, String codeNumber, int state)
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date now = new Date();

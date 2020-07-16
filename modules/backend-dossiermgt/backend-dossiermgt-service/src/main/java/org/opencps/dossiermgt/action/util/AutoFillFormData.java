@@ -91,6 +91,7 @@ public class AutoFillFormData {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
 						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
+				_applicantName = dossier.getApplicantName();
 
 				// get data applicant or employee
 				ApplicantActions applicantActions = new ApplicantActionsImpl();

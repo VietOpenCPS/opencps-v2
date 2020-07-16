@@ -190,7 +190,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.CANCELLING_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getCancellingDate()) ? object.getCancellingDate().getTime() : 0);
 			// }
-			
+
 			document.addNumberSortable(DossierTerm.FINISH_DATE_TIMESTAMP,
 					Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0);
 
@@ -207,7 +207,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			long releaseTime = Validator.isNotNull(object.getReleaseDate()) ? object.getReleaseDate().getTime() : 0;
 			long finishTime = Validator.isNotNull(object.getFinishDate()) ? object.getFinishDate().getTime() : 0;
 //			long hourMiliseconds = 60 * 60 * 1000;
-			
+
 			if (extendateTime > dueDateTime) {
 				document.addNumberSortable(DossierTerm.COMPARE_DELAY_DATE, 1);
 			} else {
@@ -231,12 +231,10 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					*/
 					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
 					if (1 == valueCompareRelease) {
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);						
-					}
-					else if (2 == valueCompareRelease) {
+						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
+					} else if (2 == valueCompareRelease) {
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
-					}
-					else if (3 == valueCompareRelease) {
+					} else if (3 == valueCompareRelease) {
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
 					}
 				} else {
@@ -277,7 +275,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			} else {
 //				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
 //			}
-			
+
 			if (durationCount > 0) {
 				//Need performance tuning!!!!
 				long dossierActionId = object.getDossierActionId();
@@ -292,8 +290,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 								if (sc != null) {
 									document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
 								}
-							}
-							catch (Exception e) {
+							} catch (Exception e) {
 								_log.debug(e);
 							}
 							String dueDatePattern = sp.getDueDatePattern();
@@ -316,80 +313,69 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 												double durationComing = durationCount / valueInt;
 												long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 														object.getGroupId());
-												document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+												document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+											} catch (NumberFormatException e) {
+
 											}
-											catch (NumberFormatException e) {
-												
-											}
-										}
-										else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
-											if ((int)durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+										} else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_DAY.contentEquals(type)) {
+											if ((int) durationUnit == DossierTerm.DURATION_UNIT_DAY) {
 												try {
 													int valueInt = Integer.parseInt(value);
 													double durationComing = durationCount - valueInt;
 													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 															object.getGroupId());
-													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+												} catch (NumberFormatException e) {
+
 												}
-												catch (NumberFormatException e) {
-													
-												}												
-											}
-											else if ((int)durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
 													int valueInt = Integer.parseInt(value) * DossierTerm.WORKING_HOUR_PER_DAY;
 													double durationComing = durationCount - valueInt;
 													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 															object.getGroupId());
-													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+												} catch (NumberFormatException e) {
+
 												}
-												catch (NumberFormatException e) {
-													
-												}												
 											}
-										}
-										else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
-											if ((int)durationUnit == DossierTerm.DURATION_UNIT_DAY) {
+										} else if (DossierTerm.DUE_DATE_NOTIFY_TYPE_HOUR.contentEquals(type)) {
+											if ((int) durationUnit == DossierTerm.DURATION_UNIT_DAY) {
 												try {
 													int valueInt = Integer.parseInt(value) / DossierTerm.WORKING_HOUR_PER_DAY;
 													double durationComing = durationCount - valueInt;
 													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 															object.getGroupId());
-													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+												} catch (NumberFormatException e) {
+
 												}
-												catch (NumberFormatException e) {
-													
-												}												
-											}
-											else if ((int)durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
+											} else if ((int) durationUnit == DossierTerm.DURATION_UNIT_HOUR) {
 												try {
 													int valueInt = Integer.parseInt(value);
 													double durationComing = durationCount - valueInt;
 													long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 															object.getGroupId());
-													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);																				
+													document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
+												} catch (NumberFormatException e) {
+
 												}
-												catch (NumberFormatException e) {
-													
-												}												
 											}
-										}										
+										}
 									}
-								}
-								else {
+								} else {
 									double durationComing = durationCount / 5;
 									long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 											object.getGroupId());
-									document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);									
+									document.addNumberSortable(DossierTerm.DUE_DATE_COMING, dateComing);
 								}
-							}
-							catch (Exception e) {
+							} catch (Exception e) {
 								_log.debug(e);
 							}
 						}
 					}
 				}
-				
+
 //				double durationComing = durationCount / 5;
 //				long dateComing = TimeComingUtils.getTimeComing(object.getDueDate(), durationComing, (int) durationUnit,
 //						object.getGroupId());
@@ -397,7 +383,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addNumberSortable(DossierTerm.DUE_DATE_COMING, 0);
 			}
-			
+
 
 			// add number fields
 			document.addNumberSortable(DossierTerm.COUNTER, object.getCounter());
@@ -464,111 +450,116 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			// DossierAction fields
 			long dossierObjectActionId = object.getDossierActionId();
 			int originality = object.getOriginality();
-			if (dossierObjectActionId != 0 && originality > 0) {
+			String dossierNoTT = "000.00.17.G11.200715.00003";
+			if (dossierNoTT.equals(object.getDossierNo())){
+				if (dossierObjectActionId != 0 && originality > 0) {
 
-				DossierAction dossierAction = DossierActionLocalServiceUtil
-						.fetchDossierAction(dossierObjectActionId);
-				
-				if (dossierAction != null) {
-					ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
-					if (sc != null) {
-						document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
-					}
-					// if (Validator.isNotNull(dossierAction.getCreateDate())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
-							.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
-					// }
-					// if (Validator.isNotNull(dossierAction.getActionCode())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
-					// }
-					// if (Validator.isNotNull(dossierAction.getActionName())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
-					// }
-					// if (Validator.isNotNull(dossierAction.getActionUser())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
-					// }
-					// if (Validator.isNotNull(dossierAction.getActionNote())) {
-					document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
-					// }
-					
-					String currentActionUserStr = StringPool.BLANK;
-					try {
-						List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
-						List<Long> lstUsers = new ArrayList<>();
-						StringBuilder currentActionUser = new StringBuilder();
-						
-						if (!lstDus.isEmpty()) {
-							for (DossierActionUser dau : lstDus) {
-								Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
-								if (employee != null) {
-									if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
-										lstUsers.add(dau.getUserId());
-										currentActionUser.append(employee.getFullName());
-									}		
+					DossierAction dossierAction = DossierActionLocalServiceUtil
+							.fetchDossierAction(dossierObjectActionId);
+
+					if (dossierAction != null) {
+						ServiceConfig sc = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(object.getGroupId(), object.getServiceCode(), object.getGovAgencyCode());
+						if (sc != null) {
+							document.addNumberSortable(DossierTerm.SERVICE_LEVEL, sc.getServiceLevel());
+						}
+						// if (Validator.isNotNull(dossierAction.getCreateDate())) {
+						document.addTextSortable(DossierTerm.LAST_ACTION_DATE, APIDateTimeUtils
+								.convertDateToString(dossierAction.getCreateDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+						// }
+						// if (Validator.isNotNull(dossierAction.getActionCode())) {
+						document.addTextSortable(DossierTerm.LAST_ACTION_CODE, dossierAction.getActionCode());
+						// }
+						// if (Validator.isNotNull(dossierAction.getActionName())) {
+						document.addTextSortable(DossierTerm.LAST_ACTION_NAME, dossierAction.getActionName());
+						// }
+						// if (Validator.isNotNull(dossierAction.getActionUser())) {
+						document.addTextSortable(DossierTerm.LAST_ACTION_USER, dossierAction.getActionUser());
+						// }
+						// if (Validator.isNotNull(dossierAction.getActionNote())) {
+						document.addTextSortable(DossierTerm.LAST_ACTION_NOTE, dossierAction.getActionNote());
+						// }
+
+						String currentActionUserStr = StringPool.BLANK;
+						try {
+							List<DossierActionUser> lstDus = DossierActionUserLocalServiceUtil.getListUser(dossierObjectActionId);
+							List<Long> lstUsers = new ArrayList<>();
+							StringBuilder currentActionUser = new StringBuilder();
+
+							if (!lstDus.isEmpty()) {
+								for (DossierActionUser dau : lstDus) {
+									Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossierAction.getGroupId(), dau.getUserId());
+									if (employee != null) {
+										if (!lstUsers.contains(dau.getUserId()) && dau.getModerator() == DossierActionUserTerm.ASSIGNED_TH) {
+											lstUsers.add(dau.getUserId());
+											currentActionUser.append(employee.getFullName());
+										}
+									}
+								}
+								currentActionUserStr = currentActionUser.toString();
+							}
+						} catch (Exception e) {
+							_log.debug(e);
+						}
+						document.addTextSortable(DossierTerm.CURRENT_ACTION_USER, currentActionUserStr);
+
+						// if (Validator.isNotNull(dossierAction.getStepCode())) {
+						document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
+						// }
+						// if (Validator.isNotNull(dossierAction.getStepName())) {
+						document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
+						// }
+
+						if (dossierAction.getActionOverdue() != 0) {
+							document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.TRUE);
+						} else {
+							document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
+						}
+
+						Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
+
+						document.addTextSortable(DossierTerm.STEP_DUE_DATE,
+								APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
+
+						//Index assigned in step
+						List<String> userAssignedList = new ArrayList<>();
+						List<String> useDoingList = new ArrayList<>();
+						if (object.getDossierId() > 0) {
+							List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil
+									.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
+							if (dauList != null && dauList.size() > 0) {
+								for (DossierActionUser dau : dauList) {
+									userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
+									useDoingList.add(DossierTerm.DANG_XU_LY + StringPool.UNDERLINE + dau.getUserId() + StringPool.UNDERLINE + dau.getAssigned());
 								}
 							}
-							currentActionUserStr = currentActionUser.toString();
 						}
-					}
-					catch (Exception e) {
-						_log.debug(e);
-					}
-					document.addTextSortable(DossierTerm.CURRENT_ACTION_USER, currentActionUserStr);
-					
-					// if (Validator.isNotNull(dossierAction.getStepCode())) {
-					document.addTextSortable(DossierTerm.STEP_CODE, dossierAction.getStepCode());
-					// }
-					// if (Validator.isNotNull(dossierAction.getStepName())) {
-					document.addTextSortable(DossierTerm.STEP_NAME, dossierAction.getStepName());
-					// }
+						document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(userAssignedList, StringPool.SPACE));
+						document.addTextSortable(DossierTerm.DOING_ACTION_USER_ID, StringUtil.merge(useDoingList, StringPool.SPACE));
 
-					if (dossierAction.getActionOverdue() != 0) {
-						document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.TRUE);
-					} else {
-						document.addTextSortable(DossierTerm.STEP_OVER_DUE, StringPool.FALSE);
-					}
-
-					Date stepDuedate = DossierOverDueUtils.getStepOverDue(object.getGroupId(), dossierAction.getActionOverdue(), new Date());
-
-					document.addTextSortable(DossierTerm.STEP_DUE_DATE,
-							APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
-					
-					//Index assigned in step
-					List<String> userAssignedList = new ArrayList<>();
-					if (object.getDossierId() > 0) {
-						List<DossierActionUser> dauList = DossierActionUserLocalServiceUtil
-								.getByDID_DAID(object.getDossierId(), dossierAction.getDossierActionId());
-						if (dauList != null && dauList.size() > 0) {
-							for (DossierActionUser dau : dauList) {
-								userAssignedList.add(dau.getUserId() + StringPool.UNDERLINE + dossierAction.getStepCode() + StringPool.UNDERLINE + dau.getAssigned());
-							}
-						}
-					}
-					document.addTextSortable(DossierTerm.ASSIGNED_USER_ID, StringUtil.merge(userAssignedList, StringPool.SPACE));
-
-					//Index userNote
-					String actionCode = dossierAction.getActionCode();
+						//Index userNote
+						String actionCode = dossierAction.getActionCode();
 //					_log.info("actionCode: "+actionCode);
-					ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
+						ActionConfig act = ActionConfigLocalServiceUtil.getByCode(object.getGroupId(), actionCode);
 //					_log.info("act: "+act);
-					if (act != null) {
+						if (act != null) {
 //						_log.info("act: "+act.getUserNote());
-						document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
-						document.addNumberSortable(DossierTerm.DATE_OPTION, act.getDateOption());
+							document.addNumberSortable(DossierTerm.USER_NOTE, act.getUserNote());
+							document.addNumberSortable(DossierTerm.DATE_OPTION, act.getDateOption());
+						} else {
+							document.addNumberSortable(DossierTerm.USER_NOTE, 0);
+							document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
+						}
+						//Add userActionId
+						document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 					} else {
-						document.addNumberSortable(DossierTerm.USER_NOTE, 0);
-						document.addNumberSortable(DossierTerm.DATE_OPTION, 0);
+						//Add userActionId
+						document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
 					}
-					//Add userActionId
-					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, dossierAction.getUserId());
 				} else {
 					//Add userActionId
 					document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
 				}
-			} else {
-				//Add userActionId
-				document.addNumberSortable(DossierTerm.USER_DOSSIER_ACTION_ID, 0);
-			}
+		}
 
 			// add text fields
 
@@ -862,7 +853,18 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					while (keys.hasNext()) {
 						String key = keys.next();
 						String value = jsonMetaData.getString(key);
-						document.addTextSortable(key, value);
+						if(key.equals(DossierTerm.MA_TO_KHAI)){
+							if(Validator.isNotNull(value)){
+								if(value.equals(StringPool.COMMA)) {
+									String[] dataArr = value.split(StringPool.COMMA);
+									document.addTextSortable(key, StringUtil.merge(dataArr, StringPool.SPACE));
+								}else{
+									document.addTextSortable(key, value);
+								}
+							}
+						}else{
+							document.addTextSortable(key, value);
+						}
 					}
 				} catch (JSONException e) {
 					_log.debug(e.getMessage());
