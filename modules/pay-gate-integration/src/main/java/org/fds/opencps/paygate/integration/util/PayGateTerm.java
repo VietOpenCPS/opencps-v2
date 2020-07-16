@@ -134,7 +134,7 @@ public class PayGateTerm {
 	public static final String MSG_RES_KEY = "msg";
 	public static final String PAYMENT_URL_RES_KEY = "payment_url";
 
-	public static String buildPathDoAction(String path, long dossierId) {
+	public static String buildPathDoAction(String path, String dossierId) {
 
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";
 	};

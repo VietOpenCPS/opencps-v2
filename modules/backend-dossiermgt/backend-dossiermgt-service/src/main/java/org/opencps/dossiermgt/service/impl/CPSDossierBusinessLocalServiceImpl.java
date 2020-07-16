@@ -2131,10 +2131,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//		long serviceProcessId = (option != null ? option.getServiceProcessId() : previousAction.getServiceProcessId());
 		//		ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
 		String paymentMethod = "";
+		String confirmPayload = "";
 		try {
 			JSONObject paymentObj = JSONFactoryUtil.createJSONObject(payment);
 			if (paymentObj.has("paymentMethod")) {
 				paymentMethod = paymentObj.getString("paymentMethod");
+			}
+			if (paymentObj.has("confirmPayload")) {
+				confirmPayload = paymentObj.getString("confirmPayload");
 			}
 		} catch (Exception e) {
 			_log.debug(e);
@@ -2221,7 +2225,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				}
 				if (oldPaymentFile != null) {
+					_log.info("=======================paymmm========" + oldPaymentFile);
 					oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
+					if (Validator.isNotNull(confirmPayload)) {
+						oldPaymentFile.setConfirmPayload(confirmPayload);
+					}
+					if (Validator.isNotNull(paymentMethod)) {
+						oldPaymentFile.setPaymentMethod(paymentMethod);
+					}
 					paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 				}
 			}
@@ -2230,6 +2241,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//			int intpaymentMethod = checkPaymentMethodinPrecondition(proAction.getPreCondition());
 			//			String paymentMethod = checkPaymentMethod(intpaymentMethod);
 			if (oldPaymentFile != null) {
+				_log.info("=======================paymmm========" + payment);
 				oldPaymentFile.setPaymentStatus(proAction.getRequestPayment());
 				//				oldPaymentFile.setPaymentMethod(paymentMethod);
 				if (Validator.isNotNull(paymentMethod)) {
@@ -3445,7 +3457,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 					serviceProcess.getDueDatePattern());
 			dossier.setDueDate(dueDatePharse.getDueDate());
-			String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dateOption);
+			String metadata = getDossierMetaKeyDateOption(dossier, dueDatePharse.getDueDate(), dueDatePharse.getReceiveDate(), dueDatePharse.getDuration(), dateOption);
 			dossier.setMetaData(metadata);
 			bResult.put(DossierTerm.META_DATA, true);
 			bResult.put(DossierTerm.DUE_DATE, true);
@@ -7521,6 +7533,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getPaymentNote())) {
 				paymentFile.setPaymentNote(input.getPaymentNote());
 			}
+			if (Validator.isNotNull(input.getConfirmPayload())) {
+				paymentFile.setConfirmPayload(input.getConfirmPayload());
+			}
 
 			paymentFile = paymentFileLocalService.updatePaymentFile(paymentFile);
 		}
@@ -8444,15 +8459,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return oldDossier;
 	}
 
-	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, int dateOption) {
+	private String getDossierMetaKeyDateOption (Dossier dossier, Date dueDate, Date receiveDate, double duration, int dateOption) {
 
 		try {
 			JSONObject metaData = Validator.isNotNull(dossier.getMetaData()) ?
 				JSONFactoryUtil.createJSONObject(dossier.getMetaData()) :
 					JSONFactoryUtil.createJSONObject();
 			String dueDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(dueDate);
+			String receiveDateStr = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(receiveDate);
 			metaData.put(DossierTerm.DATE_OPTION + dateOption, dueDateStr);
-			System.out.println("===============metaData==========" +metaData);
+			metaData.put(DossierTerm.DATE_OPTION_RECEIVER + dateOption, receiveDateStr);
+			metaData.put(DossierTerm.DATE_OPTION_DURATION + dateOption, duration);
+			_log.info("===============metaData==========" +metaData);
 			return metaData.toJSONString();
 		} catch (Exception e) {
 			_log.debug(e);

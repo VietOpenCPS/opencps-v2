@@ -56,10 +56,10 @@ public class KeypayDVCQGUtils {
 		} else {
 			bankInfo = banksInfo.getJSONObject(PayGateTerm.DEFAULT);
 		}
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_LOAI_PHI_LE_PHI, 2);
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_MA_PHI_LE_PHI, 2);
+		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_LOAI_PHI_LE_PHI, "2");
+		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_MA_PHI_LE_PHI, "2");
 		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_TEN_PHI_LE_PHI, bankInfo.getString(PayGateTerm.TENPHILEPHI));
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_SO_TIEN, paymentFile.getFeeAmount());
+		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_SO_TIEN, paymentFile.getPaymentAmount());
 		philephi.put(philephiJ);
 		data.put(KeypayDVCQGTerm.PHI_LE_PHI, philephi);
 
@@ -71,7 +71,7 @@ public class KeypayDVCQGUtils {
 		data.put(KeypayDVCQGTerm.MA_CO_QUAN_QD, epaymentProfileDVCQG.getString(PayGateTerm.MACOQUANQD));
 		data.put(KeypayDVCQGTerm.TEN_CO_QUAN_QD, epaymentProfileDVCQG.getString(PayGateTerm.TENCOQUANQD));
 		data.put(KeypayDVCQGTerm.KHO_BAC, StringPool.BLANK);
-		data.put(KeypayDVCQGTerm.NGAY_QD, StringPool.BLANK);
+		data.put(KeypayDVCQGTerm.NGAY_QD, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 		data.put(KeypayDVCQGTerm.SO_QD, StringPool.BLANK);
 		data.put(KeypayDVCQGTerm.THOI_GIAN_VI_PHAM, StringPool.BLANK);
 		data.put(KeypayDVCQGTerm.DIA_DIEM_VI_PHAM, StringPool.BLANK);
