@@ -7671,7 +7671,8 @@ public class DossierManagementImpl implements DossierManagement {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			if (Validator.isNotNull(postalCode)) {
-				String data = checkPostalCode(postalCode);
+				String data = "";
+				//String data = checkPostalCode(postalCode);
 				if (Validator.isNotNull(data)) {
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(data);
 					JSONArray soCongVanArray = jsonObject.getJSONArray("SoCongVan");
@@ -7719,19 +7720,19 @@ public class DossierManagementImpl implements DossierManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-	public String checkPostalCode(String postalCode){
-		final String serverUrl = "https://tiepnhanhoso.vnpost.vn/serviceApi/v1/GetInforToCucLanhSu/{key}/{mabuugui}";
-		String url =serverUrl;
-		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders httpHeaders = (HttpHeaders) new org.springframework.http.HttpHeaders();
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(url);
-
-		uriBuilder.queryParam("key","WMPH3Q-O6HMMU-RKDA4Z-JBS49B");
-		uriBuilder.queryParam("mabuugui", postalCode);
-
-		HttpEntity request = new HttpEntity(httpHeaders);
-		return restTemplate.getForObject(uriBuilder.toUriString(),String.class,request);
-	}
+//	public String checkPostalCode(String postalCode){
+//		final String serverUrl = "https://tiepnhanhoso.vnpost.vn/serviceApi/v1/GetInforToCucLanhSu/{key}/{mabuugui}";
+//		String url =serverUrl;
+//		RestTemplate restTemplate = new RestTemplate();
+//		HttpHeaders httpHeaders = (HttpHeaders) new org.springframework.http.HttpHeaders();
+//		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(url);
+//
+//		uriBuilder.queryParam("key","WMPH3Q-O6HMMU-RKDA4Z-JBS49B");
+//		uriBuilder.queryParam("mabuugui", postalCode);
+//
+//		HttpEntity request = new HttpEntity(httpHeaders);
+//		return restTemplate.getForObject(uriBuilder.toUriString(),String.class,request);
+//	}
 
 	@Override public Response updateState(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
 										  ServiceContext serviceContext, long id, String codeNumber, int state)
