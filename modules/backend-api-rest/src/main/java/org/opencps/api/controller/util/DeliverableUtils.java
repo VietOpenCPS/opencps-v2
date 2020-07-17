@@ -424,6 +424,9 @@ public class DeliverableUtils {
 										userId, groupId, fileAttach, pathFolder + "/" + deliverable.getString("filePath"),
 										serviceContext);
 	
+									JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+									formData.put(DeliverableTerm.FILE_ATTACHS, fileEntryAttach.getFileEntryId());
+									deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 									deliverable.put(DeliverableTerm.FILE_ATTACHS, fileEntryAttach.getFileEntryId());
 									deliverable.put(DeliverableTerm.FILE_ENTRY_ID, fileEntryAttach.getFileEntryId());
 								}

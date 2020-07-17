@@ -722,7 +722,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
-		System.out.println("================POST===========================" + file);
+		_log.info("================POST===========================" + file);
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		BackendAuth auth = new BackendAuthImpl();
