@@ -43,10 +43,13 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MimeTypes;
+import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -55,8 +58,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.activation.MimeType;
+
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.keypay.util.KPJsonRest;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -508,10 +514,22 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			dossier.setSubmitting(true);
 
 			dossierLocalService.updateDossier(dossier);
+//			JSONObject confirmPayloadJ = JSONFactoryUtil.createJSONObject(confirmPayload);
+//			if (Validator.isNotNull(confirmPayloadJ) && confirmPayloadJ.has("url_invoice")) {
+//				String url = confirmPayloadJ.getString("url_invoice");
+//				_log.info(url);
+//				InputStream inputStream = KPJsonRest.getFileFromUrl(url);
+//				String fileName = new Date().getTime() + ".pdf";
+//				if (Validator.isNotNull(inputStream)) {
+//					FileEntry fileEntry = FileUploadUtils.uploadFile(paymentFile.getUserId(), paymentFile.getCompanyId(), groupId, inputStream, fileName,
+//							MimeTypesUtil.getContentType(inputStream, fileName), inputStream.available(), null, "", serviceContext);
+//					paymentFile.setConfirmFileEntryId(fileEntry.getFileEntryId());
+//				}
+//			}
 			// dossierPersistence.update(dossier);
 
 			// indexer.reindex(dossier);
-		} catch (SearchException e) {
+		} catch (Exception e) {
 			_log.error(e);
 		}
 
