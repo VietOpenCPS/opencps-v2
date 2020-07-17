@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.impl.DeliverableService;
@@ -114,6 +115,31 @@ public class GraphQLUtils {
 		}
 		
 		return result;
+	}
+
+	public static Map<String, String> buildSearchDataForm(String formDataKey, Map<String, String> mapFilter) {
+
+		try {
+
+			if (Validator.isNull(formDataKey)) {
+				return mapFilter;
+			}
+
+			JSONObject formDataKeyObject = JSONFactoryUtil.createJSONObject(formDataKey);
+
+			Iterator<String> jsonKeys = formDataKeyObject.keys();
+			while (jsonKeys.hasNext()) {
+
+				String key = jsonKeys.next();
+				mapFilter.put(key + "_data@LIKE",
+						Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
+								: StringPool.BLANK);
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return mapFilter;
 	}
 
 }

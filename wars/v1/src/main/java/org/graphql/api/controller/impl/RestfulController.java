@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -85,6 +86,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.utils.CaptchaServiceSingleton;
 import org.graphql.api.controller.utils.CheckFileUtils;
+import org.graphql.api.controller.utils.DeliverableUtils;
 import org.graphql.api.controller.utils.ElasticQueryWrapUtil;
 import org.graphql.api.controller.utils.GraphQLUtils;
 import org.graphql.api.controller.utils.WebKeys;
@@ -1492,7 +1494,7 @@ public class RestfulController {
 
 	}
 
-	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/deliverable/test/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverable(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
@@ -1612,7 +1614,7 @@ public class RestfulController {
 		return result.toJSONString();
 	}
 
-	@RequestMapping(value = "/deliverable/test/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/deliverable/{type}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverableTest(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
@@ -1623,10 +1625,9 @@ public class RestfulController {
 
 		try {
 
-			long userId = 0;
+			//long userId = 0;
 			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
-				userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
-
+				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 				long groupId = 0;
 
 				if (Validator.isNotNull(request.getHeader("groupId"))) {
@@ -1636,8 +1637,8 @@ public class RestfulController {
 //				String[] subQuerieArr = new String[] { DeliverableTerm.DELIVERABLE_TYPE,
 //						DeliverableTerm.DELIVERABLE_NAME, DeliverableTerm.GOV_AGENCY_NAME,
 //						DeliverableTerm.APPLICANT_NAME, DeliverableTerm.DELIVERABLE_CODE_SEARCH };
-				String queryBuilder = StringPool.BLANK;
-				String queryBuilderLike = StringPool.BLANK;
+				//String queryBuilder = StringPool.BLANK;
+				//String queryBuilderLike = StringPool.BLANK;
 				//StringBuilder sbBuilder = new StringBuilder();
 				Map<String, String> mapFilter = null;
 				String keySearch = null;
@@ -1676,10 +1677,9 @@ public class RestfulController {
 					
 				}
 
-				String queryDataFrom = GraphQLUtils.buildDeliverableSearchDataForm(formDataKey);
+				mapFilter = GraphQLUtils.buildSearchDataForm(formDataKey, mapFilter);
 
-				System.out.println("queryBuilderLike:" + queryBuilderLike);
-				System.out.println("queryBuilder:" + queryBuilder);
+				System.out.println("mapFilter:" + mapFilter);
 				if (Validator.isNull(end) || end == 0) {
 					start = -1;
 					end = -1;
@@ -1697,14 +1697,37 @@ public class RestfulController {
 					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
 							start, end, searchContext);
 
-					System.out.println("hits: " + hits);
-					result.put(ConstantUtils.DATA, hits.toList());
+					if (hits != null) {
+						List<Document> docList = hits.toList();
+						JSONArray data = DeliverableUtils.mappingToDeliverableResult(docList);
+						result.put(ConstantUtils.DATA, data);
+						//System.out.println("hits: " + hits.toList());
+						//
+//						if (hits.toList() != null && hits.toList().size() > 0) {
+//							Document doc = hits.toList().get(0);
+//							Map<String, Field> map = doc.getFields();
+	//
+//							if (map != null && map.size() > 0) {
+//								for (Map.Entry<String, Field> entry: map.entrySet()) {
+//									int i = 0;
+//									if (i < 2) {
+//										String key1 = entry.getKey();
+//										Field value1 = entry.getValue();
+//										i++;
+//										System.out.println("key1: " + key1 + "| value1: "+value1.getValue());
+//									}
+//								}
+//							}
+//						}
 
-					long total = DeliverableLocalServiceUtil.countLucene(keySearch, String.valueOf(groupId), type, mapFilter,
-							searchContext);
+						long total = DeliverableLocalServiceUtil.countLucene(keySearch, String.valueOf(groupId), type, mapFilter,
+								searchContext);
 
-					result.put(ConstantUtils.TOTAL, total);
-					System.out.println("total: " + total);
+						result.put(ConstantUtils.TOTAL, total);
+						System.out.println("total: " + total);
+					} else {
+						result.put(ConstantUtils.TOTAL, 0);
+					}
 
 				} catch (Exception e) {
 					_log.error(e);
@@ -1716,6 +1739,7 @@ public class RestfulController {
 			_log.debug(e);
 		}
 
+		System.out.println("result: " + result);
 		return result.toJSONString();
 	}
 
