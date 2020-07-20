@@ -76,7 +76,7 @@ public class KeypayDVCQGUtils {
 		}
 		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_LOAI_PHI_LE_PHI, "2");
 		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_MA_PHI_LE_PHI, "2");
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_TEN_PHI_LE_PHI, bankInfo.getString(PayGateTerm.TENPHILEPHI));
+		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_TEN_PHI_LE_PHI, epaymentProfileDVCQG.getString(PayGateTerm.TENPHILEPHI));
 		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_SO_TIEN, paymentFile.getPaymentAmount());
 		philephi.put(philephiJ);
 		data.put(KeypayDVCQGTerm.PHI_LE_PHI, philephi);

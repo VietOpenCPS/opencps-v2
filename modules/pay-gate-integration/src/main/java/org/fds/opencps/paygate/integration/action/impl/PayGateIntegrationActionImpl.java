@@ -1364,8 +1364,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN_INIT);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
-		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
-				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
+		String maDoitac = schema.getString(PayGateTerm.MADOITAC);
 		String maThamchieu = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 		String sotien = String.valueOf(paymentFile.getPaymentAmount());
 		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
