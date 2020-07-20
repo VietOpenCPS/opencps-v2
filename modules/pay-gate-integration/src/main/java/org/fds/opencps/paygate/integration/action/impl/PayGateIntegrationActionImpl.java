@@ -879,6 +879,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 								epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1341,7 +1347,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-						
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1825,6 +1836,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
