@@ -6,7 +6,13 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.UUID;
 
@@ -52,6 +58,30 @@ public class PayGateUtil {
 
 	}
 
+	private static String bytesToHex(byte[] hash) {
+	    StringBuffer hexString = new StringBuffer();
+	    for (int i = 0; i < hash.length; i++) {
+	    String hex = Integer.toHexString(0xff & hash[i]);
+	    if(hex.length() == 1) hexString.append('0');
+	        hexString.append(hex);
+	    }
+	    return hexString.toString();
+	}
+	public static String sha256 (String originalString) {
+		MessageDigest digest = null;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		final byte[] hashbytes = digest.digest(
+		  originalString.getBytes(StandardCharsets.UTF_8));
+		String sha3_256hex = bytesToHex(hashbytes);
+		System.out.println("======originalString=====" + originalString);
+		System.out.println("======originalString=====" + sha3_256hex);
+		return sha3_256hex;
+	}
 	public static String hmacSHA256Hex(String key, String value) {
 		String encryptValue = StringPool.BLANK;
 		try {
@@ -106,5 +136,54 @@ public class PayGateUtil {
 		}
 	}
 
+	public static String generateChecksum(String loaiBantin, String phienBan, String maDoitac, String maThamchieu,
+			String sotien, String loaiHinhthanhtoan, String maKenhthanhtoan, String maThietbi, String ngonNgu, 
+			String maTiente, String maNganhang, String thongtinGD, String thoigianGD, String ip, String haskey) {
+		
+		String checksum = loaiBantin + "|" + phienBan + "|" + maDoitac + "|" + maThamchieu + "|" + sotien
+				+ "|" + loaiHinhthanhtoan + "|" + maKenhthanhtoan + "|" + maThietbi + "|" + ngonNgu 
+				+ "|" + maTiente + "|" + maNganhang + "|" + thongtinGD + "|" + thoigianGD + "|" + ip + "|" + haskey;
+		return sha256(checksum);
+
+	}
+	
+	public static JSONObject createResponseMessage(String errCode, String errMsg, String partnerCode, 
+			String refferenceCode, String transactionTime, String verificationCode) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		result.put("MaLoi", errCode);
+		result.put("MoTaLoi", errMsg);
+		result.put("MaDoiTac", partnerCode);
+		result.put("MaThamChieu", refferenceCode);
+		result.put("ThoiGianGD", transactionTime);
+		result.put("MaXacThuc", verificationCode);
+		return result;
+
+	}
+	
+	public static String generateChecksum(String loaiBantin, String maLoi, String maDoitac, String maThamchieu,
+			int sotien, String maTiente, String maGD, String maNganhang, String thongtinGD, String thoigianGD, String haskey) {
+		
+		String checksum = loaiBantin + "|" + maLoi + "|"  + maDoitac + "|" + maThamchieu + "|" + sotien
+				+ "|" + maTiente + "|" + maGD + "|" + maNganhang + "|" + thoigianGD + "|" + thongtinGD + "|" + haskey;
+		return sha256(checksum);
+	}
+	
+	public static String generateChecksum(String loaiBantin, String phienBan, String maDoitac,
+			String maThamchieu, String thoigianGD, String hashkey) {
+		
+		String checksum = loaiBantin + "|" +  phienBan + "|" + maDoitac + "|" + maThamchieu + "|" + thoigianGD + "|" + hashkey;
+		return sha256(checksum);
+	}
+	
+	public static String convertDate(Date date, String dateTemplate) {
+		Format f = new SimpleDateFormat(dateTemplate);
+		String convertDate = StringPool.BLANK;
+		try {
+			 convertDate = f.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return convertDate;
+	}
 	private static Log _log = LogFactoryUtil.getLog(PayGateUtil.class);
 }
