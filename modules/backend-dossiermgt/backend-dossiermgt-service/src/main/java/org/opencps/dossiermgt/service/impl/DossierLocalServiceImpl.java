@@ -3155,8 +3155,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS)) != null
 						? GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS))
 						: null;
-		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
-		
+		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
+				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
+				: null;
+
 		Indexer<Dossier> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3384,13 +3386,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(matokhai)) {
-//			String[] keywordArr = matokhai.split(StringPool.COMMA);
-//			BooleanQuery subQuery = new BooleanQueryImpl();
-//			for (String key : keywordArr) {
 			MultiMatchQuery query = new MultiMatchQuery(matokhai);
 			query.addField(DossierTerm.MA_TO_KHAI);
-//				subQuery.add(query, BooleanClauseOccur.SHOULD);
-//			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 

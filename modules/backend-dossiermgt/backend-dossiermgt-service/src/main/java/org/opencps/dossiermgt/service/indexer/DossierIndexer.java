@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.service.indexer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -36,10 +37,7 @@ import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
-import org.opencps.dossiermgt.constants.DossierActionUserTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
@@ -50,6 +48,7 @@ import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
@@ -846,18 +845,16 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 				try {
 					JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
 					Iterator<String> keys = jsonMetaData.keys();
-					// Key: donvigui || donvinhan
+					// Key: donvigui || donvinhan && maCongvan
 					while (keys.hasNext()) {
 						String key = keys.next();
 						String value = jsonMetaData.getString(key);
-						if(key.equals(DossierTerm.MA_TO_KHAI)){
-							if(Validator.isNotNull(value)){
-								if(value.equals(StringPool.COMMA)) {
-									String[] dataArr = value.split(StringPool.COMMA);
-									document.addTextSortable(key, StringUtil.merge(dataArr, StringPool.SPACE));
-								}else{
-									document.addTextSortable(key, value);
-								}
+						if(key.equals(DossierTerm.MA_TO_KHAI_INDEXER)){
+							ObjectMapper mapper = new ObjectMapper();
+							List<String> lstValue = mapper.readValue(value, List.class);
+							if(lstValue !=null && lstValue.size() > 0) {
+								String maCongvan = lstValue.get(0);
+								document.addTextSortable(DossierTerm.MA_TO_KHAI, maCongvan);
 							}
 						}else{
 							document.addTextSortable(key, value);

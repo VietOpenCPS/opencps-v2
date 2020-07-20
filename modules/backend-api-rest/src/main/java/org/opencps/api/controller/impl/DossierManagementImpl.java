@@ -7688,10 +7688,8 @@ public class DossierManagementImpl implements DossierManagement {
 							Sort[] sorts = null;
 							if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
 								if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-									String maToKhai = soCongvan;
-
-									params.put(DossierTerm.MA_TO_KHAI, maToKhai);
-
+									params.put(DossierTerm.MA_TO_KHAI, soCongvan);
+									params.put(Field.GROUP_ID, String.valueOf(groupId));
 									JSONObject jsonData = actions.getDossiers(
 											user.getUserId(), company.getCompanyId(), groupId, params,
 											sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -7702,8 +7700,7 @@ public class DossierManagementImpl implements DossierManagement {
 													(List<Document>) jsonData.get(ConstantUtils.DATA), user.getUserId(),
 													null, query));
 								} else {
-									String maHS = soCongvan;
-									Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(maHS, groupId);
+									Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
 									if (dossier != null) {
 										result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
 										_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));

@@ -390,6 +390,7 @@ public class DossierTerm {
 	public static final String SCOPE_ = "_scope";
 	public static final String FIRSTSCOPE = "firstscope";
 	public static final String _FIRSTSCOPE = "_firstscope";
-	public static final String MA_TO_KHAI = "ma_to_khai";
+	public static final String MA_TO_KHAI_INDEXER = "ma_to_khai";
+	public static final String MA_TO_KHAI = "matokhai";
 	public static final String DOING_ACTION_USER_ID = "doingActionUserId";
 }
