@@ -2382,6 +2382,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				if (epaymentConfigJSON.has(KeyPayTerm.PP_DVCGQ_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.PP_KPDVCQG, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2501,6 +2511,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
 					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			if (epaymentConfigJSON.has(KeyPayTerm.PP_DVCGQ_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
 				} catch (Exception e) {
 					_log.error(e);
 				}
