@@ -1364,7 +1364,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-						
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1387,8 +1392,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN_INIT);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
-		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
-				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
+		String maDoitac = schema.getString(PayGateTerm.MADOITAC);
 		String maThamchieu = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 		String sotien = String.valueOf(paymentFile.getPaymentAmount());
 		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
@@ -1431,7 +1435,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			throws PortalException {
 
 		JSONObject receipt_info = JSONFactoryUtil.createJSONObject();
-
 		/**
 		int maDV = schema.getInt(PayGateTerm.MADICHVU);
 		receipt_info.put(PayGateTerm.MADICHVU, maDV); // bb
@@ -1497,20 +1500,20 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		receipt_info.put(PayGateTerm.TENTKTHUHUONG,
 				(maDV == 2) ? bankInfo.getString(PayGateTerm.TENTKTHUHUONG) : StringPool.BLANK);
 
-//		List<PaymentFeeInfo> paymentFeeInfos = PaymentFeeInfoLocalServiceUtil
-//				.findByServiceConfigMappingId(serviceConfigMapping.getServiceConfigMappingId());
+		List<PaymentFeeInfo> paymentFeeInfos = PaymentFeeInfoLocalServiceUtil
+				.findByServiceConfigMappingId(serviceConfigMapping.getServiceConfigMappingId());
 
 		JSONArray phiLePhi = JSONFactoryUtil.createJSONArray();
 
-//		if (paymentFeeInfos != null) {
-//			for (PaymentFeeInfo paymentFeeInfo : paymentFeeInfos) {
-//				JSONObject _tm = JSONFactoryUtil.createJSONObject();
-//				_tm.put(PayGateTerm.LOAIPHILEPHI, paymentFeeInfo.getType());
-//				_tm.put(PayGateTerm.MAPHILEPHI, paymentFeeInfo.getPaymentFeeCode());
-//				_tm.put(PayGateTerm.TENPHILEPHI, paymentFeeInfo.getPaymentFeeName());
-//				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
-//			}
-//		}
+		if (paymentFeeInfos != null) {
+			for (PaymentFeeInfo paymentFeeInfo : paymentFeeInfos) {
+				JSONObject _tm = JSONFactoryUtil.createJSONObject();
+				_tm.put(PayGateTerm.LOAIPHILEPHI, paymentFeeInfo.getType());
+				_tm.put(PayGateTerm.MAPHILEPHI, paymentFeeInfo.getPaymentFeeCode());
+				_tm.put(PayGateTerm.TENPHILEPHI, paymentFeeInfo.getPaymentFeeName());
+				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
+			}
+		}
 
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
 
@@ -1850,6 +1853,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1895,9 +1904,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		DVCQGIntegrationActionImpl dvcqgAction = new DVCQGIntegrationActionImpl();
 		/**
+		DVCQGIntegrationActionImpl dvcqgAction = new DVCQGIntegrationActionImpl();
+
 		try {
 			JSONObject serviceConfigData = dvcqgAction.doSyncServiceConfig(user, groupId, requestBody, context);
 
