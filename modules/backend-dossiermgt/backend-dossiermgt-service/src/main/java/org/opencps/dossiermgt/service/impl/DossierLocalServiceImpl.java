@@ -7651,4 +7651,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	{
 			return  dossierFinder.findDossierByDay(date);
 	}
+
+	public List<ServiceInfo> findByGID_PUB_SID(long groupId, boolean public_, long[] serviceInfoArr) {
+		return serviceInfoPersistence.findByGI_PUB_SID(groupId, public_, serviceInfoArr);
+	}
 }

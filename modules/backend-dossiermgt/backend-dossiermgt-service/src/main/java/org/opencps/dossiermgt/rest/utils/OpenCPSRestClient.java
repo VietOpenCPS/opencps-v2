@@ -27,6 +27,7 @@ import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
@@ -41,6 +42,9 @@ import org.opencps.dossiermgt.rest.model.InformDossierInputModel;
 import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DossierLocalService;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
 
 public class OpenCPSRestClient {
 	private Log _log = LogFactoryUtil.getLog(OpenCPSRestClient.class);
@@ -155,6 +159,44 @@ public class OpenCPSRestClient {
 
 		try {
 
+			String requestURL = ConstantUtils.DOSSIERS_BASE_PATH + StringPool.FORWARD_SLASH + dossierUnique
+					+ StringPool.FORWARD_SLASH + DossierActionTerm.FILES;
+			InvokeREST callRest = new InvokeREST();
+			HashMap<String, String> properties = OpenCPSConverter.convertDossierFileHttpParams(model);
+			ServiceContext context = new ServiceContext();
+			
+			JSONObject jsonObj = callRest.callPostFileAPIWithFileName(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON,
+					 baseUrl, requestURL, username,
+					password, properties, file, model.getDisplayName(), context);
+			_log.debug("Post dossier file: " + jsonObj);
+			result = OpenCPSConverter.convertDossierFile(jsonObj);
+			
+			return result;
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+		
+	}
+
+	public DossierFileModel postDossierFileInform(File file, Dossier dossier, String dossierUnique, DossierFileModel model) {
+		DossierFileModel result = null;
+
+		try {
+
+			Dossier hslt = null;
+			if (Validator.isNotNull(dossier.getOriginDossierNo()) && dossier.getOriginDossierId() == 0) {
+				if (dossier.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+					hslt = DossierLocalServiceUtil.getByDossierNo(groupId, dossier.getOriginDossierNo());
+				}
+			}
+
+			if (hslt != null && !hslt.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+				dossierUnique = hslt.getReferenceUid();
+			}
+
+			_log.info("dossierUnique LT: "+dossierUnique);
 			String requestURL = ConstantUtils.DOSSIERS_BASE_PATH + StringPool.FORWARD_SLASH + dossierUnique
 					+ StringPool.FORWARD_SLASH + DossierActionTerm.FILES;
 			InvokeREST callRest = new InvokeREST();
