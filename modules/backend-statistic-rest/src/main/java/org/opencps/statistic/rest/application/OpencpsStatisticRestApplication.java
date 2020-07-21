@@ -330,6 +330,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
 					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+					params.put(DossierTerm.DOMAIN_CODE, domain);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId(); 

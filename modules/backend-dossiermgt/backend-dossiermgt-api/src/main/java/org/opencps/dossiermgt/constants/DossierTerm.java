@@ -387,6 +387,14 @@ public class DossierTerm {
 	public static final String DON_VI_GUI = "donvigui";
 	public static final String DON_VI_NHAN = "donvinhan";
 	public static final String SCOPE_ = "_scope";
+	public static final String FIRTSCOPE = "firtscope";
+	
+	public static final int VIA_POSTAL_DISABLE = 0;
+	public static final int VIA_POSTAL_UNSELECTED = 1;
+	public static final int VIA_POSTAL_SELECTED = 2;
+	public static final int VIA_POSTAL_SENDED = 3;
+	public static final int VIA_POSTAL_RECEIVED = 4;
+	
 	public static final String FIRSTSCOPE = "firstscope";
 	public static final String _FIRSTSCOPE = "_firstscope";
 }

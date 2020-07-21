@@ -3337,10 +3337,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		// viaPostal
 		if (Validator.isNotNull(viaPostal)) {
-			MultiMatchQuery query =
-				new MultiMatchQuery(String.valueOf(viaPostal));
-			query.addField(DossierTerm.VIA_POSTAL);
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			Integer viaPostalInt = GetterUtil.getInteger(viaPostal);
+			if( viaPostalInt < DossierTerm.VIA_POSTAL_SENDED) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.VIA_POSTAL,
+						String.valueOf(DossierTerm.VIA_POSTAL_DISABLE),
+						String.valueOf(DossierTerm.VIA_POSTAL_SELECTED),
+						true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.VIA_POSTAL,
+						String.valueOf(DossierTerm.VIA_POSTAL_SENDED),
+						String.valueOf(DossierTerm.VIA_POSTAL_RECEIVED),
+						true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		// vnpostalStatus
@@ -4344,12 +4358,25 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(domain)) {
-			MultiMatchQuery query = new MultiMatchQuery(domain);
-
-			query.addFields(DossierTerm.DOMAIN_CODE);
-
+			String[] lstDomain = StringUtil.split(domain);
+			if (lstDomain != null && lstDomain.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < lstDomain.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(lstDomain[i]);
+					query.addField(DossierTerm.DOMAIN_CODE);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(domain);
+				query.addFields(DossierTerm.DOMAIN_CODE);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+   
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}		
+		}
 
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(domainName)) {
