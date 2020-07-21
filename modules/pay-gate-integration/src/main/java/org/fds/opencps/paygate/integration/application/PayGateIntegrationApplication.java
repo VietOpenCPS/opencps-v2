@@ -343,4 +343,21 @@ public class PayGateIntegrationApplication extends Application {
 		return Response.status(200).entity(result.toJSONString()).build();
 	}
 
+	@POST
+	@Path("/ppdvcqg/bills")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getBills(@Context HttpServletRequest request, @Context HttpServletResponse response,
+			@Context HttpHeaders header, @Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @FormParam("dossierNo") String dossierNo) throws PortalException {
+
+		PayGateIntegrationAction payGateAction = new PayGateIntegrationActionImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		JSONObject result = payGateAction.getBills(user, groupId, dossierNo, serviceContext);
+
+		return Response.status(200).entity(result.toJSONString()).build();
+	}
+
 }
