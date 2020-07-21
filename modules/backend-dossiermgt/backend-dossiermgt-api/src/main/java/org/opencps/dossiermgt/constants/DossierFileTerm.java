@@ -49,4 +49,6 @@ public class DossierFileTerm {
 	public static final String REVALIDATE = "revalidate";
 	public static final String IS_SYNC_TRUE = "true";
 	public static final String RETURNED = "returned";
+	public static final String SO_CONG_VAN = "SoCongVan";
+	public static final String STATUS_CONG_VAN = "Status";
 }

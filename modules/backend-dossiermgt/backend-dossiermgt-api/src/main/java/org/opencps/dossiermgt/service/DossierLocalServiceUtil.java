@@ -347,6 +347,11 @@ public class DossierLocalServiceUtil {
 		return getService().fetchByDO_NO(dossierNo);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier fetchByDO_NO_GROUP(
+		String dossierNo, long groupId) {
+		return getService().fetchByDO_NO_GROUP(dossierNo, groupId);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier fetchDossier(
 		long dossierId) {
 		return getService().fetchDossier(dossierId);

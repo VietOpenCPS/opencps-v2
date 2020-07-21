@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(205);
+		StringBundler sb = new StringBundler(209);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -270,6 +270,10 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(fromViaPostal);
 		sb.append(", multipleCheck=");
 		sb.append(multipleCheck);
+		sb.append(", postalCodeSend=");
+		sb.append(postalCodeSend);
+		sb.append(", postalCodeReceived=");
+		sb.append(postalCodeReceived);
 		sb.append("}");
 
 		return sb.toString();
@@ -877,6 +881,20 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setMultipleCheck(multipleCheck);
 		}
 
+		if (postalCodeSend == null) {
+			dossierImpl.setPostalCodeSend("");
+		}
+		else {
+			dossierImpl.setPostalCodeSend(postalCodeSend);
+		}
+
+		if (postalCodeReceived == null) {
+			dossierImpl.setPostalCodeReceived("");
+		}
+		else {
+			dossierImpl.setPostalCodeReceived(postalCodeReceived);
+		}
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -1007,6 +1025,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 		fromViaPostal = objectInput.readInt();
 		multipleCheck = objectInput.readUTF();
+		postalCodeSend = objectInput.readUTF();
+		postalCodeReceived = objectInput.readUTF();
 	}
 
 	@Override
@@ -1540,6 +1560,20 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		else {
 			objectOutput.writeUTF(multipleCheck);
 		}
+
+		if (postalCodeSend == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(postalCodeSend);
+		}
+
+		if (postalCodeReceived == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(postalCodeReceived);
+		}
 	}
 
 	public String uuid;
@@ -1644,4 +1678,6 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String vnpostalProfile;
 	public int fromViaPostal;
 	public String multipleCheck;
+	public String postalCodeSend;
+	public String postalCodeReceived;
 }

@@ -325,6 +325,26 @@ public class DossierStatisticData {
 	private int releaseDossierSatCount;
 	private String groupAgencyCode;
 	private int fromViaPostalCount;
+	private int onlineBetimesCount = 0;
+	private int onlineOntimeCount = 0;
+	private int onlineOvertimeCount = 0;
+	private int onegateBetimesCount = 0;
+	private int onegateOntimeCount = 0;
+	private int onegateOvertimeCount = 0;
+	
+	// Ho so dang giai quyet: truc tiep, truc tuyen
+	private int onlineProcessingCount = 0;
+	private int onegateProcessingCount = 0;
+	
+	// Ho so (da) giai quyet: truc tiep, truc tuyen (truoc han, dung han, qua han)
+	private int onlineReleaseBetimesCount = 0;
+	private int onlineReleaseOntimeCount = 0;
+	private int onlineReleaseOvertimeCount = 0;
+	private int onegateReleaseBetimesCount = 0;
+	private int onegateReleaseOntimeCount = 0;
+	private int onegateReleaseOvertimeCount = 0;
+	
+	
 	
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
@@ -389,4 +409,117 @@ public class DossierStatisticData {
 	public void setSaturdayCount(int saturdayCount) {
 		this.saturdayCount = saturdayCount;
 	}
+
+	public int getOnlineBetimesCount() {
+		return onlineBetimesCount;
+	}
+
+	public void setOnlineBetimesCount(int onlineBetimesCount) {
+		this.onlineBetimesCount = onlineBetimesCount;
+	}
+
+	public int getOnlineOntimeCount() {
+		return onlineOntimeCount;
+	}
+
+	public void setOnlineOntimeCount(int onlineOntimeCount) {
+		this.onlineOntimeCount = onlineOntimeCount;
+	}
+
+	public int getOnlineOvertimeCount() {
+		return onlineOvertimeCount;
+	}
+
+	public void setOnlineOvertimeCount(int onlineOvertimeCount) {
+		this.onlineOvertimeCount = onlineOvertimeCount;
+	}
+
+	public int getOnegateBetimesCount() {
+		return onegateBetimesCount;
+	}
+
+	public void setOnegateBetimesCount(int onegateBetimesCount) {
+		this.onegateBetimesCount = onegateBetimesCount;
+	}
+
+	public int getOnegateOntimeCount() {
+		return onegateOntimeCount;
+	}
+
+	public void setOnegateOntimeCount(int onegateOntimeCount) {
+		this.onegateOntimeCount = onegateOntimeCount;
+	}
+
+	public int getOnegateOvertimeCount() {
+		return onegateOvertimeCount;
+	}
+
+	public void setOnegateOvertimeCount(int onegateOvertimeCount) {
+		this.onegateOvertimeCount = onegateOvertimeCount;
+	}
+
+	public int getOnlineProcessingCount() {
+		return onlineProcessingCount;
+	}
+
+	public void setOnlineProcessingCount(int onlineProcessingCount) {
+		this.onlineProcessingCount = onlineProcessingCount;
+	}
+
+	public int getOnegateProcessingCount() {
+		return onegateProcessingCount;
+	}
+
+	public void setOnegateProcessingCount(int onegateProcessingCount) {
+		this.onegateProcessingCount = onegateProcessingCount;
+	}
+
+	public int getOnlineReleaseBetimesCount() {
+		return onlineReleaseBetimesCount;
+	}
+
+	public void setOnlineReleaseBetimesCount(int onlineReleaseBetimesCount) {
+		this.onlineReleaseBetimesCount = onlineReleaseBetimesCount;
+	}
+
+	public int getOnlineReleaseOntimeCount() {
+		return onlineReleaseOntimeCount;
+	}
+
+	public void setOnlineReleaseOntimeCount(int onlineReleaseOntimeCount) {
+		this.onlineReleaseOntimeCount = onlineReleaseOntimeCount;
+	}
+
+	public int getOnlineReleaseOvertimeCount() {
+		return onlineReleaseOvertimeCount;
+	}
+
+	public void setOnlineReleaseOvertimeCount(int onlineReleaseOvertimeCount) {
+		this.onlineReleaseOvertimeCount = onlineReleaseOvertimeCount;
+	}
+
+	public int getOnegateReleaseBetimesCount() {
+		return onegateReleaseBetimesCount;
+	}
+
+	public void setOnegateReleaseBetimesCount(int onegateReleaseBetimesCount) {
+		this.onegateReleaseBetimesCount = onegateReleaseBetimesCount;
+	}
+
+	public int getOnegateReleaseOntimeCount() {
+		return onegateReleaseOntimeCount;
+	}
+
+	public void setOnegateReleaseOntimeCount(int onegateReleaseOntimeCount) {
+		this.onegateReleaseOntimeCount = onegateReleaseOntimeCount;
+	}
+
+	public int getOnegateReleaseOvertimeCount() {
+		return onegateReleaseOvertimeCount;
+	}
+
+	public void setOnegateReleaseOvertimeCount(int onegateReleaseOvertimeCount) {
+		this.onegateReleaseOvertimeCount = onegateReleaseOvertimeCount;
+	}
+		
 }

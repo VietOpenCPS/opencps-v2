@@ -489,6 +489,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
 				String paymentNote = paymentFile != null ? paymentFile.getPaymentNote() : StringPool.BLANK;
 				pfiModel.setPaymentNote(paymentNote);
+				pfiModel.setConfirmPayload(paymentFile.getConfirmPayload());
 				client.postPaymentFiles(originReferenceUid, pfiModel);
 				
 				_log.debug("OpenCPS END SYNC PAYMENTFILE FROM SYNCINFORM REQUESTPAYMENT = 5: "
@@ -1070,6 +1071,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 			
 //			pfiModel.setConfirmFileEntryId(paymentFile.getConfirmFileEntryId());
 			pfiModel.setPaymentMethod(paymentFile.getPaymentMethod());
+			pfiModel.setConfirmPayload(paymentFile.getConfirmPayload());
 			
 //			client.postPaymentFiles(dossier.getReferenceUid(), pfiModel);
 			client.postPaymentFiles(result.getReferenceUid(), pfiModel);

@@ -135,6 +135,8 @@ public class DossierSoap implements Serializable {
 		soapModel.setVnpostalProfile(model.getVnpostalProfile());
 		soapModel.setFromViaPostal(model.getFromViaPostal());
 		soapModel.setMultipleCheck(model.getMultipleCheck());
+		soapModel.setPostalCodeSend(model.getPostalCodeSend());
+		soapModel.setPostalCodeReceived(model.getPostalCodeReceived());
 
 		return soapModel;
 	}
@@ -1019,6 +1021,22 @@ public class DossierSoap implements Serializable {
 		_multipleCheck = multipleCheck;
 	}
 
+	public String getPostalCodeSend() {
+		return _postalCodeSend;
+	}
+
+	public void setPostalCodeSend(String postalCodeSend) {
+		_postalCodeSend = postalCodeSend;
+	}
+
+	public String getPostalCodeReceived() {
+		return _postalCodeReceived;
+	}
+
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		_postalCodeReceived = postalCodeReceived;
+	}
+
 	private String _uuid;
 	private long _dossierId;
 	private long _groupId;
@@ -1121,4 +1139,6 @@ public class DossierSoap implements Serializable {
 	private String _vnpostalProfile;
 	private int _fromViaPostal;
 	private String _multipleCheck;
+	private String _postalCodeSend;
+	private String _postalCodeReceived;
 }
