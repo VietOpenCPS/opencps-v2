@@ -286,7 +286,7 @@ create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:7
 
 create index IX_3AF75462 on opencps_serviceinfo (companyId);
 create index IX_216AA2FF on opencps_serviceinfo (domainCode[$COLUMN_LENGTH:128$], groupId);
-create index IX_73C61E2 on opencps_serviceinfo (groupId, public_);
+create index IX_FCA7408C on opencps_serviceinfo (groupId, public_, serviceInfoId);
 create index IX_2FC150E on opencps_serviceinfo (groupId, serviceCode[$COLUMN_LENGTH:128$]);
 create index IX_3E222E7E on opencps_serviceinfo (serviceCode[$COLUMN_LENGTH:128$], groupId);
 create index IX_D3675C7A on opencps_serviceinfo (uuid_[$COLUMN_LENGTH:75$], companyId);

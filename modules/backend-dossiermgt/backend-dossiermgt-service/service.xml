@@ -74,6 +74,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="public_" />
 		</finder>
+		<finder name="GI_PUB_SID" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="public_" />
+			<finder-column name="serviceInfoId" arrayable-operator="OR"/>
+		</finder>
 		<finder name="F_GID_SC" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="serviceCode" arrayable-operator="OR"/>

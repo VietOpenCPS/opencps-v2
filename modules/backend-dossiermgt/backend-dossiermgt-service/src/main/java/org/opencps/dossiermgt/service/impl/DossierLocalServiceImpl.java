@@ -4394,9 +4394,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 		}
-   
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
 
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(domainName)) {
@@ -7701,5 +7698,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public List<Dossier> findDossierByDay(String date)
 	{
 			return  dossierFinder.findDossierByDay(date);
+	}
+
+	public List<ServiceInfo> findByGID_PUB_SID(long groupId, boolean public_, long[] serviceInfoArr) {
+		return serviceInfoPersistence.findByGI_PUB_SID(groupId, public_, serviceInfoArr);
 	}
 }

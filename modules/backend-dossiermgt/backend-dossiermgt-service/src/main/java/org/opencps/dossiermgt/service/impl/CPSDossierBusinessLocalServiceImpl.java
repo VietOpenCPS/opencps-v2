@@ -838,44 +838,41 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	private void doMappingAction(long groupId, long userId, Employee employee, Dossier dossier,
 			ActionConfig actionConfig, String actionUser, String actionNote, String payload, String assignUsers,
 			String payment, ServiceContext context) throws PortalException, Exception {
-		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
-			ActionConfig mappingConfig = actionConfigLocalService.getByCode(groupId, actionConfig.getMappingAction());
-			if (dossier.getOriginDossierId() != 0) {
-				Dossier hslt = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
-				ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
-						hslt.getDossierTemplateNo(), groupId);
-				ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(),
-						actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
-				String actionUserHslt = actionUser;
-				if (employee != null) {
-					actionUserHslt = actionUser;
+		ActionConfig mappingConfig = actionConfigLocalService.getByCode(groupId, actionConfig.getMappingAction());
+		if (dossier.getOriginDossierId() != 0) {
+			Dossier hslt = dossierLocalService.fetchDossier(dossier.getOriginDossierId());
+			ProcessOption optionHslt = getProcessOption(hslt.getServiceCode(), hslt.getGovAgencyCode(),
+					hslt.getDossierTemplateNo(), groupId);
+			ProcessAction actionHslt = getProcessAction(groupId, hslt.getDossierId(), hslt.getReferenceUid(),
+					actionConfig.getMappingAction(), optionHslt.getServiceProcessId());
+			String actionUserHslt = actionUser;
+			if (employee != null) {
+				actionUserHslt = actionUser;
+			}
+			if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
+				Date now = new Date();
+				hslt.setSubmitDate(now);
+				hslt = dossierLocalService.updateDossier(hslt);
+				try {
+					JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
+					payloadObj.put(DossierTerm.SUBMIT_DATE, now.getTime());
+					payload = payloadObj.toJSONString();
+				} catch (JSONException e) {
+					_log.debug(e);
 				}
-				if (DossierTerm.DOSSIER_STATUS_NEW.equals(hslt.getDossierStatus())) {
-					Date now = new Date();
-					hslt.setSubmitDate(now);
-					hslt = dossierLocalService.updateDossier(hslt);
-					try {
-						JSONObject payloadObj = JSONFactoryUtil.createJSONObject(payload);
-						payloadObj.put(DossierTerm.SUBMIT_DATE, now.getTime());
-						payload = payloadObj.toJSONString();
-					} catch (JSONException e) {
-						_log.debug(e);
-					}
-				}
-				doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt,
-						actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
-			} else {
-				Dossier originDossier = dossierLocalService.getByOrigin(groupId, dossier.getDossierId());
-				if (originDossier != null) {
-					ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(),
-							originDossier.getGovAgencyCode(), originDossier.getDossierTemplateNo(), groupId);
-					ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(),
-							originDossier.getReferenceUid(), actionConfig.getMappingAction(),
-							optionOrigin.getServiceProcessId());
-					doAction(groupId, userId, originDossier, optionOrigin, actionOrigin,
-							actionConfig.getMappingAction(), actionUser, actionNote, payload, assignUsers, payment,
-							mappingConfig.getSyncType(), context);
-				}
+			}
+			doAction(groupId, userId, hslt, optionHslt, actionHslt, actionConfig.getMappingAction(), actionUserHslt,
+					actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
+		} else {
+			Dossier originDossier = dossierLocalService.getByOrigin(groupId, dossier.getDossierId());
+			if (originDossier != null) {
+				ProcessOption optionOrigin = getProcessOption(originDossier.getServiceCode(),
+						originDossier.getGovAgencyCode(), originDossier.getDossierTemplateNo(), groupId);
+				ProcessAction actionOrigin = getProcessAction(groupId, originDossier.getDossierId(),
+						originDossier.getReferenceUid(), actionConfig.getMappingAction(),
+						optionOrigin.getServiceProcessId());
+				doAction(groupId, userId, originDossier, optionOrigin, actionOrigin, actionConfig.getMappingAction(),
+						actionUser, actionNote, payload, assignUsers, payment, mappingConfig.getSyncType(), context);
 			}
 		}
 	}
@@ -1002,6 +999,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
+		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		Map<String, Boolean> flagChanged = new HashMap<>();
@@ -1410,10 +1408,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
-		doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
-				assignUsers, payment, context);
+		if (Validator.isNotNull(actionConfig) && Validator.isNotNull(actionConfig.getMappingAction())) {
+			doMappingAction(groupId, userId, employee, dossier, actionConfig, actionUser, actionNote, newObj.toJSONString(),
+					assignUsers, payment, context);
+		}
 
-		
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
 		_log.info("TRACE_LOG_INFO doAction CPS L2 dossier: "+JSONFactoryUtil.looseSerialize(dossier));
@@ -2043,7 +2042,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if (obj.has(DossierTerm.DOSSIER_NO)) {
 			//_log.info("Sync dossier no");
 			if (Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_NO))
-					&& !obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())) {
+					&& !obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())
+					&& dossier.getOriginDossierId() > 0) {
 				//_log.info("Sync set dossier no");
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}

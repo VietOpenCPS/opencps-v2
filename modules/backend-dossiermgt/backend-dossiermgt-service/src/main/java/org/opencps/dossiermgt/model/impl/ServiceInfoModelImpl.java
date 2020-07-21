@@ -155,8 +155,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	public static final long GROUPID_COLUMN_BITMASK = 4L;
 	public static final long PUBLIC__COLUMN_BITMASK = 8L;
 	public static final long SERVICECODE_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long SERVICEINFOID_COLUMN_BITMASK = 64L;
+	public static final long SERVICEINFOID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ServiceInfo"));
 
@@ -448,7 +448,19 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 	@Override
 	public void setServiceInfoId(long serviceInfoId) {
+		_columnBitmask |= SERVICEINFOID_COLUMN_BITMASK;
+
+		if (!_setOriginalServiceInfoId) {
+			_setOriginalServiceInfoId = true;
+
+			_originalServiceInfoId = _serviceInfoId;
+		}
+
 		_serviceInfoId = serviceInfoId;
+	}
+
+	public long getOriginalServiceInfoId() {
+		return _originalServiceInfoId;
 	}
 
 	@Override
@@ -1050,6 +1062,10 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 
 		serviceInfoModelImpl._originalUuid = serviceInfoModelImpl._uuid;
 
+		serviceInfoModelImpl._originalServiceInfoId = serviceInfoModelImpl._serviceInfoId;
+
+		serviceInfoModelImpl._setOriginalServiceInfoId = false;
+
 		serviceInfoModelImpl._originalGroupId = serviceInfoModelImpl._groupId;
 
 		serviceInfoModelImpl._setOriginalGroupId = false;
@@ -1489,6 +1505,8 @@ public class ServiceInfoModelImpl extends BaseModelImpl<ServiceInfo>
 	private String _uuid;
 	private String _originalUuid;
 	private long _serviceInfoId;
+	private long _originalServiceInfoId;
+	private boolean _setOriginalServiceInfoId;
 	private long _groupId;
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;
