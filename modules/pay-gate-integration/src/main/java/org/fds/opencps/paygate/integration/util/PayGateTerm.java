@@ -159,6 +159,7 @@ public class PayGateTerm {
 	public static final String PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT = "paymentplatform_dvcqg_init_transaction_endpoint";
 	public static final String MAGIAODICH = "MaGiaoDich";
 	public static final String PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT = "paymentplatform_dvcgq_get_receipt_endpoint";
+	public static final String PAYMENTPLATFORM_DVCQG_GET_BILL_ENDPOINT = "paymentplatform_dvcqg_get_bill_endpoint";
 
 	public static String buildPathDoAction(String path, String dossierId) {
 

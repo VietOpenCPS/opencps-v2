@@ -58,6 +58,14 @@ public class PayGateUtil {
 
 	}
 
+	public static String generateGetBillChecksum(String loaiBanTin, String phienBan, String maDoiTac, String maThamChieu,
+			String thoiGianGD, String hash_key) {
+		String checksum = loaiBanTin + "|" + phienBan + "|" + maDoiTac + "|" + maThamChieu + "|" + thoiGianGD
+				+ "|" + hash_key;
+		return sha256(checksum);
+
+	}
+
 	private static String bytesToHex(byte[] hash) {
 	    StringBuffer hexString = new StringBuffer();
 	    for (int i = 0; i < hash.length; i++) {
