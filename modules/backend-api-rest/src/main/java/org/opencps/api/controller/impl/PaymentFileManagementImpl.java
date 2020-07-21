@@ -1173,7 +1173,6 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					params.put("dossierNo", dossier.getDossierNo());
 
 					String baseUrl = ppConfig.getJSONObject("actionIsOnline").getString("url");//RESTFulConfiguration.SERVER_PATH_BASE;
-					System.out.println("====baseUrlbaseUrlbaseUrl========"+baseUrl);
 					JSONObject resultObj = callRest.callPostAPI(
 						0, HttpMethod.POST, "application/json", baseUrl, "/o/pgi/ppdvcqg/bills",
 						"",
@@ -1183,7 +1182,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 					JSONObject eInvoice = JSONFactoryUtil.createJSONObject(
 						resultObj.getString(RESTFulConfiguration.MESSAGE));
 					
-					System.out.println("=============eInvoice toJSONString================== " + eInvoice.toJSONString());
+					_log.info("eInvoice toJSONString: " + eInvoice.toJSONString());
 					
 					url = eInvoice.getString("UrlBienLai");
 				}
