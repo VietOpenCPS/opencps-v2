@@ -103,7 +103,8 @@ public class OneGateControllerImpl_bak implements OneGateController {
 			}
 //			long startTime = System.currentTimeMillis();
 			//Add Map role
-			List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : null;
+			//List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : null;
+			List<ServiceProcessRole> lstPRoles = new ArrayList<ServiceProcessRole>();
 			Map<Long, List<ServiceProcessRole>> mapPRoles = null;
 			List<Long> serviceInfoIdList = null;
 			Long[] serviceInfoIdArr = null;

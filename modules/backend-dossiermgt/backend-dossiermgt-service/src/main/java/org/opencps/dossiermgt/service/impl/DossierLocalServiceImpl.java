@@ -4394,9 +4394,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 		}
-   
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
 
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(domainName)) {
