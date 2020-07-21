@@ -26,12 +26,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -59,6 +61,8 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
+import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
@@ -1160,10 +1164,33 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				String url = payload.getString("UrlBienLai");
 				JSONObject ppConfig = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
 						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				if (Validator.isNull(url)) {
+
+					InvokeREST callRest = new InvokeREST();
+					HashMap<String, String> properties = new HashMap<String, String>();
+					Map<String, Object> params = new HashMap<>();
+					Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+					params.put("dossierNo", dossier.getDossierNo());
+
+					String baseUrl = ppConfig.getJSONObject("actionIsOnline").getString("url");//RESTFulConfiguration.SERVER_PATH_BASE;
+					JSONObject resultObj = callRest.callPostAPI(
+						0, HttpMethod.POST, "application/json", baseUrl, "/o/pgi/ppdvcqg/bills",
+						"",
+						"", properties, params,
+						new ServiceContext());
+
+					JSONObject eInvoice = JSONFactoryUtil.createJSONObject(
+						resultObj.getString(RESTFulConfiguration.MESSAGE));
+					
+					_log.info("eInvoice toJSONString: " + eInvoice.toJSONString());
+					
+					url = eInvoice.getString("UrlBienLai");
+				}
 				String ssEndpoint = ppConfig.getString("ss_endpoint");
 				String ssEndpointTerm = ppConfig.getString("ss_endpoint_term");
 				url = StringUtils.replaceOnce(url, ssEndpointTerm, ssEndpoint);
 				_log.info("endpoint get invoice: " + url);
+				
 				InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
 				return Response.ok(file).header(
 							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();

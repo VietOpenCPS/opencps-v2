@@ -50,4 +50,6 @@ public interface PayGateIntegrationAction {
 	public String ppGetReceipt(User user, long groupId, long dosssierId, ServiceContext serviceContext);
 	
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context);
+	
+	public JSONObject getBills(User user, long groupId, String dossierNo, ServiceContext context);
 }

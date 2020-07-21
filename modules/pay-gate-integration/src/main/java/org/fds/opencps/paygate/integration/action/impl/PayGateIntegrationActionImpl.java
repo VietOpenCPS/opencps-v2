@@ -879,6 +879,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 								epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1341,7 +1347,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-						
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1364,8 +1375,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		String loaiBantin = schema.getString(PayGateTerm.LOAIBANTIN_INIT);
 		String phienBan = schema.getString(PayGateTerm.PHIENBAN);
-		String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
-				paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
+		String maDoitac = schema.getString(PayGateTerm.MADOITAC);
 		String maThamchieu = PayGateUtil.decodeTransactionId(paymentFile.getPaymentFileId());
 		String sotien = String.valueOf(paymentFile.getPaymentAmount());
 		String loaiHinhthanhtoan = schema.getString(PayGateTerm.LOAIHINHTHANHTOAN);
@@ -1826,6 +1836,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 						schema.put(PayGateTerm.TRANSACTION_ID, transactionId);
 						epaymentProfile.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+						if (Validator.isNull(serviceContext)) {
+							serviceContext = new ServiceContext();
+							serviceContext.setUserId(dossier.getUserId());
+							serviceContext.setCompanyId(dossier.getCompanyId());
+							serviceContext.setSignedIn(true);
+						}
 						PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(),
 								paymentFile.getReferenceUid(), epaymentProfile.toJSONString(), serviceContext);
 					}
@@ -1957,6 +1973,96 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return createResponseMessage(result, 500, "error", "system error");
 		}
 
+	}
+	
+	@Override
+	public JSONObject getBills(User user, long groupId, String dossierNo, ServiceContext context) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		
+		HttpURLConnection conn = null;
+		try {
+			_log.info("=======body========" + dossierNo);
+			Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO(dossierNo);
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			JSONObject confirmPayload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+					.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+			
+			String loaiBanTin = schema.getString(PayGateTerm.LOAIBANTIN_GET_BILL);
+			String phienBan = schema.getString(PayGateTerm.PHIENBAN);
+			String maDoiTac = schema.getString(PayGateTerm.MADOITAC);
+			String thoiGianGD = confirmPayload.getString(PayGateTerm.THOIGIANGD);
+			String maThamChieu = confirmPayload.getString(PayGateTerm.MATHAMCHIEU);
+			String hash_key = schema.getString(PayGateTerm.HASH_KEY);
+			String checkSum = PayGateUtil.generateGetBillChecksum(loaiBanTin, phienBan, maDoiTac, maThamChieu, thoiGianGD, hash_key);
+			String endpoint = schema.getString(PayGateTerm.PAYMENTPLATFORM_DVCQG_GET_BILL_ENDPOINT);
+
+			_log.info("payment platform endpoint " + endpoint);
+			_log.info("payment platform endpoint " + checkSum);
+
+			JSONObject data = createPaymentPlatformGetBillPostParam(loaiBanTin, phienBan, maDoiTac, maThamChieu, thoiGianGD, checkSum);
+			_log.info("payment platform data " + data);
+
+			URL url = new URL(endpoint);
+
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			conn.setInstanceFollowRedirects(true);
+			HttpURLConnection.setFollowRedirects(true);
+			conn.setReadTimeout(60 * 1000);
+
+			byte[] postData = data.toJSONString().getBytes("UTF-8");
+			int postDataLength = postData.length;
+			conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+			try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+				wr.write(postData);
+			}
+
+			conn.connect();
+
+			try (BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader((conn.getInputStream())))) {
+
+				String output = StringPool.BLANK;
+
+				StringBuilder sb = new StringBuilder();
+
+				while ((output = bufferedReader.readLine()) != null) {
+					sb.append(output);
+				}
+
+				_log.info("response: " + sb.toString());
+
+				result = JSONFactoryUtil.createJSONObject(sb.toString());
+				_log.info("result " + result);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+		return result;
+	}
+	
+	private JSONObject createPaymentPlatformGetBillPostParam(String loaiBanTin, String phienBan, String maDoiTac, String maThamChieu, String thoiGianGD, String maXacThuc) {
+		JSONObject data = JSONFactoryUtil.createJSONObject();
+		data.put(PayGateTerm.LOAIBANTIN, loaiBanTin);
+		data.put(PayGateTerm.PHIENBAN, phienBan);
+		data.put(PayGateTerm.MADOITAC, maDoiTac);
+		data.put(PayGateTerm.MATHAMCHIEU, maThamChieu);
+		data.put(PayGateTerm.THOIGIANGD, thoiGianGD);
+		data.put(PayGateTerm.MAXACTHUC, maXacThuc);
+		
+		return data;
 	}
 
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
