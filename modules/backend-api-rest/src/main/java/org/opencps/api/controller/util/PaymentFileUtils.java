@@ -154,6 +154,7 @@ public class PaymentFileUtils {
 		model.setPaymentAmount(paymentFile.getPaymentAmount());
 		model.setPaymentNote(paymentFile.getPaymentNote());
 		model.setEpaymentProfile(paymentFile.getEpaymentProfile());
+		model.setApproveDatetime(APIDateTimeUtils.convertDateToString(paymentFile.getApproveDatetime(), APIDateTimeUtils._NORMAL_DATE_TIME));
 
 		return model;
 	}
