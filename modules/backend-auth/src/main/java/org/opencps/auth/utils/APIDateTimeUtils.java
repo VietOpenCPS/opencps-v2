@@ -89,20 +89,25 @@ public class APIDateTimeUtils {
 	}
 
 	public static String convertDateToString(Date date, String pattern) {
-		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			pattern);
+		try {
+			DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+					pattern);
 
-		if (Validator.isNull(date) || Validator.isNull(pattern)) {
+			if (Validator.isNull(date) || Validator.isNull(pattern)) {
+				return StringPool.BLANK;
+			}
+
+			dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(_SYS_TIME_ZONE));
+
+			Calendar calendar = Calendar.getInstance();
+
+			calendar.setTime(date);
+
+			return dateFormat.format(calendar.getTime());
+		} catch(Exception e) {
+			_log.debug(e);
 			return StringPool.BLANK;
 		}
-
-		dateFormat.setTimeZone(TimeZoneUtil.getTimeZone(_SYS_TIME_ZONE));
-
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.setTime(date);
-
-		return dateFormat.format(calendar.getTime());
 	}
 	
 	public static Date convertStringToDate(String source, String pattern) {

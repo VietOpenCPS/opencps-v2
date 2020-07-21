@@ -218,6 +218,7 @@ public class DossierTerm {
 	public static final String COMING = "coming";
 	public static final String DUE_DATE_COMING = "dueDateComing";
 	public static final String QUA_HAN = "passed";
+	public static final String DANG_XU_LY = "doing";
 	public static final String USER_DOSSIER_ACTION_ID = "userIdAction";
 	public static final String EMAIL_USER_LOGIN = "emailUserLogin";
 	public static final String EMAIL_DEFAULT = "default@liferay.com";
@@ -397,4 +398,7 @@ public class DossierTerm {
 	
 	public static final String FIRSTSCOPE = "firstscope";
 	public static final String _FIRSTSCOPE = "_firstscope";
+	public static final String MA_TO_KHAI_INDEXER = "ma_to_khai";
+	public static final String MA_TO_KHAI = "matokhai";
+	public static final String DOING_ACTION_USER_ID = "doingActionUserId";
 }

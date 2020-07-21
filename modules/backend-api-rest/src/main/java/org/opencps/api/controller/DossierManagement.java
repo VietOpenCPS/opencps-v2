@@ -160,6 +160,29 @@ public interface DossierManagement {
 		@Context ServiceContext serviceContext, @PathParam("id") long id,
 		@BeanParam DossierInputModel input);
 
+	@PUT
+	@Path("/{dossierNo}/dossierNo")
+	@Consumes({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Update a Dossier", response = DossierDetailModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a Dossier was updated", response = DossierDetailModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal error", response = ExceptionModel.class)
+	})
+
+	public Response updateDossierByDossierNo(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("dossierNo") String dossierNo,
+			@BeanParam DossierInputModel input);
+
 	@DELETE
 	@Path("/{id}")
 	@Produces({
@@ -1628,6 +1651,25 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @QueryParam("date") String date);
+
+	@GET
+	@Path("/{postalCode}/postalCodeSend")
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get list dossiers by postalCode", response = DossierResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns list DossierCounter", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response getDossierByPostalCodeSend(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, @PathParam("postalCode") String postalCode);
+
 
 	@PUT
 	@Path("/{id}/booking")

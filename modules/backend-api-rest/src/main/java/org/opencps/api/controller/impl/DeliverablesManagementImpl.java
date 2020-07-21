@@ -722,7 +722,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 		Locale locale, User user, ServiceContext serviceContext,
 		Attachment file) {
 
-//		System.out.println("================POST===========================");
+		_log.info("================POST===========================" + file);
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 
 		BackendAuth auth = new BackendAuthImpl();
@@ -740,15 +740,18 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				// HttpURLConnection.HTTP_UNAUTHORIZED).entity(
 				// "User not permission process!").build();
 			}
-//			long groupId =
-//				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-//			long userId = user.getUserId();
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+			long companyId = user.getCompanyId();
+			String userName = user.getFullName();
 
-			// List<Deliverable> deliverables =
-			// DeliverableUtils.readWorkBooksDeliverabe(
-			// file, userId, groupId, serviceContext);
-			//
-			// result.put(ConstantUtils.TOTAL, deliverables.size());
+			JSONArray deliverables = 
+					DeliverableUtils.readZipDeliverabe(file, userId, groupId, companyId, userName, serviceContext);
+			int size = 0;
+			
+			 result.put(ConstantUtils.TOTAL, deliverables.length());
+			 result.put(ConstantUtils.API_JSON_COUNT, size);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();
@@ -823,8 +826,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			String userName = user.getFullName();
 
 			DataHandler dataHandle = file.getDataHandler();
-			JSONArray deliverables = DeliverableUtils.readExcelDeliverable(
-				dataHandle.getInputStream());
+			JSONArray deliverables = DeliverableUtils.readExcelDeliverable(dataHandle.getInputStream());
 
 			int size = 0;
 			for (int i = 0; i < deliverables.length(); i++) {

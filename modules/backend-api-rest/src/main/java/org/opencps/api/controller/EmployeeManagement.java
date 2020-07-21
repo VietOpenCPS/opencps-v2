@@ -177,4 +177,12 @@ public interface EmployeeManagement {
 	public Response getEmployeesByItemCode(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("itemCode") String itemCode, @BeanParam DataSearchModel query);
+
+	@GET
+	@Path("/byGroupId")
+	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response getEmployeeByGroupId(@Context HttpServletRequest request, @Context HttpHeaders header,
+										 @Context Company company, @Context Locale locale, @Context User user,
+										 @Context ServiceContext serviceContext);
 }

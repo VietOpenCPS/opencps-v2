@@ -20,6 +20,7 @@ public class DeliverableTerm {
 	public static final String DELIVERABLE_STATE = "deliverableState";
 	public static final String FILE_ATTACHS = "fileAttachs";
 	public static final String FILE_ATTACH = "fileAttach";
+	public static final String FILE_ENTRY_ID = "fileEntryId";
 	
 	public static final String DELIVERABLE_STATE_VALID = "1";
 	public static final String DELIVERABLE_STATE_INVALID = "2";

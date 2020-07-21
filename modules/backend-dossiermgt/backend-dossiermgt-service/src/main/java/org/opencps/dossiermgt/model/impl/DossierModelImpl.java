@@ -169,7 +169,9 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			{ "vnpostalStatus", Types.INTEGER },
 			{ "vnpostalProfile", Types.VARCHAR },
 			{ "fromViaPostal", Types.INTEGER },
-			{ "multipleCheck", Types.VARCHAR }
+			{ "multipleCheck", Types.VARCHAR },
+			{ "postalCodeSend", Types.VARCHAR },
+			{ "postalCodeReceived", Types.VARCHAR }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -276,9 +278,11 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		TABLE_COLUMNS_MAP.put("vnpostalProfile", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("fromViaPostal", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("multipleCheck", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("postalCodeSend", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("postalCodeReceived", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(255) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(1024) null,dossierRegister VARCHAR(255) null,processNo VARCHAR(128) null,serviceCode VARCHAR(128) null,serviceName TEXT null,govAgencyCode VARCHAR(128) null,govAgencyName VARCHAR(512) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(128) null,applicantIdNo VARCHAR(128) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(128) null,cityName VARCHAR(255) null,districtCode VARCHAR(128) null,districtName VARCHAR(512) null,wardCode VARCHAR(128) null,wardName VARCHAR(512) null,contactName TEXT null,contactTelNo VARCHAR(128) null,contactEmail VARCHAR(255) null,delegateType INTEGER,delegateName VARCHAR(512) null,delegateIdNo VARCHAR(128) null,delegateTelNo VARCHAR(128) null,delegateEmail VARCHAR(255) null,delegateAddress TEXT null,delegateCityCode VARCHAR(128) null,delegateCityName VARCHAR(512) null,delegateDistrictCode VARCHAR(128) null,delegateDistrictName VARCHAR(512) null,delegateWardCode VARCHAR(128) null,delegateWardName VARCHAR(512) null,documentNo VARCHAR(255) null,documentDate DATE null,dossierTemplateNo VARCHAR(128) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(255) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(128) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(1024) null,postalAddress TEXT null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(512) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(512) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(512) null,postalTelNo VARCHAR(128) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(255) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId VARCHAR(75) null,metaData TEXT null,systemId INTEGER,dossierCounter VARCHAR(128) null,vnpostalStatus INTEGER,vnpostalProfile TEXT null,fromViaPostal INTEGER,multipleCheck VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_dossier (uuid_ VARCHAR(75) null,dossierId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,referenceUid VARCHAR(255) null,counter LONG,registerBookCode VARCHAR(100) null,registerBookName VARCHAR(1024) null,dossierRegister VARCHAR(255) null,processNo VARCHAR(128) null,serviceCode VARCHAR(128) null,serviceName TEXT null,govAgencyCode VARCHAR(128) null,govAgencyName VARCHAR(512) null,applicantName VARCHAR(500) null,applicantIdType VARCHAR(128) null,applicantIdNo VARCHAR(128) null,applicantIdDate DATE null,address TEXT null,cityCode VARCHAR(128) null,cityName VARCHAR(255) null,districtCode VARCHAR(128) null,districtName VARCHAR(512) null,wardCode VARCHAR(128) null,wardName VARCHAR(512) null,contactName TEXT null,contactTelNo VARCHAR(128) null,contactEmail VARCHAR(255) null,delegateType INTEGER,delegateName VARCHAR(512) null,delegateIdNo VARCHAR(128) null,delegateTelNo VARCHAR(128) null,delegateEmail VARCHAR(255) null,delegateAddress TEXT null,delegateCityCode VARCHAR(128) null,delegateCityName VARCHAR(512) null,delegateDistrictCode VARCHAR(128) null,delegateDistrictName VARCHAR(512) null,delegateWardCode VARCHAR(128) null,delegateWardName VARCHAR(512) null,documentNo VARCHAR(255) null,documentDate DATE null,dossierTemplateNo VARCHAR(128) null,dossierTemplateName TEXT null,dossierNote TEXT null,submissionNote TEXT null,applicantNote TEXT null,briefNote TEXT null,dossierNo VARCHAR(255) null,submitting BOOLEAN,processDate DATE null,submitDate DATE null,receiveDate DATE null,dueDate DATE null,extendDate DATE null,releaseDate DATE null,finishDate DATE null,cancellingDate DATE null,correcttingDate DATE null,dossierStatus VARCHAR(255) null,dossierStatusText TEXT null,dossierSubStatus VARCHAR(128) null,dossierSubStatusText TEXT null,folderId LONG,dossierActionId LONG,viaPostal INTEGER,postalServiceCode VARCHAR(255) null,postalServiceName VARCHAR(1024) null,postalAddress TEXT null,postalCityCode VARCHAR(255) null,postalCityName VARCHAR(512) null,postalDistrictCode VARCHAR(255) null,postalDistrictName VARCHAR(512) null,postalWardCode VARCHAR(255) null,postalWardName VARCHAR(512) null,postalTelNo VARCHAR(128) null,password_ VARCHAR(75) null,notification BOOLEAN,online_ BOOLEAN,original BOOLEAN,serverNo VARCHAR(255) null,endorsementDate DATE null,lockState VARCHAR(200) null,originality INTEGER,originDossierId LONG,sampleCount LONG,durationUnit INTEGER,durationCount DOUBLE,dossierName VARCHAR(1000) null,originDossierNo VARCHAR(255) null,groupDossierId VARCHAR(75) null,metaData TEXT null,systemId INTEGER,dossierCounter VARCHAR(128) null,vnpostalStatus INTEGER,vnpostalProfile TEXT null,fromViaPostal INTEGER,multipleCheck VARCHAR(75) null,postalCodeSend VARCHAR(75) null,postalCodeReceived VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_dossier";
 	public static final String ORDER_BY_JPQL = " ORDER BY dossier.dossierId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_dossier.dossierId ASC";
@@ -459,6 +463,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		attributes.put("vnpostalProfile", getVnpostalProfile());
 		attributes.put("fromViaPostal", getFromViaPostal());
 		attributes.put("multipleCheck", getMultipleCheck());
+		attributes.put("postalCodeSend", getPostalCodeSend());
+		attributes.put("postalCodeReceived", getPostalCodeReceived());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -1082,6 +1088,18 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 		if (multipleCheck != null) {
 			setMultipleCheck(multipleCheck);
+		}
+
+		String postalCodeSend = (String)attributes.get("postalCodeSend");
+
+		if (postalCodeSend != null) {
+			setPostalCodeSend(postalCodeSend);
+		}
+
+		String postalCodeReceived = (String)attributes.get("postalCodeReceived");
+
+		if (postalCodeReceived != null) {
+			setPostalCodeReceived(postalCodeReceived);
 		}
 	}
 
@@ -2729,6 +2747,36 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	}
 
 	@Override
+	public String getPostalCodeSend() {
+		if (_postalCodeSend == null) {
+			return "";
+		}
+		else {
+			return _postalCodeSend;
+		}
+	}
+
+	@Override
+	public void setPostalCodeSend(String postalCodeSend) {
+		_postalCodeSend = postalCodeSend;
+	}
+
+	@Override
+	public String getPostalCodeReceived() {
+		if (_postalCodeReceived == null) {
+			return "";
+		}
+		else {
+			return _postalCodeReceived;
+		}
+	}
+
+	@Override
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		_postalCodeReceived = postalCodeReceived;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Dossier.class.getName()));
@@ -2867,6 +2915,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierImpl.setVnpostalProfile(getVnpostalProfile());
 		dossierImpl.setFromViaPostal(getFromViaPostal());
 		dossierImpl.setMultipleCheck(getMultipleCheck());
+		dossierImpl.setPostalCodeSend(getPostalCodeSend());
+		dossierImpl.setPostalCodeReceived(getPostalCodeReceived());
 
 		dossierImpl.resetOriginalValues();
 
@@ -3710,12 +3760,28 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			dossierCacheModel.multipleCheck = null;
 		}
 
+		dossierCacheModel.postalCodeSend = getPostalCodeSend();
+
+		String postalCodeSend = dossierCacheModel.postalCodeSend;
+
+		if ((postalCodeSend != null) && (postalCodeSend.length() == 0)) {
+			dossierCacheModel.postalCodeSend = null;
+		}
+
+		dossierCacheModel.postalCodeReceived = getPostalCodeReceived();
+
+		String postalCodeReceived = dossierCacheModel.postalCodeReceived;
+
+		if ((postalCodeReceived != null) && (postalCodeReceived.length() == 0)) {
+			dossierCacheModel.postalCodeReceived = null;
+		}
+
 		return dossierCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(205);
+		StringBundler sb = new StringBundler(209);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -3921,6 +3987,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		sb.append(getFromViaPostal());
 		sb.append(", multipleCheck=");
 		sb.append(getMultipleCheck());
+		sb.append(", postalCodeSend=");
+		sb.append(getPostalCodeSend());
+		sb.append(", postalCodeReceived=");
+		sb.append(getPostalCodeReceived());
 		sb.append("}");
 
 		return sb.toString();
@@ -3928,7 +3998,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(310);
+		StringBundler sb = new StringBundler(316);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.Dossier");
@@ -4342,6 +4412,14 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 			"<column><column-name>multipleCheck</column-name><column-value><![CDATA[");
 		sb.append(getMultipleCheck());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>postalCodeSend</column-name><column-value><![CDATA[");
+		sb.append(getPostalCodeSend());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>postalCodeReceived</column-name><column-value><![CDATA[");
+		sb.append(getPostalCodeReceived());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -4487,6 +4565,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _vnpostalProfile;
 	private int _fromViaPostal;
 	private String _multipleCheck;
+	private String _postalCodeSend;
+	private String _postalCodeReceived;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }
