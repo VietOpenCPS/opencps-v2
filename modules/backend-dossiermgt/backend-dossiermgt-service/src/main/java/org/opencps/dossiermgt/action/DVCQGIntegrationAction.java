@@ -28,6 +28,7 @@ public interface DVCQGIntegrationAction {
 	public JSONObject doSyncGovernmentAgency(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doSyncServiceAdministration(User user, ServiceContext serviceContext, JSONObject data);
 	public JSONObject doCreateDossierFromDVCQG(Company company, User user, long groupId, ServiceContext serviceContext, JSONObject data);
+	public void syncSummaryVote() throws Exception;
 	//public JSONObject doSyncAnsewer(User user, ServiceContext serviceContext, JSONObject data);
 	//public JSONObject searchDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
 	//public boolean checkExistDossier(User user, long groupId, ServiceContext serviceContext, String dossierNo);
