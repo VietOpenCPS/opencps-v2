@@ -4359,7 +4359,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(domain)) {
 			String[] lstDomain = StringUtil.split(domain);
-
 			if (lstDomain != null && lstDomain.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (int i = 0; i < lstDomain.length; i++) {
@@ -4374,6 +4373,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				query.addFields(DossierTerm.DOMAIN_CODE);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+   
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		// LamTV: Process search LIKE
