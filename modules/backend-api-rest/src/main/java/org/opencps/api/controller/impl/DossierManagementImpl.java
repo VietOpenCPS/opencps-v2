@@ -168,503 +168,573 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
-			// boolean isCitizen = false;
-			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-				query.setStart(QueryUtil.ALL_POS);
-				query.setEnd(QueryUtil.ALL_POS);
-				// query.setStart(0);
-				// query.setEnd(15);
-			}
-
-			LinkedHashMap<String, Object> params =
-				new LinkedHashMap<String, Object>();
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			// LamTV_Process search LIKE
-			String keywordSearch = query.getKeyword();
-			String keySearch = StringPool.BLANK;
-			if (Validator.isNotNull(keywordSearch)) {
-				keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
-			}
-			params.put(Field.KEYWORD_SEARCH, keySearch);
-
-			String status = query.getStatus();
-			String substatus = query.getSubstatus();
-			String agencys = query.getAgency();
-			if (ALL_AGENCY.equals(agencys)) {
-				agencys = StringPool.BLANK;
-			}
-			if (Validator.isNull(agencys)) {
-				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				if (employee != null && Validator.isNotNull(employee.getScope())) {
-					agencys = employee.getScope();
-				}
-			}
-			
-			String serviceCode = query.getService();
-			String service = StringPool.BLANK;
-			if (Validator.isNotNull(serviceCode)) {
-				service = SpecialCharacterUtils.splitSpecial(serviceCode);
-			}
-			String templateNo = query.getTemplate();
-			String template = StringPool.BLANK;
-			if (Validator.isNotNull(templateNo)) {
-				template = SpecialCharacterUtils.splitSpecial(templateNo);
-			}
-			String dossierCounter = query.getDossierCounter();
-			String dossierCounterSearch = StringPool.BLANK;
-			if (Validator.isNotNull(dossierCounter)) {
-				dossierCounterSearch = SpecialCharacterUtils.splitSpecial(dossierCounter);
-			}
-			// Integer originality =
-			// GetterUtil.getInteger(query.getOriginality());
-			// String originality = query.getOriginality();
-			// if (originality == -1) {
-			// owner = String.valueOf(false);
-			// } else {
-			// If user is citizen then default owner true
-			// if (isCitizen) {
-			// owner = String.valueOf(true);
-			// }
-			// }
-
-			String step = query.getStep();
-			String submitting = query.getSubmitting();
-			// Process Top using statistic
-			int year = query.getYear();
-			int month = query.getMonth();
-			String fromStatisticDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromStatisticDate());
-			String toStatisticDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToStatisticDate());
-			String top = query.getTop();
-			if (Validator.isNotNull(top) &&
-				DossierTerm.STATISTIC.equals(top.toLowerCase())) {
-				if ((year > 0 || month > 0) ||
-					(Validator.isNotNull(fromStatisticDate) ||
-						Validator.isNotNull(toStatisticDate))) {
-					// if (Validator.isNotNull(fromStatisticDate) ||
-					// Validator.isNotNull(toStatisticDate)) {
-					//
-					// }
-				}
-				else {
-					Calendar baseDateCal = Calendar.getInstance();
-					baseDateCal.setTime(new Date());
-					if (month == 0) {
-						month = baseDateCal.get(Calendar.MONTH) + 1;
+			boolean istheViaPostal = query.isIstheViaPostal();
+			if(istheViaPostal){
+			try {
+				DossierDetailModel result = null;
+				String dossierNo = query.getDossierNo();
+				if(Validator.isNotNull(dossierNo)){
+					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
+					if(Validator.isNotNull(dossier)){
+						result = mappingForGetDetail(dossier, user.getUserId());
+						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 					}
-					if (year == 0) {
-						year = baseDateCal.get(Calendar.YEAR);
+					Dossier dossierByPostalCodeSend = DossierLocalServiceUtil.fetchByDO_POST_SEND_GROUP(dossierNo, groupId);
+					if(Validator.isNotNull(dossierByPostalCodeSend)){
+						result = mappingForGetDetail(dossierByPostalCodeSend, user.getUserId());
+						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+					}
+					Dossier dossierByPostalCodeReceived = DossierLocalServiceUtil.fetchByDO_POST_RECEIVED_GROUP(dossierNo, groupId);
+					if(Validator.isNotNull(dossierByPostalCodeReceived)){
+						result = mappingForGetDetail(dossierByPostalCodeReceived, user.getUserId());
+						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 					}
 				}
-			}
+				if(Validator.isNull(result)) {
+					ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
+					if (Validator.isNotNull(sc)) {
+						JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 
-			String state = query.getState();
-			String dossierIdNo = query.getDossierNo();
-			String dossierNoSearch = StringPool.BLANK;
-			if (Validator.isNotNull(dossierIdNo)) {
-				dossierNoSearch =
-					SpecialCharacterUtils.splitSpecial(dossierIdNo);
-			}
-			String soChungChi = query.getSoChungChi();
-			String certNo = StringPool.BLANK;
-			if (Validator.isNotNull(soChungChi)) {
-				certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
-			}
+						HashMap<String, String> properties = new HashMap<String, String>();
+						InvokeREST callRest = new InvokeREST();
 
-			String fromReceiveDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromReceiveDate());
+						if (Validator.isNotNull(dossierNo)) {
+							//URL + token
+							String urlVnPost = config.getString(DossierTerm.URL_VIA_POST);
+							//Path : Token + Code
+							String path = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
 
-			String toReceiveDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToReceiveDate());
+							JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
+									urlVnPost, path, "",
+									"", properties, serviceContext);
 
-			String fromCertDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getTuNgayKyCc());
+							System.out.println("===========" + urlVnPost + " " + path);
+							if (Validator.isNotNull(resultObj)) {
+								if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+									throw new RuntimeException(
+											"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
+								} else {
+									JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
 
-			String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(
-				query.getDenNgayKyCc());
+									for (int i = 0; i < arrayData.length(); i++) {
+										JSONObject object = arrayData.getJSONObject(i);
 
-			String dossierIdCTN = query.getDossierIdCTN();
-			String fromSubmitDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromSubmitDate());
-			String toSubmitDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToSubmitDate());
-			// Process Statistic
-			String fromReleaseDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromReleaseDate());
-			String toReleaseDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToReleaseDate());
-
-			String fromFinishDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromFinishDate());
-			String toFinishDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToFinishDate());
-
-			// _log.info("fromFinishDate: "+fromFinishDate);
-			// _log.info("toFinishDate: "+toFinishDate);
-
-			String fromReceiveNotDoneDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getFromReceiveNotDoneDate());
-			String toReceiveNotDoneDate =
-				APIDateTimeUtils.convertNormalDateToLuceneDate(
-					query.getToReceiveNotDoneDate());
-
-			// LamTV:Get info case abnormal
-			Long statusRegNo = null;
-			if (Validator.isNotNull(query.getStatusReg())) {
-				statusRegNo = Long.valueOf(query.getStatusReg());
-			}
-
-			Long notStatusRegNo = null;
-			if (Validator.isNotNull(query.getNotStatusReg())) {
-				notStatusRegNo = Long.valueOf(query.getNotStatusReg());
-			}
-
-			String online = query.getOnline();
-			String domain = query.getDomain();
-			String domainName = query.getDomainName();
-			String applicantName = query.getApplicantName();
-			String applicantIdNo = query.getApplicantIdNo();
-			String serviceName = query.getServiceName();
-			Integer originDossierId = query.getOriginDossierId();
-			String owner = query.getOwner();
-			String follow = query.getFollow();
-			String applicantFollowIdNo = null;
-			if (Boolean.valueOf(follow)) {
-				if (userId > 0) {
-					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
-					if (applicant != null) {
-						applicantFollowIdNo = applicant.getApplicantIdNo();
-					}
-				}
-			}
-
-			String permission = query.getPermission();
-			if (Validator.isNotNull(permission)) {
-				String permissionUserId = StringPool.BLANK;
-				if (permission.contains(StringPool.COMMA)) {
-					String[] permissionArr = permission.split(StringPool.COMMA);
-					if (permissionArr != null && permissionArr.length > 0) {
-						List<String> permissionList = new ArrayList<>();
-						for (String permissionDetail : permissionArr) {
-							if (Validator.isNotNull(permissionDetail)) {
-								permissionList.add(
-									user.getUserId() + StringPool.UNDERLINE +
-										permissionDetail.toLowerCase());
+										String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
+										String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
+										// Trạng thái 1 || 2 || 3 là mã tờ khai
+										// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+										if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
+											if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
+												Dossier dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
+												result = mappingForGetDetail(dossier, user.getUserId());
+											} else {
+												Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
+												result = mappingForGetDetail(dossier, user.getUserId());
+											}
+										}
+									}
+								}
 							}
 						}
-						//
-						permissionUserId =
-							StringUtil.merge(permissionList, StringPool.COMMA);
 					}
 				}
-				else {
-					permissionUserId = user.getUserId() + StringPool.UNDERLINE +
-						permission.toLowerCase();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			} catch (Exception e) {
+					e.printStackTrace();
+					_log.info("------ Log Exception ------ " + " " + e.getMessage());
+					return BusinessExceptionImpl.processException(e);
+			}
+			}else {
+				// boolean isCitizen = false;
+				if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+					query.setStart(QueryUtil.ALL_POS);
+					query.setEnd(QueryUtil.ALL_POS);
+					// query.setStart(0);
+					// query.setEnd(15);
 				}
 
-				params.put(DossierTerm.MAPPING_PERMISSION, permissionUserId);
-			}
+				LinkedHashMap<String, Object> params =
+						new LinkedHashMap<String, Object>();
+				params.put(Field.GROUP_ID, String.valueOf(groupId));
+				// LamTV_Process search LIKE
+				String keywordSearch = query.getKeyword();
+				String keySearch = StringPool.BLANK;
+				if (Validator.isNotNull(keywordSearch)) {
+					keySearch = SpecialCharacterUtils.splitSpecial(keywordSearch);
+				}
+				params.put(Field.KEYWORD_SEARCH, keySearch);
 
-			// SystemId
-			String strSystemId = query.getSystemId();
-			if (Validator.isNotNull(strSystemId)) {
-				params.put(DossierTerm.SYSTEM_ID, strSystemId);
-			}
-			else {
-				params.put(DossierTerm.SYSTEM_ID, 0);
-			}
-			//ViaPostal
-			Integer viaPostal = query.getViapostal();
-			if (viaPostal != null) {
-				params.put(DossierTerm.VIA_POSTAL, viaPostal);
-			}
-			params.put(DossierTerm.ONLINE, online);
-			params.put(DossierTerm.STATUS, status);
-			params.put(DossierTerm.SUBSTATUS, substatus);
-			params.put(DossierTerm.AGENCYS, agencys);
-			params.put(DossierTerm.SERVICE, service);
-			params.put(DossierTerm.TEMPLATE, template);
-			if (year != 0) {
-				params.put(DossierTerm.YEAR, year);
-			}
-			if (month != 0) {
-				params.put(DossierTerm.MONTH, month);
-			}
-			params.put(DossierTerm.DAY, query.getDay());
-			if (Validator.isNotNull(step) && step.contains(DossierTerm.STEP_X)) {
-				String stepCode = query.getStep();
+				String status = query.getStatus();
+				String substatus = query.getSubstatus();
+				String agencys = query.getAgency();
+				if (ALL_AGENCY.equals(agencys)) {
+					agencys = StringPool.BLANK;
+				}
+				if (Validator.isNull(agencys)) {
+					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					if (employee != null && Validator.isNotNull(employee.getScope())) {
+						agencys = employee.getScope();
+					}
+				}
+
+				String serviceCode = query.getService();
+				String service = StringPool.BLANK;
+				if (Validator.isNotNull(serviceCode)) {
+					service = SpecialCharacterUtils.splitSpecial(serviceCode);
+				}
+				String templateNo = query.getTemplate();
+				String template = StringPool.BLANK;
+				if (Validator.isNotNull(templateNo)) {
+					template = SpecialCharacterUtils.splitSpecial(templateNo);
+				}
+				String dossierCounter = query.getDossierCounter();
+				String dossierCounterSearch = StringPool.BLANK;
+				if (Validator.isNotNull(dossierCounter)) {
+					dossierCounterSearch = SpecialCharacterUtils.splitSpecial(dossierCounter);
+				}
+				// Integer originality =
+				// GetterUtil.getInteger(query.getOriginality());
+				// String originality = query.getOriginality();
+				// if (originality == -1) {
+				// owner = String.valueOf(false);
+				// } else {
+				// If user is citizen then default owner true
+				// if (isCitizen) {
+				// owner = String.valueOf(true);
+				// }
+				// }
+
+				String step = query.getStep();
+				String submitting = query.getSubmitting();
+				// Process Top using statistic
+				int year = query.getYear();
+				int month = query.getMonth();
+				String fromStatisticDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromStatisticDate());
+				String toStatisticDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToStatisticDate());
+				String top = query.getTop();
+				if (Validator.isNotNull(top) &&
+						DossierTerm.STATISTIC.equals(top.toLowerCase())) {
+					if ((year > 0 || month > 0) ||
+							(Validator.isNotNull(fromStatisticDate) ||
+									Validator.isNotNull(toStatisticDate))) {
+						// if (Validator.isNotNull(fromStatisticDate) ||
+						// Validator.isNotNull(toStatisticDate)) {
+						//
+						// }
+					} else {
+						Calendar baseDateCal = Calendar.getInstance();
+						baseDateCal.setTime(new Date());
+						if (month == 0) {
+							month = baseDateCal.get(Calendar.MONTH) + 1;
+						}
+						if (year == 0) {
+							year = baseDateCal.get(Calendar.YEAR);
+						}
+					}
+				}
+
+				String state = query.getState();
+				String dossierIdNo = query.getDossierNo();
+				String dossierNoSearch = StringPool.BLANK;
+				if (Validator.isNotNull(dossierIdNo)) {
+					dossierNoSearch =
+							SpecialCharacterUtils.splitSpecial(dossierIdNo);
+				}
+				String soChungChi = query.getSoChungChi();
+				String certNo = StringPool.BLANK;
+				if (Validator.isNotNull(soChungChi)) {
+					certNo = SpecialCharacterUtils.splitSpecial(soChungChi);
+				}
+
+				String fromReceiveDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromReceiveDate());
+
+				String toReceiveDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToReceiveDate());
+
+				String fromCertDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getTuNgayKyCc());
+
+				String toCertDate = APIDateTimeUtils.convertNormalDateToLuceneDate(
+						query.getDenNgayKyCc());
+
+				String dossierIdCTN = query.getDossierIdCTN();
+				String fromSubmitDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromSubmitDate());
+				String toSubmitDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToSubmitDate());
+				// Process Statistic
+				String fromReleaseDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromReleaseDate());
+				String toReleaseDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToReleaseDate());
+
+				String fromFinishDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromFinishDate());
+				String toFinishDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToFinishDate());
+
+				// _log.info("fromFinishDate: "+fromFinishDate);
+				// _log.info("toFinishDate: "+toFinishDate);
+
+				String fromReceiveNotDoneDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getFromReceiveNotDoneDate());
+				String toReceiveNotDoneDate =
+						APIDateTimeUtils.convertNormalDateToLuceneDate(
+								query.getToReceiveNotDoneDate());
+
+				// LamTV:Get info case abnormal
+				Long statusRegNo = null;
+				if (Validator.isNotNull(query.getStatusReg())) {
+					statusRegNo = Long.valueOf(query.getStatusReg());
+				}
+
+				Long notStatusRegNo = null;
+				if (Validator.isNotNull(query.getNotStatusReg())) {
+					notStatusRegNo = Long.valueOf(query.getNotStatusReg());
+				}
+
+				String online = query.getOnline();
+				String domain = query.getDomain();
+				String domainName = query.getDomainName();
+				String applicantName = query.getApplicantName();
+				String applicantIdNo = query.getApplicantIdNo();
+				String serviceName = query.getServiceName();
+				Integer originDossierId = query.getOriginDossierId();
+				String owner = query.getOwner();
+				String follow = query.getFollow();
+				String applicantFollowIdNo = null;
+				if (Boolean.valueOf(follow)) {
+					if (userId > 0) {
+						Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(userId);
+						if (applicant != null) {
+							applicantFollowIdNo = applicant.getApplicantIdNo();
+						}
+					}
+				}
+
+				String permission = query.getPermission();
+				if (Validator.isNotNull(permission)) {
+					String permissionUserId = StringPool.BLANK;
+					if (permission.contains(StringPool.COMMA)) {
+						String[] permissionArr = permission.split(StringPool.COMMA);
+						if (permissionArr != null && permissionArr.length > 0) {
+							List<String> permissionList = new ArrayList<>();
+							for (String permissionDetail : permissionArr) {
+								if (Validator.isNotNull(permissionDetail)) {
+									permissionList.add(
+											user.getUserId() + StringPool.UNDERLINE +
+													permissionDetail.toLowerCase());
+								}
+							}
+							//
+							permissionUserId =
+									StringUtil.merge(permissionList, StringPool.COMMA);
+						}
+					} else {
+						permissionUserId = user.getUserId() + StringPool.UNDERLINE +
+								permission.toLowerCase();
+					}
+
+					params.put(DossierTerm.MAPPING_PERMISSION, permissionUserId);
+				}
+
+				// SystemId
+				String strSystemId = query.getSystemId();
+				if (Validator.isNotNull(strSystemId)) {
+					params.put(DossierTerm.SYSTEM_ID, strSystemId);
+				} else {
+					params.put(DossierTerm.SYSTEM_ID, 0);
+				}
+				//ViaPostal
+				Integer viaPostal = query.getViapostal();
+				if (viaPostal != null) {
+					params.put(DossierTerm.VIA_POSTAL, viaPostal);
+				}
+				params.put(DossierTerm.ONLINE, online);
+				params.put(DossierTerm.STATUS, status);
+				params.put(DossierTerm.SUBSTATUS, substatus);
+				params.put(DossierTerm.AGENCYS, agencys);
+				params.put(DossierTerm.SERVICE, service);
+				params.put(DossierTerm.TEMPLATE, template);
+				if (year != 0) {
+					params.put(DossierTerm.YEAR, year);
+				}
+				if (month != 0) {
+					params.put(DossierTerm.MONTH, month);
+				}
+				params.put(DossierTerm.DAY, query.getDay());
+				if (Validator.isNotNull(step) && step.contains(DossierTerm.STEP_X)) {
+					String stepCode = query.getStep();
 //				_log.info("STEPCODE: "+stepCode);
-				if (Validator.isNotNull(stepCode)) {
-					String[] stepArr = stepCode.split(StringPool.COMMA);
-					if (stepArr != null && stepArr.length > 0) {
-						List<StepConfig> lstSteps = StepConfigLocalServiceUtil.findByG_SCS(groupId, stepArr);
-						StringBuilder stepBuilder = new StringBuilder();
-						for (StepConfig sc : lstSteps) {
-							if (sc.getStepCode().contains(DossierTerm.STEP_X)) {
-								for (int i = 0; i <= 9; i++) {
-									String stepCodeRep = sc.getStepCode().replace(DossierTerm.STEP_X, i + StringPool.BLANK);
+					if (Validator.isNotNull(stepCode)) {
+						String[] stepArr = stepCode.split(StringPool.COMMA);
+						if (stepArr != null && stepArr.length > 0) {
+							List<StepConfig> lstSteps = StepConfigLocalServiceUtil.findByG_SCS(groupId, stepArr);
+							StringBuilder stepBuilder = new StringBuilder();
+							for (StepConfig sc : lstSteps) {
+								if (sc.getStepCode().contains(DossierTerm.STEP_X)) {
+									for (int i = 0; i <= 9; i++) {
+										String stepCodeRep = sc.getStepCode().replace(DossierTerm.STEP_X, i + StringPool.BLANK);
+										if (!StringPool.BLANK.contentEquals(stepBuilder.toString())) {
+											stepBuilder.append(StringPool.COMMA);
+										}
+										stepBuilder.append(stepCodeRep);
+									}
+								} else {
 									if (!StringPool.BLANK.contentEquals(stepBuilder.toString())) {
 										stepBuilder.append(StringPool.COMMA);
 									}
-									stepBuilder.append(stepCodeRep);
+									stepBuilder.append(sc.getStepCode());
 								}
 							}
-							else {
-								if (!StringPool.BLANK.contentEquals(stepBuilder.toString())) {
-									stepBuilder.append(StringPool.COMMA);
-								}
-								stepBuilder.append(sc.getStepCode());								
+							params.put(DossierTerm.STEP, stepBuilder.toString());
+						}
+					} else {
+					}
+				} else {
+					params.put(DossierTerm.STEP, step);
+				}
+				params.put(DossierTerm.OWNER, owner);
+				params.put(
+						DossierTerm.APPLICANT_FOLLOW_ID_NO,
+						Validator.isNotNull(applicantFollowIdNo)
+								? applicantFollowIdNo : StringPool.BLANK);
+				params.put(DossierTerm.SUBMITTING, submitting);
+
+				params.put(DossierTerm.FOLLOW, follow);
+				params.put(DossierTerm.TOP, top);
+
+				backend.auth.api.BackendAuth auth2 =
+						new backend.auth.api.BackendAuthImpl();
+				if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+					params.put(DossierTerm.USER_ID, user.getUserId());
+				}
+				params.put(DossierTerm.SECRET_KEY, query.getSecetKey());
+				params.put(DossierTerm.STATE, state);
+				params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
+				params.put(DossierTerm.CERT_NO, certNo);
+				params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
+				params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
+				params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
+				params.put(DossierTerm.TO_CERT_DATE, toCertDate);
+				params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
+				params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
+				params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
+				params.put(DossierTerm.STATUS_REG, statusRegNo);
+				params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
+				if (Validator.isNotNull(domain)) {
+					params.put(DossierTerm.DOMAIN_CODE, domain);
+				}
+				params.put(DossierTerm.DOMAIN_NAME, domainName);
+				params.put(DossierTerm.APPLICANT_NAME, applicantName);
+				params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
+				params.put(DossierTerm.SERVICE_NAME, serviceName);
+				// Check guest search
+				params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
+				params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+				//
+				params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
+				params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
+				params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
+				params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
+				params.put(
+						DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
+				params.put(
+						DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
+				params.put(
+						PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+				params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
+				params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
+				params.put(DossierTerm.ORIGIN, query.getOrigin());
+				params.put(DossierTerm.TIME, query.getTime());
+				//Undue time
+				params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
+
+				params.put(DossierTerm.REGISTER, query.getRegister());
+				params.put(DossierTerm.DOSSIER_COUNTER_SEARCH, dossierCounterSearch);
+
+				params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
+				params.put(DossierTerm.BACKLOG, query.getBacklog());
+				if (Validator.isNotNull(query.getAssignedUserIdSearch())) {
+					params.put(DossierTerm.ASSIGNED_USER_ID_SEARCH, query.getAssignedUserIdSearch());
+				}
+
+				params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
+				// Delegate
+				if (Validator.isNotNull(query.getDelegateType())) {
+					params.put(DossierTerm.DELEGATE_TYPE, query.getDelegateType());
+				}
+				if (Validator.isNotNull(query.getDocumentNo())) {
+					params.put(DossierTerm.DOCUMENT_NO, query.getDocumentNo());
+				}
+				if (Validator.isNotNull(query.getDocumentDate())) {
+					params.put(DossierTerm.DOCUMENT_DATE, query.getDocumentDate());
+				}
+
+				// Search theo tu tuong moi
+				// params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
+				if (Validator.isNotNull(originDossierId))
+					params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
+
+				if (Validator.isNotNull(query.getVnpostalStatus())) {
+					params.put(DossierTerm.VNPOSTAL_STATUS, query.getVnpostalStatus());
+				}
+
+				Integer fromViaPostal = query.getFromViaPostal();
+				if (fromViaPostal != null) {
+					params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+				}
+				// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				String donvigui = query.getDonvigui();
+				if (Validator.isNotNull(donvigui)) {
+					String[] donviguiArr = donvigui.split(StringPool.COMMA);
+					//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
+					boolean firtScopeDVG = false;
+					for (String key : donviguiArr) {
+						if (key.equals(DossierTerm.FIRSTSCOPE)) {
+							firtScopeDVG = true;
+						}
+					}
+					if (firtScopeDVG) {
+						if (Validator.isNotNull(employee)) {
+							String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+							params.put(DossierTerm.DON_VI_GUI, employeeArr[0]);
+						}
+					} else {
+						if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+							if (Validator.isNotNull(employee)) {
+								params.put(DossierTerm.DON_VI_GUI, employee.getScope());
 							}
+						} else {
+							params.put(DossierTerm.DON_VI_GUI, donvigui);
 						}
-						params.put(DossierTerm.STEP, stepBuilder.toString());	
-					}
-				} else {
-				}
-			}
-			else {
-				params.put(DossierTerm.STEP, step);				
-			}
-			params.put(DossierTerm.OWNER, owner);
-			params.put(
-				DossierTerm.APPLICANT_FOLLOW_ID_NO,
-				Validator.isNotNull(applicantFollowIdNo)
-					? applicantFollowIdNo : StringPool.BLANK);
-			params.put(DossierTerm.SUBMITTING, submitting);
-
-			params.put(DossierTerm.FOLLOW, follow);
-			params.put(DossierTerm.TOP, top);
-
-			backend.auth.api.BackendAuth auth2 =
-				new backend.auth.api.BackendAuthImpl();
-			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
-				params.put(DossierTerm.USER_ID, user.getUserId());
-			}
-			params.put(DossierTerm.SECRET_KEY, query.getSecetKey());
-			params.put(DossierTerm.STATE, state);
-			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
-			params.put(DossierTerm.CERT_NO, certNo);
-			params.put(DossierTerm.FROM_RECEIVEDATE, fromReceiveDate);
-			params.put(DossierTerm.TO_RECEIVEDATE, toReceiveDate);
-			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
-			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
-			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
-			params.put(DossierTerm.FROM_SUBMIT_DATE, fromSubmitDate);
-			params.put(DossierTerm.TO_SUBMIT_DATE, toSubmitDate);
-			params.put(DossierTerm.STATUS_REG, statusRegNo);
-			params.put(DossierTerm.NOT_STATUS_REG, notStatusRegNo);
-			if (Validator.isNotNull(domain)) {
-				params.put(DossierTerm.DOMAIN_CODE, domain);
-			}
-			params.put(DossierTerm.DOMAIN_NAME, domainName);
-			params.put(DossierTerm.APPLICANT_NAME, applicantName);
-			params.put(DossierTerm.APPLICANT_ID_NO, applicantIdNo);
-			params.put(DossierTerm.SERVICE_NAME, serviceName);
-			// Check guest search
-			params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
-			params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
-			//
-			params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
-			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
-			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
-			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
-			params.put(
-				DossierTerm.FROM_RECEIVE_NOTDONE_DATE, fromReceiveNotDoneDate);
-			params.put(
-				DossierTerm.TO_RECEIVE_NOTDONE_DATE, toReceiveNotDoneDate);
-			params.put(
-				PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
-			params.put(DossierTerm.FROM_STATISTIC_DATE, fromStatisticDate);
-			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
-			params.put(DossierTerm.ORIGIN, query.getOrigin());
-			params.put(DossierTerm.TIME, query.getTime());
-			//Undue time
-			params.put(DossierTerm.UNDUE_TIME, query.getUndueTime());
-			
-			params.put(DossierTerm.REGISTER, query.getRegister());
-			params.put(DossierTerm.DOSSIER_COUNTER_SEARCH, dossierCounterSearch);
-
-			params.put(DossierTerm.TO_BACKLOGDATE, query.getToBacklogDate());
-			params.put(DossierTerm.BACKLOG, query.getBacklog());
-			if (Validator.isNotNull(query.getAssignedUserIdSearch())) {
-				params.put(DossierTerm.ASSIGNED_USER_ID_SEARCH, query.getAssignedUserIdSearch());
-			}
-
-			params.put(DossierTerm.GROUP_DOSSIER_ID, query.getGroupDossierId());
-			// Delegate
-			if (Validator.isNotNull(query.getDelegateType())) {
-				params.put(DossierTerm.DELEGATE_TYPE, query.getDelegateType());
-			}
-			if (Validator.isNotNull(query.getDocumentNo())) {
-				params.put(DossierTerm.DOCUMENT_NO, query.getDocumentNo());
-			}
-			if (Validator.isNotNull(query.getDocumentDate())) {
-				params.put(DossierTerm.DOCUMENT_DATE, query.getDocumentDate());
-			}
-
-			// Search theo tu tuong moi
-			// params.put(DossierTerm.ORIGINALLITY_TEST, strOriginality);
-			if (Validator.isNotNull(originDossierId))
-				params.put(DossierTerm.ORIGIN_DOSSIER_ID, originDossierId);
-
-			if (Validator.isNotNull(query.getVnpostalStatus())) {
-				params.put(DossierTerm.VNPOSTAL_STATUS, query.getVnpostalStatus());
-			}
-
-			Integer fromViaPostal = query.getFromViaPostal();
-			if (fromViaPostal != null) {
-				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
-			}
-			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId,userId);
-			String donvigui = query.getDonvigui();
-			if(Validator.isNotNull(donvigui)) {
-				String[] donviguiArr = donvigui.split(StringPool.COMMA);
-			//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
-				boolean firtScopeDVG = false;
-				for (String key : donviguiArr) {
-					if (key.equals(DossierTerm.FIRSTSCOPE)) {
-						firtScopeDVG = true;
 					}
 				}
-				if (firtScopeDVG) {
-					if (Validator.isNotNull(employee)) {
-					    String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-						params.put(DossierTerm.DON_VI_GUI, employeeArr[0]);
+				//Don vi nhan
+				String donvinhan = query.getDonvinhan();
+				if (Validator.isNotNull(donvinhan)) {
+					String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
+					boolean firtScopeDVN = false;
+					for (String key : donvinhanArr) {
+						if (key.equals(DossierTerm.FIRSTSCOPE)) {
+							firtScopeDVN = true;
+						}
 					}
-				} else {
-					if (query.getDonvigui().equals(DossierTerm.SCOPE_)) {
+					if (firtScopeDVN) {
 						if (Validator.isNotNull(employee)) {
-							params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+							String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+							params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
 						}
 					} else {
-						params.put(DossierTerm.DON_VI_GUI, donvigui);
-					}
-				}
-			}
-			//Don vi nhan
-			String donvinhan = query.getDonvinhan();
-			if(Validator.isNotNull(donvinhan)) {
-				String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
-				boolean firtScopeDVN = false;
-				for (String key : donvinhanArr) {
-					if (key.equals(DossierTerm.FIRSTSCOPE)) {
-						firtScopeDVN = true;
-					}
-				}
-				if (firtScopeDVN) {
-					if (Validator.isNotNull(employee)) {
-						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-						params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
-					}
-				} else {
-					if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
-						if (Validator.isNotNull(employee)) {
-							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+						if (query.getDonvinhan().equals(DossierTerm.SCOPE_)) {
+							if (Validator.isNotNull(employee)) {
+								params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+							}
+						} else {
+							params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 						}
-					} else {
-						params.put(DossierTerm.DON_VI_NHAN, donvinhan);
 					}
 				}
-			}
-			Sort[] sorts = null;
-			if (Validator.isNull(query.getSort())) {
-				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
-				sorts = new Sort[] {
-					SortFactoryUtil.create(
-						dateSort, Sort.LONG_TYPE,
-						GetterUtil.getBoolean(query.getOrder()))
-				};
-			}
-			else {
-				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
-				sorts = new Sort[] {
-					SortFactoryUtil.create(
-						querySort, Sort.STRING_TYPE,
-						GetterUtil.getBoolean(query.getOrder()))
-				};
-			}
-
-			if (Validator.isNotNull(top)) {
-				String querySort;
-				switch (top) {
-				case DossierTerm.RECEIVE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
-					sorts = new Sort[] {
-						SortFactoryUtil.create(
-							querySort,
-							Sort.LONG_TYPE, false)
+				Sort[] sorts = null;
+				if (Validator.isNull(query.getSort())) {
+					String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
+					sorts = new Sort[]{
+							SortFactoryUtil.create(
+									dateSort, Sort.LONG_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
 					};
-					break;
-				case DossierTerm.OVERDUE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
-					sorts = new Sort[] {
-						SortFactoryUtil.create(
-							querySort,
-							Sort.LONG_TYPE, false)
+				} else {
+					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+					sorts = new Sort[]{
+							SortFactoryUtil.create(
+									querySort, Sort.STRING_TYPE,
+									GetterUtil.getBoolean(query.getOrder()))
 					};
-					break;
-				case DossierTerm.RELEASE:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
-					sorts = new Sort[] {
-						SortFactoryUtil.create(
-							querySort,
-							Sort.LONG_TYPE, false)
-					};
-					break;
-				case DossierTerm.CANCELLING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
-					sorts = new Sort[] {
-						SortFactoryUtil.create(
-							querySort,
-							Sort.LONG_TYPE, false)
-					};
-					break;
-				case DossierTerm.CORRECTING:
-					querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
-					sorts = new Sort[] {
-						SortFactoryUtil.create(
-							querySort,
-							Sort.LONG_TYPE, false)
-					};
-					break;
-				default:
-					break;
 				}
+
+				if (Validator.isNotNull(top)) {
+					String querySort;
+					switch (top) {
+						case DossierTerm.RECEIVE:
+							querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RECEIVE_DATE_TIMESTAMP);
+							sorts = new Sort[]{
+									SortFactoryUtil.create(
+											querySort,
+											Sort.LONG_TYPE, false)
+							};
+							break;
+						case DossierTerm.OVERDUE:
+							querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.DUE_DATE_TIMESTAMP);
+							sorts = new Sort[]{
+									SortFactoryUtil.create(
+											querySort,
+											Sort.LONG_TYPE, false)
+							};
+							break;
+						case DossierTerm.RELEASE:
+							querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.RELEASE_DATE_TIMESTAMP);
+							sorts = new Sort[]{
+									SortFactoryUtil.create(
+											querySort,
+											Sort.LONG_TYPE, false)
+							};
+							break;
+						case DossierTerm.CANCELLING:
+							querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CANCELLING_DATE_TIMESTAMP);
+							sorts = new Sort[]{
+									SortFactoryUtil.create(
+											querySort,
+											Sort.LONG_TYPE, false)
+							};
+							break;
+						case DossierTerm.CORRECTING:
+							querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CORRECTING_DATE_TIMESTAMP);
+							sorts = new Sort[]{
+									SortFactoryUtil.create(
+											querySort,
+											Sort.LONG_TYPE, false)
+							};
+							break;
+						default:
+							break;
+					}
+				}
+
+				DossierResultsModel results = new DossierResultsModel();
+
+				JSONObject jsonData = actions.getDossiers(
+						user.getUserId(), company.getCompanyId(), groupId, params,
+						sorts, query.getStart(), query.getEnd(), serviceContext);
+
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+
+				results.getData().addAll(
+						DossierUtils.mappingForGetList(
+								(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
+								query.getAssigned(), query));
+
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
-
-			DossierResultsModel results = new DossierResultsModel();
-
-			JSONObject jsonData = actions.getDossiers(
-				user.getUserId(), company.getCompanyId(), groupId, params,
-				sorts, query.getStart(), query.getEnd(), serviceContext);
-
-			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-
-			results.getData().addAll(
-				DossierUtils.mappingForGetList(
-					(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-					query.getAssigned(),query));
-
-			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
-
 		}
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
 	// LamTV: Process dossierTodo
@@ -846,7 +916,7 @@ public class DossierManagementImpl implements DossierManagement {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 					if (employee != null && Validator.isNotNull(employee.getScope())) {
 						agencys = employee.getScope();
-					}					
+					}
 				}
 			}
 			if (Boolean.valueOf(query.getSpecialKey())) {
@@ -904,28 +974,28 @@ public class DossierManagementImpl implements DossierManagement {
 			String toSubmitDate =
 				APIDateTimeUtils.convertNormalDateToLuceneDate(
 					query.getToSubmitDate());
-			
+
 			String fromDueDate =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 						query.getFromDueDate());
 			String toDueDate =
 				APIDateTimeUtils.convertNormalDateToLuceneDate(
 					query.getToDueDate());
-			
+
 			String fromReleaseDate =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 						query.getFromReleaseDate());
 			String toReleaseDate =
 				APIDateTimeUtils.convertNormalDateToLuceneDate(
 					query.getToReleaseDate());
-			
+
 			String fromFinishDate =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 						query.getFromFinishDate());
 			String toFinishDate =
 				APIDateTimeUtils.convertNormalDateToLuceneDate(
 					query.getToFinishDate());
-			
+
 			String dossierIdCTN = query.getDossierIdCTN();
 			String domain = query.getDomain();
 			String domainName = query.getDomainName();
@@ -997,7 +1067,7 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
 			params.put(DossierTerm.FROM_FINISH_DATE, fromFinishDate);
 			params.put(DossierTerm.TO_FINISH_DATE, toFinishDate);
-			
+
 			params.put(DossierTerm.FROM_CERT_DATE, fromCertDate);
 			params.put(DossierTerm.TO_CERT_DATE, toCertDate);
 			params.put(DossierTerm.DOSSIER_ID_CTN, dossierIdCTN);
@@ -7649,74 +7719,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 	}
 
-	@Override
-	public Response getDossierByPostalCodeSend(HttpServletRequest request, HttpHeaders header, Company company,
-											   Locale locale, User user, ServiceContext serviceContext, String postalCode) {
+	public DossierDetailModel mappingForGetDetail(Dossier dossier, long userId){
 		DossierDetailModel result = new DossierDetailModel();
-		DossierActions actions = new DossierActionsImpl();
-		DossierResultsModel results = new DossierResultsModel();
-		DossierSearchModel query = new DossierSearchModel();
-		LinkedHashMap<String, Object> params =
-				new LinkedHashMap<String, Object>();
-		HashMap<String, String> properties = new HashMap<String, String>();
-		InvokeREST callRest = new InvokeREST();
-		String baseUrl =ConstantUtils.SERVICE_API_CLS;
-		String path = StringPool.FORWARD_SLASH + ConstantUtils.TOKEN_CLS + StringPool.FORWARD_SLASH + postalCode  ;
-		try {
-			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-			if (Validator.isNotNull(postalCode)) {
-				JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
-						baseUrl, path, "",
-						"", properties, serviceContext);
-
-				System.out.println("===========" + baseUrl + " " + path);
-				if (Validator.isNotNull(resultObj)) {
-					if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
-						throw new RuntimeException(
-								"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
-					} else {
-						JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
-
-						for (int i = 0; i < arrayData.length(); i++) {
-							JSONObject object = arrayData.getJSONObject(i);
-
-							String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
-							String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
-							// Trạng thái 1 || 2 || 3 là mã tờ khai
-							// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
-
-							Sort[] sorts = null;
-							if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
-								if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-									params.put(DossierTerm.MA_TO_KHAI, soCongvan);
-									params.put(Field.GROUP_ID, String.valueOf(groupId));
-									JSONObject jsonData = actions.getDossiers(
-											user.getUserId(), company.getCompanyId(), groupId, params,
-											sorts, query.getStart(), query.getEnd(), serviceContext);
-
-									results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-									results.getData().addAll(
-											DossierUtils.mappingForGetList(
-													(List<Document>) jsonData.get(ConstantUtils.DATA), user.getUserId(),
-													null, query));
-								} else {
-									Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
-									if (dossier != null) {
-										result = DossierUtils.mappingForGetDetail(dossier, user.getUserId());
-										_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-		} catch (Exception e) {
-			e.printStackTrace();
-			_log.info("------ Log Exception ------ " + " " + e.getMessage());
-			return BusinessExceptionImpl.processException(e);
+		if (dossier != null) {
+			result = DossierUtils.mappingForGetDetail(dossier, userId);
+			_log.info("TRACE_LOG_INFO result Dossier: " + JSONFactoryUtil.looseSerialize(result));
 		}
+		return result;
 	}
 
 	@Override public Response updateState(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,

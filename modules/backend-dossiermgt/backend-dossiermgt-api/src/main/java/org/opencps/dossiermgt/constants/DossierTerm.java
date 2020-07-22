@@ -393,4 +393,7 @@ public class DossierTerm {
 	public static final String MA_TO_KHAI_INDEXER = "ma_to_khai";
 	public static final String MA_TO_KHAI = "matokhai";
 	public static final String DOING_ACTION_USER_ID = "doingActionUserId";
+	public static final String VNPOST_CLS = "VNPOST_CLS";
+	public static final String URL_VIA_POST = "apiGetVnPost";
+	public static final String TOKEN_VN_POST = "tokenVnPost";
 }

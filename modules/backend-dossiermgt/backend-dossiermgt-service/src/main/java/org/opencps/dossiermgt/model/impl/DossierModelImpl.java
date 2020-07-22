@@ -314,13 +314,15 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 8192L;
 	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 16384L;
 	public static final long ORIGINALITY_COLUMN_BITMASK = 32768L;
-	public static final long PROCESSNO_COLUMN_BITMASK = 65536L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 131072L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 262144L;
-	public static final long USERID_COLUMN_BITMASK = 524288L;
-	public static final long UUID_COLUMN_BITMASK = 1048576L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 2097152L;
-	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 4194304L;
+	public static final long POSTALCODERECEIVED_COLUMN_BITMASK = 65536L;
+	public static final long POSTALCODESEND_COLUMN_BITMASK = 131072L;
+	public static final long PROCESSNO_COLUMN_BITMASK = 262144L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 524288L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 1048576L;
+	public static final long USERID_COLUMN_BITMASK = 2097152L;
+	public static final long UUID_COLUMN_BITMASK = 4194304L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 8388608L;
+	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 16777216L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -2758,7 +2760,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setPostalCodeSend(String postalCodeSend) {
+		_columnBitmask |= POSTALCODESEND_COLUMN_BITMASK;
+
+		if (_originalPostalCodeSend == null) {
+			_originalPostalCodeSend = _postalCodeSend;
+		}
+
 		_postalCodeSend = postalCodeSend;
+	}
+
+	public String getOriginalPostalCodeSend() {
+		return GetterUtil.getString(_originalPostalCodeSend);
 	}
 
 	@Override
@@ -2773,7 +2785,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setPostalCodeReceived(String postalCodeReceived) {
+		_columnBitmask |= POSTALCODERECEIVED_COLUMN_BITMASK;
+
+		if (_originalPostalCodeReceived == null) {
+			_originalPostalCodeReceived = _postalCodeReceived;
+		}
+
 		_postalCodeReceived = postalCodeReceived;
+	}
+
+	public String getOriginalPostalCodeReceived() {
+		return GetterUtil.getString(_originalPostalCodeReceived);
 	}
 
 	@Override
@@ -3044,6 +3066,10 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._originalVnpostalStatus = dossierModelImpl._vnpostalStatus;
 
 		dossierModelImpl._setOriginalVnpostalStatus = false;
+
+		dossierModelImpl._originalPostalCodeSend = dossierModelImpl._postalCodeSend;
+
+		dossierModelImpl._originalPostalCodeReceived = dossierModelImpl._postalCodeReceived;
 
 		dossierModelImpl._columnBitmask = 0;
 	}
@@ -4566,7 +4592,9 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private int _fromViaPostal;
 	private String _multipleCheck;
 	private String _postalCodeSend;
+	private String _originalPostalCodeSend;
 	private String _postalCodeReceived;
+	private String _originalPostalCodeReceived;
 	private long _columnBitmask;
 	private Dossier _escapedModel;
 }
