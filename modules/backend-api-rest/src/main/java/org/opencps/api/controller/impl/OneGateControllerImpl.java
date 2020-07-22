@@ -108,7 +108,7 @@ public class OneGateControllerImpl implements OneGateController {
 					break;
 				}
 			}
-			long startTime = System.currentTimeMillis();
+			//long startTime = System.currentTimeMillis();
 			String searchGovAgencyCode = query.getSearchGovAgencyCode();
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId,
 					searchGovAgencyCode, user.getUserId());
@@ -126,7 +126,7 @@ public class OneGateControllerImpl implements OneGateController {
 					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
 				}
 			}
-			long endTime = System.currentTimeMillis();
+			//long endTime = System.currentTimeMillis();
 			//startTime = System.currentTimeMillis();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
 			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
@@ -152,7 +152,6 @@ public class OneGateControllerImpl implements OneGateController {
 				}
 			}
 			
-			startTime = System.currentTimeMillis();
 			/*******/
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
@@ -176,8 +175,6 @@ public class OneGateControllerImpl implements OneGateController {
 			}
 
 			/*******/
-			endTime = System.currentTimeMillis();
-			_log.info("time lucenue: " + String.valueOf(endTime - startTime));
 			_log.info("processList: " + processList != null ? processList.size() : 0);
 			String serviceCodeOld = "";
 			if (serviceConfigs != null) {
