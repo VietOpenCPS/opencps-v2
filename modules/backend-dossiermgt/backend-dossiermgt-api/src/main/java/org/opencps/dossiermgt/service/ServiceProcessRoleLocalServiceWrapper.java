@@ -187,6 +187,12 @@ public class ServiceProcessRoleLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findByRID(
+		long[] roleArr) {
+		return _serviceProcessRoleLocalService.findByRID(roleArr);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findByS_P_ID(
 		long serviceProcessId) {
 		return _serviceProcessRoleLocalService.findByS_P_ID(serviceProcessId);

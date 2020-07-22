@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -10,6 +11,10 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -20,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,7 +41,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.OneGateController;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
+import org.opencps.api.controller.util.ServiceConfigUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.dossier.model.DossierOnegateInputModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
@@ -80,13 +88,12 @@ public class OneGateControllerImpl implements OneGateController {
 
 	@Override
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-									  User user, ServiceContext serviceContext, String domain, String public_, Request requestCC, DossierSearchModel query) {
-		
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		
-		BackendAuth auth = new BackendAuthImpl();
+			User user, ServiceContext serviceContext, String domain, String public_, Request requestCC,
+			DossierSearchModel query) {
 
-		// TODO need implement user in GovAgency
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 
@@ -101,9 +108,10 @@ public class OneGateControllerImpl implements OneGateController {
 					break;
 				}
 			}
-//			long startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			String searchGovAgencyCode = query.getSearchGovAgencyCode();
-			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId, searchGovAgencyCode, user.getUserId());
+			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId,
+					searchGovAgencyCode, user.getUserId());
 
 			Map<Long, ServiceInfo> mapServiceInfos = new HashMap<>();
 			List<ServiceInfo> lstServiceInfos = null;
@@ -118,64 +126,66 @@ public class OneGateControllerImpl implements OneGateController {
 					mapServiceInfos.put(serviceInfo.getServiceInfoId(), serviceInfo);
 				}
 			}
-//			long endTime = System.currentTimeMillis();
-//			startTime = System.currentTimeMillis();
+			long endTime = System.currentTimeMillis();
+			//startTime = System.currentTimeMillis();
 			JSONObject results = JSONFactoryUtil.createJSONObject();
-			Map<Long, List<ProcessOption>> mapProcessOptions = new HashMap<>();
-//			startTime = System.currentTimeMillis();
-			List<ProcessOption> lstOptions = ProcessOptionLocalServiceUtil.findByGroup(groupId);
-//			endTime = System.currentTimeMillis();
-//			startTime = System.currentTimeMillis();
-			long[] spArr = new long[lstOptions.size()];
-			int count = 0;
 			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 
-			for (ProcessOption po : lstOptions) {
-				if (mapProcessOptions.get(po.getServiceConfigId()) == null) {
-					List<ProcessOption> lstPos = new ArrayList<>();
-					mapProcessOptions.put(po.getServiceConfigId(), lstPos);
-					lstPos.add(po);
-				} else {
-					List<ProcessOption> lstPos = mapProcessOptions.get(po.getServiceConfigId());
-					lstPos.add(po);
-				}
-				spArr[count++] = po.getServiceProcessId();
-			}
-
-//			endTime = System.currentTimeMillis();
-//			startTime = System.currentTimeMillis();
 			JSONArray data = JSONFactoryUtil.createJSONArray();
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
-//			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-			List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : new ArrayList<ServiceProcessRole>();
-			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
-			for (ServiceProcessRole spr : lstPRoles) {
-				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
-				if (mapPRoles.containsKey(spr.getServiceProcessId())) {
-					lstTempSprs = mapPRoles.get(spr.getServiceProcessId());
-				} else {
-					mapPRoles.put(spr.getServiceProcessId(), lstTempSprs);
-				}
+			//Add Map role
+			List<ServiceProcessRole> lstPRoles = (roleIds != null && roleIds.length > 0)
+					? ServiceProcessRoleLocalServiceUtil.findByRID(roleIds)
+					: null;
 
-				lstTempSprs.add(spr);
+			StringBuilder sbProcessId = null;
+			if (lstPRoles != null && lstPRoles.size() > 0) {
+				sbProcessId = new StringBuilder();
+				for (ServiceProcessRole spr : lstPRoles) {
+					if (sbProcessId.length() > 0) {
+						sbProcessId.append(StringPool.COMMA);
+						sbProcessId.append(spr.getServiceProcessId());
+					} else {
+						sbProcessId.append(spr.getServiceProcessId());
+					}
+				}
 			}
-//			endTime = System.currentTimeMillis();
-//			startTime = System.currentTimeMillis();
-			List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
-			Map<Long, DossierTemplate> mapTemplates = new HashMap<Long, DossierTemplate>();
-			for (DossierTemplate dt : lstTemplates) {
-				mapTemplates.put(dt.getDossierTemplateId(), dt);
+			
+			startTime = System.currentTimeMillis();
+			/*******/
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
+			params.put(ProcessOptionTerm.SERVICE_PROCESS_ID, sbProcessId.toString());
+
+			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+			Sort[] sorts = new Sort[] {
+					SortFactoryUtil.create(querySort, Sort.STRING_TYPE, GetterUtil.getBoolean(query.getOrder())) };
+
+			
+			//Search lucene
+			SearchContext searchContext = new SearchContext();
+			searchContext.setCompanyId(serviceContext.getCompanyId());
+
+			Hits hits = ProcessOptionLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					searchContext);
+			List<org.opencps.api.serviceconfig.model.ProcessOption> processList = null;
+			if (hits != null) {
+				processList = ServiceConfigUtils.mappingToProcessOptionResults(hits.toList());
 			}
-//			endTime = System.currentTimeMillis();
+
+			/*******/
+			endTime = System.currentTimeMillis();
+			_log.info("time lucenue: " + String.valueOf(endTime - startTime));
+			_log.info("processList: " + processList != null ? processList.size() : 0);
 			String serviceCodeOld = "";
-			if (serviceConfigs != null){
+			if (serviceConfigs != null) {
 				for (ServiceConfig serviceConfig : serviceConfigs) {
-//				if (((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
-//					_log.debug("SERVICE CONFIG SCOPE: " + e.getScope());
-//					_log.debug("SERVICE CONFIG LEVEL: " + serviceConfig.getServiceLevel());
-//				}
-					if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope()))) || (e != null && Validator.isNotNull(e.getScope()) && e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0))) {
+
+					if (serviceConfig.getServiceLevel() >= 2 && ((e != null && (Validator.isNull(e.getScope())))
+							|| (e != null && Validator.isNotNull(e.getScope())
+									&& e.getScope().indexOf(serviceConfig.getGovAgencyCode()) >= 0))) {
 						JSONObject elmData = JSONFactoryUtil.createJSONObject();
 
 						elmData.put(ServiceConfigTerm.SERVICECONFIG_ID, serviceConfig.getServiceConfigId());
@@ -186,75 +196,49 @@ public class OneGateControllerImpl implements OneGateController {
 						if (mapServiceInfos.containsKey(serviceConfig.getServiceInfoId())) {
 							serviceInfo = mapServiceInfos.get(serviceConfig.getServiceInfoId());
 							if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
-								//					try {
-								//						serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceConfig.getServiceInfoId());
-								//					} catch (Exception e1) {
-								//						_log.debug(e1);
-								//						break;
-								//					}
-								serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId, serviceInfo.getServiceCode());
+								serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
+										serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
-								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG() : StringPool.BLANK);
-								elmData.put(ServiceInfoTerm.SERVICE_NAME_DVCQG, serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG() : StringPool.BLANK);
+								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG,
+										serviceInfoMapping != null ? serviceInfoMapping.getServiceCodeDVCQG()
+												: StringPool.BLANK);
+								elmData.put(ServiceInfoTerm.SERVICE_NAME_DVCQG,
+										serviceInfoMapping != null ? serviceInfoMapping.getServiceNameDVCQG()
+												: StringPool.BLANK);
 								elmData.put(ServiceConfigTerm.GOVAGENCY_CODE, serviceConfig.getGovAgencyCode());
 								elmData.put(ServiceConfigTerm.GOVAGENCY_NAME, serviceConfig.getGovAgencyName());
 
-								//						List<ProcessOption> processOptions = ProcessOptionLocalServiceUtil
-								//								.getByServiceProcessId(serviceConfig.getServiceConfigId());
-								List<ProcessOption> processOptions = mapProcessOptions.get(serviceConfig.getServiceConfigId()) != null ? mapProcessOptions.get(serviceConfig.getServiceConfigId())
-										: new ArrayList<>();
-
 								JSONArray options = JSONFactoryUtil.createJSONArray();
-								for (ProcessOption processOption : processOptions) {
-									//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
-									long serviceProcessId = processOption.getServiceProcessId();
-//								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
-									List<ServiceProcessRole> lstRoles = mapPRoles.get(serviceProcessId);
+								for (org.opencps.api.serviceconfig.model.ProcessOption processOption : processList) {
 									boolean hasPermission = false;
-									//						_log.info("List role: " + lstRoles);
-									if (lstRoles != null && lstRoles.size() > 0) {
-										//							_log.info("Role of users : " + user);
-										for (ServiceProcessRole spr : lstRoles) {
-											for (int i = 0; i < roleIds.length; i++) {
-												if (roleIds[i] == spr.getRoleId()) {
-													hasPermission = true;
-													break;
-												}
-											}
-											if (hasPermission) break;
-										}
+									if (processOption.getServiceConfigId() == serviceConfig.getServiceConfigId()) {
+										hasPermission = true;
 									}
 									if (isAdmin) {
 										hasPermission = true;
 									}
 									if (e != null) {
-										if (Validator.isNotNull(e.getScope()) && Arrays.asList(e.getScope().split(StringPool.COMMA)).indexOf(serviceConfig.getGovAgencyCode()) < 0) {
+										if (Validator.isNotNull(e.getScope())
+												&& Arrays.asList(e.getScope().split(StringPool.COMMA))
+														.indexOf(serviceConfig.getGovAgencyCode()) < 0) {
 											hasPermission = false;
 										}
 									}
-//								if (((e != null && Validator.isNotNull(e.getScope()) && serviceConfig.getGovAgencyCode().contentEquals(e.getScope())))) {
-//									hasPermission = true;
-//								}
 
 									if (hasPermission) {
 										JSONObject elmOption = JSONFactoryUtil.createJSONObject();
 
-										elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID, processOption.getProcessOptionId());
+										elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID,
+												processOption.getProcessOptionId());
 										elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
-										elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE, processOption.getInstructionNote());
+										elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE,
+												processOption.getInstructionNote());
+										elmOption.put(DossierTemplateTerm.TEMPLATE_NO,
+												processOption.getTemplateNo_0020());
+										elmOption.put(DossierTemplateTerm.TEMPLATE_NAME,
+												processOption.getTemplateName());
 
-//									try {
-//										DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getDossierTemplate(processOption.getDossierTemplateId());
-										DossierTemplate dossierTemplate = mapTemplates.get(processOption.getDossierTemplateId());
-										if (dossierTemplate != null) {
-											elmOption.put(DossierTemplateTerm.TEMPLATE_NO, dossierTemplate.getTemplateNo());
-											elmOption.put(DossierTemplateTerm.TEMPLATE_NAME, dossierTemplate.getTemplateName());
-										}
-//									}
-//									catch (NoSuchDossierTemplateException e) {
-//										_log.error(e);
-//									}
 										options.put(elmOption);
 									}
 
@@ -266,7 +250,7 @@ public class OneGateControllerImpl implements OneGateController {
 								boolean groupServiceCode = query.isGroupServiceCode();
 								if (groupServiceCode == true) {
 									String serviceCodeNew = "";
-									//Khởi tạo serviceCodeOld
+									// Khởi tạo serviceCodeOld
 									// Lần thứ 2 for sẽ vào key if() check nếu serviceCode khác nhau
 									// Sẽ gán cho serviceCodeNew = serviceCodeOld để check tiếp theo
 									// Danh sách phải được order by
@@ -296,29 +280,26 @@ public class OneGateControllerImpl implements OneGateController {
 						}
 					}
 				}
-		}
+			}
 			results.put(ConstantUtils.TOTAL, total);
 			results.put(ConstantUtils.DATA, data);
-			
-//			_log.info(results.toJSONString());
+
 			EntityTag etag = new EntityTag(Integer.toString((groupId + domain).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);			
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
 				builder = Response.status(HttpURLConnection.HTTP_OK);
 				CacheControl cc = new CacheControl();
 				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-				cc.setPrivate(true);	
+				cc.setPrivate(true);
 				builder.tag(etag);
 				return builder.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
-			}
-			else {
+			} else {
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results.toJSONString()).build();
-			}			
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-
 
 	}
 
@@ -328,8 +309,6 @@ public class OneGateControllerImpl implements OneGateController {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
-		
-//		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
 		
 		DossierPermission dossierPermission = new DossierPermission();
 
