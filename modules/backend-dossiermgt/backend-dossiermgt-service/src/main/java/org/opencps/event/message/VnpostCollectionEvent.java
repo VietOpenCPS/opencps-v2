@@ -11,9 +11,11 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,9 +25,13 @@ import javax.ws.rs.core.MediaType;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 public class VnpostCollectionEvent implements MessageListener {
 
@@ -55,13 +61,14 @@ public class VnpostCollectionEvent implements MessageListener {
 			return;
 		}
 
+		// SenderDesc = Ten dich vu || Loai dich vu || Thanh phan dau vao
 		JSONObject vnpostProfile = JSONFactoryUtil.createJSONObject(dossierObj.getString(DossierTerm.VNPOSTAL_PROFILE));
 		InvokeREST callRest = new InvokeREST();
 		String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
-		params.put(VnpostCollectionTerm.ORDER_NUMBER,
-				dossierObj.getString(DossierTerm.DOSSIER_NO) + StringPool.DOUBLE_UNDERLINE + Math.random());
+		String dossierNo = Validator.isNotNull(dossier.getDossierNo()) ? dossier.getDossierNo() : dossier.getReferenceUid();
+		params.put(VnpostCollectionTerm.ORDER_NUMBER, dossierNo);
 		params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
 		params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
 		params.put(VnpostCollectionTerm.COD_AMOUNT, 0);
@@ -73,7 +80,7 @@ public class VnpostCollectionEvent implements MessageListener {
 		params.put(VnpostCollectionTerm.SENDER_NAME, dossierObj.getString(DossierTerm.DELEGATE_NAME));
 		params.put(VnpostCollectionTerm.SENDER_MAIL, dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
 		params.put(VnpostCollectionTerm.SENDER_TEL, vnpostProfile.getString(VnpostCollectionTerm.PROFILE_TEL_NO));
-		params.put(VnpostCollectionTerm.SENDER_DESC, dossierObj.getString(DossierTerm.APPLICANT_NAME));
+		params.put(VnpostCollectionTerm.SENDER_DESC, createVnpostSenderDesc(dossier, true));
 		params.put(VnpostCollectionTerm.DESCRIPTION,
 				vnpostProfile.getString(VnpostCollectionTerm.PROFILE_SERVICE_NAME));
 
@@ -103,5 +110,31 @@ public class VnpostCollectionEvent implements MessageListener {
 		}
 	}
 
+	// TODO: fix and waiting
+	private String createVnpostSenderDesc (Dossier dossier, boolean isInput) {
+
+		String dossierNo = Validator.isNotNull(dossier.getDossierNo()) ? "Mã hồ sơ: " + dossier.getDossierNo() + "||" : StringPool.BLANK;
+		String serviceType = isInput ? "Thu gom hồ sơ tại nhà" : "Trả hồ sơ tại nhà";
+		String senderName = dossierNo + "Tên thủ tục: " + dossier.getServiceName();
+		try {
+			List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(dossier.getGroupId(),
+					dossier.getDossierTemplateNo());
+			for (DossierPart dp : dossierParts) {
+				int i = 1;
+				if ((!isInput && dp.getPartType() == 2) || (isInput && dp.getPartType() != 2)) {
+					List<DossierFile> df = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossier.getDossierId(), dp.getPartNo(), false);
+					if (df.size() > 0) {
+						senderName += "||Thành phần hồ sơ " + i + ": " + dp.getPartName();
+						i++;
+					}
+				}
+			}
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		senderName  += "||Tên dịch vụ: " + serviceType + "||CMND: " + dossier.getApplicantIdNo();
+		return senderName;
+	}
 	private Log _log = LogFactoryUtil.getLog(VnpostCollectionEvent.class);
 }
