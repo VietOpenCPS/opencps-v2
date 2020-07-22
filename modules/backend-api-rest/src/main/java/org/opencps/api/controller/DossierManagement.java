@@ -1668,4 +1668,18 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") long id,@FormParam("codeNumber") String codeNumber,@FormParam("state") int state);
+
+	@GET
+	@Path("/{days}/calculate/duedate")
+	@Consumes({
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	public Response calculateDueDate(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@PathParam("days") double days);
 }

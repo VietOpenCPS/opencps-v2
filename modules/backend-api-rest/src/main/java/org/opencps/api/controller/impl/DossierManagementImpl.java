@@ -110,6 +110,7 @@ import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.dossiermgt.action.*;
 
@@ -7756,5 +7757,30 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put("status",true);
 		result.put("codeNumberUpdated",updated);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
+	}
+
+	private static final String VN_FORMAT_H = "dd/MM/yyyy HH:mm:ss";
+	@Override
+	public Response calculateDueDate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+									 User user, ServiceContext serviceContext, double days) {
+		int durationUnit = 0;
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat(VN_FORMAT_H);
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			Date date = new Date();
+			Date dateNow =
+					new SimpleDateFormat(VN_FORMAT_H).parse(formatter.format(date));
+			_log.info(dateNow);
+			DueDateUtils dueDateUtils = new DueDateUtils(
+					dateNow, days,durationUnit , groupId);
+			String dueDate = new SimpleDateFormat(VN_FORMAT_H).format(
+					dueDateUtils.getDueDate());
+			return Response.status(HttpURLConnection.HTTP_OK).entity(dueDate).build();
+		}
+		catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return Response.status(java.net.HttpURLConnection.HTTP_INTERNAL_ERROR).entity(StringPool.BLANK).build();
 	}
 }
