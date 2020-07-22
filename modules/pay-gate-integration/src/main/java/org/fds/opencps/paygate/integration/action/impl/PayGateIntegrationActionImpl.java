@@ -740,10 +740,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONArray philephi = JSONFactoryUtil.createJSONArray();
 				//????????????????????????
 				JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-				philephiJ.put(PayGateTerm.LOAIPHILEPHI, 2);
-				philephiJ.put(PayGateTerm.MAPHILEPHI, 2);
-				philephiJ.put(PayGateTerm.TENPHILEPHI, bankInfo.getString(PayGateTerm.TENPHILEPHI));
-				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+				philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
+				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
 				philephi.put(philephiJ);
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
@@ -1497,7 +1497,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
 			}
 		}
-
+		JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
+		philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
+		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+		phiLePhi.put(philephiJ);
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
 
 		// bb khi madichvu = 1
