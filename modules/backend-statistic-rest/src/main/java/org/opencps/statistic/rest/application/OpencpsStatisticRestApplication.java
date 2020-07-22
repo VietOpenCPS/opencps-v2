@@ -330,6 +330,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					params.put(DossierConstants.SYSTEM, payload.getSystem());
 
 					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+					params.put(DossierTerm.DOMAIN_CODE, domain);
 					
 					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
 					long companyId = company.getCompanyId(); 
@@ -1675,7 +1676,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					int count = 1;
 					for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
 						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
-						if (mapPfs.containsKey(dossierId) && doc.hasField(DossierTerm.FINISH_DATE)) {
+						if (mapPfs.containsKey(dossierId) && mapPfs.get(dossierId).getApproveDatetime() != null) {
 							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
 
 							String dossierMetaData = doc.get(DossierTerm.META_DATA);
@@ -1698,6 +1699,7 @@ public class OpencpsStatisticRestApplication extends Application {
 										}
 									}
 								}
+								dossierObj.put("dossierFilePayments", dossierFilePayments);
 							}
 							dossierObj.put("no", count++);
 							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
@@ -1705,7 +1707,8 @@ public class OpencpsStatisticRestApplication extends Application {
 							String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
 							dossierObj.put("address", address);
 							PaymentFile pf = mapPfs.get(dossierId);
-							dossierObj.put("paymentDate", doc.get(DossierTerm.FINISH_DATE));
+							String paymentDate = APIDateTimeUtils.convertDateToString(pf.getApproveDatetime(), APIDateTimeUtils._NORMAL_DATE_TIME);
+							dossierObj.put("paymentDate", paymentDate);
 							dossierObj.put("paymentFee", pf.getFeeAmount());
 							dossierObj.put("serviceAmount", pf.getServiceAmount());
 							dossierObj.put("paymentAmount", pf.getPaymentAmount());

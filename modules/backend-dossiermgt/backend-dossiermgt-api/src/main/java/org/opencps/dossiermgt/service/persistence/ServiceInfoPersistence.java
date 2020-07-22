@@ -969,6 +969,234 @@ public interface ServiceInfoPersistence extends BasePersistence<ServiceInfo> {
 	public int countByGI_PUB(long groupId, boolean public_);
 
 	/**
+	* Returns all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @return the matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long serviceInfoId);
+
+	/**
+	* Returns a range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @return the range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long serviceInfoId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long serviceInfoId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long serviceInfoId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Returns the first service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service info
+	* @throws NoSuchServiceInfoException if a matching service info could not be found
+	*/
+	public ServiceInfo findByGI_PUB_SID_First(long groupId, boolean public_,
+		long serviceInfoId,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator)
+		throws NoSuchServiceInfoException;
+
+	/**
+	* Returns the first service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching service info, or <code>null</code> if a matching service info could not be found
+	*/
+	public ServiceInfo fetchByGI_PUB_SID_First(long groupId, boolean public_,
+		long serviceInfoId,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator);
+
+	/**
+	* Returns the last service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service info
+	* @throws NoSuchServiceInfoException if a matching service info could not be found
+	*/
+	public ServiceInfo findByGI_PUB_SID_Last(long groupId, boolean public_,
+		long serviceInfoId,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator)
+		throws NoSuchServiceInfoException;
+
+	/**
+	* Returns the last service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching service info, or <code>null</code> if a matching service info could not be found
+	*/
+	public ServiceInfo fetchByGI_PUB_SID_Last(long groupId, boolean public_,
+		long serviceInfoId,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator);
+
+	/**
+	* Returns all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoIds the service info IDs
+	* @return the matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long[] serviceInfoIds);
+
+	/**
+	* Returns a range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoIds the service info IDs
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @return the range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long[] serviceInfoIds, int start, int end);
+
+	/**
+	* Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoIds the service info IDs
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long[] serviceInfoIds, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator);
+
+	/**
+	* Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @param start the lower bound of the range of service infos
+	* @param end the upper bound of the range of service infos (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching service infos
+	*/
+	public java.util.List<ServiceInfo> findByGI_PUB_SID(long groupId,
+		boolean public_, long[] serviceInfoIds, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<ServiceInfo> orderByComparator,
+		boolean retrieveFromCache);
+
+	/**
+	* Removes all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	*/
+	public void removeByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId);
+
+	/**
+	* Returns the number of service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoId the service info ID
+	* @return the number of matching service infos
+	*/
+	public int countByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId);
+
+	/**
+	* Returns the number of service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	*
+	* @param groupId the group ID
+	* @param public_ the public_
+	* @param serviceInfoIds the service info IDs
+	* @return the number of matching service infos
+	*/
+	public int countByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds);
+
+	/**
 	* Returns all the service infos where groupId = &#63; and serviceCode = &#63;.
 	*
 	* @param groupId the group ID

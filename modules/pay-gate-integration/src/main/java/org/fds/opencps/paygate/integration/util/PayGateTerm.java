@@ -134,6 +134,33 @@ public class PayGateTerm {
 	public static final String MSG_RES_KEY = "msg";
 	public static final String PAYMENT_URL_RES_KEY = "payment_url";
 
+	// add by PhucHN
+	public static final String LOAIBANTIN = "LoaiBanTin";
+	public static final String LOAIBANTIN_INIT = "LoaiBanTinInit";
+	public static final String LOAIBANTIN_GET_BILL = "LoaiBanTinGetBill";
+	public static final String LOAIBANTIN_CONFIRM = "LoaiBanTinConfirm";
+	public static final String PHIENBAN = "PhienBan";
+	public static final String MADOITAC = "MaDoiTac";
+	public static final String MATHAMCHIEU = "MaThamChieu";
+	public static final String LOAIHINHTHANHTOAN = "LoaiHinhThanhToan";
+	public static final String MAKENHTHANHTOAN = "MaKenhThanhToan";
+	public static final String MATHIETBI = "MaThietBi";
+	public static final String NGONNGU = "NgonNgu";
+	public static final String MATIENTE = "MaTienTe";
+	public static final String MANGANHANG = "MaNganHang";
+	public static final String THONGTINGIAODICH = "ThongTinGiaoDich";
+	public static final String THOIGIANGD = "ThoiGianGD";
+	public static final String IP = "Ip";
+	public static final String THONGTINBIENLAI = "ThongTinBienLai";
+	public static final String MAXACTHUC = "MaXacThuc";
+	
+	public static final String MALOI_KEY = "MaLoi";
+	public static final String MALOI_SUCCESS = "00";
+	public static final String PAYMENTPLATFORM_DVCQG_INIT_TRANSACTION_ENDPOINT = "paymentplatform_dvcqg_init_transaction_endpoint";
+	public static final String MAGIAODICH = "MaGiaoDich";
+	public static final String PAYMENTPLATFORM_DVCQG_GET_RECEIPT_ENDPOINT = "paymentplatform_dvcgq_get_receipt_endpoint";
+	public static final String PAYMENTPLATFORM_DVCQG_GET_BILL_ENDPOINT = "paymentplatform_dvcqg_get_bill_endpoint";
+
 	public static String buildPathDoAction(String path, String dossierId) {
 
 		return path + "/o/rest/v2/dossiers/" + dossierId + "/actions";

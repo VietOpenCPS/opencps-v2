@@ -177,7 +177,7 @@ public class StatisticEngineFetchEntry {
 						}
 					} else {
 						statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-					}
+					}					
 				}
 			}
 		}
@@ -273,6 +273,11 @@ public class StatisticEngineFetchEntry {
 				} else {
 					// đang xử lý
 					statisticData.setProcessingCount(statisticData.getProcessingCount() + 1);
+					if (dossierData.getOnline()) {
+						statisticData.setOnlineProcessingCount(statisticData.getOnlineProcessingCount() + 1);
+					} else {
+						statisticData.setOnegateProcessingCount(statisticData.getOnegateProcessingCount() + 1);
+					}
 					if (!DossierStatusTerm.PROCESSING.equals(dossierData.getDossierStatus())) {
 						// xử lý nội bộ
 						statisticData.setOutsideCount(statisticData.getOutsideCount() + 1);
@@ -360,7 +365,33 @@ public class StatisticEngineFetchEntry {
 							}
 						} else {
 							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-						}							
+						}
+						
+						// truc tuyen
+						if (dossierData.getOnline()) {
+							if (betimeCal == 3) {
+								statisticData.setOnlineBetimesCount(statisticData.getOnlineBetimesCount() + 1);
+								statisticData.setOnlineReleaseBetimesCount(statisticData.getOnlineReleaseBetimesCount() + 1);
+							} else if (betimeCal == 1) {
+								statisticData.setOnlineOvertimeCount(statisticData.getOnlineOntimeCount() + 1);
+								statisticData.setOnlineReleaseOvertimeCount(statisticData.getOnlineReleaseOvertimeCount() + 1);
+							} else {
+								statisticData.setOnlineOntimeCount(statisticData.getOnlineOntimeCount() + 1);
+								statisticData.setOnlineReleaseOntimeCount(statisticData.getOnlineReleaseOntimeCount() + 1);
+							}
+						} // truc tiep
+						else {
+							if (betimeCal == 3) {
+								statisticData.setOnegateBetimesCount(statisticData.getOnegateBetimesCount() + 1);
+								statisticData.setOnegateReleaseBetimesCount(statisticData.getOnegateReleaseBetimesCount() + 1);
+							} else if (betimeCal == 1) {
+								statisticData.setOnegateOvertimeCount(statisticData.getOnegateOvertimeCount() + 1);
+								statisticData.setOnegateReleaseOvertimeCount(statisticData.getOnegateReleaseOvertimeCount() + 1);
+							} else {
+								statisticData.setOnegateOntimeCount(statisticData.getOnegateOntimeCount() + 1);
+								statisticData.setOnegateReleaseOntimeCount(statisticData.getOnegateReleaseOntimeCount() + 1);
+							}
+						}
 					}
 				}
 			}
