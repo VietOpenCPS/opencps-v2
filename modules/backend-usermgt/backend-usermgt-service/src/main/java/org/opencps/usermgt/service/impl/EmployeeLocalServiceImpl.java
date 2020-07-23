@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -41,7 +42,9 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -295,6 +298,12 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 				long mappingUserId = employee.getMappingUserId();
 				if (mappingUserId > 0) {
 					try {
+						//DELETE USER
+						Group group = GroupLocalServiceUtil.fetchUserGroup(employee.getCompanyId(), mappingUserId);
+						if (group != null) {
+							GroupLocalServiceUtil.deleteGroup(group);
+						}
+
 						userPersistence.remove(mappingUserId);
 					} catch (NoSuchUserException e) {
 						_log.debug(e);
@@ -303,7 +312,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 			}
 			employee = employeePersistence.remove(employeeId);
 		}
-		catch (NoSuchEmployeeException e) {
+		catch (PortalException e) {
 			// throw new NotFoundException();
 			_log.error(e);
 		}

@@ -156,7 +156,9 @@ public class OneGateControllerImpl implements OneGateController {
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.KEYWORD_SEARCH, StringPool.BLANK);
-			params.put(ProcessOptionTerm.SERVICE_PROCESS_ID, sbProcessId.toString());
+			if (!isAdmin && e != null) {
+				params.put(ProcessOptionTerm.SERVICE_PROCESS_ID, sbProcessId.toString());
+			}
 
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			Sort[] sorts = new Sort[] {
