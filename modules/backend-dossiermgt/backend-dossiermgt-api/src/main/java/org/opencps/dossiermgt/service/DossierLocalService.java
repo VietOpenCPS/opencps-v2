@@ -299,6 +299,9 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByGID(long groupId, int start, int end);
 
+	public List<ServiceInfo> findByGID_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoArr);
+
 	public List<Dossier> findByNOT_ST_GT_MD(String[] statuses, Date d,
 		int start, int end);
 

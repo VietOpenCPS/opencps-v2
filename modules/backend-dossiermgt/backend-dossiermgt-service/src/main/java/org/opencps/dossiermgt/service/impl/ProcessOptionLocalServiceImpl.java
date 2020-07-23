@@ -34,10 +34,12 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MatchQuery.Operator;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -216,6 +218,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		// Extra fields
 		String configId = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_CONFIG_ID));
 		String applicantType = GetterUtil.getString(params.get(ProcessOptionTerm.APPLICATION_TYPE));
+		String strServiceProcess = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_PROCESS_ID));
 
 		if (Validator.isNotNull(configId)) {
 			MultiMatchQuery query = new MultiMatchQuery(configId);
@@ -236,6 +239,25 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			query.setOperator(operator);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strServiceProcess)) {
+			String[] processArr = StringUtil.split(strServiceProcess);
+
+			if (processArr != null && processArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < processArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(processArr[i]);
+					query.addField(ProcessOptionTerm.SERVICE_PROCESS_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(strServiceProcess);
+				query.addFields(ProcessOptionTerm.SERVICE_PROCESS_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -291,6 +313,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		// Extra fields
 		String configId = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_CONFIG_ID));
 		String applicantType = GetterUtil.getString(params.get(ProcessOptionTerm.APPLICATION_TYPE));
+		String strServiceProcess = GetterUtil.getString(params.get(ProcessOptionTerm.SERVICE_PROCESS_ID));
 
 		if (Validator.isNotNull(configId) && !configId.contentEquals(String.valueOf(0))) {
 			MultiMatchQuery query = new MultiMatchQuery(configId);
@@ -306,6 +329,25 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 			query.addFields(ProcessOptionTerm.APPLICATION_TYPE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(strServiceProcess)) {
+			String[] processArr = StringUtil.split(strServiceProcess);
+
+			if (processArr != null && processArr.length > 0) {
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (int i = 0; i < processArr.length; i++) {
+					MultiMatchQuery query = new MultiMatchQuery(processArr[i]);
+					query.addField(ProcessOptionTerm.SERVICE_PROCESS_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(strServiceProcess);
+				query.addFields(ProcessOptionTerm.SERVICE_PROCESS_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

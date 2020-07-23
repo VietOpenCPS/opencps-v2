@@ -175,6 +175,8 @@ public interface ServiceProcessRoleLocalService extends BaseLocalService,
 	public ServiceProcessRole fetchServiceProcessRole(
 		ServiceProcessRolePK serviceProcessRolePK);
 
+	public List<ServiceProcessRole> findByRID(long[] roleArr);
+
 	@ThreadLocalCachable
 	public List<ServiceProcessRole> findByS_P_ID(long serviceProcessId);
 

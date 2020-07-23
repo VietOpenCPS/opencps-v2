@@ -77,6 +77,7 @@ public class ServiceConfigUtils {
 			processOption.setProcessNo(doc.get(ProcessOptionTerm.PROCESS_NO));
 			processOption.setProcessName(doc.get(ProcessOptionTerm.PROCESS_NAME));
 			processOption.setOptionName(doc.get(ProcessOptionTerm.OPTION_NAME));
+			processOption.setServiceConfigId(GetterUtil.getLong(doc.get(ProcessOptionTerm.SERVICE_CONFIG_ID)));
 
 			processes.add(processOption);
 		}
