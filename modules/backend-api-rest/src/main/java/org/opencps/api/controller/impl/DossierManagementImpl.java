@@ -7748,4 +7748,20 @@ public class DossierManagementImpl implements DossierManagement {
 		result.put("codeNumberUpdated",updated);
 		return Response.status(HttpURLConnection.HTTP_OK).entity(result.toString()).build();
 	}
+
+	@Override
+	public Response garbageCollectorDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+
+		try {
+			int[] originalityArr = {0, 9};
+			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(originalityArr, StringPool.BLANK);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+				"{ok}").build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }

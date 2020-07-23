@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
@@ -34,15 +35,18 @@ import java.util.*;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.PaymentFileManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentFileUtils;
@@ -66,6 +70,7 @@ import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
@@ -1300,5 +1305,86 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		jsonObject.put("status" , "Succeeded");
 		return Response.status(200).entity(jsonObject.toString()).build();
 
+	}
+
+	@Override
+	public Response downloadInvoiceFileDVCQG(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, String id, String referenceUid) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long dossierId = GetterUtil.getLong(id);
+
+		// TODO get Dossier by referenceUid if dossierId = 0
+		// String referenceUid = dossierId == 0 ? id : StringPool.BLANK;
+
+		try {
+
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			PaymentFileActions action = new PaymentFileActionsImpl();
+			PaymentFile paymentFile = action.getPaymentFileByReferenceUid(dossierId, referenceUid);
+
+			_log.info(PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG +"===========dossierId, referenceUid=======" + dossierId + referenceUid);
+			_log.info("===========paymentFile=======" + paymentFile);
+			if (paymentFile != null && paymentFile.getInvoiceFileEntryId() > 0) {
+
+				FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(paymentFile.getInvoiceFileEntryId());
+
+				File file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+						true);
+
+				ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+				responseBuilder.header("Content-Disposition",
+						"attachment; filename=\"" + fileEntry.getFileName() + "\"");
+				responseBuilder.header("Content-Type", fileEntry.getMimeType());
+
+				return responseBuilder.build();
+
+			} else if (paymentFile != null && PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())){
+				
+				JSONObject payload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
+				String url = payload.getString("UrlBienLai");
+				JSONObject ppConfig = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+						.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+				if (Validator.isNull(url)) {
+
+					InvokeREST callRest = new InvokeREST();
+					HashMap<String, String> properties = new HashMap<String, String>();
+					Map<String, Object> params = new HashMap<>();
+					Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+					params.put("dossierNo", dossier.getDossierNo());
+
+					String baseUrl = ppConfig.getJSONObject("actionIsOnline").getString("url");//RESTFulConfiguration.SERVER_PATH_BASE;
+					JSONObject resultObj = callRest.callPostAPI(
+						0, HttpMethod.POST, "application/json", baseUrl, "/o/pgi/ppdvcqg/bills",
+						"",
+						"", properties, params,
+						new ServiceContext());
+
+					JSONObject eInvoice = JSONFactoryUtil.createJSONObject(
+						resultObj.getString(RESTFulConfiguration.MESSAGE));
+					
+					_log.info("eInvoice toJSONString: " + eInvoice.toJSONString());
+					
+					url = eInvoice.getString("UrlBienLai");
+				}
+				String ssEndpoint = ppConfig.getString("ss_endpoint");
+				String ssEndpointTerm = ppConfig.getString("ss_endpoint_term");
+				url = StringUtils.replaceOnce(url, ssEndpointTerm, ssEndpoint);
+				_log.info("endpoint get invoice: " + url);
+				
+				InputStream file = ConvertDossierFromV1Dot9Utils.getFileFromDVCOld(url);
+				return Response.ok(file).header(
+							"Content-Disposition", "attachment; filename=\"" + new Date().getTime() + ".pdf" + "\"").build();
+			} else {
+				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
+			}
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }

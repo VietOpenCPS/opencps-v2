@@ -1686,4 +1686,20 @@ public interface DossierManagement {
 		@Context HttpServletRequest request, @Context HttpHeaders header,
 		@Context Company company, @Context Locale locale, @Context User user,
 		@Context ServiceContext serviceContext, @PathParam("id") long id,@FormParam("codeNumber") String codeNumber,@FormParam("state") int state);
+
+	@POST
+	@Path("/garbage")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Do rollback on the Dossier")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Rollback dossier", response = DoActionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response garbageCollectorDossier(@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext);
 }

@@ -74,6 +74,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="public_" />
 		</finder>
+		<finder name="GI_PUB_SID" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="public_" />
+			<finder-column name="serviceInfoId" arrayable-operator="OR"/>
+		</finder>
 		<finder name="F_GID_SC" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="serviceCode" arrayable-operator="OR"/>
@@ -1268,6 +1273,9 @@
 		</finder>
 		<finder return-type="Collection" name="SPS">
 			<finder-column name="serviceProcessId" arrayable-operator="OR" comparator="="/>
+		</finder>
+		<finder return-type="Collection" name="R_ID">
+			<finder-column name="roleId" arrayable-operator="OR" comparator="="/>
 		</finder>
 	</entity>
 
