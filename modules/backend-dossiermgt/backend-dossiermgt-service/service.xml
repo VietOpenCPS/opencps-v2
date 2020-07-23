@@ -2916,6 +2916,116 @@
 <!-- 		</finder> -->
 	</entity>
 
+	<entity local-service="true" name="ServiceConfigMapping"
+		remote-service="false" uuid="true"
+		table="opencps_serviceconfigmapping">
+
+		<!-- PK fields -->
+
+		<column name="serviceConfigMappingId" primary="true"
+			type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="serviceConfigCode" type="String" />
+		<column name="serviceConfigName" type="String" />
+		<column name="serviceCode" type="String" />
+		<column name="serviceName" type="String" />
+		<column name="govAgencyName" type="String" />
+		<column name="domainName" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="G_ServiceCode" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="serviceCode"></finder-column>
+		</finder>
+
+
+		<!-- References -->
+	</entity>
+
+	<entity name="PaymentFeeInfo" remote-service="false"
+		local-service="true" uuid="true" table="opencps_paymentfeeinfo">
+
+
+		<!-- PK fields -->
+
+		<column name="paymentFeeInfoId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="type" type="String" />
+		<column name="paymentFeeCode" type="String" />
+		<column name="paymentFeeName" type="String" />
+		<column name="amount" type="String" />
+		<column name="serviceConfigMappingId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ServiceConfigMappingId" return-type="Collection">
+			<finder-column name="serviceConfigMappingId"></finder-column>
+		</finder>
+
+		<!-- References -->
+	</entity>
+	<entity table="opencps_applicableInfo" uuid="true"
+		remote-service="false" local-service="true" name="ApplicableInfo">
+
+		<!-- PK fields -->
+
+		<column name="applicableInfoId" primary="true" type="long"></column>
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long"></column>
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long"></column>
+		<column name="userId" type="long"></column>
+		<column name="userName" type="String"></column>
+		<column name="createDate" type="Date"></column>
+		<column name="modifiedDate" type="Date"></column>
+		<column name="serviceCode" type="String"></column>
+		<column name="govAgencyCode" type="String"></column>
+		<column type="int" name="serviceLevel"></column>
+		<column name="serviceConfigMappingId" type="long"></column>
+		<finder name="G_SC_GC_SL" return-type="ApplicableInfo">
+			<finder-column name="groupId"></finder-column>
+			<finder-column name="serviceCode"></finder-column>
+			<finder-column name="govAgencyCode"></finder-column>
+			<finder-column name="serviceLevel"></finder-column>
+		</finder>
+		<finder name="ServiceConfigMappingId" return-type="Collection">
+			<finder-column name="serviceConfigMappingId"></finder-column>
+		</finder>
+	</entity>
+
 	<exceptions>
 		<exception>RequiredServiceCode</exception>
 		<exception>DuplicateServiceCode</exception>

@@ -409,6 +409,13 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
+		return _dossierLocalService.findByGID_PUB_SID(groupId, public_,
+			serviceInfoArr);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findByNOT_ST_GT_MD(
 		String[] statuses, java.util.Date d, int start, int end) {
 		return _dossierLocalService.findByNOT_ST_GT_MD(statuses, d, start, end);
