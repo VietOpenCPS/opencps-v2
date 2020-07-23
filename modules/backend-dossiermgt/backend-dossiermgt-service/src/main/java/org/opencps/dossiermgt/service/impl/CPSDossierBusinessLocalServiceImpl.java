@@ -1006,7 +1006,26 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		JSONObject payloadObject = JSONFactoryUtil.createJSONObject();
 		User user = userLocalService.fetchUser(userId);
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
-		_log.info("TRACE_LOG_INFO doAction CPS dossier: "+JSONFactoryUtil.looseSerialize(dossier));
+		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())
+				&& Validator.isNull(dossier.getCityCode()) && Validator.isNull(dossier.getDistrictCode())
+				&& Validator.isNull(dossier.getWardCode())) {
+			_log.info("TRACE_LOG_INFO CPS dossier: "+JSONFactoryUtil.looseSerialize(dossier));
+			for (int i = 0; i < 5; i++) {
+				try {
+					dossier = DossierLocalServiceUtil.getDossier(dossier.getDossierId());
+					if (Validator.isNotNull(dossier.getApplicantName()) && Validator.isNotNull(dossier.getApplicantIdNo())
+					&& Validator.isNotNull(dossier.getCityCode()) && Validator.isNotNull(dossier.getDistrictCode())
+					&& Validator.isNotNull(dossier.getWardCode())) {
+						_log.info("TRACE_LOG_INFO doAction count: " + i + "CPS dossier: "+JSONFactoryUtil.looseSerialize(dossier));
+						break;
+					}
+				} catch (Exception e) {
+					_log.debug(e);
+				}
+				Thread.sleep(50);
+			}
+		}
+		_log.info("TRACE_LOG_INFO doAction CPS dossier END: "+JSONFactoryUtil.looseSerialize(dossier));
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
 				groupId + StringPool.UNDERLINE + userId);
@@ -1415,7 +1434,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		//Update dossier
 		dossierLocalService.updateDossier(dossier);
-		_log.info("TRACE_LOG_INFO doAction CPS L2 dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 
 		//		Indexer<Dossier> indexer = IndexerRegistryUtil
 		//				.nullSafeGetIndexer(Dossier.class);
@@ -2043,7 +2061,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//_log.info("Sync dossier no");
 			if (Validator.isNotNull(obj.getString(DossierTerm.DOSSIER_NO))
 					&& !obj.getString(DossierTerm.DOSSIER_NO).equals(dossier.getDossierNo())
-					&& dossier.getOriginDossierId() > 0) {
+					&& (dossier.getOriginDossierId() > 0 || Validator.isNull(dossier.getDossierNo()))) {
 				//_log.info("Sync set dossier no");
 				dossier.setDossierNo(obj.getString(DossierTerm.DOSSIER_NO));
 			}

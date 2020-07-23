@@ -76,11 +76,12 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
-public class OneGateControllerImpl_bak implements OneGateController {
+public class OneGateControllerImpl_bak1 {
 
-	@Override
+	//@Override
 	public Response getServiceconfigs(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
-									  User user, ServiceContext serviceContext, String domain, String public_, Request requestCC, DossierSearchModel query) {
+			User user, ServiceContext serviceContext, String domain, String public_, Request requestCC,
+			DossierSearchModel query) {
 		
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		
@@ -102,35 +103,6 @@ public class OneGateControllerImpl_bak implements OneGateController {
 				}
 			}
 //			long startTime = System.currentTimeMillis();
-			//Add Map role
-			//List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : null;
-			List<ServiceProcessRole> lstPRoles = new ArrayList<ServiceProcessRole>();
-			Map<Long, List<ServiceProcessRole>> mapPRoles = null;
-			List<Long> serviceInfoIdList = null;
-			Long[] serviceInfoIdArr = null;
-			if (lstPRoles != null && lstPRoles.size() > 0) {
-				mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
-				serviceInfoIdList = new ArrayList<>();
-				for (ServiceProcessRole spr : lstPRoles) {
-					List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
-//					if (mapPRoles.containsKey(spr.getServiceProcessId())) {
-//						lstTempSprs = mapPRoles.get(spr.getServiceProcessId());
-//					} else {
-//						mapPRoles.put(spr.getServiceProcessId(), lstTempSprs);
-//						serviceInfoIdList.add(spr.getServiceProcessId());
-//					}
-					if (!mapPRoles.containsKey(spr.getServiceProcessId())) {
-						mapPRoles.put(spr.getServiceProcessId(), lstTempSprs);
-						serviceInfoIdList.add(spr.getServiceProcessId());
-					}
-
-					//lstTempSprs.add(spr);
-				}
-			}
-			if (serviceInfoIdList != null && serviceInfoIdList.size() > 0) {
-				serviceInfoIdArr = serviceInfoIdList.toArray(new Long[0]);
-			}
-
 			String searchGovAgencyCode = query.getSearchGovAgencyCode();
 			List<ServiceConfig> serviceConfigs = ServiceConfigLocalServiceUtil.getByGroupId(groupId, searchGovAgencyCode, user.getUserId());
 
@@ -177,6 +149,18 @@ public class OneGateControllerImpl_bak implements OneGateController {
 			int total = 0;
 			long[] roleIds = UserLocalServiceUtil.getRolePrimaryKeys(user.getUserId());
 //			List<ServiceProcessRole> lstPRoles = ServiceProcessRoleLocalServiceUtil.getServiceProcessRoles(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<ServiceProcessRole> lstPRoles = (spArr != null && spArr.length > 0) ? ServiceProcessRoleLocalServiceUtil.findBySPS(spArr) : new ArrayList<ServiceProcessRole>();
+			Map<Long, List<ServiceProcessRole>> mapPRoles = new HashMap<Long, List<ServiceProcessRole>>();
+			for (ServiceProcessRole spr : lstPRoles) {
+				List<ServiceProcessRole> lstTempSprs = new ArrayList<ServiceProcessRole>();
+				if (mapPRoles.containsKey(spr.getServiceProcessId())) {
+					lstTempSprs = mapPRoles.get(spr.getServiceProcessId());
+				} else {
+					mapPRoles.put(spr.getServiceProcessId(), lstTempSprs);
+				}
+
+				lstTempSprs.add(spr);
+			}
 //			endTime = System.currentTimeMillis();
 //			startTime = System.currentTimeMillis();
 			List<DossierTemplate> lstTemplates = DossierTemplateLocalServiceUtil.findByG(groupId);
@@ -227,7 +211,7 @@ public class OneGateControllerImpl_bak implements OneGateController {
 									//					_log.info("processOptionId"+ processOption.getDossierTemplateId());
 									long serviceProcessId = processOption.getServiceProcessId();
 //								List<ServiceProcessRole> lstRoles = ServiceProcessRoleLocalServiceUtil.findByS_P_ID(serviceProcessId);
-									List<ServiceProcessRole> lstRoles = mapPRoles != null ? mapPRoles.get(serviceProcessId) : null;
+									List<ServiceProcessRole> lstRoles = mapPRoles.get(serviceProcessId);
 									boolean hasPermission = false;
 									//						_log.info("List role: " + lstRoles);
 									if (lstRoles != null && lstRoles.size() > 0) {
@@ -339,7 +323,7 @@ public class OneGateControllerImpl_bak implements OneGateController {
 
 	}
 
-	@Override
+	//@Override
 	public Response createDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input) {
 
@@ -396,9 +380,9 @@ public class OneGateControllerImpl_bak implements OneGateController {
 		}
 	}
 
-	private Log _log = LogFactoryUtil.getLog(OneGateControllerImpl_bak.class);
+	private Log _log = LogFactoryUtil.getLog(OneGateControllerImpl_bak1.class);
 
-	@Override
+	//@Override
 	public Response updateDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, DossierOnegateInputModel input, long dossierId) {
 
@@ -443,7 +427,7 @@ public class OneGateControllerImpl_bak implements OneGateController {
 		}
 	}
 
-	@Override
+	//@Override
 	public Response getDossierOngate(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId) {
 		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -471,7 +455,7 @@ public class OneGateControllerImpl_bak implements OneGateController {
 		}
 	}
 
-	@Override
+	//@Override
 	public Response getServiceProcess(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext, long dossierId, String serviceCode, String govAgencyCode,
 			String dossierTemplateNo, String dossierActionId) {
@@ -527,7 +511,7 @@ public class OneGateControllerImpl_bak implements OneGateController {
 		}
 	}
 
-	@Override
+	//@Override
 	public Response getGovAgencies(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
 			User user, ServiceContext serviceContext) {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));

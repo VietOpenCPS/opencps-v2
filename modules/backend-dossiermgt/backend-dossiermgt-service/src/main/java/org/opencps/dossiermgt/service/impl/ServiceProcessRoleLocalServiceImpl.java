@@ -171,4 +171,9 @@ public class ServiceProcessRoleLocalServiceImpl extends ServiceProcessRoleLocalS
 	public List<ServiceProcessRole> findBySPS(long[] serviceProcessArr) {
 		return serviceProcessRolePersistence.findBySPS(serviceProcessArr);
 	}
+
+	public List<ServiceProcessRole> findByRID(long[] roleArr) {
+		return serviceProcessRolePersistence.findByR_ID(roleArr);
+	}
+
 }

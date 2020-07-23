@@ -181,6 +181,11 @@ public class ServiceProcessRoleLocalServiceUtil {
 		return getService().fetchServiceProcessRole(serviceProcessRolePK);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findByRID(
+		long[] roleArr) {
+		return getService().findByRID(roleArr);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceProcessRole> findByS_P_ID(
 		long serviceProcessId) {
 		return getService().findByS_P_ID(serviceProcessId);
