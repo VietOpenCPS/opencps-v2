@@ -219,19 +219,24 @@ public class DossierManagementImpl implements DossierManagement {
 
 									for (int i = 0; i < arrayData.length(); i++) {
 										JSONObject object = arrayData.getJSONObject(i);
-
+										Dossier dossier = null;
 										String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
 										String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
 										// Trạng thái 1 || 2 || 3 là mã tờ khai
 										// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
 										if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
 											if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-												Dossier dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
+												dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
 												result = mappingForGetDetail(dossier, user.getUserId());
 											} else {
-												Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
+												dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
 												result = mappingForGetDetail(dossier, user.getUserId());
 											}
+										}
+										// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
+										if(Validator.isNotNull(result)){
+											dossier.setPostalCodeSend(dossierNo);
+											DossierLocalServiceUtil.updateDossier(dossier);
 										}
 									}
 								}
