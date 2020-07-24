@@ -304,6 +304,7 @@ create index IX_D84A5557 on opencps_serviceprocess (uuid_[$COLUMN_LENGTH:75$], c
 create unique index IX_8A464599 on opencps_serviceprocess (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_645BCD10 on opencps_serviceprocessrole (roleCode[$COLUMN_LENGTH:255$]);
+create index IX_B5CAB0FE on opencps_serviceprocessrole (roleId);
 create index IX_8F9EE2C2 on opencps_serviceprocessrole (serviceProcessId);
 create index IX_645000FB on opencps_serviceprocessrole (uuid_[$COLUMN_LENGTH:75$]);
 

@@ -95,9 +95,9 @@ public class ServiceProcessRoleModelImpl extends BaseModelImpl<ServiceProcessRol
 				"value.object.column.bitmask.enabled.org.opencps.dossiermgt.model.ServiceProcessRole"),
 			true);
 	public static final long ROLECODE_COLUMN_BITMASK = 1L;
-	public static final long SERVICEPROCESSID_COLUMN_BITMASK = 2L;
-	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long ROLEID_COLUMN_BITMASK = 8L;
+	public static final long ROLEID_COLUMN_BITMASK = 2L;
+	public static final long SERVICEPROCESSID_COLUMN_BITMASK = 4L;
+	public static final long UUID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.ServiceProcessRole"));
 
@@ -250,7 +250,19 @@ public class ServiceProcessRoleModelImpl extends BaseModelImpl<ServiceProcessRol
 
 	@Override
 	public void setRoleId(long roleId) {
+		_columnBitmask |= ROLEID_COLUMN_BITMASK;
+
+		if (!_setOriginalRoleId) {
+			_setOriginalRoleId = true;
+
+			_originalRoleId = _roleId;
+		}
+
 		_roleId = roleId;
+	}
+
+	public long getOriginalRoleId() {
+		return _originalRoleId;
 	}
 
 	@Override
@@ -408,6 +420,10 @@ public class ServiceProcessRoleModelImpl extends BaseModelImpl<ServiceProcessRol
 
 		serviceProcessRoleModelImpl._setOriginalServiceProcessId = false;
 
+		serviceProcessRoleModelImpl._originalRoleId = serviceProcessRoleModelImpl._roleId;
+
+		serviceProcessRoleModelImpl._setOriginalRoleId = false;
+
 		serviceProcessRoleModelImpl._originalRoleCode = serviceProcessRoleModelImpl._roleCode;
 
 		serviceProcessRoleModelImpl._columnBitmask = 0;
@@ -535,6 +551,8 @@ public class ServiceProcessRoleModelImpl extends BaseModelImpl<ServiceProcessRol
 	private long _originalServiceProcessId;
 	private boolean _setOriginalServiceProcessId;
 	private long _roleId;
+	private long _originalRoleId;
+	private boolean _setOriginalRoleId;
 	private String _roleCode;
 	private String _originalRoleCode;
 	private String _roleName;

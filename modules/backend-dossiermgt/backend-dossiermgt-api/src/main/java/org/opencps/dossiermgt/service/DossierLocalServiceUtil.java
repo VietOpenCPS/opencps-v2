@@ -401,6 +401,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByGID(groupId, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
+		return getService().findByGID_PUB_SID(groupId, public_, serviceInfoArr);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByNOT_ST_GT_MD(
 		String[] statuses, java.util.Date d, int start, int end) {
 		return getService().findByNOT_ST_GT_MD(statuses, d, start, end);

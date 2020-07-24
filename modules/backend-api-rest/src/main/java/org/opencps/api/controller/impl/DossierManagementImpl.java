@@ -741,6 +741,7 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
+
 	}
 
 	// LamTV: Process dossierTodo
@@ -7787,5 +7788,21 @@ public class DossierManagementImpl implements DossierManagement {
 		}
 
 		return Response.status(java.net.HttpURLConnection.HTTP_INTERNAL_ERROR).entity(StringPool.BLANK).build();
+	}
+
+	@Override
+	public Response garbageCollectorDossier(HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext) {
+
+		try {
+			int[] originalityArr = {0, 9};
+			DossierLocalServiceUtil.removeDossierByG_NOTO_DS(originalityArr, StringPool.BLANK);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+				"{ok}").build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
 	}
 }

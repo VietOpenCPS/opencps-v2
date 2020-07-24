@@ -1282,6 +1282,9 @@
 		<finder return-type="Collection" name="SPS">
 			<finder-column name="serviceProcessId" arrayable-operator="OR" comparator="="/>
 		</finder>
+		<finder return-type="Collection" name="R_ID">
+			<finder-column name="roleId" arrayable-operator="OR" comparator="="/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="ProcessStep" remote-service="false" 
