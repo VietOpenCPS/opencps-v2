@@ -2539,6 +2539,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}

@@ -1480,7 +1480,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				serviceInfoMapping.getServiceCode());
 		
 		
-		_log.info(groupId + "|" + serviceCodeDVCQG + "|" + itemMapping.getItemCodeDVCQG() + "|" + serviceInfo.getMaxLevel());
+		_log.info(groupId + "|" + serviceCodeDVCQG + "|" + itemMapping + "|" + serviceInfo);
 
 		ApplicableInfo applicableInfo = ApplicableInfoLocalServiceUtil.fetchByG_SC_GC_SL(0, serviceCodeDVCQG,
 				itemMapping.getItemCodeDVCQG(), serviceInfo.getMaxLevel());
