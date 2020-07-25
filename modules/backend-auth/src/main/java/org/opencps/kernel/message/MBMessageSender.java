@@ -11,4 +11,8 @@ public interface MBMessageSender {
 	void send(
 		MBMessageEntry messageEntry, String type,
 		ServiceContext... ServiceContext);
+
+	void sendLGSP(
+			MBMessageEntry messageEntry, String type,
+			ServiceContext... ServiceContext);
 }

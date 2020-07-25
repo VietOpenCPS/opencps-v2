@@ -35,6 +35,7 @@ import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalService;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.sms.utils.BCTSMSUtils;
+import org.opencps.communication.sms.utils.LGSPSMSUtils;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
@@ -63,6 +64,8 @@ public class OneMinute extends BaseMessageListener {
 	private static String agencySMS = Validator.isNotNull(PropsUtil.get("opencps.notify.agency.sms"))
 			? GetterUtil.getString(PropsUtil.get("opencps.notify.agency.sms"))
 			: StringPool.BLANK;
+	private static boolean isSendLGSP = Validator.isNotNull(PropsUtil.get("opencps.send.notification.lgsp"))
+					? GetterUtil.getBoolean(PropsUtil.get("opencps.send.notification.lgsp")) : false;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -151,63 +154,109 @@ public class OneMinute extends BaseMessageListener {
 							notificationQueue.setModifiedDate(cal.getTime());
 							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 						} else {
-						//Process send SMS
-						Result resultSendSMS = new Result("Success", new Long(1));
-						if(messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())){
 
-							/** stop send sms 8369
-							_log.debug("messageEntry.isSendSMS(): "+messageEntry.isSendSMS());
-							String results = SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
-									messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-							if (Validator.isNotNull(results)
-									&& results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) {
-								flagSend = true;
-							} */
+							if (isSendLGSP) {
+								// Process send SMS
+								Result resultSendSMS = new Result("Success", new Long(1));
+								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
 
-							_log.info("notificationQueue.getNotificationType(): "+notificationQueue.getNotificationType());
-							if ("BCT".contentEquals(agencySMS)) {
-									String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
-											notificationQueue.getClassPK(), messageEntry.getTextMessage(),
-											messageEntry.getEmailSubject(), messageEntry.getToTelNo());
-								JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
-								if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
-									resultSendSMS.setMessage("Success");
-									resultSendSMS.setResult(1L);
+									String rsMsg = LGSPSMSUtils.sendSMS(notificationQueue.getGroupId(),
+											messageEntry.getTextMessage(), messageEntry.getEmailSubject(),
+											messageEntry.getToTelNo());
+									JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
+									if (jsonMsg != null && "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
+										resultSendSMS.setMessage("Success");
+										resultSendSMS.setResult(1L);
+									}
+									_log.debug("END SEND SMS");
+								}
+
+								if (messageEntry.isSendEmail()) {
+									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
+									MBEmailSenderFactoryUtil.sendLGSP(messageEntry, StringPool.BLANK);
+								}
+								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
+									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
+									MBNotificationSenderFactoryUtil.send(messageEntry, messageEntry.getClassName(),
+											serviceContext);
+								}
+								/*
+								 * Remove queue when send SMS success Or telNo is null
+								 * 
+								 * If Send SMS error, continue until expiredDate
+								 */
+								_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
+								if (resultSendSMS.getResult() > 0) {
+									NotificationQueueBusinessFactoryUtil
+											.delete(notificationQueue.getNotificationQueueId(), serviceContext);
+								} else {
+
+									// hot fix: stop send noti (spam mail)
+									notificationQueue.setExpireDate(notificationQueue.getCreateDate());
+									NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
 								}
 							} else {
-							//Send viettel
-							resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(), messageEntry.getTextMessage(),
-								messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+								// Process send SMS
+								Result resultSendSMS = new Result("Success", new Long(1));
+								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
+
+									/**
+									 * stop send sms 8369 _log.debug("messageEntry.isSendSMS():
+									 * "+messageEntry.isSendSMS()); String results =
+									 * SendMTConverterUtils.sendSMS(messageEntry.getTextMessage(),
+									 * messageEntry.getEmailSubject(), messageEntry.getToTelNo()); if
+									 * (Validator.isNotNull(results) &&
+									 * results.equals(String.valueOf(HttpServletResponse.SC_ACCEPTED))) { flagSend =
+									 * true; }
+									 */
+
+									_log.info("notificationQueue.getNotificationType(): "
+											+ notificationQueue.getNotificationType());
+									if ("BCT".contentEquals(agencySMS)) {
+										String rsMsg = BCTSMSUtils.sendSMS(notificationQueue.getGroupId(),
+												notificationQueue.getClassPK(), messageEntry.getTextMessage(),
+												messageEntry.getEmailSubject(), messageEntry.getToTelNo());
+										JSONObject jsonMsg = JSONFactoryUtil.createJSONObject(rsMsg);
+										if (jsonMsg != null
+												&& "Success".equalsIgnoreCase(jsonMsg.getString("message"))) {
+											resultSendSMS.setMessage("Success");
+											resultSendSMS.setResult(1L);
+										}
+									} else {
+										// Send viettel
+										resultSendSMS = ViettelSMSUtils.sendSMS(notificationQueue.getGroupId(),
+												messageEntry.getTextMessage(), messageEntry.getEmailSubject(),
+												messageEntry.getToTelNo());
+									}
+									_log.debug("END SEND SMS");
+								}
+
+								if (messageEntry.isSendEmail()) {
+									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
+									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
+								}
+								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
+									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
+									MBNotificationSenderFactoryUtil.send(messageEntry, messageEntry.getClassName(),
+											serviceContext);
+								}
+								/*
+								 * Remove queue when send SMS success Or telNo is null
+								 * 
+								 * If Send SMS error, continue until expiredDate
+								 */
+								_log.debug("resultSendSMS: " + JSONFactoryUtil.looseSerialize(resultSendSMS));
+								if (resultSendSMS.getResult() > 0) {
+									NotificationQueueBusinessFactoryUtil
+											.delete(notificationQueue.getNotificationQueueId(), serviceContext);
+								} else {
+
+									// hot fix: stop send noti (spam mail)
+									notificationQueue.setExpireDate(notificationQueue.getCreateDate());
+									NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
+								}
 							}
-							_log.debug("END SEND SMS");
 						}
-
-						if(messageEntry.isSendEmail()){
-							_log.info("messageEntry.isSendEmail(): "+messageEntry.isSendEmail());
-							MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
-						}
-						if(messageEntry.isSendNotify() || messageEntry.isSendZalo()){
-							_log.debug("messageEntry.isSendNotify(): "+messageEntry.isSendNotify());
-							MBNotificationSenderFactoryUtil.send(
-								messageEntry, messageEntry.getClassName(),
-								serviceContext);
-						}
-						/* Remove queue when send SMS success Or telNo is null
-						 * 
-						 * If Send SMS error, continue until expiredDate 
-						 * */
-						_log.debug("resultSendSMS: "+JSONFactoryUtil.looseSerialize(resultSendSMS));
-						if (resultSendSMS.getResult() > 0) {
-							NotificationQueueBusinessFactoryUtil.delete(
-									notificationQueue.getNotificationQueueId(),
-									serviceContext);
-						} else {
-
-							// hot fix: stop send noti (spam mail)
-							notificationQueue.setExpireDate(notificationQueue.getCreateDate());
-							NotificationQueueBusinessFactoryUtil.update(notificationQueue, serviceContext);
-						}
-					}
 					}
 					catch (Exception e) {
 						_log.error("Can't send message from queue " + e);
