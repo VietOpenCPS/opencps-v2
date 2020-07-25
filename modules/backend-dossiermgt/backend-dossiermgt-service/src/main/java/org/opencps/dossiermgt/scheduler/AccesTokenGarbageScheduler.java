@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import java.util.Date;
 import java.util.Map;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.service.AccessTokenLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
@@ -28,9 +29,23 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = AccesTokenGarbageScheduler.class)
 public class AccesTokenGarbageScheduler extends BaseMessageListener {
+	private volatile boolean isRunning = false;
+
 	@Override
-	protected void doReceive(Message message) throws Exception {
-		AccessTokenLocalServiceUtil.garbageToken();
+	protected void doReceive(Message message) {
+		if (!isRunning) {
+			isRunning = true;
+		} else {
+			return;
+		}
+		try {
+			_log.info("START GARBAGE TOKEN : " + APIDateTimeUtils.convertDateToString(new Date()));
+			AccessTokenLocalServiceUtil.garbageToken();
+			_log.info("END GARBAGE TOKEN  : " + APIDateTimeUtils.convertDateToString(new Date()));
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		isRunning = false;
 	}
 
 	@Activate
@@ -41,7 +56,7 @@ public class AccesTokenGarbageScheduler extends BaseMessageListener {
 				TimeUnit.DAY);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
 
 		if (_initialized) {
 			deactivate();

@@ -29,21 +29,31 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = GarbageGroupDossierScheduler.class)
 public class GarbageGroupDossierScheduler extends BaseMessageListener {
+
+	private volatile boolean isRunning = false;
+
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		try {
 			DossierLocalServiceUtil.removeDossierByF_OG_DS(9, StringPool.BLANK);
 		}
 		catch (Exception e) {
-			_log.error(e);
+			_log.debug(e);
 		}
+		isRunning = false;
 	}
 	//TODO
 	  @Activate
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 4, TimeUnit.HOUR);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.DAY);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
