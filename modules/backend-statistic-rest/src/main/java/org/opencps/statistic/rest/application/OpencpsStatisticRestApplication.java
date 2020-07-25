@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -142,6 +143,7 @@ import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
+import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -587,6 +589,62 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 
 		return null;
+	}
+
+	@GET
+	@Path("/votingsCountPoint")
+	public VotingResultResponse searchVotingStatisticCountPoint(@HeaderParam("groupId") long groupId,
+																@BeanParam VotingSearchModel query) {
+		try {
+			String fromStatisticDate = query.getFromStatisticDate() != null ? query.getFromStatisticDate() : "1/1/2019";
+			String toStatisticDate = query.getToStatisticDate() != null ? query.getToStatisticDate() : "1/1/2100";
+
+			String fromDateMysql = StatisticUtils.changeFormatDate(fromStatisticDate) != null
+					? StatisticUtils.changeFormatDate(fromStatisticDate)
+					: "2019-01-01";
+			String toDateMysql   = StatisticUtils.changeFormatDate(toStatisticDate) != null
+					? StatisticUtils.changeFormatDate(toStatisticDate)
+					: "2100-01-01";
+
+			List<Object[]> list = OpencpsVotingStatisticLocalServiceUtil.searchVotingStatisticCountPoint(groupId,
+					fromDateMysql, toDateMysql);
+
+			int size = list.size();
+			String subject;
+			int point;
+
+			VotingResultStatisticData oneVoting;
+			List<VotingResultStatisticData> listVotingResult = new ArrayList<>();
+			for (int i = 0; i < size; i++)
+			{
+				oneVoting = new VotingResultStatisticData();
+				if(list.get(i) != null) {
+					subject = list.get(i)[0] != null ? (String) list.get(i)[0] : "No subject found";
+					point   = list.get(i)[1] != null ? (int)list.get(i)[1] : 0;
+				} else {
+					subject = "";
+					point   = 0;
+				}
+				oneVoting.setVotingSubject(subject);
+				oneVoting.setTotalVoted(point);
+				listVotingResult.add(oneVoting);
+			}
+
+			VotingResultResponse statisticResponse = new VotingResultResponse();
+			statisticResponse.setTotal(listVotingResult.size());
+			statisticResponse.setData(listVotingResult);
+
+			return statisticResponse;
+		}catch (Exception e) {
+			LOG.error("error", e);
+			OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+			serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));
+			serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+			throwException(new OpencpsServiceException(serviceExceptionDetails));
+			return null;
+		}
 	}
 
 	@GET

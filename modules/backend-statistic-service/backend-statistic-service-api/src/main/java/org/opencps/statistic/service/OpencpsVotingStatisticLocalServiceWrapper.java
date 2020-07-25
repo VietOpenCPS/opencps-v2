@@ -388,6 +388,13 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 			month, year, votingCode, domain, govAgencyCode, start, end);
 	}
 
+	@Override
+	public java.util.List<Object[]> searchVotingStatisticCountPoint(
+		long groupId, String startDay, String endDay) {
+		return _opencpsVotingStatisticLocalService.searchVotingStatisticCountPoint(groupId,
+			startDay, endDay);
+	}
+
 	/**
 	* Updates the opencps voting statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

@@ -3382,7 +3382,8 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		int currentYear  = this.getCurrentTime().get("Year");
 
 		//get only data of current month
-		votes.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear);
+		votes.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
+				|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
 
 		List<VoteTransform> voteTransformList = new ArrayList<>();
 		VoteTransform newVote;

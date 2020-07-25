@@ -2,10 +2,7 @@ package org.opencps.statistic.service.persistence.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.SQLQuery;
-import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -288,7 +285,33 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 
 		return null;
 	}
-	
+
+	@Override
+	public List<Object[]> searchVotingStatisticCountPoint(long groupId, String startDay, String endDay) {
+		Session session;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),OpencpsVotingStatisticFinder.class.getName() + ".searchVotingStatisticCountPoint");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+
+			query.addScalar("subject", Type.STRING);
+			query.addScalar("point",Type.INTEGER);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(startDay);
+			queryPos.add(endDay);
+			queryPos.add(groupId);
+			return (List<Object[]>) query.list();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@ServiceReference(type = CustomSQL.class)
 	private CustomSQL _customSQL;
 }

@@ -224,6 +224,11 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
 			JSONObject vote;
 			for(OpencpsVotingStatistic oneStatistic: lists){
+				if (oneStatistic.getVotingCode() == null
+						|| oneStatistic.getVotingCode().isEmpty()
+						|| oneStatistic.getMonth() == 0) {
+					continue;
+				}
 				vote = JSONFactoryUtil.createJSONObject();
 				vote.put("companyId", oneStatistic.getCompanyId());
 				vote.put("groupId", oneStatistic.getGroupId());

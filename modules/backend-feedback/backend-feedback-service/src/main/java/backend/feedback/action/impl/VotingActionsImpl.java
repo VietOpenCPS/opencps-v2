@@ -8,15 +8,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,35 +49,50 @@ public class VotingActionsImpl implements VotingActions {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
+			boolean isRenewVotingList = false;
+
 			if (!"0".equals(classPK)) {
-				// long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
-				long count = VotingLocalServiceUtil.countVotingByG_Class_Name_PK(groupId, className, classPK);
-				long countTemplate = VotingLocalServiceUtil.countVotingByG_Class_Name_PK(groupId, className, "0");
+				isRenewVotingList = true;
+
+				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
+				long countTemplate = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, "0");
 				System.out.println("============Count Cur=========" + count);
 				System.out.println("============Count Temp=========" + countTemplate);
-				if (count != countTemplate) {
-					// delete old voting
-					List<Voting> votingListOld = VotingLocalServiceUtil.getVotingByG_Class_Name_PK(groupId, className, classPK);
-					for (Voting voting : votingListOld) {
-						VotingLocalServiceUtil.deleteVote(voting.getVotingId(), serviceContext);
-					}
-					// Add new voting with classPK
-					List<Voting> votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
-					if (votingList != null) {
-						String subject;
-						String choices;
-						String templateNo;
-						Boolean commentable;
-						String votingCode;
-						for (Voting voting : votingList) {
-							subject = voting.getSubject();
-							choices = voting.getChoices();
-							templateNo = voting.getTemplateNo();
-							commentable = voting.getCommentable();
-							votingCode = voting.getVotingCode();
-							//voting.setClassPK(classPK);
+
+				if (count < countTemplate) {
+					String subject;
+					String choices;
+					String templateNo;
+					Boolean commentable;
+					String votingCode;
+					// get list voting config
+					List<Voting> listVotingConfig = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, ConfigProps.get(ConfigConstants.VOTING_CLASSPK_VALIDATOR));
+					List<Voting> listVotingByClassPk = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+					String votingCodeConfig;
+					boolean isClassPKExists;
+
+					for (Voting votingConfig : listVotingConfig) {
+						isClassPKExists = false;
+						if(votingConfig.getVotingCode() == null || votingConfig.getVotingCode().isEmpty()){
+							continue;
+						}
+						votingCodeConfig = votingConfig.getVotingCode();
+						for(Voting votingClassPk: listVotingByClassPk){
+							if(votingCodeConfig.equals(votingClassPk.getVotingCode())){
+								isClassPKExists = true;
+								break;
+							}
+						}
+						if(!isClassPKExists){
+							subject = votingConfig.getSubject();
+							choices = votingConfig.getChoices();
+							templateNo = votingConfig.getTemplateNo();
+							commentable = votingConfig.getCommentable();
+							votingCode = votingConfig.getVotingCode();
+
 							Voting votingAdd = VotingLocalServiceUtil.addVoting(userId, groupId, className, classPK, subject, choices,
 									templateNo, commentable, serviceContext);
+
 							if (votingAdd != null) {
 								votingAdd.setVotingCode(votingCode);
 								VotingLocalServiceUtil.updateVoting(votingAdd);
@@ -90,13 +102,32 @@ public class VotingActionsImpl implements VotingActions {
 				}
 			}
 
-//			List<Voting> votingList = null;
-//			if (Validator.isNotNull(strFromVotingDate) && Validator.isNotNull(strToVotingDate)) {
-//			} else {
-//				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
-//			}
-//			result.put(ConstantUtils.DATA, votingList);
-			
+			// Add this case: When list vote renew, elastic search wont able to reload new vote(take some minute)
+			// immediately so we will return new list here.
+			if(isRenewVotingList) {
+				List<Voting> votingList;
+				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
+				List<Document> votingListDocument = new ArrayList<>();
+				Document document;
+
+				for(Voting voting : votingList) {
+					document = new DocumentImpl();
+					document.addText(VotingTerm.CLASS_NAME, className);
+					document.addText(VotingTerm.SUBJECT, voting.getSubject());
+					document.addText(VotingTerm.VOTING_CODE, voting.getVotingCode());
+					document.addText(VotingTerm.COMMENTABLE, String.valueOf(voting.getCommentable()));
+					document.addText(VotingTerm.CHOICES, voting.getChoices());
+					document.addText(VotingTerm.VOTING_ID, String.valueOf(voting.getVotingId()));
+					document.addText(VotingTerm.USER_ID, String.valueOf(voting.getUserId()));
+					votingListDocument.add(document);
+				}
+
+				result.put(ConstantUtils.DATA, votingListDocument);
+				result.put(ConstantUtils.TOTAL, votingList.size());
+				return result;
+			}
+
+			//return list by elastic search
 			SearchContext searchContext = new SearchContext();
 			searchContext.setCompanyId(companyId);
 
@@ -115,7 +146,7 @@ public class VotingActionsImpl implements VotingActions {
 			result.put(ConstantUtils.TOTAL, total);
 
 			//long total = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
-			result.put(ConstantUtils.TOTAL, total);
+//			result.put(ConstantUtils.TOTAL, total);
 		} catch (Exception e) {
 			_log.error(e);
 		}
