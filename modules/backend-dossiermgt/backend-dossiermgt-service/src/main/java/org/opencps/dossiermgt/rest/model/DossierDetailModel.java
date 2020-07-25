@@ -174,7 +174,9 @@ import javax.xml.bind.annotation.XmlType;
     "metaData",
     "vnpostalStatus",
     "vnpostalProfile",
-    "fromViaPostal"
+    "fromViaPostal",
+    "postalCodeSend",
+    "postalCodeReceived"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -253,6 +255,24 @@ public class DossierDetailModel {
     protected Integer vnpostalStatus;
     protected String vnpostalProfile;
     protected Integer fromViaPostal;
+    protected String postalCodeSend;
+    protected String postalCodeReceived;
+
+    public String getPostalCodeSend() {
+        return postalCodeSend;
+    }
+
+    public void setPostalCodeSend(String postalCodeSend) {
+        this.postalCodeSend = postalCodeSend;
+    }
+
+    public String getPostalCodeReceived() {
+        return postalCodeReceived;
+    }
+
+    public void setPostalCodeReceived(String postalCodeReceived) {
+        this.postalCodeReceived = postalCodeReceived;
+    }
 
     public String getPostalDistrictCode() {
 		return postalDistrictCode;

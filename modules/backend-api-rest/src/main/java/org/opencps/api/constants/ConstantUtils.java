@@ -456,6 +456,4 @@ public class ConstantUtils {
 	public static final String DOSSIER_LOCKUNDER3_MESSAGE = "dossier.message.lockunder3";
 	public static final String CTN = "CTN";
 	public static final String DOSSIER_STATUS = "DOSSIER_STATUS";
-	public static final String SERVICE_API_CLS = "https://tiepnhanhoso.vnpost.vn/serviceApi/v1/GetInforToCucLanhSu";
-	public static final String TOKEN_CLS = "WMPH3Q-O6HMMU-RKDA4Z-JBS49B";
 }

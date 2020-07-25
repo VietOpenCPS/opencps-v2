@@ -713,6 +713,14 @@
 			<finder-column name="dossierNo" />
 			<finder-column name="groupId" />
 		</finder>
+		<finder return-type="Dossier" name="DO_POST_SEND_GROUP">
+			<finder-column name="postalCodeSend" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder return-type="Dossier" name="DO_POST_RECEIVED_GROUP">
+			<finder-column name="postalCodeReceived" />
+			<finder-column name="groupId" />
+		</finder>
 
 		<finder return-type="Collection" name="G_AN">
 			<finder-column name="groupId"/>

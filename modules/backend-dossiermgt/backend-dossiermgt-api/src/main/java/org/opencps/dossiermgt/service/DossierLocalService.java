@@ -275,6 +275,12 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier fetchByDO_NO_GROUP(String dossierNo, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);
 
 	/**
@@ -310,6 +316,8 @@ public interface DossierLocalService extends BaseLocalService,
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
 	public List<Dossier> findDossierByDay(String date);
+
+	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
 	public List<Dossier> findDossierByGroup(long groupId);
 
