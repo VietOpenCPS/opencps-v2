@@ -49,7 +49,11 @@ public class FifteenMinutes extends BaseMessageListener {
 		else {
 			return;
 		}
-		doProcessNotification(message);
+		try {
+			doProcessNotification(message);
+		} catch (Exception e) {
+			_log.debug(e);
+		}
 		isRunning = false;
 	}
 

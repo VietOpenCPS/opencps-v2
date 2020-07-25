@@ -40,7 +40,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
@@ -59,7 +58,6 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.GetDossierData;
@@ -213,7 +211,32 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						lstGroupGovs.add(groupGovAgencyQH.toString());					
 					}
 					
-					dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
+					DictGroup dgqh = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
+					List<DictItemGroup> lstDgqhs = (dgqh != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dgqh.getDictGroupId()) : new ArrayList<DictItemGroup>();
+					lstGovs = new ArrayList<DictItem>();
+					
+					if(lstDgqhs.size() > 0) {
+						for (DictItemGroup dig : lstDgqhs) {
+							lstGovs = DictItemLocalServiceUtil.findByF_parentItemId(dig.getDictItemId());
+							lstSortItems = new ArrayList<DictItem>();
+							lstSortItems.addAll(lstGovs);
+							
+							Collections.sort(lstSortItems, compareByItemCode);
+							lstGovs = lstSortItems;
+							
+							StringBuilder groupGovAgencyXPByQH = new StringBuilder();
+							for (DictItem di : lstGovs) {
+								if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
+									groupGovAgencyXPByQH.append(StringPool.COMMA);
+								}
+								groupGovAgencyXPByQH.append(di.getItemCode());
+							}
+							if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
+								lstGroupGovs.add(groupGovAgencyXPByQH.toString());					
+							}							
+						}
+					}
+					/*dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
 					lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 					lstGovs = new ArrayList<DictItem>();
 					StringBuilder groupGovAgencyXP = new StringBuilder();
@@ -242,9 +265,12 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (!StringPool.BLANK.contentEquals(groupGovAgencyXP.toString())) {
 						lstGroupGovs.add(groupGovAgencyXP.toString());					
 					}
+					*/
 //					for (String groupGovAgencyCode : lstGroupGovs) {
 //						_log.info("CALCULATE GROUP AGENCY CODE: " + groupGovAgencyCode);
-//					}					
+//					}
+					
+				
 				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
@@ -468,6 +494,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 //				3 year before
 //				StatisticEngineUpdate statisticEngineUpdate2 = new StatisticEngineUpdate();
 //				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
+//					if (mapFlagPrev2.get(lastMonth)) {
+//					if (mapFlagPrev2.get(lastMonth)) {
 //					if (mapFlagPrev2.get(lastMonth)) {
 //						if (calculateDatas.get(lastYear2) != null &&
 //								calculateDatas.get(lastYear2).get(lastMonth) != null) {

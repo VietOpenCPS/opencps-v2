@@ -34,26 +34,38 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = GarbageCollectorScheduler.class)
 public class GarbageCollectorScheduler extends BaseMessageListener {
+	private volatile boolean isRunning = false;
 	@Override
-	protected void doReceive(Message message) throws Exception {
-		_log.info("OpenCPS GARBAGE COLLECTOR IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		cal.add(Calendar.DATE, -7);
-		Date sevenDayAgo = cal.getTime();
-		
-		List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.findByST_LT_MD(new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, sevenDayAgo, 0, 10);
-		
-		for (PublishQueue pq : lstQueues) {
-			try {
-				PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+	protected void doReceive(Message message) {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
+		try {
+			_log.info("OpenCPS GARBAGE COLLECTOR IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			Date now = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(now);
+			cal.add(Calendar.DATE, -7);
+			Date sevenDayAgo = cal.getTime();
+			
+			List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.findByST_LT_MD(new int[] { PublishQueueTerm.STATE_RECEIVED_ACK }, sevenDayAgo, 0, 10);
+			
+			for (PublishQueue pq : lstQueues) {
+				try {
+					PublishQueueLocalServiceUtil.removePublishQueue(pq.getPublishQueueId());
+				}
+				catch (PortalException pe) {
+					_log.debug(pe);
+				}
 			}
-			catch (PortalException pe) {
-				_log.debug(pe);
-			}
+		} catch (Exception e) {
+			_log.debug(e);
 		}
 		
+		isRunning = false;
 		_log.info("OpenCPS GARBAGE COLLECTOR HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));		
 	}
 	

@@ -29,11 +29,24 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = SyncDVCQGScheduler.class)
 public class SyncDVCQGScheduler extends BaseMessageListener {
 
+	private volatile boolean isRunning = false;
+
 	@Override
-	protected void doReceive(Message message) throws Exception {
+	protected void doReceive(Message message) {
+		if (!isRunning) {
+			isRunning = true;
+		}
+		else {
+			return;
+		}
 		_log.info("---------------------->>>>>>>>>>>>>>>>>> SyncDVCQGScheduler");
-		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-		actionImpl.syncFAQToDVCQG();
+		try {
+			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+			actionImpl.syncFAQToDVCQG();
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		isRunning = false;
 	}
 
 	@Activate
