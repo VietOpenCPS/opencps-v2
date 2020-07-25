@@ -293,6 +293,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "searchGovAgencyCode")
 	protected String searchGovAgencyCode;
 	@QueryParam(value = "istheViaPostal")
+	@DefaultValue("false")
 	protected boolean istheViaPostal;
 	@QueryParam(value = "postalCodeSend")
 	protected String postalCodeSend;

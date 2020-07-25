@@ -576,6 +576,11 @@ public class ProcessActionLocalServiceImpl extends ProcessActionLocalServiceBase
 		return processActionPersistence.fetchBySPID_AC(serviceProcessId, actionCode);
 	}
 
+	@Override
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId, String preStepCode, String actionCode) {
+		return processActionPersistence.fetchBySPI_PRESC_AC(serviceProcessId,preStepCode,actionCode);
+	}
+
 	public List<ProcessAction> getProcessActionbyServiceProcessId(long serviceProcessId) throws PortalException {
 		return processActionPersistence.findByS_P_ID(serviceProcessId);
 	}

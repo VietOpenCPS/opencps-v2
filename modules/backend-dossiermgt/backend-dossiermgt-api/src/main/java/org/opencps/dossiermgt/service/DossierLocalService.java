@@ -275,10 +275,12 @@ public interface DossierLocalService extends BaseLocalService,
 	public Dossier fetchByDO_NO_GROUP(String dossierNo, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId);
+	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId);
+	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend,
+		long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchDossier(long dossierId);

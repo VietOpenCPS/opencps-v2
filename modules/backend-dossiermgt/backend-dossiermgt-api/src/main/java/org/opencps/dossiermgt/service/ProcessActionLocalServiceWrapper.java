@@ -17,6 +17,7 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.dossiermgt.model.ProcessAction;
 
 /**
  * Provides a wrapper for {@link ProcessActionLocalService}.
@@ -211,6 +212,11 @@ public class ProcessActionLocalServiceWrapper
 		long serviceProcessId, String actionCode) {
 		return _processActionLocalService.fetchBySPID_AC(serviceProcessId,
 			actionCode);
+	}
+
+	@Override
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId, String preStepCode, String actionCode) {
+		return _processActionLocalService.fetchBySPI_PRESC_AC(serviceProcessId,preStepCode,actionCode);
 	}
 
 	@Override
