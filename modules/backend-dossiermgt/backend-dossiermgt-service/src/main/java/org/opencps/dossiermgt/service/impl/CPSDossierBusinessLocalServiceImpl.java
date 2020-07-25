@@ -3340,7 +3340,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
 
 		// if payload content reciveDate or dueDate -> do not calculate reciveDate, dueDate
-		boolean allowUpdateDueDate = checkAllowUpdateDueDate(payload);
+		boolean allowUpdateDueDate = checkAllowUpdateDueDate(payload, dossier, dateOption);
 
 		//		ServiceProcess serviceProcess =  null;
 		//
@@ -3859,7 +3859,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				 */
 				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 			} else if(dateOption == DossierTerm.DATE_OPTION_TWO) {
-				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, allowUpdateDueDate, dossier.getReceiveDate(), params);
+				boolean checkUpdateDueDate = allowUpdateDueDate && Validator.isNull(dossier.getDueDate());
+				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, checkUpdateDueDate, dossier.getReceiveDate(), params);
 			}
 
 		//Check if dossier is done
@@ -8897,13 +8898,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	// if payload content reciveDate or dueDate -> do not calculate reciveDate, dueDate
-	private boolean checkAllowUpdateDueDate (String payload) {
+	private boolean checkAllowUpdateDueDate (String payload, Dossier dossier, int dateOption) {
 		try {
+			boolean hasDueDate = false;
+			boolean caseDateOption2 = true;
 			if (Validator.isNotNull(payload)) {
 				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
-				boolean hasDueDate = payloadJ.has(DossierTerm.DUE_DATE) && Validator.isNotNull(payloadJ.getString(DossierTerm.DUE_DATE));
-				return !hasDueDate;
+				 hasDueDate = payloadJ.has(DossierTerm.DUE_DATE) && Validator.isNotNull(payloadJ.getString(DossierTerm.DUE_DATE));
 			}
+			if (Validator.isNull(dossier.getDueDate()) && dateOption == DossierTerm.DATE_OPTION_TWO) {
+				caseDateOption2 = false;
+			}
+			return !hasDueDate && caseDateOption2;
 		} catch (Exception e) {
 			_log.debug(e);
 		}
