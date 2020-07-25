@@ -24,4 +24,7 @@ import aQute.bnd.annotation.ProviderType;
 public interface DossierFinder {
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date);
+
+	public org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
+		String code, long groupId);
 }

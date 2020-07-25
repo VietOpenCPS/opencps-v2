@@ -85,4 +85,11 @@
                 AND DATE(p.modifiedDate) = DATE([$DATE$]) ;
         ]]>
     </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.DossierFinder.findDossierByDeclarationCode">
+        <![CDATA[
+            SELECT d.*, JSON_EXTRACT(metaData, "$.ma_to_khai") AS metaData
+            FROM   opencps_dossier AS d
+            WHERE replace(replace(JSON_EXTRACT(metaData, "$.ma_to_khai"),'["',''), '"]','') = ? and d.groupId  = ?;
+        ]]>
+    </sql>
 </custom-sql>

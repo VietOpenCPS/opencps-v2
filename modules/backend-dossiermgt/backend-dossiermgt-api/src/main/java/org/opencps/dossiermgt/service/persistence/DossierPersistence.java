@@ -3164,6 +3164,108 @@ public interface DossierPersistence extends BasePersistence<Dossier> {
 	public int countByDO_NO_GROUP(String dossierNo, long groupId);
 
 	/**
+	* Returns the dossier where postalCodeSend = &#63; and groupId = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param postalCodeSend the postal code send
+	* @param groupId the group ID
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByDO_POST_SEND_GROUP(String postalCodeSend, long groupId)
+		throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where postalCodeSend = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param postalCodeSend the postal code send
+	* @param groupId the group ID
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDO_POST_SEND_GROUP(String postalCodeSend, long groupId);
+
+	/**
+	* Returns the dossier where postalCodeSend = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param postalCodeSend the postal code send
+	* @param groupId the group ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDO_POST_SEND_GROUP(String postalCodeSend,
+		long groupId, boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where postalCodeSend = &#63; and groupId = &#63; from the database.
+	*
+	* @param postalCodeSend the postal code send
+	* @param groupId the group ID
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByDO_POST_SEND_GROUP(String postalCodeSend,
+		long groupId) throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where postalCodeSend = &#63; and groupId = &#63;.
+	*
+	* @param postalCodeSend the postal code send
+	* @param groupId the group ID
+	* @return the number of matching dossiers
+	*/
+	public int countByDO_POST_SEND_GROUP(String postalCodeSend, long groupId);
+
+	/**
+	* Returns the dossier where postalCodeReceived = &#63; and groupId = &#63; or throws a {@link NoSuchDossierException} if it could not be found.
+	*
+	* @param postalCodeReceived the postal code received
+	* @param groupId the group ID
+	* @return the matching dossier
+	* @throws NoSuchDossierException if a matching dossier could not be found
+	*/
+	public Dossier findByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId) throws NoSuchDossierException;
+
+	/**
+	* Returns the dossier where postalCodeReceived = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param postalCodeReceived the postal code received
+	* @param groupId the group ID
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId);
+
+	/**
+	* Returns the dossier where postalCodeReceived = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param postalCodeReceived the postal code received
+	* @param groupId the group ID
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching dossier, or <code>null</code> if a matching dossier could not be found
+	*/
+	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId, boolean retrieveFromCache);
+
+	/**
+	* Removes the dossier where postalCodeReceived = &#63; and groupId = &#63; from the database.
+	*
+	* @param postalCodeReceived the postal code received
+	* @param groupId the group ID
+	* @return the dossier that was removed
+	*/
+	public Dossier removeByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId) throws NoSuchDossierException;
+
+	/**
+	* Returns the number of dossiers where postalCodeReceived = &#63; and groupId = &#63;.
+	*
+	* @param postalCodeReceived the postal code received
+	* @param groupId the group ID
+	* @return the number of matching dossiers
+	*/
+	public int countByDO_POST_RECEIVED_GROUP(String postalCodeReceived,
+		long groupId);
+
+	/**
 	* Returns all the dossiers where groupId = &#63; and applicantIdNo = &#63;.
 	*
 	* @param groupId the group ID

@@ -390,6 +390,8 @@ public class DossierTerm {
 	public static final String DON_VI_NHAN = "donvinhan";
 	public static final String SCOPE_ = "_scope";
 	public static final String FIRTSCOPE = "firtscope";
+	public static final String POSTAL_CODE_RECEIVED = "postalCodeReceived";
+	public static final String POSTAL_CODE_SEND = "postalCodeSend";
 	
 	public static final int VIA_POSTAL_DISABLE = 0;
 	public static final int VIA_POSTAL_UNSELECTED = 1;
@@ -402,4 +404,7 @@ public class DossierTerm {
 	public static final String MA_TO_KHAI_INDEXER = "ma_to_khai";
 	public static final String MA_TO_KHAI = "matokhai";
 	public static final String DOING_ACTION_USER_ID = "doingActionUserId";
+	public static final String VNPOST_CLS = "VNPOST_CLS";
+	public static final String URL_VIA_POST = "apiGetVnPost";
+	public static final String TOKEN_VN_POST = "tokenVnPost";
 }
