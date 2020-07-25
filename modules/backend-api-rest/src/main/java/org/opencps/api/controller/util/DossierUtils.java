@@ -564,13 +564,8 @@ public class DossierUtils {
 			model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
 			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
-
-			if(Validator.isNotNull(doc.get(DossierTerm.POSTAL_CODE_SEND))) {
-				model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
-			}
-			if(Validator.isNotNull(doc.get(DossierTerm.POSTAL_CODE_RECEIVED))) {
-				model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
-			}
+			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
+			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
 			ouputs.add(model);
 		}
 

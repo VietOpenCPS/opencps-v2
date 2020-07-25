@@ -4403,6 +4403,332 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 	private static final String _FINDER_COLUMN_POST_CODE_POSTSTEPCODE_2 = "processAction.postStepCode = ? AND ";
 	private static final String _FINDER_COLUMN_POST_CODE_POSTSTEPCODE_3 = "(processAction.postStepCode IS NULL OR processAction.postStepCode = '') AND ";
 	private static final String _FINDER_COLUMN_POST_CODE_GROUPID_2 = "processAction.groupId = ?";
+	public static final FinderPath FINDER_PATH_FETCH_BY_SPI_PRESC_AC = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED,
+			ProcessActionImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchBySPI_PRESC_AC",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			ProcessActionModelImpl.SERVICEPROCESSID_COLUMN_BITMASK |
+			ProcessActionModelImpl.PRESTEPCODE_COLUMN_BITMASK |
+			ProcessActionModelImpl.ACTIONCODE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_SPI_PRESC_AC = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
+			ProcessActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySPI_PRESC_AC",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param actionCode the action code
+	 * @return the matching process action
+	 * @throws NoSuchProcessActionException if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction findBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = fetchBySPI_PRESC_AC(serviceProcessId,
+				preStepCode, actionCode);
+
+		if (processAction == null) {
+			StringBundler msg = new StringBundler(8);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("serviceProcessId=");
+			msg.append(serviceProcessId);
+
+			msg.append(", preStepCode=");
+			msg.append(preStepCode);
+
+			msg.append(", actionCode=");
+			msg.append(actionCode);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchProcessActionException(msg.toString());
+		}
+
+		return processAction;
+	}
+
+	/**
+	 * Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param actionCode the action code
+	 * @return the matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode) {
+		return fetchBySPI_PRESC_AC(serviceProcessId, preStepCode, actionCode,
+			true);
+	}
+
+	/**
+	 * Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param actionCode the action code
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching process action, or <code>null</code> if a matching process action could not be found
+	 */
+	@Override
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode, boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] {
+				serviceProcessId, preStepCode, actionCode
+			};
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC,
+					finderArgs, this);
+		}
+
+		if (result instanceof ProcessAction) {
+			ProcessAction processAction = (ProcessAction)result;
+
+			if ((serviceProcessId != processAction.getServiceProcessId()) ||
+					!Objects.equals(preStepCode, processAction.getPreStepCode()) ||
+					!Objects.equals(actionCode, processAction.getActionCode())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_SELECT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_SPI_PRESC_AC_SERVICEPROCESSID_2);
+
+			boolean bindPreStepCode = false;
+
+			if (preStepCode == null) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_1);
+			}
+			else if (preStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_3);
+			}
+			else {
+				bindPreStepCode = true;
+
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_2);
+			}
+
+			boolean bindActionCode = false;
+
+			if (actionCode == null) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_1);
+			}
+			else if (actionCode.equals("")) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_3);
+			}
+			else {
+				bindActionCode = true;
+
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceProcessId);
+
+				if (bindPreStepCode) {
+					qPos.add(preStepCode);
+				}
+
+				if (bindActionCode) {
+					qPos.add(actionCode);
+				}
+
+				List<ProcessAction> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC,
+						finderArgs, list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"ProcessActionPersistenceImpl.fetchBySPI_PRESC_AC(long, String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ProcessAction processAction = list.get(0);
+
+					result = processAction;
+
+					cacheResult(processAction);
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ProcessAction)result;
+		}
+	}
+
+	/**
+	 * Removes the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; from the database.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param actionCode the action code
+	 * @return the process action that was removed
+	 */
+	@Override
+	public ProcessAction removeBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode)
+		throws NoSuchProcessActionException {
+		ProcessAction processAction = findBySPI_PRESC_AC(serviceProcessId,
+				preStepCode, actionCode);
+
+		return remove(processAction);
+	}
+
+	/**
+	 * Returns the number of process actions where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63;.
+	 *
+	 * @param serviceProcessId the service process ID
+	 * @param preStepCode the pre step code
+	 * @param actionCode the action code
+	 * @return the number of matching process actions
+	 */
+	@Override
+	public int countBySPI_PRESC_AC(long serviceProcessId, String preStepCode,
+		String actionCode) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_SPI_PRESC_AC;
+
+		Object[] finderArgs = new Object[] {
+				serviceProcessId, preStepCode, actionCode
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_PROCESSACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_SPI_PRESC_AC_SERVICEPROCESSID_2);
+
+			boolean bindPreStepCode = false;
+
+			if (preStepCode == null) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_1);
+			}
+			else if (preStepCode.equals("")) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_3);
+			}
+			else {
+				bindPreStepCode = true;
+
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_2);
+			}
+
+			boolean bindActionCode = false;
+
+			if (actionCode == null) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_1);
+			}
+			else if (actionCode.equals("")) {
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_3);
+			}
+			else {
+				bindActionCode = true;
+
+				query.append(_FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(serviceProcessId);
+
+				if (bindPreStepCode) {
+					qPos.add(preStepCode);
+				}
+
+				if (bindActionCode) {
+					qPos.add(actionCode);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_SERVICEPROCESSID_2 = "processAction.serviceProcessId = ? AND ";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_1 = "processAction.preStepCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_2 = "processAction.preStepCode = ? AND ";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_PRESTEPCODE_3 = "(processAction.preStepCode IS NULL OR processAction.preStepCode = '') AND ";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_1 = "processAction.actionCode IS NULL";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_2 = "processAction.actionCode = ?";
+	private static final String _FINDER_COLUMN_SPI_PRESC_AC_ACTIONCODE_3 = "(processAction.actionCode IS NULL OR processAction.actionCode = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_SPI_PRESC_AEV = new FinderPath(ProcessActionModelImpl.ENTITY_CACHE_ENABLED,
 			ProcessActionModelImpl.FINDER_CACHE_ENABLED,
 			ProcessActionImpl.class, FINDER_CLASS_NAME_ENTITY,
@@ -9543,6 +9869,12 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 			new Object[] { processAction.getUuid(), processAction.getGroupId() },
 			processAction);
 
+		finderCache.putResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC,
+			new Object[] {
+				processAction.getServiceProcessId(),
+				processAction.getPreStepCode(), processAction.getActionCode()
+			}, processAction);
+
 		finderCache.putResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AEV,
 			new Object[] {
 				processAction.getServiceProcessId(),
@@ -9659,6 +9991,17 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 		args = new Object[] {
 				processActionModelImpl.getServiceProcessId(),
 				processActionModelImpl.getPreStepCode(),
+				processActionModelImpl.getActionCode()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_SPI_PRESC_AC, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC, args,
+			processActionModelImpl, false);
+
+		args = new Object[] {
+				processActionModelImpl.getServiceProcessId(),
+				processActionModelImpl.getPreStepCode(),
 				processActionModelImpl.getAutoEvent()
 			};
 
@@ -9735,6 +10078,29 @@ public class ProcessActionPersistenceImpl extends BasePersistenceImpl<ProcessAct
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					processActionModelImpl.getServiceProcessId(),
+					processActionModelImpl.getPreStepCode(),
+					processActionModelImpl.getActionCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SPI_PRESC_AC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC, args);
+		}
+
+		if ((processActionModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_SPI_PRESC_AC.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					processActionModelImpl.getOriginalServiceProcessId(),
+					processActionModelImpl.getOriginalPreStepCode(),
+					processActionModelImpl.getOriginalActionCode()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SPI_PRESC_AC, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_SPI_PRESC_AC, args);
 		}
 
 		if (clearCurrent) {

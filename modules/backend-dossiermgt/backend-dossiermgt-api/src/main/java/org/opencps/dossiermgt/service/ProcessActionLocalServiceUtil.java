@@ -205,6 +205,10 @@ public class ProcessActionLocalServiceUtil {
 		long serviceProcessId, String actionCode) {
 		return getService().fetchBySPID_AC(serviceProcessId, actionCode);
 	}
+	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AC(
+			long serviceProcessId,String preStepCode,String actionCode) {
+		return getService().fetchBySPI_PRESC_AC(serviceProcessId, preStepCode, actionCode);
+	}
 
 	public static org.opencps.dossiermgt.model.ProcessAction fetchProcessAction(
 		long processActionId) {

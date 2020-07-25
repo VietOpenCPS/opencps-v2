@@ -89,6 +89,7 @@ import org.opencps.api.dossier.model.DossierPublishModel;
 import org.opencps.api.dossier.model.DossierResultPublishModel;
 import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
 import org.opencps.api.dossiermark.model.DossierMarkModel;
@@ -128,6 +129,8 @@ import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
+import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
+import org.opencps.dossiermgt.service.persistence.ServiceProcessUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -7809,14 +7812,13 @@ public class DossierManagementImpl implements DossierManagement {
 
 	@Override
 	public Response doActionByDossierGroupId(HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext, String id, String actionCode, DoActionModel input, Long dueDate) {
+		Locale locale, User user, ServiceContext serviceContext, String dossierId, String actionCode, DoActionModel input, Long dueDate) {
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierActions actions = new DossierActionsImpl();
 		DossierAction dossierResult = null;
 		ErrorMsgModel errorModel = new ErrorMsgModel();
 		DossierActionDetailModel dAction = new DossierActionDetailModel();
-		List<DossierActionDetailModel> lstAction = new ArrayList<>();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
@@ -7834,14 +7836,14 @@ public class DossierManagementImpl implements DossierManagement {
 			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
 			}
-			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, id);
+			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossierId);
 			for (Dossier dossier : lstDossiers) {
 
 				_log.info("TRACE_LOG_INFO doAction Dossier: " + JSONFactoryUtil.looseSerialize(dossier));
 				_log.info("TRACE_LOG_INFO doAction dueDate: " + dueDate);
 
 				_log.debug("Input: " + JSONFactoryUtil.looseSerialize(input));
-				_log.debug("TRACE_LOG_INFO in groupId: " + groupId + "|dossierId: " + id + "userId: " + userId);
+				_log.debug("TRACE_LOG_INFO in groupId: " + groupId + "|dossierId: " + dossierId + "userId: " + userId);
 
 				if (dossier != null) {
 					_log.debug("Dossier: " + dossier + ", actionCode: " + actionCode);
@@ -7958,22 +7960,36 @@ public class DossierManagementImpl implements DossierManagement {
 						dossierDocumentId = doc.getDossierDocumentId();
 					}
 					 dAction = DossierUtils.mappingDossierAction(dossierResult, dossierDocumentId);
-					if(Validator.isNotNull(dAction)) {
-						lstAction.add(dAction);
-					}
 				}
-//				else {
-//					JSONObject errorJson = JSONFactoryUtil.createJSONObject();
-//					errorJson.put(ConstantUtils.API_DOSSIER_JSON_ERROR_KEY, MessageUtil.getMessage(ConstantUtils.DOSSIER_MESSAGE_CANNOT_DO_ACTION));
-//					return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(
-//							errorJson.toJSONString()).build();
-//				}
+				Thread.sleep(10000);
+
 			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(lstAction).build();
+				return Response.status(HttpURLConnection.HTTP_OK).entity(dAction).build();
 		}
 		catch (Exception e) {
 			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response getDetailAction(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+	User user, ServiceContext serviceContext, long dossierId, String stepCode, String actionCode) {
+		DossierActionNextActionModel model = new DossierActionNextActionModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+		if(Validator.isNotNull(dossier)){
+			if(Validator.isNotNull(dossier.getProcessNo()) && Validator.isNotNull(stepCode) && Validator.isNotNull(actionCode)){
+				ServiceProcess svProcess = ServiceProcessLocalServiceUtil.getByG_PNO(groupId,dossier.getProcessNo());
+				if(Validator.isNotNull(svProcess)){
+					ProcessAction processAction = ProcessActionLocalServiceUtil.fetchBySPI_PRESC_AC(svProcess.getServiceProcessId(), stepCode, actionCode);
+					if(Validator.isNotNull(processAction)){
+						model =org.opencps.api.controller.util.DossierActionUtils.
+								mappingToDoActionModel(processAction);
+					}
+				}
+			}
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(model).build();
 	}
 }

@@ -219,6 +219,7 @@ create index IX_77A1E779 on opencps_processaction (groupId, serviceProcessId, pr
 create index IX_3F5FEA35 on opencps_processaction (postStepCode[$COLUMN_LENGTH:255$], groupId);
 create index IX_C791AD26 on opencps_processaction (preStepCode[$COLUMN_LENGTH:255$], groupId);
 create index IX_10C9A8BD on opencps_processaction (serviceProcessId, actionCode[$COLUMN_LENGTH:255$], actionName[$COLUMN_LENGTH:255$]);
+create index IX_9E61E6B2 on opencps_processaction (serviceProcessId, preStepCode[$COLUMN_LENGTH:255$], actionCode[$COLUMN_LENGTH:255$]);
 create index IX_34CDC00 on opencps_processaction (serviceProcessId, preStepCode[$COLUMN_LENGTH:255$], autoEvent[$COLUMN_LENGTH:255$]);
 create index IX_EBDC8BC on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_39594E3E on opencps_processaction (uuid_[$COLUMN_LENGTH:75$], groupId);

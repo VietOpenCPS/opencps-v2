@@ -17,7 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.Dossier;
 
 /**
  * Provides a wrapper for {@link DossierLocalService}.
@@ -362,13 +361,17 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
-	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
-		return _dossierLocalService.fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
+	public org.opencps.dossiermgt.model.Dossier fetchByDO_POST_RECEIVED_GROUP(
+		String postalCodeReceived, long groupId) {
+		return _dossierLocalService.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived,
+			groupId);
 	}
 
 	@Override
-	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
-		return _dossierLocalService.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
+	public org.opencps.dossiermgt.model.Dossier fetchByDO_POST_SEND_GROUP(
+		String postpostalCodeSend, long groupId) {
+		return _dossierLocalService.fetchByDO_POST_SEND_GROUP(postpostalCodeSend,
+			groupId);
 	}
 
 	@Override
