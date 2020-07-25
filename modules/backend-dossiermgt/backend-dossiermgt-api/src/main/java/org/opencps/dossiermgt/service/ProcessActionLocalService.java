@@ -195,6 +195,9 @@ public interface ProcessActionLocalService extends BaseLocalService,
 	public ProcessAction fetchBySPID_AC(long serviceProcessId, String actionCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId, String preStepCode, String actionCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessAction fetchProcessAction(long processActionId);
 
 	/**
