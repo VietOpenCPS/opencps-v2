@@ -53,7 +53,6 @@ import org.opencps.usermgt.service.persistence.FileItemPersistence;
 import org.opencps.usermgt.service.persistence.HmacAuthenPersistence;
 import org.opencps.usermgt.service.persistence.JobPosPersistence;
 import org.opencps.usermgt.service.persistence.JobPosWorkPersistence;
-import org.opencps.usermgt.service.persistence.LGSPTokenPersistence;
 import org.opencps.usermgt.service.persistence.OfficeSitePersistence;
 import org.opencps.usermgt.service.persistence.PreferencesPersistence;
 import org.opencps.usermgt.service.persistence.QuestionFinder;
@@ -672,44 +671,6 @@ public abstract class QuestionLocalServiceBaseImpl extends BaseLocalServiceImpl
 	public void setJobPosWorkPersistence(
 		JobPosWorkPersistence jobPosWorkPersistence) {
 		this.jobPosWorkPersistence = jobPosWorkPersistence;
-	}
-
-	/**
-	 * Returns the lgsp token local service.
-	 *
-	 * @return the lgsp token local service
-	 */
-	public org.opencps.usermgt.service.LGSPTokenLocalService getLGSPTokenLocalService() {
-		return lgspTokenLocalService;
-	}
-
-	/**
-	 * Sets the lgsp token local service.
-	 *
-	 * @param lgspTokenLocalService the lgsp token local service
-	 */
-	public void setLGSPTokenLocalService(
-		org.opencps.usermgt.service.LGSPTokenLocalService lgspTokenLocalService) {
-		this.lgspTokenLocalService = lgspTokenLocalService;
-	}
-
-	/**
-	 * Returns the lgsp token persistence.
-	 *
-	 * @return the lgsp token persistence
-	 */
-	public LGSPTokenPersistence getLGSPTokenPersistence() {
-		return lgspTokenPersistence;
-	}
-
-	/**
-	 * Sets the lgsp token persistence.
-	 *
-	 * @param lgspTokenPersistence the lgsp token persistence
-	 */
-	public void setLGSPTokenPersistence(
-		LGSPTokenPersistence lgspTokenPersistence) {
-		this.lgspTokenPersistence = lgspTokenPersistence;
 	}
 
 	/**
@@ -1461,10 +1422,6 @@ public abstract class QuestionLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected org.opencps.usermgt.service.JobPosWorkLocalService jobPosWorkLocalService;
 	@BeanReference(type = JobPosWorkPersistence.class)
 	protected JobPosWorkPersistence jobPosWorkPersistence;
-	@BeanReference(type = org.opencps.usermgt.service.LGSPTokenLocalService.class)
-	protected org.opencps.usermgt.service.LGSPTokenLocalService lgspTokenLocalService;
-	@BeanReference(type = LGSPTokenPersistence.class)
-	protected LGSPTokenPersistence lgspTokenPersistence;
 	@BeanReference(type = org.opencps.usermgt.service.OfficeSiteLocalService.class)
 	protected org.opencps.usermgt.service.OfficeSiteLocalService officeSiteLocalService;
 	@BeanReference(type = OfficeSitePersistence.class)

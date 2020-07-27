@@ -20,4 +20,13 @@ public class MBEmailSenderFactoryUtil {
 
 	}
 
+	public static void sendLGSP(
+			MBMessageEntry messageEntry, String portletId,
+			ServiceContext... serviceContext) {
+
+			MBEmailSenderImpl impl = new MBEmailSenderImpl();
+			impl.sendLGSP(messageEntry, portletId, serviceContext);
+
+		}
+
 }

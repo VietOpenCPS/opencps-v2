@@ -44,6 +44,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalService;
+import org.opencps.communication.service.persistence.LGSPTokenPersistence;
 import org.opencps.communication.service.persistence.NotificationQueuePersistence;
 import org.opencps.communication.service.persistence.NotificationtemplatePersistence;
 import org.opencps.communication.service.persistence.ServerConfigPersistence;
@@ -317,6 +318,44 @@ public abstract class ServerConfigLocalServiceBaseImpl
 	@Override
 	public ServerConfig updateServerConfig(ServerConfig serverConfig) {
 		return serverConfigPersistence.update(serverConfig);
+	}
+
+	/**
+	 * Returns the lgsp token local service.
+	 *
+	 * @return the lgsp token local service
+	 */
+	public org.opencps.communication.service.LGSPTokenLocalService getLGSPTokenLocalService() {
+		return lgspTokenLocalService;
+	}
+
+	/**
+	 * Sets the lgsp token local service.
+	 *
+	 * @param lgspTokenLocalService the lgsp token local service
+	 */
+	public void setLGSPTokenLocalService(
+		org.opencps.communication.service.LGSPTokenLocalService lgspTokenLocalService) {
+		this.lgspTokenLocalService = lgspTokenLocalService;
+	}
+
+	/**
+	 * Returns the lgsp token persistence.
+	 *
+	 * @return the lgsp token persistence
+	 */
+	public LGSPTokenPersistence getLGSPTokenPersistence() {
+		return lgspTokenPersistence;
+	}
+
+	/**
+	 * Sets the lgsp token persistence.
+	 *
+	 * @param lgspTokenPersistence the lgsp token persistence
+	 */
+	public void setLGSPTokenPersistence(
+		LGSPTokenPersistence lgspTokenPersistence) {
+		this.lgspTokenPersistence = lgspTokenPersistence;
 	}
 
 	/**
@@ -635,6 +674,10 @@ public abstract class ServerConfigLocalServiceBaseImpl
 		}
 	}
 
+	@BeanReference(type = org.opencps.communication.service.LGSPTokenLocalService.class)
+	protected org.opencps.communication.service.LGSPTokenLocalService lgspTokenLocalService;
+	@BeanReference(type = LGSPTokenPersistence.class)
+	protected LGSPTokenPersistence lgspTokenPersistence;
 	@BeanReference(type = org.opencps.communication.service.NotificationQueueLocalService.class)
 	protected org.opencps.communication.service.NotificationQueueLocalService notificationQueueLocalService;
 	@BeanReference(type = NotificationQueuePersistence.class)

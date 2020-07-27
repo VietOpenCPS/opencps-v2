@@ -118,6 +118,7 @@ import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.JobPosLocalServiceUtil;
+import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
 import org.springframework.cache.annotation.Cacheable;
@@ -382,109 +383,79 @@ public class RestfulController {
 //				} catch (Exception e) {
 //				}
 				
-				StringBuilder sbToken = new StringBuilder();
-				try {
+				JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+				if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+						&& jsonToken.has("expiryDate")) {
 
-					URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
-
-					java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
-					conToken.setRequestMethod(HttpMethod.POST);
-					conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-					conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-					conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
-					conToken.setRequestProperty("Content-Length", String.valueOf(0));
-
-					conToken.setUseCaches(false);
-					conToken.setDoInput(true);
-					conToken.setDoOutput(true);
+					String strUrlLogin = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_LOGIN;
+					_log.info("strUrlLogin: "+ strUrlLogin);
+					String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
+					_log.info("authStrEnc: "+ authStrEnc);
+					_log.info("email: "+ email);
+					_log.info("password: "+ password);
 					
-					OutputStream os = conToken.getOutputStream();
-					os.close();
+					StringBuilder sbLogin = new StringBuilder();
+					try {
+						URL urlLogin = new URL(strUrlLogin);
 
-					BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+						JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+						jsonBody.put(UserRegisterTerm.USER_NAME, email);
+						jsonBody.put(UserRegisterTerm.SECRECT_KEY, password);
+						//
 
-					int cpToken;
-					while ((cpToken = brfToken.read()) != -1) {
-						sbToken.append((char) cpToken);
-					}
-				} catch (Exception e) {
-					_log.debug(e);
-				}
+						java.net.HttpURLConnection conLogin = (java.net.HttpURLConnection) urlLogin.openConnection();
+						conLogin.setRequestMethod(HttpMethod.POST);
+						conLogin.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+						conLogin.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+						conLogin.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+						_log.debug("BASIC AUTHEN: " + authStrEnc);
+						conLogin.setRequestProperty("Content-Length",
+								StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
-				if (sbToken != null && Validator.isNotNull(sbToken.toString())) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
-					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-							&& jsonToken.has("expiryDate")) {
+						conLogin.setUseCaches(false);
+						conLogin.setDoInput(true);
+						conLogin.setDoOutput(true);
+						_log.debug("POST DATA: " + jsonBody.toString());
+						OutputStream osLogin = conLogin.getOutputStream();
+						osLogin.write(jsonBody.toString().getBytes());
+						osLogin.close();
 
-						String strUrlLogin = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_LOGIN;
-						_log.info("strUrlLogin: "+ strUrlLogin);
-						String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
-						_log.info("authStrEnc: "+ authStrEnc);
-						_log.info("email: "+ email);
-						_log.info("password: "+ password);
-						
-						StringBuilder sbLogin = new StringBuilder();
-						try {
-							URL urlLogin = new URL(strUrlLogin);
+						BufferedReader brfLogin = new BufferedReader(new InputStreamReader(conLogin.getInputStream()));
 
-							JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
-							jsonBody.put(UserRegisterTerm.USER_NAME, email);
-							jsonBody.put(UserRegisterTerm.SECRECT_KEY, password);
+						int cpLogin;
+						while ((cpLogin = brfLogin.read()) != -1) {
+							sbLogin.append((char) cpLogin);
+						}
+						_log.info("RESULT PROXY: " + sbLogin.toString());
+						//
+						if (Validator.isNotNull(sbLogin.toString())) {
 							//
+							_log.error("sbReg:" + sbLogin.toString());
+							JSONObject jsonLogin = JSONFactoryUtil.createJSONObject(sbLogin.toString());
+							if (jsonLogin.has("success")
+									&& jsonLogin.has(UserRegisterTerm.USER_NAME)
+									&& jsonLogin.has("isRequireVerify")
+									&& jsonLogin.has("isRequireChangePassword")) {
+								boolean isSuccess = jsonLogin.getBoolean("success");
+								boolean isRequireVerify = jsonLogin.getBoolean("isRequireVerify");
+								boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
 
-							java.net.HttpURLConnection conLogin = (java.net.HttpURLConnection) urlLogin.openConnection();
-							conLogin.setRequestMethod(HttpMethod.POST);
-							conLogin.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-							conLogin.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-							conLogin.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-							_log.debug("BASIC AUTHEN: " + authStrEnc);
-							conLogin.setRequestProperty("Content-Length",
-									StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-
-							conLogin.setUseCaches(false);
-							conLogin.setDoInput(true);
-							conLogin.setDoOutput(true);
-							_log.debug("POST DATA: " + jsonBody.toString());
-							OutputStream osLogin = conLogin.getOutputStream();
-							osLogin.write(jsonBody.toString().getBytes());
-							osLogin.close();
-
-							BufferedReader brfLogin = new BufferedReader(new InputStreamReader(conLogin.getInputStream()));
-
-							int cpLogin;
-							while ((cpLogin = brfLogin.read()) != -1) {
-								sbLogin.append((char) cpLogin);
-							}
-							_log.info("RESULT PROXY: " + sbLogin.toString());
-							//
-							if (Validator.isNotNull(sbLogin.toString())) {
-								//
-								_log.error("sbReg:" + sbLogin.toString());
-								JSONObject jsonLogin = JSONFactoryUtil.createJSONObject(sbLogin.toString());
-								if (jsonLogin.has("success")
-										&& jsonLogin.has(UserRegisterTerm.USER_NAME)
-										&& jsonLogin.has("isRequireVerify")
-										&& jsonLogin.has("isRequireChangePassword")) {
-									boolean isSuccess = jsonLogin.getBoolean("success");
-									boolean isRequireVerify = jsonLogin.getBoolean("isRequireVerify");
-									boolean isRequireChangePassword = jsonLogin.getBoolean("isRequireChangePassword");
-
-									if (isRequireChangePassword) {
-										long userId = 0;
-										try {
-											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-													CompanyConstants.AUTH_TYPE_EA);
-										} catch (PortalException e) {
-											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
-													CompanyConstants.AUTH_TYPE_EA);
-											//Update applicant
-											passKey = password;
-											if (app != null) {
-												app.setTmpPass(password);
-												ApplicantLocalServiceUtil.updateApplicant(app);
-											}
+								if (isRequireChangePassword) {
+									long userId = 0;
+									try {
+										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+												CompanyConstants.AUTH_TYPE_EA);
+									} catch (PortalException e) {
+										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+												CompanyConstants.AUTH_TYPE_EA);
+										//Update applicant
+										passKey = password;
+										if (app != null) {
+											app.setTmpPass(password);
+											ApplicantLocalServiceUtil.updateApplicant(app);
 										}
-										_log.info("userId: "+userId);
+									}
+									_log.info("userId: "+userId);
 //										if (userId == 0) {
 //											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
 //													CompanyConstants.AUTH_TYPE_EA);
@@ -495,30 +466,30 @@ public class RestfulController {
 //												ApplicantLocalServiceUtil.updateApplicant(app);
 //											}
 //										}
-										if (userId > 0 && userId != 20103) {
-											checkUserId = userId;
-											//Remember me false
-											AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
-													CompanyConstants.AUTH_TYPE_EA);
+									if (userId > 0 && userId != 20103) {
+										checkUserId = userId;
+										//Remember me false
+										AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
+												CompanyConstants.AUTH_TYPE_EA);
 
-											User user = UserLocalServiceUtil.fetchUser(userId);
+										User user = UserLocalServiceUtil.fetchUser(userId);
 //											Algorithm algorithm = Algorithm.HMAC256(SECRET);
 //											String token = JWT.create()
 //													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
 //													.sign(algorithm);
 //											response.setHeader("jwt-token", token);
-											
-											if (userId != 20139) {
-												_log.info("changeSecrect: OK");
-												response.setStatus(HttpServletResponse.SC_OK);
-												return "changeSecrect";
-											} else {
-												_log.info("NOT CHANGE OK");
-												response.setStatus(HttpServletResponse.SC_OK);
-												return "ok";
-											}
-											
-										} // Create userId
+										
+										if (userId != 20139) {
+											_log.info("changeSecrect: OK");
+											response.setStatus(HttpServletResponse.SC_OK);
+											return "changeSecrect";
+										} else {
+											_log.info("NOT CHANGE OK");
+											response.setStatus(HttpServletResponse.SC_OK);
+											return "ok";
+										}
+										
+									} // Create userId
 //										else {
 //											//Get userInfo
 //											String strUrlInfo = UserRegisterTerm.NEW_BASE_URL
@@ -559,84 +530,81 @@ public class RestfulController {
 //														StringPool.BLANK, input.getPassword());
 //											}
 //										}
-									} else if (isRequireVerify) {
-										if (app != null) {
-											String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
-											app.setActivationCode(activationCode);
-											ApplicantLocalServiceUtil.updateApplicant(app);
-											//Send activeCode
-											SendMailLGSPUtils.sendMailVerifyAcc(app, activationCode,
-													GetterUtil.getLong(request.getHeader("groupId")));
-										}
-										response.setStatus(HttpServletResponse.SC_OK);
-										response.setHeader("applicantId", String.valueOf(applicantId));
-										return "verify";
-									} else if (isSuccess) {
-										//Sau khi check authen xong
-										_log.info("passKey: "+ passKey);
-										long userId = 0;
-										try {
-											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
-													CompanyConstants.AUTH_TYPE_EA);
-										} catch (PortalException e) {
-											userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
-													CompanyConstants.AUTH_TYPE_EA);
-										}
-										if (userId > 0 && userId != 20103) {
-											checkUserId = userId;
-											//Remember me false
-											AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
-													CompanyConstants.AUTH_TYPE_EA);
+								} else if (isRequireVerify) {
+									if (app != null) {
+										String activationCode = PwdGenerator.getPassword(ServiceProps.PASSWORD_LENGHT);
+										app.setActivationCode(activationCode);
+										ApplicantLocalServiceUtil.updateApplicant(app);
+										//Send activeCode
+										SendMailLGSPUtils.sendMailVerifyAcc(app, activationCode,
+												GetterUtil.getLong(request.getHeader("groupId")));
+									}
+									response.setStatus(HttpServletResponse.SC_OK);
+									response.setHeader("applicantId", String.valueOf(applicantId));
+									return "verify";
+								} else if (isSuccess) {
+									//Sau khi check authen xong
+									_log.info("passKey: "+ passKey);
+									long userId = 0;
+									try {
+										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, passKey,
+												CompanyConstants.AUTH_TYPE_EA);
+									} catch (PortalException e) {
+										userId = AuthenticatedSessionManagerUtil.getAuthenticatedUserId(request, email, password,
+												CompanyConstants.AUTH_TYPE_EA);
+									}
+									if (userId > 0 && userId != 20103) {
+										checkUserId = userId;
+										//Remember me false
+										AuthenticatedSessionManagerUtil.login(request, response, email, passKey, false,
+												CompanyConstants.AUTH_TYPE_EA);
 
-											User user = UserLocalServiceUtil.fetchUser(userId);
+										User user = UserLocalServiceUtil.fetchUser(userId);
 //											Algorithm algorithm = Algorithm.HMAC256(SECRET);
 //											String token = JWT.create()
 //													.withClaim("screenName", Validator.isNotNull(user) ? user.getScreenName() : StringPool.BLANK)
 //													.sign(algorithm);
 //											response.setHeader("jwt-token", token);
-											
-											if (userId != 20139) {
-												Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+										
+										if (userId != 20139) {
+											Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
 
-												if (Validator.isNotNull(employee)) {
+											if (Validator.isNotNull(employee)) {
 
-													if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
-														response.setStatus(HttpServletResponse.SC_OK);
-														return "pending";
-													} else {
-														response.setStatus(HttpServletResponse.SC_OK);
-														return "/c";
-													}
-													
+												if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING && employee.getWorkingStatus() == 0) {
+													response.setStatus(HttpServletResponse.SC_OK);
+													return "pending";
 												} else {
-													if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-														response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
-														response.setStatus(HttpServletResponse.SC_OK);
-														return "pending";
-													} else {
-														response.setStatus(HttpServletResponse.SC_OK);
-														return "ok";
-													}
+													response.setStatus(HttpServletResponse.SC_OK);
+													return "/c";
 												}
+												
 											} else {
-												response.setStatus(HttpServletResponse.SC_OK);
-												return "ok";
+												if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
+													response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+													response.setStatus(HttpServletResponse.SC_OK);
+													return "pending";
+												} else {
+													response.setStatus(HttpServletResponse.SC_OK);
+													return "ok";
+												}
 											}
-											
+										} else {
+											response.setStatus(HttpServletResponse.SC_OK);
+											return "ok";
 										}
-									} else {
-										return "";
+										
 									}
+								} else {
+									return "";
 								}
 							}
-						} catch (Exception e) {
-							_log.error(e);
-							_log.debug("Something went wrong while reading/writing in stream!!");
 						}
+					} catch (Exception e) {
+						_log.error(e);
+						_log.debug("Something went wrong while reading/writing in stream!!");
 					}
 				}
-				
-				
 			} else {
 				// Get encoded user and password, comes after "BASIC "
 				String userpassEncoded = strBasic.substring(6);

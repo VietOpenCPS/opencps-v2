@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -999,8 +1000,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String MULTIPLE_CHECK = "MULTIPLE_CHECK";
 
 	private DossierAction doActionInsideProcess(long groupId, long userId, Dossier dossier, ActionConfig actionConfig,
-												ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
-												String payload, String assignUsers, String payment, int syncType, ServiceContext context)
+			ProcessOption option, ProcessAction proAction, String actionCode, String actionUser, String actionNote,
+			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
 		//_log.info("payload Action: "+ payload);
@@ -1012,20 +1013,21 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())) {
 			_log.info("TRACE_LOG_LOST_DOSSIER: "+JSONFactoryUtil.looseSerialize(dossier));
-			for (int i = 0; i < 5; i++) {
-				try {
-					dossierPersistence.clearCache(dossier);
-					dossier = dossierPersistence.fetchByPrimaryKey(dossier.getDossierId());
-					if (Validator.isNotNull(dossier.getApplicantName()) && Validator.isNotNull(dossier.getApplicantIdNo())) {
-						_log.info("TRACE_LOG_LOST_DOSSIER: | count" + i + "CPS DONE: "+JSONFactoryUtil.looseSerialize(dossier));
-						break;
-					}
-				} catch (Exception e) {
-					_log.error(e);
-				}
-				
-				Thread.sleep(50);
-			}
+//			for (int i = 0; i < 5; i++) {
+//				try {
+//					dossierPersistence.clearCache(dossier);
+//					dossier = dossierPersistence.fetchByPrimaryKey(dossier.getDossierId());
+//					_log.info("TRACE_LOG_LOST_DOSSIER DB MODIFIEDDATE: "+ dossier.getModifiedDate().getTime());
+//					if (Validator.isNotNull(dossier.getApplicantName()) && Validator.isNotNull(dossier.getApplicantIdNo())) {
+//						_log.info("TRACE_LOG_LOST_DOSSIER count" + i + "CPS DONE: "+JSONFactoryUtil.looseSerialize(dossier));
+//						break;
+//					}
+//				} catch (Exception e) {
+//					_log.error(e);
+//				}
+//				
+//				Thread.sleep(50);
+//			}
 		}
 		//_log.info("TRACE_LOG_INFO doAction CPS dossier END: "+JSONFactoryUtil.looseSerialize(dossier));
 		
@@ -2151,286 +2153,198 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		//Update mat thong tin chu ho so
-//		if (Validator.isNull(dossier.getDossierStatus()) && Validator.isNull(dossier.getApplicantName())) {
-//			//
-//			String applicantName = null;
-//			String applicantIdNo = null;
-//			String address = null;
-//			String cityCode = null;
-//			String cityName = null;
-//			String districtCode = null;
-//			String districtName = null;
-//			String wardCode = null;
-//			String wardName = null;
-//			String contactTelNo = null;
-//			String contactEmail = null;
-//
-//			if (obj.has(DossierTerm.APPLICANT_NAME) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_NAME))) {
-//				applicantName = String.valueOf(obj.get(DossierTerm.APPLICANT_NAME));
-//				dossier.setApplicantName(applicantName);
-//			}
-//			if (obj.has(DossierTerm.APPLICANT_ID_TYPE) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_ID_TYPE))) {
-//				dossier.setApplicantIdType(String.valueOf(obj.get(DossierTerm.APPLICANT_ID_TYPE)));
-//			}
-//			if (obj.has(DossierTerm.APPLICANT_ID_NO) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_ID_NO))) {
-//				applicantIdNo = String.valueOf(obj.get(DossierTerm.APPLICANT_ID_NO));
-//				dossier.setApplicantIdNo(applicantIdNo);
-//			}
-//			if (obj.has(DossierTerm.ADDRESS) && Validator.isNotNull(obj.get(DossierTerm.ADDRESS))) {
-//				address = String.valueOf(obj.get(DossierTerm.ADDRESS));
-//				dossier.setAddress(address);
-//			}
-//			if (obj.has(DossierTerm.CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.CITY_CODE))) {
-//				cityCode = String.valueOf(obj.get(DossierTerm.CITY_CODE));
-//				dossier.setCityCode(cityCode);
-//				//
-//				cityName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
-//						String.valueOf(obj.get(DossierTerm.CITY_CODE)));
-//				if (Validator.isNotNull(cityName)) {
-//					dossier.setCityName(cityName);
-//				}
-//				
-//			}
-//			if (obj.has(DossierTerm.DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.DISTRICT_CODE))) {
-//				districtCode = String.valueOf(obj.get(DossierTerm.DISTRICT_CODE));
-//				dossier.setDistrictCode(districtCode);
-//				//
-//				districtName = getDictItemName(
-//						dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.DISTRICT_CODE)));
-//				if (Validator.isNotNull(districtName)) {
-//					dossier.setDistrictName(districtName);
-//				}
-//			}
-//			if (obj.has(DossierTerm.WARD_CODE) && Validator.isNotNull(obj.get(DossierTerm.WARD_CODE))) {
-//				wardCode = String.valueOf(obj.get(DossierTerm.WARD_CODE));
-//				dossier.setWardCode(wardCode);
-//				//
-//				wardName = getDictItemName(
-//						dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.WARD_CODE)));
-//				if (Validator.isNotNull(wardName)) {
-//					dossier.setWardName(wardName);
-//				}
-//			}
-//			if (obj.has(DossierTerm.CONTACT_EMAIL) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_EMAIL))) {
-//				contactEmail = String.valueOf(obj.get(DossierTerm.CONTACT_EMAIL));
-//				dossier.setContactEmail(contactEmail);
-//			}
-//			if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
-//				contactTelNo = String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO));
-//				dossier.setContactTelNo(contactTelNo);
-//			}
-//			if (obj.has(DossierTerm.SAMPLE_COUNT) && Validator.isNotNull(obj.get(DossierTerm.SAMPLE_COUNT))) {
-//				dossier.setSampleCount(obj.getInt(DossierTerm.SAMPLE_COUNT));
-//			}
-//			if (obj.has(DossierTerm.VIA_POSTAL) && Validator.isNotNull(obj.get(DossierTerm.VIA_POSTAL))) {
-//				int viaPostal = obj.getInt(DossierTerm.VIA_POSTAL);
-//				dossier.setViaPostal(viaPostal);
-//				//
-//				if (viaPostal == 2) {
-//					if (obj.has(DossierTerm.POSTAL_ADDRESS) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_ADDRESS))) {
-//						dossier.setPostalAddress(String.valueOf(obj.get(DossierTerm.POSTAL_ADDRESS)));
-//					}
-//					if (obj.has(DossierTerm.POSTAL_CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_CITY_CODE))) {
-//						dossier.setPostalCityCode(String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
-//						if (Validator.isNotNull(postalCityName))
-//							dossier.setPostalCityName(postalCityName);
-//					}
-//					if (obj.has(DossierTerm.POSTAL_DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_DISTRICT_CODE))) {
-//						dossier.setPostalDistrictCode(String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
-//						if (Validator.isNotNull(postalDistrictName))
-//							dossier.setPostalDistrictName(postalDistrictName);
-//					}
-//					if (obj.has(DossierTerm.POSTAL_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_TEL_NO))) {
-//						dossier.setPostalTelNo(String.valueOf(obj.get(DossierTerm.POSTAL_TEL_NO)));
-//					}
-//					if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
-//						dossier.setContactTelNo(String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO)));
-//					}
-//					if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
-//						dossier.setContactTelNo(String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO)));
-//					}
-//				}
-//				else {
-//					dossier.setPostalAddress(StringPool.BLANK);
-//					dossier.setPostalCityCode(StringPool.BLANK);
-//					dossier.setPostalTelNo(StringPool.BLANK);
-//					dossier.setPostalDistrictCode(StringPool.BLANK);
-//				}
-//			}
-//
-//			if (obj.has(DossierTerm.IS_SAME_APPLICANT) && Validator.isNotNull(obj.get(DossierTerm.IS_SAME_APPLICANT))) {
-//				boolean isSameAsApplicant = obj.getBoolean(DossierTerm.IS_SAME_APPLICANT);
-//				if (isSameAsApplicant) {
-//					dossier.setDelegateName(applicantName);
-//					dossier.setDelegateIdNo(applicantIdNo);
-//					dossier.setDelegateTelNo(contactTelNo);
-//					dossier.setDelegateAddress(address);
-//					dossier.setDelegateEmail(contactEmail);
-//					if (Validator.isNotNull(cityCode)) {
-//						dossier.setDelegateCityCode(cityCode);
-//						dossier.setDelegateCityName(cityName != null ? cityName : StringPool.BLANK);
-//					}
-//
-//					if (Validator.isNotNull(districtCode)) {
-//						dossier.setDelegateDistrictCode(districtCode);
-//						dossier.setDelegateDistrictName(districtName != null ? districtName : StringPool.BLANK);
-//					}
-//
-//					if (Validator.isNotNull(wardCode)) {
-//						dossier.setDelegateWardCode(wardCode);
-//						dossier.setDelegateWardName(wardName != null ? wardName : StringPool.BLANK);
-//					}
-//				}
-//				else {
-//					//
-//					if (obj.has(DossierTerm.DELEGATE_NAME) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_NAME))) {
-//						dossier.setDelegateName(String.valueOf(obj.get(DossierTerm.DELEGATE_NAME)));
-//					}
-//					if (obj.has(DossierTerm.DELEGATE_ID_NO) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_ID_NO))) {
-//						dossier.setDelegateIdNo(String.valueOf(obj.get(DossierTerm.DELEGATE_ID_NO)));
-//					}
-//					if (obj.has(DossierTerm.ADDRESS) && Validator.isNotNull(obj.get(DossierTerm.ADDRESS))) {
-//						address = String.valueOf(obj.get(DossierTerm.ADDRESS));
-//						dossier.setAddress(address);
-//					}
-//					if (obj.has(DossierTerm.CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.CITY_CODE))) {
-//						cityCode = String.valueOf(obj.get(DossierTerm.CITY_CODE));
-//						dossier.setCityCode(cityCode);
-//						//
-//						cityName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
-//								String.valueOf(obj.get(DossierTerm.CITY_CODE)));
-//						if (Validator.isNotNull(cityName)) {
-//							dossier.setCityName(cityName);
-//						}
-//						
-//					}
-//					if (obj.has(DossierTerm.DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.DISTRICT_CODE))) {
-//						districtCode = String.valueOf(obj.get(DossierTerm.DISTRICT_CODE));
-//						dossier.setDistrictCode(districtCode);
-//						//
-//						districtName = getDictItemName(
-//								dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.DISTRICT_CODE)));
-//						if (Validator.isNotNull(districtName)) {
-//							dossier.setDistrictName(districtName);
-//						}
-//					}
-//					if (obj.has(DossierTerm.WARD_CODE) && Validator.isNotNull(obj.get(DossierTerm.WARD_CODE))) {
-//						wardCode = String.valueOf(obj.get(DossierTerm.WARD_CODE));
-//						dossier.setWardCode(wardCode);
-//						//
-//						wardName = getDictItemName(
-//								dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.WARD_CODE)));
-//						if (Validator.isNotNull(wardName)) {
-//							dossier.setWardName(wardName);
-//						}
-//					}
-//					if (obj.has(DossierTerm.CONTACT_EMAIL) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_EMAIL))) {
-//						contactEmail = String.valueOf(obj.get(DossierTerm.CONTACT_EMAIL));
-//						dossier.setContactEmail(contactEmail);
-//					}
-//					if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
-//						contactTelNo = String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO));
-//						dossier.setContactTelNo(contactTelNo);
-//					}
-//					//
-//					dossier.setDelegateName(delegateName);
-//					dossier.setDelegateIdNo(delegateIdNo);
-//					dossier.setDelegateTelNo(delegateTelNo);
-//					dossier.setDelegateAddress(delegateAddress);
-//					dossier.setDelegateEmail(delegateEmail);
-//
-//					if (Validator.isNotNull(delegateCityCode)) {
-//						dossier.setDelegateCityCode(delegateCityCode);
-//						dossier.setDelegateCityName(
-//							getDictItemName(
-//								dossier.getGroupId(), ADMINISTRATIVE_REGION,
-//								delegateCityCode));
-//					}
-//
-//					if (Validator.isNotNull(delegateDistrictCode)) {
-//						dossier.setDelegateDistrictCode(delegateDistrictCode);
-//						dossier.setDelegateDistrictName(
-//							getDictItemName(
-//								dossier.getGroupId(), ADMINISTRATIVE_REGION,
-//								delegateDistrictCode));
-//					}
-//
-//					if (Validator.isNotNull(delegateWardCode)) {
-//						dossier.setDelegateWardCode(delegateWardCode);
-//						dossier.setDelegateWardName(
-//							getDictItemName(
-//								dossier.getGroupId(), ADMINISTRATIVE_REGION,
-//								delegateWardCode));
-//					}
-//				}
-//			}
-//			
-//
-//			dossier.setApplicantNote(applicantNote);
-//			if (Validator.isNotNull(dossierName)) {
-//				dossier.setDossierName(dossierName);
-//			}
-//			System.out.println("Dossier name: " + dossierName);
-//			dossier.setBriefNote(briefNote);
-//			// Process add status of group dossier
-//			if (dossier.getOriginality() == 9) {
-//				dossier.setDossierStatus(DossierTerm.DOSSIER_STATUS_PROCESSING);
-//			}
-//
-//			// Delegate type
-//			if (delegateType != null && Validator.isNotNull(delegateType)) {
-//				dossier.setDelegateType(delegateType);
-//			}
-//			if (Validator.isNotNull(documentNo)) {
-//				dossier.setDocumentNo(documentNo);
-//			}
-//			if (documentDate != null && Validator.isNotNull(documentDate)) {
-//				dossier.setDocumentDate(documentDate);
-//			}
-//
-//			if (systemId > 0) {
-//				dossier.setSystemId(systemId);
-//			}
-//
-//			if (vnpostalStatus != null && Validator.isNotNull(vnpostalStatus)) {
-//				dossier.setVnpostalStatus(vnpostalStatus);
-//			}
-//			if (vnpostalProfile != null && Validator.isNotNull(vnpostalProfile)) {
-//				dossier.setVnpostalProfile(vnpostalProfile);
-//			}
-//			if (fromViaPostal != null && Validator.isNotNull(fromViaPostal)) {
-//				dossier.setFromViaPostal(fromViaPostal);
-//			}
-//			if (dueDate != null) 
-//				dossier.setDueDate(dueDate);
-//			
-//			
-//			
-////			if (Validator.isNotNull(input.getPostalCityCode())) {
-////				postalCityName = getDictItemName(
-////					groupId, VNPOST_CITY_CODE, input.getPostalCityCode());
-////			}
-////			if (Validator.isNotNull(input.getPostalDistrictCode())) {
-////				postalDistrictName = getDictItemName(
-////					groupId, VNPOST_CITY_CODE, input.getPostalDistrictCode());
-////			}
-//			Integer delegateType =
-//					(input.getDelegateType() != null ? input.getDelegateType() : 0);
-//				String documentNo = input.getDocumentNo();
-//				Date documentDate = null;
-//				if (input.getDocumentDate() != null &&
-//					Validator.isNotNull(input.getDocumentDate())) {
-//					documentDate = new Date(input.getDocumentDate());
-//				}
-//
-//				String vnpostalProfile = input.getVnpostalProfile();
-//				Integer vnpostalStatus = input.getVnpostalStatus();
-//				if (Validator.isNotNull(vnpostalProfile) && Validator.isNull(vnpostalStatus)) {
-//					vnpostalStatus = VnpostCollectionTerm.VNPOSTAL_STAUS_1;
-//				}
-//				//
-//				
-//		}
+		if (Validator.isNull(dossier.getDossierStatus()) && Validator.isNull(dossier.getApplicantName())) {
+			//
+			String applicantName = null;
+			String applicantIdNo = null;
+			String address = null;
+			String cityCode = null;
+			String cityName = null;
+			String districtCode = null;
+			String districtName = null;
+			String wardCode = null;
+			String wardName = null;
+			String contactTelNo = null;
+			String contactEmail = null;
+
+			if (obj.has(DossierTerm.APPLICANT_NAME) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_NAME))) {
+				applicantName = String.valueOf(obj.get(DossierTerm.APPLICANT_NAME));
+				dossier.setApplicantName(applicantName);
+			}
+			if (obj.has(DossierTerm.APPLICANT_ID_TYPE) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_ID_TYPE))) {
+				dossier.setApplicantIdType(String.valueOf(obj.get(DossierTerm.APPLICANT_ID_TYPE)));
+			}
+			if (obj.has(DossierTerm.APPLICANT_ID_NO) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_ID_NO))) {
+				applicantIdNo = String.valueOf(obj.get(DossierTerm.APPLICANT_ID_NO));
+				dossier.setApplicantIdNo(applicantIdNo);
+			}
+			if (obj.has(DossierTerm.ADDRESS) && Validator.isNotNull(obj.get(DossierTerm.ADDRESS))) {
+				address = String.valueOf(obj.get(DossierTerm.ADDRESS));
+				dossier.setAddress(address);
+			}
+			if (obj.has(DossierTerm.CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.CITY_CODE))) {
+				cityCode = String.valueOf(obj.get(DossierTerm.CITY_CODE));
+				dossier.setCityCode(cityCode);
+				//
+				cityName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
+						String.valueOf(obj.get(DossierTerm.CITY_CODE)));
+				if (Validator.isNotNull(cityName)) {
+					dossier.setCityName(cityName);
+				}
+				
+			}
+			if (obj.has(DossierTerm.DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.DISTRICT_CODE))) {
+				districtCode = String.valueOf(obj.get(DossierTerm.DISTRICT_CODE));
+				dossier.setDistrictCode(districtCode);
+				//
+				districtName = getDictItemName(
+						dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.DISTRICT_CODE)));
+				if (Validator.isNotNull(districtName)) {
+					dossier.setDistrictName(districtName);
+				}
+			}
+			if (obj.has(DossierTerm.WARD_CODE) && Validator.isNotNull(obj.get(DossierTerm.WARD_CODE))) {
+				wardCode = String.valueOf(obj.get(DossierTerm.WARD_CODE));
+				dossier.setWardCode(wardCode);
+				//
+				wardName = getDictItemName(
+						dossier.getGroupId(), ADMINISTRATIVE_REGION, String.valueOf(obj.get(DossierTerm.WARD_CODE)));
+				if (Validator.isNotNull(wardName)) {
+					dossier.setWardName(wardName);
+				}
+			}
+			if (obj.has(DossierTerm.CONTACT_EMAIL) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_EMAIL))) {
+				contactEmail = String.valueOf(obj.get(DossierTerm.CONTACT_EMAIL));
+				dossier.setContactEmail(contactEmail);
+			}
+			if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
+				contactTelNo = String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO));
+				dossier.setContactTelNo(contactTelNo);
+			}
+			if (obj.has(DossierTerm.SAMPLE_COUNT) && Validator.isNotNull(obj.get(DossierTerm.SAMPLE_COUNT))) {
+				dossier.setSampleCount(obj.getInt(DossierTerm.SAMPLE_COUNT));
+			}
+			if (obj.has(DossierTerm.VIA_POSTAL) && Validator.isNotNull(obj.get(DossierTerm.VIA_POSTAL))) {
+				int viaPostal = obj.getInt(DossierTerm.VIA_POSTAL);
+				dossier.setViaPostal(viaPostal);
+				//
+				if (viaPostal == 2) {
+					if (obj.has(DossierTerm.POSTAL_ADDRESS) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_ADDRESS))) {
+						dossier.setPostalAddress(String.valueOf(obj.get(DossierTerm.POSTAL_ADDRESS)));
+					}
+					if (obj.has(DossierTerm.POSTAL_CITY_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_CITY_CODE))) {
+						dossier.setPostalCityCode(String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
+						
+						String postalCityName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
+								String.valueOf(obj.get(DossierTerm.POSTAL_CITY_CODE)));
+						if (Validator.isNotNull(postalCityName))
+							dossier.setPostalCityName(postalCityName);
+					}
+					if (obj.has(DossierTerm.POSTAL_DISTRICT_CODE) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_DISTRICT_CODE))) {
+						dossier.setPostalDistrictCode(String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
+						
+						String postalDistrictName = getDictItemName(dossier.getGroupId(), VNPOST_CITY_CODE,
+								String.valueOf(obj.get(DossierTerm.POSTAL_DISTRICT_CODE)));
+						if (Validator.isNotNull(postalDistrictName))
+							dossier.setPostalDistrictName(postalDistrictName);
+					}
+					if (obj.has(DossierTerm.POSTAL_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.POSTAL_TEL_NO))) {
+						dossier.setPostalTelNo(String.valueOf(obj.get(DossierTerm.POSTAL_TEL_NO)));
+					}
+					if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
+						dossier.setContactTelNo(String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO)));
+					}
+					if (obj.has(DossierTerm.CONTACT_TEL_NO) && Validator.isNotNull(obj.get(DossierTerm.CONTACT_TEL_NO))) {
+						dossier.setContactTelNo(String.valueOf(obj.get(DossierTerm.CONTACT_TEL_NO)));
+					}
+				}
+				else {
+					dossier.setPostalAddress(StringPool.BLANK);
+					dossier.setPostalCityCode(StringPool.BLANK);
+					dossier.setPostalTelNo(StringPool.BLANK);
+					dossier.setPostalDistrictCode(StringPool.BLANK);
+				}
+			}
+
+			if (obj.has(DossierTerm.IS_SAME_APPLICANT) && Validator.isNotNull(obj.get(DossierTerm.IS_SAME_APPLICANT))
+					&& obj.getBoolean(DossierTerm.IS_SAME_APPLICANT)) {
+				dossier.setDelegateName(applicantName);
+				dossier.setDelegateIdNo(applicantIdNo);
+				dossier.setDelegateTelNo(contactTelNo);
+				dossier.setDelegateAddress(address);
+				dossier.setDelegateEmail(contactEmail);
+				if (Validator.isNotNull(cityCode)) {
+					dossier.setDelegateCityCode(cityCode);
+					dossier.setDelegateCityName(cityName != null ? cityName : StringPool.BLANK);
+				}
+
+				if (Validator.isNotNull(districtCode)) {
+					dossier.setDelegateDistrictCode(districtCode);
+					dossier.setDelegateDistrictName(districtName != null ? districtName : StringPool.BLANK);
+				}
+
+				if (Validator.isNotNull(wardCode)) {
+					dossier.setDelegateWardCode(wardCode);
+					dossier.setDelegateWardName(wardName != null ? wardName : StringPool.BLANK);
+				}
+			} else {
+				//
+				if (obj.has(DossierTerm.DELEGATE_NAME) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_NAME))) {
+					dossier.setDelegateName(String.valueOf(obj.get(DossierTerm.DELEGATE_NAME)));
+				}
+				if (obj.has(DossierTerm.DELEGATE_ID_NO) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_ID_NO))) {
+					dossier.setDelegateIdNo(String.valueOf(obj.get(DossierTerm.DELEGATE_ID_NO)));
+				}
+				if (obj.has(DossierTerm.DELEGATE_ADDRESS)
+						&& Validator.isNotNull(obj.get(DossierTerm.DELEGATE_ADDRESS))) {
+					dossier.setDelegateAddress(String.valueOf(obj.get(DossierTerm.DELEGATE_ADDRESS)));
+				}
+				if (obj.has(DossierTerm.DELEGATE_CITYCODE)
+						&& Validator.isNotNull(obj.get(DossierTerm.DELEGATE_CITYCODE))) {
+					dossier.setDelegateCityCode(String.valueOf(obj.get(DossierTerm.DELEGATE_CITYCODE)));
+					//
+					String delegateCityName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
+							String.valueOf(obj.get(DossierTerm.DELEGATE_CITYCODE)));
+					if (Validator.isNotNull(delegateCityName)) {
+						dossier.setDelegateCityName(delegateCityName);
+					}
+
+				}
+				if (obj.has(DossierTerm.DELEGATE_DISTRICTCODE)
+						&& Validator.isNotNull(obj.get(DossierTerm.DELEGATE_DISTRICTCODE))) {
+					dossier.setDistrictCode(String.valueOf(obj.get(DossierTerm.DELEGATE_DISTRICTCODE)));
+					//
+					String delegateDistrictName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
+							String.valueOf(obj.get(DossierTerm.DELEGATE_DISTRICTCODE)));
+					if (Validator.isNotNull(delegateDistrictName)) {
+						dossier.setDelegateDistrictName(delegateDistrictName);
+					}
+				}
+				if (obj.has(DossierTerm.DELEGATE_WARDCODE)
+						&& Validator.isNotNull(obj.get(DossierTerm.DELEGATE_WARDCODE))) {
+					dossier.setDelegateWardCode(String.valueOf(obj.get(DossierTerm.DELEGATE_WARDCODE)));
+					//
+					String delegateWardName = getDictItemName(dossier.getGroupId(), ADMINISTRATIVE_REGION,
+							String.valueOf(obj.get(DossierTerm.DELEGATE_WARDCODE)));
+					if (Validator.isNotNull(delegateWardName)) {
+						dossier.setDelegateWardName(delegateWardName);
+					}
+				}
+				if (obj.has(DossierTerm.DELEGATE_EMAIL) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_EMAIL))) {
+					dossier.setDelegateEmail(String.valueOf(obj.get(DossierTerm.DELEGATE_EMAIL)));
+				}
+				if (obj.has(DossierTerm.DELEGATE_TELNO) && Validator.isNotNull(obj.get(DossierTerm.DELEGATE_TELNO))) {
+					dossier.setDelegateTelNo(String.valueOf(obj.get(DossierTerm.DELEGATE_TELNO)));
+				}
+			}
+
+			if (obj.has(DossierTerm.APPLICANT_NOTE) && Validator.isNotNull(obj.get(DossierTerm.APPLICANT_NOTE))) {
+				dossier.setApplicantNote(String.valueOf(obj.get(DossierTerm.APPLICANT_NOTE)));
+			}
+			if (obj.has(DossierTerm.DOSSIER_NAME) && Validator.isNotNull(obj.get(DossierTerm.DOSSIER_NAME))) {
+				dossier.setDossierName(String.valueOf(obj.get(DossierTerm.DOSSIER_NAME)));
+			}
+		}
 	}
 
 	private void processPaymentFile(long groupId, long userId, String payment, ProcessOption option,
