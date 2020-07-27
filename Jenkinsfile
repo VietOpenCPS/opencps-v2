@@ -4,9 +4,13 @@ node(){
 }
 
 if (env.CHANGE_ID) {
-    buildPullRequest()
+    if(env.CHANGE_TARGET=='master'){
+        buildPullRequest()
+    }
 } else {
-    buildPushCommit()
+    if(env.BRANCH_NAME=='master'){
+        buildPushCommit()
+    }
 }
 
 def buildPushCommit() {
