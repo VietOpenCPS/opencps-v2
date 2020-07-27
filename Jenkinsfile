@@ -1,6 +1,7 @@
 env.OPENCPS_CACHE_VOLUME='gradle_cache_volume_test'
-
-echo sh(script: 'env|sort', returnStdout: true)
+node(){
+    echo sh(script: 'env|sort', returnStdout: true)
+}
 
 if (env.CHANGE_ID) {
     buildPullRequest()
