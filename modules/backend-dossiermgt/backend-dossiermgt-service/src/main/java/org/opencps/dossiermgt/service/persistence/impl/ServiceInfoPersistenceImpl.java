@@ -3865,6 +3865,748 @@ public class ServiceInfoPersistenceImpl extends BasePersistenceImpl<ServiceInfo>
 
 	private static final String _FINDER_COLUMN_GI_PUB_GROUPID_2 = "serviceInfo.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_GI_PUB_PUBLIC__2 = "serviceInfo.public_ = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GI_PUB_SID =
+		new FinderPath(ServiceInfoModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceInfoModelImpl.FINDER_CACHE_ENABLED, ServiceInfoImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGI_PUB_SID",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID =
+		new FinderPath(ServiceInfoModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceInfoModelImpl.FINDER_CACHE_ENABLED, ServiceInfoImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGI_PUB_SID",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				Long.class.getName()
+			},
+			ServiceInfoModelImpl.GROUPID_COLUMN_BITMASK |
+			ServiceInfoModelImpl.PUBLIC__COLUMN_BITMASK |
+			ServiceInfoModelImpl.SERVICEINFOID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GI_PUB_SID = new FinderPath(ServiceInfoModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceInfoModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGI_PUB_SID",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				Long.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_GI_PUB_SID =
+		new FinderPath(ServiceInfoModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceInfoModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGI_PUB_SID",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				Long.class.getName()
+			});
+
+	/**
+	 * Returns all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @return the matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @return the range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId, int start, int end) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoId, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId, int start, int end,
+		OrderByComparator<ServiceInfo> orderByComparator) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoId, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId, int start, int end,
+		OrderByComparator<ServiceInfo> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID;
+			finderArgs = new Object[] { groupId, public_, serviceInfoId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GI_PUB_SID;
+			finderArgs = new Object[] {
+					groupId, public_, serviceInfoId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceInfo> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceInfo>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceInfo serviceInfo : list) {
+					if ((groupId != serviceInfo.getGroupId()) ||
+							(public_ != serviceInfo.isPublic_()) ||
+							(serviceInfoId != serviceInfo.getServiceInfoId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_SERVICEINFO_WHERE);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_PUBLIC__2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceInfoModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(public_);
+
+				qPos.add(serviceInfoId);
+
+				if (!pagination) {
+					list = (List<ServiceInfo>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceInfo>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service info
+	 * @throws NoSuchServiceInfoException if a matching service info could not be found
+	 */
+	@Override
+	public ServiceInfo findByGI_PUB_SID_First(long groupId, boolean public_,
+		long serviceInfoId, OrderByComparator<ServiceInfo> orderByComparator)
+		throws NoSuchServiceInfoException {
+		ServiceInfo serviceInfo = fetchByGI_PUB_SID_First(groupId, public_,
+				serviceInfoId, orderByComparator);
+
+		if (serviceInfo != null) {
+			return serviceInfo;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", public_=");
+		msg.append(public_);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append("}");
+
+		throw new NoSuchServiceInfoException(msg.toString());
+	}
+
+	/**
+	 * Returns the first service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service info, or <code>null</code> if a matching service info could not be found
+	 */
+	@Override
+	public ServiceInfo fetchByGI_PUB_SID_First(long groupId, boolean public_,
+		long serviceInfoId, OrderByComparator<ServiceInfo> orderByComparator) {
+		List<ServiceInfo> list = findByGI_PUB_SID(groupId, public_,
+				serviceInfoId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service info
+	 * @throws NoSuchServiceInfoException if a matching service info could not be found
+	 */
+	@Override
+	public ServiceInfo findByGI_PUB_SID_Last(long groupId, boolean public_,
+		long serviceInfoId, OrderByComparator<ServiceInfo> orderByComparator)
+		throws NoSuchServiceInfoException {
+		ServiceInfo serviceInfo = fetchByGI_PUB_SID_Last(groupId, public_,
+				serviceInfoId, orderByComparator);
+
+		if (serviceInfo != null) {
+			return serviceInfo;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", public_=");
+		msg.append(public_);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append("}");
+
+		throw new NoSuchServiceInfoException(msg.toString());
+	}
+
+	/**
+	 * Returns the last service info in the ordered set where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service info, or <code>null</code> if a matching service info could not be found
+	 */
+	@Override
+	public ServiceInfo fetchByGI_PUB_SID_Last(long groupId, boolean public_,
+		long serviceInfoId, OrderByComparator<ServiceInfo> orderByComparator) {
+		int count = countByGI_PUB_SID(groupId, public_, serviceInfoId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServiceInfo> list = findByGI_PUB_SID(groupId, public_,
+				serviceInfoId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoIds the service info IDs
+	 * @return the matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoIds,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoIds the service info IDs
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @return the range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds, int start, int end) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoIds, start, end,
+			null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoIds the service info IDs
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds, int start, int end,
+		OrderByComparator<ServiceInfo> orderByComparator) {
+		return findByGI_PUB_SID(groupId, public_, serviceInfoIds, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceInfoModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service infos
+	 * @param end the upper bound of the range of service infos (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service infos
+	 */
+	@Override
+	public List<ServiceInfo> findByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds, int start, int end,
+		OrderByComparator<ServiceInfo> orderByComparator,
+		boolean retrieveFromCache) {
+		if (serviceInfoIds == null) {
+			serviceInfoIds = new long[0];
+		}
+		else if (serviceInfoIds.length > 1) {
+			serviceInfoIds = ArrayUtil.unique(serviceInfoIds);
+
+			Arrays.sort(serviceInfoIds);
+		}
+
+		if (serviceInfoIds.length == 1) {
+			return findByGI_PUB_SID(groupId, public_, serviceInfoIds[0], start,
+				end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, public_, StringUtil.merge(serviceInfoIds)
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, public_, StringUtil.merge(serviceInfoIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceInfo> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceInfo>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GI_PUB_SID,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceInfo serviceInfo : list) {
+					if ((groupId != serviceInfo.getGroupId()) ||
+							(public_ != serviceInfo.isPublic_()) ||
+							!ArrayUtil.contains(serviceInfoIds,
+								serviceInfo.getServiceInfoId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_SERVICEINFO_WHERE);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_PUBLIC__2);
+
+			if (serviceInfoIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_7);
+
+				query.append(StringUtil.merge(serviceInfoIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceInfoModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(public_);
+
+				if (!pagination) {
+					list = (List<ServiceInfo>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceInfo>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GI_PUB_SID,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_GI_PUB_SID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 */
+	@Override
+	public void removeByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId) {
+		for (ServiceInfo serviceInfo : findByGI_PUB_SID(groupId, public_,
+				serviceInfoId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(serviceInfo);
+		}
+	}
+
+	/**
+	 * Returns the number of service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoId the service info ID
+	 * @return the number of matching service infos
+	 */
+	@Override
+	public int countByGI_PUB_SID(long groupId, boolean public_,
+		long serviceInfoId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GI_PUB_SID;
+
+		Object[] finderArgs = new Object[] { groupId, public_, serviceInfoId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_SERVICEINFO_WHERE);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_PUBLIC__2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(public_);
+
+				qPos.add(serviceInfoId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of service infos where groupId = &#63; and public_ = &#63; and serviceInfoId = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param public_ the public_
+	 * @param serviceInfoIds the service info IDs
+	 * @return the number of matching service infos
+	 */
+	@Override
+	public int countByGI_PUB_SID(long groupId, boolean public_,
+		long[] serviceInfoIds) {
+		if (serviceInfoIds == null) {
+			serviceInfoIds = new long[0];
+		}
+		else if (serviceInfoIds.length > 1) {
+			serviceInfoIds = ArrayUtil.unique(serviceInfoIds);
+
+			Arrays.sort(serviceInfoIds);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, public_, StringUtil.merge(serviceInfoIds)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GI_PUB_SID,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_SERVICEINFO_WHERE);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GI_PUB_SID_PUBLIC__2);
+
+			if (serviceInfoIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_7);
+
+				query.append(StringUtil.merge(serviceInfoIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(public_);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GI_PUB_SID,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_GI_PUB_SID,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GI_PUB_SID_GROUPID_2 = "serviceInfo.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GI_PUB_SID_PUBLIC__2 = "serviceInfo.public_ = ? AND ";
+	private static final String _FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_2 = "serviceInfo.serviceInfoId = ?";
+	private static final String _FINDER_COLUMN_GI_PUB_SID_SERVICEINFOID_7 = "serviceInfo.serviceInfoId IN (";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_GID_SC = new FinderPath(ServiceInfoModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceInfoModelImpl.FINDER_CACHE_ENABLED, ServiceInfoImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_GID_SC",
@@ -5186,6 +5928,16 @@ public class ServiceInfoPersistenceImpl extends BasePersistenceImpl<ServiceInfo>
 
 			args = new Object[] {
 					serviceInfoModelImpl.getGroupId(),
+					serviceInfoModelImpl.isPublic_(),
+					serviceInfoModelImpl.getServiceInfoId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GI_PUB_SID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID,
+				args);
+
+			args = new Object[] {
+					serviceInfoModelImpl.getGroupId(),
 					serviceInfoModelImpl.getServiceCode()
 				};
 
@@ -5310,6 +6062,29 @@ public class ServiceInfoPersistenceImpl extends BasePersistenceImpl<ServiceInfo>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GI_PUB, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB,
+					args);
+			}
+
+			if ((serviceInfoModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serviceInfoModelImpl.getOriginalGroupId(),
+						serviceInfoModelImpl.getOriginalPublic_(),
+						serviceInfoModelImpl.getOriginalServiceInfoId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GI_PUB_SID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID,
+					args);
+
+				args = new Object[] {
+						serviceInfoModelImpl.getGroupId(),
+						serviceInfoModelImpl.isPublic_(),
+						serviceInfoModelImpl.getServiceInfoId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_GI_PUB_SID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GI_PUB_SID,
 					args);
 			}
 

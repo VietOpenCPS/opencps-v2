@@ -1396,6 +1396,84 @@ public class ProcessActionUtil {
 	}
 
 	/**
+	* Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
+	*
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param actionCode the action code
+	* @return the matching process action
+	* @throws NoSuchProcessActionException if a matching process action could not be found
+	*/
+	public static ProcessAction findBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessActionException {
+		return getPersistence()
+				   .findBySPI_PRESC_AC(serviceProcessId, preStepCode, actionCode);
+	}
+
+	/**
+	* Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param actionCode the action code
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public static ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode) {
+		return getPersistence()
+				   .fetchBySPI_PRESC_AC(serviceProcessId, preStepCode,
+			actionCode);
+	}
+
+	/**
+	* Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param actionCode the action code
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching process action, or <code>null</code> if a matching process action could not be found
+	*/
+	public static ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode, boolean retrieveFromCache) {
+		return getPersistence()
+				   .fetchBySPI_PRESC_AC(serviceProcessId, preStepCode,
+			actionCode, retrieveFromCache);
+	}
+
+	/**
+	* Removes the process action where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63; from the database.
+	*
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param actionCode the action code
+	* @return the process action that was removed
+	*/
+	public static ProcessAction removeBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode)
+		throws org.opencps.dossiermgt.exception.NoSuchProcessActionException {
+		return getPersistence()
+				   .removeBySPI_PRESC_AC(serviceProcessId, preStepCode,
+			actionCode);
+	}
+
+	/**
+	* Returns the number of process actions where serviceProcessId = &#63; and preStepCode = &#63; and actionCode = &#63;.
+	*
+	* @param serviceProcessId the service process ID
+	* @param preStepCode the pre step code
+	* @param actionCode the action code
+	* @return the number of matching process actions
+	*/
+	public static int countBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode) {
+		return getPersistence()
+				   .countBySPI_PRESC_AC(serviceProcessId, preStepCode,
+			actionCode);
+	}
+
+	/**
 	* Returns the process action where serviceProcessId = &#63; and preStepCode = &#63; and autoEvent = &#63; or throws a {@link NoSuchProcessActionException} if it could not be found.
 	*
 	* @param serviceProcessId the service process ID

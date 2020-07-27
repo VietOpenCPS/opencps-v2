@@ -74,6 +74,11 @@
 			<finder-column name="groupId" />
 			<finder-column name="public_" />
 		</finder>
+		<finder name="GI_PUB_SID" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="public_" />
+			<finder-column name="serviceInfoId" arrayable-operator="OR"/>
+		</finder>
 		<finder name="F_GID_SC" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="serviceCode" arrayable-operator="OR"/>
@@ -589,6 +594,8 @@
 		<column name="vnpostalProfile" type="String" />
 		<column name="fromViaPostal" type="int" />
 		<column name="multipleCheck" type="String" />
+		<column name="postalCodeSend" type="String" />
+		<column name="postalCodeReceived" type="String" />
 		
 		<!-- Order -->
 		
@@ -701,6 +708,18 @@
 		</finder>
 		<finder return-type="Dossier" name="DO_NO">
 			<finder-column name="dossierNo" />
+		</finder>
+		<finder return-type="Dossier" name="DO_NO_GROUP">
+			<finder-column name="dossierNo" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder return-type="Dossier" name="DO_POST_SEND_GROUP">
+			<finder-column name="postalCodeSend" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder return-type="Dossier" name="DO_POST_RECEIVED_GROUP">
+			<finder-column name="postalCodeReceived" />
+			<finder-column name="groupId" />
 		</finder>
 
 		<finder return-type="Collection" name="G_AN">
@@ -1263,6 +1282,9 @@
 		<finder return-type="Collection" name="SPS">
 			<finder-column name="serviceProcessId" arrayable-operator="OR" comparator="="/>
 		</finder>
+		<finder return-type="Collection" name="R_ID">
+			<finder-column name="roleId" arrayable-operator="OR" comparator="="/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="ProcessStep" remote-service="false" 
@@ -1526,6 +1548,12 @@
 		<finder return-type="Collection" name="POST_CODE">
 			<finder-column name="postStepCode" />
 			<finder-column name="groupId" />
+		</finder>
+
+		<finder return-type="ProcessAction" name="SPI_PRESC_AC">
+			<finder-column name="serviceProcessId" />
+			<finder-column name="preStepCode" />
+			<finder-column name="actionCode" />
 		</finder>
 
 		<finder return-type="ProcessAction" name="SPI_PRESC_AEV">

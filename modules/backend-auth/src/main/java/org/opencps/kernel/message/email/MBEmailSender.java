@@ -18,5 +18,12 @@ public interface MBEmailSender extends MBMessageSender {
 
 	}
 
+	@Override
+	default void sendLGSP(
+		MBMessageEntry messageEntry, String portletId,
+		ServiceContext... ServiceContext) {
+
+	}
+
 	boolean send(MBMessageEntry messageEntry, String contactEmail);
 }

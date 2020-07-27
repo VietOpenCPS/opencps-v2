@@ -65,6 +65,7 @@ import org.opencps.api.user.model.UserSitesResults;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.communication.utils.LGSPRestfulUtils;
 import org.opencps.kernel.prop.PropValues;
 import org.opencps.usermgt.action.JobposInterface;
 import org.opencps.usermgt.action.UserInterface;
@@ -495,41 +496,42 @@ public class UserManagementImpl implements UserManagement {
 				String secretKey = StringPool.BLANK;
 				try {
 					/** Get Token */
-					String strToken = ApplicantUtils.getTokenNewLGSP();
-					_log.debug("RESULT PROXY: " + strToken);
-					if (Validator.isNotNull(strToken)) {
-						JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-						//
-						if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-								&& jsonToken.has("expiryDate")) {
-							String accessToken = jsonToken.getString("token");
-							String refreshToken = jsonToken.getString("refreshToken");
+					// String strToken = ApplicantUtils.getTokenNewLGSP();
+					// _log.debug("RESULT PROXY: " + strToken);
+					// if (Validator.isNotNull(strToken)) {
+					// JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+					//
+					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+							&& jsonToken.has("expiryDate")) {
+						String accessToken = jsonToken.getString("token");
+						String refreshToken = jsonToken.getString("refreshToken");
 
-							_log.info("accessToken: " + accessToken);
-							_log.info("refreshToken: " + refreshToken);
+						_log.info("accessToken: " + accessToken);
+						_log.info("refreshToken: " + refreshToken);
 
-							String strResult = RegisterLGSPUtils.forgotNewLGSP("Bearer", accessToken, screenname_email);
-							
-							boolean flagFogot = false;
-							if (Validator.isNotNull(strResult)) {
-								JSONObject jsonResult = JSONFactoryUtil.createJSONObject(strResult);
-								if (jsonResult != null && jsonResult.has("password") && jsonResult.has("userName")
-										&& Validator.isNotNull(jsonResult.getString("password")) && 
-										Validator.isNotNull(jsonResult.getString("userName"))) {
-									flagFogot = true;
-									secretKey = jsonResult.getString("password");
-								}
-							}
+						String strResult = RegisterLGSPUtils.forgotNewLGSP("Bearer", accessToken, screenname_email);
 
-							if (!flagFogot) {
-								ErrorMsgModel error = new ErrorMsgModel();
-								error.setMessage("Change pass error");
-								error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-								error.setDescription("Change pass error");
-								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+						boolean flagFogot = false;
+						if (Validator.isNotNull(strResult)) {
+							JSONObject jsonResult = JSONFactoryUtil.createJSONObject(strResult);
+							if (jsonResult != null && jsonResult.has("password") && jsonResult.has("userName")
+									&& Validator.isNotNull(jsonResult.getString("password"))
+									&& Validator.isNotNull(jsonResult.getString("userName"))) {
+								flagFogot = true;
+								secretKey = jsonResult.getString("password");
 							}
 						}
+
+						if (!flagFogot) {
+							ErrorMsgModel error = new ErrorMsgModel();
+							error.setMessage("Change pass error");
+							error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+							error.setDescription("Change pass error");
+							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
+						}
 					}
+					// }
 				} catch (Exception e) {
 					_log.error(e);
 					_log.debug("Something went wrong while reading/writing in stream!!");
@@ -814,82 +816,53 @@ public class UserManagementImpl implements UserManagement {
 			boolean syncUserLGSP = Validator.isNotNull(PropsUtil.get("opencps.register.lgsp"))
 					? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 			if (syncUserLGSP) {
-				StringBuilder sbToken = new StringBuilder();
-				try {
 
-					URL urlToken = new URL(UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_TOKEN);
+				JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+				if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+						&& jsonToken.has("expiryDate")) {
 
-					java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
-					conToken.setRequestMethod(HttpMethod.POST);
-					conToken.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-					conToken.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-					conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
-					conToken.setRequestProperty("Content-Length", String.valueOf(0));
+					String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_PASS;
+					_log.info("strUrlChange: " + strUrlChange);
+					String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
+					_log.info("authStrEnc: " + authStrEnc);
 
-					conToken.setUseCaches(false);
-					conToken.setDoInput(true);
-					conToken.setDoOutput(true);
-					
-					OutputStream os = conToken.getOutputStream();
-					os.close();
+					StringBuilder sbChange = new StringBuilder();
+					try {
+						URL urlChange = new URL(strUrlChange);
 
-					BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
+						JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+						jsonBody.put(UserRegisterTerm.USER_NAME, user.getEmailAddress());
+						jsonBody.put(UserRegisterTerm.OLD_SECRECT_KEY, oldPassword);
+						jsonBody.put(UserRegisterTerm.SECRECT_KEY, newPassword);
+						//
 
-					int cpToken;
-					while ((cpToken = brfToken.read()) != -1) {
-						sbToken.append((char) cpToken);
-					}
-				} catch (Exception e) {
-					_log.debug(e);
-				}
+						java.net.HttpURLConnection conChange = (java.net.HttpURLConnection) urlChange.openConnection();
+						conChange.setRequestMethod(HttpMethod.POST);
+						conChange.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+						conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+						conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+						_log.debug("BASIC AUTHEN: " + authStrEnc);
+						conChange.setRequestProperty("Content-Length",
+								StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
-				if (sbToken != null && Validator.isNotNull(sbToken.toString())) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
-					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-							&& jsonToken.has("expiryDate")) {
+						conChange.setUseCaches(false);
+						conChange.setDoInput(true);
+						conChange.setDoOutput(true);
+						_log.debug("POST DATA: " + jsonBody.toString());
+						OutputStream osChange = conChange.getOutputStream();
+						osChange.write(jsonBody.toString().getBytes());
+						osChange.close();
 
-						String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_PASS;
-						_log.info("strUrlChange: "+ strUrlChange);
-						String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
-						_log.info("authStrEnc: "+ authStrEnc);
-						
-						StringBuilder sbChange = new StringBuilder();
-						try {
-							URL urlChange = new URL(strUrlChange);
+						BufferedReader brfChange = new BufferedReader(
+								new InputStreamReader(conChange.getInputStream()));
 
-							JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
-							jsonBody.put(UserRegisterTerm.USER_NAME, user.getEmailAddress());
-							jsonBody.put(UserRegisterTerm.OLD_SECRECT_KEY, oldPassword);
-							jsonBody.put(UserRegisterTerm.SECRECT_KEY, newPassword);
-							//
-
-							java.net.HttpURLConnection conChange = (java.net.HttpURLConnection) urlChange.openConnection();
-							conChange.setRequestMethod(HttpMethod.POST);
-							conChange.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-							conChange.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-							conChange.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-							_log.debug("BASIC AUTHEN: " + authStrEnc);
-							conChange.setRequestProperty("Content-Length",
-									StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
-
-							conChange.setUseCaches(false);
-							conChange.setDoInput(true);
-							conChange.setDoOutput(true);
-							_log.debug("POST DATA: " + jsonBody.toString());
-							OutputStream osChange = conChange.getOutputStream();
-							osChange.write(jsonBody.toString().getBytes());
-							osChange.close();
-
-							BufferedReader brfChange = new BufferedReader(new InputStreamReader(conChange.getInputStream()));
-
-							int cpChange;
-							while ((cpChange = brfChange.read()) != -1) {
-								sbChange.append((char) cpChange);
-							}
-							_log.info("RESULT PROXY: " + sbChange.toString());
-						} catch (Exception e) {
-							// TODO: handle exception
+						int cpChange;
+						while ((cpChange = brfChange.read()) != -1) {
+							sbChange.append((char) cpChange);
 						}
+						_log.info("RESULT PROXY: " + sbChange.toString());
+					} catch (Exception e) {
+						// TODO: handle exception
 					}
 				}
 			}

@@ -34,17 +34,21 @@ import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.lgsp.model.MResult;
 import org.opencps.dossiermgt.lgsp.model.Mtoken;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.PublishQueue;
 import org.opencps.dossiermgt.rest.model.DossierDetailModel;
+import org.opencps.dossiermgt.rest.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.rest.utils.LGSPRestClient;
 import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
 import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.Activate;
@@ -123,6 +127,39 @@ public class PublishEventScheduler extends BaseMessageListener {
 							.fromJSONObject(JSONFactoryUtil.createJSONObject(sc.getConfigs()));
 					DossierDetailModel result = client.publishDossier(OpenCPSConverter.convertDossierPublish(
 							DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())));
+
+					PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
+					if (result.getDossierId() != null && paymentFile != null && (paymentFile.getPaymentStatus() == 2)) { //|| paymentFile.getPaymentStatus() == 5
+
+						PaymentFileInputModel pfiModel = new PaymentFileInputModel();
+						pfiModel.setApplicantIdNo(dossier.getApplicantIdNo());
+						pfiModel.setApplicantName(dossier.getApplicantName());
+						pfiModel.setBankInfo(paymentFile.getBankInfo());
+						pfiModel.setEpaymentProfile(paymentFile.getEpaymentProfile());
+						pfiModel.setGovAgencyCode(dossier.getGovAgencyCode());
+						pfiModel.setGovAgencyName(dossier.getGovAgencyName());
+						pfiModel.setPaymentAmount(paymentFile.getPaymentAmount());
+						pfiModel.setPaymentFee(paymentFile.getPaymentFee());
+						pfiModel.setPaymentNote(paymentFile.getPaymentNote());
+						pfiModel.setReferenceUid(paymentFile.getReferenceUid());
+						if (Validator.isNotNull(dossier.getOriginDossierNo())) {
+							if (pfiModel.getReferenceUid().contains(DossierTerm.PREFIX_UUID)) {
+								String newRef = pfiModel.getReferenceUid().substring(DossierTerm.PREFIX_UUID.length());
+								pfiModel.setReferenceUid(newRef);
+							}
+						}
+						
+						pfiModel.setFeeAmount(paymentFile.getFeeAmount());
+						pfiModel.setInvoiceTemplateNo(paymentFile.getInvoiceTemplateNo());
+						pfiModel.setPaymentStatus(paymentFile.getPaymentStatus());
+						pfiModel.setAdvanceAmount(paymentFile.getAdvanceAmount());
+						pfiModel.setServiceAmount(paymentFile.getServiceAmount());
+						pfiModel.setShipAmount(paymentFile.getShipAmount());
+						
+						//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
+						client.postPaymentFiles(pfiModel.getReferenceUid(), pfiModel);
+					}
+					
 					if (client.isWriteLog()) {
 						String messageText = DossierMgtUtils.convertDossierToJSON(dossier, dossier.getDossierActionId())
 								.toJSONString();

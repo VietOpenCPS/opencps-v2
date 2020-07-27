@@ -5,8 +5,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -14,16 +12,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Date;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-import org.opencps.usermgt.constants.ApplicantTerm;
 import org.opencps.usermgt.constants.UserRegisterTerm;
-import org.opencps.usermgt.service.SyncSchedulerLocalServiceUtil;
-import org.opencps.usermgt.service.util.PasswordEncrypt;
 
 public class RegisterLGSPUtils {
 

@@ -326,7 +326,7 @@ public interface DeliverablesManagement {
 		@Context ServiceContext serviceContext);
 
 	@POST
-	@Path("/deliverables/import/files-deprecate")
+	@Path("/deliverables/import/files")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -366,7 +366,7 @@ public interface DeliverablesManagement {
 		@ApiParam(value = "id of Deliverable", required = true) @PathParam("id") Long id);
 
 	@POST
-	@Path("/deliverables/import/files")
+	@Path("/deliverables/import/files-deprecate")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON

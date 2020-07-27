@@ -1,16 +1,20 @@
 
 package org.opencps.api.controller.util;
 
+import com.google.gson.JsonArray;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.activation.DataHandler;
+
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -27,17 +34,19 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.deliverable.model.DeliverableInputModel;
 import org.opencps.api.deliverable.model.DeliverableModel;
 import org.opencps.api.deliverable.model.DeliverableUpdateModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 
 public class DeliverableUtils {
 
-	public static List<DeliverableModel> mappingToDeliverableResultModel(
-		List<Document> documents) {
+	public static List<DeliverableModel> mappingToDeliverableResultModel(List<Document> documents) {
 
 		List<DeliverableModel> data = new ArrayList<DeliverableModel>();
 
@@ -53,34 +62,27 @@ public class DeliverableUtils {
 
 		DeliverableModel model = new DeliverableModel();
 
-		model.setDeliverableId(
-			Long.valueOf(doc.get(DeliverableTerm.DELIVERABLE_ID)));
+		model.setDeliverableId(Long.valueOf(doc.get(DeliverableTerm.DELIVERABLE_ID)));
 		model.setUserId(Long.valueOf(doc.get(Field.USER_ID)));
 		model.setUserName(doc.get(Field.USER_NAME));
 		// Convert Date to String
 		String strCreateDate = doc.get(Field.CREATE_DATE);
 		Date createDate = null;
 		if (Validator.isNotNull(strCreateDate)) {
-			createDate = APIDateTimeUtils.convertStringToDate(
-				strCreateDate, APIDateTimeUtils._LUCENE_PATTERN);
+			createDate = APIDateTimeUtils.convertStringToDate(strCreateDate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setCreateDate(
-			createDate != null
-				? APIDateTimeUtils.convertDateToString(
-					createDate, APIDateTimeUtils._TIMESTAMP)
-				: strCreateDate);
+				createDate != null ? APIDateTimeUtils.convertDateToString(createDate, APIDateTimeUtils._TIMESTAMP)
+						: strCreateDate);
 
 		String strModifiedDate = doc.get(Field.MODIFIED_DATE);
 		Date modifiedDate = null;
 		if (Validator.isNotNull(strModifiedDate)) {
-			modifiedDate = APIDateTimeUtils.convertStringToDate(
-				strModifiedDate, APIDateTimeUtils._LUCENE_PATTERN);
+			modifiedDate = APIDateTimeUtils.convertStringToDate(strModifiedDate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setModifiedDate(
-			modifiedDate != null
-				? APIDateTimeUtils.convertDateToString(
-					modifiedDate, APIDateTimeUtils._TIMESTAMP)
-				: strModifiedDate);
+				modifiedDate != null ? APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._TIMESTAMP)
+						: strModifiedDate);
 
 		model.setDeliverableCode(doc.get(DeliverableTerm.DELIVERABLE_CODE));
 		model.setDeliverableName(doc.get(DeliverableTerm.DELIVERABLE_NAME));
@@ -95,17 +97,13 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strIssueDate)) {
 			// _log.info("SUBMIT_DATE_DATEEEEEE:
 			// "+doc.get(DossierTerm.SUBMIT_DATE));
-			Date issueDate = APIDateTimeUtils.convertStringToDate(
-				strIssueDate, APIDateTimeUtils._LUCENE_PATTERN);
+			Date issueDate = APIDateTimeUtils.convertStringToDate(strIssueDate, APIDateTimeUtils._LUCENE_PATTERN);
 			// _log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
-			model.setIssueDate(
-				APIDateTimeUtils.convertDateToString(
-					issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			model.setIssueDate(APIDateTimeUtils.convertDateToString(issueDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			// _log.info("SUBMIT_DATE_CONVERT:
 			// "+APIDateTimeUtils.convertDateToString(submitDate,
 			// APIDateTimeUtils._NORMAL_PARTTERN));
-		}
-		else {
+		} else {
 			model.setIssueDate(strIssueDate);
 		}
 
@@ -113,39 +111,31 @@ public class DeliverableUtils {
 		if (Validator.isNotNull(strExpireDate)) {
 			// _log.info("SUBMIT_DATE_DATEEEEEE:
 			// "+doc.get(DossierTerm.SUBMIT_DATE));
-			Date expireDate = APIDateTimeUtils.convertStringToDate(
-				strExpireDate, APIDateTimeUtils._LUCENE_PATTERN);
+			Date expireDate = APIDateTimeUtils.convertStringToDate(strExpireDate, APIDateTimeUtils._LUCENE_PATTERN);
 			// _log.info("SUBMIT_DATE_DATEEEEEE: "+submitDate);
-			model.setExpireDate(
-				APIDateTimeUtils.convertDateToString(
-					expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			model.setExpireDate(APIDateTimeUtils.convertDateToString(expireDate, APIDateTimeUtils._NORMAL_PARTTERN));
 			// _log.info("SUBMIT_DATE_CONVERT:
 			// "+APIDateTimeUtils.convertDateToString(submitDate,
 			// APIDateTimeUtils._NORMAL_PARTTERN));
-		}
-		else {
+		} else {
 			model.setExpireDate(strExpireDate);
 		}
 
 		String strRevalidate = doc.get(DeliverableTerm.REVALIDATE);
 		Date revalidate = null;
 		if (Validator.isNotNull(strRevalidate)) {
-			revalidate = APIDateTimeUtils.convertStringToDate(
-				strRevalidate, APIDateTimeUtils._LUCENE_PATTERN);
+			revalidate = APIDateTimeUtils.convertStringToDate(strRevalidate, APIDateTimeUtils._LUCENE_PATTERN);
 		}
 		model.setRevalidate(
-			revalidate != null
-				? APIDateTimeUtils.convertDateToString(
-					revalidate, APIDateTimeUtils._TIMESTAMP)
-				: strRevalidate);
+				revalidate != null ? APIDateTimeUtils.convertDateToString(revalidate, APIDateTimeUtils._TIMESTAMP)
+						: strRevalidate);
 
 		model.setDeliverableState(doc.get(DeliverableTerm.DELIVERABLE_STATE));
 
 		return model;
 	}
 
-	public static DeliverableInputModel mappingToDeliverablesModel(
-		Deliverable deliverable) {
+	public static DeliverableInputModel mappingToDeliverablesModel(Deliverable deliverable) {
 
 		if (deliverable == null) {
 			return null;
@@ -159,22 +149,17 @@ public class DeliverableUtils {
 		model.setApplicantName(deliverable.getApplicantName());
 		model.setSubject(deliverable.getSubject());
 		model.setIssueDate(
-			APIDateTimeUtils.convertDateToString(
-				deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
+				APIDateTimeUtils.convertDateToString(deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setExpireDate(
-			APIDateTimeUtils.convertDateToString(
-				deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
+				APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 		model.setRevalidate(
-			APIDateTimeUtils.convertDateToString(
-				deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
-		model.setDeliverableState(
-			String.valueOf(deliverable.getDeliverableState()));
+				APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
+		model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 		return model;
 	}
 
-	public static DeliverableModel mappingToDeliverableDetailModel(
-		Deliverable deliverable) {
+	public static DeliverableModel mappingToDeliverableDetailModel(Deliverable deliverable) {
 
 		if (deliverable != null) {
 			DeliverableModel model = new DeliverableModel();
@@ -184,12 +169,9 @@ public class DeliverableUtils {
 			model.setUserName(deliverable.getUserName());
 			// Convert Date to String
 			model.setCreateDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getCreateDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setModifiedDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getModifiedDate(),
-					APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getModifiedDate(), APIDateTimeUtils._TIMESTAMP));
 
 			model.setDeliverableCode(deliverable.getDeliverableCode());
 			model.setDeliverableName(deliverable.getDeliverableName());
@@ -201,62 +183,48 @@ public class DeliverableUtils {
 			model.setSubject(deliverable.getSubject());
 			// Convert Date to String
 			model.setModifiedDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setModifiedDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setModifiedDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
 
-			model.setDeliverableState(
-				String.valueOf(deliverable.getDeliverableState()));
+			model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 			return model;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
 
-	public static DeliverableUpdateModel mappingToDeliverablesUpdateModel(
-		Deliverable deliverable) {
+	public static DeliverableUpdateModel mappingToDeliverablesUpdateModel(Deliverable deliverable) {
 
 		if (deliverable != null) {
 			DeliverableUpdateModel model = new DeliverableUpdateModel();
 
 			model.setSubject(deliverable.getSubject());
 			model.setIssueDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getIssueDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setExpireDate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
+					APIDateTimeUtils.convertDateToString(deliverable.getExpireDate(), APIDateTimeUtils._TIMESTAMP));
 			model.setRevalidate(
-				APIDateTimeUtils.convertDateToString(
-					deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
-			model.setDeliverableState(
-				String.valueOf(deliverable.getDeliverableState()));
+					APIDateTimeUtils.convertDateToString(deliverable.getRevalidate(), APIDateTimeUtils._TIMESTAMP));
+			model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
-			model.setDeliverableState(
-				String.valueOf(deliverable.getDeliverableState()));
+			model.setDeliverableState(String.valueOf(deliverable.getDeliverableState()));
 
 			return model;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
 
-	public static String mappingToDeliverableFormDataModel(
-		List<Document> documents) {
+	public static String mappingToDeliverableFormDataModel(List<Document> documents) {
 
 		Document doc = documents.get(0);
 		if (doc != null) {
 			return doc.get(DeliverableTerm.FORM_DATA);
-		}
-		else {
+		} else {
 			return null;
 		}
 
@@ -281,14 +249,10 @@ public class DeliverableUtils {
 				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
 				for (int i = 0; i < nOfColumns; i++) {
 					Cell celli = datatypeSheetOne.getRow(0).getCell(i);
-					if (Validator.isNotNull(celli) &&
-						Validator.isNotNull(celli.getStringCellValue())) {
-						formDataFormat.put(
-							String.valueOf(i),
-							datatypeSheetOne.getRow(0).getCell(
-								i).getStringCellValue());
-					}
-					else {
+					if (Validator.isNotNull(celli) && Validator.isNotNull(celli.getStringCellValue())) {
+						formDataFormat.put(String.valueOf(i),
+								datatypeSheetOne.getRow(0).getCell(i).getStringCellValue());
+					} else {
 						nOfColumns = i - 1;
 						break;
 					}
@@ -300,35 +264,29 @@ public class DeliverableUtils {
 					if (currentRow != null) {
 
 						// todo convert
-						JSONObject deliverable = convertRowToDeliverable(
-							currentRow, nOfColumns, formDataFormat);
-						if (Validator.isNotNull(deliverable)) {
-
-							results.put(deliverable);
+						JSONObject deliverableObj = convertRowToDeliverable(currentRow, nOfColumns, formDataFormat);
+						if (Validator.isNotNull(deliverableObj)) {
+							results.put(deliverableObj);
 						}
 					}
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			_log.debug(e);
-		}
-		finally {
+		} finally {
 			if (workbook != null) {
 				try {
 					workbook.close();
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 //					e.printStackTrace();
-					 _log.debug(e);
+					_log.debug(e);
 				}
 			}
 		}
 		return results;
 	}
 
-	public static JSONObject convertRowToDeliverable(
-		Row currentRow, int nOfColumns, JSONObject formDataFormat) {
+	public static JSONObject convertRowToDeliverable(Row currentRow, int nOfColumns, JSONObject formDataFormat) {
 
 		JSONObject formData = JSONFactoryUtil.createJSONObject();
 		JSONObject deliverableObj = JSONFactoryUtil.createJSONObject();
@@ -336,19 +294,13 @@ public class DeliverableUtils {
 		try {
 			for (int i = 0; i <= nOfColumns; i++) {
 
-				formData.put(
-					formDataFormat.getString(String.valueOf(i)),
-					getCellValue(currentRow.getCell(i)));
-				deliverableObj.put(
-					formDataFormat.getString(String.valueOf(i)),
-					getCellValue(currentRow.getCell(i)));
+				formData.put(formDataFormat.getString(String.valueOf(i)), getCellValue(currentRow.getCell(i)));
+				deliverableObj.put(formDataFormat.getString(String.valueOf(i)), getCellValue(currentRow.getCell(i)));
 			}
-
 			deliverableObj.put("formData", formData);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 //			e.printStackTrace();
-			 _log.debug(e);
+			_log.debug(e);
 		}
 
 		return deliverableObj;
@@ -359,29 +311,22 @@ public class DeliverableUtils {
 		if (cell == null) {
 
 			return null;
-		}
-		else if (CellType.STRING == cell.getCellType()) {
+		} else if (CellType.STRING == cell.getCellType()) {
 
 			return cell.getStringCellValue();
-		}
-		else if (CellType.BOOLEAN == cell.getCellType()) {
+		} else if (CellType.BOOLEAN == cell.getCellType()) {
 
 			return cell.getBooleanCellValue();
-		}
-		else if (CellType.ERROR == cell.getCellType()) {
+		} else if (CellType.ERROR == cell.getCellType()) {
 
 			return cell.getErrorCellValue();
-		}
-		else if (CellType.NUMERIC == cell.getCellType()) {
+		} else if (CellType.NUMERIC == cell.getCellType()) {
 
 			return cell.getNumericCellValue();
-		}
-		else if (DateUtil.isCellDateFormatted(cell)) {
+		} else if (DateUtil.isCellDateFormatted(cell)) {
 
-			return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
-				cell.getDateCellValue());
-		}
-		else {
+			return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(cell.getDateCellValue());
+		} else {
 
 			return null;
 		}
@@ -402,23 +347,100 @@ public class DeliverableUtils {
 			}
 			if (in != null)
 				in.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 //			e.printStackTrace();
 			_log.debug(e);
-		}
-		finally {
+		} finally {
 			if (out != null || in != null) {
 				try {
-					if (out != null) out.close();
-					if (in != null) in.close();
-				}
-				catch (IOException e) {
+					if (out != null)
+						out.close();
+					if (in != null)
+						in.close();
+				} catch (IOException e) {
 					_log.debug(e);
 //					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	public static JSONArray readZipDeliverabe(Attachment file, long userId, long groupId,
+			long companyId, String userName, ServiceContext serviceContext) {
+
+		JSONArray deliverablesArr = JSONFactoryUtil.createJSONArray();
+		try {
+			DataHandler dataHandle = file.getDataHandler();
+			InputStream fileInputStream = dataHandle.getInputStream();
+			String fileName = dataHandle.getName();
+			String pathFolder = ImportZipFileUtils.getFolderPath(fileName, ConstantUtils.DEST_DIRECTORY);
+			File fileOld = new File(pathFolder);
+			_log.info("fileOld: " + fileOld);
+			if (fileOld.exists()) {
+				boolean flag = ReadXMLFileUtils.deleteFilesForParentFolder(fileOld);
+				_log.info("LamTV_Delete DONE: " + flag);
+			}
+			ImportZipFileUtils.unzip(fileInputStream, ConstantUtils.DEST_DIRECTORY);
+
+			File fileList = new File(pathFolder);
+
+			for (File fileEntry : fileList.listFiles()) {
+
+				_log.info("excelFile: " + fileEntry);
+				_log.info("LamTV_fileList: " + fileEntry.getPath());
+
+				if (fileEntry.isDirectory()) {
+					System.out.println("folder " + fileEntry.getName());
+				} else {
+					if ("xls".equals(ImportZipFileUtils.getExtendFileName(fileEntry.getName()))
+							|| "xlsx".equals(ImportZipFileUtils.getExtendFileName(fileEntry.getName()))) {
+
+						FileInputStream excelInputStream = new FileInputStream(fileEntry);
+						deliverablesArr = readExcelDeliverable(excelInputStream);
+						for (int i = 0; i < deliverablesArr.length(); i++) {
+
+							JSONObject deliverable = deliverablesArr.getJSONObject(i);
+
+							if (Validator.isNotNull(deliverable.get(DeliverableTerm.DELIVERABLE_CODE))) {
+
+								Deliverable deliverableObj =
+									DeliverableLocalServiceUtil.getByF_GID_DCODE(
+										groupId, deliverable.getString(DeliverableTerm.DELIVERABLE_CODE));
+
+								deliverable.put(
+									DeliverableTerm.DELIVERABLE_ID, Validator.isNotNull(deliverableObj)
+										? deliverableObj.getDeliverableId() : 0);
+								deliverable.put(Field.GROUP_ID, groupId);
+								deliverable.put(Field.USER_ID, userId);
+								deliverable.put(Field.COMPANY_ID, companyId);
+								deliverable.put(Field.USER_NAME, userName);
+								deliverable.put(DeliverableTerm.FILE_ATTACH, false);
+								if (Validator.isNotNull(pathFolder) && deliverable.has("filePath") && Validator.isNotNull(deliverable.getString("filePath"))) {
+
+									File fileAttach = new File(pathFolder + "/" + deliverable.getString("filePath"));
+									System.out.println("fileAttach.getName()==========="+ fileAttach.getName());
+									System.out.println("fileAttach.getTotalSpace()================="+fileAttach.getTotalSpace());
+									FileEntry fileEntryAttach = FileUploadUtils.uploadDossierFile(
+										userId, groupId, fileAttach, pathFolder + "/" + deliverable.getString("filePath"),
+										serviceContext);
+	
+									JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+									formData.put(DeliverableTerm.FILE_ATTACHS, fileEntryAttach.getFileEntryId());
+									deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
+									deliverable.put(DeliverableTerm.FILE_ATTACHS, fileEntryAttach.getFileEntryId());
+									deliverable.put(DeliverableTerm.FILE_ENTRY_ID, fileEntryAttach.getFileEntryId());
+								}
+								DeliverableLocalServiceUtil.adminProcessData(deliverable);
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// _log.error(e);
+		}
+		return deliverablesArr;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(DeliverableUtils.class);

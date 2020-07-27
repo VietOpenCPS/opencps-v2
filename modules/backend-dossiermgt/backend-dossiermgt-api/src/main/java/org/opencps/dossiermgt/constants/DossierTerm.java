@@ -88,6 +88,7 @@ public class DossierTerm {
 	public static final String ACTION_USERIDS = "actionUserIds";
 	public static final String ASSIGNED_USER_ID = "assignedUserId";
 	public static final String ASSIGNED_USER_ID_SEARCH = "assignedUserIdSearch";
+	public static final String IS_SAME_APPLICANT = "isSameAsApplicant";
 	
 	public static final String STATUS = "status";
 	public static final String SUBSTATUS = "subStatus";
@@ -218,6 +219,7 @@ public class DossierTerm {
 	public static final String COMING = "coming";
 	public static final String DUE_DATE_COMING = "dueDateComing";
 	public static final String QUA_HAN = "passed";
+	public static final String DANG_XU_LY = "doing";
 	public static final String USER_DOSSIER_ACTION_ID = "userIdAction";
 	public static final String EMAIL_USER_LOGIN = "emailUserLogin";
 	public static final String EMAIL_DEFAULT = "default@liferay.com";
@@ -245,6 +247,8 @@ public class DossierTerm {
 	public static final String ACTION_CODE_GOTO = "9999";
 	public static final int CONSTANT_INDEX_ORIGINALITY = 99;
 	public static final String DATE_OPTION = "dateOption";
+	public static final String DATE_OPTION_RECEIVER = "dateOptionReceiver";
+	public static final String DATE_OPTION_DURATION = "dateOptionDuration";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
 	public static final int DATE_OPTION_TWO = 2;
@@ -385,6 +389,22 @@ public class DossierTerm {
 	public static final String DON_VI_GUI = "donvigui";
 	public static final String DON_VI_NHAN = "donvinhan";
 	public static final String SCOPE_ = "_scope";
+	public static final String FIRTSCOPE = "firtscope";
+	public static final String POSTAL_CODE_RECEIVED = "postalCodeReceived";
+	public static final String POSTAL_CODE_SEND = "postalCodeSend";
+	
+	public static final int VIA_POSTAL_DISABLE = 0;
+	public static final int VIA_POSTAL_UNSELECTED = 1;
+	public static final int VIA_POSTAL_SELECTED = 2;
+	public static final int VIA_POSTAL_SENDED = 3;
+	public static final int VIA_POSTAL_RECEIVED = 4;
+	
 	public static final String FIRSTSCOPE = "firstscope";
 	public static final String _FIRSTSCOPE = "_firstscope";
+	public static final String MA_TO_KHAI_INDEXER = "ma_to_khai";
+	public static final String MA_TO_KHAI = "matokhai";
+	public static final String DOING_ACTION_USER_ID = "doingActionUserId";
+	public static final String VNPOST_CLS = "VNPOST_CLS";
+	public static final String URL_VIA_POST = "apiGetVnPost";
+	public static final String TOKEN_VN_POST = "tokenVnPost";
 }

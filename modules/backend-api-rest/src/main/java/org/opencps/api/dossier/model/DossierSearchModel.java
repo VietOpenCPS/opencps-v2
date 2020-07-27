@@ -292,6 +292,37 @@ public class DossierSearchModel {
 	protected boolean groupServiceCode;
 	@QueryParam(value = "searchGovAgencyCode")
 	protected String searchGovAgencyCode;
+	@QueryParam(value = "istheViaPostal")
+	@DefaultValue("false")
+	protected boolean istheViaPostal;
+	@QueryParam(value = "postalCodeSend")
+	protected String postalCodeSend;
+	@QueryParam(value = "postalCodeReceived")
+	protected String postalCodeReceived;
+
+	public String getPostalCodeSend() {
+		return postalCodeSend;
+	}
+
+	public void setPostalCodeSend(String postalCodeSend) {
+		this.postalCodeSend = postalCodeSend;
+	}
+
+	public String getPostalCodeReceived() {
+		return postalCodeReceived;
+	}
+
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		this.postalCodeReceived = postalCodeReceived;
+	}
+
+	public boolean isIstheViaPostal() {
+		return istheViaPostal;
+	}
+
+	public void setIstheViaPostal(boolean istheViaPostal) {
+		this.istheViaPostal = istheViaPostal;
+	}
 
 	public String getSearchGovAgencyCode() {
 		return searchGovAgencyCode;

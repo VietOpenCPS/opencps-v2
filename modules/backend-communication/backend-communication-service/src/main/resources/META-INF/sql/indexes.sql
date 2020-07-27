@@ -1,3 +1,6 @@
+create unique index IX_42C3A548 on opencps_lgsp_token (tokenType[$COLUMN_LENGTH:75$]);
+create index IX_D07481B9 on opencps_lgsp_token (uuid_[$COLUMN_LENGTH:75$]);
+
 create index IX_63B47ACA on opencps_notificationqueue (expireDate);
 create index IX_C0F9E920 on opencps_notificationqueue (groupId, className[$COLUMN_LENGTH:512$], classPK[$COLUMN_LENGTH:255$], toEmail[$COLUMN_LENGTH:255$]);
 create index IX_A4B70B87 on opencps_notificationqueue (groupId, notificationType[$COLUMN_LENGTH:255$], className[$COLUMN_LENGTH:512$], classPK[$COLUMN_LENGTH:255$], toEmail[$COLUMN_LENGTH:255$]);

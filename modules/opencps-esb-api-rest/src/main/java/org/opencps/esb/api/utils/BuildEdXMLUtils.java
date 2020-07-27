@@ -138,6 +138,7 @@ public class BuildEdXMLUtils {
 
 			List<DossierFile> dossierFileList = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
 			if (dossierFileList != null && dossierFileList.size() > 0) {
+				_log.info("dossierFileList SIZE: "+dossierFileList.size());
 				for (DossierFile dossierFile : dossierFileList) {
 					File file = null;
 					if (dossierFile.getFileEntryId() > 0) {
@@ -147,11 +148,14 @@ public class BuildEdXMLUtils {
 							file = DLFileEntryLocalServiceUtil.getFile(
 									fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
 						} catch (PortalException e) {
-							e.printStackTrace();
+							_log.debug(e);
 						}
 					}
 
 					if (file != null) {
+						_log.info("dossierFile.getDossierFileId(): "+dossierFile.getDossierFileId());
+						_log.info("dossierFile.getDisplayName(): "+dossierFile.getDisplayName());
+						_log.info("file: "+file);
 						ed.addAttachment(new Attachment(String.valueOf(dossierFile.getDossierFileId()),
 								dossierFile.getDisplayName(), dossierFile.getDisplayName(), file));
 					}

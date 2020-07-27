@@ -347,6 +347,23 @@ public class DossierLocalServiceUtil {
 		return getService().fetchByDO_NO(dossierNo);
 	}
 
+	public static org.opencps.dossiermgt.model.Dossier fetchByDO_NO_GROUP(
+		String dossierNo, long groupId) {
+		return getService().fetchByDO_NO_GROUP(dossierNo, groupId);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier fetchByDO_POST_RECEIVED_GROUP(
+		String postalCodeReceived, long groupId) {
+		return getService()
+				   .fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier fetchByDO_POST_SEND_GROUP(
+		String postpostalCodeSend, long groupId) {
+		return getService()
+				   .fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier fetchDossier(
 		long dossierId) {
 		return getService().fetchDossier(dossierId);
@@ -388,6 +405,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByGID(groupId, start, end);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceInfo> findByGID_PUB_SID(
+		long groupId, boolean public_, long[] serviceInfoArr) {
+		return getService().findByGID_PUB_SID(groupId, public_, serviceInfoArr);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findByNOT_ST_GT_MD(
 		String[] statuses, java.util.Date d, int start, int end) {
 		return getService().findByNOT_ST_GT_MD(statuses, d, start, end);
@@ -406,6 +428,11 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return getService().findDossierByDay(date);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
+		String code, long groupId) {
+		return getService().findDossierByDeclarationCode(code, groupId);
 	}
 
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(

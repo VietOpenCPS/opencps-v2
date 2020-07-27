@@ -7,6 +7,16 @@
 	<hint-collection name="LONG_TEXT">
 		<hint name="max-length">4096</hint>
 	</hint-collection>
+	<model name="org.opencps.communication.model.LGSPToken">
+		<field name="uuid" type="String" />
+		<field name="tokenId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="token" type="String" />
+		<field name="tokenType" type="String" />
+		<field name="refreshToken" type="String" />
+		<field name="expiryDate" type="Date" />
+	</model>
 	<model name="org.opencps.communication.model.NotificationQueue">
 		<field name="notificationQueueId" type="long" />
 		<field name="groupId" type="long" />

@@ -223,7 +223,24 @@ public class DossierActionUtils {
 		ProcessAction processAction) {
 
 		DossierActionNextActionModel model = new DossierActionNextActionModel();
-
+		model.setProcessActionId(processAction.getProcessActionId());
+		model.setGroupId(processAction.getGroupId());
+		model.setUserId(processAction.getUserId());
+		model.setUserName(processAction.getUserName());
+		model.setCreateDate(processAction.getCreateDate());
+		model.setModifiedDate(processAction.getModifiedDate());
+		model.setServiceProcessId(processAction.getServiceProcessId());
+		model.setRequestPayment(processAction.getRequestPayment());
+		model.setCreateDossierFiles(processAction.getCreateDossierFiles());
+		model.setReturnDossierFiles(processAction.getReturnDossierFiles());
+		model.setMakeBriefNote(processAction.getMakeBriefNote());
+		model.setSyncActionCode(processAction.getSyncActionCode());
+		model.setRollbackable(processAction.getRollbackable());
+		model.setDossierTemplateNo(processAction.getDossierTemplateNo());
+		model.setSignatureType(processAction.getSignatureType());
+		model.setCreateDossiers(processAction.getCreateDossiers());
+		model.setCheckInput(processAction.getCheckInput());
+		model.setPostAction(processAction.getPostAction());
 		model.setActionCode(processAction.getActionCode());
 		model.setActionName(processAction.getActionName());
 		model.setPostStepCode(processAction.getPostStepCode());

@@ -240,7 +240,8 @@ public class EmployeeUtils {
 			
 			ett.setWorkingUnitName(workingUnitName);
 			ett.setJobPosTitle(jobPosTitle);
-			
+			ett.setScope(employee.getScope());
+
 			User user = UserLocalServiceUtil.fetchUser(employee.getMappingUserId());
 			
 			MappingUser mappingUser = new MappingUser();
