@@ -152,6 +152,12 @@ public class MBNotificationSenderImpl implements MBNotificationSender {
 		}
 	}
 
+	@Override
+	public void sendLGSP(MBMessageEntry messageEntry, String type, ServiceContext... ServiceContext) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/*
 	 * private UserNotificationEventLocalService
 	 * userNotificationEventLocalService;

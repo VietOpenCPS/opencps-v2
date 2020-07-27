@@ -15,6 +15,7 @@ dependencies {
 	compile group: 'commons-discovery', name: 'commons-discovery', version: '0.5'
 	compile group: 'wsdl4j', name: 'wsdl4j', version: '1.6.2'
 	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.0.1"
+	compileOnly group: "javax.mail", name: "mail", version: "1.4"
 	
 	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-auth")

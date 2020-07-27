@@ -7,4 +7,5 @@ Export-Package: \
 	org.opencps.communication.action,\
 	org.opencps.communication.action.impl,\
 	org.opencps.communication.sms.utils,\
-	ws.bulkSms.impl
+	ws.bulkSms.impl,\
+	org.opencps.communication.utils

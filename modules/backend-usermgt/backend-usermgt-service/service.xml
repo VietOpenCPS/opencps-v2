@@ -1006,28 +1006,6 @@
 		</finder>
 	</entity>
 
-	<entity name="LGSPToken" uuid="true" local-service="true"
-		remote-service="false" table="opencps_lgsp_token">
-
-		<!-- PK fields -->
-		<column name="tokenId" primary="true" type="long" />
-
-		<!-- Audit fields -->
-		<column name="createDate" type="Date" />
-		<column name="modifiedDate" type="Date" />
-
-		<!-- Other fields -->
-		<column name="token" type="String" />
-		<column name="tokenType" type="String" />
-		<column name="refreshToken" type="String" />
-		<column name="expiryDate" type="Date" />
-
-		<finder return-type="LGSPToken" name="F_TYPE_EXPIRY" unique="true">
-			<finder-column name="tokenType" />
-		</finder>
-
-	</entity>
-
 	<exceptions>
 		<exception>NoApplicantName</exception>
 		<exception>NoApplicantIdType</exception>

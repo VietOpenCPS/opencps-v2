@@ -7,6 +7,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 >
+	<bean class="org.opencps.communication.service.impl.LGSPTokenLocalServiceImpl" id="org.opencps.communication.service.LGSPTokenLocalService" />
+	<bean class="org.opencps.communication.service.persistence.impl.LGSPTokenPersistenceImpl" id="org.opencps.communication.service.persistence.LGSPTokenPersistence" parent="basePersistence" />
 	<bean class="org.opencps.communication.service.impl.NotificationQueueLocalServiceImpl" id="org.opencps.communication.service.NotificationQueueLocalService" />
 	<bean class="org.opencps.communication.service.persistence.impl.NotificationQueuePersistenceImpl" id="org.opencps.communication.service.persistence.NotificationQueuePersistence" parent="basePersistence" />
 	<bean class="org.opencps.communication.service.impl.NotificationtemplateLocalServiceImpl" id="org.opencps.communication.service.NotificationtemplateLocalService" />

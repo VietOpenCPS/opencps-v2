@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.opencps.auth.api.keys.NotificationType;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.NotificationQueue;
 import org.opencps.communication.model.Notificationtemplate;
@@ -37,6 +36,7 @@ import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.sms.utils.BCTSMSUtils;
 import org.opencps.communication.sms.utils.LGSPSMSUtils;
 import org.opencps.communication.sms.utils.ViettelSMSUtils;
+import org.opencps.communication.utils.LGSPSendMailUtils;
 import org.opencps.communication.utils.NotificationQueueBusinessFactoryUtil;
 import org.opencps.communication.utils.NotificationUtil;
 import org.opencps.kernel.context.MBServiceContextFactoryUtil;
@@ -66,6 +66,9 @@ public class OneMinute extends BaseMessageListener {
 			: StringPool.BLANK;
 	private static boolean isSendLGSP = Validator.isNotNull(PropsUtil.get("opencps.send.notification.lgsp"))
 					? GetterUtil.getBoolean(PropsUtil.get("opencps.send.notification.lgsp")) : false;
+	private static int timeSendNotify = Validator.isNotNull(PropsUtil.get("opencps.time.send.notification"))
+			? Integer.valueOf(PropsUtil.get("opencps.time.send.notification"))
+			: 45;
 	
 	@Override
 	protected void doReceive(Message message) {
@@ -159,7 +162,8 @@ public class OneMinute extends BaseMessageListener {
 								// Process send SMS
 								Result resultSendSMS = new Result("Success", new Long(1));
 								if (messageEntry.isSendSMS() && Validator.isNotNull(messageEntry.getToTelNo())) {
-
+									_log.info("START SEND SMS");
+									_log.info("messageEntry.getTextMessage(): "+messageEntry.getTextMessage());
 									String rsMsg = LGSPSMSUtils.sendSMS(notificationQueue.getGroupId(),
 											messageEntry.getTextMessage(), messageEntry.getEmailSubject(),
 											messageEntry.getToTelNo());
@@ -168,12 +172,12 @@ public class OneMinute extends BaseMessageListener {
 										resultSendSMS.setMessage("Success");
 										resultSendSMS.setResult(1L);
 									}
-									_log.debug("END SEND SMS");
+									_log.info("END SEND SMS");
 								}
 
 								if (messageEntry.isSendEmail()) {
 									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
-									MBEmailSenderFactoryUtil.sendLGSP(messageEntry, StringPool.BLANK);
+									LGSPSendMailUtils.sendLGSP(messageEntry, StringPool.BLANK);
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
 									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
@@ -288,7 +292,7 @@ public class OneMinute extends BaseMessageListener {
 	  @Modified
 	  protected void activate(Map<String,Object> properties) throws SchedulerException {
 		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
+		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, timeSendNotify, TimeUnit.SECOND);
 
 		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
