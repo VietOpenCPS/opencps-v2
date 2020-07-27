@@ -1,7 +1,4 @@
 env.OPENCPS_CACHE_VOLUME='gradle_cache_volume'
-node(){
-    echo sh(script: 'env|sort', returnStdout: true)
-}
 
 if (env.CHANGE_ID) {
     if(env.CHANGE_TARGET=='master'){
