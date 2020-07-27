@@ -1,4 +1,4 @@
-env.OPENCPS_CACHE_VOLUME='gradle_cache_volume_test'
+env.OPENCPS_CACHE_VOLUME='gradle_cache_volume'
 
 node {
     stage('Preparation & Checkout') {
