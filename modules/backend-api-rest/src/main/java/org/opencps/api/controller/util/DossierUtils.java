@@ -704,6 +704,7 @@ public class DossierUtils {
 				//_log.info("flagCeil: "+flagCeil);
 				//_log.info("overDue: "+overDue);
 				//_log.info("durationCount: "+durationCount);
+				// tính thời gian giải quyết còn lại của hồ sơ (overdue = true)
 				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, 0.0) > 0) {
 					//return (int)durationCount + strOverDue;
 					return overDue + strOverDue;
@@ -729,10 +730,12 @@ public class DossierUtils {
 
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
-		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return Math.abs((int)durationCount) + strOverDue;
+		// tính thời gian giải quyết còn lại của hồ sơ
+		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, 0.0) > 0) {
+//			return Math.abs((int)durationCount) + strOverDue;
+			return overDue + strOverDue;
 		} else {
-			return Math.abs((int)overDue) + strOverDue;
+			return durationCount + strOverDue;
 		}
 	}
 

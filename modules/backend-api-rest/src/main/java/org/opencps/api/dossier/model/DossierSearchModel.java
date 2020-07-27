@@ -289,6 +289,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "groupDossierIdHs")
 	protected String groupDossierIdHs;
 	@QueryParam(value = "groupServiceCode")
+	@DefaultValue("false")
 	protected boolean groupServiceCode;
 	@QueryParam(value = "searchGovAgencyCode")
 	protected String searchGovAgencyCode;
