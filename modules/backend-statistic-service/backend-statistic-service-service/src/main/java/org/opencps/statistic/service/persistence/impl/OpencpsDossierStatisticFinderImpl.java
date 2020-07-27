@@ -98,9 +98,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			/* add groupId */
 			qPos.add(groupId);
 			
-			List<OpencpsDossierStatistic> ls = (List<OpencpsDossierStatistic>) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			List<OpencpsDossierStatistic> ls = (List<OpencpsDossierStatistic>) QueryUtil.list(q, getDialect(), 0, 1);
 			
-			if (ls.size() > 0) {
+			if (ls != null && ls.size() > 0) {
 				return ls.get(0);
 			} 
 
@@ -190,9 +190,9 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			qPos.add(groupId);
 			
 			List<OpencpsDossierStatistic> ls = (List<OpencpsDossierStatistic>) QueryUtil.list(q, getDialect(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+					0, 1);
 			
-			if (ls.size() > 0) {
+			if (ls != null && ls.size() > 0) {
 				return ls.get(0);
 			} 
 
