@@ -93,7 +93,7 @@
 				(select OV.votingId, OV.subject, OVR.selected, count(*) as numberSelected
 				from opencps_voting OV
 				left join opencps_votingresult OVR
-				on OV.votingId = OVR.votingId and (OVR.createDate BETWEEN ? AND ?)
+				on OV.votingId = OVR.votingId and (OVR.createDate BETWEEN ? AND ?) and OV.groupId = OVR.groupId
 				where OV.classPK !=0 and OV.groupId = ?
 				group by OV.votingId, OVR.selected) as abc
 			group by votingId
