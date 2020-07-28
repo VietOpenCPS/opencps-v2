@@ -1141,6 +1141,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 			if (schema == null) {
+				schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+			}
+			if (schema == null) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
