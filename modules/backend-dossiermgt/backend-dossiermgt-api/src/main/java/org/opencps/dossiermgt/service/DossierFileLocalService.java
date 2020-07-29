@@ -27,13 +27,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -48,7 +43,6 @@ import org.opencps.dossiermgt.model.DossierFile;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -73,7 +67,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link DossierFileLocalServiceUtil} to access the dossier file local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.DossierFileLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierByDeliverable(long groupId, long companyId,
 		long userId, String userName, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, int dossierPartType,
@@ -93,14 +86,12 @@ public interface DossierFileLocalService extends BaseLocalService,
 	/**
 	* POST /dossiers/{id|referenceUid}/files
 	*/
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
 		long fileSize, InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
@@ -108,17 +99,14 @@ public interface DossierFileLocalService extends BaseLocalService,
 		String formScript, String formReport, boolean eForm, String formData,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFileEForm(long groupId, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
 		String fileTemplateNo, String displayName, String sourceFileName,
 		long fileSize, InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile adminProcessData(JSONObject objectData);
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierFile adminProcessDelete(Long id);
 
 	/**
@@ -134,7 +122,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @throws SystemException
 	*/
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile cloneDossierFile(long groupId, long dossierId,
 		long dossierFileId, String dossierTemplateNo, String dossierPartNo,
 		ServiceContext serviceContext) throws PortalException, SystemException;
@@ -156,9 +143,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 
 	public int countByF_GID_DID_R_O(long groupId, long[] dossierIds,
 		boolean removed, boolean original);
-
-	public long countLucene(LinkedHashMap<String, Object> params,
-		SearchContext searchContext) throws ParseException, SearchException;
 
 	/**
 	* Creates a new dossier file with the primary key. Does not add the dossier file to the database.
@@ -191,11 +175,9 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public DossierFile deleteDossierFile(long dossierFileId)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(long dossierId, String referenceUid)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierFile deletePermanentDossierFile(DossierFile dossierFile);
 
 	/**
@@ -515,21 +497,13 @@ public interface DossierFileLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierFile permanentDeleteDossierFile(long dossierFileId)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile removeDossierFile(long dossierId, String referenceUid,
 		ServiceContext serviceContext) throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile resetDossierFile(long dossierFileId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits searchLucene(LinkedHashMap<String, Object> params,
-		Sort[] sorts, int start, int end, SearchContext searchContext)
-		throws ParseException, SearchException;
 
 	/**
 	* Updates the dossier file in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -543,7 +517,6 @@ public interface DossierFileLocalService extends BaseLocalService,
 	/**
 	* @POST @Path("/dossierfiles")
 	*/
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(long dossierFileId, long groupId,
 		long companyId, long userId, String userName, long dossierId,
 		String referenceUid, String dossierTemplateNo, String dossierPartNo,
@@ -556,19 +529,16 @@ public interface DossierFileLocalService extends BaseLocalService,
 	/**
 	* POST /dossiers/{id|referenceUid}/files/{referenceUid}
 	*/
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(long groupId, long dossierId,
 		String referenceUid, String displayName, String sourceFileName,
 		InputStream inputStream, ServiceContext serviceContext)
 		throws PortalException, SystemException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(long groupId, long dossierId,
 		String referenceUid, String displayName, String sourceFileName,
 		long fileSize, InputStream inputStream, String fileType, String isSync,
 		ServiceContext serviceContext) throws PortalException, SystemException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(long groupId, long dossierId,
 		String referenceUid, String formData, ServiceContext serviceContext)
 		throws PortalException, SystemException;

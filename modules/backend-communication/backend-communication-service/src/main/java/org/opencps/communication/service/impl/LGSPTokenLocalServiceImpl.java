@@ -14,6 +14,9 @@
 
 package org.opencps.communication.service.impl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.Date;
 import java.util.List;
 
@@ -41,25 +44,40 @@ public class LGSPTokenLocalServiceImpl extends LGSPTokenLocalServiceBaseImpl {
 	 * Never reference this class directly. Always use {@link org.opencps.communication.service.LGSPTokenLocalServiceUtil} to access the lgsp token local service.
 	 */
 
+	private static Log _log = LogFactoryUtil.getLog(LGSPTokenLocalServiceImpl.class);
+
 	public List<LGSPToken> getByTokenType(String tokenType) {
 		return lgspTokenPersistence.findByF_TYPE_EXPIRY(tokenType);
 	}
 
 	public LGSPToken updateLGSPToken(String token, String tokenType, String refreshToken, Date expiryDate) {
 
-		long tokenId = counterLocalService.increment(LGSPToken.class.getName());
-		LGSPToken lgspToken = lgspTokenPersistence.create(tokenId);
+		try {
+			List<LGSPToken> tokeList = lgspTokenPersistence.findByF_TYPE_EXPIRY(tokenType);
+			
+			LGSPToken lgspToken = null;
+			if (tokeList != null && tokeList.size() > 0) {
+				lgspToken = tokeList.get(0);
+			} else {
+				long tokenId = counterLocalService.increment(LGSPToken.class.getName());
+				lgspToken = lgspTokenPersistence.create(tokenId);
+			}
 
-		Date now = new Date();
-		// Audit fields
-		lgspToken.setCreateDate(now);
-		lgspToken.setModifiedDate(now);
-		lgspToken.setToken(token);
-		lgspToken.setTokenType(tokenType);
-		lgspToken.setRefreshToken(refreshToken);
-		lgspToken.setExpiryDate(expiryDate);
+			Date now = new Date();
+			// Audit fields
+			lgspToken.setCreateDate(now);
+			lgspToken.setModifiedDate(now);
+			lgspToken.setToken(token);
+			lgspToken.setTokenType(tokenType);
+			lgspToken.setRefreshToken(refreshToken);
+			lgspToken.setExpiryDate(expiryDate);
 
-		return lgspTokenPersistence.update(lgspToken);
+			return lgspTokenPersistence.update(lgspToken);
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return null;
 	}
 
 }
