@@ -74,7 +74,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.findByF_DID_DOCTYPE(groupId, dossierId, documentType, start, end);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, long dossierActionId, String documentType,
 			String documentName, String documentCode, String sourceFileName, long fileSize, InputStream inputStream,
 			String fileType, ServiceContext serviceContext) {
@@ -134,7 +134,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.update(object);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, String referenceUid, long dossierActionId,
 			String documentType, String documentName, String documentCode, long documentFileId, int docSync,
 			ServiceContext serviceContext) {
@@ -166,7 +166,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.update(object);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument updateDossierDoc(long groupId, long dossierDocId, Long dossierId, String referenceUid,
 			long dossierActionId, String documentType, String documentName, String documentCode, long documentFileId,
 			int docSync, ServiceContext serviceContext) throws NoSuchDossierDocumentException {
@@ -194,7 +194,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.update(object);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId, String referenceUid, long dossierActionId,
 			String documentType, String documentName, String documentCode, String sourceFileName, long fileSize,
 			InputStream inputStream, String fileType, ServiceContext serviceContext) {
@@ -263,7 +263,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return dossierDocumentPersistence.fetchByF_GID_DID_REF(groupId, dossierId, referenceUid);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument updateDossierDoc(long groupId, long dossierDocId, Long dossierId, String referenceUid,
 			long dossierActionId, String documentType, String documentName, String documentCode, String sourceFileName,
 			long fileSize, InputStream inputStream, String fileType, ServiceContext serviceContext) {
@@ -323,7 +323,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 	}
 
 	// super_admin Generators
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierDocument adminProcessDelete(Long id) {
 
 		DossierDocument object = dossierDocumentPersistence.fetchByPrimaryKey(id);
@@ -337,7 +337,7 @@ public class DossierDocumentLocalServiceImpl extends DossierDocumentLocalService
 		return object;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument adminProcessData(JSONObject objectData) {
 
 		DossierDocument object = null;

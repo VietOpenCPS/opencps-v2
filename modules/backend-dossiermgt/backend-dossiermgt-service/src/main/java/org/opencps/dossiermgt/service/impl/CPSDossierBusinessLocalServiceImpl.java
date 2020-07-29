@@ -553,8 +553,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
-													DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
-													String documentTypeList, ServiceContext context)
+			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
+			String documentTypeList, ServiceContext context)
 			throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
@@ -883,10 +883,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private DossierAction createActionAndAssignUser(long groupId, long userId, ProcessStep curStep,
-													ActionConfig actionConfig, DossierAction dossierAction, DossierAction previousAction,
-													ProcessAction proAction, Dossier dossier, String actionCode, String actionUser, String actionNote,
-													String payload, String assignUsers, String payment, ServiceProcess serviceProcess, ProcessOption option,
-													Map<String, Boolean> flagChanged, Integer dateOption, ServiceContext context) throws PortalException {
+			ActionConfig actionConfig, DossierAction dossierAction, DossierAction previousAction,
+			ProcessAction proAction, Dossier dossier, String actionCode, String actionUser, String actionNote,
+			String payload, String assignUsers, String payment, ServiceProcess serviceProcess, ProcessOption option,
+			Map<String, Boolean> flagChanged, Integer dateOption, ServiceContext context) throws PortalException {
 		int actionOverdue = getActionDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 				proAction.getProcessActionId());
 		String actionName = proAction.getActionName();
