@@ -390,7 +390,12 @@ public class NotificationtemplateLocalServiceImpl extends NotificationtemplateLo
 	}
 
 	public Notificationtemplate fetchByF_NotificationtemplateByType(long groupId, String notificationType) {
-		return notificationtemplatePersistence.fetchByF_NotificationtemplateByType(groupId, notificationType);
+		try {
+			return notificationtemplatePersistence.fetchByF_NotificationtemplateByType(groupId, notificationType);
+		} catch (Exception e) {
+			_log.debug(e);
+			return null;
+		}
 	}
 
 	public List<Notificationtemplate> findByF_NotificationtemplateByGroup(long groupId) {
