@@ -9,30 +9,35 @@ public interface DossierStatisticConstants {
 	String TOTAL = "total";
 	int REPORTING_TYPE_0 = 0;
 	int REPORTING_TYPE_1 = 1;
-	
+
 	String GOV_AGENCY_GROUP_CODE = "GOVERNMENT_AGENCY";
-	
+
 	String GOV_AGENCY_ENDPOINT = "opencps.rest.enpoind.govagency";
 	String SERVICE_DOMAIN_ENDPOINT = "opencps.rest.enpoind.servicedomain";
-	
+
 	String DOSSIER_ENDPOINT = "opencps.rest.enpoind.dossier";
-	
+
 	String SERVICE_INFO_ENDPOINT = "opencps.rest.enpoint.service.info";
-	
+
 	String OPENCPS_AUTHENCATION = "opencps.rest.authentication";
-	
+
 	String OPENCPS_GROUP_CONFIG = "opencps.group.id.config";
-	
+
 	String VOTING_ENDPOINT = "opencps.rest.enpoint.voting.result";
-	
+
 	String STATISTIC_REPORT_ENDPOINT = "opencps.rest.enpoint.statistic.report";
-	
+
+	String GOOGLE_ENDPOINT = "opencps.google.enpoint";
+
 	String GROUP_ID = "groupId";
-	
+
+	String VOTING_CLASSNAME_DOSSIER = "opencps.voting.classname.dossier";
+	String VOTING_CLASSNAME_EMPLOYEE = "opencps.voting.classname.employee";
+
 	int START_YEARS = 1990;
-	
+
 	Locale VIETNAM = new Locale("vi", "VN");
-	
+
 	long STATISTIC_USER_ID = -1;
 	String STATISTIC_USER_NAME = "ADM";
 
@@ -41,10 +46,13 @@ public interface DossierStatisticConstants {
 	String SERVICE_DOMAIN_ENDPOINT_KEY = "serviceDomainEndpoint";
 	String VOTING_ENDPOINT_KEY = "votingEndpoint";
 	String USERNAME_KEY = "username";
+	String SECRET_KEY = "password";
 	String PASSWORD_KEY = "password";
-	
+
 	String SERVICE_DOMAIN_CODE = "SERVICE_DOMAIN";
 	String GOV_AGENCY_CODE = "GOVERNMENT_AGENCY";
 	//ALL SYSTEM
 	String ALL_SYSTEM = "0,1,2";
+
+	String TOP_STATISTIC = "statistic";
 }

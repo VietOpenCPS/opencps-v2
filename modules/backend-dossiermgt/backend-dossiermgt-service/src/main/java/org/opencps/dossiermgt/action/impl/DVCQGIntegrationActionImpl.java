@@ -80,6 +80,8 @@ import org.opencps.usermgt.service.AnswerLocalServiceUtil;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.QuestionLocalServiceUtil;
 import org.opencps.usermgt.service.util.DateTimeUtils;
+import org.opencps.statistic.model.OpencpsVotingStatistic;
+import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
@@ -129,6 +131,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private Log _log = LogFactoryUtil.getLog(DVCQGIntegrationActionImpl.class);
 	private static final String LUCENE_DATE_FORMAT = "yyyyMMddHHmmss";
 	private static final String HCM_TIMEZONE = "Asia/Ho_Chi_Minh";
+	private static final String DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
 
 	private String convertDate2String(Date date) {
 
@@ -3300,6 +3303,142 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			return createResponseMessage(result, 500, "error", "system error");
 		}
 
+	}
+
+	private JSONObject payloadSummaryVote(JSONObject config) {
+		JSONObject payload = JSONFactoryUtil.createJSONObject();
+		payload.put("service", "DongBoDanhGia");
+		payload.put("data", this.getListSummaryVote(config));
+		return payload;
+	}
+
+	private JSONArray getListSummaryVote(JSONObject config) {
+		JSONArray data = JSONFactoryUtil.createJSONArray();
+		List<OpencpsVotingStatistic> votes = new ArrayList<>(OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100));
+
+		int currentMonth = this.getCurrentTime().get("Month");
+		int currentYear  = this.getCurrentTime().get("Year");
+
+		//get only data of current month
+		votes.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
+				|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
+
+		List<VoteTransform> voteTransformList = new ArrayList<>();
+		VoteTransform newVote;
+		//Transform opencpsVotingStatistic model to Transform model to easy handle
+		for(OpencpsVotingStatistic oldVote: votes) {
+			newVote = new VoteTransform(oldVote.getTotalVoted(), oldVote.getGoodCount(), oldVote.getVeryGoodCount(), oldVote.getBadCount(),
+					oldVote.getPercentGood(), oldVote.getPercentVeryGood(), oldVote.getPercentBad(),
+					oldVote.getVotingCode(), oldVote.getVotingSubject());
+
+			voteTransformList.add(newVote);
+		}
+
+		if(voteTransformList.isEmpty()) {
+			return data;
+		}
+		//Sum count group by votingCode
+		List<VoteTransform> listVoteAfterCounting = voteTransformList.stream().collect(Collectors.groupingBy(VoteTransform -> VoteTransform.votingCode)).entrySet().stream()
+				.map(e -> e.getValue().stream().reduce(this::countingVoteData))
+				.map(f -> f.get()).collect(Collectors.toList());
+
+		//Calculate percent
+		JSONObject item;
+		int percentVeryGood;
+		int percentGood;
+		int percentBad;
+		for(VoteTransform vote: listVoteAfterCounting) {
+			item = JSONFactoryUtil.createJSONObject();
+			percentVeryGood = calculatePercentage(vote.countVeryGoodVote, vote.totalVote);
+			percentGood = calculatePercentage(vote.countGoodVote, vote.totalVote);
+			percentBad = percentVeryGood != 0 || percentGood != 0 ? 100 - (percentVeryGood + percentGood): 0;
+
+			item.put("NgayTongHop", currentMonth + "-" + currentYear);
+			item.put("TongSoNguoiDanhGia", vote.totalVote);
+			item.put("PhanTramDanhGiaRatHaiLong", percentVeryGood + "%");
+			item.put("PhanTramDanhGiaHaiLong", percentGood +"%");
+			item.put("PhanTramDanhGiaChuaHaiLong", percentBad + "%");
+			item.put("DanhSachNoiDungYKien", "");
+			item.put("MaThuTuc", "");
+			item.put("NoiDung", vote.votingSubject != null ?vote.votingSubject : "");
+			item.put("PhanTramDanhGiaDichVuRatHaiLong", percentVeryGood + "%");
+			item.put("PhanTramDanhGiaDichVuHaiLong", percentGood +"%");
+			item.put("PhanTramDanhGiaDichVuChuaHaiLong", percentBad + "%");
+			item.put("Madonvi", config.getString("madonvi", ""));
+			item.put("TenDonVi", config.getString("tendonvi", ""));
+			data.put(item);
+		}
+
+		System.out.println(data);
+
+		return data;
+	}
+
+	private int calculatePercentage(int obtained, int total) {
+		if(total > 0) {
+			return Math.round(obtained * 100 / total);
+		}
+		return 0;
+	}
+
+	private Map<String, Integer> getCurrentTime() {
+		Map<String, Integer> monthAndYear = new HashMap<>();
+		monthAndYear.put("Month", Calendar.getInstance().get(Calendar.MONTH)+1);
+		monthAndYear.put("Year", Calendar.getInstance().get(Calendar.YEAR));
+		return monthAndYear;
+	}
+
+	class VoteTransform {
+		public Integer totalVote;
+		public Integer countGoodVote;
+		public Integer countVeryGoodVote;
+		public Integer countBadVote;
+		public Integer percentGoodVote;
+		public Integer percentVeryGoodVote;
+		public Integer percentBadVote;
+		public String votingCode;
+		public String votingSubject;
+
+		public VoteTransform(Integer totalVote, Integer countGoodVote, Integer countVeryGoodVote,
+							 Integer countBadVote, Integer percentGoodVote, Integer percentVeryGoodVote,
+							 Integer percentBadVote, String votingCode, String votingSubject) {
+			this.totalVote = totalVote;
+			this.countGoodVote = countGoodVote;
+			this.countVeryGoodVote = countVeryGoodVote;
+			this.countBadVote = countBadVote;
+			this.percentGoodVote = percentGoodVote;
+			this.percentVeryGoodVote = percentVeryGoodVote;
+			this.percentBadVote = percentBadVote;
+			this.votingCode = votingCode;
+			this.votingSubject = votingSubject;
+		}
+	}
+
+	private VoteTransform countingVoteData(VoteTransform f1, VoteTransform f2) {
+		VoteTransform voteTransform = new VoteTransform(f1.totalVote + f2.totalVote, f1.countGoodVote + f2.countGoodVote,
+				f1.countVeryGoodVote + f2.countVeryGoodVote, f1.countBadVote + f2.countBadVote,
+				0, 0, 0,
+				f1.votingCode, f1.votingSubject);
+
+		return voteTransform;
+	}
+
+	@Override
+	public void syncSummaryVote() throws Exception {
+		try {
+			_log.info("Start getting summary vote...");
+			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(DVCQG_INTEGRATION);
+			if (serverConfigs == null ||serverConfigs.isEmpty()) {
+				throw new Exception("Server config not found");
+			}
+			ServerConfig serverConfig = serverConfigs.get(0);
+			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			JSONObject payload = this.payloadSummaryVote(config);
+			syncData(serverConfig, payload);
+			_log.info("End get summary vote.");
+		}catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {

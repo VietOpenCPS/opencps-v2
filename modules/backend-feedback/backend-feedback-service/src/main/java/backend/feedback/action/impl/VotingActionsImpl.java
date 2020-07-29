@@ -48,10 +48,10 @@ public class VotingActionsImpl implements VotingActions {
 			String classPK, LinkedHashMap<String, Object> params, int start, int end, ServiceContext serviceContext) {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		try {
-			boolean isRenewVotingList = false;
+			//ES is running not exactly, so we always get from DB
+			boolean isGetFromDB = true;
 
 			if (!"0".equals(classPK)) {
-				isRenewVotingList = true;
 
 				long count = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, classPK);
 				long countTemplate = VotingLocalServiceUtil.countVotingByClass_Name_PK(className, "0");
@@ -103,7 +103,7 @@ public class VotingActionsImpl implements VotingActions {
 
 			// Add this case: When list vote renew, elastic search wont able to reload new vote(take some minute)
 			// immediately so we will return new list here.
-			if(isRenewVotingList) {
+			if(isGetFromDB) {
 				List<Voting> votingList;
 				votingList = VotingLocalServiceUtil.getVotingByClass_Name_PK(className, classPK);
 				List<Document> votingListDocument = new ArrayList<>();
