@@ -39,7 +39,7 @@ import backend.feedback.service.util.ConfigProps;
 
 public class VotingActionsImpl implements VotingActions {
 
-	public static final Locale locale = new Locale("vi", "VN");
+	public static final Locale locale = new Locale(ConfigProps.get(ConfigConstants.SYS_LOCALE), ConfigProps.get(ConfigConstants.SYS_LOCALE_UPP));
 
 	private static final Log _log = LogFactoryUtil.getLog(VotingActionsImpl.class);
 
