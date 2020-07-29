@@ -1013,23 +1013,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())) {
 			_log.info("TRACE_LOG_LOST_DOSSIER: "+JSONFactoryUtil.looseSerialize(dossier));
-//			for (int i = 0; i < 5; i++) {
-//				try {
-//					dossierPersistence.clearCache(dossier);
-//					dossier = dossierPersistence.fetchByPrimaryKey(dossier.getDossierId());
-//					_log.info("TRACE_LOG_LOST_DOSSIER DB MODIFIEDDATE: "+ dossier.getModifiedDate().getTime());
-//					if (Validator.isNotNull(dossier.getApplicantName()) && Validator.isNotNull(dossier.getApplicantIdNo())) {
-//						_log.info("TRACE_LOG_LOST_DOSSIER count" + i + "CPS DONE: "+JSONFactoryUtil.looseSerialize(dossier));
-//						break;
-//					}
-//				} catch (Exception e) {
-//					_log.error(e);
-//				}
-//				
-//				Thread.sleep(50);
-//			}
 		}
-		//_log.info("TRACE_LOG_INFO doAction CPS dossier END: "+JSONFactoryUtil.looseSerialize(dossier));
 		
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,

@@ -451,50 +451,50 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Response getDossierFiles(
-		HttpServletRequest request, HttpHeaders header, Company company,
-		Locale locale, User user, ServiceContext serviceContext,
-		DossierFileSearchModel query) {
-
-		BackendAuth auth = new BackendAuthImpl();
-
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-
-		try {
-
-			if (!auth.isAuth(serviceContext)) {
-				throw new UnauthenticationException();
-			}
-
-			DossierFileSearchResultsModel results =
-				new DossierFileSearchResultsModel();
-
-			DossierFileActions action = new DossierFileActionsImpl();
-
-			JSONObject dossierFileJsonObject = action.getDossierFiles(
-				groupId, query.getKeyword(), query.getTemplate(),
-				query.getType(), query.isOwner(), query.isOriginal(),
-				query.getStart(), query.getEnd(), query.getSort(),
-				query.getOrder(), serviceContext);
-
-			List<Document> documents =
-				(List<Document>) dossierFileJsonObject.get(ConstantUtils.DATA);
-
-			results.setTotal(dossierFileJsonObject.getInt(ConstantUtils.TOTAL));
-
-			results.getData().addAll(
-				DossierFileUtils.mappingToDossierFileSearchResultsModel(
-					documents));
-
-			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
-
-		}
-		catch (Exception e) {
-			return BusinessExceptionImpl.processException(e);
-		}
-	}
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public Response getDossierFiles(
+//		HttpServletRequest request, HttpHeaders header, Company company,
+//		Locale locale, User user, ServiceContext serviceContext,
+//		DossierFileSearchModel query) {
+//
+//		BackendAuth auth = new BackendAuthImpl();
+//
+//		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//
+//		try {
+//
+//			if (!auth.isAuth(serviceContext)) {
+//				throw new UnauthenticationException();
+//			}
+//
+//			DossierFileSearchResultsModel results =
+//				new DossierFileSearchResultsModel();
+//
+//			DossierFileActions action = new DossierFileActionsImpl();
+//
+//			JSONObject dossierFileJsonObject = action.getDossierFiles(
+//				groupId, query.getKeyword(), query.getTemplate(),
+//				query.getType(), query.isOwner(), query.isOriginal(),
+//				query.getStart(), query.getEnd(), query.getSort(),
+//				query.getOrder(), serviceContext);
+//
+//			List<Document> documents =
+//				(List<Document>) dossierFileJsonObject.get(ConstantUtils.DATA);
+//
+//			results.setTotal(dossierFileJsonObject.getInt(ConstantUtils.TOTAL));
+//
+//			results.getData().addAll(
+//				DossierFileUtils.mappingToDossierFileSearchResultsModel(
+//					documents));
+//
+//			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+//
+//		}
+//		catch (Exception e) {
+//			return BusinessExceptionImpl.processException(e);
+//		}
+//	}
 
 	@Override
 	public Response downloadByDossierId(

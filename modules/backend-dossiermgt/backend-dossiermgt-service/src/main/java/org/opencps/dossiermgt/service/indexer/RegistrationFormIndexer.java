@@ -31,10 +31,7 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-@Component(
-    immediate = true,
-    service = BaseIndexer.class
-)
+//@Component(immediate = true, service = BaseIndexer.class)
 public class RegistrationFormIndexer extends BaseIndexer<RegistrationForm> {
 	public static final String CLASS_NAME = RegistrationForm.class.getName();
 

@@ -45,10 +45,10 @@ public interface DossierFileActions {
 		ServiceContext serviceContext)
 		throws PortalException;
 
-	public JSONObject getDossierFiles(
-		long groupId, String keyword, String template, Integer type,
-		Boolean owner, Boolean original, int start, int end, String sort,
-		String order, ServiceContext serviceContext);
+//	public JSONObject getDossierFiles(
+//		long groupId, String keyword, String template, Integer type,
+//		Boolean owner, Boolean original, int start, int end, String sort,
+//		String order, ServiceContext serviceContext);
 
 	public DossierFile updateDossierFileFormData(
 		long groupId, long dossierId, String referenceUid, String formData,

@@ -331,6 +331,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				
 				int monthCurrent = LocalDate.now().getMonthValue();
 //				int monthCurrent = 4;
+				_log.info("monthCurrent: "+monthCurrent);
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -361,6 +362,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 //						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
 					} else {
+						_log.info("START CAL monthCurrent: "+monthCurrent);
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
@@ -785,8 +787,8 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			List<GetDossierData> dossierData = new ArrayList<>();
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
-//			_log.debug("GET DOSSIER SIZE: " + datas.size());
-//			_log.debug("GET DOSSIER total: " + total);
+			_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
+			_log.info("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {
 				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());

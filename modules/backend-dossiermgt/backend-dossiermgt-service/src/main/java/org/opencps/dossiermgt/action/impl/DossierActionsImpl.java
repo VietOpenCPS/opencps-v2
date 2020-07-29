@@ -101,6 +101,7 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 import org.osgi.service.component.annotations.Component;
@@ -4032,6 +4033,7 @@ public class DossierActionsImpl implements DossierActions {
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
 			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
 		try {
+
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			Date dueDate = new Date();
 			if (Validator.isNotNull(strDueDate) && GetterUtil.getLong(strDueDate) > 0) {
@@ -4039,6 +4041,15 @@ public class DossierActionsImpl implements DossierActions {
 				dueDate.setTime(longDueDate);
 			} else {
 				dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
+			}
+
+			//Update applicant
+			if (dossier != null && ConstantUtils.ORIGINAL_TODO.contains(String.valueOf(dossier.getOriginality()))) {
+				ApplicantLocalServiceUtil.updateApplicant(0l, dossier.getUserId(), dossier.getCompanyId(),
+						applicantName, applicantIdType, applicantIdNo,
+						APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._NORMAL_PARTTERN),
+						address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+						contactTelNo, contactEmail);
 			}
 
 			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {

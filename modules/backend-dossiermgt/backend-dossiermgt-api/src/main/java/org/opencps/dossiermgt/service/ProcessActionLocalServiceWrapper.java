@@ -17,7 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.ProcessAction;
 
 /**
  * Provides a wrapper for {@link ProcessActionLocalService}.
@@ -201,6 +200,13 @@ public class ProcessActionLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AC(
+		long serviceProcessId, String preStepCode, String actionCode) {
+		return _processActionLocalService.fetchBySPI_PRESC_AC(serviceProcessId,
+			preStepCode, actionCode);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AEV(
 		long serviceProcessId, String preStepCode, String autoEvent) {
 		return _processActionLocalService.fetchBySPI_PRESC_AEV(serviceProcessId,
@@ -212,11 +218,6 @@ public class ProcessActionLocalServiceWrapper
 		long serviceProcessId, String actionCode) {
 		return _processActionLocalService.fetchBySPID_AC(serviceProcessId,
 			actionCode);
-	}
-
-	@Override
-	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId, String preStepCode, String actionCode) {
-		return _processActionLocalService.fetchBySPI_PRESC_AC(serviceProcessId,preStepCode,actionCode);
 	}
 
 	@Override
