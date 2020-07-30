@@ -85,7 +85,7 @@
 	//anh
 	<sql id="org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder.searchVotingStatisticCountPoint">
 		<![CDATA[
-			select subject, sum(case when selected = 1 then numberSelected*2
+			select votingCode, subject, sum(case when selected = 1 then numberSelected*2
 					   when selected = 2 then numberSelected*1
                        when selected = 3 then numberSelected*0
                        else 0 end)  as point

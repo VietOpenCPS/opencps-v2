@@ -611,6 +611,7 @@ public class OpencpsStatisticRestApplication extends Application {
 					fromDateMysql, toDateMysql);
 
 			int size = list.size();
+			String votingCode;
 			String subject;
 			int point;
 
@@ -620,12 +621,15 @@ public class OpencpsStatisticRestApplication extends Application {
 			{
 				oneVoting = new VotingResultStatisticData();
 				if(list.get(i) != null) {
-					subject = list.get(i)[0] != null ? (String) list.get(i)[0] : "No subject found";
-					point   = list.get(i)[1] != null ? (int)list.get(i)[1] : 0;
+					votingCode = list.get(i)[0] != null ? (String) list.get(i)[0] : "No voting code found";
+					subject    = list.get(i)[1] != null ? (String) list.get(i)[1] : "No subject found";
+					point      = list.get(i)[2] != null ? (int) list.get(i)[2] : 0;
 				} else {
+					votingCode = "";
 					subject = "";
 					point   = 0;
 				}
+				oneVoting.setVotingCode(votingCode);
 				oneVoting.setVotingSubject(subject);
 				oneVoting.setTotalVoted(point);
 				listVotingResult.add(oneVoting);

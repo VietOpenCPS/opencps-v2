@@ -296,6 +296,7 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 			SQLQuery query = session.createSQLQuery(SQL);
 			query.setCacheable(false);
 
+			query.addScalar("votingCode", Type.STRING);
 			query.addScalar("subject", Type.STRING);
 			query.addScalar("point",Type.INTEGER);
 
