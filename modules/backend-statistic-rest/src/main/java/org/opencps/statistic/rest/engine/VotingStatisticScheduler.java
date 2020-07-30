@@ -26,10 +26,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -203,7 +200,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			}
 			//Sync Voting statistic from MCDT to DVC
 			//todo uncomment this
-//			syncDataToDVC();
+			syncDataToDVC();
 		}
 		catch (Exception e) {
 			System.out.println("Error calculate: " + e.getMessage());
@@ -223,17 +220,19 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 				return;
 			}
 			JSONObject serverConfigJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			int currentMonth = this.getCurrentTime().get("Month");
+			int currentYear  = this.getCurrentTime().get("Year");
 
 			//Create payload
-			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100);
+			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 200);
+			System.out.println("Count list sync to DVC: "+ lists.size());
+			//get only data of current month
+			lists.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
+					|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
+			System.out.println("Count list sync to after transform: "+ lists.size());
 			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
 			JSONObject vote;
 			for(OpencpsVotingStatistic oneStatistic: lists){
-				if (oneStatistic.getVotingCode() == null
-						|| oneStatistic.getVotingCode().isEmpty()
-						|| oneStatistic.getMonth() == 0) {
-					continue;
-				}
 				vote = JSONFactoryUtil.createJSONObject();
 				vote.put("companyId", oneStatistic.getCompanyId());
 				vote.put("groupId", oneStatistic.getGroupId());
@@ -257,7 +256,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 				vote.put("totalCount", oneStatistic.getTotalCount());
 				voteDatas.put(vote);
 			}
-
+			System.out.println("Count list voteDatas: "+ voteDatas.length());
 			//Call to DVC
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
@@ -267,8 +266,16 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
 			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
 		} catch (Exception e) {
+			System.out.print("Error sync data vote to DVC: " + e.getMessage());
 			throw new Exception(e.getMessage());
 		}
+	}
+
+	private Map<String, Integer> getCurrentTime() {
+		Map<String, Integer> monthAndYear = new HashMap<>();
+		monthAndYear.put("Month", Calendar.getInstance().get(Calendar.MONTH)+1);
+		monthAndYear.put("Year", Calendar.getInstance().get(Calendar.YEAR));
+		return monthAndYear;
 	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetVotingResultRequest payload,
