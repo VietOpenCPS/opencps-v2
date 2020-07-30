@@ -188,14 +188,15 @@ public interface ProcessActionLocalService extends BaseLocalService,
 		String postStepCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId,
+		String preStepCode, String actionCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessAction fetchBySPI_PRESC_AEV(long serviceProcessId,
 		String preStepCode, String autoEvent);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessAction fetchBySPID_AC(long serviceProcessId, String actionCode);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ProcessAction fetchBySPI_PRESC_AC(long serviceProcessId, String preStepCode, String actionCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ProcessAction fetchProcessAction(long processActionId);

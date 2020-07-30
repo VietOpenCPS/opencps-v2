@@ -82,6 +82,9 @@ public class AutoFillFormData {
 			String _representative = StringPool.BLANK;
 			String _govAgencyName = StringPool.BLANK;
 			String _serviceName = StringPool.BLANK;
+			String _sampleCount = StringPool.BLANK;
+			String _documentDate = StringPool.BLANK;
+			String _documentNo = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
 
@@ -181,6 +184,9 @@ public class AutoFillFormData {
 				_govAgencyName = dossier.getGovAgencyName();
 				_serviceName = dossier.getServiceName();
 				_applicantName = dossier.getApplicantName();
+				_sampleCount = String.valueOf(dossier.getSampleCount());
+				_documentDate = dossier.getDocumentDate().toGMTString();
+				_documentNo = dossier.getDocumentNo();
 			}
 			// process sampleData
 //			if (Validator.isNull(sampleData)) {
@@ -245,6 +251,12 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _govAgencyName);
 					} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _serviceName);
+					}else if((StringPool.UNDERLINE + DossierTerm.SAMPLE_COUNT).equals(value)){
+						jsonMap.put(entry.getKey(), _sampleCount);
+					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_DATE).equals(value)){
+						jsonMap.put(entry.getKey(), _documentDate);
+					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
+						jsonMap.put(entry.getKey(), _documentNo);
 					}
 //					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
@@ -323,6 +335,12 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _govAgencyName);
 						} else if ((StringPool.UNDERLINE + DossierTerm.SERVICE_NAME).equals(value)) {
 							jsonMap.put(entry.getKey(), _serviceName);
+						}else if((StringPool.UNDERLINE + DossierTerm.SAMPLE_COUNT).equals(value)){
+							jsonMap.put(entry.getKey(), _sampleCount);
+						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_DATE).equals(value)){
+							jsonMap.put(entry.getKey(), _documentDate);
+						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
+							jsonMap.put(entry.getKey(), _documentNo);
 						}
 					}
 

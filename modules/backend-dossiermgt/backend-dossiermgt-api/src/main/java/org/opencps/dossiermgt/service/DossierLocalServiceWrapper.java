@@ -350,6 +350,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByD_OR_D(
+		long[] dossierId) {
+		return _dossierLocalService.fetchByD_OR_D(dossierId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier fetchByDO_NO(String dossierNo) {
 		return _dossierLocalService.fetchByDO_NO(dossierNo);
 	}

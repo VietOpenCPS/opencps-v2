@@ -280,6 +280,8 @@ public interface DossierFileLocalService extends BaseLocalService,
 
 	public List<DossierFile> findByDID(long dossierId);
 
+	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId);
+
 	public List<DossierFile> findByGroup(long groupId);
 
 	public DossierFile findLastDossierFile(long dossierId,

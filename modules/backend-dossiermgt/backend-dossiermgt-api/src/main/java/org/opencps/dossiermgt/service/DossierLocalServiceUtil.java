@@ -342,6 +342,11 @@ public class DossierLocalServiceUtil {
 			processNo, metaData, context);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByD_OR_D(
+		long[] dossierId) {
+		return getService().fetchByD_OR_D(dossierId);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier fetchByDO_NO(
 		String dossierNo) {
 		return getService().fetchByDO_NO(dossierNo);

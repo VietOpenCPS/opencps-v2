@@ -203,6 +203,10 @@ public class DeliverableTypeLocalServiceUtil {
 		long deliverableTypeId) {
 		return getService().fetchDeliverableType(deliverableTypeId);
 	}
+	public static org.opencps.dossiermgt.model.DeliverableType fetchByG_DLT(
+			long groupId, String typeCode) {
+		return getService().fetchByG_DLT(groupId,typeCode);
+	}
 
 	/**
 	* Returns the deliverable type matching the UUID and group.

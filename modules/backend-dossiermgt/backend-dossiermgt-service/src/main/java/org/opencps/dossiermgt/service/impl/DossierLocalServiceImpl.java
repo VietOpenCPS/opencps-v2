@@ -7713,6 +7713,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier fetchByDO_POST_SEND_GROUP(String postpostalCodeSend, long groupId) {
 		return dossierPersistence.fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
 	}
+
+	@Override
+	public List<Dossier> fetchByD_OR_D(long[] dossierId) {
+		return dossierPersistence.findByD_OR_D(dossierId);
+	}
+
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
 	}

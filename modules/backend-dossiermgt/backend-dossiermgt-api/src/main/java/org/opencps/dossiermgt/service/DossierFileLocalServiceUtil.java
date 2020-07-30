@@ -343,6 +343,11 @@ public class DossierFileLocalServiceUtil {
 		return getService().findByDID(dossierId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> findByDID_GROUP(
+		long groupId, long dossierId) {
+		return getService().findByDID_GROUP(groupId, dossierId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.DossierFile> findByGroup(
 		long groupId) {
 		return getService().findByGroup(groupId);

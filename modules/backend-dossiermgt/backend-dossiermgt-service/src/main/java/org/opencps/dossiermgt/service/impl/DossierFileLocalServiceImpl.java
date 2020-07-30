@@ -1907,5 +1907,10 @@ public class DossierFileLocalServiceImpl
 			start, end, orderByComparator);
 	}
 
+	@Override
+	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId) {
+		return dossierFilePersistence.findByDID_GROUP(groupId,dossierId);
+	}
+
 	public static final String CLASS_NAME = DossierFile.class.getName();
 }

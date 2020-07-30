@@ -407,4 +407,5 @@ public class DossierTerm {
 	public static final String VNPOST_CLS = "VNPOST_CLS";
 	public static final String URL_VIA_POST = "apiGetVnPost";
 	public static final String TOKEN_VN_POST = "tokenVnPost";
+	public static final String DELIVERABLE_CODE = "deliverableCode";
 }

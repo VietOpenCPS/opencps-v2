@@ -194,6 +194,13 @@ public class ProcessActionLocalServiceUtil {
 			actionCode, preStepCode, postStepCode);
 	}
 
+	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AC(
+		long serviceProcessId, String preStepCode, String actionCode) {
+		return getService()
+				   .fetchBySPI_PRESC_AC(serviceProcessId, preStepCode,
+			actionCode);
+	}
+
 	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AEV(
 		long serviceProcessId, String preStepCode, String autoEvent) {
 		return getService()
@@ -204,10 +211,6 @@ public class ProcessActionLocalServiceUtil {
 	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPID_AC(
 		long serviceProcessId, String actionCode) {
 		return getService().fetchBySPID_AC(serviceProcessId, actionCode);
-	}
-	public static org.opencps.dossiermgt.model.ProcessAction fetchBySPI_PRESC_AC(
-			long serviceProcessId,String preStepCode,String actionCode) {
-		return getService().fetchBySPI_PRESC_AC(serviceProcessId, preStepCode, actionCode);
 	}
 
 	public static org.opencps.dossiermgt.model.ProcessAction fetchProcessAction(
