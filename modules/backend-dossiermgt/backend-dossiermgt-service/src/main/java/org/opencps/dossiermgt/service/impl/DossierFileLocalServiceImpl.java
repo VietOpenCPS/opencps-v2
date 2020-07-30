@@ -120,7 +120,7 @@ public class DossierFileLocalServiceImpl
 	/**
 	 * POST /dossiers/{id|referenceUid}/files
 	 */
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
@@ -258,7 +258,7 @@ public class DossierFileLocalServiceImpl
 	}
 
 	//
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFile(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
@@ -397,7 +397,7 @@ public class DossierFileLocalServiceImpl
 	}
 
 	// Process EForm
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierFileEForm(
 		long groupId, long dossierId, String referenceUid,
 		String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
@@ -843,7 +843,7 @@ public class DossierFileLocalServiceImpl
 	 * @throws PortalException
 	 * @throws SystemException
 	 */
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile cloneDossierFile(
 		long groupId, long dossierId, long dossierFileId,
 		String dossierTemplateNo, String dossierPartNo,
@@ -939,7 +939,7 @@ public class DossierFileLocalServiceImpl
 	/**
 	 * POST /dossiers/{id|referenceUid}/files/{referenceUid}
 	 */
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(
 		long groupId, long dossierId, String referenceUid, String displayName,
 		String sourceFileName, InputStream inputStream,
@@ -998,7 +998,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(long groupId, long dossierId, String referenceUid, String displayName,
 			String sourceFileName, long fileSize, InputStream inputStream, String fileType, String isSync,
 			ServiceContext serviceContext) throws PortalException, SystemException {
@@ -1046,7 +1046,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateFormData(
 		long groupId, long dossierId, String referenceUid, String formData,
 		ServiceContext serviceContext)
@@ -1108,7 +1108,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(long dossierFileId)
 		throws PortalException {
 
@@ -1118,7 +1118,7 @@ public class DossierFileLocalServiceImpl
 		return deleteDossierFile(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile removeDossierFile(
 		long dossierId, String referenceUid, ServiceContext serviceContext)
 		throws PortalException {
@@ -1143,7 +1143,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFileLocalService.updateDossierFile(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(long dossierId, String referenceUid)
 		throws PortalException {
 
@@ -1153,7 +1153,7 @@ public class DossierFileLocalServiceImpl
 		return deleteDossierFile(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile resetDossierFile(long dossierFileId) {
 
 		DossierFile dossierFile =
@@ -1166,7 +1166,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFile;
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile deleteDossierFile(DossierFile dossierFile)
 		throws PortalException {
 
@@ -1179,7 +1179,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.update(dossierFile);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile deletePermanentDossierFile(DossierFile dossierFile) {
 
 		return dossierFilePersistence.remove(dossierFile);
@@ -1220,221 +1220,221 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.fetchByDID_REF(dossierId, referenceUid);
 	}
 
-	public Hits searchLucene(
-		LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
-		SearchContext searchContext)
-		throws ParseException, SearchException {
-
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
-
-		Indexer<DossierFile> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
-
-		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] {
-			CLASS_NAME
-		});
-		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
-		searchContext.setLike(true);
-		searchContext.setStart(start);
-		searchContext.setEnd(end);
-		searchContext.setAndSearch(true);
-		searchContext.setSorts(sorts);
-
-		BooleanQuery booleanQuery = null;
-
-		if (Validator.isNotNull(keywords)) {
-			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		}
-		else {
-			booleanQuery = indexer.getFullQuery(searchContext);
-		}
-
-		if (Validator.isNotNull(keywords)) {
-
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
-		}
-
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(Field.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		String fileTemplateNo =
-			GetterUtil.getString(params.get(DossierFileTerm.FILE_TEMPLATE_NO));
-		String dossierPartType =
-			GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
-		String user_id =
-			GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
-		String original =
-			GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
-		String removed =
-			GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
-
-		if (Validator.isNotNull(fileTemplateNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
-
-			query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(dossierPartType)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
-
-			query.addFields(DossierFileTerm.DOSSIER_PART_TYPE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(user_id)) {
-			MultiMatchQuery query = new MultiMatchQuery(user_id);
-
-			query.addFields(DossierFileTerm.USER_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(original)) {
-			MultiMatchQuery query = new MultiMatchQuery(original);
-
-			query.addFields(DossierFileTerm.ORIGINAL);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(removed)) {
-			MultiMatchQuery query = new MultiMatchQuery(removed);
-
-			query.addFields(DossierFileTerm.REMOVED);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
-
-		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
-	}
-
-	public long countLucene(
-		LinkedHashMap<String, Object> params, SearchContext searchContext)
-		throws ParseException, SearchException {
-
-		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
-		String groupId = (String) params.get(Field.GROUP_ID);
-
-		Indexer<DossierFile> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
-
-		searchContext.addFullQueryEntryClassName(CLASS_NAME);
-		searchContext.setEntryClassNames(new String[] {
-			CLASS_NAME
-		});
-		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
-		searchContext.setLike(true);
-		searchContext.setAndSearch(true);
-
-		BooleanQuery booleanQuery = null;
-
-		if (Validator.isNotNull(keywords)) {
-			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
-		}
-		else {
-			booleanQuery = indexer.getFullQuery(searchContext);
-		}
-
-		if (Validator.isNotNull(keywords)) {
-
-			String[] keyword = keywords.split(StringPool.SPACE);
-
-			for (String string : keyword) {
-
-				MultiMatchQuery query = new MultiMatchQuery(string);
-
-				query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
-
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-			}
-		}
-
-		if (Validator.isNotNull(groupId)) {
-			MultiMatchQuery query = new MultiMatchQuery(groupId);
-
-			query.addFields(Field.GROUP_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		String fileTemplateNo =
-			GetterUtil.getString(params.get(DossierFileTerm.FILE_TEMPLATE_NO));
-		String dossierPartType =
-			GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
-		String user_id =
-			GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
-		String original =
-			GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
-		String removed =
-			GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
-
-		if (Validator.isNotNull(fileTemplateNo)) {
-			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
-
-			query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(dossierPartType)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
-
-			query.addFields(DossierFileTerm.DOSSIER_PART_TYPE);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(user_id)) {
-			MultiMatchQuery query = new MultiMatchQuery(user_id);
-
-			query.addFields(DossierFileTerm.USER_ID);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(original)) {
-			MultiMatchQuery query = new MultiMatchQuery(original);
-
-			query.addFields(DossierFileTerm.ORIGINAL);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		if (Validator.isNotNull(removed)) {
-			MultiMatchQuery query = new MultiMatchQuery(removed);
-
-			query.addFields(DossierFileTerm.REMOVED);
-
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-
-		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
-
-		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
-	}
+//	public Hits searchLucene(
+//		LinkedHashMap<String, Object> params, Sort[] sorts, int start, int end,
+//		SearchContext searchContext)
+//		throws ParseException, SearchException {
+//
+//		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+//		String groupId = (String) params.get(Field.GROUP_ID);
+//
+//		Indexer<DossierFile> indexer =
+//			IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
+//
+//		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+//		searchContext.setEntryClassNames(new String[] {
+//			CLASS_NAME
+//		});
+//		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
+//		searchContext.setLike(true);
+//		searchContext.setStart(start);
+//		searchContext.setEnd(end);
+//		searchContext.setAndSearch(true);
+//		searchContext.setSorts(sorts);
+//
+//		BooleanQuery booleanQuery = null;
+//
+//		if (Validator.isNotNull(keywords)) {
+//			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+//		}
+//		else {
+//			booleanQuery = indexer.getFullQuery(searchContext);
+//		}
+//
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+//
+//		if (Validator.isNotNull(groupId)) {
+//			MultiMatchQuery query = new MultiMatchQuery(groupId);
+//
+//			query.addFields(Field.GROUP_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		String fileTemplateNo =
+//			GetterUtil.getString(params.get(DossierFileTerm.FILE_TEMPLATE_NO));
+//		String dossierPartType =
+//			GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
+//		String user_id =
+//			GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
+//		String original =
+//			GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
+//		String removed =
+//			GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
+//
+//		if (Validator.isNotNull(fileTemplateNo)) {
+//			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+//
+//			query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(dossierPartType)) {
+//			MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
+//
+//			query.addFields(DossierFileTerm.DOSSIER_PART_TYPE);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(user_id)) {
+//			MultiMatchQuery query = new MultiMatchQuery(user_id);
+//
+//			query.addFields(DossierFileTerm.USER_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(original)) {
+//			MultiMatchQuery query = new MultiMatchQuery(original);
+//
+//			query.addFields(DossierFileTerm.ORIGINAL);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(removed)) {
+//			MultiMatchQuery query = new MultiMatchQuery(removed);
+//
+//			query.addFields(DossierFileTerm.REMOVED);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+//
+//		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
+//	}
+//
+//	public long countLucene(
+//		LinkedHashMap<String, Object> params, SearchContext searchContext)
+//		throws ParseException, SearchException {
+//
+//		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
+//		String groupId = (String) params.get(Field.GROUP_ID);
+//
+//		Indexer<DossierFile> indexer =
+//			IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
+//
+//		searchContext.addFullQueryEntryClassName(CLASS_NAME);
+//		searchContext.setEntryClassNames(new String[] {
+//			CLASS_NAME
+//		});
+//		searchContext.setAttribute(DeliverableTerm.PAGINATION_TYPE, DeliverableTerm.REGULAR);
+//		searchContext.setLike(true);
+//		searchContext.setAndSearch(true);
+//
+//		BooleanQuery booleanQuery = null;
+//
+//		if (Validator.isNotNull(keywords)) {
+//			booleanQuery = BooleanQueryFactoryUtil.create(searchContext);
+//		}
+//		else {
+//			booleanQuery = indexer.getFullQuery(searchContext);
+//		}
+//
+//		if (Validator.isNotNull(keywords)) {
+//
+//			String[] keyword = keywords.split(StringPool.SPACE);
+//
+//			for (String string : keyword) {
+//
+//				MultiMatchQuery query = new MultiMatchQuery(string);
+//
+//				query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
+//
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//
+//			}
+//		}
+//
+//		if (Validator.isNotNull(groupId)) {
+//			MultiMatchQuery query = new MultiMatchQuery(groupId);
+//
+//			query.addFields(Field.GROUP_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		String fileTemplateNo =
+//			GetterUtil.getString(params.get(DossierFileTerm.FILE_TEMPLATE_NO));
+//		String dossierPartType =
+//			GetterUtil.getString(params.get(DossierFileTerm.DOSSIER_PART_TYPE));
+//		String user_id =
+//			GetterUtil.getString(params.get(DossierFileTerm.USER_ID));
+//		String original =
+//			GetterUtil.getString(params.get(DossierFileTerm.ORIGINAL));
+//		String removed =
+//			GetterUtil.getString(params.get(DossierFileTerm.REMOVED));
+//
+//		if (Validator.isNotNull(fileTemplateNo)) {
+//			MultiMatchQuery query = new MultiMatchQuery(fileTemplateNo);
+//
+//			query.addFields(DossierFileTerm.FILE_TEMPLATE_NO);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(dossierPartType)) {
+//			MultiMatchQuery query = new MultiMatchQuery(dossierPartType);
+//
+//			query.addFields(DossierFileTerm.DOSSIER_PART_TYPE);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(user_id)) {
+//			MultiMatchQuery query = new MultiMatchQuery(user_id);
+//
+//			query.addFields(DossierFileTerm.USER_ID);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(original)) {
+//			MultiMatchQuery query = new MultiMatchQuery(original);
+//
+//			query.addFields(DossierFileTerm.ORIGINAL);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		if (Validator.isNotNull(removed)) {
+//			MultiMatchQuery query = new MultiMatchQuery(removed);
+//
+//			query.addFields(DossierFileTerm.REMOVED);
+//
+//			booleanQuery.add(query, BooleanClauseOccur.MUST);
+//		}
+//
+//		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
+//
+//		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
+//	}
 
 	public List<DossierFile> getByDossierIdAndIsNew(
 		long dossierId, boolean isNew) {
@@ -1603,7 +1603,7 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.findByG(groupId);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile permanentDeleteDossierFile(long dossierFileId)
 		throws PortalException {
 
@@ -1618,7 +1618,7 @@ public class DossierFileLocalServiceImpl
 	}
 
 	// super_admin Generators
-	@Indexable(type = IndexableType.DELETE)
+	//@Indexable(type = IndexableType.DELETE)
 	public DossierFile adminProcessDelete(Long id) {
 
 		DossierFile object = dossierFilePersistence.fetchByPrimaryKey(id);
@@ -1633,7 +1633,7 @@ public class DossierFileLocalServiceImpl
 		return object;
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile adminProcessData(JSONObject objectData) {
 
 		DossierFile object = null;
@@ -1766,7 +1766,7 @@ public class DossierFileLocalServiceImpl
 	/**
 	 * @POST @Path("/dossierfiles")
 	 */
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile updateDossierFile(
 		long dossierFileId, long groupId, long companyId, long userId,
 		String userName, long dossierId, String referenceUid,
@@ -1827,7 +1827,7 @@ public class DossierFileLocalServiceImpl
 
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
+	//@Indexable(type = IndexableType.REINDEX)
 	public DossierFile addDossierByDeliverable(long groupId, long companyId, long userId, String userName,
 			long dossierId, String referenceUid, String dossierTemplateNo, String dossierPartNo, int dossierPartType,
 			String fileTemplateNo, String displayName, String formData, long fileEntryId, Boolean original,

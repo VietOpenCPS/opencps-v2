@@ -65,7 +65,7 @@ public class SiteCleanBackgroundTaskExecutor extends BaseBackgroundTaskExecutor 
 		messageContent.setPercentage(progress);
 
 		progress += 3;
-		SystemUtils.cleanDossierFile(siteId, 0l, serviceContext);
+		//SystemUtils.cleanDossierFile(siteId, 0l, serviceContext);
 		LOGGER.info("Clean dossierfile complete!");
 		messageContent.setExecutionLog("Đã làm sạch thành phần hồ sơ");
 		messageContent.setPercentage(progress);

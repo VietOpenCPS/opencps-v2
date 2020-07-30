@@ -359,7 +359,6 @@ public interface DossierActionLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierAction removeAction(long actionId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -376,7 +375,6 @@ public interface DossierActionLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(DossierAction dossierAction);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId,
 		long dossierActionId, long dossierId, long serviceProcessId,
 		long previousActionId, String fromStepCode, String fromStepName,
@@ -387,7 +385,6 @@ public interface DossierActionLocalService extends BaseLocalService,
 		long nextActionId, String payload, String stepInstruction, int state,
 		int eventStatus, ServiceContext context) throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId,
 		long dossierActionId, long dossierId, long serviceProcessId,
 		long previousActionId, String fromStepCode, String fromStepName,
@@ -398,7 +395,6 @@ public interface DossierActionLocalService extends BaseLocalService,
 		int eventStatus, boolean rollbackable, ServiceContext context)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateDossierAction(long groupId,
 		long dossierActionId, long dossierId, long serviceProcessId,
 		long previousActionId, String fromStepCode, String fromStepName,
@@ -408,7 +404,6 @@ public interface DossierActionLocalService extends BaseLocalService,
 		long nextActionId, String payload, String stepInstruction, int state,
 		int eventStatus, ServiceContext context) throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateImportDossierAction(long groupId,
 		long dossierActionId, long serviceProcessId, String fromStepCode,
 		String fromStepName, String fromSequenceNo, String actionCode,
@@ -416,17 +411,13 @@ public interface DossierActionLocalService extends BaseLocalService,
 		Date dueDate, long nextActionId, int state, ServiceContext context)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateNextActionId(long actionId, long nextActionId)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updatePending(long actionId, boolean pending)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateRollbackable(long actionId, boolean rollbackable);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierAction updateState(long actionId, int state);
 }
