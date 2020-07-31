@@ -7982,7 +7982,7 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 
 					}
-					Thread.sleep(5000);
+//					Thread.sleep(500);
 				}
 				results.put(ConstantUtils.DATA,data);
 				results.put(ConstantUtils.TOTAL,total);
@@ -8268,21 +8268,7 @@ public class DossierManagementImpl implements DossierManagement {
 					user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			List<DossierDataModel> lstData = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA));
-			List<Long> lstId = new ArrayList<>();
-
-			if(lstData !=null && !lstData.isEmpty()){
-				for(DossierDataModel item : lstData) {
-					if (Validator.isNotNull(item.getGroupDossierId())) {
-						String groupDossierIds = String.valueOf(item.getGroupDossierId());
-						String[] id = groupDossierIds.split(StringPool.COMMA);
-						for (String key : id) {
-							if(!key.contains(lstId.toString())){
-								lstId.add(Long.valueOf(key));
-							}
-						}
-					}
-				}
+			List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA));
 				long[] dossierIds = new long[lstId.size()];
 				if(lstId !=null && !lstId.isEmpty()){
 					int i = 0;
@@ -8293,7 +8279,6 @@ public class DossierManagementImpl implements DossierManagement {
 				if(Validator.isNotNull(dossierIds)) {
 					lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
 				}
-			}
 			results.setTotal(lstDossier.size());
  			results.getData().addAll(DossierUtils.mappingForListDossier(lstDossier));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();

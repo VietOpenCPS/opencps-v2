@@ -36,6 +36,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -987,7 +988,11 @@ public class DossierUtils {
 		model.setContactTelNo(input.getContactTelNo());
 		model.setContactEmail(input.getContactEmail());
 		model.setDossierNote(input.getDossierNote());
-		model.setSubmissionNote(input.getSubmissionNote());
+		if(Validator.isNotNull(input.getSubmissionNote())) {
+			String submissionNote = DossierContentGenerator.getSubmissionNote(
+					input.getDossierId(), input.getSubmissionNote());
+			model.setSubmissionNote(submissionNote);
+		}
 		model.setBriefNote(input.getBriefNote());
 		model.setDossierNo(input.getDossierNo());
 		model.setSubmitting(Boolean.toString(input.getSubmitting()));
@@ -1687,9 +1692,8 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
-	public static List<DossierDataModel> mappingForListCongVan(List<Document> docs) {
+	public static List<Long> mappingForListCongVan(List<Document> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
-		Map<String, String> mapGroups = new HashMap<>();
 		for (Document doc : docs) {
 			int originality = GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY));
 			DossierDataModel model = new DossierDataModel();
@@ -1712,13 +1716,35 @@ public class DossierUtils {
  			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
-			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
+			String groupDossierId = "";
+			if(Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))){
+				String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
+				for (String key : idGroup) {
+					groupDossierId += key + ",";
+				}
+				model.setGroupDossierIds(groupDossierId);
+			}
 			model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
 
 			ouputs.add(model);
 		}
+		List<Long> lstId = new ArrayList<>();
+		if(ouputs !=null){
+			for(DossierDataModel item : ouputs) {
+				//GroupDossierId : id,id,id
+				if (Validator.isNotNull(item.getGroupDossierIds())) {
+					String groupDossierIds = String.valueOf(item.getGroupDossierIds());
+					String[] id = groupDossierIds.split(StringPool.COMMA);
+					for (String key : id) {
+						if(!key.contains(lstId.toString())){
+							lstId.add(Long.valueOf(key));
+						}
+					}
+				}
+			}
+		}
 
-		return ouputs;
+		return lstId;
 	}
 	public static List<DossierDataModel> mappingForListDossier(List<Dossier> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();

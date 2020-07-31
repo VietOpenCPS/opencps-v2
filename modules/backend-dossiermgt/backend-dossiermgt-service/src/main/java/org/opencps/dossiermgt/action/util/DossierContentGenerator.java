@@ -1,5 +1,6 @@
 package org.opencps.dossiermgt.action.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -9,12 +10,11 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -95,6 +95,8 @@ public class DossierContentGenerator {
 
 	private static final String BRIEFNOTE_PATTERN = "\\[\\$(.*?)\\$\\]";
 	private static final String VARIABLE = "$variable";
+	private static final String VARIABLE_SUBMISSION = "$variable";
+	private static final String SUBMISSION_PATTERN = "\\[\\$(.*?)\\$\\]";
 	
 	public static String getBriefNote(long groupId, long dossierId, String briefNotePattern) {
 
@@ -166,6 +168,94 @@ public class DossierContentGenerator {
 			briefNote = briefNotePattern;
 
 			return briefNote;
+
+		} else {
+			return StringPool.BLANK;
+		}
+	}
+	public static String getSubmissionNote(long dossierId, String submissionNotePattern) {
+
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
+
+		String submissionNote;
+
+		LinkedHashMap<String, String> patternContentMaps = new LinkedHashMap<String, String>();
+		JSONObject jsonObject = null;
+
+		if (Validator.isNotNull(dossier) && Validator.isNotNull(submissionNotePattern)) {
+
+			String pattern = SUBMISSION_PATTERN;
+
+			Pattern r = Pattern.compile(pattern);
+
+			Matcher m = r.matcher(submissionNotePattern);
+
+			int count = 0;
+
+			while (m.find()) {
+				submissionNotePattern = submissionNotePattern.replace(m.group(0), VARIABLE_SUBMISSION + count + StringPool.DOLLAR);
+				patternContentMaps.put(VARIABLE_SUBMISSION + count + StringPool.DOLLAR, m.group(1));
+				m = r.matcher(submissionNotePattern);
+				count++;
+			}
+			try {
+				 jsonObject = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
+			}catch (Exception e){
+				return e.getMessage();
+			}
+			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {
+				String tmpKey = entry.getKey();
+				String patternContent = entry.getValue();
+				String[] textSplit = StringUtil.split(patternContent, StringPool.AT);
+				if (textSplit == null || textSplit.length < 2) {
+					Iterator<String> keys = jsonObject.keys();
+					while (keys.hasNext()) {
+						String key = keys.next();
+						String value = jsonObject.getString(key);
+						if(key.equals(patternContent)){
+							submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+							break;
+						}
+					}
+				} else {
+					String dataKey = textSplit[0];
+					String fileTemplateNo = textSplit[1];
+
+					DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+							fileTemplateNo, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
+
+
+					if (dossierFile == null) {
+						submissionNotePattern = submissionNotePattern.replace(tmpKey, StringPool.BLANK);
+					} else {
+
+						String formData = dossierFile.getFormData();
+						if (Validator.isNull(formData)) {
+							submissionNotePattern = submissionNotePattern.replace(tmpKey, StringPool.BLANK);
+						} else {
+							try {
+								String value = StringPool.BLANK;
+
+								JSONObject object = JSONFactoryUtil.createJSONObject(formData);
+								if(object.has(dataKey)){
+									value = object.getString(dataKey);
+								}
+
+								submissionNotePattern = submissionNotePattern.replace(tmpKey,
+										Validator.isNotNull(value) ? value : StringPool.BLANK);
+							} catch (Exception e) {
+								_log.debug(e);
+								//_log.error(e);
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, StringPool.BLANK);
+							}
+						}
+					}
+				}
+			}
+
+			submissionNote = submissionNotePattern;
+
+			return submissionNote;
 
 		} else {
 			return StringPool.BLANK;

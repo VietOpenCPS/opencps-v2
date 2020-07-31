@@ -185,7 +185,9 @@ public class AutoFillFormData {
 				_serviceName = dossier.getServiceName();
 				_applicantName = dossier.getApplicantName();
 				_sampleCount = String.valueOf(dossier.getSampleCount());
-				_documentDate = dossier.getDocumentDate().toGMTString();
+				if(Validator.isNotNull(dossier.getDocumentDate())) {
+					_documentDate = dossier.getDocumentDate().toGMTString();
+				}
 				_documentNo = dossier.getDocumentNo();
 			}
 			// process sampleData
