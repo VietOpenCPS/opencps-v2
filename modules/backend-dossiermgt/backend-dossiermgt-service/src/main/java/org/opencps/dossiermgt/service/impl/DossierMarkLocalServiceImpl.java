@@ -127,6 +127,10 @@ public class DossierMarkLocalServiceImpl extends DossierMarkLocalServiceBaseImpl
 	public List<DossierMark> getDossierMarksByFileMark(long groupId, long dossierId, int fileMark) {
 		return dossierMarkPersistence.findByG_DID_MARK(groupId, dossierId, fileMark);
 	}
+	
+	public List<DossierMark> getDossierMarksByFileMarkAndRecordCount(long groupId, long dossierId, int fileMark, String recordCount) {
+		return dossierMarkPersistence.findByG_DID_MARK_RC(groupId, dossierId, fileMark, recordCount);
+	}
 
 
 	// super_admin Generators

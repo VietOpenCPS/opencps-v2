@@ -64,19 +64,16 @@ public interface DossierDocumentLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link DossierDocumentLocalServiceUtil} to access the dossier document local service. Add custom service methods to {@link org.opencps.dossiermgt.service.impl.DossierDocumentLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId,
 		long dossierActionId, String documentType, String documentName,
 		String documentCode, String sourceFileName, long fileSize,
 		InputStream inputStream, String fileType, ServiceContext serviceContext);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId,
 		String referenceUid, long dossierActionId, String documentType,
 		String documentName, String documentCode, long documentFileId,
 		int docSync, ServiceContext serviceContext);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDoc(long groupId, Long dossierId,
 		String referenceUid, long dossierActionId, String documentType,
 		String documentName, String documentCode, String sourceFileName,
@@ -92,10 +89,8 @@ public interface DossierDocumentLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument addDossierDocument(DossierDocument dossierDocument);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument adminProcessData(JSONObject objectData);
 
-	@Indexable(type = IndexableType.DELETE)
 	public DossierDocument adminProcessDelete(Long id);
 
 	public long countDossierDocumentList(Long dossierId);
@@ -288,14 +283,12 @@ public interface DossierDocumentLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument updateDossierDoc(long groupId, long dossierDocId,
 		Long dossierId, String referenceUid, long dossierActionId,
 		String documentType, String documentName, String documentCode,
 		long documentFileId, int docSync, ServiceContext serviceContext)
 		throws NoSuchDossierDocumentException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public DossierDocument updateDossierDoc(long groupId, long dossierDocId,
 		Long dossierId, String referenceUid, long dossierActionId,
 		String documentType, String documentName, String documentCode,

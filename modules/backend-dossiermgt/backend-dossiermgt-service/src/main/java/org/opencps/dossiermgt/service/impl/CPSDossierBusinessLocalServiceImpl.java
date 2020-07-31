@@ -5569,7 +5569,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		BackendAuth auth = new BackendAuthImpl();
 		DossierPermission dossierPermission = new DossierPermission();
-		_log.info("DossierInputModel: " + input);
 
 		long start = System.currentTimeMillis();
 
@@ -5728,7 +5727,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					input.getPostalDistrictCode(), postalDistrictName, input.getPostalTelNo(), online,
 					process.getDirectNotification(), input.getApplicantNote(), Integer.valueOf(input.getOriginality()),
 					service, process, option, serviceContext);
-			_log.info("Thong tin ho so : " + dossier);
 
 			if (Validator.isNotNull(input.getDossierName())) {
 				dossier.setDossierName(input.getDossierName());
