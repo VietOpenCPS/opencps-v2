@@ -132,4 +132,9 @@ public class OpencpsVotingStatisticLocalServiceImpl
 		opencpsVotingStatisticPersistence.removeByCID_GID_Y(companyId, groupId, month, year);
 	}
 
+	public List<Object[]> searchVotingByGovAgencyAndServiceCode(long groupId, String startDay, String endDay, String govAgency,
+																String serviceCode) {
+		return opencpsVotingStatisticFinder.searchVotingByGovAgencyAndServiceCode(groupId, startDay, endDay, govAgency, serviceCode);
+	}
+
 }

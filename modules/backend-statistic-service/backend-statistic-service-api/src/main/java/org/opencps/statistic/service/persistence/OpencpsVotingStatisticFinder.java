@@ -33,4 +33,8 @@ public interface OpencpsVotingStatisticFinder {
 	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchByVotingServiceGovAgencyGroup(
 		long groupId, int month, int year, String votingCode, String domain,
 		String govAgency, int start, int end);
+
+	public java.util.List<Object[]> searchVotingByGovAgencyAndServiceCode(
+		long groupId, String startDay, String endDay, String govAgency,
+		String serviceCode);
 }

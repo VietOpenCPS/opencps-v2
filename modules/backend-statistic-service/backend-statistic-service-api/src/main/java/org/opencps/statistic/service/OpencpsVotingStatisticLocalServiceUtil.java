@@ -340,6 +340,14 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 		getService().removeVotingStatisticByYear(companyId, groupId, month, year);
 	}
 
+	public static java.util.List<Object[]> searchVotingByGovAgencyAndServiceCode(
+		long groupId, String startDay, String endDay, String govAgency,
+		String serviceCode) {
+		return getService()
+				   .searchVotingByGovAgencyAndServiceCode(groupId, startDay,
+			endDay, govAgency, serviceCode);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchVotingStatistic(
 		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)

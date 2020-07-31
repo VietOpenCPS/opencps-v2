@@ -363,6 +363,14 @@ public class OpencpsVotingStatisticLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<Object[]> searchVotingByGovAgencyAndServiceCode(
+		long groupId, String startDay, String endDay, String govAgency,
+		String serviceCode) {
+		return _opencpsVotingStatisticLocalService.searchVotingByGovAgencyAndServiceCode(groupId,
+			startDay, endDay, govAgency, serviceCode);
+	}
+
+	@Override
 	public java.util.List<org.opencps.statistic.model.OpencpsVotingStatistic> searchVotingStatistic(
 		long groupId, int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)
