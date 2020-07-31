@@ -121,53 +121,53 @@ public class SystemUtils {
 		}
 	}
 	
-	public static void cleanDossierFile(long groupId, long userId, ServiceContext serviceContext) throws PortalException {
-		Indexer<DossierFile> indexer = IndexerRegistryUtil
-				.nullSafeGetIndexer(DossierFile.class);
-		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-
-		params.put(Field.GROUP_ID, String.valueOf(groupId));
-		SearchContext searchContext = new SearchContext();
-		searchContext.setCompanyId(serviceContext.getCompanyId());
-
-		Sort[] sorts = new Sort[] { };
-		
-		Hits hits = DossierFileLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, searchContext);
-		long total = DossierFileLocalServiceUtil.countLucene(params, searchContext);
-		
-		if (total > 0) {
-			List<Document> lstDocs =  (List<Document>) hits.toList();	
-			for (Document document : lstDocs) {
-				long dossierFileId = GetterUtil.getLong(document.get(DossierFileTerm.DOSSIER_FILE_ID));
-				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
-				String uid = document.get(Field.UID);
-				DossierFile oldDossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
-				if (oldDossierFile == null) {
-					try {
-						indexer.delete(companyId, uid);
-					} catch (SearchException e) {
-						_log.debug(e);
-						//_log.error(e);
-					}
-				}
-			}			
-		}
-		
-		List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByGroup(groupId);
-		for (DossierFile df : lstFiles) {
-			LOGGER.info("Clean dossier file: " + df.getReferenceUid());
-			if (df.getFileEntryId() != 0) {
-				try {
-					DLAppLocalServiceUtil.deleteFileEntry(df.getFileEntryId());		
-				}
-				catch (PortalException e) {
-					_log.debug(e);
-					//_log.error(e);
-				}
-			}
-			DossierFileLocalServiceUtil.permanentDeleteDossierFile(df.getDossierFileId());
-		}
-	}
+//	public static void cleanDossierFile(long groupId, long userId, ServiceContext serviceContext) throws PortalException {
+//		Indexer<DossierFile> indexer = IndexerRegistryUtil
+//				.nullSafeGetIndexer(DossierFile.class);
+//		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//
+//		params.put(Field.GROUP_ID, String.valueOf(groupId));
+//		SearchContext searchContext = new SearchContext();
+//		searchContext.setCompanyId(serviceContext.getCompanyId());
+//
+//		Sort[] sorts = new Sort[] { };
+//		
+//		Hits hits = DossierFileLocalServiceUtil.searchLucene(params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, searchContext);
+//		long total = DossierFileLocalServiceUtil.countLucene(params, searchContext);
+//		
+//		if (total > 0) {
+//			List<Document> lstDocs =  (List<Document>) hits.toList();	
+//			for (Document document : lstDocs) {
+//				long dossierFileId = GetterUtil.getLong(document.get(DossierFileTerm.DOSSIER_FILE_ID));
+//				long companyId = GetterUtil.getLong(document.get(Field.COMPANY_ID));
+//				String uid = document.get(Field.UID);
+//				DossierFile oldDossierFile = DossierFileLocalServiceUtil.fetchDossierFile(dossierFileId);
+//				if (oldDossierFile == null) {
+//					try {
+//						indexer.delete(companyId, uid);
+//					} catch (SearchException e) {
+//						_log.debug(e);
+//						//_log.error(e);
+//					}
+//				}
+//			}			
+//		}
+//		
+//		List<DossierFile> lstFiles = DossierFileLocalServiceUtil.findByGroup(groupId);
+//		for (DossierFile df : lstFiles) {
+//			LOGGER.info("Clean dossier file: " + df.getReferenceUid());
+//			if (df.getFileEntryId() != 0) {
+//				try {
+//					DLAppLocalServiceUtil.deleteFileEntry(df.getFileEntryId());		
+//				}
+//				catch (PortalException e) {
+//					_log.debug(e);
+//					//_log.error(e);
+//				}
+//			}
+//			DossierFileLocalServiceUtil.permanentDeleteDossierFile(df.getDossierFileId());
+//		}
+//	}
 	
 	public static void cleanDossierLog(long groupId, long userId, ServiceContext serviceContext) throws PortalException {
 		Indexer<DossierLog> indexer = IndexerRegistryUtil

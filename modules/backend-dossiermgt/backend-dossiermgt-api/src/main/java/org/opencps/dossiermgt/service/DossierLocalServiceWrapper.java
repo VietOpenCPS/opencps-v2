@@ -361,6 +361,20 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Dossier fetchByDO_POST_RECEIVED_GROUP(
+		String postalCodeReceived, long groupId) {
+		return _dossierLocalService.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived,
+			groupId);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier fetchByDO_POST_SEND_GROUP(
+		String postpostalCodeSend, long groupId) {
+		return _dossierLocalService.fetchByDO_POST_SEND_GROUP(postpostalCodeSend,
+			groupId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Dossier fetchDossier(long dossierId) {
 		return _dossierLocalService.fetchDossier(dossierId);
 	}
@@ -437,6 +451,12 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 	public java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return _dossierLocalService.findDossierByDay(date);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Dossier findDossierByDeclarationCode(
+		String code, long groupId) {
+		return _dossierLocalService.findDossierByDeclarationCode(code, groupId);
 	}
 
 	@Override

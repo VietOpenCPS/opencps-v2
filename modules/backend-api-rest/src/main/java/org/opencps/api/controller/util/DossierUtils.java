@@ -563,6 +563,9 @@ public class DossierUtils {
 			model.setDonvigui(doc.get(DossierTerm.DON_VI_GUI));
 			model.setDonvinhan(doc.get(DossierTerm.DON_VI_NHAN));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
+			model.setProcessNo(doc.get(DossierTerm.PROCESS_NO));
+			model.setPostalCodeSend(doc.get(DossierTerm.POSTAL_CODE_SEND));
+			model.setPostalCodeReceived(doc.get(DossierTerm.POSTAL_CODE_RECEIVED));
 			ouputs.add(model);
 		}
 
@@ -701,11 +704,13 @@ public class DossierUtils {
 				//_log.info("flagCeil: "+flagCeil);
 				//_log.info("overDue: "+overDue);
 				//_log.info("durationCount: "+durationCount);
-				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-					return (int)durationCount + strOverDue;
-				} else {
+				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, 0.0) > 0) {
+					//return (int)durationCount + strOverDue;
 					return overDue + strOverDue;
 				}
+//				else {
+//					return overDue + strOverDue;
+//				}
 			}
 		} else {
 			strOverDue = " giờ";
@@ -1121,6 +1126,7 @@ public class DossierUtils {
 		model.setVnpostalProfile(input.getVnpostalProfile());
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setPostalCodeSend(input.getPostalCodeSend());
+		model.setProcessNo(input.getProcessNo());
 
 		return model;
 	}

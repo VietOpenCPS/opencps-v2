@@ -318,27 +318,27 @@ public interface DossierFileManagement {
 		@ApiParam(value = "id of dossier", required = true) @PathParam("id") long id,
 		@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
 
-	@GET
-	@Path("/dossierfiles")
-	@Consumes({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@Produces({
-		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-	})
-	@ApiOperation(value = "Get all DossierFiles", response = DossierFileSearchResultsModel.class)
-	@ApiResponses(value = {
-		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all DossierFiles", response = DossierFileSearchResultsModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
-	})
-
-	public Response getDossierFiles(
-		@Context HttpServletRequest request, @Context HttpHeaders header,
-		@Context Company company, @Context Locale locale, @Context User user,
-		@Context ServiceContext serviceContext,
-		@BeanParam DossierFileSearchModel query);
+//	@GET
+//	@Path("/dossierfiles")
+//	@Consumes({
+//		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+//	})
+//	@Produces({
+//		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+//	})
+//	@ApiOperation(value = "Get all DossierFiles", response = DossierFileSearchResultsModel.class)
+//	@ApiResponses(value = {
+//		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all DossierFiles", response = DossierFileSearchResultsModel.class),
+//		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+//		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+//		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+//	})
+//
+//	public Response getDossierFiles(
+//		@Context HttpServletRequest request, @Context HttpHeaders header,
+//		@Context Company company, @Context Locale locale, @Context User user,
+//		@Context ServiceContext serviceContext,
+//		@BeanParam DossierFileSearchModel query);
 
 	@GET
 	@Path("/{id}/download")

@@ -105,6 +105,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.communication.utils.LGSPRestfulUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -709,31 +710,32 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				if (aplc != null) {
 					try {
 						/** Get Token */
-						String strToken = ApplicantUtils.getTokenNewLGSP();
-						_log.debug("RESULT PROXY: " + strToken);
-						if (Validator.isNotNull(strToken)) {
-							JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-							//
-							if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-									&& jsonToken.has("expiryDate")) {
-								String accessToken = jsonToken.getString("token");
-								String refreshToken = jsonToken.getString("refreshToken");
-								//String expiryDate = jsonToken.getString("expiryDate");
+						// String strToken = ApplicantUtils.getTokenNewLGSP();
+						// _log.debug("RESULT PROXY: " + strToken);
+						// if (Validator.isNotNull(strToken)) {
+						// JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+						JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+						//
+						if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+								&& jsonToken.has("expiryDate")) {
+							String accessToken = jsonToken.getString("token");
+							String refreshToken = jsonToken.getString("refreshToken");
+							// String expiryDate = jsonToken.getString("expiryDate");
 
-								_log.info("accessToken: " + accessToken);
-								_log.info("refreshToken: " + refreshToken);
+							_log.info("accessToken: " + accessToken);
+							_log.info("refreshToken: " + refreshToken);
 
-								boolean flagActive = RegisterLGSPUtils.activeUserNewLGSP(jsonToken, aplc.getGroupId(),
-										aplc.getTmpPass(), aplc.getContactEmail());
-								if (!flagActive) {
-									ErrorMsgModel error = new ErrorMsgModel();
-									error.setMessage("Active error");
-									error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
-									error.setDescription("Active error");
-									return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
-								}
+							boolean flagActive = RegisterLGSPUtils.activeUserNewLGSP(jsonToken, aplc.getGroupId(),
+									aplc.getTmpPass(), aplc.getContactEmail());
+							if (!flagActive) {
+								ErrorMsgModel error = new ErrorMsgModel();
+								error.setMessage("Active error");
+								error.setCode(HttpURLConnection.HTTP_FORBIDDEN);
+								error.setDescription("Active error");
+								return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity(error).build();
 							}
 						}
+						// }
 					} catch (Exception e) {
 						_log.error(e);
 						_log.debug("Something went wrong while reading/writing in stream!!");
@@ -1125,41 +1127,14 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 //					HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 //				} catch (Exception e) {
 //				}
-//
-//				//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
-//				String strProfile = StringPool.BLANK;
-//				String strToken = ApplicantUtils.getTokenLGSP();
-//				if (Validator.isNotNull(strToken)) {
-//					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
-//					//
-//					if (jsonToken.has("access_token") && jsonToken.has("token_type")
-//							&& Validator.isNotNull(jsonToken.getString("access_token"))
-//							&& Validator.isNotNull(jsonToken.getString("token_type"))) {
-//						String accessToken = jsonToken.getString("access_token");
-//						String tokenType = jsonToken.getString("token_type");
-//
-//						_log.info("accessToken: " + accessToken);
-//						_log.info("tokenType: " + tokenType);
-//
-//						// Dang ky tk cong dan
-//						strProfile = ApplicantUtils.registerLGSP(tokenType, accessToken, applicantIdType, contactEmail,
-//								applicantIdNo, applicantName, applicantIdDate, contactTelNo);
-//						_log.info("strProfile: " + strProfile);
-//						if (Validator.isNull(strProfile)) {
-//							return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-//						}
-//					}
-//				} else {
-//					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
-//				}
 //			}
 
 			if (syncUserLGSP) {
 
 				String strProfile = StringPool.BLANK;
-				String strToken = ApplicantUtils.getTokenNewLGSP();
-				if (Validator.isNotNull(strToken)) {
-					JSONObject jsonToken = JSONFactoryUtil.createJSONObject(strToken);
+				//String strToken = ApplicantUtils.getTokenNewLGSP();
+				//if (Validator.isNotNull(strToken)) {
+					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
 					//
 					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
 							&& jsonToken.has("expiryDate")) {
@@ -1210,7 +1185,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 								}
 							}
 						}
-					}
+					//}
 				} else {
 					return Response.status(HttpURLConnection.HTTP_FORBIDDEN).entity("{error}").build();
 				}

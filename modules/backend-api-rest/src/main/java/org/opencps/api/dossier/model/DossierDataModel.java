@@ -216,7 +216,10 @@ import javax.xml.bind.annotation.XmlType;
     "fromViaPostal",
 	"donvigui",
 	"donvinhan",
-	"groupDossierIdHs"
+	"groupDossierIdHs",
+	"processNo",
+	"postalCodeSend",
+	"postalCodeReceived"
 })
 public class DossierDataModel {
 
@@ -339,6 +342,33 @@ public class DossierDataModel {
     protected String donvinhan;
     protected String donvigui;
 	protected Long groupDossierIdHs;
+	protected String processNo;
+	protected String postalCodeSend;
+	protected String postalCodeReceived;
+
+	public String getPostalCodeSend() {
+		return postalCodeSend;
+	}
+
+	public void setPostalCodeSend(String postalCodeSend) {
+		this.postalCodeSend = postalCodeSend;
+	}
+
+	public String getPostalCodeReceived() {
+		return postalCodeReceived;
+	}
+
+	public void setPostalCodeReceived(String postalCodeReceived) {
+		this.postalCodeReceived = postalCodeReceived;
+	}
+
+	public String getProcessNo() {
+		return processNo;
+	}
+
+	public void setProcessNo(String processNo) {
+		this.processNo = processNo;
+	}
 
 	public Long getGroupDossierIdHs() {
 		return groupDossierIdHs;

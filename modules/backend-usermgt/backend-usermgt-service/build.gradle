@@ -13,12 +13,12 @@ dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.petra.encryptor", version: "3.0.0"
 	//compileOnly group: "com.liferay", name: "com.liferay.portal.security.auth.session", version: "2.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
-	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
-	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
-	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
 	
 	compileOnly project(":modules:backend-auth")
+	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
+	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
+	compileOnly project(":modules:backend-communication:backend-communication-api")
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-api")
 	compileOnly project(":modules:backend-cache-builder:backend-cache-builder-service")
 	

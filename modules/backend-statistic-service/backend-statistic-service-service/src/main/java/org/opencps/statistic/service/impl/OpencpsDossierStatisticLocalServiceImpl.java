@@ -1131,6 +1131,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			int receiveDossierSatCount = dossierObj.has("receiveDossierSatCount") ? dossierObj.getInt("receiveDossierSatCount") : 0;
 			int releaseDossierSatCount = dossierObj.has("releaseDossierSatCount") ? dossierObj.getInt("releaseDossierSatCount") : 0;
 			int fromViaPostalCount = dossierObj.has("fromViaPostalCount") ? dossierObj.getInt("fromViaPostalCount") : 0;
+			//Check record exit
 			OpencpsDossierStatistic dossierStatistic = OpencpsDossierStatisticLocalServiceUtil.checkExsitSystem(groupId,
 					month, year, govAgencyCode, domainCode, system, groupGovAgencyCode);
 			Date now = new Date();

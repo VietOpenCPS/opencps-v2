@@ -1,3 +1,14 @@
+create table opencps_lgsp_token (
+	uuid_ VARCHAR(75) null,
+	tokenId LONG not null primary key,
+	createDate DATE null,
+	modifiedDate DATE null,
+	token VARCHAR(75) null,
+	tokenType VARCHAR(75) null,
+	refreshToken VARCHAR(75) null,
+	expiryDate DATE null
+);
+
 create table opencps_notificationqueue (
 	notificationQueueId LONG not null primary key,
 	groupId LONG,

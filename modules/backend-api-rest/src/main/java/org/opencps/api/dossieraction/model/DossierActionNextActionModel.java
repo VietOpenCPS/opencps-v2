@@ -9,9 +9,11 @@
 package org.opencps.api.dossieraction.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -44,6 +46,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * 
  */
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DossierActionNextActionModel", propOrder = {
     "processActionId",
@@ -60,7 +63,27 @@ import javax.xml.bind.annotation.XmlType;
     "createDossierNo",
     "eSignature",
     "pending",
-    "configNote"
+    "configNote",
+    "groupId",
+    "userId",
+    "userName",
+    "createDate",
+    "modifiedDate",
+    "serviceProcessId",
+    "requestPayment",
+    "createDossierFiles",
+    "returnDossierFiles",
+    "makeBriefNote",
+    "syncActionCode",
+    "rollbackable",
+    "dossierTemplateNo",
+    "signatureType",
+    "createDossiers",
+    "assignUserName",
+    "extraForm",
+    "userNote",
+    "checkInput",
+    "postAction"
 })
 public class DossierActionNextActionModel {
 
@@ -78,6 +101,189 @@ public class DossierActionNextActionModel {
     protected List<DossierActionNextActioncreateFiles> createFiles;
     protected Boolean createDossierNo;
     protected Boolean eSignature;
+    protected Long groupId;
+    protected Long userId;
+    protected String userName;
+    protected Date createDate;
+    protected Date modifiedDate;
+    protected Long serviceProcessId;
+    protected int requestPayment;
+    protected String createDossierFiles;
+    protected String returnDossierFiles;
+    protected String makeBriefNote;
+    protected String syncActionCode;
+    protected boolean rollbackable;
+    protected String dossierTemplateNo;
+    protected String signatureType;
+    protected String createDossiers;
+    protected String assignUserName;
+    protected String extraForm;
+    protected String userNote;
+    protected int checkInput;
+    protected String postAction;
+
+    public int getRequestPayment() {
+        return requestPayment;
+    }
+
+    public void setRequestPayment(int requestPayment) {
+        this.requestPayment = requestPayment;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public Long getServiceProcessId() {
+        return serviceProcessId;
+    }
+
+    public void setServiceProcessId(Long serviceProcessId) {
+        this.serviceProcessId = serviceProcessId;
+    }
+
+
+
+    public String getCreateDossierFiles() {
+        return createDossierFiles;
+    }
+
+    public void setCreateDossierFiles(String createDossierFiles) {
+        this.createDossierFiles = createDossierFiles;
+    }
+
+    public String getReturnDossierFiles() {
+        return returnDossierFiles;
+    }
+
+    public void setReturnDossierFiles(String returnDossierFiles) {
+        this.returnDossierFiles = returnDossierFiles;
+    }
+
+    public String getMakeBriefNote() {
+        return makeBriefNote;
+    }
+
+    public void setMakeBriefNote(String makeBriefNote) {
+        this.makeBriefNote = makeBriefNote;
+    }
+
+    public String getSyncActionCode() {
+        return syncActionCode;
+    }
+
+    public void setSyncActionCode(String syncActionCode) {
+        this.syncActionCode = syncActionCode;
+    }
+
+    public boolean isRollbackable() {
+        return rollbackable;
+    }
+
+    public void setRollbackable(boolean rollbackable) {
+        this.rollbackable = rollbackable;
+    }
+
+    public String getDossierTemplateNo() {
+        return dossierTemplateNo;
+    }
+
+    public void setDossierTemplateNo(String dossierTemplateNo) {
+        this.dossierTemplateNo = dossierTemplateNo;
+    }
+
+    public String getSignatureType() {
+        return signatureType;
+    }
+
+    public void setSignatureType(String signatureType) {
+        this.signatureType = signatureType;
+    }
+
+    public String getCreateDossiers() {
+        return createDossiers;
+    }
+
+    public void setCreateDossiers(String createDossiers) {
+        this.createDossiers = createDossiers;
+    }
+
+    public String getAssignUserName() {
+        return assignUserName;
+    }
+
+    public void setAssignUserName(String assignUserName) {
+        this.assignUserName = assignUserName;
+    }
+
+    public String getExtraForm() {
+        return extraForm;
+    }
+
+    public void setExtraForm(String extraForm) {
+        this.extraForm = extraForm;
+    }
+
+    public String getUserNote() {
+        return userNote;
+    }
+
+    public void setUserNote(String userNote) {
+        this.userNote = userNote;
+    }
+
+    public int getCheckInput() {
+        return checkInput;
+    }
+
+    public void setCheckInput(int checkInput) {
+        this.checkInput = checkInput;
+    }
+
+    public String getPostAction() {
+        return postAction;
+    }
+
+    public void setPostAction(String postAction) {
+        this.postAction = postAction;
+    }
+
     public String getConfigNote() {
 		return configNote;
 	}

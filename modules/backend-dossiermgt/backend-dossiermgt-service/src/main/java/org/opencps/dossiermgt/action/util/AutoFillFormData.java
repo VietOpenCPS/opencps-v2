@@ -91,7 +91,6 @@ public class AutoFillFormData {
 				_receiveDate = Validator.isNotNull(dossier.getReceiveDate()) ? dossier.getReceiveDate().toGMTString()
 						: StringPool.BLANK;
 				_dossierNo = dossier.getDossierNo();
-				_applicantName = dossier.getApplicantName();
 
 				// get data applicant or employee
 				ApplicantActions applicantActions = new ApplicantActionsImpl();
@@ -181,6 +180,7 @@ public class AutoFillFormData {
 				
 				_govAgencyName = dossier.getGovAgencyName();
 				_serviceName = dossier.getServiceName();
+				_applicantName = dossier.getApplicantName();
 			}
 			// process sampleData
 //			if (Validator.isNull(sampleData)) {
