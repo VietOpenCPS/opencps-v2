@@ -224,12 +224,10 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			int currentYear  = this.getCurrentTime().get("Year");
 
 			//Create payload
-			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 200);
-			System.out.println("Count list sync to DVC: "+ lists.size());
+			List<OpencpsVotingStatistic> lists = new ArrayList<>(OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 500));
 			//get only data of current month
 			lists.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
 					|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
-			System.out.println("Count list sync to after transform: "+ lists.size());
 			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
 			JSONObject vote;
 			for(OpencpsVotingStatistic oneStatistic: lists){
@@ -263,10 +261,11 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<String> request = new HttpEntity<>(voteDatas.toString(), headers);
 			String urlSync = serverConfigJson.getString("url") + "/votings/syncStatisticVoteToDVC";
+			System.out.println("Url call to DVC: " + urlSync);
 			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
-			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
+			System.out.println("Status sync data vote to DVC: " + response.getStatusCode().value());
 		} catch (Exception e) {
-			System.out.print("Error sync data vote to DVC: " + e.getMessage());
+			System.out.println("Error sync data vote to DVC: " + e.getMessage());
 			throw new Exception(e.getMessage());
 		}
 	}
@@ -364,8 +363,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 	@Modified
 	protected void activate(Map<String,Object> properties) throws SchedulerException {
 		String listenerClass = getClass().getName();
-		//todo back to 10 minute
-		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 3, TimeUnit.MINUTE);
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.HOUR);
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);

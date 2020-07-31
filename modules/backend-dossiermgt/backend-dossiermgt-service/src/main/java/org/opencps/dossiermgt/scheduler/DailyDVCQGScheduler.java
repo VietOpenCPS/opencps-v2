@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.scheduler.*;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
+import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.osgi.service.component.annotations.*;
 
@@ -22,6 +23,15 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
 
     @Override
     protected void doReceive(Message message) throws Exception {
+        System.out.println("Sync data votes to DVCQG...");
+
+        if (!OpenCPSConfigUtil.isCanSyncToDVCQG()) {
+            System.out.println("Syn data to DVCQG has stopped because of this server is mcdt");
+            return;
+        }
+        System.out.println("Server has permission to sync DVCQG");
+
+        System.out.println("isRunning variable: " + isRunning);
         if (!isRunning) {
             isRunning = true;
         } else {
@@ -29,13 +39,17 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
         }
 
         try {
+            System.out.println("Daily sync data to DVCQG  : " + APIDateTimeUtils.convertDateToString(new Date()));
             _log.info("Daily sync data to DVCQG  : " + APIDateTimeUtils.convertDateToString(new Date()));
             DVCQGIntegrationAction action = new DVCQGIntegrationActionImpl();
             action.syncSummaryVote();
         } catch (Exception e) {
+            System.out.println("---ERROR SYNC: " + e.getMessage());
             _log.error(e.getMessage());
+        } finally {
+            isRunning = false;
+            System.out.println("isRunning variable finally: " + isRunning);
         }
-        isRunning = false;
     }
 
     @Activate

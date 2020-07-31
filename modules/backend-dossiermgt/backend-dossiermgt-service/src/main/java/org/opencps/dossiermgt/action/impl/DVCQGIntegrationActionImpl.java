@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -3312,6 +3315,20 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return payload;
 	}
 
+	private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors)
+	{
+		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+		return t ->
+		{
+			final List<?> keys = Arrays.stream(keyExtractors)
+					.map(ke -> ke.apply(t))
+					.collect(Collectors.toList());
+
+			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+		};
+	}
+
 	private JSONArray getListSummaryVote(JSONObject config) {
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 		List<OpencpsVotingStatistic> votes = new ArrayList<>(OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100));
@@ -3320,25 +3337,35 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		int currentYear  = this.getCurrentTime().get("Year");
 
 		//get only data of current month
+		System.out.println("Count 1:" + votes.size());
 		votes.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
 				|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
-
+		System.out.println("Count 2:" + votes.size());
 		List<VoteTransform> voteTransformList = new ArrayList<>();
 		VoteTransform newVote;
 		//Transform opencpsVotingStatistic model to Transform model to easy handle
 		for(OpencpsVotingStatistic oldVote: votes) {
-			newVote = new VoteTransform(oldVote.getTotalVoted(), oldVote.getGoodCount(), oldVote.getVeryGoodCount(), oldVote.getBadCount(),
+			newVote = new VoteTransform(oldVote.getMonth(), oldVote.getYear(), oldVote.getGroupId(), oldVote.getTotalVoted(),
+					oldVote.getGoodCount(), oldVote.getVeryGoodCount(), oldVote.getBadCount(),
 					oldVote.getPercentGood(), oldVote.getPercentVeryGood(), oldVote.getPercentBad(),
 					oldVote.getVotingCode(), oldVote.getVotingSubject());
 
 			voteTransformList.add(newVote);
 		}
-
+		System.out.println("Count 3:" + voteTransformList.size());
 		if(voteTransformList.isEmpty()) {
 			return data;
 		}
+
+		List<VoteTransform> voteAfterDistinct = voteTransformList.stream()
+				.filter(distinctByKeys(VoteTransform::getGroupId, VoteTransform::getYear,
+						VoteTransform::getMonth,VoteTransform::getVotingCode,VoteTransform::getVotingSubject,
+						VoteTransform::getTotalVote,VoteTransform::getCountVeryGoodVote,VoteTransform::getCountGoodVote
+						,VoteTransform::getCountBadVote))
+				.collect(Collectors.toList());
+		System.out.println("Count 4 after distinct:" + voteAfterDistinct.size());
 		//Sum count group by votingCode
-		List<VoteTransform> listVoteAfterCounting = voteTransformList.stream().collect(Collectors.groupingBy(VoteTransform -> VoteTransform.votingCode)).entrySet().stream()
+		List<VoteTransform> listVoteAfterCounting = voteAfterDistinct.stream().collect(Collectors.groupingBy(VoteTransform -> VoteTransform.votingCode)).entrySet().stream()
 				.map(e -> e.getValue().stream().reduce(this::countingVoteData))
 				.map(f -> f.get()).collect(Collectors.toList());
 
@@ -3398,10 +3425,14 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		public Integer percentBadVote;
 		public String votingCode;
 		public String votingSubject;
+		public Long groupId;
+		public Integer month;
+		public Integer year;
 
-		public VoteTransform(Integer totalVote, Integer countGoodVote, Integer countVeryGoodVote,
+		public VoteTransform(Integer month, Integer year, Long groupId, Integer totalVote, Integer countGoodVote, Integer countVeryGoodVote,
 							 Integer countBadVote, Integer percentGoodVote, Integer percentVeryGoodVote,
 							 Integer percentBadVote, String votingCode, String votingSubject) {
+			this.groupId = groupId;
 			this.totalVote = totalVote;
 			this.countGoodVote = countGoodVote;
 			this.countVeryGoodVote = countVeryGoodVote;
@@ -3411,11 +3442,61 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			this.percentBadVote = percentBadVote;
 			this.votingCode = votingCode;
 			this.votingSubject = votingSubject;
+			this.month = month;
+			this.year = year;
+		}
+
+		public Integer getTotalVote() {
+			return totalVote;
+		}
+
+		public Integer getCountGoodVote() {
+			return countGoodVote;
+		}
+
+		public Integer getCountVeryGoodVote() {
+			return countVeryGoodVote;
+		}
+
+		public Integer getCountBadVote() {
+			return countBadVote;
+		}
+
+		public Integer getPercentGoodVote() {
+			return percentGoodVote;
+		}
+
+		public Integer getPercentVeryGoodVote() {
+			return percentVeryGoodVote;
+		}
+
+		public Integer getPercentBadVote() {
+			return percentBadVote;
+		}
+
+		public String getVotingCode() {
+			return votingCode;
+		}
+
+		public String getVotingSubject() {
+			return votingSubject;
+		}
+
+		public Long getGroupId() {
+			return groupId;
+		}
+
+		public Integer getMonth() {
+			return month;
+		}
+
+		public Integer getYear() {
+			return year;
 		}
 	}
 
 	private VoteTransform countingVoteData(VoteTransform f1, VoteTransform f2) {
-		VoteTransform voteTransform = new VoteTransform(f1.totalVote + f2.totalVote, f1.countGoodVote + f2.countGoodVote,
+		VoteTransform voteTransform = new VoteTransform(0, 0,0L,f1.totalVote + f2.totalVote, f1.countGoodVote + f2.countGoodVote,
 				f1.countVeryGoodVote + f2.countVeryGoodVote, f1.countBadVote + f2.countBadVote,
 				0, 0, 0,
 				f1.votingCode, f1.votingSubject);

@@ -65,16 +65,16 @@ public class VotingManagementImpl implements VotingManagement {
 	public Response syncStatisticVoteToDVC(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
 		try {
 			//Remove old data
-			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100);
+			_log.info("DVC API-syncing data from MCDT...");
+			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 200);
 			for(OpencpsVotingStatistic oneStatistic: lists){
 				OpencpsVotingStatisticLocalServiceUtil.removeVotingStatisticByMonthYear(oneStatistic.getGroupId(),
 						oneStatistic.getMonth(), oneStatistic.getYear());
 			}
-
 			//Sync new data from MCDT
 			JSONArray votes = JSONFactoryUtil.createJSONArray(body);
 			JSONObject item;
-
+			System.out.println("COUNT Data after parse: " + votes.length());
 			for (int i = 0; i < votes.length(); i++) {
 				item = votes.getJSONObject(i);
 				OpencpsVotingStatisticLocalServiceUtil.updateVotingStatistic(0L,
@@ -89,6 +89,7 @@ public class VotingManagementImpl implements VotingManagement {
 						item.getString("domainCode", ""), item.getString("domainName", ""),
 						item.getString("votingCode", ""), item.getInt("totalCount", 0));
 			}
+			_log.info("DVC API-syncing data done");
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
