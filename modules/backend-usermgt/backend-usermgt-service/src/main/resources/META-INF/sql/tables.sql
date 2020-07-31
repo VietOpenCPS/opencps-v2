@@ -172,17 +172,6 @@ create table opencps_jobpos (
 	leader INTEGER
 );
 
-create table opencps_lgsp_token (
-	uuid_ VARCHAR(75) null,
-	tokenId LONG not null primary key,
-	createDate DATE null,
-	modifiedDate DATE null,
-	token TEXT null,
-	tokenType VARCHAR(75) null,
-	refreshToken VARCHAR(75) null,
-	expiryDate DATE null
-);
-
 create table opencps_officesite (
 	uuid_ VARCHAR(75) null,
 	officeSiteId LONG not null primary key,

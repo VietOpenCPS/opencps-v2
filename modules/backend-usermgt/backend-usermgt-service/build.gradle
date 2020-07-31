@@ -15,6 +15,9 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql.api", version: "1.0.0"
 	
+	 // https://mvnrepository.com/artifact/com.liferay/com.liferay.portal.upgrade.api
+	compileOnly group: 'com.liferay', name: 'com.liferay.portal.upgrade.api', version: '2.0.0'
+	
 	compileOnly project(":modules:backend-auth")
 	compileOnly project(":modules:backend-usermgt:backend-usermgt-api")
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
