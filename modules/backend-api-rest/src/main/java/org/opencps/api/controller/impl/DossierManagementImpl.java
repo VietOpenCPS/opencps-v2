@@ -4260,7 +4260,6 @@ public class DossierManagementImpl implements DossierManagement {
 				jsonData = actions.getDossierSyncByDossierAndInfo(
 					groupId, id, info, start, end, serviceContext);
 			}
-			_log.info("Xem thong tin json Data : " + jsonData);
 			DossierSyncV21ResultsModel results =
 				new DossierSyncV21ResultsModel();
 
@@ -4289,7 +4288,6 @@ public class DossierManagementImpl implements DossierManagement {
 					lstDatas.add(model);
 				}
 				results.getData().addAll(lstDatas);
-				_log.info("Check thong tin dossier mark : " + lstDatas);
 			}
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
