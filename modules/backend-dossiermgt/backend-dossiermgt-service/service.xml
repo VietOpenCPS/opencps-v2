@@ -8,6 +8,7 @@
 	<namespace>dossiermgt</namespace>
 	<entity name="ServiceInfo" table="opencps_serviceinfo"
 		local-service="true" remote-service="false" uuid="true" >
+		dfdg
 
 		<!-- PK fields -->
 
