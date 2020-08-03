@@ -407,4 +407,11 @@ public class DossierTerm {
 	public static final String VNPOST_CLS = "VNPOST_CLS";
 	public static final String URL_VIA_POST = "apiGetVnPost";
 	public static final String TOKEN_VN_POST = "tokenVnPost";
+	public static final String DELIVERABLE_CODE = "deliverableCode";
+	public static final String SEARCH_CV_T_DV = "searchCongVanTheoDonViNhan";
+	public static final String DOSSIER_FILE = "dossierFile";
+	public static final String HTML = "dossierFile";
+	public static final String KQGP = "@KQGP";
+	public static final String DELIVERABLE_STATE = "deliverableState";
+	public static final String DELIVERABLE_NAME = "deliverableName";
 }
