@@ -52,6 +52,7 @@ public class ProcessActionTerm {
 	public static final String ACTION_CREATE_HSLT = "3200";
 	
 	public static final String DUE_DATE_EDITABLE = "editable";
+	public static final String DURATION_PHASE = "durationPhase";
 	public static final String DUE_DATE_HOUR = "hour";
 	public static final String PROCESS_HOUR = "processHour";
 	public static final String START_HOUR = "startHour";

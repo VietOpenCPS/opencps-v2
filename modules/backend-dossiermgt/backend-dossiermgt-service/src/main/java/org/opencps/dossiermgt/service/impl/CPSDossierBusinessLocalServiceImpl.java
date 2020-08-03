@@ -8847,7 +8847,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		try {
 			if (Validator.isNotNull(payload)) {
 				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
-				return payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
+				return payloadJ.has(ProcessActionTerm.DURATION_PHASE) ? 
+					payloadJ.getLong(ProcessActionTerm.DURATION_PHASE, 0) :
+					payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
 			}
 		} catch (Exception e) {
 			_log.debug(e);
