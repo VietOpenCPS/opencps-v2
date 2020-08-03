@@ -25,4 +25,5 @@ public interface MBEmailSender extends MBMessageSender {
 
 	}
 
+	boolean send(MBMessageEntry messageEntry, String contactEmail);
 }

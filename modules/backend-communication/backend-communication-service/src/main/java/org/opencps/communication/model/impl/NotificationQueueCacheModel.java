@@ -65,7 +65,7 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{notificationQueueId=");
 		sb.append(notificationQueueId);
@@ -103,6 +103,8 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 		sb.append(publicationDate);
 		sb.append(", expireDate=");
 		sb.append(expireDate);
+		sb.append(", priority=");
+		sb.append(priority);
 		sb.append("}");
 
 		return sb.toString();
@@ -210,6 +212,8 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 			notificationQueueImpl.setExpireDate(new Date(expireDate));
 		}
 
+		notificationQueueImpl.setPriority(priority);
+
 		notificationQueueImpl.resetOriginalValues();
 
 		return notificationQueueImpl;
@@ -239,6 +243,8 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 		toTelNo = objectInput.readUTF();
 		publicationDate = objectInput.readLong();
 		expireDate = objectInput.readLong();
+
+		priority = objectInput.readInt();
 	}
 
 	@Override
@@ -322,6 +328,8 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 
 		objectOutput.writeLong(publicationDate);
 		objectOutput.writeLong(expireDate);
+
+		objectOutput.writeInt(priority);
 	}
 
 	public long notificationQueueId;
@@ -342,4 +350,5 @@ public class NotificationQueueCacheModel implements CacheModel<NotificationQueue
 	public String toTelNo;
 	public long publicationDate;
 	public long expireDate;
+	public int priority;
 }
