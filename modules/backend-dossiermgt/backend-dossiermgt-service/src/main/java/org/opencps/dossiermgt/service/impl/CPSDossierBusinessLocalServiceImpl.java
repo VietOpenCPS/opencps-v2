@@ -2722,6 +2722,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -3227,8 +3229,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction,
-													  ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
-													  int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
+			ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
+			int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -8845,7 +8847,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		try {
 			if (Validator.isNotNull(payload)) {
 				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
-				return payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
+				return payloadJ.has(ProcessActionTerm.DURATION_PHASE) ? 
+					payloadJ.getLong(ProcessActionTerm.DURATION_PHASE, 0) :
+					payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
 			}
 		} catch (Exception e) {
 			_log.debug(e);

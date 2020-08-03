@@ -50,6 +50,10 @@ import org.fds.opencps.paygate.integration.util.PayGateTerm;
 import org.fds.opencps.paygate.integration.util.PayGateUtil;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictItemMapping;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemMappingLocalServiceUtil;
 import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
@@ -58,17 +62,23 @@ import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.VTPayTerm;
+import org.opencps.dossiermgt.model.ApplicableInfo;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.PaymentConfig;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ServiceConfigMapping;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
+import org.opencps.dossiermgt.service.ApplicableInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 
 /**
@@ -728,10 +738,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONArray philephi = JSONFactoryUtil.createJSONArray();
 				//????????????????????????
 				JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-				philephiJ.put(PayGateTerm.LOAIPHILEPHI, 2);
-				philephiJ.put(PayGateTerm.MAPHILEPHI, 2);
-				philephiJ.put(PayGateTerm.TENPHILEPHI, bankInfo.getString(PayGateTerm.TENPHILEPHI));
-				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+				philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
+				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
 				philephi.put(philephiJ);
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
@@ -1131,6 +1141,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 			if (schema == null) {
+				schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
+			}
+			if (schema == null) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
@@ -1435,7 +1448,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			throws PortalException {
 
 		JSONObject receipt_info = JSONFactoryUtil.createJSONObject();
-		/**
+
 		int maDV = schema.getInt(PayGateTerm.MADICHVU);
 		receipt_info.put(PayGateTerm.MADICHVU, maDV); // bb
 
@@ -1470,7 +1483,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				serviceInfoMapping.getServiceCode());
 		
 		
-		_log.info(groupId + "|" + serviceCodeDVCQG + "|" + itemMapping.getItemCodeDVCQG() + "|" + serviceInfo.getMaxLevel());
+		_log.info(groupId + "|" + serviceCodeDVCQG + "|" + itemMapping + "|" + serviceInfo);
 
 		ApplicableInfo applicableInfo = ApplicableInfoLocalServiceUtil.fetchByG_SC_GC_SL(0, serviceCodeDVCQG,
 				itemMapping.getItemCodeDVCQG(), serviceInfo.getMaxLevel());
@@ -1478,6 +1491,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		ServiceConfigMapping serviceConfigMapping = ServiceConfigMappingLocalServiceUtil
 				.fetchServiceConfigMapping(applicableInfo.getServiceConfigMappingId());
 
+		receipt_info.put(PayGateTerm.MADVC,
+				(maDV == 2) ? serviceConfigMapping.getServiceConfigCode() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENDVC,
+				(maDV == 2) ? serviceConfigMapping.getServiceConfigName() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.MATTHC, (maDV == 2) ? serviceConfigMapping.getServiceCode() : StringPool.BLANK);
+		receipt_info.put(PayGateTerm.TENTTHC, (maDV == 2) ? serviceConfigMapping.getServiceName() : StringPool.BLANK);
 		receipt_info.put(PayGateTerm.MADVC,
 				(maDV == 2) ? serviceConfigMapping.getServiceConfigCode() : StringPool.BLANK);
 		receipt_info.put(PayGateTerm.TENDVC,
@@ -1500,21 +1519,26 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		receipt_info.put(PayGateTerm.TENTKTHUHUONG,
 				(maDV == 2) ? bankInfo.getString(PayGateTerm.TENTKTHUHUONG) : StringPool.BLANK);
 
-		List<PaymentFeeInfo> paymentFeeInfos = PaymentFeeInfoLocalServiceUtil
-				.findByServiceConfigMappingId(serviceConfigMapping.getServiceConfigMappingId());
+//		List<PaymentFeeInfo> paymentFeeInfos = PaymentFeeInfoLocalServiceUtil
+//				.findByServiceConfigMappingId(serviceConfigMapping.getServiceConfigMappingId());
 
 		JSONArray phiLePhi = JSONFactoryUtil.createJSONArray();
 
-		if (paymentFeeInfos != null) {
-			for (PaymentFeeInfo paymentFeeInfo : paymentFeeInfos) {
-				JSONObject _tm = JSONFactoryUtil.createJSONObject();
-				_tm.put(PayGateTerm.LOAIPHILEPHI, paymentFeeInfo.getType());
-				_tm.put(PayGateTerm.MAPHILEPHI, paymentFeeInfo.getPaymentFeeCode());
-				_tm.put(PayGateTerm.TENPHILEPHI, paymentFeeInfo.getPaymentFeeName());
-				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
-			}
-		}
-
+//		if (paymentFeeInfos != null) {
+//			for (PaymentFeeInfo paymentFeeInfo : paymentFeeInfos) {
+//				JSONObject _tm = JSONFactoryUtil.createJSONObject();
+//				_tm.put(PayGateTerm.LOAIPHILEPHI, paymentFeeInfo.getType());
+//				_tm.put(PayGateTerm.MAPHILEPHI, paymentFeeInfo.getPaymentFeeCode());
+//				_tm.put(PayGateTerm.TENPHILEPHI, paymentFeeInfo.getPaymentFeeName());
+//				_tm.put(PayGateTerm.SOTIEN, paymentFeeInfo.getAmount());
+//			}
+//		}
+		JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
+		philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
+		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+		phiLePhi.put(philephiJ);
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
 
 		// bb khi madichvu = 1
@@ -1545,7 +1569,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		receipt_info.put(PayGateTerm.HUYENNGUOINOP, ""); // kbb
 		receipt_info.put(PayGateTerm.TINHNGUOINOP, ""); // kbb
 		receipt_info.put(PayGateTerm.TAIKHOANTHUNSNN, ""); // kbb
-		*/
+
 		return receipt_info;
 	}
 
@@ -1904,7 +1928,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
-		/**
+
 		DVCQGIntegrationActionImpl dvcqgAction = new DVCQGIntegrationActionImpl();
 
 		try {
@@ -1989,8 +2013,6 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			_log.error(e);
 			return createResponseMessage(result, 500, "error", "system error");
 		}
-		*/
-		return result;
 	}
 
 	@Override
