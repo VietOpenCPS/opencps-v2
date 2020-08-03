@@ -185,8 +185,15 @@ public class AutoFillFormData {
 				_serviceName = dossier.getServiceName();
 				_applicantName = dossier.getApplicantName();
 				_sampleCount = String.valueOf(dossier.getSampleCount());
+				_wardCode = dossier.getWardCode();
+				_wardName = dossier.getWardName();
+				_districtCode = dossier.getDistrictCode();
+				_districtName = dossier.getDistrictName();
+				_cityCode = dossier.getCityCode();
+				_cityName = dossier.getCityName();
+
 				if(Validator.isNotNull(dossier.getDocumentDate())) {
-					_documentDate = dossier.getDocumentDate().toGMTString();
+					_documentDate = APIDateTimeUtils.convertDateToString(dossier.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN);
 				}
 				_documentNo = dossier.getDocumentNo();
 			}
@@ -276,6 +283,9 @@ public class AutoFillFormData {
 										jsonMap.put(entry.getKey(), valueMeta);
 										check = false;
 									}
+								}
+								if (check) {
+									jsonMap.put(entry.getKey(),  StringPool.BLANK);
 								}
 							} catch (JSONException e) {
 								_log.debug(e.getMessage());

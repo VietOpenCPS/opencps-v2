@@ -300,6 +300,16 @@ public class DossierSearchModel {
 	protected String postalCodeSend;
 	@QueryParam(value = "postalCodeReceived")
 	protected String postalCodeReceived;
+	@QueryParam(value = "searchCongVanTheoDonViNhan")
+	protected String searchCongVanTheoDonViNhan;
+
+	public String getSearchCongVanTheoDonViNhan() {
+		return searchCongVanTheoDonViNhan;
+	}
+
+	public void setSearchCongVanTheoDonViNhan(String searchCongVanTheoDonViNhan) {
+		this.searchCongVanTheoDonViNhan = searchCongVanTheoDonViNhan;
+	}
 
 	public String getPostalCodeSend() {
 		return postalCodeSend;

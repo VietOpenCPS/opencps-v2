@@ -1694,39 +1694,41 @@ public class DossierUtils {
 	}
 	public static List<Long> mappingForListCongVan(List<Document> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
-		for (Document doc : docs) {
-			int originality = GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY));
-			DossierDataModel model = new DossierDataModel();
-			model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
-			model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
-			model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
-			model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-			model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
-			model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
-			model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
-			model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
-			model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(";", "; ") : StringPool.BLANK);
-			model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
-			model.setOriginality(originality);
-			model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-			model.setDueDateComing(doc.get(DossierTerm.DUE_DATE_COMING));
-			model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
-			model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
- 			model.setStepCode(doc.get(DossierTerm.STEP_CODE));
- 			model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
-			model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
-			model.setServerNo(doc.get(DossierTerm.SERVER_NO));
-			String groupDossierId = "";
-			if(Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))){
-				String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
-				for (String key : idGroup) {
-					groupDossierId += key + ",";
+		if(Validator.isNotNull(docs)) {
+			for (Document doc : docs) {
+				int originality = GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY));
+				DossierDataModel model = new DossierDataModel();
+				model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
+				model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+				model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
+				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+				model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(";", "; ") : StringPool.BLANK);
+				model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+				model.setOriginality(originality);
+				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+				model.setDueDateComing(doc.get(DossierTerm.DUE_DATE_COMING));
+				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+				model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+				model.setStepCode(doc.get(DossierTerm.STEP_CODE));
+				model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
+				model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
+				model.setServerNo(doc.get(DossierTerm.SERVER_NO));
+				String groupDossierId = "";
+				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
+					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
+					for (String key : idGroup) {
+						groupDossierId += key + ",";
+					}
+					model.setGroupDossierIds(groupDossierId);
 				}
-				model.setGroupDossierIds(groupDossierId);
-			}
-			model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
+				model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
 
-			ouputs.add(model);
+				ouputs.add(model);
+			}
 		}
 		List<Long> lstId = new ArrayList<>();
 		if(ouputs !=null){
@@ -1771,8 +1773,13 @@ public class DossierUtils {
 			model.setServerNo(doc.getServerNo());
 			model.setGroupDossierId(GetterUtil.getLong(doc.getGroupDossierId()));
 			model.setDocumentNo(GetterUtil.getString(doc.getDocumentNo()));
-			model.setDocumentDate(GetterUtil.getString(doc.getDocumentDate()));
-
+			if (Validator.isNotNull(doc.getDocumentDate())) {
+				model.setDocumentDate(APIDateTimeUtils.convertDateToString(doc.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+//			model.setDocumentDate(GetterUtil.getString(doc.getDocumentDate()));
+			if(Validator.isNotNull(doc.getMetaData())) {
+				model.setMetaData(GetterUtil.getString(doc.getMetaData()));
+			}
 			ouputs.add(model);
 		}
 

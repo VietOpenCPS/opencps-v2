@@ -213,7 +213,25 @@ public class DossierContentGenerator {
 						String key = keys.next();
 						String value = jsonObject.getString(key);
 						if(key.equals(patternContent)){
-							submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+							if(key.equals(DossierTerm.DOSSIER_FILE)){
+								List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
+								if(lstFile != null && !lstFile.isEmpty()){
+									String fileName = "";
+									int countFile = 0;
+									if(lstFile.size() > 1) {
+										for (DossierFile item : lstFile) {
+											countFile++;
+											fileName  += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + "." + item.getDisplayName() + ConstantUtils.HTML_CLOSE_SPAN;
+										}
+										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+									}else{
+										fileName = lstFile.get(0).getDisplayName();
+										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+									}
+								}
+							}else {
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+							}
 							break;
 						}
 					}

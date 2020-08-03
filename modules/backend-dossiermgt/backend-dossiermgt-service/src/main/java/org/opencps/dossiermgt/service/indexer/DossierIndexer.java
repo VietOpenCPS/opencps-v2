@@ -813,7 +813,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addTextSortable(DossierTerm.DELEGATE_DISTRICTNAME, object.getDistrictName());
 			document.addTextSortable(DossierTerm.DELEGATE_WARDCODE, object.getWardCode());
 			document.addTextSortable(DossierTerm.DELEGATE_WARDNAME, object.getWardName());
-			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
+//			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
 			document.addNumberSortable(DossierTerm.DELEGATE_TYPE, object.getDelegateType());
 			document.addTextSortable(DossierTerm.DOCUMENT_NO, object.getDocumentNo());
 			if (Validator.isNotNull(object.getDocumentDate())) {

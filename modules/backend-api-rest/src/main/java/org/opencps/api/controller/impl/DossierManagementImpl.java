@@ -3796,13 +3796,19 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-			if (Validator.isNotNull(formData)) {
+			if (Validator.isNotNull(dossierFile.getFormData())) {
+				dossierFile.setFormData(dossierFile.getFormData());
+			}else{
 				dossierFile.setFormData(formData);
 			}
-			if (Validator.isNotNull(removed)) {
+			if (Validator.isNotNull(dossierFile.getRemoved())) {
+				dossierFile.setRemoved(dossierFile.getRemoved());
+			}else{
 				dossierFile.setRemoved(Boolean.parseBoolean(removed));
 			}
-			if (Validator.isNotNull(eForm)) {
+			if (Validator.isNotNull(dossierFile.getEForm())) {
+				dossierFile.setEForm(dossierFile.getEForm());
+			}else{
 				dossierFile.setEForm(Boolean.parseBoolean(eForm));
 			}
 
@@ -3811,8 +3817,8 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 
 			dossierFile = action.updateDossierFileFormData(
-				groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
-				formData, serviceContext);
+						groupId, dossier.getDossierId(), dossierFile.getReferenceUid(),
+						Validator.isNull(dossierFile.getFormData()) ? formData : dossierFile.getFormData(), serviceContext);
 
 			_log.info("__End update dossier file at:" + new Date());
 
@@ -6538,10 +6544,13 @@ public class DossierManagementImpl implements DossierManagement {
 				_log.info("dossier: "+dossier);
 				if (dossier != null) {
 					String strGroupDossierId = dossier.getGroupDossierId();
-					if (Validator.isNotNull(strGroupDossierId)
-							&& !strGroupDossierId.contains(String.valueOf(groupDossierId))) {
-						strGroupDossierId += StringPool.COMMA + groupDossierId;
-						dossier.setGroupDossierId(strGroupDossierId);
+					if (Validator.isNotNull(strGroupDossierId)) {
+						if(!strGroupDossierId.contains(String.valueOf(groupDossierId))){
+							strGroupDossierId += StringPool.COMMA + groupDossierId;
+							dossier.setGroupDossierId(strGroupDossierId);
+						}else{
+							dossier.setGroupDossierId(strGroupDossierId);
+						}
 					} else {
 						_log.info("groupDossierId: "+ String.valueOf(groupDossierId));
 						dossier.setGroupDossierId(String.valueOf(groupDossierId));
@@ -7885,7 +7894,7 @@ public class DossierManagementImpl implements DossierManagement {
 														actConfig.getSyncType(),
 														serviceContext, errorModel);
 												boolean checkCreateFile = false;
-												options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext);
+												options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext,request,header,locale);
 												if(options.length() >0){
 													elmData.put(ProcessOptionTerm.OPTIONS, options);
 												}
@@ -7926,7 +7935,7 @@ public class DossierManagementImpl implements DossierManagement {
 														actConfig.getSyncType(),
 														serviceContext, errorModel);
 												boolean checkCreateFile = false;
-												options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext);
+												options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext,request,header,locale);
 												if(options.length() >0){
 													elmData.put(ProcessOptionTerm.OPTIONS, options);
 												}
@@ -7959,7 +7968,7 @@ public class DossierManagementImpl implements DossierManagement {
 												input.getAssignUsers(), input.getPayment(),
 												0, serviceContext, errorModel);
 										boolean checkCreateFile = false;
-										options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext);
+										options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext,request,header,locale);
 										if(options.length() >0){
 											elmData.put(ProcessOptionTerm.OPTIONS, options);
 										}
@@ -7996,112 +8005,159 @@ public class DossierManagementImpl implements DossierManagement {
 	}
 	public JSONArray cloneDossierFile(Dossier dossier, List<DossierFile> listDossierFile, ProcessAction proAction,
 									  Long groupId, boolean checkCreateFile, User user,
-									  Company company, ServiceContext serviceContext){
+									  Company company, ServiceContext serviceContext, HttpServletRequest request, HttpHeaders header,
+									  Locale locale){
 		JSONArray options = JSONFactoryUtil.createJSONArray();
 		JSONObject elmentOption = JSONFactoryUtil.createJSONObject();
 		long fileEntryId= 0;
-		if(Validator.isNotNull(listDossierFile)){
-			for(DossierFile item : listDossierFile){
-				if(Validator.isNotNull(item.getDossierPartNo())){
-					if(Validator.isNotNull(proAction.getCreateDossierFiles())){
-						String[] crDossierFiles = proAction.getCreateDossierFiles().split(StringPool.COMMA);
-						for(String key : crDossierFiles){
-							if(item.getDossierPartNo().equals(key)){
-								_log.info("TRACE_LOG_INFO dossierPartNo : " + item.getDossierPartNo() + " ---- createDossierFile : " + key);
-								checkCreateFile = true;
-								break;
+//		String fileTemplateNo = "";
+		DossierPart dossierPart = null;
+		//CreateDossierFile(ProcessAction) : id , id
+		//DossierPart : Deliverable !=null ==> tìm được TP hồ sơ
+		if (Validator.isNotNull(proAction.getCreateDossierFiles())) {
+			String[] proCrDossierFile = proAction.getCreateDossierFiles().split(StringPool.COMMA);
+			for (String idDossierFile : proCrDossierFile) {
+				dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier.getDossierTemplateNo(), idDossierFile);
+				_log.info("TRACE_LOG_INFO DossierPart: " + JSONFactoryUtil.looseSerialize(dossierPart));
+				if (dossierPart.getPartNo().equals(idDossierFile)) {
+					_log.info("TRACE_LOG_INFO dossierPartNo : " + dossierPart.getPartNo() + " ---- createDossierFile : " + idDossierFile);
+					checkCreateFile = true;
+				}
+				if (Validator.isNotNull(dossierPart.getPartNo())) {
+					if (checkCreateFile) {
+						if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
+							if (Validator.isNotNull(listDossierFile)) {
+								for (DossierFile item : listDossierFile) {
+									_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
+									DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
+											0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
+											dossier.getDossierId(),
+											PortalUUIDUtil.generate(),
+											item.getDossierTemplateNo(),
+											item.getDossierPartNo(),
+											item.getDossierPartType(),
+											item.getFileTemplateNo(),
+											item.getDisplayName(), item.getFormData(),
+											item.getFileEntryId(), false,
+											item.getEForm(), item.isNew(),
+											item.getRemoved(), item.getSignCheck(),
+											item.getSignInfo(), item.getFormScript(),
+											item.getFormReport(),
+											item.getFormSchema(),
+											item.getDeliverableCode());
+									_log.info("TRACE_LOG_INFO DossierFile :  " + JSONFactoryUtil.looseSerialize(dossierFile));
+									elmentOption.put(DossierFileTerm.DOSSIER_FILE_ID, item.getDossierFileId());
+									elmentOption.put(DossierFileTerm.DOSSIER_ID, item.getDossierId());
+									elmentOption.put(DossierFileTerm.GROUP_ID, item.getGroupId());
+									elmentOption.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, item.getDossierTemplateNo());
+									elmentOption.put(DossierFileTerm.DOSSIER_PART_NO, item.getDossierPartNo());
+									elmentOption.put(DossierFileTerm.FILE_TEMPLATE_NO, item.getFileTemplateNo());
+									_log.info("TRACE_LOG_INFO DossierFileOld :  " + JSONFactoryUtil.looseSerialize(item));
+									options.put(elmentOption);
+								}
 							}
-						}
-						if(checkCreateFile) {
-							_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
-							DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
-									0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
-									dossier.getDossierId(),
-									PortalUUIDUtil.generate(),
-									item.getDossierTemplateNo(),
-									item.getDossierPartNo(),
-									item.getDossierPartType(),
-									item.getFileTemplateNo(),
-									item.getDisplayName(), item.getFormData(),
-									item.getFileEntryId(), false,
-									item.getEForm(), item.isNew(),
-									item.getRemoved(), item.getSignCheck(),
-									item.getSignInfo(), item.getFormScript(),
-									item.getFormReport(),
-									item.getFormSchema(),
-									item.getDeliverableCode());
-							_log.info("TRACE_LOG_INFO DossierFile :  " + JSONFactoryUtil.looseSerialize(dossierFile));
-							elmentOption.put(DossierFileTerm.DOSSIER_FILE_ID, item.getDossierFileId());
-							elmentOption.put(DossierFileTerm.DOSSIER_ID, item.getDossierId());
-							elmentOption.put(DossierFileTerm.GROUP_ID, item.getGroupId());
-							elmentOption.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, item.getDossierTemplateNo());
-							elmentOption.put(DossierFileTerm.DOSSIER_PART_NO, item.getDossierPartNo());
-							elmentOption.put(DossierFileTerm.FILE_TEMPLATE_NO, item.getFileTemplateNo());
-							_log.info("TRACE_LOG_INFO DossierFileOld :  " + JSONFactoryUtil.looseSerialize(item));
-						}
-						if(listDossierFile.size() <1 ){
-							if(item.getEForm() == true) {
-								// true == CongVan
-								fileEntryId = item.getFileEntryId();
-							}
-						}else {
-							if (item.getEForm() == false) {
-								fileEntryId = item.getFileEntryId();
-							}
+						} else if ("2".equals(String.valueOf(dossierPart.getPartType()))) {
+							Attachment file = null;
+							addDossierFileByEForm(request, header, company,
+									locale, user, serviceContext,
+									file, String.valueOf(dossier.getDossierId()), dossierPart.getPartNo(),
+									null, null, dossierPart.getSampleData());
 						}
 					}
 				}
-				options.put(elmentOption);
-			}
-			DossierPart dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId,listDossierFile.get(0).getDossierTemplateNo(),proAction.getCreateDossierFiles());
-			if(Validator.isNotNull(dossierPart)){
-				_log.info("TRACE_LOG_INFO DossierPart: " + JSONFactoryUtil.looseSerialize(dossierPart));
-				boolean eSign = dossierPart.getESign();
-				if(eSign == true){
-					if(Validator.isNotNull(dossierPart.getDeliverableType())) {
-						_log.info("TRACE_LOG_INFO Check: " + eSign + dossierPart.getDeliverableType());
+
+				//Tạo Deliverable cho hồ sơ
+				List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+				if (listDossierHS != null && !listDossierHS.isEmpty()) {
+					if (Validator.isNotNull(dossierPart.getDeliverableType())) {
+
 						DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, dossierPart.getDeliverableType());
-						String deliverableTypes = deliverableType.getTypeCode();
-						String deliverableCode = "";
-						String mappingData = deliverableType.getMappingData();
-						try {
-							if (Validator.isNotNull(mappingData)) {
-								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(mappingData);
-								Iterator<String> keys = jsonMetaData.keys();
-								while (keys.hasNext()) {
-									String key = keys.next();
-									String value = jsonMetaData.getString(key);
-									if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
-										deliverableCode = value;
-										break;
+						for (DossierFile item : listDossierHS) {
+							//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
+							if (Validator.isNotNull(item.getDeliverableCode()) && item.getEForm() == true) {
+
+								boolean eSignature = proAction.getESignature();
+								if (eSignature == true) {
+
+									_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
+									String deliverableTypes = deliverableType.getTypeCode();
+//									String deliverableCode = item.getDeliverableCode();
+									String deliverableCode = dossier.getDossierNo();
+									String deliverableName = deliverableType.getTypeName();
+									String govAgencyCode = dossier.getGovAgencyCode();
+									String govAgencyName = dossier.getGovAgencyName();
+									String applicationIdNo = dossier.getApplicantIdNo();
+									String applicationName = dossier.getApplicantName();
+									long dosserId = dossier.getDossierId();
+									long formScriptFileId = deliverableType.getFormScriptFileId();
+									long formReportFileId = deliverableType.getFormReportFileId();
+									String formData = "";
+									String deliverableState = "";
+									//Xử lý formData cho ds người có công
+									// Mapping formData --> với cấu hình của deliverableType
+									try {
+										if (Validator.isNotNull(item.getFormData())) {
+
+											JSONObject jsonMapping = JSONFactoryUtil.createJSONObject();
+											JSONObject jsonFormData = JSONFactoryUtil.createJSONObject(item.getFormData());
+											jsonMapping = JSONFactoryUtil.createJSONObject(deliverableType.getMappingData());
+											Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonMapping);
+											for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+												String value = String.valueOf(entry.getValue());
+												if (value.startsWith(StringPool.POUND) && value.contains(DossierTerm.KQGP)) {
+
+													Iterator<String> keys = jsonFormData.keys();
+													while (keys.hasNext()) {
+														String key = keys.next();
+														String valueMeta = jsonFormData.getString(key);
+														if (key.equals(entry.getKey())) {
+															if(key.equals(DossierTerm.DELIVERABLE_STATE)){
+																deliverableState = valueMeta;
+															}else if(key.equals(DossierTerm.DELIVERABLE_CODE)){
+																deliverableCode = valueMeta;
+															}else if(key.equals(DossierTerm.DELIVERABLE_NAME)){
+																deliverableName = valueMeta;
+															}else if(key.equals(DossierTerm.GOV_AGENCY_CODE)){
+																govAgencyCode = valueMeta;
+															}else if(key.equals(DossierTerm.GOV_AGENCY_NAME)){
+																govAgencyName = valueMeta;
+															}
+															jsonMapping.put(entry.getKey(), valueMeta);
+															break;
+														}
+													}
+												}
+											}
+//											for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+//												if (entry.getValue().getClass().getName().contains(org.opencps.dossiermgt.action.util.ConstantUtils.KEY_JSON_OBJECT)) {
+//													jsonMapping.put(entry.getKey(), (JSONObject) entry.getValue());
+//												} else {
+//													jsonMapping.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
+//												}
+//											}
+											formData = jsonMapping.toJSONString();
+										}
+									} catch (Exception e) {
+										e.getMessage();
+										_log.info("EXCEPTION: " + e.getMessage());
 									}
+									Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+											groupId, deliverableTypes, deliverableName,
+											deliverableCode, govAgencyCode, govAgencyName,
+											applicationIdNo, applicationName, "",
+											"", "", "", deliverableState,
+											dosserId, item.getFileEntryId(), formScriptFileId, formReportFileId,
+											formData, "",
+											serviceContext);
+									_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 								}
 							}
-						} catch (Exception e) {
-							_log.info(e.getMessage());
 						}
-
-						String deliverableName = deliverableType.getTypeName();
-						String govAgencyCode = dossier.getGovAgencyCode();
-						String govAgencyName = dossier.getGovAgencyName();
-						String applicationIdNo = dossier.getApplicantIdNo();
-						String applicationName = dossier.getApplicantName();
-						long dosserId = dossier.getDossierId();
-						long formScriptFileId = deliverableType.getFormScriptFileId();
-						long formReportFileId = deliverableType.getFormReportFileId();
-						String formData = deliverableType.getMappingData();
-						Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
-								groupId, deliverableTypes, deliverableCode,
-								deliverableName, govAgencyCode, govAgencyName,
-								applicationIdNo, applicationName, "",
-								"", "", "", "",
-								dosserId, fileEntryId, formScriptFileId, formReportFileId,
-								formData, "",
-								serviceContext);
 					}
 				}
 			}
 		}
+
 		return options;
 	}
 
@@ -8132,6 +8188,7 @@ public class DossierManagementImpl implements DossierManagement {
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
 		List<Dossier> lstDossier = new ArrayList<>();
+		List<Dossier> lstSearchDossierCV = new ArrayList<>();
 		try {
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 				query.setStart(QueryUtil.ALL_POS);
@@ -8247,6 +8304,33 @@ public class DossierManagementImpl implements DossierManagement {
 			params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
 			params.put(
 					PaymentFileTerm.PAYMENT_STATUS, query.getPaymentStatus());
+			// Nếu đơn vị nhận == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			//Search công văn theo đơn vị nhận
+			String searchCongVanTheoDonViNhan = query.getSearchCongVanTheoDonViNhan();
+//			if (Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+//				String[] congVanArr = searchCongVanTheoDonViNhan.split(StringPool.COMMA);
+//				boolean firtScope = false;
+//				for (String key : congVanArr) {
+//					if (key.equals(DossierTerm.FIRSTSCOPE)) {
+//						firtScope = true;
+//					}
+//				}
+//				if (firtScope) {
+//					if (Validator.isNotNull(employee.getScope())) {
+//						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+//						params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
+//					}
+//				} else {
+//					if (query.getSearchCongVanTheoDonViNhan().equals(DossierTerm.SCOPE_)) {
+//						if (Validator.isNotNull(employee.getScope())) {
+//							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+//						}
+//					} else {
+//						params.put(DossierTerm.DON_VI_NHAN, searchCongVanTheoDonViNhan);
+//					}
+//				}
+//			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
@@ -8277,10 +8361,43 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 				if(Validator.isNotNull(dossierIds)) {
-					lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+					if(dossierIds.length > 1) {
+						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+					}
 				}
-			results.setTotal(lstDossier.size());
- 			results.getData().addAll(DossierUtils.mappingForListDossier(lstDossier));
+				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+					if (lstDossier != null && !lstDossier.isEmpty()) {
+						for (Dossier item : lstDossier){
+							if(Validator.isNotNull(item.getMetaData())) {
+								String metaData = item.getMetaData();
+								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+								Iterator<String> keys = jsonMetaData.keys();
+								while (keys.hasNext()) {
+									String key = keys.next();
+									String value = jsonMetaData.getString(key);
+									if (key.equals(DossierTerm.DON_VI_NHAN)) {
+										if (searchCongVanTheoDonViNhan.equals(DossierTerm.SCOPE_)) {
+											if (Validator.isNotNull(employee.getScope())) {
+												String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+ 												if (value.equals(employeeArr[0])) {
+													lstSearchDossierCV.add(item);
+													break;
+												}
+											}
+										} else {
+											if (searchCongVanTheoDonViNhan.equals(value)) {
+												lstSearchDossierCV.add(item);
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			results.setTotal(lstSearchDossierCV.size());
+ 			results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}catch (Exception e) {
 			_log.info(e.getMessage());
