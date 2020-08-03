@@ -22,6 +22,11 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
 
     @Override
     protected void doReceive(Message message) throws Exception {
+        //turn off Daily sync voting to DVCQG on branch 3.0
+        if (true) {
+            return;
+        }
+
         if (!isRunning) {
             isRunning = true;
         }
