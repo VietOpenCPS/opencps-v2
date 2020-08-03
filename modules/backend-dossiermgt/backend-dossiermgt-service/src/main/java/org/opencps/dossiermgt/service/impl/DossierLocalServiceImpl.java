@@ -1458,10 +1458,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		ProcessOption option = getProcessOption(
 				serviceCode, govAgencyCode, dossierTemplateNo, groupId);
 
-		long serviceProcessId = option.getServiceProcessId();
-
-		ServiceProcess serviceProcess =
-				serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+		ServiceProcess serviceProcess = null;
+		if (option != null) {
+			long serviceProcessId = option.getServiceProcessId();
+			serviceProcess = serviceProcessPersistence.findByPrimaryKey(serviceProcessId);
+		}
 
 		double durationCount = 0;
 		int durationUnit = 0;
@@ -1592,9 +1593,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		ServiceConfig config = ServiceConfigLocalServiceUtil.getBySICodeAndGAC(
 				groupId, serviceInfoCode, govAgencyCode);
+		if (config != null) {
+			return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
+					groupId, dossierTemplateNo, config.getServiceConfigId());
+		}
 
-		return ProcessOptionLocalServiceUtil.getByDTPLNoAndServiceCF(
-				groupId, dossierTemplateNo, config.getServiceConfigId());
+		return null;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

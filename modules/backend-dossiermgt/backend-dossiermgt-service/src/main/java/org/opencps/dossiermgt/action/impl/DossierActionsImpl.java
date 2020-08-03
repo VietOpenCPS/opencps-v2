@@ -101,6 +101,7 @@ import org.opencps.dossiermgt.service.ServiceProcessRoleLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.dossiermgt.service.impl.CPSDossierBusinessLocalServiceImpl;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.util.OCPSUserUtils;
 import org.osgi.service.component.annotations.Component;
@@ -772,27 +773,37 @@ public class DossierActionsImpl implements DossierActions {
 					} else {
 
 						Double durationCount = serviceProcess.getDurationCount();
+						String strDateOption = StringPool.BLANK;
 
 						JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
+
+						// dateOption from PostAction
 						String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
 						if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
 							JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
 							if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
-								String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
-								if (Validator.isNotNull(strDateOption) && (
-										Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
-										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
-										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
-									
-									DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
-											serviceProcess.getDueDatePattern());
-									dueDate = dueDatePharse.getDueDate();
-									dossier.setDueDate(dueDate);
-								} else if (Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
-
-									dueDate = null;
-								}
+								strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
 							}
+						}
+						// dateOption from action config
+						if (Validator.isNull(processAction.getPostAction())) {
+
+							ActionConfig action = ActionConfigLocalServiceUtil.getByCode(groupId, processAction.getActionCode());
+							strDateOption = String.valueOf(action.getDateOption());
+						}
+						if (Validator.isNotNull(strDateOption) && (
+								Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+								|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+								|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
+							
+							DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
+									serviceProcess.getDueDatePattern());
+							dueDate = dueDatePharse.getDueDate();
+							dossier.setDueDate(dueDate);
+							receivingObj.put(ProcessActionTerm.DURATION_PHASE, dueDatePharse.getDuration());
+						} else if (Validator.isNotNull(strDateOption) && Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
+
+							dueDate = null;
 						} else if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 							
@@ -800,7 +811,7 @@ public class DossierActionsImpl implements DossierActions {
 							dueDate = dueDateUtils.getDueDate();
 							dossier.setDueDate(dueDate);
 						}
-						_log.info("dueDate============" + dueDate);
+						_log.info("dueDate============" + strDateOption + dueDate);
 						_log.info("processAction============" + processAction);
 					}
 
@@ -4032,6 +4043,7 @@ public class DossierActionsImpl implements DossierActions {
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
 			Integer fromViaPostal, String formMeta, String strDueDate, ServiceContext serviceContext) {
 		try {
+
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(id);
 			Date dueDate = new Date();
 			if (Validator.isNotNull(strDueDate) && GetterUtil.getLong(strDueDate) > 0) {
@@ -4039,6 +4051,15 @@ public class DossierActionsImpl implements DossierActions {
 				dueDate.setTime(longDueDate);
 			} else {
 				dueDate = APIDateTimeUtils.convertStringToDate(strDueDate, APIDateTimeUtils._NORMAL_DATE);
+			}
+
+			//Update applicant
+			if (dossier != null && ConstantUtils.ORIGINAL_TODO.contains(String.valueOf(dossier.getOriginality()))) {
+				ApplicantLocalServiceUtil.updateApplicant(0l, dossier.getUserId(), dossier.getCompanyId(),
+						applicantName, applicantIdType, applicantIdNo,
+						APIDateTimeUtils.convertStringToDate(applicantIdDate, APIDateTimeUtils._NORMAL_PARTTERN),
+						address, cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
+						contactTelNo, contactEmail);
 			}
 
 			if (Validator.isNotNull(formMeta) && JSONFactoryUtil.createJSONObject(formMeta) != null) {

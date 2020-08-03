@@ -553,8 +553,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private boolean createDossierDocumentPostAction(long groupId, long userId, Dossier dossier,
-													DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
-													String documentTypeList, ServiceContext context)
+			DossierAction dossierAction, JSONObject payloadObject, Employee employee, User user,
+			String documentTypeList, ServiceContext context)
 			throws com.liferay.portal.kernel.search.ParseException, JSONException, SearchException {
 		//Check if generate dossier document
 		if (dossier.getOriginality() != DossierTerm.ORIGINALITY_DVCTT) {
@@ -883,10 +883,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private DossierAction createActionAndAssignUser(long groupId, long userId, ProcessStep curStep,
-													ActionConfig actionConfig, DossierAction dossierAction, DossierAction previousAction,
-													ProcessAction proAction, Dossier dossier, String actionCode, String actionUser, String actionNote,
-													String payload, String assignUsers, String payment, ServiceProcess serviceProcess, ProcessOption option,
-													Map<String, Boolean> flagChanged, Integer dateOption, ServiceContext context) throws PortalException {
+			ActionConfig actionConfig, DossierAction dossierAction, DossierAction previousAction,
+			ProcessAction proAction, Dossier dossier, String actionCode, String actionUser, String actionNote,
+			String payload, String assignUsers, String payment, ServiceProcess serviceProcess, ProcessOption option,
+			Map<String, Boolean> flagChanged, Integer dateOption, ServiceContext context) throws PortalException {
 		int actionOverdue = getActionDueDate(groupId, dossier.getDossierId(), dossier.getReferenceUid(),
 				proAction.getProcessActionId());
 		String actionName = proAction.getActionName();
@@ -1004,7 +1004,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String payload, String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 
-		//_log.info("payload Action: "+ payload);
+		_log.info("payload Action: "+ payload);
 		context.setUserId(userId);
 		DossierAction dossierAction = null;
 		Map<String, Boolean> flagChanged = new HashMap<>();
@@ -1013,23 +1013,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		String dossierStatus = dossier.getDossierStatus().toLowerCase();
 		if (Validator.isNull(dossier.getApplicantName()) && Validator.isNull(dossier.getApplicantIdNo())) {
 			_log.info("TRACE_LOG_LOST_DOSSIER: "+JSONFactoryUtil.looseSerialize(dossier));
-//			for (int i = 0; i < 5; i++) {
-//				try {
-//					dossierPersistence.clearCache(dossier);
-//					dossier = dossierPersistence.fetchByPrimaryKey(dossier.getDossierId());
-//					_log.info("TRACE_LOG_LOST_DOSSIER DB MODIFIEDDATE: "+ dossier.getModifiedDate().getTime());
-//					if (Validator.isNotNull(dossier.getApplicantName()) && Validator.isNotNull(dossier.getApplicantIdNo())) {
-//						_log.info("TRACE_LOG_LOST_DOSSIER count" + i + "CPS DONE: "+JSONFactoryUtil.looseSerialize(dossier));
-//						break;
-//					}
-//				} catch (Exception e) {
-//					_log.error(e);
-//				}
-//				
-//				Thread.sleep(50);
-//			}
 		}
-		//_log.info("TRACE_LOG_INFO doAction CPS dossier END: "+JSONFactoryUtil.looseSerialize(dossier));
 		
 		Employee employee = null;
 		Serializable employeeCache = cache.getFromCache(CacheTerm.MASTER_DATA_EMPLOYEE,
@@ -2740,6 +2724,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -3245,8 +3231,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction,
-													  ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
-													  int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
+			ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
+			int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -3254,9 +3240,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		params.put(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
 		params.put(DossierTerm.DOSSIER_TEMPLATE_NO, dossier.getDossierTemplateNo());
 		params.put(DossierTerm.DOSSIER_STATUS, StringPool.BLANK);
-
-		// if payload content reciveDate or dueDate -> do not calculate reciveDate, dueDate
-		boolean allowUpdateDueDate = checkAllowUpdateDueDate(payload, dossier, dateOption);
 
 		//		ServiceProcess serviceProcess =  null;
 		//
@@ -3322,13 +3305,15 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Double durationCount = serviceProcess.getDurationCount();
 			int durationUnit = serviceProcess.getDurationUnit();
 			Date dueDate = null;
-			if (allowUpdateDueDate && Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
+			if (Validator.isNotNull(getDueDateByPayload(payload))) {
+				dueDate = getDueDateByPayload(payload);
+			} else if (Validator.isNotNull(durationCount) && durationCount > 0 && !areEqualDouble(durationCount, 0.00d, 3)) {
 				// dueDate = HolidayUtils.getDueDate(now, durationCount, durationUnit, dossier.getGroupId());
 				DueDateUtils dueDateUtils = new DueDateUtils(now, durationCount, durationUnit, dossier.getGroupId());
 				dueDate = dueDateUtils.getDueDate();
 			}
 
-			if (allowUpdateDueDate && Validator.isNotNull(dueDate)) {
+			if (Validator.isNotNull(dueDate)) {
 				dossier.setDueDate(dueDate);
 				//					DossierLocalServiceUtil.updateDueDate(dossier.getGroupId(), dossier.getDossierId(), dossier.getReferenceUid(), dueDate, context);
 				bResult.put(DossierTerm.DUE_DATE, true);
@@ -3591,7 +3576,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 		//int dateOption = actionConfig.getDateOption();
 		_log.debug("dateOption: " + dateOption);
-		if (allowUpdateDueDate && dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
+		if (dateOption == DossierTerm.DATE_OPTION_CAL_WAITING) {
 			DossierAction dActEnd = dossierActionLocalService.fetchDossierAction(dossierAction.getDossierActionId());
 			//			DossierAction dActEnd = dossierAction;
 			if (dActEnd != null && dossier.getDurationCount() > 0) {
@@ -3664,6 +3649,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			} else if (dossier.getDurationCount() <= 0) {
 				dossier.setDueDate(null);
 			}
+			if (Validator.isNotNull(getDueDateByPayload(payload))) {
+				dossier.setDueDate(getDueDateByPayload(payload));
+			}
 		} else if (dateOption == DossierTerm.DATE_OPTION_CHANGE_DUE_DATE) {
 			if (dossier.getDueDate() != null) {
 				//dossier.setCorrecttingDate(dossier.getDueDate());
@@ -3675,23 +3663,23 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 				dossier.setLockState(StringPool.BLANK);
 			}
-			if (allowUpdateDueDate && dossier.getDueDate() != null) {
-				if (serviceProcess != null) {
-					//					Date newDueDate = HolidayUtils.getDueDate(new Date(),
-					//							serviceProcess.getDurationCount(),
-					//							serviceProcess.getDurationUnit(), dossier.getGroupId());
-					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), serviceProcess.getDurationCount(),
-							serviceProcess.getDurationUnit(), dossier.getGroupId());
-					Date newDueDate = dueDateUtils.getDueDate();
-					if (newDueDate != null) {
-						//dossier.setReceiveDate(new Date());
-						dossier.setDueDate(newDueDate);
-						bResult.put(DossierTerm.DUE_DATE, true);
-					}
+			if (Validator.isNotNull(getDueDateByPayload(payload))) {
+				dossier.setDueDate(getDueDateByPayload(payload));
+			} else if (dossier.getDueDate() != null && serviceProcess != null) {
+//				Date newDueDate = HolidayUtils.getDueDate(new Date(),
+				//							serviceProcess.getDurationCount(),
+				//							serviceProcess.getDurationUnit(), dossier.getGroupId());
+				DueDateUtils dueDateUtils = new DueDateUtils(new Date(), serviceProcess.getDurationCount(),
+						serviceProcess.getDurationUnit(), dossier.getGroupId());
+				Date newDueDate = dueDateUtils.getDueDate();
+				if (newDueDate != null) {
+					//dossier.setReceiveDate(new Date());
+					dossier.setDueDate(newDueDate);
+					bResult.put(DossierTerm.DUE_DATE, true);
 				}
 			}
 		} else if (dateOption == DossierTerm.DATE_OPTION_PAUSE_OVERDUE) {
-			if (allowUpdateDueDate && dossier.getDueDate() != null) {
+			if (dossier.getDueDate() != null) {
 				dossier.setLockState(DossierTerm.PAUSE_OVERDUE_LOCK_STATE);
 			}
 		} else if ((dateOption == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
@@ -3703,7 +3691,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossier.setLockState(StringPool.BLANK);
 			}
 
-			if (allowUpdateDueDate) {
+			if (Validator.isNotNull(getDueDateByPayload(payload))) {
+				Date dueDate = getDueDateByPayload(payload);
+				dossier.setDueDate(dueDate);
+				String metadata = getDossierMetaKeyDateOption(dossier, dueDate, getReceiveDateByPayload(payload), getDurationByPayload(payload), dateOption);
+				dossier.setMetaData(metadata);
+				bResult.put(DossierTerm.META_DATA, true);
+				bResult.put(DossierTerm.DUE_DATE, true);
+			} else {
 				DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), dateOption,
 						serviceProcess.getDueDatePattern());
 				dossier.setDueDate(dueDatePharse.getDueDate());
@@ -3775,8 +3770,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				 */
 				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, false, null, params);
 			} else if(dateOption == DossierTerm.DATE_OPTION_TWO) {
-				boolean checkUpdateDueDate = allowUpdateDueDate && Validator.isNull(dossier.getDueDate());
-				dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, checkUpdateDueDate, dossier.getReceiveDate(), params);
+				if (Validator.isNotNull(getDueDateByPayload(payload))) {
+					dossier.setDueDate(getDueDateByPayload(payload));
+				} else {
+					dossier = setDossierNoNDueDate(dossier, serviceProcess, option, true, Validator.isNull(dossier.getDueDate()), dossier.getReceiveDate(), params);
+				}
 			}
 
 		//Check if dossier is done
@@ -6166,8 +6164,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (dossier != null) {
 				//
 				//Check if have DOSSIER-01 template
-				Notificationtemplate dossierTemplate = NotificationtemplateLocalServiceUtil
-						.fetchByF_NotificationtemplateByType(groupId, NotificationType.DOSSIER_01);
+				Notificationtemplate dossierTemplate = null;
+				try {
+					dossierTemplate = NotificationtemplateLocalServiceUtil
+					.fetchByF_NotificationtemplateByType(groupId, NotificationType.DOSSIER_01);
+				} catch (Exception e) {
+					// TODO: handle exception
+					_log.debug(e);
+				}
 				if (dossierTemplate != null) {
 					long notificationQueueId = CounterLocalServiceUtil.increment(NotificationQueue.class.getName());
 
@@ -8832,23 +8836,46 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		return dossier;
 	}
 
-	// if payload content reciveDate or dueDate -> do not calculate reciveDate, dueDate
-	private boolean checkAllowUpdateDueDate (String payload, Dossier dossier, int dateOption) {
+	private Date getDueDateByPayload (String payload) {
 		try {
-			boolean hasDueDate = false;
-			boolean caseDateOption2 = true;
 			if (Validator.isNotNull(payload)) {
 				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
-				 hasDueDate = payloadJ.has(DossierTerm.DUE_DATE) && Validator.isNotNull(payloadJ.getString(DossierTerm.DUE_DATE));
+				long dueDate = payloadJ.getLong(DossierTerm.DUE_DATE);
+				if (dueDate > 0) {
+					return new Date(dueDate);
+				}
 			}
-			if (Validator.isNull(dossier.getDueDate()) && dateOption == DossierTerm.DATE_OPTION_TWO) {
-				caseDateOption2 = false;
-			}
-			return !hasDueDate && caseDateOption2;
 		} catch (Exception e) {
 			_log.debug(e);
 		}
-		return true;
+		return null;
+	}
+	private Date getReceiveDateByPayload (String payload) {
+		try {
+			if (Validator.isNotNull(payload)) {
+				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
+				long dueDate = payloadJ.getLong(DossierTerm.RECEIVE_DATE);
+				if (dueDate > 0) {
+					return new Date(dueDate);
+				}
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return new Date();
+	}
+	private long getDurationByPayload (String payload) {
+		try {
+			if (Validator.isNotNull(payload)) {
+				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
+				return payloadJ.has(ProcessActionTerm.DURATION_PHASE) ? 
+					payloadJ.getLong(ProcessActionTerm.DURATION_PHASE, 0) :
+					payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return 0;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);

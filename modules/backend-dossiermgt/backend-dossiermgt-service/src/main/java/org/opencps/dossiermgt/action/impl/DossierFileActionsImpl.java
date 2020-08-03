@@ -107,62 +107,62 @@ public class DossierFileActionsImpl implements DossierFileActions {
 		// referenceUid);
 	}
 
-	@Override
-	public JSONObject getDossierFiles(
-		long groupId, String keyword, String template, Integer type,
-		Boolean owner, Boolean original, int start, int end, String sort,
-		String order, ServiceContext serviceContext) {
-
-		JSONObject result = JSONFactoryUtil.createJSONObject();
-
-		SearchContext searchContext = new SearchContext();
-		searchContext.setCompanyId(serviceContext.getCompanyId());
-
-		try {
-
-			if (start == 0) {
-				start = -1;
-				end = -1;
-			}
-
-			LinkedHashMap<String, Object> params =
-				new LinkedHashMap<String, Object>();
-
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			params.put(Field.KEYWORD_SEARCH, keyword);
-			params.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, template);
-			params.put(DossierFileTerm.DOSSIER_PART_TYPE, type);
-			params.put(DossierFileTerm.REMOVED, String.valueOf(false));
-
-			if (owner != null && owner.booleanValue()) {
-				params.put(Field.USER_ID, serviceContext.getUserId());
-			}
-
-			params.put(DossierFileTerm.ORIGINAL, original);
-
-			Sort[] sorts = new Sort[] {
-				SortFactoryUtil.create(
-					sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
-					GetterUtil.getBoolean(order))
-			};
-
-			Hits hits = DossierFileLocalServiceUtil.searchLucene(
-				params, sorts, start, end, searchContext);
-
-			result.put(ConstantUtils.DATA, hits.toList());
-
-			long total =
-				DossierFileLocalServiceUtil.countLucene(params, searchContext);
-
-			result.put(ConstantUtils.TOTAL, total);
-
-		}
-		catch (Exception e) {
-			_log.error(e);
-		}
-
-		return result;
-	}
+//	@Override
+//	public JSONObject getDossierFiles(
+//		long groupId, String keyword, String template, Integer type,
+//		Boolean owner, Boolean original, int start, int end, String sort,
+//		String order, ServiceContext serviceContext) {
+//
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
+//
+//		SearchContext searchContext = new SearchContext();
+//		searchContext.setCompanyId(serviceContext.getCompanyId());
+//
+//		try {
+//
+//			if (start == 0) {
+//				start = -1;
+//				end = -1;
+//			}
+//
+//			LinkedHashMap<String, Object> params =
+//				new LinkedHashMap<String, Object>();
+//
+//			params.put(Field.GROUP_ID, String.valueOf(groupId));
+//			params.put(Field.KEYWORD_SEARCH, keyword);
+//			params.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, template);
+//			params.put(DossierFileTerm.DOSSIER_PART_TYPE, type);
+//			params.put(DossierFileTerm.REMOVED, String.valueOf(false));
+//
+//			if (owner != null && owner.booleanValue()) {
+//				params.put(Field.USER_ID, serviceContext.getUserId());
+//			}
+//
+//			params.put(DossierFileTerm.ORIGINAL, original);
+//
+//			Sort[] sorts = new Sort[] {
+//				SortFactoryUtil.create(
+//					sort + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+//					GetterUtil.getBoolean(order))
+//			};
+//
+//			Hits hits = DossierFileLocalServiceUtil.searchLucene(
+//				params, sorts, start, end, searchContext);
+//
+//			result.put(ConstantUtils.DATA, hits.toList());
+//
+//			long total =
+//				DossierFileLocalServiceUtil.countLucene(params, searchContext);
+//
+//			result.put(ConstantUtils.TOTAL, total);
+//
+//		}
+//		catch (Exception e) {
+//			_log.error(e);
+//		}
+//
+//		return result;
+//	}
 
 	@Override
 	public DossierFile updateDossierFileFormData(

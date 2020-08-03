@@ -23,10 +23,7 @@ import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-@Component(
-    immediate = true,
-    service = BaseIndexer.class
-)
+//@Component(immediate = true, service = BaseIndexer.class)
 public class DossierFileIndexer extends BaseIndexer<DossierFile> {
 	public static final String CLASS_NAME = DossierFile.class.getName();
 

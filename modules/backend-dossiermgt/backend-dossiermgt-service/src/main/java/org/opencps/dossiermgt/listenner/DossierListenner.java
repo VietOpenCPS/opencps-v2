@@ -134,29 +134,29 @@ public class DossierListenner extends BaseModelListener<Dossier> {
 		}
 		
 	*/
-		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
-			//long groupId = model.getGroupId();
-			long userId = model.getUserId();
-			long companyId = model.getCompanyId();
-			String applicantIdNo = model.getApplicantIdNo();
-			String applicantName = model.getApplicantName();
-			String applicantIdType = model.getApplicantIdType();
-			Date applicantIdDate = model.getApplicantIdDate();
-			String address = model.getAddress();
-			String cityCode = model.getCityCode();
-			String cityName = model.getCityName();
-			String districtCode = model.getDistrictCode();
-			String districtName = model.getDistrictName();
-			String wardCode = model.getWardCode();
-			String wardName = model.getWardName();
-			String contactName = model.getContactName();
-			String contactTelNo = model.getContactTelNo();
-			String contactEmail = model.getContactEmail();
-			
-			ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
-					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
-					contactName, contactTelNo, contactEmail);
-		}
+//		if (ORIGINAL_TODO.contains(String.valueOf(model.getOriginality()))) {
+//			//long groupId = model.getGroupId();
+//			long userId = model.getUserId();
+//			long companyId = model.getCompanyId();
+//			String applicantIdNo = model.getApplicantIdNo();
+//			String applicantName = model.getApplicantName();
+//			String applicantIdType = model.getApplicantIdType();
+//			Date applicantIdDate = model.getApplicantIdDate();
+//			String address = model.getAddress();
+//			String cityCode = model.getCityCode();
+//			String cityName = model.getCityName();
+//			String districtCode = model.getDistrictCode();
+//			String districtName = model.getDistrictName();
+//			String wardCode = model.getWardCode();
+//			String wardName = model.getWardName();
+//			String contactName = model.getContactName();
+//			String contactTelNo = model.getContactTelNo();
+//			String contactEmail = model.getContactEmail();
+//			
+//			ApplicantLocalServiceUtil.updateApplicant(0l, userId, companyId, applicantName, applicantIdType, applicantIdNo,
+//					applicantIdDate, address, cityCode, cityName, districtCode, districtName, wardCode, wardName,
+//					contactName, contactTelNo, contactEmail);
+//		}
 		
 		if (OpenCPSConfigUtil.isDossierLogEnable()) {
 			_log.debug("UPDATE DOSSIER LOG.....");

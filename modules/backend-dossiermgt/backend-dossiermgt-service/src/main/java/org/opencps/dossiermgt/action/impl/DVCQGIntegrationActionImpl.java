@@ -60,6 +60,7 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigMappingLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
@@ -3529,6 +3530,119 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 	private JSONObject createResponseMessage(JSONObject object, int errorCode, String message) {
 		object.put("error_code", errorCode);
 		object.put("message", message);
+		return object;
+	}
+
+
+	@Override
+	public JSONObject doSyncServiceConfig(User user, long groupId, String requestBody, ServiceContext context) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		ServerConfig serverConfig = null;
+		try {
+
+			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG_INTEGRATION");
+
+			if (serverConfigs != null && !serverConfigs.isEmpty()) {
+				serverConfig = serverConfigs.get(0);
+			}
+
+			if (serverConfig == null) {
+				return createResponseMessage(result, 404, "error",
+						"Not found server config width protocal: DVCQG_INTEGRATION");
+			}
+
+			JSONObject body = JSONFactoryUtil.createJSONObject(requestBody);
+
+			body.put("service", "LayDVC");
+
+			JSONObject serviceConfigData = getSharingData(serverConfig, body);
+
+			_log.info("serviceConfigData: " + serviceConfigData.toJSONString());
+
+			if (serviceConfigData == null || serviceConfigData.length() == 0) {
+				return createResponseMessage(result, 404, "error", "can't get data");
+			}
+
+			JSONArray data = serviceConfigData.getJSONObject("result").getJSONArray("data");
+
+			for (int i = 0; i < data.length(); i++) {
+
+				JSONObject obj = data.getJSONObject(i);
+				String serviceConfigCode = obj.getString("MADVC");
+				String serviceConfigName = obj.getString("TENDVC");
+				String serviceCode = obj.getString("MATTHC");
+				String serviceName = obj.getString("TENTTHC");
+				String govAgencyName = obj.getString("TENCOQUANBANHANH");
+				String domainName = obj.getString("TENLINHVUC");
+				JSONArray applicableInfoObj = obj.getJSONArray("APDUNGDVC");
+
+				JSONObject serviceInfoDetail = getServiceInfoDVCQGDetail(user, groupId, context, serviceCode);
+
+				_log.info("serviceInfoDetail " + serviceInfoDetail.toJSONString());
+
+				JSONArray paymentFeeInfoObj = JSONFactoryUtil.createJSONArray();
+
+				if (serviceInfoDetail.has("error_code")
+						&& GetterUtil.getInteger(serviceInfoDetail.getString("error_code")) == 0) {
+
+					JSONArray resultTmp = serviceInfoDetail.getJSONArray("result");
+
+					if (resultTmp != null) {
+
+						JSONObject _tmp = resultTmp.getJSONObject(0);
+
+						if (_tmp.has("CACHTHUCTHUCHIEN")) {
+
+							JSONArray cachthucthuchien_arr = _tmp.getJSONArray("CACHTHUCTHUCHIEN");
+
+							if (cachthucthuchien_arr != null) {
+								for (int j = 0; j < cachthucthuchien_arr.length(); j++) {
+									JSONObject cachthucthuchien_obj = cachthucthuchien_arr.getJSONObject(j);
+
+									JSONArray thoigian_arr = cachthucthuchien_obj.getJSONArray("THOIGIAN");
+
+									if (thoigian_arr != null) {
+
+										for (int t = 0; t < thoigian_arr.length(); t++) {
+
+											JSONObject thoigian_obj = thoigian_arr.getJSONObject(t);
+
+											JSONArray philephi_arr = thoigian_obj.getJSONArray("PHILEPHI");
+
+											if (philephi_arr != null && philephi_arr.length() > 0) {
+												for (int p = 0; p < philephi_arr.length(); p++) {
+													paymentFeeInfoObj.put(philephi_arr.getJSONObject(p));
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+					}
+				}
+
+				ServiceConfigMappingLocalServiceUtil.addServiceConfigMaping(groupId, serviceConfigCode,
+						serviceConfigName, serviceCode, serviceName, govAgencyName, domainName, applicableInfoObj,
+						paymentFeeInfoObj, context);
+			}
+
+			return createResponseMessage(result, 200, "success", "sync serverconfig success");
+
+		} catch (Exception e) {
+			_log.error(e);
+			return createResponseMessage(result, 500, "error", "system error");
+		}
+
+	}
+
+	private JSONObject createResponseMessage(JSONObject object, int status, String message, String desc) {
+		object.put("status", status);
+		object.put("message", message);
+		object.put("description", desc);
 		return object;
 	}
 
