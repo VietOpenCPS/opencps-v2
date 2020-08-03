@@ -271,10 +271,11 @@ public class DossierManagementImpl implements DossierManagement {
 				String status = query.getStatus();
 				String substatus = query.getSubstatus();
 				String agencys = query.getAgency();
-				if (ALL_AGENCY.equals(agencys)) {
+				boolean notAgencysScope = query.isNotAgencysScope();
+				if (ALL_AGENCY.equals(agencys) ) {
 					agencys = StringPool.BLANK;
 				}
-				if (Validator.isNull(agencys)) {
+				if (Validator.isNull(agencys) & !notAgencysScope) {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 					if (employee != null && Validator.isNotNull(employee.getScope())) {
 						agencys = employee.getScope();

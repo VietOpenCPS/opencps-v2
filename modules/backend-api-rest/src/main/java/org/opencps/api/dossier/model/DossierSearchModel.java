@@ -302,6 +302,17 @@ public class DossierSearchModel {
 	protected String postalCodeReceived;
 	@QueryParam(value = "searchCongVanTheoDonViNhan")
 	protected String searchCongVanTheoDonViNhan;
+	@DefaultValue("false")
+	@QueryParam(value = "notAgencysScope")
+	protected boolean notAgencysScope;
+
+	public boolean isNotAgencysScope() {
+		return notAgencysScope;
+	}
+
+	public void setNotAgencysScope(boolean notAgencysScope) {
+		this.notAgencysScope = notAgencysScope;
+	}
 
 	public String getSearchCongVanTheoDonViNhan() {
 		return searchCongVanTheoDonViNhan;
