@@ -85,13 +85,13 @@ import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.DossierStatisticManualResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticModel;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
@@ -378,7 +378,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
 						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
 						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,
-								false);
+								0);
 						//StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 						//statisticEngineUpdate.updateStatisticData(statisticData);
 						//
@@ -412,7 +412,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				if (reCalculate == 1) {
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					processUpdateDB(groupId, firstDay, lastDay, month, year, true, new ArrayList<String>());
+					processUpdateDB(groupId, firstDay, lastDay, month, year, 1, new ArrayList<String>());
 				}
 
 				validInput(month, year, start, end);
@@ -960,7 +960,7 @@ public class OpencpsStatisticRestApplication extends Application {
 	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
-	private void processUpdateDB(long groupId, Date firstDay, Date lastDay, int month, int year, boolean reporting, List<String> lstGroupGovs)
+	private void processUpdateDB(long groupId, Date firstDay, Date lastDay, int month, int year, int reporting, List<String> lstGroupGovs)
 			throws Exception {
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
@@ -1201,7 +1201,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		for (OpencpsDossierStatistic statistic : lstStatistics) {
 			if (Validator.isNotNull(statistic.getGovAgencyCode())) {
 				statistic.setModifiedDate(new Date());
-				statistic.setReporting(true);
+				statistic.setReporting(1);
 				OpencpsDossierStatisticLocalServiceUtil.updateOpencpsDossierStatistic(statistic);
 				
 				//Chốt lên cổng tra cứu
@@ -1463,7 +1463,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				if (reCalculate == 1) {
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					processUpdateDB(groupId, firstDay, lastDay, month, year, true, new ArrayList<String>());
+					processUpdateDB(groupId, firstDay, lastDay, month, year, 1, new ArrayList<String>());
 				}
 
 				validInput(month, year, start, end);
@@ -1485,7 +1485,7 @@ public class OpencpsStatisticRestApplication extends Application {
 				dossierStatisticRequest.setYear(year);
 				dossierStatisticRequest.setSystem(DossierConstants.SYSTEM_1);
 				//
-				DossierStatisticResponse statisticResponse = dossierStatisticManualFinderService
+				DossierStatisticManualResponse statisticResponse = dossierStatisticManualFinderService
 						.finderDossierStatisticSystem(dossierStatisticRequest);
 				if (statisticResponse != null) {
 					statisticResponse.setAgency(govAgencyCode);

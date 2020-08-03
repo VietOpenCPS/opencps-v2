@@ -720,7 +720,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic findByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting)
+		int reporting)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
 				   .findByM_Y_DM_G(groupId, govAgencyCode, month, year,
@@ -740,7 +740,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) {
+		int reporting) {
 		return getPersistence()
 				   .fetchByM_Y_DM_G(groupId, govAgencyCode, month, year,
 			domainCode, reporting);
@@ -760,7 +760,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting, boolean retrieveFromCache) {
+		int reporting, boolean retrieveFromCache) {
 		return getPersistence()
 				   .fetchByM_Y_DM_G(groupId, govAgencyCode, month, year,
 			domainCode, reporting, retrieveFromCache);
@@ -779,7 +779,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic removeByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting)
+		int reporting)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
 				   .removeByM_Y_DM_G(groupId, govAgencyCode, month, year,
@@ -798,7 +798,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the number of matching opencps dossier statistics
 	*/
 	public static int countByM_Y_DM_G(long groupId, String govAgencyCode,
-		int month, int year, String domainCode, boolean reporting) {
+		int month, int year, String domainCode, int reporting) {
 		return getPersistence()
 				   .countByM_Y_DM_G(groupId, govAgencyCode, month, year,
 			domainCode, reporting);
@@ -1688,7 +1688,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting) {
+		int month, int year, int reporting) {
 		return getPersistence().findByGID_M_Y_RP(groupId, month, year, reporting);
 	}
 
@@ -1708,7 +1708,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end) {
+		int month, int year, int reporting, int start, int end) {
 		return getPersistence()
 				   .findByGID_M_Y_RP(groupId, month, year, reporting, start, end);
 	}
@@ -1730,7 +1730,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .findByGID_M_Y_RP(groupId, month, year, reporting, start,
@@ -1755,7 +1755,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
@@ -1775,7 +1775,7 @@ public class OpencpsDossierStatisticUtil {
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic findByGID_M_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -1794,7 +1794,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic fetchByGID_M_Y_RP_First(
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .fetchByGID_M_Y_RP_First(groupId, month, year, reporting,
@@ -1813,7 +1813,7 @@ public class OpencpsDossierStatisticUtil {
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic findByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -1832,7 +1832,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic fetchByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .fetchByGID_M_Y_RP_Last(groupId, month, year, reporting,
@@ -1853,7 +1853,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic[] findByGID_M_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -1870,7 +1870,7 @@ public class OpencpsDossierStatisticUtil {
 	* @param reporting the reporting
 	*/
 	public static void removeByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		getPersistence().removeByGID_M_Y_RP(groupId, month, year, reporting);
 	}
 
@@ -1884,7 +1884,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the number of matching opencps dossier statistics
 	*/
 	public static int countByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		return getPersistence()
 				   .countByGID_M_Y_RP(groupId, month, year, reporting);
 	}
@@ -1899,7 +1899,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting) {
+		long groupId, int month, int year, int reporting) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, month, year, reporting);
 	}
@@ -1920,7 +1920,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start, int end) {
+		long groupId, int month, int year, int reporting, int start, int end) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, month, year, reporting, start,
 			end);
@@ -1943,8 +1943,8 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		long groupId, int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, month, year, reporting, start,
 			end, orderByComparator);
@@ -1968,8 +1968,8 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		long groupId, int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, month, year, reporting, start,
@@ -1988,7 +1988,7 @@ public class OpencpsDossierStatisticUtil {
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic findByGID_MS_Y_RP_First(
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -2007,7 +2007,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic fetchByGID_MS_Y_RP_First(
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .fetchByGID_MS_Y_RP_First(groupId, month, year, reporting,
@@ -2026,7 +2026,7 @@ public class OpencpsDossierStatisticUtil {
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic findByGID_MS_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -2045,7 +2045,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public static OpencpsDossierStatistic fetchByGID_MS_Y_RP_Last(
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .fetchByGID_MS_Y_RP_Last(groupId, month, year, reporting,
@@ -2066,7 +2066,7 @@ public class OpencpsDossierStatisticUtil {
 	*/
 	public static OpencpsDossierStatistic[] findByGID_MS_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
 		return getPersistence()
@@ -2088,7 +2088,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting) {
+		long groupId, int[] months, int year, int reporting) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, months, year, reporting);
 	}
@@ -2109,8 +2109,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
-		int end) {
+		long groupId, int[] months, int year, int reporting, int start, int end) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, months, year, reporting, start,
 			end);
@@ -2133,7 +2132,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
+		long groupId, int[] months, int year, int reporting, int start,
 		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return getPersistence()
 				   .findByGID_MS_Y_RP(groupId, months, year, reporting, start,
@@ -2158,7 +2157,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public static List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
+		long groupId, int[] months, int year, int reporting, int start,
 		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		return getPersistence()
@@ -2175,7 +2174,7 @@ public class OpencpsDossierStatisticUtil {
 	* @param reporting the reporting
 	*/
 	public static void removeByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		getPersistence().removeByGID_MS_Y_RP(groupId, month, year, reporting);
 	}
 
@@ -2189,7 +2188,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the number of matching opencps dossier statistics
 	*/
 	public static int countByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		return getPersistence()
 				   .countByGID_MS_Y_RP(groupId, month, year, reporting);
 	}
@@ -2204,7 +2203,7 @@ public class OpencpsDossierStatisticUtil {
 	* @return the number of matching opencps dossier statistics
 	*/
 	public static int countByGID_MS_Y_RP(long groupId, int[] months, int year,
-		boolean reporting) {
+		int reporting) {
 		return getPersistence()
 				   .countByGID_MS_Y_RP(groupId, months, year, reporting);
 	}

@@ -98,8 +98,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int pausingCount, int ontimePercentage, int overtimeInside,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int fromViaPostalCount)
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic createOnlyStatistic(long companyId,
@@ -112,9 +112,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int pausingCount, int ontimePercentage, int overtimeInside,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int viaPostalCount,
-		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int viaPostalCount, int saturdayCount,
+		int dossierOnline3Count, int dossierOnline4Count,
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		int fromViaPostalCount) throws PortalException, SystemException;
 
@@ -138,25 +138,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount) throws PortalException, SystemException;
-
-	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
-		long groupId, long userId, String userName, int month, int year,
-		String system, int totalCount, int deniedCount, int cancelledCount,
-		int processCount, int remainingCount, int receivedCount,
-		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
-		int overtimeCount, int doneCount, int releasingCount,
-		int unresolvedCount, int processingCount, int undueCount,
-		int overdueCount, int pausingCount, int ontimePercentage,
-		int overtimeInside, int overtimeOutside, int interoperatingCount,
-		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
-		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount, int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
@@ -169,8 +152,24 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount) throws PortalException, SystemException;
+
+	public OpencpsDossierStatistic createOrUpdateStatistic(long companyId,
+		long groupId, long userId, String userName, int month, int year,
+		String system, int totalCount, int deniedCount, int cancelledCount,
+		int processCount, int remainingCount, int receivedCount,
+		int onlineCount, int releaseCount, int betimesCount, int ontimeCount,
+		int overtimeCount, int doneCount, int releasingCount,
+		int unresolvedCount, int processingCount, int undueCount,
+		int overdueCount, int pausingCount, int ontimePercentage,
+		int overtimeInside, int overtimeOutside, int interoperatingCount,
+		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, String groupGovAgencyCode,
-		boolean reporting, int onegateCount, int outsideCount, int insideCount,
+		int reporting, int onegateCount, int outsideCount, int insideCount,
 		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
 		int dossierOnline4Count, int receiveDossierSatCount,
 		int releaseDossierSatCount, int fromViaPostalCount)
@@ -310,11 +309,11 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting);
+		int reporting);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
-		long groupId, int[] month, int year, boolean reporting);
+		long groupId, int[] month, int year, int reporting);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYear(
@@ -322,7 +321,7 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(
-		long groupId, int month, int year, boolean reporting);
+		long groupId, int month, int year, int reporting);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByYear(
@@ -452,8 +451,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int pausingCount, int ontimePercentage, int overtimeInside,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int fromViaPostalCount)
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateOnlyStatistic(
@@ -467,9 +466,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int pausingCount, int ontimePercentage, int overtimeInside,
 		int overtimeOutside, int interoperatingCount, int waitingCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int viaPostalCount,
-		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int viaPostalCount, int saturdayCount,
+		int dossierOnline3Count, int dossierOnline4Count,
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		int fromViaPostalCount) throws PortalException, SystemException;
 
@@ -496,8 +495,8 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int dossierOnline3Count, int dossierOnline4Count,
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int fromViaPostalCount)
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int fromViaPostalCount)
 		throws PortalException, SystemException;
 
 	public OpencpsDossierStatistic updateStatistic(long dossierStatisticId,
@@ -510,9 +509,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount) throws PortalException, SystemException;
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
+		throws PortalException, SystemException;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}

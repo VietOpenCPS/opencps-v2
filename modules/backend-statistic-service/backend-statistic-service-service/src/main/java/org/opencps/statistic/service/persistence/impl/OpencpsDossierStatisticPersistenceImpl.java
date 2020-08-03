@@ -2101,7 +2101,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			new String[] {
 				Long.class.getName(), String.class.getName(),
 				Integer.class.getName(), Integer.class.getName(),
-				String.class.getName(), Boolean.class.getName()
+				String.class.getName(), Integer.class.getName()
 			},
 			OpencpsDossierStatisticModelImpl.GROUPID_COLUMN_BITMASK |
 			OpencpsDossierStatisticModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
@@ -2115,7 +2115,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			new String[] {
 				Long.class.getName(), String.class.getName(),
 				Integer.class.getName(), Integer.class.getName(),
-				String.class.getName(), Boolean.class.getName()
+				String.class.getName(), Integer.class.getName()
 			});
 
 	/**
@@ -2133,7 +2133,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic findByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) throws NoSuchOpencpsDossierStatisticException {
+		int reporting) throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = fetchByM_Y_DM_G(groupId,
 				govAgencyCode, month, year, domainCode, reporting);
 
@@ -2186,7 +2186,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) {
+		int reporting) {
 		return fetchByM_Y_DM_G(groupId, govAgencyCode, month, year, domainCode,
 			reporting, true);
 	}
@@ -2206,7 +2206,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting, boolean retrieveFromCache) {
+		int reporting, boolean retrieveFromCache) {
 		Object[] finderArgs = new Object[] {
 				groupId, govAgencyCode, month, year, domainCode, reporting
 			};
@@ -2228,7 +2228,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					(year != opencpsDossierStatistic.getYear()) ||
 					!Objects.equals(domainCode,
 						opencpsDossierStatistic.getDomainCode()) ||
-					(reporting != opencpsDossierStatistic.isReporting())) {
+					(reporting != opencpsDossierStatistic.getReporting())) {
 				result = null;
 			}
 		}
@@ -2313,7 +2313,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 
 						if (_log.isWarnEnabled()) {
 							_log.warn(
-								"OpencpsDossierStatisticPersistenceImpl.fetchByM_Y_DM_G(long, String, int, int, String, boolean, boolean) with parameters (" +
+								"OpencpsDossierStatisticPersistenceImpl.fetchByM_Y_DM_G(long, String, int, int, String, int, boolean) with parameters (" +
 								StringUtil.merge(finderArgs) +
 								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
 						}
@@ -2359,7 +2359,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic removeByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) throws NoSuchOpencpsDossierStatisticException {
+		int reporting) throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = findByM_Y_DM_G(groupId,
 				govAgencyCode, month, year, domainCode, reporting);
 
@@ -2379,7 +2379,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public int countByM_Y_DM_G(long groupId, String govAgencyCode, int month,
-		int year, String domainCode, boolean reporting) {
+		int year, String domainCode, int reporting) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_M_Y_DM_G;
 
 		Object[] finderArgs = new Object[] {
@@ -5481,7 +5481,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGID_M_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
@@ -5493,7 +5493,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGID_M_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName()
+				Integer.class.getName(), Integer.class.getName()
 			},
 			OpencpsDossierStatisticModelImpl.GROUPID_COLUMN_BITMASK |
 			OpencpsDossierStatisticModelImpl.MONTH_COLUMN_BITMASK |
@@ -5504,7 +5504,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGID_M_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName()
+				Integer.class.getName(), Integer.class.getName()
 			});
 
 	/**
@@ -5518,7 +5518,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting) {
+		int month, int year, int reporting) {
 		return findByGID_M_Y_RP(groupId, month, year, reporting,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -5540,7 +5540,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end) {
+		int month, int year, int reporting, int start, int end) {
 		return findByGID_M_Y_RP(groupId, month, year, reporting, start, end,
 			null);
 	}
@@ -5563,7 +5563,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return findByGID_M_Y_RP(groupId, month, year, reporting, start, end,
 			orderByComparator, true);
@@ -5588,7 +5588,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_M_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		boolean pagination = true;
@@ -5621,7 +5621,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					if ((groupId != opencpsDossierStatistic.getGroupId()) ||
 							(month != opencpsDossierStatistic.getMonth()) ||
 							(year != opencpsDossierStatistic.getYear()) ||
-							(reporting != opencpsDossierStatistic.isReporting())) {
+							(reporting != opencpsDossierStatistic.getReporting())) {
 						list = null;
 
 						break;
@@ -5722,7 +5722,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic findByGID_M_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_M_Y_RP_First(groupId,
@@ -5765,7 +5765,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic fetchByGID_M_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		List<OpencpsDossierStatistic> list = findByGID_M_Y_RP(groupId, month,
 				year, reporting, 0, 1, orderByComparator);
@@ -5790,7 +5790,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic findByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_M_Y_RP_Last(groupId,
@@ -5833,7 +5833,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic fetchByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		int count = countByGID_M_Y_RP(groupId, month, year, reporting);
 
@@ -5866,7 +5866,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic[] findByGID_M_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
@@ -5900,7 +5900,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 
 	protected OpencpsDossierStatistic getByGID_M_Y_RP_PrevAndNext(
 		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean previous) {
 		StringBundler query = null;
@@ -6028,7 +6028,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public void removeByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		for (OpencpsDossierStatistic opencpsDossierStatistic : findByGID_M_Y_RP(
 				groupId, month, year, reporting, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -6047,7 +6047,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public int countByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_M_Y_RP;
 
 		Object[] finderArgs = new Object[] { groupId, month, year, reporting };
@@ -6114,7 +6114,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGID_MS_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
@@ -6126,7 +6126,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGID_MS_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName()
+				Integer.class.getName(), Integer.class.getName()
 			},
 			OpencpsDossierStatisticModelImpl.GROUPID_COLUMN_BITMASK |
 			OpencpsDossierStatisticModelImpl.MONTH_COLUMN_BITMASK |
@@ -6137,7 +6137,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGID_MS_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName()
+				Integer.class.getName(), Integer.class.getName()
 			});
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_MS_Y_RP =
 		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
@@ -6145,7 +6145,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGID_MS_Y_RP",
 			new String[] {
 				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Boolean.class.getName()
+				Integer.class.getName(), Integer.class.getName()
 			});
 
 	/**
@@ -6159,7 +6159,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int month, int year, boolean reporting) {
+		int month, int year, int reporting) {
 		return findByGID_MS_Y_RP(groupId, month, year, reporting,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -6181,7 +6181,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end) {
+		int month, int year, int reporting, int start, int end) {
 		return findByGID_MS_Y_RP(groupId, month, year, reporting, start, end,
 			null);
 	}
@@ -6204,7 +6204,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return findByGID_MS_Y_RP(groupId, month, year, reporting, start, end,
 			orderByComparator, true);
@@ -6229,7 +6229,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int month, int year, boolean reporting, int start, int end,
+		int month, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		boolean pagination = true;
@@ -6262,7 +6262,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					if ((groupId != opencpsDossierStatistic.getGroupId()) ||
 							(month != opencpsDossierStatistic.getMonth()) ||
 							(year != opencpsDossierStatistic.getYear()) ||
-							(reporting != opencpsDossierStatistic.isReporting())) {
+							(reporting != opencpsDossierStatistic.getReporting())) {
 						list = null;
 
 						break;
@@ -6363,7 +6363,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic findByGID_MS_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_MS_Y_RP_First(groupId,
@@ -6406,7 +6406,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic fetchByGID_MS_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		List<OpencpsDossierStatistic> list = findByGID_MS_Y_RP(groupId, month,
 				year, reporting, 0, 1, orderByComparator);
@@ -6431,7 +6431,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic findByGID_MS_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_MS_Y_RP_Last(groupId,
@@ -6474,7 +6474,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public OpencpsDossierStatistic fetchByGID_MS_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		int count = countByGID_MS_Y_RP(groupId, month, year, reporting);
 
@@ -6507,7 +6507,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	@Override
 	public OpencpsDossierStatistic[] findByGID_MS_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException {
 		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
@@ -6541,7 +6541,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 
 	protected OpencpsDossierStatistic getByGID_MS_Y_RP_PrevAndNext(
 		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
-		long groupId, int month, int year, boolean reporting,
+		long groupId, int month, int year, int reporting,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean previous) {
 		StringBundler query = null;
@@ -6674,7 +6674,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int[] months, int year, boolean reporting) {
+		int[] months, int year, int reporting) {
 		return findByGID_MS_Y_RP(groupId, months, year, reporting,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -6696,7 +6696,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int[] months, int year, boolean reporting, int start, int end) {
+		int[] months, int year, int reporting, int start, int end) {
 		return findByGID_MS_Y_RP(groupId, months, year, reporting, start, end,
 			null);
 	}
@@ -6719,7 +6719,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int[] months, int year, boolean reporting, int start, int end,
+		int[] months, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
 		return findByGID_MS_Y_RP(groupId, months, year, reporting, start, end,
 			orderByComparator, true);
@@ -6744,7 +6744,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public List<OpencpsDossierStatistic> findByGID_MS_Y_RP(long groupId,
-		int[] months, int year, boolean reporting, int start, int end,
+		int[] months, int year, int reporting, int start, int end,
 		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache) {
 		if (months == null) {
@@ -6791,7 +6791,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 							!ArrayUtil.contains(months,
 								opencpsDossierStatistic.getMonth()) ||
 							(year != opencpsDossierStatistic.getYear()) ||
-							(reporting != opencpsDossierStatistic.isReporting())) {
+							(reporting != opencpsDossierStatistic.getReporting())) {
 						list = null;
 
 						break;
@@ -6896,7 +6896,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public void removeByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		for (OpencpsDossierStatistic opencpsDossierStatistic : findByGID_MS_Y_RP(
 				groupId, month, year, reporting, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -6915,7 +6915,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public int countByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting) {
+		int reporting) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_GID_MS_Y_RP;
 
 		Object[] finderArgs = new Object[] { groupId, month, year, reporting };
@@ -6982,7 +6982,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public int countByGID_MS_Y_RP(long groupId, int[] months, int year,
-		boolean reporting) {
+		int reporting) {
 		if (months == null) {
 			months = new int[0];
 		}
@@ -8789,7 +8789,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 				opencpsDossierStatistic.getMonth(),
 				opencpsDossierStatistic.getYear(),
 				opencpsDossierStatistic.getDomainCode(),
-				opencpsDossierStatistic.isReporting()
+				opencpsDossierStatistic.getReporting()
 			}, opencpsDossierStatistic);
 
 		finderCache.putResult(FINDER_PATH_FETCH_BY_G_M_Y_G_D,
@@ -8913,7 +8913,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 				opencpsDossierStatisticModelImpl.getMonth(),
 				opencpsDossierStatisticModelImpl.getYear(),
 				opencpsDossierStatisticModelImpl.getDomainCode(),
-				opencpsDossierStatisticModelImpl.isReporting()
+				opencpsDossierStatisticModelImpl.getReporting()
 			};
 
 		finderCache.putResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args,
@@ -8992,7 +8992,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					opencpsDossierStatisticModelImpl.getMonth(),
 					opencpsDossierStatisticModelImpl.getYear(),
 					opencpsDossierStatisticModelImpl.getDomainCode(),
-					opencpsDossierStatisticModelImpl.isReporting()
+					opencpsDossierStatisticModelImpl.getReporting()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_DM_G, args);
@@ -9346,7 +9346,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					opencpsDossierStatisticModelImpl.getGroupId(),
 					opencpsDossierStatisticModelImpl.getMonth(),
 					opencpsDossierStatisticModelImpl.getYear(),
-					opencpsDossierStatisticModelImpl.isReporting()
+					opencpsDossierStatisticModelImpl.getReporting()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_M_Y_RP, args);
@@ -9357,7 +9357,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 					opencpsDossierStatisticModelImpl.getGroupId(),
 					opencpsDossierStatisticModelImpl.getMonth(),
 					opencpsDossierStatisticModelImpl.getYear(),
-					opencpsDossierStatisticModelImpl.isReporting()
+					opencpsDossierStatisticModelImpl.getReporting()
 				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_MS_Y_RP, args);
@@ -9537,7 +9537,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 						opencpsDossierStatisticModelImpl.getGroupId(),
 						opencpsDossierStatisticModelImpl.getMonth(),
 						opencpsDossierStatisticModelImpl.getYear(),
-						opencpsDossierStatisticModelImpl.isReporting()
+						opencpsDossierStatisticModelImpl.getReporting()
 					};
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_M_Y_RP, args);
@@ -9562,7 +9562,7 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 						opencpsDossierStatisticModelImpl.getGroupId(),
 						opencpsDossierStatisticModelImpl.getMonth(),
 						opencpsDossierStatisticModelImpl.getYear(),
-						opencpsDossierStatisticModelImpl.isReporting()
+						opencpsDossierStatisticModelImpl.getReporting()
 					};
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_MS_Y_RP, args);

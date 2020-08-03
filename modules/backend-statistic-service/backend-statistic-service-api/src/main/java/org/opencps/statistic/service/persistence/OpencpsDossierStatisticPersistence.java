@@ -544,7 +544,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic findByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) throws NoSuchOpencpsDossierStatisticException;
+		int reporting) throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
@@ -559,7 +559,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -575,7 +575,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic fetchByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting, boolean retrieveFromCache);
+		int reporting, boolean retrieveFromCache);
 
 	/**
 	* Removes the opencps dossier statistic where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63; from the database.
@@ -590,7 +590,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic removeByM_Y_DM_G(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
-		boolean reporting) throws NoSuchOpencpsDossierStatisticException;
+		int reporting) throws NoSuchOpencpsDossierStatisticException;
 
 	/**
 	* Returns the number of opencps dossier statistics where groupId = &#63; and govAgencyCode = &#63; and month = &#63; and year = &#63; and domainCode = &#63; and reporting = &#63;.
@@ -604,7 +604,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByM_Y_DM_G(long groupId, String govAgencyCode, int month,
-		int year, String domainCode, boolean reporting);
+		int year, String domainCode, int reporting);
 
 	/**
 	* Returns the opencps dossier statistic where groupId = &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; or throws a {@link NoSuchOpencpsDossierStatisticException} if it could not be found.
@@ -1330,7 +1330,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_M_Y_RP(
-		long groupId, int month, int year, boolean reporting);
+		long groupId, int month, int year, int reporting);
 
 	/**
 	* Returns a range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1348,7 +1348,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_M_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start, int end);
+		long groupId, int month, int year, int reporting, int start, int end);
 
 	/**
 	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1367,8 +1367,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_M_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end,
+		long groupId, int month, int year, int reporting, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1389,8 +1388,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_M_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end,
+		long groupId, int month, int year, int reporting, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -1406,7 +1404,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByGID_M_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1421,7 +1419,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByGID_M_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1436,7 +1434,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1451,7 +1449,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByGID_M_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1468,7 +1466,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic[] findByGID_M_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1481,7 +1479,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param reporting the reporting
 	*/
 	public void removeByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns the number of opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1493,7 +1491,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByGID_M_Y_RP(long groupId, int month, int year,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1505,7 +1503,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting);
+		long groupId, int month, int year, int reporting);
 
 	/**
 	* Returns a range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1523,7 +1521,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start, int end);
+		long groupId, int month, int year, int reporting, int start, int end);
 
 	/**
 	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1542,8 +1540,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end,
+		long groupId, int month, int year, int reporting, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1564,8 +1561,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int month, int year, boolean reporting, int start,
-		int end,
+		long groupId, int month, int year, int reporting, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache);
 
@@ -1581,7 +1577,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByGID_MS_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1596,7 +1592,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByGID_MS_Y_RP_First(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1611,7 +1607,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic findByGID_MS_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1626,7 +1622,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
 	*/
 	public OpencpsDossierStatistic fetchByGID_MS_Y_RP_Last(long groupId,
-		int month, int year, boolean reporting,
+		int month, int year, int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
 	/**
@@ -1643,7 +1639,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	*/
 	public OpencpsDossierStatistic[] findByGID_MS_Y_RP_PrevAndNext(
 		long dossierStatisticId, long groupId, int month, int year,
-		boolean reporting,
+		int reporting,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator)
 		throws NoSuchOpencpsDossierStatisticException;
 
@@ -1661,7 +1657,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting);
+		long groupId, int[] months, int year, int reporting);
 
 	/**
 	* Returns a range of all the opencps dossier statistics where groupId = &#63; and month = any &#63; and year = &#63; and reporting = &#63;.
@@ -1679,8 +1675,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
-		int end);
+		long groupId, int[] months, int year, int reporting, int start, int end);
 
 	/**
 	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = any &#63; and year = &#63; and reporting = &#63;.
@@ -1699,7 +1694,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
+		long groupId, int[] months, int year, int reporting, int start,
 		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator);
 
@@ -1721,7 +1716,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the ordered range of matching opencps dossier statistics
 	*/
 	public java.util.List<OpencpsDossierStatistic> findByGID_MS_Y_RP(
-		long groupId, int[] months, int year, boolean reporting, int start,
+		long groupId, int[] months, int year, int reporting, int start,
 		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<OpencpsDossierStatistic> orderByComparator,
 		boolean retrieveFromCache);
@@ -1735,7 +1730,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @param reporting the reporting
 	*/
 	public void removeByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns the number of opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting = &#63;.
@@ -1747,7 +1742,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByGID_MS_Y_RP(long groupId, int month, int year,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns the number of opencps dossier statistics where groupId = &#63; and month = any &#63; and year = &#63; and reporting = &#63;.
@@ -1759,7 +1754,7 @@ public interface OpencpsDossierStatisticPersistence extends BasePersistence<Open
 	* @return the number of matching opencps dossier statistics
 	*/
 	public int countByGID_MS_Y_RP(long groupId, int[] months, int year,
-		boolean reporting);
+		int reporting);
 
 	/**
 	* Returns all the opencps dossier statistics where groupId = &#63;.

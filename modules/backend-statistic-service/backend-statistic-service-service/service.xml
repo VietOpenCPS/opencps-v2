@@ -44,7 +44,7 @@
 		<column name="govAgencyName" type="String" />
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
-		<column name="reporting" type="boolean" />
+		<column name="reporting" type="int" />
 		<column name="overtimeInside" type="int"/>
 		<column name="overtimeOutside" type="int"/>
 		<column name="interoperatingCount" type="int"/>

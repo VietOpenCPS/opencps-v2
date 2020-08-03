@@ -362,7 +362,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 		domainCode = objectInput.readUTF();
 		domainName = objectInput.readUTF();
 
-		reporting = objectInput.readBoolean();
+		reporting = objectInput.readInt();
 
 		overtimeInside = objectInput.readInt();
 
@@ -501,7 +501,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 			objectOutput.writeUTF(domainName);
 		}
 
-		objectOutput.writeBoolean(reporting);
+		objectOutput.writeInt(reporting);
 
 		objectOutput.writeInt(overtimeInside);
 
@@ -574,7 +574,7 @@ public class OpencpsDossierStatisticCacheModel implements CacheModel<OpencpsDoss
 	public String govAgencyName;
 	public String domainCode;
 	public String domainName;
-	public boolean reporting;
+	public int reporting;
 	public int overtimeInside;
 	public int overtimeOutside;
 	public int interoperatingCount;

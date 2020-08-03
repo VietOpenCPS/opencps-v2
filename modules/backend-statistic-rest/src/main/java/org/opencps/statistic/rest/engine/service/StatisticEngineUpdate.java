@@ -119,7 +119,7 @@ public class StatisticEngineUpdate {
 			data.setGovAgencyName(tempData.getGovAgencyName());
 			data.setDomainCode(tempData.getDomainCode());
 			data.setDomainName(tempData.getDomainName());
-			data.setReporting(tempData.isReporting());
+			data.setReporting(tempData.getReporting());
 			data.setCompanyId(tempData.getCompanyId());
 			data.setGroupId(tempData.getGroupId());
 			data.setViaPostalCount(tempData.getViaPostalCount());

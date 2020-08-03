@@ -103,7 +103,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			{ "govAgencyName", Types.VARCHAR },
 			{ "domainCode", Types.VARCHAR },
 			{ "domainName", Types.VARCHAR },
-			{ "reporting", Types.BOOLEAN },
+			{ "reporting", Types.INTEGER },
 			{ "overtimeInside", Types.INTEGER },
 			{ "overtimeOutside", Types.INTEGER },
 			{ "interoperatingCount", Types.INTEGER },
@@ -158,7 +158,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		TABLE_COLUMNS_MAP.put("govAgencyName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("domainCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("domainName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("reporting", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("reporting", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("overtimeInside", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("overtimeOutside", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("interoperatingCount", Types.INTEGER);
@@ -176,7 +176,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		TABLE_COLUMNS_MAP.put("fromViaPostalCount", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting BOOLEAN,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER,fromViaPostalCount INTEGER)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_statistic (uuid_ VARCHAR(75) null,dossierStatisticId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,month INTEGER,year INTEGER,totalCount INTEGER,deniedCount INTEGER,cancelledCount INTEGER,processCount INTEGER,remainingCount INTEGER,receivedCount INTEGER,onlineCount INTEGER,onegateCount INTEGER,releaseCount INTEGER,betimesCount INTEGER,ontimeCount INTEGER,overtimeCount INTEGER,doneCount INTEGER,releasingCount INTEGER,unresolvedCount INTEGER,processingCount INTEGER,undueCount INTEGER,overdueCount INTEGER,pausingCount INTEGER,ontimePercentage INTEGER,govAgencyCode VARCHAR(255) null,groupAgencyCode TEXT null,govAgencyName TEXT null,domainCode VARCHAR(255) null,domainName TEXT null,reporting INTEGER,overtimeInside INTEGER,overtimeOutside INTEGER,interoperatingCount INTEGER,waitingCount INTEGER,outsideCount INTEGER,insideCount INTEGER,system VARCHAR(75) null,viaPostalCount INTEGER,notViaPostalCount INTEGER,saturdayCount INTEGER,dossierOnline3Count INTEGER,dossierOnline4Count INTEGER,receiveDossierSatCount INTEGER,releaseDossierSatCount INTEGER,fromViaPostalCount INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_statistic";
 	public static final String ORDER_BY_JPQL = " ORDER BY opencpsDossierStatistic.dossierStatisticId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_statistic.dossierStatisticId ASC";
@@ -278,7 +278,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("domainCode", getDomainCode());
 		attributes.put("domainName", getDomainName());
-		attributes.put("reporting", isReporting());
+		attributes.put("reporting", getReporting());
 		attributes.put("overtimeInside", getOvertimeInside());
 		attributes.put("overtimeOutside", getOvertimeOutside());
 		attributes.put("interoperatingCount", getInteroperatingCount());
@@ -513,7 +513,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			setDomainName(domainName);
 		}
 
-		Boolean reporting = (Boolean)attributes.get("reporting");
+		Integer reporting = (Integer)attributes.get("reporting");
 
 		if (reporting != null) {
 			setReporting(reporting);
@@ -1112,17 +1112,12 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	}
 
 	@Override
-	public boolean getReporting() {
+	public int getReporting() {
 		return _reporting;
 	}
 
 	@Override
-	public boolean isReporting() {
-		return _reporting;
-	}
-
-	@Override
-	public void setReporting(boolean reporting) {
+	public void setReporting(int reporting) {
 		_columnBitmask |= REPORTING_COLUMN_BITMASK;
 
 		if (!_setOriginalReporting) {
@@ -1134,7 +1129,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		_reporting = reporting;
 	}
 
-	public boolean getOriginalReporting() {
+	public int getOriginalReporting() {
 		return _originalReporting;
 	}
 
@@ -1375,7 +1370,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		opencpsDossierStatisticImpl.setGovAgencyName(getGovAgencyName());
 		opencpsDossierStatisticImpl.setDomainCode(getDomainCode());
 		opencpsDossierStatisticImpl.setDomainName(getDomainName());
-		opencpsDossierStatisticImpl.setReporting(isReporting());
+		opencpsDossierStatisticImpl.setReporting(getReporting());
 		opencpsDossierStatisticImpl.setOvertimeInside(getOvertimeInside());
 		opencpsDossierStatisticImpl.setOvertimeOutside(getOvertimeOutside());
 		opencpsDossierStatisticImpl.setInteroperatingCount(getInteroperatingCount());
@@ -1620,7 +1615,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 			opencpsDossierStatisticCacheModel.domainName = null;
 		}
 
-		opencpsDossierStatisticCacheModel.reporting = isReporting();
+		opencpsDossierStatisticCacheModel.reporting = getReporting();
 
 		opencpsDossierStatisticCacheModel.overtimeInside = getOvertimeInside();
 
@@ -1736,7 +1731,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		sb.append(", domainName=");
 		sb.append(getDomainName());
 		sb.append(", reporting=");
-		sb.append(isReporting());
+		sb.append(getReporting());
 		sb.append(", overtimeInside=");
 		sb.append(getOvertimeInside());
 		sb.append(", overtimeOutside=");
@@ -1922,7 +1917,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>reporting</column-name><column-value><![CDATA[");
-		sb.append(isReporting());
+		sb.append(getReporting());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>overtimeInside</column-name><column-value><![CDATA[");
@@ -2043,8 +2038,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	private String _domainCode;
 	private String _originalDomainCode;
 	private String _domainName;
-	private boolean _reporting;
-	private boolean _originalReporting;
+	private int _reporting;
+	private int _originalReporting;
 	private boolean _setOriginalReporting;
 	private int _overtimeInside;
 	private int _overtimeOutside;

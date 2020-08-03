@@ -23,7 +23,7 @@ public class StatisticEngineFetch {
 	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting, List<String> lstGroupGovs) {
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting, List<String> lstGroupGovs) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -681,7 +681,7 @@ public class StatisticEngineFetch {
 	}
 
 	public void fetchSumStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 

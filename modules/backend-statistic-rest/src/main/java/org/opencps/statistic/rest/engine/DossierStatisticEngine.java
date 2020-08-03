@@ -339,7 +339,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					if (month < monthCurrent) {
 //						_log.debug("STATISTICS CALCULATE ONE MONTH SITE: " + month + ", " + site.getGroupId() + ", " + site.getName(Locale.getDefault()) + " " + (System.currentTimeMillis() - startTime) + " ms");;
 						List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, true);
+								.getDossierStatisticByMonthYearAndReport(site.getGroupId(), month, yearCurrent, 1);
 						if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 							//for (OpencpsDossierStatistic dossierStatistic : dossierStatisticList) {
 								//boolean reporting = dossierStatistic.getReporting();
@@ -386,7 +386,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
-							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, true);
+							.getDossierStatisticByMonthYearAndReport(site.getGroupId(), lastMonth, lastYear, 1);
 					if (dossierStatisticList != null && dossierStatisticList.size() > 0) {
 						flagLastYear = false;
 					}
@@ -675,7 +675,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 						Date firstDay = StatisticUtils.getFirstDay(month, year);
 						Date lastDay = StatisticUtils.getLastDay(month, year);
-						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
+						engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, 0, lstGroupGovs);
 //						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 //						
 //						statisticEngineUpdate.updateStatisticData(statisticData);	
@@ -902,7 +902,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 
 					Date firstDay = StatisticUtils.getFirstDay(month, year);
 					Date lastDay = StatisticUtils.getLastDay(month, year);
-					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs);
+					engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, 0, lstGroupGovs);
 	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 	//					
 	//					statisticEngineUpdate.updateStatisticData(statisticData);	
