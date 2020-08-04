@@ -8011,7 +8011,6 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONArray options = JSONFactoryUtil.createJSONArray();
 		JSONObject elmentOption = JSONFactoryUtil.createJSONObject();
 		long fileEntryId= 0;
-//		String fileTemplateNo = "";
 		DossierPart dossierPart = null;
 		//CreateDossierFile(ProcessAction) : id , id
 		//DossierPart : Deliverable !=null ==> tìm được TP hồ sơ
@@ -8074,6 +8073,12 @@ public class DossierManagementImpl implements DossierManagement {
 
 						DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, dossierPart.getDeliverableType());
 						for (DossierFile item : listDossierHS) {
+							//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
+						    if(item.getFileTemplateNo().equals(DossierTerm.KQGP)) {
+                                if (item.getEForm() == false) {
+                                    fileEntryId = item.getFileEntryId();
+                                }
+                            }
 							//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
 							if (Validator.isNotNull(item.getDeliverableCode()) && item.getEForm() == true) {
 
@@ -8082,7 +8087,6 @@ public class DossierManagementImpl implements DossierManagement {
 
 									_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
 									String deliverableTypes = deliverableType.getTypeCode();
-//									String deliverableCode = item.getDeliverableCode();
 									String deliverableCode = dossier.getDossierNo();
 									String deliverableName = deliverableType.getTypeName();
 									String govAgencyCode = dossier.getGovAgencyCode();
@@ -8129,13 +8133,6 @@ public class DossierManagementImpl implements DossierManagement {
 													}
 												}
 											}
-//											for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-//												if (entry.getValue().getClass().getName().contains(org.opencps.dossiermgt.action.util.ConstantUtils.KEY_JSON_OBJECT)) {
-//													jsonMapping.put(entry.getKey(), (JSONObject) entry.getValue());
-//												} else {
-//													jsonMapping.put(entry.getKey(), entry.getValue() + StringPool.BLANK);
-//												}
-//											}
 											formData = jsonMapping.toJSONString();
 										}
 									} catch (Exception e) {
@@ -8147,7 +8144,7 @@ public class DossierManagementImpl implements DossierManagement {
 											deliverableCode, govAgencyCode, govAgencyName,
 											applicationIdNo, applicationName, "",
 											"", "", "", deliverableState,
-											dosserId, item.getFileEntryId(), formScriptFileId, formReportFileId,
+											dosserId, fileEntryId !=0 ? fileEntryId : item.getFileEntryId() , formScriptFileId, formReportFileId,
 											formData, "",
 											serviceContext);
 									_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
