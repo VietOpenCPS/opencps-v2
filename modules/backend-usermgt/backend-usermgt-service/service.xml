@@ -20,7 +20,7 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
-		<!-- Other fields -->df
+		<!-- Other fields -->
 
 		<column name="name" type="String" />
 		<column name="enName" type="String" />
