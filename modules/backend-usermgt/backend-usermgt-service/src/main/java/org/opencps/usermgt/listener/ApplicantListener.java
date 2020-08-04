@@ -108,6 +108,7 @@ public class ApplicantListener extends BaseModelListener<Applicant>{
 					queue.setModifiedDate(now);
 					queue.setGroupId(model.getGroupId());
 					queue.setCompanyId(model.getCompanyId());
+					queue.setPriority(ConfigConstants.PRIORITY_REGISTER);
 					
 					queue.setNotificationType(NotificationType.APPLICANT_01);
 					queue.setClassName(Applicant.class.getName());

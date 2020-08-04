@@ -51,6 +51,7 @@ public class NotificationQueueSoap implements Serializable {
 		soapModel.setToTelNo(model.getToTelNo());
 		soapModel.setPublicationDate(model.getPublicationDate());
 		soapModel.setExpireDate(model.getExpireDate());
+		soapModel.setPriority(model.getPriority());
 
 		return soapModel;
 	}
@@ -250,6 +251,14 @@ public class NotificationQueueSoap implements Serializable {
 		_expireDate = expireDate;
 	}
 
+	public int getPriority() {
+		return _priority;
+	}
+
+	public void setPriority(int priority) {
+		_priority = priority;
+	}
+
 	private long _notificationQueueId;
 	private long _groupId;
 	private long _companyId;
@@ -268,4 +277,5 @@ public class NotificationQueueSoap implements Serializable {
 	private String _toTelNo;
 	private Date _publicationDate;
 	private Date _expireDate;
+	private int _priority;
 }

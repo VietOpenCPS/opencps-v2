@@ -84,7 +84,8 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 			{ "userUrlPattern", Types.VARCHAR },
 			{ "guestUrlPattern", Types.VARCHAR },
 			{ "interval_", Types.VARCHAR },
-			{ "grouping", Types.BOOLEAN }
+			{ "grouping", Types.BOOLEAN },
+			{ "priority", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -109,9 +110,10 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		TABLE_COLUMNS_MAP.put("guestUrlPattern", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("interval_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("grouping", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("priority", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject TEXT null,emailBody TEXT null,textMessage TEXT null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notificationtemplate (notificationTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,emailSubject TEXT null,emailBody TEXT null,textMessage TEXT null,notifyMessage TEXT null,sendSMS BOOLEAN,sendEmail BOOLEAN,sendNotification BOOLEAN,expireDuration INTEGER,userUrlPattern VARCHAR(1024) null,guestUrlPattern VARCHAR(1024) null,interval_ VARCHAR(255) null,grouping BOOLEAN,priority INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notificationtemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY notificationtemplate.notificationType ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationtemplate.notificationType ASC";
@@ -192,6 +194,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		attributes.put("guestUrlPattern", getGuestUrlPattern());
 		attributes.put("interval", getInterval());
 		attributes.put("grouping", isGrouping());
+		attributes.put("priority", getPriority());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -320,6 +323,12 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 
 		if (grouping != null) {
 			setGrouping(grouping);
+		}
+
+		Integer priority = (Integer)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
 		}
 	}
 
@@ -664,6 +673,16 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		_grouping = grouping;
 	}
 
+	@Override
+	public int getPriority() {
+		return _priority;
+	}
+
+	@Override
+	public void setPriority(int priority) {
+		_priority = priority;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -715,6 +734,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		notificationtemplateImpl.setGuestUrlPattern(getGuestUrlPattern());
 		notificationtemplateImpl.setInterval(getInterval());
 		notificationtemplateImpl.setGrouping(isGrouping());
+		notificationtemplateImpl.setPriority(getPriority());
 
 		notificationtemplateImpl.resetOriginalValues();
 
@@ -907,12 +927,14 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 
 		notificationtemplateCacheModel.grouping = isGrouping();
 
+		notificationtemplateCacheModel.priority = getPriority();
+
 		return notificationtemplateCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{notificationTemplateId=");
 		sb.append(getNotificationTemplateId());
@@ -954,6 +976,8 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 		sb.append(getInterval());
 		sb.append(", grouping=");
 		sb.append(isGrouping());
+		sb.append(", priority=");
+		sb.append(getPriority());
 		sb.append("}");
 
 		return sb.toString();
@@ -961,7 +985,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(64);
+		StringBundler sb = new StringBundler(67);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.communication.model.Notificationtemplate");
@@ -1047,6 +1071,10 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 			"<column><column-name>grouping</column-name><column-value><![CDATA[");
 		sb.append(isGrouping());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>priority</column-name><column-value><![CDATA[");
+		sb.append(getPriority());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1085,6 +1113,7 @@ public class NotificationtemplateModelImpl extends BaseModelImpl<Notificationtem
 	private String _interval;
 	private String _originalInterval;
 	private boolean _grouping;
+	private int _priority;
 	private long _columnBitmask;
 	private Notificationtemplate _escapedModel;
 }

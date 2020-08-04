@@ -22,6 +22,10 @@ public class MBMessageEntry {
 
 	private static Log _log = LogFactoryUtil.getLog(MBMessageEntry.class);
 
+	public MBMessageEntry() {
+
+	}
+
 	public MBMessageEntry(ServiceContext serviceContext) {
 		this.setUserId(serviceContext.getUserId());
 		this.setGroupId(serviceContext.getScopeGroupId());

@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "VotingResultResponse")
+@XmlRootElement(name = "data")
 public class VotingResultResponse {
 	private int total;
 	private String agency;

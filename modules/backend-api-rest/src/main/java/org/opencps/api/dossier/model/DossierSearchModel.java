@@ -289,6 +289,7 @@ public class DossierSearchModel {
 	@QueryParam(value = "groupDossierIdHs")
 	protected String groupDossierIdHs;
 	@QueryParam(value = "groupServiceCode")
+	@DefaultValue("false")
 	protected boolean groupServiceCode;
 	@QueryParam(value = "searchGovAgencyCode")
 	protected String searchGovAgencyCode;
@@ -299,6 +300,27 @@ public class DossierSearchModel {
 	protected String postalCodeSend;
 	@QueryParam(value = "postalCodeReceived")
 	protected String postalCodeReceived;
+	@QueryParam(value = "searchCongVanTheoDonViNhan")
+	protected String searchCongVanTheoDonViNhan;
+	@DefaultValue("false")
+	@QueryParam(value = "notAgencysScope")
+	protected boolean notAgencysScope;
+
+	public boolean isNotAgencysScope() {
+		return notAgencysScope;
+	}
+
+	public void setNotAgencysScope(boolean notAgencysScope) {
+		this.notAgencysScope = notAgencysScope;
+	}
+
+	public String getSearchCongVanTheoDonViNhan() {
+		return searchCongVanTheoDonViNhan;
+	}
+
+	public void setSearchCongVanTheoDonViNhan(String searchCongVanTheoDonViNhan) {
+		this.searchCongVanTheoDonViNhan = searchCongVanTheoDonViNhan;
+	}
 
 	public String getPostalCodeSend() {
 		return postalCodeSend;

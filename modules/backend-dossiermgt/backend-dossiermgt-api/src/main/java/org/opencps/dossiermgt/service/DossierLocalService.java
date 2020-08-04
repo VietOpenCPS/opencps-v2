@@ -269,6 +269,9 @@ public interface DossierLocalService extends BaseLocalService,
 		ServiceContext context) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Dossier> fetchByD_OR_D(long[] dossierId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Dossier fetchByDO_NO(String dossierNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

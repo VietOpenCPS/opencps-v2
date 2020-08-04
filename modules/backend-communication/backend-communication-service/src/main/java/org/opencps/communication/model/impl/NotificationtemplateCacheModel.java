@@ -65,7 +65,7 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{notificationTemplateId=");
 		sb.append(notificationTemplateId);
@@ -107,6 +107,8 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 		sb.append(interval);
 		sb.append(", grouping=");
 		sb.append(grouping);
+		sb.append(", priority=");
+		sb.append(priority);
 		sb.append("}");
 
 		return sb.toString();
@@ -204,6 +206,7 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 		}
 
 		notificationtemplateImpl.setGrouping(grouping);
+		notificationtemplateImpl.setPriority(priority);
 
 		notificationtemplateImpl.resetOriginalValues();
 
@@ -240,6 +243,8 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 		interval = objectInput.readUTF();
 
 		grouping = objectInput.readBoolean();
+
+		priority = objectInput.readInt();
 	}
 
 	@Override
@@ -328,6 +333,8 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 		}
 
 		objectOutput.writeBoolean(grouping);
+
+		objectOutput.writeInt(priority);
 	}
 
 	public long notificationTemplateId;
@@ -350,4 +357,5 @@ public class NotificationtemplateCacheModel implements CacheModel<Notificationte
 	public String guestUrlPattern;
 	public String interval;
 	public boolean grouping;
+	public int priority;
 }

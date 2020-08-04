@@ -340,4 +340,6 @@ public class ConstantUtils {
 	
 	public static final String ADMINISTRATOR = "Administrator";
 	public static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
+	public static final String HTML_OPEN_SPAN = "<span class=\"text-bold\">";
+	public static final String HTML_CLOSE_SPAN = "</span>";
 }

@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.engine.service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +42,19 @@ public class StatisticUtils {
 			}
 		}
 		return null;
+	}
+
+	public static String changeFormatDate(String datetime) {
+		try {
+			DateFormat inputFormatter = new SimpleDateFormat("d/M/yyyy");
+			Date da;
+			da = inputFormatter.parse(datetime);
+			DateFormat outputFormatter = new SimpleDateFormat("yyyy-MM-dd");
+			String strDateTime = outputFormatter.format(da);
+			return strDateTime;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static Date getFirstDay(int month, int year) {
