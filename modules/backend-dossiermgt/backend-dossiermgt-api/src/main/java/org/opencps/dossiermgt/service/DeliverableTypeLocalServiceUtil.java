@@ -199,13 +199,14 @@ public class DeliverableTypeLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.DeliverableType fetchByG_DLT(
+		long groupId, String typeCode) {
+		return getService().fetchByG_DLT(groupId, typeCode);
+	}
+
 	public static org.opencps.dossiermgt.model.DeliverableType fetchDeliverableType(
 		long deliverableTypeId) {
 		return getService().fetchDeliverableType(deliverableTypeId);
-	}
-	public static org.opencps.dossiermgt.model.DeliverableType fetchByG_DLT(
-			long groupId, String typeCode) {
-		return getService().fetchByG_DLT(groupId,typeCode);
 	}
 
 	/**

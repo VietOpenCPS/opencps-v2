@@ -305,6 +305,16 @@ public class DossierSearchModel {
 	@DefaultValue("false")
 	@QueryParam(value = "notAgencysScope")
 	protected boolean notAgencysScope;
+	@QueryParam(value = "groupCongVan")
+	protected String groupCongVan;
+
+	public String getGroupCongVan() {
+		return groupCongVan;
+	}
+
+	public void setGroupCongVan(String groupCongVan) {
+		this.groupCongVan = groupCongVan;
+	}
 
 	public boolean isNotAgencysScope() {
 		return notAgencysScope;

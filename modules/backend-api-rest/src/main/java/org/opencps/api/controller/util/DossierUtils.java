@@ -1692,7 +1692,7 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
-	public static List<Long> mappingForListCongVan(List<Document> docs) {
+	public static List<Long> mappingForListCongVan(List<Document> docs, String groupCongVan) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		if(Validator.isNotNull(docs)) {
 			for (Document doc : docs) {
@@ -1731,15 +1731,27 @@ public class DossierUtils {
 			}
 		}
 		List<Long> lstId = new ArrayList<>();
-		if(ouputs !=null){
-			for(DossierDataModel item : ouputs) {
-				//GroupDossierId : id,id,id
-				if (Validator.isNotNull(item.getGroupDossierIds())) {
-					String groupDossierIds = String.valueOf(item.getGroupDossierIds());
-					String[] id = groupDossierIds.split(StringPool.COMMA);
-					for (String key : id) {
-						if(!key.contains(lstId.toString())){
-							lstId.add(Long.valueOf(key));
+		if(ouputs !=null) {
+			if(Validator.isNull(groupCongVan)) {
+				for (DossierDataModel item : ouputs) {
+					//GroupDossierId : id,id,id
+					if (Validator.isNotNull(item.getGroupDossierIds())) {
+						String groupDossierIds = String.valueOf(item.getGroupDossierIds());
+						String[] id = groupDossierIds.split(StringPool.COMMA);
+						for (String key : id) {
+							if (!key.contains(lstId.toString())) {
+								lstId.add(Long.valueOf(key));
+							}
+						}
+					}
+				}
+			}else{
+				for (DossierDataModel item : ouputs) {
+					//DossierId : id,id,id
+					if (Validator.isNotNull(item.getDossierId())) {
+						String dossierId = String.valueOf(item.getDossierId());
+						if (!dossierId.contains(lstId.toString())) {
+							lstId.add(Long.valueOf(item.getDossierId()));
 						}
 					}
 				}

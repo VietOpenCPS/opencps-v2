@@ -9,6 +9,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import java.util.LinkedHashMap;
+
 public interface DossierLogActions {
 
 	public JSONObject getDossierLogs(long groupId, String notificationType, Boolean owner, int start, int end, String sort, String order,
@@ -23,5 +25,8 @@ public interface DossierLogActions {
 
 	public JSONObject getDossiers(long groupId, long dossierId, Sort[] sorts, int start, int end,
 			ServiceContext serviceContext);
+
+	public JSONObject getRevisionLogByGroupId(long groupId, long companyId,Sort[] sorts, int start, int end, LinkedHashMap<String, Object> params,
+											  ServiceContext serviceContext);
 
 }

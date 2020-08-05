@@ -633,6 +633,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				//Don vi nhan
 				String donvinhan = query.getDonvinhan();
+				String groupCongVan = query.getGroupCongVan();
 				if (Validator.isNotNull(donvinhan)) {
 					String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
 					boolean firtScopeDVN = false;
@@ -726,14 +727,63 @@ public class DossierManagementImpl implements DossierManagement {
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
+				if(Validator.isNull(groupCongVan)){
+					results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
-				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+					results.getData().addAll(
+							DossierUtils.mappingForGetList(
+									(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
+									query.getAssigned(), query));
+				}else{
+					List<Dossier> lstSearchDossierByDocumentTary = new ArrayList<>();
+					List<Dossier> lstDossier = new ArrayList<>();
+					List<Dossier> lstAdd = new ArrayList<>();
+					List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA), groupCongVan);
+					String dossierIds ="";
+					String [] dossierId ;
+					if(lstId !=null && !lstId.isEmpty()){
+						for(Long id : lstId){
+							if(Validator.isNotNull(id)){
+								lstDossier = DossierLocalServiceUtil.findByG_GDID(groupId,String.valueOf(id));
+							}
+							lstAdd.addAll(lstDossier);
+						}
+					}
 
-				results.getData().addAll(
-						DossierUtils.mappingForGetList(
-								(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
-								query.getAssigned(), query));
-
+					if(Validator.isNotNull(groupCongVan)) {
+						if (lstAdd != null && !lstAdd.isEmpty()) {
+							for (Dossier item : lstAdd){
+								if(Validator.isNotNull(item.getMetaData())) {
+									String metaData = item.getMetaData();
+									JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+									Iterator<String> keys = jsonMetaData.keys();
+									while (keys.hasNext()) {
+										String key = keys.next();
+										String value = jsonMetaData.getString(key);
+										if (key.equals(DossierTerm.DON_VI_NHAN)) {
+											if (groupCongVan.equals(DossierTerm.SCOPE_)) {
+												if (Validator.isNotNull(employee.getScope())) {
+													String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+													if (value.equals(employeeArr[0])) {
+														lstSearchDossierByDocumentTary.add(item);
+														break;
+													}
+												}
+											} else {
+												if (groupCongVan.equals(value)) {
+													lstSearchDossierByDocumentTary.add(item);
+													break;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					results.setTotal(lstSearchDossierByDocumentTary.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierByDocumentTary));
+				}
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 		}
@@ -8350,7 +8400,7 @@ public class DossierManagementImpl implements DossierManagement {
 					user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA));
+			List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
 				long[] dossierIds = new long[lstId.size()];
 				if(lstId !=null && !lstId.isEmpty()){
 					int i = 0;
@@ -8359,7 +8409,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 				if(Validator.isNotNull(dossierIds)) {
-					if(dossierIds.length > 1) {
+					if(dossierIds.length > 0) {
 						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
 					}
 				}

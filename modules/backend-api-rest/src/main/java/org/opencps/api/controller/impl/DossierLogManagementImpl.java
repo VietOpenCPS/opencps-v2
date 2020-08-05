@@ -8,12 +8,15 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,6 +26,7 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.DossierLogManagement;
 import org.opencps.api.controller.util.DossierLogUtils;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierlog.model.DossierLogResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchModel;
@@ -32,6 +36,7 @@ import org.opencps.dossiermgt.action.impl.DossierLogActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -158,4 +163,45 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 		}
 	}
 
+	@Override
+	public Response getRevisionLogByGroupId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, DossierLogSearchModel query) {
+		DossierLogResultsModel results = new DossierLogResultsModel();
+		DossierLogActions action = new DossierLogActionsImpl();
+		LinkedHashMap<String, Object> params =
+				new LinkedHashMap<>();
+
+		try {
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+			Sort[] sorts = null;
+			if (Validator.isNull(query.getSort())) {
+				String dateSort = String.format(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[]{
+						SortFactoryUtil.create(
+								dateSort, Sort.LONG_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			} else {
+				String querySort = String.format(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.QUERY_STRING_SORT), query.getSort());
+				sorts = new Sort[]{
+						SortFactoryUtil.create(
+								querySort, Sort.STRING_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			}
+
+			JSONObject dossierLogJsonObject = action.getRevisionLogByGroupId(groupId, company.getCompanyId(), sorts,
+				 query.getStart(), query.getEnd(),params,serviceContext);
+
+			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
+
+			results.setTotal(dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
+			results.getData().addAll(DossierLogUtils.mappingToDossierLogResultsModel(documents));
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }
