@@ -110,7 +110,7 @@ public class NotificationQueuePersistenceImpl extends BasePersistenceImpl<Notifi
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG",
 			new String[] { Long.class.getName() },
 			NotificationQueueModelImpl.GROUPID_COLUMN_BITMASK |
-			NotificationQueueModelImpl.CREATEDATE_COLUMN_BITMASK);
+			NotificationQueueModelImpl.PRIORITY_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_G = new FinderPath(NotificationQueueModelImpl.ENTITY_CACHE_ENABLED,
 			NotificationQueueModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG",

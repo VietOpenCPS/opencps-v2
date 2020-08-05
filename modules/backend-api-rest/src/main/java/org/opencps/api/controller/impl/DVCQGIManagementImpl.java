@@ -322,4 +322,27 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 			return Response.status(500).entity("request body incorrect").build();
 		}
 	}
+
+	@Override
+	public Response doSyncServiceConfig(HttpServletRequest request, HttpServletResponse response, HttpHeaders header,
+			Company company, Locale locale, User user, ServiceContext serviceContext, String body) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString("groupId"));
+		
+		serviceContext.setScopeGroupId(groupId);
+		
+		serviceContext.setCompanyId(company.getCompanyId());
+		
+		DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+		
+		_log.debug("doSyncServiceConfig " + body);
+		
+		try {
+			JSONObject result = actionImpl.doSyncServiceConfig(user, groupId, body, serviceContext);
+			return Response.status(200).entity(result.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error(e);
+			return Response.status(500).entity("request body incorrect").build();
+		}
+	}
 }

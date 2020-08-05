@@ -493,8 +493,9 @@ public class DossierFileLocalServiceImpl
 			if (Validator.isNotNull(dossierPart.getFormReport())) {
 				object.setFormReport(dossierPart.getFormReport());
 			}
-		}
-		else {
+//		}else if(Validator.isNotNull(dossierPart.getFormReport())){
+//			object.setFormReport(dossierPart.getFormReport());
+		}else{
 			DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(
 				groupId, dossierPart.getDeliverableType());
 			if (dt != null && Validator.isNotNull(dt.getFormReport())) {
@@ -1077,6 +1078,8 @@ public class DossierFileLocalServiceImpl
 					groupId, dossierPart.getDeliverableType());
 				if (dt != null && Validator.isNotNull(dt.getFormReport())) {
 					jrxmlTemplate = dt.getFormReport();
+				}else{
+					jrxmlTemplate = dossierPart.getFormReport();
 				}
 			}
 			else {
@@ -1085,8 +1088,11 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
-
-		dossierFile.setFormData(formData);
+		if(Validator.isNotNull(dossierFile.getFormData())){
+			dossierFile.setFormData(dossierFile.getFormData());
+		}else{
+			dossierFile.setFormData(formData);
+		}
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
@@ -1905,6 +1911,11 @@ public class DossierFileLocalServiceImpl
 		return dossierFilePersistence.findByDID_FTNO_DPTS_NOT_NULL_FID(
 			dossierId, fileTemplateNo, dossierPartType, fileEntryId, removed,
 			start, end, orderByComparator);
+	}
+
+	@Override
+	public List<DossierFile> findByDID_GROUP(long groupId, long dossierId) {
+		return dossierFilePersistence.findByDID_GROUP(groupId,dossierId);
 	}
 
 	public static final String CLASS_NAME = DossierFile.class.getName();
