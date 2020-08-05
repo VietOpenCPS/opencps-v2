@@ -253,6 +253,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return _deliverableLocalService.fetchByGID_DID(groupId, dossierId);
