@@ -209,30 +209,40 @@ public class DossierContentGenerator {
 				String[] textSplit = StringUtil.split(patternContent, StringPool.AT);
 				if (textSplit == null || textSplit.length < 2) {
 					Iterator<String> keys = jsonObject.keys();
-					while (keys.hasNext()) {
-						String key = keys.next();
-						String value = jsonObject.getString(key);
-						if(key.equals(patternContent)){
-							if(key.equals(DossierTerm.DOSSIER_FILE)){
-								List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
-								if(lstFile != null && !lstFile.isEmpty()){
-									String fileName = "";
-									int countFile = 0;
-									if(lstFile.size() > 1) {
-										for (DossierFile item : lstFile) {
-											countFile++;
-											fileName  += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + "." + item.getDisplayName() + ConstantUtils.HTML_CLOSE_SPAN;
+					if(patternContent.equals(DossierTerm.DOSSIER_FILE)){
+						List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
+						if(lstFile != null && !lstFile.isEmpty()){
+							String fileName = "";
+							int countFile = 0;
+							if(lstFile.size() > 1) {
+								for (DossierFile item : lstFile) {
+									if ("1".equals(item.getDossierPartType())) {
+										countFile++;
+										if (countFile > 1) {
+											fileName += " " + ConstantUtils.HTML_NEW_LINE;
 										}
-										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
-									}else{
-										fileName = lstFile.get(0).getDisplayName();
-										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+										fileName += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + item.getDisplayName() + " " + ConstantUtils.HTML_CLOSE_SPAN;
 									}
 								}
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+								break;
 							}else {
-								submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+								if ("1".equals(lstFile.get(0).getDossierPartType())) {
+									fileName = lstFile.get(0).getDisplayName();
+									submissionNotePattern = submissionNotePattern.replace(tmpKey, ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + fileName + "" + ConstantUtils.HTML_CLOSE_SPAN);
+									break;
+								}
+
 							}
-							break;
+						}
+					}else {
+						while (keys.hasNext()) {
+							String key = keys.next();
+							String value = jsonObject.getString(key);
+							if (key.equals(patternContent)) {
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+								break;
+							}
 						}
 					}
 				} else {
