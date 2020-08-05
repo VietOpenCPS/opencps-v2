@@ -249,6 +249,11 @@ public class DeliverableLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return getService().fetchByGID_AID(groupId, applicantIdNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Deliverable fetchByGID_DID(
 		long groupId, long dossierId) {
 		return getService().fetchByGID_DID(groupId, dossierId);
