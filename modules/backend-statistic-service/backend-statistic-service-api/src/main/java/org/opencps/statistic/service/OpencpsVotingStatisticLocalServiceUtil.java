@@ -366,6 +366,12 @@ public class OpencpsVotingStatisticLocalServiceUtil {
 			domain, govAgencyCode, start, end);
 	}
 
+	public static java.util.List<Object[]> searchVotingStatisticCountPoint(
+		long groupId, String startDay, String endDay) {
+		return getService()
+				   .searchVotingStatisticCountPoint(groupId, startDay, endDay);
+	}
+
 	/**
 	* Updates the opencps voting statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

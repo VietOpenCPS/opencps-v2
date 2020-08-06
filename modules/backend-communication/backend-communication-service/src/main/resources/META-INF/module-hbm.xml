@@ -40,6 +40,7 @@
 		<property name="toTelNo" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="publicationDate" type="org.hibernate.type.TimestampType" />
 		<property name="expireDate" type="org.hibernate.type.TimestampType" />
+		<property name="priority" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.communication.model.impl.NotificationtemplateImpl" table="opencps_notificationtemplate">
 		<id name="notificationTemplateId" type="long">
@@ -64,6 +65,7 @@
 		<property name="guestUrlPattern" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property column="interval_" name="interval" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="grouping" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="priority" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.communication.model.impl.ServerConfigImpl" table="opencps_serverconfig">
 		<id name="serverConfigId" type="long">

@@ -79,6 +79,7 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 		attributes.put("guestUrlPattern", getGuestUrlPattern());
 		attributes.put("interval", getInterval());
 		attributes.put("grouping", isGrouping());
+		attributes.put("priority", getPriority());
 
 		return attributes;
 	}
@@ -204,6 +205,12 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 
 		if (grouping != null) {
 			setGrouping(grouping);
+		}
+
+		Integer priority = (Integer)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
 		}
 	}
 
@@ -365,6 +372,16 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _notificationtemplate.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the priority of this notificationtemplate.
+	*
+	* @return the priority of this notificationtemplate
+	*/
+	@Override
+	public int getPriority() {
+		return _notificationtemplate.getPriority();
 	}
 
 	/**
@@ -681,6 +698,16 @@ public class NotificationtemplateWrapper implements Notificationtemplate,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_notificationtemplate.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the priority of this notificationtemplate.
+	*
+	* @param priority the priority of this notificationtemplate
+	*/
+	@Override
+	public void setPriority(int priority) {
+		_notificationtemplate.setPriority(priority);
 	}
 
 	/**

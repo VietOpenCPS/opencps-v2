@@ -46,7 +46,8 @@ dependencies {
 	
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-api")
 	compileOnly project(":modules:backend-admin-config:backend-admin-config-service")
-
+	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-api")
+	compileOnly project(":modules:backend-statistic-service:backend-statistic-service-service")
 	compileOnly project(":modules:backend-feedback:backend-feedback-api")
 	compileOnly project(":modules:backend-feedback:backend-feedback-service")
 

@@ -312,6 +312,10 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 		String govAgencyCode, int start, int end)
 		throws PortalException, SystemException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> searchVotingStatisticCountPoint(long groupId,
+		String startDay, String endDay);
+
 	/**
 	* Updates the opencps voting statistic in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

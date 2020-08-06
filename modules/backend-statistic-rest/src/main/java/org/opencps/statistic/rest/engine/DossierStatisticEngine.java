@@ -585,7 +585,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			List<GetDossierData> dossierData = new ArrayList<>();
 			int total = jsonData.getInt(ConstantUtils.TOTAL);
 
-			_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
+			//_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
 			_log.info("GET DOSSIER total: " + total);
 
 			if (total > datas.size()) {

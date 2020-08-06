@@ -1,6 +1,7 @@
 
 package org.opencps.kernel.message.email;
 
+import backend.service.IntegrateLgsp;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.kernel.service.MailServiceUtil;
@@ -37,7 +38,15 @@ import org.osgi.service.component.annotations.Component;
 @Component(immediate = true, service = MBEmailSenderImpl.class)
 public class MBEmailSenderImpl implements MBEmailSender {
 	private Log _log = LogFactoryUtil.getLog(MBEmailSenderImpl.class);
-	
+	private IntegrateLgsp integrateLgsp;
+
+	public MBEmailSenderImpl(IntegrateLgsp integrateLgsp) {
+		this.integrateLgsp = integrateLgsp;
+	}
+	public MBEmailSenderImpl() {
+
+	}
+
 	@Override
 	public void sendLGSP(
 		MBMessageEntry messageEntry, String portletId,
@@ -70,7 +79,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					conToken.setUseCaches(false);
 					conToken.setDoInput(true);
 					conToken.setDoOutput(true);
-					
+
 					OutputStream os = conToken.getOutputStream();
 					os.close();
 
@@ -98,7 +107,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 						_log.info("strUrlSendMail: "+ strUrlSendMail);
 						String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
 						//_log.info("authStrEnc: "+ authStrEnc);
-						
+
 						for (int i = 0; i < 8; i++) {
 							StringBuilder sbSendMail = new StringBuilder();
 							try {
@@ -108,7 +117,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 								StringBuilder sbToAdd = new StringBuilder();
 								if (messageEntry.getToAddress() != null && messageEntry.getToAddress().length > 0) {
 									InternetAddress[] addressArr = messageEntry.getToAddress();
-									
+
 									for (InternetAddress internetAddress : addressArr) {
 										sbToAdd.append(internetAddress.getAddress().trim());
 										sbToAdd.append(StringPool.SEMICOLON);
@@ -148,7 +157,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 								_log.info("RESULT PROXY: " + sbSendMail.toString());
 								if (Validator.isNotNull(sbSendMail.toString()) ) {
 									JSONObject jsonResult = JSONFactoryUtil.createJSONObject(sbSendMail.toString());
-									if (jsonResult != null && jsonResult.has("result") && 
+									if (jsonResult != null && jsonResult.has("result") &&
 											"SUCCESSFUL".equals(jsonResult.getString("result"))) {
 										break;
 									}
@@ -168,7 +177,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 								_log.debug(e);
 							}
 						}
-						
+
 					}
 				}
 			}
@@ -191,7 +200,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 				}
 			}
 			_log.info("Send email: " + needSendEmail + ", " + messageEntry.getToAddress());
-			
+
 			if (needSendEmail) {
 
 				MailMessage mailMessage = new MailMessage();
@@ -214,7 +223,24 @@ public class MBEmailSenderImpl implements MBEmailSender {
 		}
 
 	}
-	
+
+	@Override
+	public boolean send(MBMessageEntry messageEntry, String contactEmail) {
+		try {
+			String tokenLGSP = integrateLgsp.getToken();
+			if(tokenLGSP.isEmpty()) {
+				return false;
+			}
+			integrateLgsp.sendMail(tokenLGSP, messageEntry, contactEmail);
+
+		} catch (Exception e) {
+			_log.error(e);
+			return false;
+		}
+
+		return true;
+	}
+
 	@BeanReference(type = MailService.class)
 	protected MailService mailService;
 

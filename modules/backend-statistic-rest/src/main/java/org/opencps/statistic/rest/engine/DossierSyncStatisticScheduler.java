@@ -80,6 +80,9 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
 			if (configList != null && configList.size() > 0) {
 				ServerConfig config = configList.get(0);
+				if (config == null) {
+					return;
+				}
 			}
 
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();

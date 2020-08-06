@@ -803,6 +803,9 @@
 		<finder name="DC" return-type="Dossier" where="">
 			<finder-column name="dossierCounter"/>
 		</finder>
+		<finder return-type="Collection" name="D_OR_D">
+			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+		</finder>
 	</entity>
 
 	<entity name="DossierFile" table="opencps_dossierfile"
@@ -990,6 +993,10 @@
             <finder-column name="fileEntryId" comparator="&gt;"></finder-column>
             <finder-column name="removed"></finder-column>
         </finder>
+		<finder return-type="Collection" name="DID_GROUP">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+		</finder>
 	</entity>
 
 	<entity name="DossierLog" table="opencps_dossierlog"
