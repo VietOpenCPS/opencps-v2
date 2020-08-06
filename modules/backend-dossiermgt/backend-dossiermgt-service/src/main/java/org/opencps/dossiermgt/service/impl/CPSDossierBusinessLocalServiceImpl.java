@@ -1882,6 +1882,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							if (foundApplicant != null) {
 								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 								payloadObj.put("filesAttach", filesAttach);
+								payloadObj = verifyPayloadMail(payloadObj);
 								_log.info("====================payloadattach2=========" + payloadObj);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
@@ -5034,6 +5035,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							}
 							JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 							payloadObj.put("filesAttach", filesAttach);
+							payloadObj = verifyPayloadMail(payloadObj);
 							_log.info("====================payloadattach1=========" + payloadObj);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, notificationType,
 									Dossier.class.getName(), String.valueOf(dossier.getDossierId()),
@@ -8878,6 +8880,24 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug(e);
 		}
 		return 0;
+	}
+
+	private JSONObject verifyPayloadMail (JSONObject payload) {
+		Iterator payloadKeys = payload.keys();
+		String tmp_key;
+		JSONObject result = payload;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		try {
+			while (payloadKeys.hasNext()) {
+				tmp_key = (String) payloadKeys.next();
+				if (tmp_key.toLowerCase().indexOf("date") >= 0 && payload.getLong(tmp_key) > 0) {
+					result.put(tmp_key + "Str", sdf.format(new Date(payload.getLong(tmp_key))));
+				}
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return result;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);
