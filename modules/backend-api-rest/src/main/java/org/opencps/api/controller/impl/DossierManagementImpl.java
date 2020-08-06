@@ -8123,81 +8123,90 @@ public class DossierManagementImpl implements DossierManagement {
 
 						DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, dossierPart.getDeliverableType());
 						for (DossierFile item : listDossierHS) {
-							//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
-						    if(item.getFileTemplateNo().equals(DossierTerm.KQGP)) {
-                                if (item.getEForm() == false) {
-                                    fileEntryId = item.getFileEntryId();
-                                }
-                            }
-							//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
-							if (Validator.isNotNull(item.getDeliverableCode()) && item.getEForm() == true) {
+							if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
+								//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
+								if (item.getFileTemplateNo().equals(DossierTerm.KQGP)) {
+									if (item.getEForm() == false) {
+										fileEntryId = item.getFileEntryId();
+									}
+								}
+								Deliverable deliverable = Validator.isNotNull(item.getDeliverableCode())
+										? DeliverableLocalServiceUtil.getByF_GID_DCODE(
+										dossier.getGroupId(), item.getDeliverableCode())
+										: DeliverableLocalServiceUtil.fetchByGID_DID(
+										dossier.getGroupId(), dossier.getDossierId());
+								//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
+								if (dossierPart.getDeliverableAction() == 0 && Validator.isNull(deliverable)) {
 
-								boolean eSignature = proAction.getESignature();
-								if (eSignature == true) {
+									boolean eSignature = proAction.getESignature();
+									if (eSignature == true && item.getEForm() == true) {
 
-									_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
-									String deliverableTypes = deliverableType.getTypeCode();
-									String deliverableCode = dossier.getDossierNo();
-									String deliverableName = deliverableType.getTypeName();
-									String govAgencyCode = dossier.getGovAgencyCode();
-									String govAgencyName = dossier.getGovAgencyName();
-									String applicationIdNo = dossier.getApplicantIdNo();
-									String applicationName = dossier.getApplicantName();
-									long dosserId = dossier.getDossierId();
-									long formScriptFileId = deliverableType.getFormScriptFileId();
-									long formReportFileId = deliverableType.getFormReportFileId();
-									String formData = "";
-									String deliverableState = "";
-									//Xử lý formData cho ds người có công
-									// Mapping formData --> với cấu hình của deliverableType
-									try {
-										if (Validator.isNotNull(item.getFormData())) {
+										_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
+										String deliverableTypes = deliverableType.getTypeCode();
+										String deliverableCode = dossier.getDossierNo();
+										String deliverableName = deliverableType.getTypeName();
+										String govAgencyCode = dossier.getGovAgencyCode();
+										String govAgencyName = dossier.getGovAgencyName();
+										String applicationIdNo = dossier.getApplicantIdNo();
+										String applicationName = dossier.getApplicantName();
+										long dosserId = dossier.getDossierId();
+										long formScriptFileId = deliverableType.getFormScriptFileId();
+										long formReportFileId = deliverableType.getFormReportFileId();
+										String formData = "";
+										String deliverableState = "";
+										//Xử lý formData cho ds người có công
+										// Mapping formData --> với cấu hình của deliverableType
+										try {
+											if (Validator.isNotNull(item.getFormData())) {
 
-											JSONObject jsonMapping = JSONFactoryUtil.createJSONObject();
-											JSONObject jsonFormData = JSONFactoryUtil.createJSONObject(item.getFormData());
-											jsonMapping = JSONFactoryUtil.createJSONObject(deliverableType.getMappingData());
-											Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonMapping);
-											for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
-												String value = String.valueOf(entry.getValue());
-												if (value.startsWith(StringPool.POUND) && value.contains(DossierTerm.KQGP)) {
+												JSONObject jsonMapping = JSONFactoryUtil.createJSONObject();
+												JSONObject jsonFormData = JSONFactoryUtil.createJSONObject(item.getFormData());
+												jsonMapping = JSONFactoryUtil.createJSONObject(deliverableType.getMappingData());
+												Map<String, Object> jsonMap = AutoFillFormData.jsonToMap(jsonMapping);
+												for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+													String value = String.valueOf(entry.getValue());
+													if (value.startsWith(StringPool.POUND) && value.contains(DossierTerm.KQGP)) {
 
-													Iterator<String> keys = jsonFormData.keys();
-													while (keys.hasNext()) {
-														String key = keys.next();
-														String valueMeta = jsonFormData.getString(key);
-														if (key.equals(entry.getKey())) {
-															if(key.equals(DossierTerm.DELIVERABLE_STATE)){
-																deliverableState = valueMeta;
-															}else if(key.equals(DossierTerm.DELIVERABLE_CODE)){
-																deliverableCode = valueMeta;
-															}else if(key.equals(DossierTerm.DELIVERABLE_NAME)){
-																deliverableName = valueMeta;
-															}else if(key.equals(DossierTerm.GOV_AGENCY_CODE)){
-																govAgencyCode = valueMeta;
-															}else if(key.equals(DossierTerm.GOV_AGENCY_NAME)){
-																govAgencyName = valueMeta;
+														Iterator<String> keys = jsonFormData.keys();
+														while (keys.hasNext()) {
+															String key = keys.next();
+															String valueMeta = jsonFormData.getString(key);
+															if (key.equals(entry.getKey())) {
+																if (Validator.isNotNull(valueMeta)) {
+																	if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
+																		deliverableState = valueMeta;
+																	} else if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
+																		deliverableCode = valueMeta;
+																	} else if (key.equals(DossierTerm.DELIVERABLE_NAME)) {
+																		deliverableName = valueMeta;
+																	} else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
+																		govAgencyCode = valueMeta;
+																	} else if (key.equals(DossierTerm.GOV_AGENCY_NAME)) {
+																		govAgencyName = valueMeta;
+																	}
+																}
+																jsonMapping.put(entry.getKey(), valueMeta);
+																break;
 															}
-															jsonMapping.put(entry.getKey(), valueMeta);
-															break;
 														}
 													}
 												}
+												formData = jsonMapping.toJSONString();
 											}
-											formData = jsonMapping.toJSONString();
+										} catch (Exception e) {
+											e.getMessage();
+											_log.info("EXCEPTION: " + e.getMessage());
 										}
-									} catch (Exception e) {
-										e.getMessage();
-										_log.info("EXCEPTION: " + e.getMessage());
+										deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+												groupId, deliverableTypes, deliverableName,
+												deliverableCode, govAgencyCode, govAgencyName,
+												applicationIdNo, applicationName, "",
+												"", "", "", deliverableState,
+												dosserId, Validator.isNull(fileEntryId) ? item.getFileEntryId() : fileEntryId, formScriptFileId, formReportFileId,
+												formData, "",
+												serviceContext);
+										_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 									}
-									Deliverable deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
-											groupId, deliverableTypes, deliverableName,
-											deliverableCode, govAgencyCode, govAgencyName,
-											applicationIdNo, applicationName, "",
-											"", "", "", deliverableState,
-											dosserId, fileEntryId !=0 ? fileEntryId : item.getFileEntryId() , formScriptFileId, formReportFileId,
-											formData, "",
-											serviceContext);
-									_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 								}
 							}
 						}

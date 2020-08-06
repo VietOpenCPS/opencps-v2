@@ -619,15 +619,17 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getGroupId(), dDeliverableCode)
 				: DeliverableLocalServiceUtil.fetchByGID_DID(
 					model.getGroupId(), model.getDossierId());
-
+			_log.debug("------------------------------------");
+			_log.debug("LOG TRACE DOSSIER ORIGINALITY: " + dossier.getOriginality());
 			if (dossierPart.getDeliverableAction() == 0 &&
-				Validator.isNull(deliverable)) {
+				Validator.isNull(deliverable) && dossier.getOriginality() != 9) {
 
 				// add new deliverable
 
 				_log.debug(
 					"============addDeliverableSign=============" +
 						model.getDeliverableCode() + "___" + deliverable);
+				_log.debug("Dossier Originality : " + dossier.getOriginality());
 				deliverable =
 					DeliverableLocalServiceUtil.addDeliverableSign(
 						model.getGroupId(),
