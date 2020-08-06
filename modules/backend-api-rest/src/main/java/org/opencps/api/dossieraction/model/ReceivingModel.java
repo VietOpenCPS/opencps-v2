@@ -30,12 +30,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReceivingModel", propOrder = {
     "receiveDate",
     "dueDate",
+    "durationPhase",
     "editable"
 })
 public class ReceivingModel {
     protected Long receiveDate;
     protected Long dueDate;
     protected Boolean editable;
+    protected String durationPhase;
 
     /**
      * Gets the value of the receiveDate property.
@@ -108,5 +110,28 @@ public class ReceivingModel {
     public void setEditable(Boolean value) {
         this.editable = value;
     }
+    /**
+     * Gets the value of the durationPhase property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
 
+    public String getDurationPhase() {
+        return durationPhase;
+    }
+
+    /**
+     * Sets the value of the durationPhase property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDurationPhase(String value) {
+        this.durationPhase = value;
+    }
 }

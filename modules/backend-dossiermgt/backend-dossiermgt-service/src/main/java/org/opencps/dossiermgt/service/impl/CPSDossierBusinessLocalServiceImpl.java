@@ -1716,6 +1716,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = doActionInsideProcess(groupId, userId, dossier, actionConfig, option, proAction, actionCode,
 					actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		}
+		//Integrate TTTT
+		this.integrateTTTT(dossier, context, dossierAction.getDossierActionId());
 
 		return dossierAction;
 	}
@@ -2722,6 +2724,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
+					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -3227,8 +3231,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private Map<String, Boolean> updateProcessingDate(DossierAction dossierAction, DossierAction prevAction,
-													  ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
-													  int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
+			ProcessStep processStep, Dossier dossier, String curStatus, String curSubStatus, String prevStatus,
+			int dateOption, ProcessOption option, ServiceProcess serviceProcess, String payload, ServiceContext context) {
 		Date now = new Date();
 		Map<String, Boolean> bResult = new HashMap<>();
 		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -4441,6 +4445,25 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		_log.info("=============create collectVnpostEvent============");
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);
+	}
+
+	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
+		//Add tich hop Thong tin truyen thong
+		try{
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
+					dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+				}
+			}
+		}catch(Exception e) {
+			_log.error(e);
+		}
 	}
 
 	private void publishEvent(Dossier dossier, ServiceContext context, long dossierActionId) {
@@ -8845,7 +8868,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		try {
 			if (Validator.isNotNull(payload)) {
 				JSONObject payloadJ = JSONFactoryUtil.createJSONObject(payload);
-				return payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
+				return payloadJ.has(ProcessActionTerm.DURATION_PHASE) ? 
+					payloadJ.getLong(ProcessActionTerm.DURATION_PHASE, 0) :
+					payloadJ.getLong(DossierTerm.DURATION_COUNT, 0);
 			}
 		} catch (Exception e) {
 			_log.debug(e);

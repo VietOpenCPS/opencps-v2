@@ -35,6 +35,17 @@ import backend.auth.api.keys.ModelNameKeys;
  */
 public class SendMailUtils {
 
+	public static boolean isNumeric(final String str) {
+
+		// null or empty
+		if (str == null || str.length() == 0) {
+			return false;
+		}
+
+		return str.chars().allMatch(Character::isDigit);
+
+	}
+
 	@SuppressWarnings("deprecation")
 	public static void sendEmailNotification(JSONObject payLoad, ServiceContext serviceContext) throws SystemException {
 

@@ -185,6 +185,9 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DeliverableType fetchDeliverableType(long deliverableTypeId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DeliverableType fetchByG_DLT(long groupId,String typeCode);
+
 	/**
 	* Returns the deliverable type matching the UUID and group.
 	*

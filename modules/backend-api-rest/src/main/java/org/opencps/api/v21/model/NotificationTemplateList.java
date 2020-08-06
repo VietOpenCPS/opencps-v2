@@ -10,6 +10,7 @@ package org.opencps.api.v21.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -211,6 +212,7 @@ public class NotificationTemplateList {
     public static class NotificationTemplate {
 
         @XmlElement(required = true)
+        @FormParam(value = "notificationType")
         protected String notificationType;
         protected boolean sendEmail;
         @XmlElement(required = true)
@@ -224,6 +226,7 @@ public class NotificationTemplateList {
         @XmlElement(required = true)
         protected String interval;
         @XmlElement(required = true)
+        @FormParam(value = "notifyMessage")
         protected String notifyMessage;
         protected boolean sendNotification;
 

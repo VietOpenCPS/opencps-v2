@@ -348,6 +348,12 @@ public class DossierFileLocalServiceWrapper implements DossierFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierFile> findByDID_GROUP(
+		long groupId, long dossierId) {
+		return _dossierFileLocalService.findByDID_GROUP(groupId, dossierId);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.DossierFile> findByGroup(
 		long groupId) {
 		return _dossierFileLocalService.findByGroup(groupId);

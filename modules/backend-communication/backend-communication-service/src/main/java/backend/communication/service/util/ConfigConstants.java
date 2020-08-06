@@ -10,4 +10,7 @@ public class ConfigConstants {
 	public static final String ZALO_PARAM_DATA = "opencps.open.zalo.param.data";
 	public static final String ZALO_MEDIA_TYPE = "opencps.open.zalo.mediatype";
 
+	public static final Integer PRIORITY_REGISTER = 1;
+	public static final Integer PRIORITY_FORGOT_PASS = 2;
+
 }

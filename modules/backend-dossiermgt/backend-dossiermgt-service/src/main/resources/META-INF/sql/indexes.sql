@@ -5,6 +5,11 @@ create index IX_1833407B on opencps_actionconfig (groupId, eventType);
 create index IX_D5B50DF5 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_EDA28DB7 on opencps_actionconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_362B3AF5 on opencps_applicableInfo (groupId, serviceCode[$COLUMN_LENGTH:75$], govAgencyCode[$COLUMN_LENGTH:75$], serviceLevel);
+create index IX_938871C on opencps_applicableInfo (serviceConfigMappingId);
+create index IX_F494E0AA on opencps_applicableInfo (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_FC5189AC on opencps_applicableInfo (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_96163B06 on opencps_booking (codeNumber[$COLUMN_LENGTH:255$]);
 create index IX_35D7C193 on opencps_booking (groupId, bookingDate, online_);
 create index IX_68310EDE on opencps_booking (groupId, className[$COLUMN_LENGTH:255$], classPK);
@@ -200,6 +205,10 @@ create index IX_1C8F6A99 on opencps_paymentconfig (groupId, invoiceTemplateNo[$C
 create index IX_50A3049F on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_C61226E1 on opencps_paymentconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create index IX_53CC0B5D on opencps_paymentfeeinfo (serviceConfigMappingId);
+create index IX_42CE9AB on opencps_paymentfeeinfo (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_C0A9DEED on opencps_paymentfeeinfo (uuid_[$COLUMN_LENGTH:75$], groupId);
+
 create index IX_AB66566A on opencps_paymentfile (dossierId, referenceUid[$COLUMN_LENGTH:75$]);
 create index IX_928D77F1 on opencps_paymentfile (groupId, dossierId);
 create index IX_8EF25743 on opencps_paymentfile (groupId, paymentStatus);
@@ -286,6 +295,10 @@ create index IX_ABABE3D2 on opencps_serviceconfig (groupId, serviceInfoId, govAg
 create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
+
+create index IX_80005EC8 on opencps_serviceconfigmapping (groupId, serviceCode[$COLUMN_LENGTH:75$]);
+create index IX_6399334 on opencps_serviceconfigmapping (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_57B556B6 on opencps_serviceconfigmapping (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_3AF75462 on opencps_serviceinfo (companyId);
 create index IX_216AA2FF on opencps_serviceinfo (domainCode[$COLUMN_LENGTH:128$], groupId);
