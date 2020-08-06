@@ -273,6 +273,21 @@ public class PaymentFileLocalServiceUtil {
 		return getService().findByG_PT(groupId, paymentStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPaymentStatusAndMethod(
+		int paymentStatus, String paymentMethod, int start, int end) {
+		return getService()
+				   .findByPaymentStatusAndMethod(paymentStatus, paymentMethod,
+			start, end);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPaymentStatusAndMethod(
+		int paymentStatus, String paymentMethod, long groupId, int start,
+		int end) {
+		return getService()
+				   .findByPaymentStatusAndMethod(paymentStatus, paymentMethod,
+			groupId, start, end);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPT(
 		int paymentStatus) {
 		return getService().findByPT(paymentStatus);

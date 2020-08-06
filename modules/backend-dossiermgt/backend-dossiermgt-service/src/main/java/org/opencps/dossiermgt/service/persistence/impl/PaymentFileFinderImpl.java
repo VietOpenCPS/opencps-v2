@@ -7,9 +7,15 @@ import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+
+import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.impl.PaymentFileImpl;
 import org.opencps.dossiermgt.service.persistence.PaymentFileFinder;
+import org.opencps.statistic.model.impl.OpencpsDossierStatisticImpl;
+import org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +33,19 @@ public class PaymentFileFinderImpl extends PaymentFileFinderBaseImpl implements 
 	private static final String FILTER_GROUP_ID_VALUE = "AND groupId = ?";
 
 	public static final String FILTER_DATE = "[$DATE$]";
-
+	
+	private static final String SEARCH_PAYMENT_FILE_BY_S_M = PaymentFileFinder.class.getName()
+			+ ".findPaymentByS_M";
+	private static final String SEARCH_PAYMENT_FILE_BY_G_S_M = PaymentFileFinder.class.getName()
+			+ ".findPaymentByG_S_M";
+	
+	private static final String CONDITION_PAYMENT_METHOD = "(opencps_paymentfile.paymentMethod = ?) AND";
+	private static final String CONDITION_PAYMENT_METHOD_DIRECT = "(opencps_paymentfile.paymentMethod IS NULL) AND";
+	private static final String CONDITION_PAYMENT_METHOD_ONLINE = "(opencps_paymentfile.paymentMethod IS NOT NULL) AND";
+	private static final String DIRECT = "direct";
+	private static final String ONLINE = "online";
+	private static final String TOTAL = "total";
+	
 	public String findSumPaymentAmountDay(long groupId,String date,int start,int end)
 	{
 		Session session = null;
@@ -87,5 +105,106 @@ public class PaymentFileFinderImpl extends PaymentFileFinderBaseImpl implements 
 		}
 
 		return "0";
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PaymentFile> findPaymentByS_M(int paymentStatus, String paymentMethod, int start, int end) {
+		Session session = null;
+		try
+		{
+			session = openSession();
+
+			String sql = _customSQL.get(getClass(),SEARCH_PAYMENT_FILE_BY_S_M);
+			
+			if (paymentMethod.contentEquals(TOTAL)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, StringPool.BLANK);
+			}
+			
+			if (paymentMethod.contentEquals(DIRECT)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, CONDITION_PAYMENT_METHOD_DIRECT);
+			}
+			
+			if (paymentMethod.contentEquals(ONLINE)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, CONDITION_PAYMENT_METHOD_ONLINE);
+			}
+			
+			SQLQuery q = session.createSQLQuery(sql);
+			
+			q.setCacheable(true);
+			q.addEntity("PaymentFile", PaymentFileImpl.class);			
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			if (Validator.isNotNull(paymentStatus)) {
+				qPos.add(paymentStatus);
+			}
+
+			return (List<PaymentFile>) QueryUtil.list(q, getDialect(),QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		}catch (Exception e) {
+			_log.error(e);
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				_log.error(se);
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PaymentFile> findPaymentByG_S_M(int paymentStatus, String paymentMethod, long groupId, int start,
+			int end) {
+		Session session = null;
+		try
+		{
+			session = openSession();
+
+			String sql = _customSQL.get(getClass(),SEARCH_PAYMENT_FILE_BY_G_S_M);
+			
+			if (paymentMethod.contentEquals(TOTAL)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, StringPool.BLANK);
+			}
+			
+			if (paymentMethod.contentEquals(DIRECT)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, CONDITION_PAYMENT_METHOD_DIRECT);
+			}
+			
+			if (paymentMethod.contentEquals(ONLINE)) {
+				sql = StringUtil.replace(sql, CONDITION_PAYMENT_METHOD, CONDITION_PAYMENT_METHOD_ONLINE);
+			}
+			
+			SQLQuery q = session.createSQLQuery(sql);
+			
+			q.setCacheable(true);
+			q.addEntity("PaymentFile", PaymentFileImpl.class);			
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			if (Validator.isNotNull(paymentStatus)) {
+				qPos.add(paymentStatus);
+			}
+			
+			qPos.add(groupId);
+
+			return (List<PaymentFile>) QueryUtil.list(q, getDialect(),QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		}catch (Exception e) {
+			_log.error(e);
+			try {
+				throw new SystemException(e);
+			} catch (SystemException se) {
+				_log.error(se);
+			}
+		} finally {
+			closeSession(session);
+		}
+
+		return null;
 	}
 }

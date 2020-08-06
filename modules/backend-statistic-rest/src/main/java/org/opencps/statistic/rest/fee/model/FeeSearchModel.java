@@ -105,6 +105,8 @@ public class FeeSearchModel {
     protected String fromStatisticDate;
 	@QueryParam(value="toStatisticDate")
     protected String toStatisticDate;
+	@QueryParam(value="paymentMethod")
+    protected String paymentMethod;
 
     /**
      * Gets the value of the keyword property.
@@ -500,6 +502,14 @@ public class FeeSearchModel {
 	 */
 	public void setToStatisticDate(String toStatisticDate) {
 		this.toStatisticDate = toStatisticDate;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
     
     
