@@ -44,6 +44,7 @@ import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.kernel.util.DateTimeUtil;
 
 public class DeliverableUtils {
 
@@ -531,8 +532,15 @@ public class DeliverableUtils {
 					deliverableObj.put(DeliverableTerm.QUAN_HUYEN, quequan[1]);
 					deliverableObj.put(DeliverableTerm.TINH_TP, quequan[2]);
 				}else if (value.equals(DeliverableTerm.NAM_SINH) && getCellValueV3(currentRow.getCell(i)) != null) {
-					String namsinh = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(currentRow.getCell(i).getDateCellValue());
-					String[] birdthday = namsinh.split("/");
+					
+					String[] birdthday = null;
+					if (CellType.STRING == currentRow.getCell(i).getCellType()) {
+						birdthday = currentRow.getCell(i).getStringCellValue().split("\\.");
+					} else if (CellType.NUMERIC == currentRow.getCell(i).getCellType() 
+							&& DateUtil.isCellDateFormatted(currentRow.getCell(i))) {
+						String namsinh = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(currentRow.getCell(i).getDateCellValue());
+						birdthday = namsinh.split("/");
+					}
 					formData.put(DeliverableTerm.NGAY, birdthday[0]);
 					formData.put(DeliverableTerm.THANG, birdthday[1]);
 					formData.put(DeliverableTerm.NAM, birdthday[2]);
@@ -556,8 +564,7 @@ public class DeliverableUtils {
 	private static boolean validateRequiredField(String value) {
 		boolean result = false;
 		if (value.equals(DeliverableTerm.HO_TEN)|| value.equals(DeliverableTerm.SO_QD) 
-				|| value.equals(DeliverableTerm.NGAY_QD) || value.equals(DeliverableTerm.CHE_DO_TC) 
-				|| value.equals(DeliverableTerm.DON_VI_HCD)) {
+				|| value.equals(DeliverableTerm.CHE_DO_TC)|| value.equals(DeliverableTerm.DON_VI_HCD)) {
 			result = true;
 		}
 		return result;
@@ -565,7 +572,6 @@ public class DeliverableUtils {
 
 	private static Object getCellValueV3(Cell cell) {
 		
-
 		if (cell == null) {
 
 			return null;
@@ -589,6 +595,7 @@ public class DeliverableUtils {
 			return null;
 		}
 	}
+	
 	
 	private static Log _log = LogFactoryUtil.getLog(DeliverableUtils.class);
 
