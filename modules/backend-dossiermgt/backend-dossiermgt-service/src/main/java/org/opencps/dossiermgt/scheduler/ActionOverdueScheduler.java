@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +31,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.Notificationtemplate;
 import org.opencps.communication.service.NotificationQueueLocalServiceUtil;
 import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.constants.DossierActionUserTerm;
 import org.opencps.dossiermgt.model.Dossier;
@@ -83,6 +85,12 @@ public class ActionOverdueScheduler extends BaseMessageListener {
 									JSONFactoryUtil.looseSerialize(dossier)));
 		        	}
 		        	payloadObj.put("DossierAction", JSONFactoryUtil.looseSerialize(action));
+		        	if (Validator.isNotNull(action.getDueDate())) {
+		        		DueDateUtils duedateutil = new DueDateUtils(action.getDueDate(), now, 0, action.getGroupId());
+		        		JSONObject dossierAction = payloadObj.getJSONObject("DossierAction");
+		        		dossierAction.put("overDue", duedateutil.getOverDueCalcToString());
+		        		payloadObj.put("DossierAction", dossierAction);
+		        	}
 		        }
 		        catch (Exception e) {
 		        	_log.debug(e);
