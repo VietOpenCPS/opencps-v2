@@ -2754,6 +2754,1518 @@ public class OpencpsDossierStatisticUtil {
 	}
 
 	/**
+	* Returns all the opencps dossier statistics where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int reporting) {
+		return getPersistence().findByF_REPO(reporting);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int reporting,
+		int start, int end) {
+		return getPersistence().findByF_REPO(reporting, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int reporting,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_REPO(reporting, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where reporting = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int reporting,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_REPO(reporting, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_REPO_First(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence().findByF_REPO_First(reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_REPO_First(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence().fetchByF_REPO_First(reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_REPO_Last(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence().findByF_REPO_Last(reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_REPO_Last(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence().fetchByF_REPO_Last(reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where reporting = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByF_REPO_PrevAndNext(
+		long dossierStatisticId, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_REPO_PrevAndNext(dossierStatisticId, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reportings the reportings
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int[] reportings) {
+		return getPersistence().findByF_REPO(reportings);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end) {
+		return getPersistence().findByF_REPO(reportings, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where reporting = any &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reportings the reportings
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_REPO(reportings, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where reporting = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_REPO(reportings, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where reporting = &#63; from the database.
+	*
+	* @param reporting the reporting
+	*/
+	public static void removeByF_REPO(int reporting) {
+		getPersistence().removeByF_REPO(reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where reporting = &#63;.
+	*
+	* @param reporting the reporting
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_REPO(int reporting) {
+		return getPersistence().countByF_REPO(reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where reporting = any &#63;.
+	*
+	* @param reportings the reportings
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_REPO(int[] reportings) {
+		return getPersistence().countByF_REPO(reportings);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId) {
+		return getPersistence().findByF_NOT_GID(groupId);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where groupId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end) {
+		return getPersistence().findByF_NOT_GID(groupId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByF_NOT_GID(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByF_NOT_GID(groupId, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_NOT_GID_First(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence().findByF_NOT_GID_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_NOT_GID_First(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByF_NOT_GID_First(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByF_NOT_GID_Last(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence().findByF_NOT_GID_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByF_NOT_GID_Last(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence().fetchByF_NOT_GID_Last(groupId, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByF_NOT_GID_PrevAndNext(
+		long dossierStatisticId, long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByF_NOT_GID_PrevAndNext(dossierStatisticId, groupId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where groupId &ne; &#63; from the database.
+	*
+	* @param groupId the group ID
+	*/
+	public static void removeByF_NOT_GID(long groupId) {
+		getPersistence().removeByF_NOT_GID(groupId);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByF_NOT_GID(long groupId) {
+		return getPersistence().countByF_NOT_GID(groupId);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByM_Y_GOV_DOM_GRO_SYS_First(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS_First(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByM_Y_GOV_DOM_GRO_SYS_First(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByM_Y_GOV_DOM_GRO_SYS_First(month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByM_Y_GOV_DOM_GRO_SYS_Last(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS_Last(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByM_Y_GOV_DOM_GRO_SYS_Last(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByM_Y_GOV_DOM_GRO_SYS_Last(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		long dossierStatisticId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(dossierStatisticId,
+			month, year, govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	*/
+	public static void removeByM_Y_GOV_DOM_GRO_SYS(int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		getPersistence()
+			.removeByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByM_Y_GOV_DOM_GRO_SYS(int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		return getPersistence()
+				   .countByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end) {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(groupId, month,
+			year, govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		long dossierStatisticId, long groupId, int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(dossierStatisticId,
+			groupId, month, year, govAgencyCode, domainCode, groupAgencyCode,
+			system, orderByComparator);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	*/
+	public static void removeByNOT_G_M_Y_GOV_DOM_GRO_SYS(long groupId,
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		getPersistence()
+			.removeByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByNOT_G_M_Y_GOV_DOM_GRO_SYS(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return getPersistence()
+				   .countByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(
+		long groupId, int month, int year, int reporting) {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP(groupId, month, year, reporting);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(
+		long groupId, int month, int year, int reporting, int start, int end) {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP(groupId, month, year, reporting,
+			start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(
+		long groupId, int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP(groupId, month, year, reporting,
+			start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(
+		long groupId, int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP(groupId, month, year, reporting,
+			start, end, orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByGID_M_Y_NOT_RP_First(
+		long groupId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP_First(groupId, month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByGID_M_Y_NOT_RP_First(
+		long groupId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByGID_M_Y_NOT_RP_First(groupId, month, year,
+			reporting, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByGID_M_Y_NOT_RP_Last(
+		long groupId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP_Last(groupId, month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByGID_M_Y_NOT_RP_Last(
+		long groupId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByGID_M_Y_NOT_RP_Last(groupId, month, year, reporting,
+			orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByGID_M_Y_NOT_RP_PrevAndNext(
+		long dossierStatisticId, long groupId, int month, int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByGID_M_Y_NOT_RP_PrevAndNext(dossierStatisticId,
+			groupId, month, year, reporting, orderByComparator);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	*/
+	public static void removeByGID_M_Y_NOT_RP(long groupId, int month,
+		int year, int reporting) {
+		getPersistence().removeByGID_M_Y_NOT_RP(groupId, month, year, reporting);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	*
+	* @param groupId the group ID
+	* @param month the month
+	* @param year the year
+	* @param reporting the reporting
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByGID_M_Y_NOT_RP(long groupId, int month, int year,
+		int reporting) {
+		return getPersistence()
+				   .countByGID_M_Y_NOT_RP(groupId, month, year, reporting);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByG_Y_GO_DO_GR_SY_First(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY_First(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByG_Y_GO_DO_GR_SY_First(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_Y_GO_DO_GR_SY_First(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic findByG_Y_GO_DO_GR_SY_Last(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY_Last(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	*/
+	public static OpencpsDossierStatistic fetchByG_Y_GO_DO_GR_SY_Last(
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .fetchByG_Y_GO_DO_GR_SY_Last(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, orderByComparator);
+	}
+
+	/**
+	* Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param dossierStatisticId the primary key of the current opencps dossier statistic
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next opencps dossier statistic
+	* @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	*/
+	public static OpencpsDossierStatistic[] findByG_Y_GO_DO_GR_SY_PrevAndNext(
+		long dossierStatisticId, long groupId, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws org.opencps.statistic.exception.NoSuchOpencpsDossierStatisticException {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY_PrevAndNext(dossierStatisticId,
+			groupId, year, govAgencyCode, domainCode, groupAgencyCode, system,
+			orderByComparator);
+	}
+
+	/**
+	* Returns all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCodes the gov agency codes
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns a range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCodes the gov agency codes
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @return the range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes,
+			domainCode, groupAgencyCode, system, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCodes the gov agency codes
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;, optionally using the finder cache.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @param start the lower bound of the range of opencps dossier statistics
+	* @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching opencps dossier statistics
+	*/
+	public static List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator,
+			retrieveFromCache);
+	}
+
+	/**
+	* Removes all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	*/
+	public static void removeByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		getPersistence()
+			.removeByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode, domainCode,
+			groupAgencyCode, system);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCode the gov agency code
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		return getPersistence()
+				   .countByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
+	* Returns the number of opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	*
+	* @param groupId the group ID
+	* @param year the year
+	* @param govAgencyCodes the gov agency codes
+	* @param domainCode the domain code
+	* @param groupAgencyCode the group agency code
+	* @param system the system
+	* @return the number of matching opencps dossier statistics
+	*/
+	public static int countByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String[] govAgencyCodes, String domainCode, String groupAgencyCode,
+		String system) {
+		return getPersistence()
+				   .countByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes,
+			domainCode, groupAgencyCode, system);
+	}
+
+	/**
 	* Caches the opencps dossier statistic in the entity cache if it is enabled.
 	*
 	* @param opencpsDossierStatistic the opencps dossier statistic

@@ -23,7 +23,7 @@ public class StatisticEngineFetch {
 	//private final static Logger LOG = LoggerFactory.getLogger(StatisticEngineFetch.class);
 
 	public void fecthStatisticData(long groupId, Map<String, DossierStatisticData> statisticData,
-			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting, List<String> lstGroupGovs) {
+			List<GetDossierData> lsDossierData, Date fromStatisticDate, Date toStatisticDate, int reporting) {
 
 		//LOG.info("STARTTING TIME " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
@@ -204,32 +204,32 @@ public class StatisticEngineFetch {
 				statisticData.put(type8, dataType8);
 
 				// all site, all domain, all system, each group gov
-				for (String groupGovAgency : lstGroupGovs) {
-					List<String> lstGovs = Arrays.asList(groupGovAgency.split(StringPool.COMMA));
-					
-					if (lstGovs.contains(dossierData.getGovAgencyCode())) {
-						String type9 = "all@all@all@" + groupGovAgency + "@" + groupId;
-						
-						DossierStatisticData dataType9 = new DossierStatisticData();
-						dataType9.setGroupId(groupId);
-						dataType9.setGovAgencyCode(StringPool.BLANK);
-						dataType9.setGovAgencyName(StringPool.BLANK);
-						dataType9.setDomainCode(StringPool.BLANK);
-						dataType9.setDomainName(StringPool.BLANK);
-						dataType9.setSystem(StringPool.BLANK);
-						dataType9.setGroupAgencyCode(groupGovAgency);
-						
-						if (statisticData.containsKey(type9)) {
-							dataType9 = statisticData.get(type9);
-						}
-			
-						engineFetchEntry.updateDossierStatisticData(dataType9, dossierData, fromStatisticDate, toStatisticDate,
-								reporting);
-						dataType9 = processOnTimePercent(dataType9);
-						
-						statisticData.put(type9, dataType9);											
-					}
-				}
+//				for (String groupGovAgency : lstGroupGovs) {
+//					List<String> lstGovs = Arrays.asList(groupGovAgency.split(StringPool.COMMA));
+//					
+//					if (lstGovs.contains(dossierData.getGovAgencyCode())) {
+//						String type9 = "all@all@all@" + groupGovAgency + "@" + groupId;
+//						
+//						DossierStatisticData dataType9 = new DossierStatisticData();
+//						dataType9.setGroupId(groupId);
+//						dataType9.setGovAgencyCode(StringPool.BLANK);
+//						dataType9.setGovAgencyName(StringPool.BLANK);
+//						dataType9.setDomainCode(StringPool.BLANK);
+//						dataType9.setDomainName(StringPool.BLANK);
+//						dataType9.setSystem(StringPool.BLANK);
+//						dataType9.setGroupAgencyCode(groupGovAgency);
+//						
+//						if (statisticData.containsKey(type9)) {
+//							dataType9 = statisticData.get(type9);
+//						}
+//			
+//						engineFetchEntry.updateDossierStatisticData(dataType9, dossierData, fromStatisticDate, toStatisticDate,
+//								reporting);
+//						dataType9 = processOnTimePercent(dataType9);
+//						
+//						statisticData.put(type9, dataType9);											
+//					}
+//				}
 				
 			}
 		}

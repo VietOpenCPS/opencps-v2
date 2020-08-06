@@ -8742,6 +8742,5146 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 	private static final String _FINDER_COLUMN_G_NM_Y_GROUPID_2 = "opencpsDossierStatistic.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_NM_Y_MONTH_2 = "opencpsDossierStatistic.month != ? AND ";
 	private static final String _FINDER_COLUMN_G_NM_Y_YEAR_2 = "opencpsDossierStatistic.year = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_REPO = new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_REPO",
+			new String[] {
+				Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_REPO",
+			new String[] { Integer.class.getName() },
+			OpencpsDossierStatisticModelImpl.REPORTING_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_REPO = new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_REPO",
+			new String[] { Integer.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_REPO = new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_REPO",
+			new String[] { Integer.class.getName() });
+
+	/**
+	 * Returns all the opencps dossier statistics where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int reporting) {
+		return findByF_REPO(reporting, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where reporting = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int reporting, int start,
+		int end) {
+		return findByF_REPO(reporting, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where reporting = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int reporting, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByF_REPO(reporting, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where reporting = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int reporting, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO;
+			finderArgs = new Object[] { reporting };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_REPO;
+			finderArgs = new Object[] { reporting, start, end, orderByComparator };
+		}
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((reporting != opencpsDossierStatistic.getReporting())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_F_REPO_REPORTING_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(reporting);
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByF_REPO_First(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByF_REPO_First(reporting,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("reporting=");
+		msg.append(reporting);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByF_REPO_First(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByF_REPO(reporting, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByF_REPO_Last(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByF_REPO_Last(reporting,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("reporting=");
+		msg.append(reporting);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByF_REPO_Last(int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByF_REPO(reporting);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByF_REPO(reporting, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where reporting = &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByF_REPO_PrevAndNext(
+		long dossierStatisticId, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByF_REPO_PrevAndNext(session,
+					opencpsDossierStatistic, reporting, orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByF_REPO_PrevAndNext(session,
+					opencpsDossierStatistic, reporting, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByF_REPO_PrevAndNext(Session session,
+		OpencpsDossierStatistic opencpsDossierStatistic, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_F_REPO_REPORTING_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(reporting);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the opencps dossier statistics where reporting = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reportings the reportings
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int[] reportings) {
+		return findByF_REPO(reportings, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where reporting = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reportings the reportings
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end) {
+		return findByF_REPO(reportings, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where reporting = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reportings the reportings
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByF_REPO(reportings, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where reporting = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_REPO(int[] reportings,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		if (reportings == null) {
+			reportings = new int[0];
+		}
+		else if (reportings.length > 1) {
+			reportings = ArrayUtil.unique(reportings);
+
+			Arrays.sort(reportings);
+		}
+
+		if (reportings.length == 1) {
+			return findByF_REPO(reportings[0], start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { StringUtil.merge(reportings) };
+		}
+		else {
+			finderArgs = new Object[] {
+					StringUtil.merge(reportings),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_REPO,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if (!ArrayUtil.contains(reportings,
+								opencpsDossierStatistic.getReporting())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			if (reportings.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_REPO_REPORTING_7);
+
+				query.append(StringUtil.merge(reportings));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_REPO,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_REPO,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where reporting = &#63; from the database.
+	 *
+	 * @param reporting the reporting
+	 */
+	@Override
+	public void removeByF_REPO(int reporting) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByF_REPO(
+				reporting, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where reporting = &#63;.
+	 *
+	 * @param reporting the reporting
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByF_REPO(int reporting) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_REPO;
+
+		Object[] finderArgs = new Object[] { reporting };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_F_REPO_REPORTING_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(reporting);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where reporting = any &#63;.
+	 *
+	 * @param reportings the reportings
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByF_REPO(int[] reportings) {
+		if (reportings == null) {
+			reportings = new int[0];
+		}
+		else if (reportings.length > 1) {
+			reportings = ArrayUtil.unique(reportings);
+
+			Arrays.sort(reportings);
+		}
+
+		Object[] finderArgs = new Object[] { StringUtil.merge(reportings) };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_REPO,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			if (reportings.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_REPO_REPORTING_7);
+
+				query.append(StringUtil.merge(reportings));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_REPO,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_REPO,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_REPO_REPORTING_2 = "opencpsDossierStatistic.reporting = ?";
+	private static final String _FINDER_COLUMN_F_REPO_REPORTING_7 = "opencpsDossierStatistic.reporting IN (";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NOT_GID =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_NOT_GID",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NOT_GID =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_NOT_GID",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the opencps dossier statistics where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId) {
+		return findByF_NOT_GID(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where groupId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end) {
+		return findByF_NOT_GID(groupId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByF_NOT_GID(groupId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByF_NOT_GID(long groupId,
+		int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_NOT_GID;
+		finderArgs = new Object[] { groupId, start, end, orderByComparator };
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((groupId == opencpsDossierStatistic.getGroupId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_F_NOT_GID_GROUPID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByF_NOT_GID_First(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByF_NOT_GID_First(groupId,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByF_NOT_GID_First(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByF_NOT_GID(groupId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByF_NOT_GID_Last(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByF_NOT_GID_Last(groupId,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByF_NOT_GID_Last(long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByF_NOT_GID(groupId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByF_NOT_GID(groupId,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId &ne; &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByF_NOT_GID_PrevAndNext(
+		long dossierStatisticId, long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByF_NOT_GID_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByF_NOT_GID_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByF_NOT_GID_PrevAndNext(
+		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
+		long groupId,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_F_NOT_GID_GROUPID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where groupId &ne; &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 */
+	@Override
+	public void removeByF_NOT_GID(long groupId) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByF_NOT_GID(
+				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where groupId &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByF_NOT_GID(long groupId) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_NOT_GID;
+
+		Object[] finderArgs = new Object[] { groupId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_F_NOT_GID_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_NOT_GID_GROUPID_2 = "opencpsDossierStatistic.groupId != ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByM_Y_GOV_DOM_GRO_SYS",
+			new String[] {
+				Integer.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByM_Y_GOV_DOM_GRO_SYS",
+			new String[] {
+				Integer.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			OpencpsDossierStatisticModelImpl.MONTH_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.YEAR_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.DOMAINCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.GROUPAGENCYCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.SYSTEM_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_M_Y_GOV_DOM_GRO_SYS = new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByM_Y_GOV_DOM_GRO_SYS",
+			new String[] {
+				Integer.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS;
+			finderArgs = new Object[] {
+					month, year, govAgencyCode, domainCode, groupAgencyCode,
+					system
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS;
+			finderArgs = new Object[] {
+					month, year, govAgencyCode, domainCode, groupAgencyCode,
+					system,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((month != opencpsDossierStatistic.getMonth()) ||
+							(year != opencpsDossierStatistic.getYear()) ||
+							!Objects.equals(govAgencyCode,
+								opencpsDossierStatistic.getGovAgencyCode()) ||
+							!Objects.equals(domainCode,
+								opencpsDossierStatistic.getDomainCode()) ||
+							!Objects.equals(groupAgencyCode,
+								opencpsDossierStatistic.getGroupAgencyCode()) ||
+							!Objects.equals(system,
+								opencpsDossierStatistic.getSystem())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(8 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(8);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByM_Y_GOV_DOM_GRO_SYS_First(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByM_Y_GOV_DOM_GRO_SYS_First(month,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByM_Y_GOV_DOM_GRO_SYS_First(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByM_Y_GOV_DOM_GRO_SYS(month,
+				year, govAgencyCode, domainCode, groupAgencyCode, system, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByM_Y_GOV_DOM_GRO_SYS_Last(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByM_Y_GOV_DOM_GRO_SYS_Last(month,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByM_Y_GOV_DOM_GRO_SYS_Last(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+				domainCode, groupAgencyCode, system);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByM_Y_GOV_DOM_GRO_SYS(month,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		long dossierStatisticId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(session,
+					opencpsDossierStatistic, month, year, govAgencyCode,
+					domainCode, groupAgencyCode, system, orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(session,
+					opencpsDossierStatistic, month, year, govAgencyCode,
+					domainCode, groupAgencyCode, system, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByM_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(9 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(8);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+		query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+		}
+
+		boolean bindDomainCode = false;
+
+		if (domainCode == null) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+		}
+		else if (domainCode.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+		}
+		else {
+			bindDomainCode = true;
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+		}
+
+		boolean bindGroupAgencyCode = false;
+
+		if (groupAgencyCode == null) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+		}
+		else if (groupAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+		}
+		else {
+			bindGroupAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+		}
+
+		boolean bindSystem = false;
+
+		if (system == null) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+		}
+		else if (system.equals("")) {
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+		}
+		else {
+			bindSystem = true;
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (bindDomainCode) {
+			qPos.add(domainCode);
+		}
+
+		if (bindGroupAgencyCode) {
+			qPos.add(groupAgencyCode);
+		}
+
+		if (bindSystem) {
+			qPos.add(system);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 */
+	@Override
+	public void removeByM_Y_GOV_DOM_GRO_SYS(int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByM_Y_GOV_DOM_GRO_SYS(
+				month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByM_Y_GOV_DOM_GRO_SYS(int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_M_Y_GOV_DOM_GRO_SYS;
+
+		Object[] finderArgs = new Object[] {
+				month, year, govAgencyCode, domainCode, groupAgencyCode, system
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+			query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_MONTH_2 = "opencpsDossierStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_YEAR_2 = "opencpsDossierStatistic.year = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1 =
+		"opencpsDossierStatistic.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2 =
+		"opencpsDossierStatistic.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3 =
+		"(opencpsDossierStatistic.govAgencyCode IS NULL OR opencpsDossierStatistic.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1 = "opencpsDossierStatistic.domainCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2 = "opencpsDossierStatistic.domainCode = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3 = "(opencpsDossierStatistic.domainCode IS NULL OR opencpsDossierStatistic.domainCode = '') AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1 =
+		"opencpsDossierStatistic.groupAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2 =
+		"opencpsDossierStatistic.groupAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3 =
+		"(opencpsDossierStatistic.groupAgencyCode IS NULL OR opencpsDossierStatistic.groupAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1 = "opencpsDossierStatistic.system IS NULL";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2 = "opencpsDossierStatistic.system = ?";
+	private static final String _FINDER_COLUMN_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3 = "(opencpsDossierStatistic.system IS NULL OR opencpsDossierStatistic.system = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_G_M_Y_GOV_DOM_GRO_SYS =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByNOT_G_M_Y_GOV_DOM_GRO_SYS",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_G_M_Y_GOV_DOM_GRO_SYS =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"countByNOT_G_M_Y_GOV_DOM_GRO_SYS",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end) {
+		return findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system, int start,
+		int end, OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_NOT_G_M_Y_GOV_DOM_GRO_SYS;
+		finderArgs = new Object[] {
+				groupId, month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system,
+				
+				start, end, orderByComparator
+			};
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((groupId == opencpsDossierStatistic.getGroupId()) ||
+							(month != opencpsDossierStatistic.getMonth()) ||
+							(year != opencpsDossierStatistic.getYear()) ||
+							!Objects.equals(govAgencyCode,
+								opencpsDossierStatistic.getGovAgencyCode()) ||
+							!Objects.equals(domainCode,
+								opencpsDossierStatistic.getDomainCode()) ||
+							!Objects.equals(groupAgencyCode,
+								opencpsDossierStatistic.getGroupAgencyCode()) ||
+							!Objects.equals(system,
+								opencpsDossierStatistic.getSystem())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(9 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(9);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(groupId,
+				month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(16);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_First(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId,
+				month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(groupId,
+				month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(16);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByNOT_G_M_Y_GOV_DOM_GRO_SYS_Last(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+				govAgencyCode, domainCode, groupAgencyCode, system);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId,
+				month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		long dossierStatisticId, long groupId, int month, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, month, year,
+					govAgencyCode, domainCode, groupAgencyCode, system,
+					orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, month, year,
+					govAgencyCode, domainCode, groupAgencyCode, system,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByNOT_G_M_Y_GOV_DOM_GRO_SYS_PrevAndNext(
+		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(10 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(9);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+		query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+		}
+
+		boolean bindDomainCode = false;
+
+		if (domainCode == null) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+		}
+		else if (domainCode.equals("")) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+		}
+		else {
+			bindDomainCode = true;
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+		}
+
+		boolean bindGroupAgencyCode = false;
+
+		if (groupAgencyCode == null) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+		}
+		else if (groupAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+		}
+		else {
+			bindGroupAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+		}
+
+		boolean bindSystem = false;
+
+		if (system == null) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+		}
+		else if (system.equals("")) {
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+		}
+		else {
+			bindSystem = true;
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (bindDomainCode) {
+			qPos.add(domainCode);
+		}
+
+		if (bindGroupAgencyCode) {
+			qPos.add(groupAgencyCode);
+		}
+
+		if (bindSystem) {
+			qPos.add(system);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 */
+	@Override
+	public void removeByNOT_G_M_Y_GOV_DOM_GRO_SYS(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+				groupId, month, year, govAgencyCode, domainCode,
+				groupAgencyCode, system, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where groupId &ne; &#63; and month = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByNOT_G_M_Y_GOV_DOM_GRO_SYS(long groupId, int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_NOT_G_M_Y_GOV_DOM_GRO_SYS;
+
+		Object[] finderArgs = new Object[] {
+				groupId, month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(8);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_MONTH_2);
+
+			query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPID_2 =
+		"opencpsDossierStatistic.groupId != ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_MONTH_2 =
+		"opencpsDossierStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_YEAR_2 = "opencpsDossierStatistic.year = ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_1 =
+		"opencpsDossierStatistic.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_2 =
+		"opencpsDossierStatistic.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GOVAGENCYCODE_3 =
+		"(opencpsDossierStatistic.govAgencyCode IS NULL OR opencpsDossierStatistic.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_1 =
+		"opencpsDossierStatistic.domainCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_2 =
+		"opencpsDossierStatistic.domainCode = ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_DOMAINCODE_3 =
+		"(opencpsDossierStatistic.domainCode IS NULL OR opencpsDossierStatistic.domainCode = '') AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_1 =
+		"opencpsDossierStatistic.groupAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_2 =
+		"opencpsDossierStatistic.groupAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_GROUPAGENCYCODE_3 =
+		"(opencpsDossierStatistic.groupAgencyCode IS NULL OR opencpsDossierStatistic.groupAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_1 =
+		"opencpsDossierStatistic.system IS NULL";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_2 =
+		"opencpsDossierStatistic.system = ?";
+	private static final String _FINDER_COLUMN_NOT_G_M_Y_GOV_DOM_GRO_SYS_SYSTEM_3 =
+		"(opencpsDossierStatistic.system IS NULL OR opencpsDossierStatistic.system = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_M_Y_NOT_RP =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGID_M_Y_NOT_RP",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_M_Y_NOT_RP =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByGID_M_Y_NOT_RP",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(long groupId,
+		int month, int year, int reporting) {
+		return findByGID_M_Y_NOT_RP(groupId, month, year, reporting,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(long groupId,
+		int month, int year, int reporting, int start, int end) {
+		return findByGID_M_Y_NOT_RP(groupId, month, year, reporting, start,
+			end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(long groupId,
+		int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByGID_M_Y_NOT_RP(groupId, month, year, reporting, start,
+			end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByGID_M_Y_NOT_RP(long groupId,
+		int month, int year, int reporting, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GID_M_Y_NOT_RP;
+		finderArgs = new Object[] {
+				groupId, month, year, reporting,
+				
+				start, end, orderByComparator
+			};
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((groupId != opencpsDossierStatistic.getGroupId()) ||
+							(month != opencpsDossierStatistic.getMonth()) ||
+							(year != opencpsDossierStatistic.getYear()) ||
+							(reporting == opencpsDossierStatistic.getReporting())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(6 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(6);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_MONTH_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_YEAR_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_REPORTING_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				qPos.add(reporting);
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByGID_M_Y_NOT_RP_First(long groupId,
+		int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_M_Y_NOT_RP_First(groupId,
+				month, year, reporting, orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", reporting=");
+		msg.append(reporting);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByGID_M_Y_NOT_RP_First(long groupId,
+		int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByGID_M_Y_NOT_RP(groupId,
+				month, year, reporting, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByGID_M_Y_NOT_RP_Last(long groupId,
+		int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByGID_M_Y_NOT_RP_Last(groupId,
+				month, year, reporting, orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(10);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", month=");
+		msg.append(month);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", reporting=");
+		msg.append(reporting);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByGID_M_Y_NOT_RP_Last(long groupId,
+		int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByGID_M_Y_NOT_RP(groupId, month, year, reporting);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByGID_M_Y_NOT_RP(groupId,
+				month, year, reporting, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByGID_M_Y_NOT_RP_PrevAndNext(
+		long dossierStatisticId, long groupId, int month, int year,
+		int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByGID_M_Y_NOT_RP_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, month, year, reporting,
+					orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByGID_M_Y_NOT_RP_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, month, year, reporting,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByGID_M_Y_NOT_RP_PrevAndNext(
+		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
+		long groupId, int month, int year, int reporting,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(7 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(6);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_MONTH_2);
+
+		query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_YEAR_2);
+
+		query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_REPORTING_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(month);
+
+		qPos.add(year);
+
+		qPos.add(reporting);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 */
+	@Override
+	public void removeByGID_M_Y_NOT_RP(long groupId, int month, int year,
+		int reporting) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByGID_M_Y_NOT_RP(
+				groupId, month, year, reporting, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where groupId = &#63; and month = &#63; and year = &#63; and reporting &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param month the month
+	 * @param year the year
+	 * @param reporting the reporting
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByGID_M_Y_NOT_RP(long groupId, int month, int year,
+		int reporting) {
+		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_GID_M_Y_NOT_RP;
+
+		Object[] finderArgs = new Object[] { groupId, month, year, reporting };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(5);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_MONTH_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_YEAR_2);
+
+			query.append(_FINDER_COLUMN_GID_M_Y_NOT_RP_REPORTING_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(month);
+
+				qPos.add(year);
+
+				qPos.add(reporting);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GID_M_Y_NOT_RP_GROUPID_2 = "opencpsDossierStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_GID_M_Y_NOT_RP_MONTH_2 = "opencpsDossierStatistic.month = ? AND ";
+	private static final String _FINDER_COLUMN_GID_M_Y_NOT_RP_YEAR_2 = "opencpsDossierStatistic.year = ? AND ";
+	private static final String _FINDER_COLUMN_GID_M_Y_NOT_RP_REPORTING_2 = "opencpsDossierStatistic.reporting != ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_Y_GO_DO_GR_SY",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED,
+			OpencpsDossierStatisticImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_Y_GO_DO_GR_SY",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			},
+			OpencpsDossierStatisticModelImpl.GROUPID_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.YEAR_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.GOVAGENCYCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.DOMAINCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.GROUPAGENCYCODE_COLUMN_BITMASK |
+			OpencpsDossierStatisticModelImpl.SYSTEM_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_Y_GO_DO_GR_SY = new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByG_Y_GO_DO_GR_SY",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_Y_GO_DO_GR_SY =
+		new FinderPath(OpencpsDossierStatisticModelImpl.ENTITY_CACHE_ENABLED,
+			OpencpsDossierStatisticModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_Y_GO_DO_GR_SY",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				String.class.getName(), String.class.getName(),
+				String.class.getName(), String.class.getName()
+			});
+
+	/**
+	 * Returns all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode, domainCode,
+			groupAgencyCode, system, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode, domainCode,
+			groupAgencyCode, system, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode, domainCode,
+			groupAgencyCode, system, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY;
+			finderArgs = new Object[] {
+					groupId, year, govAgencyCode, domainCode, groupAgencyCode,
+					system
+				};
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY;
+			finderArgs = new Object[] {
+					groupId, year, govAgencyCode, domainCode, groupAgencyCode,
+					system,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((groupId != opencpsDossierStatistic.getGroupId()) ||
+							(year != opencpsDossierStatistic.getYear()) ||
+							!Objects.equals(govAgencyCode,
+								opencpsDossierStatistic.getGovAgencyCode()) ||
+							!Objects.equals(domainCode,
+								opencpsDossierStatistic.getDomainCode()) ||
+							!Objects.equals(groupAgencyCode,
+								opencpsDossierStatistic.getGroupAgencyCode()) ||
+							!Objects.equals(system,
+								opencpsDossierStatistic.getSystem())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(8 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(8);
+			}
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByG_Y_GO_DO_GR_SY_First(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByG_Y_GO_DO_GR_SY_First(groupId,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the first opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByG_Y_GO_DO_GR_SY_First(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		List<OpencpsDossierStatistic> list = findByG_Y_GO_DO_GR_SY(groupId,
+				year, govAgencyCode, domainCode, groupAgencyCode, system, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic findByG_Y_GO_DO_GR_SY_Last(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = fetchByG_Y_GO_DO_GR_SY_Last(groupId,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				orderByComparator);
+
+		if (opencpsDossierStatistic != null) {
+			return opencpsDossierStatistic;
+		}
+
+		StringBundler msg = new StringBundler(14);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", year=");
+		msg.append(year);
+
+		msg.append(", govAgencyCode=");
+		msg.append(govAgencyCode);
+
+		msg.append(", domainCode=");
+		msg.append(domainCode);
+
+		msg.append(", groupAgencyCode=");
+		msg.append(groupAgencyCode);
+
+		msg.append(", system=");
+		msg.append(system);
+
+		msg.append("}");
+
+		throw new NoSuchOpencpsDossierStatisticException(msg.toString());
+	}
+
+	/**
+	 * Returns the last opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching opencps dossier statistic, or <code>null</code> if a matching opencps dossier statistic could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic fetchByG_Y_GO_DO_GR_SY_Last(long groupId,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		int count = countByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCode,
+				domainCode, groupAgencyCode, system);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<OpencpsDossierStatistic> list = findByG_Y_GO_DO_GR_SY(groupId,
+				year, govAgencyCode, domainCode, groupAgencyCode, system,
+				count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the opencps dossier statistics before and after the current opencps dossier statistic in the ordered set where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param dossierStatisticId the primary key of the current opencps dossier statistic
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next opencps dossier statistic
+	 * @throws NoSuchOpencpsDossierStatisticException if a opencps dossier statistic with the primary key could not be found
+	 */
+	@Override
+	public OpencpsDossierStatistic[] findByG_Y_GO_DO_GR_SY_PrevAndNext(
+		long dossierStatisticId, long groupId, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator)
+		throws NoSuchOpencpsDossierStatisticException {
+		OpencpsDossierStatistic opencpsDossierStatistic = findByPrimaryKey(dossierStatisticId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			OpencpsDossierStatistic[] array = new OpencpsDossierStatisticImpl[3];
+
+			array[0] = getByG_Y_GO_DO_GR_SY_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, year, govAgencyCode,
+					domainCode, groupAgencyCode, system, orderByComparator, true);
+
+			array[1] = opencpsDossierStatistic;
+
+			array[2] = getByG_Y_GO_DO_GR_SY_PrevAndNext(session,
+					opencpsDossierStatistic, groupId, year, govAgencyCode,
+					domainCode, groupAgencyCode, system, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected OpencpsDossierStatistic getByG_Y_GO_DO_GR_SY_PrevAndNext(
+		Session session, OpencpsDossierStatistic opencpsDossierStatistic,
+		long groupId, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(9 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(8);
+		}
+
+		query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+		query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2);
+
+		boolean bindGovAgencyCode = false;
+
+		if (govAgencyCode == null) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_1);
+		}
+		else if (govAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_3);
+		}
+		else {
+			bindGovAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_2);
+		}
+
+		boolean bindDomainCode = false;
+
+		if (domainCode == null) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1);
+		}
+		else if (domainCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3);
+		}
+		else {
+			bindDomainCode = true;
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2);
+		}
+
+		boolean bindGroupAgencyCode = false;
+
+		if (groupAgencyCode == null) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1);
+		}
+		else if (groupAgencyCode.equals("")) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3);
+		}
+		else {
+			bindGroupAgencyCode = true;
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2);
+		}
+
+		boolean bindSystem = false;
+
+		if (system == null) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1);
+		}
+		else if (system.equals("")) {
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3);
+		}
+		else {
+			bindSystem = true;
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(year);
+
+		if (bindGovAgencyCode) {
+			qPos.add(govAgencyCode);
+		}
+
+		if (bindDomainCode) {
+			qPos.add(domainCode);
+		}
+
+		if (bindGroupAgencyCode) {
+			qPos.add(groupAgencyCode);
+		}
+
+		if (bindSystem) {
+			qPos.add(system);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(opencpsDossierStatistic);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<OpencpsDossierStatistic> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCodes the gov agency codes
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes, domainCode,
+			groupAgencyCode, system, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCodes the gov agency codes
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @return the range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes, domainCode,
+			groupAgencyCode, system, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCodes the gov agency codes
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator) {
+		return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes, domainCode,
+			groupAgencyCode, system, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link OpencpsDossierStatisticModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @param start the lower bound of the range of opencps dossier statistics
+	 * @param end the upper bound of the range of opencps dossier statistics (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching opencps dossier statistics
+	 */
+	@Override
+	public List<OpencpsDossierStatistic> findByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String[] govAgencyCodes, String domainCode,
+		String groupAgencyCode, String system, int start, int end,
+		OrderByComparator<OpencpsDossierStatistic> orderByComparator,
+		boolean retrieveFromCache) {
+		if (govAgencyCodes == null) {
+			govAgencyCodes = new String[0];
+		}
+		else if (govAgencyCodes.length > 1) {
+			govAgencyCodes = ArrayUtil.distinct(govAgencyCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(govAgencyCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		if (govAgencyCodes.length == 1) {
+			return findByG_Y_GO_DO_GR_SY(groupId, year, govAgencyCodes[0],
+				domainCode, groupAgencyCode, system, start, end,
+				orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, year, StringUtil.merge(govAgencyCodes), domainCode,
+					groupAgencyCode, system
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, year, StringUtil.merge(govAgencyCodes), domainCode,
+					groupAgencyCode, system,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<OpencpsDossierStatistic> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<OpencpsDossierStatistic>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (OpencpsDossierStatistic opencpsDossierStatistic : list) {
+					if ((groupId != opencpsDossierStatistic.getGroupId()) ||
+							(year != opencpsDossierStatistic.getYear()) ||
+							!ArrayUtil.contains(govAgencyCodes,
+								opencpsDossierStatistic.getGovAgencyCode()) ||
+							!Objects.equals(domainCode,
+								opencpsDossierStatistic.getDomainCode()) ||
+							!Objects.equals(groupAgencyCode,
+								opencpsDossierStatistic.getGroupAgencyCode()) ||
+							!Objects.equals(system,
+								opencpsDossierStatistic.getSystem())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2);
+
+			if (govAgencyCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < govAgencyCodes.length; i++) {
+					String govAgencyCode = govAgencyCodes[i];
+
+					if (govAgencyCode == null) {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_4);
+					}
+					else if (govAgencyCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_5);
+					}
+
+					if ((i + 1) < govAgencyCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(OpencpsDossierStatisticModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(year);
+
+				for (String govAgencyCode : govAgencyCodes) {
+					if ((govAgencyCode != null) && !govAgencyCode.isEmpty()) {
+						qPos.add(govAgencyCode);
+					}
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				if (!pagination) {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<OpencpsDossierStatistic>)QueryUtil.list(q,
+							getDialect(), start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 */
+	@Override
+	public void removeByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		for (OpencpsDossierStatistic opencpsDossierStatistic : findByG_Y_GO_DO_GR_SY(
+				groupId, year, govAgencyCode, domainCode, groupAgencyCode,
+				system, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(opencpsDossierStatistic);
+		}
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCode the gov agency code
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String govAgencyCode, String domainCode, String groupAgencyCode,
+		String system) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_Y_GO_DO_GR_SY;
+
+		Object[] finderArgs = new Object[] {
+				groupId, year, govAgencyCode, domainCode, groupAgencyCode,
+				system
+			};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(7);
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2);
+
+			boolean bindGovAgencyCode = false;
+
+			if (govAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_1);
+			}
+			else if (govAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_3);
+			}
+			else {
+				bindGovAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_2);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(year);
+
+				if (bindGovAgencyCode) {
+					qPos.add(govAgencyCode);
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of opencps dossier statistics where groupId = &#63; and year = &#63; and govAgencyCode = any &#63; and domainCode = &#63; and groupAgencyCode = &#63; and system = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param year the year
+	 * @param govAgencyCodes the gov agency codes
+	 * @param domainCode the domain code
+	 * @param groupAgencyCode the group agency code
+	 * @param system the system
+	 * @return the number of matching opencps dossier statistics
+	 */
+	@Override
+	public int countByG_Y_GO_DO_GR_SY(long groupId, int year,
+		String[] govAgencyCodes, String domainCode, String groupAgencyCode,
+		String system) {
+		if (govAgencyCodes == null) {
+			govAgencyCodes = new String[0];
+		}
+		else if (govAgencyCodes.length > 1) {
+			govAgencyCodes = ArrayUtil.distinct(govAgencyCodes,
+					NULL_SAFE_STRING_COMPARATOR);
+
+			Arrays.sort(govAgencyCodes, NULL_SAFE_STRING_COMPARATOR);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, year, StringUtil.merge(govAgencyCodes), domainCode,
+				groupAgencyCode, system
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_Y_GO_DO_GR_SY,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_OPENCPSDOSSIERSTATISTIC_WHERE);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2);
+
+			if (govAgencyCodes.length > 0) {
+				query.append("(");
+
+				for (int i = 0; i < govAgencyCodes.length; i++) {
+					String govAgencyCode = govAgencyCodes[i];
+
+					if (govAgencyCode == null) {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_4);
+					}
+					else if (govAgencyCode.equals("")) {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_6);
+					}
+					else {
+						query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_5);
+					}
+
+					if ((i + 1) < govAgencyCodes.length) {
+						query.append(WHERE_OR);
+					}
+				}
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			boolean bindDomainCode = false;
+
+			if (domainCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1);
+			}
+			else if (domainCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3);
+			}
+			else {
+				bindDomainCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2);
+			}
+
+			boolean bindGroupAgencyCode = false;
+
+			if (groupAgencyCode == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1);
+			}
+			else if (groupAgencyCode.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3);
+			}
+			else {
+				bindGroupAgencyCode = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2);
+			}
+
+			boolean bindSystem = false;
+
+			if (system == null) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1);
+			}
+			else if (system.equals("")) {
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3);
+			}
+			else {
+				bindSystem = true;
+
+				query.append(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2);
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(year);
+
+				for (String govAgencyCode : govAgencyCodes) {
+					if ((govAgencyCode != null) && !govAgencyCode.isEmpty()) {
+						qPos.add(govAgencyCode);
+					}
+				}
+
+				if (bindDomainCode) {
+					qPos.add(domainCode);
+				}
+
+				if (bindGroupAgencyCode) {
+					qPos.add(groupAgencyCode);
+				}
+
+				if (bindSystem) {
+					qPos.add(system);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_Y_GO_DO_GR_SY,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_G_Y_GO_DO_GR_SY,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPID_2 = "opencpsDossierStatistic.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_YEAR_2 = "opencpsDossierStatistic.year = ? AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_1 = "opencpsDossierStatistic.govAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_2 = "opencpsDossierStatistic.govAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_3 = "(opencpsDossierStatistic.govAgencyCode IS NULL OR opencpsDossierStatistic.govAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_4 = "(" +
+		removeConjunction(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_1) +
+		")";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_5 = "(" +
+		removeConjunction(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_2) +
+		")";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_6 = "(" +
+		removeConjunction(_FINDER_COLUMN_G_Y_GO_DO_GR_SY_GOVAGENCYCODE_3) +
+		")";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_1 = "opencpsDossierStatistic.domainCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_2 = "opencpsDossierStatistic.domainCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_DOMAINCODE_3 = "(opencpsDossierStatistic.domainCode IS NULL OR opencpsDossierStatistic.domainCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_1 =
+		"opencpsDossierStatistic.groupAgencyCode IS NULL AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_2 =
+		"opencpsDossierStatistic.groupAgencyCode = ? AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_GROUPAGENCYCODE_3 =
+		"(opencpsDossierStatistic.groupAgencyCode IS NULL OR opencpsDossierStatistic.groupAgencyCode = '') AND ";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_1 = "opencpsDossierStatistic.system IS NULL";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_2 = "opencpsDossierStatistic.system = ?";
+	private static final String _FINDER_COLUMN_G_Y_GO_DO_GR_SY_SYSTEM_3 = "(opencpsDossierStatistic.system IS NULL OR opencpsDossierStatistic.system = '')";
 
 	public OpencpsDossierStatisticPersistenceImpl() {
 		setModelClass(OpencpsDossierStatistic.class);
@@ -9380,6 +14520,39 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y_GC_DC,
 				args);
 
+			args = new Object[] { opencpsDossierStatisticModelImpl.getReporting() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_REPO, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO,
+				args);
+
+			args = new Object[] {
+					opencpsDossierStatisticModelImpl.getMonth(),
+					opencpsDossierStatisticModelImpl.getYear(),
+					opencpsDossierStatisticModelImpl.getGovAgencyCode(),
+					opencpsDossierStatisticModelImpl.getDomainCode(),
+					opencpsDossierStatisticModelImpl.getGroupAgencyCode(),
+					opencpsDossierStatisticModelImpl.getSystem()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_GOV_DOM_GRO_SYS,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS,
+				args);
+
+			args = new Object[] {
+					opencpsDossierStatisticModelImpl.getGroupId(),
+					opencpsDossierStatisticModelImpl.getYear(),
+					opencpsDossierStatisticModelImpl.getGovAgencyCode(),
+					opencpsDossierStatisticModelImpl.getDomainCode(),
+					opencpsDossierStatisticModelImpl.getGroupAgencyCode(),
+					opencpsDossierStatisticModelImpl.getSystem()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Y_GO_DO_GR_SY, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -9609,6 +14782,87 @@ public class OpencpsDossierStatisticPersistenceImpl extends BasePersistenceImpl<
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_M_Y_GC_DC, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_M_Y_GC_DC,
+					args);
+			}
+
+			if ((opencpsDossierStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsDossierStatisticModelImpl.getOriginalReporting()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_REPO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO,
+					args);
+
+				args = new Object[] {
+						opencpsDossierStatisticModelImpl.getReporting()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_REPO, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_REPO,
+					args);
+			}
+
+			if ((opencpsDossierStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsDossierStatisticModelImpl.getOriginalMonth(),
+						opencpsDossierStatisticModelImpl.getOriginalYear(),
+						opencpsDossierStatisticModelImpl.getOriginalGovAgencyCode(),
+						opencpsDossierStatisticModelImpl.getOriginalDomainCode(),
+						opencpsDossierStatisticModelImpl.getOriginalGroupAgencyCode(),
+						opencpsDossierStatisticModelImpl.getOriginalSystem()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_GOV_DOM_GRO_SYS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS,
+					args);
+
+				args = new Object[] {
+						opencpsDossierStatisticModelImpl.getMonth(),
+						opencpsDossierStatisticModelImpl.getYear(),
+						opencpsDossierStatisticModelImpl.getGovAgencyCode(),
+						opencpsDossierStatisticModelImpl.getDomainCode(),
+						opencpsDossierStatisticModelImpl.getGroupAgencyCode(),
+						opencpsDossierStatisticModelImpl.getSystem()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_M_Y_GOV_DOM_GRO_SYS,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_Y_GOV_DOM_GRO_SYS,
+					args);
+			}
+
+			if ((opencpsDossierStatisticModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						opencpsDossierStatisticModelImpl.getOriginalGroupId(),
+						opencpsDossierStatisticModelImpl.getOriginalYear(),
+						opencpsDossierStatisticModelImpl.getOriginalGovAgencyCode(),
+						opencpsDossierStatisticModelImpl.getOriginalDomainCode(),
+						opencpsDossierStatisticModelImpl.getOriginalGroupAgencyCode(),
+						opencpsDossierStatisticModelImpl.getOriginalSystem()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Y_GO_DO_GR_SY,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
+					args);
+
+				args = new Object[] {
+						opencpsDossierStatisticModelImpl.getGroupId(),
+						opencpsDossierStatisticModelImpl.getYear(),
+						opencpsDossierStatisticModelImpl.getGovAgencyCode(),
+						opencpsDossierStatisticModelImpl.getDomainCode(),
+						opencpsDossierStatisticModelImpl.getGroupAgencyCode(),
+						opencpsDossierStatisticModelImpl.getSystem()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_Y_GO_DO_GR_SY,
+					args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_Y_GO_DO_GR_SY,
 					args);
 			}
 		}

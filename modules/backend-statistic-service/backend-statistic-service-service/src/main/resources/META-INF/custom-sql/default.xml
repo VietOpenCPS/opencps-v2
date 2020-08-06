@@ -128,5 +128,15 @@
 			ORDER BY month DESC
 		]]>
 	</sql>
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder.updateStatisic">
+		<![CDATA[
+			UPDATE opencps_statistic 
+			SET opencps_statistic.reporting = ?
+			WHERE 
+				(opencps_statistic.groupId = ?) AND
+				(opencps_statistic.month = ?) AND
+				(opencps_statistic.year = ?)
+		]]>
+	</sql>
 
 </custom-sql>

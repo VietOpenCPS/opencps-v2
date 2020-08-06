@@ -123,6 +123,16 @@ public class StatisticEngineUpdateAction {
 		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYearAndReport(groupId, month, year, reporting);
 	}
 
+	//Get list dossierStatistic by groupId, month, year and not reporting
+	public List<OpencpsDossierStatistic> getByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getByMonthYearAndNotReport(groupId, month, year, reporting);
+	}
+
+	//Get list dossierStatistic by groupId, month, year and not reporting
+	public OpencpsDossierStatistic getStatisticByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getInfoByMonthYearAndNotReport(groupId, month, year, reporting);
+	}
+
 	//Remove record by domain and govAgencyCode
 	public void removeDossierStatisticByG_M_Y_G_D(long groupId, int month, int year, String agency, String domainCode)
 			throws NoSuchOpencpsDossierStatisticException {

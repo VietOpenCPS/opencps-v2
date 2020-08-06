@@ -298,8 +298,21 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId,
 		int notMonth, int year);
 
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month,
+		int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system);
+
+	public List<OpencpsDossierStatistic> findByNOT_GROUPID(long groupId);
+
+	public List<OpencpsDossierStatistic> findByREPO_ARR(int[] reporting);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(long groupId,
+		int year, String[] groupAgencyArr, String domainCode,
+		String groupAgency, String system);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpencpsDossierStatistic getByGovMonthYear(long groupId,
@@ -310,6 +323,15 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 	public OpencpsDossierStatistic getByGovMonthYearDomain(long groupId,
 		String govAgencyCode, int month, int year, String domainCode,
 		int reporting);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getByMonthYearAndNotReport(
+		long groupId, int month, int year, int reporting);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
@@ -333,6 +355,13 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpencpsDossierStatistic getInfoByMonthYearAndNotReport(
+		long groupId, int month, int year, int reporting);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpencpsDossierStatistic> getListByReporting(int reporting);
 
 	/**
 	* Returns the opencps dossier statistic with the primary key.
@@ -439,6 +468,9 @@ public interface OpencpsDossierStatisticLocalService extends BaseLocalService,
 
 	public void updateBatchStatistic(List<JSONObject> dossierDataObjs)
 		throws PortalException, SystemException;
+
+	public OpencpsDossierStatistic updateDossierStatistic(
+		OpencpsDossierStatistic statistic);
 
 	public OpencpsDossierStatistic updateOnlyStatistic(
 		OpencpsDossierStatistic dossierStatistic, long companyId, long groupId,

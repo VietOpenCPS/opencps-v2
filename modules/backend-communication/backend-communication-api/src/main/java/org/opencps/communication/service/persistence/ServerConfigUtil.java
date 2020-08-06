@@ -837,6 +837,182 @@ public class ServerConfigUtil {
 	}
 
 	/**
+	* Returns all the server configs where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the matching server configs
+	*/
+	public static List<ServerConfig> findBySNO_PT(String serverNo,
+		String protocol) {
+		return getPersistence().findBySNO_PT(serverNo, protocol);
+	}
+
+	/**
+	* Returns a range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param start the lower bound of the range of server configs
+	* @param end the upper bound of the range of server configs (not inclusive)
+	* @return the range of matching server configs
+	*/
+	public static List<ServerConfig> findBySNO_PT(String serverNo,
+		String protocol, int start, int end) {
+		return getPersistence().findBySNO_PT(serverNo, protocol, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param start the lower bound of the range of server configs
+	* @param end the upper bound of the range of server configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching server configs
+	*/
+	public static List<ServerConfig> findBySNO_PT(String serverNo,
+		String protocol, int start, int end,
+		OrderByComparator<ServerConfig> orderByComparator) {
+		return getPersistence()
+				   .findBySNO_PT(serverNo, protocol, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Returns an ordered range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param start the lower bound of the range of server configs
+	* @param end the upper bound of the range of server configs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the ordered range of matching server configs
+	*/
+	public static List<ServerConfig> findBySNO_PT(String serverNo,
+		String protocol, int start, int end,
+		OrderByComparator<ServerConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		return getPersistence()
+				   .findBySNO_PT(serverNo, protocol, start, end,
+			orderByComparator, retrieveFromCache);
+	}
+
+	/**
+	* Returns the first server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching server config
+	* @throws NoSuchServerConfigException if a matching server config could not be found
+	*/
+	public static ServerConfig findBySNO_PT_First(String serverNo,
+		String protocol, OrderByComparator<ServerConfig> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchServerConfigException {
+		return getPersistence()
+				   .findBySNO_PT_First(serverNo, protocol, orderByComparator);
+	}
+
+	/**
+	* Returns the first server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public static ServerConfig fetchBySNO_PT_First(String serverNo,
+		String protocol, OrderByComparator<ServerConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchBySNO_PT_First(serverNo, protocol, orderByComparator);
+	}
+
+	/**
+	* Returns the last server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching server config
+	* @throws NoSuchServerConfigException if a matching server config could not be found
+	*/
+	public static ServerConfig findBySNO_PT_Last(String serverNo,
+		String protocol, OrderByComparator<ServerConfig> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchServerConfigException {
+		return getPersistence()
+				   .findBySNO_PT_Last(serverNo, protocol, orderByComparator);
+	}
+
+	/**
+	* Returns the last server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching server config, or <code>null</code> if a matching server config could not be found
+	*/
+	public static ServerConfig fetchBySNO_PT_Last(String serverNo,
+		String protocol, OrderByComparator<ServerConfig> orderByComparator) {
+		return getPersistence()
+				   .fetchBySNO_PT_Last(serverNo, protocol, orderByComparator);
+	}
+
+	/**
+	* Returns the server configs before and after the current server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverConfigId the primary key of the current server config
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next server config
+	* @throws NoSuchServerConfigException if a server config with the primary key could not be found
+	*/
+	public static ServerConfig[] findBySNO_PT_PrevAndNext(long serverConfigId,
+		String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator)
+		throws org.opencps.communication.exception.NoSuchServerConfigException {
+		return getPersistence()
+				   .findBySNO_PT_PrevAndNext(serverConfigId, serverNo,
+			protocol, orderByComparator);
+	}
+
+	/**
+	* Removes all the server configs where serverNo = &#63; and protocol = &#63; from the database.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	*/
+	public static void removeBySNO_PT(String serverNo, String protocol) {
+		getPersistence().removeBySNO_PT(serverNo, protocol);
+	}
+
+	/**
+	* Returns the number of server configs where serverNo = &#63; and protocol = &#63;.
+	*
+	* @param serverNo the server no
+	* @param protocol the protocol
+	* @return the number of matching server configs
+	*/
+	public static int countBySNO_PT(String serverNo, String protocol) {
+		return getPersistence().countBySNO_PT(serverNo, protocol);
+	}
+
+	/**
 	* Caches the server config in the entity cache if it is enabled.
 	*
 	* @param serverConfig the server config

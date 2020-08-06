@@ -195,14 +195,15 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long DOMAINCODE_COLUMN_BITMASK = 2L;
 	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 4L;
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
-	public static final long MONTH_COLUMN_BITMASK = 16L;
-	public static final long REPORTING_COLUMN_BITMASK = 32L;
-	public static final long SYSTEM_COLUMN_BITMASK = 64L;
-	public static final long USERID_COLUMN_BITMASK = 128L;
-	public static final long UUID_COLUMN_BITMASK = 256L;
-	public static final long YEAR_COLUMN_BITMASK = 512L;
-	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 1024L;
+	public static final long GROUPAGENCYCODE_COLUMN_BITMASK = 8L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
+	public static final long MONTH_COLUMN_BITMASK = 32L;
+	public static final long REPORTING_COLUMN_BITMASK = 64L;
+	public static final long SYSTEM_COLUMN_BITMASK = 128L;
+	public static final long USERID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 512L;
+	public static final long YEAR_COLUMN_BITMASK = 1024L;
+	public static final long DOSSIERSTATISTICID_COLUMN_BITMASK = 2048L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(StatisticService.backend.statistic.service.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.statistic.model.OpencpsDossierStatistic"));
 
@@ -1053,7 +1054,17 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 
 	@Override
 	public void setGroupAgencyCode(String groupAgencyCode) {
+		_columnBitmask |= GROUPAGENCYCODE_COLUMN_BITMASK;
+
+		if (_originalGroupAgencyCode == null) {
+			_originalGroupAgencyCode = _groupAgencyCode;
+		}
+
 		_groupAgencyCode = groupAgencyCode;
+	}
+
+	public String getOriginalGroupAgencyCode() {
+		return GetterUtil.getString(_originalGroupAgencyCode);
 	}
 
 	@Override
@@ -1473,6 +1484,8 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 		opencpsDossierStatisticModelImpl._setOriginalYear = false;
 
 		opencpsDossierStatisticModelImpl._originalGovAgencyCode = opencpsDossierStatisticModelImpl._govAgencyCode;
+
+		opencpsDossierStatisticModelImpl._originalGroupAgencyCode = opencpsDossierStatisticModelImpl._groupAgencyCode;
 
 		opencpsDossierStatisticModelImpl._originalDomainCode = opencpsDossierStatisticModelImpl._domainCode;
 
@@ -2034,6 +2047,7 @@ public class OpencpsDossierStatisticModelImpl extends BaseModelImpl<OpencpsDossi
 	private String _govAgencyCode;
 	private String _originalGovAgencyCode;
 	private String _groupAgencyCode;
+	private String _originalGroupAgencyCode;
 	private String _govAgencyName;
 	private String _domainCode;
 	private String _originalDomainCode;

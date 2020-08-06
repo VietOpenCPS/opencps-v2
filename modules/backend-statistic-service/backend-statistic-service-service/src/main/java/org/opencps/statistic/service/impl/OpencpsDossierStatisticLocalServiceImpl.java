@@ -17,6 +17,7 @@ package org.opencps.statistic.service.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -393,6 +394,27 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 
 	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, int reporting) {
 		return opencpsDossierStatisticPersistence.findByGID_M_Y_RP(groupId, month, year, reporting);
+	}
+
+	public List<OpencpsDossierStatistic> getByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		return opencpsDossierStatisticPersistence.findByGID_M_Y_NOT_RP(groupId, month, year, reporting);
+	}
+
+	public OpencpsDossierStatistic getInfoByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		List<OpencpsDossierStatistic> statisticList = opencpsDossierStatisticPersistence.findByGID_M_Y_NOT_RP(groupId,
+				month, year, reporting, 0, 1);
+		if (statisticList != null && statisticList.size() > 0) {
+			return statisticList.get(0);
+		}
+		return null;
+	}
+
+	public List<OpencpsDossierStatistic> getListByReporting(int reporting) {
+		return opencpsDossierStatisticPersistence.findByF_REPO(reporting);
+	}
+
+	public OpencpsDossierStatistic updateDossierStatistic(OpencpsDossierStatistic statistic) {
+		return opencpsDossierStatisticPersistence.update(statistic);
 	}
 
 	public OpencpsDossierStatistic removeByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode,
@@ -1254,7 +1276,32 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 	public List<OpencpsDossierStatistic> findByG_NM_Y(long groupId, int notMonth, int year) {
 		return opencpsDossierStatisticPersistence.findByG_NM_Y(groupId, notMonth, year);
 	}
-	
+
+	public List<OpencpsDossierStatistic> findByREPO_ARR(int[] reporting) {
+		return opencpsDossierStatisticPersistence.findByF_REPO(reporting);
+	}
+
+	public List<OpencpsDossierStatistic> findByNOT_GROUPID(long groupId) {
+		return opencpsDossierStatisticPersistence.findByF_NOT_GID(groupId);
+	}
+
+	public List<OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(int month, int year, String govAgencyCode, String domainCode,
+			String groupAgencyCode, String system) {
+		return opencpsDossierStatisticPersistence.findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode, domainCode, groupAgencyCode,
+				system);
+	}
+
+	public List<OpencpsDossierStatistic> getByNOT_G_M_Y_GOV_DOM_GRO_SYS(long groupId, int month, int year,
+			String govAgencyCode, String domainCode, String groupAgencyCode, String system) {
+		return opencpsDossierStatisticPersistence.findByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year, govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
+	public List<OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(long groupId, int year, String[] groupAgencyArr,
+			String domainCode, String groupAgency, String system) {
+		return opencpsDossierStatisticPersistence.findByG_Y_GO_DO_GR_SY(groupId, year, groupAgencyArr, domainCode,
+				groupAgency, system);
+	}
+
 	private Log _log = LogFactoryUtil.getLog(OpencpsDossierStatisticLocalServiceImpl.class);
 
 }
