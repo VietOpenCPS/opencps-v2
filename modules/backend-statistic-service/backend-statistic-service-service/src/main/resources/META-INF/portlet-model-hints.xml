@@ -49,7 +49,7 @@
 		<field name="domainName" type="String">
 			<hint name="max-length">4096</hint>
 		</field>
-		<field name="reporting" type="boolean" />
+		<field name="reporting" type="int" />
 		<field name="overtimeInside" type="int" />
 		<field name="overtimeOutside" type="int" />
 		<field name="interoperatingCount" type="int" />

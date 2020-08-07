@@ -69,7 +69,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		soapModel.setGovAgencyName(model.getGovAgencyName());
 		soapModel.setDomainCode(model.getDomainCode());
 		soapModel.setDomainName(model.getDomainName());
-		soapModel.setReporting(model.isReporting());
+		soapModel.setReporting(model.getReporting());
 		soapModel.setOvertimeInside(model.getOvertimeInside());
 		soapModel.setOvertimeOutside(model.getOvertimeOutside());
 		soapModel.setInteroperatingCount(model.getInteroperatingCount());
@@ -420,15 +420,11 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 		_domainName = domainName;
 	}
 
-	public boolean getReporting() {
+	public int getReporting() {
 		return _reporting;
 	}
 
-	public boolean isReporting() {
-		return _reporting;
-	}
-
-	public void setReporting(boolean reporting) {
+	public void setReporting(int reporting) {
 		_reporting = reporting;
 	}
 
@@ -587,7 +583,7 @@ public class OpencpsDossierStatisticSoap implements Serializable {
 	private String _govAgencyName;
 	private String _domainCode;
 	private String _domainName;
-	private boolean _reporting;
+	private int _reporting;
 	private int _overtimeInside;
 	private int _overtimeOutside;
 	private int _interoperatingCount;

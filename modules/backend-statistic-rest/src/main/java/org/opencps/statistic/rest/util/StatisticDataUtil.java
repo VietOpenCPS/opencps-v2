@@ -2,6 +2,8 @@ package org.opencps.statistic.rest.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -20,8 +22,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
@@ -29,7 +33,8 @@ import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.statistic.model.OpencpsDossierStatistic;
+import org.opencps.statistic.rest.dto.DomainResponse;
 import org.opencps.statistic.rest.dto.GetPersonData;
 import org.opencps.statistic.rest.dto.GetPersonRequest;
 import org.opencps.statistic.rest.dto.GetPersonResponse;
@@ -42,7 +47,9 @@ import org.opencps.statistic.rest.dto.GovAgencyResponse;
 import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
 import org.opencps.statistic.rest.dto.ServiceDomainResponse;
-import org.opencps.statistic.rest.engine.service.StatisticSumYearCalcular;
+import org.opencps.statistic.rest.dto.VotingResultRequest;
+import org.opencps.statistic.rest.dto.VotingResultResponse;
+import org.opencps.statistic.rest.dto.VotingResultStatisticData;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
@@ -273,6 +280,8 @@ public class StatisticDataUtil {
 	
 	public static GovAgencyResponse getLocalGovAgency(GovAgencyRequest payload) {
 //		GovAgencyResponse response = new GovAgencyResponse();
+		//_log.info("groupId: "+GetterUtil.getLong(payload.getGroupId()));
+		//_log.info("localResponse: "+JSONFactoryUtil.looseSerialize(localResponse));
 		if (localResponse != null) return localResponse;
 		localResponse = new GovAgencyResponse();
 		
@@ -291,6 +300,7 @@ public class StatisticDataUtil {
 			params.put(ConstantUtils.ITEM_LEVEL, StringPool.BLANK);
 			params.put(DictItemTerm.PARENT_ITEM_CODE, StringPool.BLANK);
 			params.put(DictItemTerm.DICT_COLLECTION_CODE, DossierStatisticConstants.GOV_AGENCY_CODE);
+			_log.info("params: "+JSONFactoryUtil.looseSerialize(params));
 
 			Sort[] sorts = null;
 			
@@ -299,7 +309,7 @@ public class StatisticDataUtil {
 			
 
 			JSONObject jsonData = dictItemDataUtil.getDictItems(-1, company.getCompanyId(), groupId,
-					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());			
+					params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
 			localResponse.setTotal(jsonData.getInt("total"));
 			List<Document> lstDocs = (List<Document>) jsonData.get("data");
 			List<GovAgencyData> lstSDatas = new ArrayList<>();
@@ -317,6 +327,36 @@ public class StatisticDataUtil {
 		}
 		return localResponse;
 	}	
-	
+
+
+	public static GovAgencyResponse getLocalGovAgency(List<OpencpsDossierStatistic> lstCurrents) {
+		GovAgencyResponse agencyResponse = new GovAgencyResponse();
+
+		GovAgencyData agencyData = null;
+		Map<String, GovAgencyData> map = new HashMap<>();
+		if (lstCurrents != null && lstCurrents.size() > 0) {
+			for (OpencpsDossierStatistic statistic : lstCurrents) {
+				if (Validator.isNotNull(statistic.getGovAgencyCode())
+						&& Validator.isNotNull(statistic.getGovAgencyName())) {
+					agencyData = new GovAgencyData();
+					agencyData.setItemCode(statistic.getGovAgencyCode());
+					agencyData.setItemName(statistic.getGovAgencyName());
+
+					//
+					map.put(statistic.getGovAgencyCode(), agencyData);
+				}
+			}
+		}
+		//
+		if (map != null && !map.isEmpty()) {
+			agencyResponse.setTotal(map.size());
+			for (Map.Entry<String, GovAgencyData> entry : map.entrySet()) {
+				agencyResponse.getData().add(entry.getValue());
+			}
+		}
+
+		return agencyResponse;
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(StatisticDataUtil.class);
 }

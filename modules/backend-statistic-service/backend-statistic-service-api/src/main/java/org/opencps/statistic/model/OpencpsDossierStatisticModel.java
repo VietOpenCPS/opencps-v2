@@ -598,21 +598,14 @@ public interface OpencpsDossierStatisticModel extends BaseModel<OpencpsDossierSt
 	 *
 	 * @return the reporting of this opencps dossier statistic
 	 */
-	public boolean getReporting();
+	public int getReporting();
 
 	/**
-	 * Returns <code>true</code> if this opencps dossier statistic is reporting.
-	 *
-	 * @return <code>true</code> if this opencps dossier statistic is reporting; <code>false</code> otherwise
-	 */
-	public boolean isReporting();
-
-	/**
-	 * Sets whether this opencps dossier statistic is reporting.
+	 * Sets the reporting of this opencps dossier statistic.
 	 *
 	 * @param reporting the reporting of this opencps dossier statistic
 	 */
-	public void setReporting(boolean reporting);
+	public void setReporting(int reporting);
 
 	/**
 	 * Returns the overtime inside of this opencps dossier statistic.

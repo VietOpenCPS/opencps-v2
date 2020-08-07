@@ -206,6 +206,10 @@
 			<finder-column name="serverNo"/>
 			<finder-column name="protocol"/>
 		</finder>
+		<finder return-type="Collection" name="SNO_PT">
+			<finder-column name="serverNo"/>
+			<finder-column name="protocol"/>
+		</finder>
 	</entity>
 
 	<entity name="ZaloMap" local-service="true"
