@@ -38,6 +38,7 @@ public class DeliverableNumberGenerator {
 	private static final String PERCENT_ZERO = "%0";
 	private static final String NUMBER_FORMAT = "d";
 	private static final String FORWARD_SLASH = "/";
+	private static final String DOT = "\\.";
 	private static final String OK = "OK";
 	
 	public static String generateDeliverableNumber(long groupId, long companyId, long deliverableTypeId)
@@ -194,7 +195,12 @@ public class DeliverableNumberGenerator {
 		String datetimePattern = DATETIME_PATTERN;
 		String[] patterns = new String[] {codePattern, dayPattern, monthPattern, yearPattern, datetimePattern };
 
-		String[] ngayquyetdinh = ngayQD.split(FORWARD_SLASH);
+		String[] ngayquyetdinh = null;
+		if (ngayQD.split(FORWARD_SLASH).length > 1) {
+			ngayquyetdinh = ngayQD.split(FORWARD_SLASH);
+		} else if (ngayQD.split(DOT).length > 1) {
+			ngayquyetdinh = ngayQD.split(DOT);
+		}
 		String day = ngayquyetdinh[0];
 		String month = ngayquyetdinh[1];
 		String year = ngayquyetdinh[2];		
