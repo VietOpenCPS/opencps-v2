@@ -1,6 +1,7 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -25,15 +26,13 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
+import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
@@ -49,43 +48,63 @@ import org.opencps.statistic.rest.engine.service.StatisticUtils;
 import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
+import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
+import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
 	private volatile boolean isRunning = false;
 	//private final static Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	protected Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
-	
+
 	public static final int GROUP_TYPE_SITE = 1;
+	private static final String SERVER_NO_DVC = "SERVER_DVC_VOTING_STATISTIC";
+	private static final String PROTOCOL_DVC = "API_SYNC_VOTING_STATISTIC";
+
 	OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingResultService = new OpencpsCallVotingRestFacadeImpl();
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		//this scheduler is only used for MCDT
+		System.out.println("Calculate voting statistic...");
+		if (OpenCPSConfigUtil.isDVC()) {
+			System.out.println("Calculate voting statistic stopped because of this server is dvc");
+			return;
+		}
+
 		if (!isRunning) {
 			isRunning = true;
 		}
 		else {
 			return;
 		}
+		Date nowLog = new Date();
 		try {
+			System.out.println("Start calculate...");
+			_log.info("START TRACE LOG VOTING TIME: " + nowLog);
 //			System.out.println("START getVotingStatistic(): " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-			
+
 			OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
-			
+
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-	
+
 			List<Group> groupList = GroupLocalServiceUtil.getCompanyGroups(company.getCompanyId(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 			List<Group> sites = new ArrayList<Group>();
-	
+
 			if (groupList != null && groupList.size() > 0) {
 				for (Group group : groupList) {
 					if (group.getType() == GROUP_TYPE_SITE && group.isSite()) {
@@ -93,13 +112,13 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 					}
 				}
 			}
-	
+
 			if (sites != null && sites.size() > 0) {
 				for (Group site : sites) {
 					List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
-	
+
 					/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - START */
-	
+
 					ServiceDomainRequest sdPayload = new ServiceDomainRequest();
 					sdPayload.setGroupId(site.getGroupId());
 					sdPayload.setStart(QueryUtil.ALL_POS);
@@ -110,12 +129,12 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								sdPayload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								sdPayload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY)) {
 								sdPayload.setEndpoint(scObject.getString(DossierStatisticConstants.SERVICE_DOMAIN_ENDPOINT_KEY));
-							}						
+							}
 						}
 					}
 
@@ -128,7 +147,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 					}
 
 					/** Get dictItem by collectionCode = "SERVICE_DOMAIN" - END */
-	
+
 					// Get dossier by groupId - START
 					GetVotingResultRequest payload = new GetVotingResultRequest();
 					payload.setGroupId(site.getGroupId());
@@ -140,22 +159,22 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 							if (scObject.has(DossierStatisticConstants.USERNAME_KEY)) {
 								payload.setUsername(scObject.getString(DossierStatisticConstants.USERNAME_KEY));
 							}
-							if (scObject.has(DossierStatisticConstants.PASSWORD_KEY)) {
-								payload.setPassword(scObject.getString(DossierStatisticConstants.PASSWORD_KEY));
+							if (scObject.has(DossierStatisticConstants.SECRET_KEY)) {
+								payload.setPassword(scObject.getString(DossierStatisticConstants.SECRET_KEY));
 							}
 							if (scObject.has(DossierStatisticConstants.VOTING_ENDPOINT_KEY)) {
 								payload.setEndpoint(scObject.getString(DossierStatisticConstants.VOTING_ENDPOINT_KEY));
-							}						
+							}
 						}
 					}
-					
+
 					int monthCurrent = LocalDate.now().getMonthValue();
 					int yearCurrent = LocalDate.now().getYear();
 					for (int month = 1; month <= monthCurrent; month ++) {
 						processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
 								engineUpdateAction, serviceDomainResponse);
 					}
-	
+
 					//TODO: Calculator again year ago
 					int lastYear = LocalDate.now().getYear() - 1;
 					for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
@@ -164,7 +183,7 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 					}
 //					 System.out.println("END getVotingStatistic(): " +
 //					 LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-	
+
 					/* Update summary */
 					// Delete record
 					engineUpdateAction.removeVotingStatisticByYear(site.getCompanyId(), site.getGroupId(), 0,
@@ -175,26 +194,98 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 					//TODO: Calculator again last year
 					//Delete record
 					engineUpdateAction.removeVotingStatisticByYear(site.getCompanyId(), site.getGroupId(), 0, lastYear);
-					
+
 					statisticSumYearService.votingCalculateSumYear(site.getCompanyId(), site.getGroupId(), lastYear);
 				}
 			}
+			//Sync Voting statistic from MCDT to DVC
+			//todo uncomment this
+			syncDataToDVC();
 		}
 		catch (Exception e) {
+			System.out.println("Error calculate: " + e.getMessage());
 			_log.error(e);
 		}
+		System.out.println("End calculate.");
+		_log.info("END TRACE LOG VOTING TIME: " + nowLog);
 		isRunning = false;
 	}
 
+	private void syncDataToDVC() throws Exception{
+		try {
+			System.out.println("Sync voting statistic from MCDT to DVC...");
+			//Sync voting statistic from MCDT to DVC
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(SERVER_NO_DVC);
+			if (serverConfig == null) {
+				return;
+			}
+			JSONObject serverConfigJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			int currentMonth = this.getCurrentTime().get("Month");
+			int currentYear  = this.getCurrentTime().get("Year");
+
+			//Create payload
+			List<OpencpsVotingStatistic> lists = new ArrayList<>(OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 500));
+			//get only data of current month
+			lists.removeIf(vote -> vote.getMonth() != currentMonth || vote.getYear() != currentYear
+					|| vote.getVotingCode() == null || vote.getVotingCode().equals(""));
+			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
+			JSONObject vote;
+			for(OpencpsVotingStatistic oneStatistic: lists){
+				vote = JSONFactoryUtil.createJSONObject();
+				vote.put("companyId", oneStatistic.getCompanyId());
+				vote.put("groupId", oneStatistic.getGroupId());
+				vote.put("userId", oneStatistic.getUserId());
+				vote.put("userName", oneStatistic.getUserName());
+				vote.put("month", oneStatistic.getMonth());
+				vote.put("year", oneStatistic.getYear());
+				vote.put("votingSubject", oneStatistic.getVotingSubject());
+				vote.put("totalVoted", oneStatistic.getTotalVoted());
+				vote.put("veryGoodCount", oneStatistic.getVeryGoodCount());
+				vote.put("goodCount", oneStatistic.getGoodCount());
+				vote.put("badCount", oneStatistic.getBadCount());
+				vote.put("percentVeryGood", oneStatistic.getPercentVeryGood());
+				vote.put("percentGood", oneStatistic.getPercentGood());
+				vote.put("percentBad", oneStatistic.getPercentBad());
+				vote.put("govAgencyCode", oneStatistic.getGovAgencyCode());
+				vote.put("govAgencyName", oneStatistic.getGovAgencyName());
+				vote.put("domainCode", oneStatistic.getDomainCode());
+				vote.put("domainName", oneStatistic.getDomainName());
+				vote.put("votingCode", oneStatistic.getVotingCode());
+				vote.put("totalCount", oneStatistic.getTotalCount());
+				voteDatas.put(vote);
+			}
+			System.out.println("Count list voteDatas: "+ voteDatas.length());
+			//Call to DVC
+			RestTemplate restTemplate = new RestTemplate();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> request = new HttpEntity<>(voteDatas.toString(), headers);
+			String urlSync = serverConfigJson.getString("url") + "/votings/syncStatisticVoteToDVC";
+			System.out.println("Url call to DVC: " + urlSync);
+			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
+			System.out.println("Status sync data vote to DVC: " + response.getStatusCode().value());
+		} catch (Exception e) {
+			System.out.println("Error sync data vote to DVC: " + e.getMessage());
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	private Map<String, Integer> getCurrentTime() {
+		Map<String, Integer> monthAndYear = new HashMap<>();
+		monthAndYear.put("Month", Calendar.getInstance().get(Calendar.MONTH)+1);
+		monthAndYear.put("Year", Calendar.getInstance().get(Calendar.YEAR));
+		return monthAndYear;
+	}
+
 	private void processUpdateStatistic(long groupId, int month, int year, GetVotingResultRequest payload,
-			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse)
+										StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse)
 			throws Exception{
 		// Delete dossier statistic by month/year
 		engineUpdateAction.removeVotingStatisticByMonthYear(groupId, month, year);
 
 		payload.setMonth(Integer.toString(month));
 		payload.setYear(Integer.toString(year));
-		payload.setClassName("dossier");
+		payload.setClassName(DossierStatisticConfig.get(DossierStatisticConstants.VOTING_CLASSNAME_DOSSIER));
 		payload.setStart(QueryUtil.ALL_POS);
 		payload.setEnd(QueryUtil.ALL_POS);
 		// Check calculate = true => month
@@ -263,42 +354,42 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 	}
 
 	/**
-	   * activate: Called whenever the properties for the component change (ala Config Admin)
-	   * or OSGi is activating the component.
-	   * @param properties The properties map from Config Admin.
-	   * @throws SchedulerException in case of error.
-	   */
-	  @Activate
-	  @Modified
-	  protected void activate(Map<String,Object> properties) throws SchedulerException {
-		  String listenerClass = getClass().getName();
-		  Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 10, TimeUnit.MINUTE);
+	 * activate: Called whenever the properties for the component change (ala Config Admin)
+	 * or OSGi is activating the component.
+	 * @param properties The properties map from Config Admin.
+	 * @throws SchedulerException in case of error.
+	 */
+	@Activate
+	@Modified
+	protected void activate(Map<String,Object> properties) throws SchedulerException {
+		String listenerClass = getClass().getName();
+		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.HOUR);
 
-		  _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
-		  _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
-		  
+		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
+		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.PERSISTED);
+
 //		  _schedulerEntryImpl.setTrigger(jobTrigger);
 
-		  if (_initialized) {
-			  deactivate();
-		  }
+		if (_initialized) {
+			deactivate();
+		}
 
-	    _schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
-	    _initialized = true;
-	  }
-	  
+		_schedulerEngineHelper.register(this, _schedulerEntryImpl, DestinationNames.SCHEDULER_DISPATCH);
+		_initialized = true;
+	}
+
 	@Deactivate
 	protected void deactivate() {
 		if (_initialized) {
 			try {
 				_schedulerEngineHelper.unschedule(_schedulerEntryImpl, getStorageType());
-		    } catch (SchedulerException se) {
-		        if (_log.isWarnEnabled()) {
-		        	_log.warn("Unable to unschedule trigger", se);
-		        }
-		    }
+			} catch (SchedulerException se) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to unschedule trigger", se);
+				}
+			}
 
-		      _schedulerEngineHelper.unregister(this);
+			_schedulerEngineHelper.unregister(this);
 		}
 		_initialized = false;
 	}
@@ -306,32 +397,32 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 	/**
 	 * getStorageType: Utility method to get the storage type from the scheduler entry wrapper.
 	 * @return StorageType The storage type to use.
-	*/
+	 */
 	protected StorageType getStorageType() {
-	    if (_schedulerEntryImpl instanceof StorageTypeAware) {
-	    	return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
-	    }
-	    
-	    return StorageType.MEMORY_CLUSTERED;
+		if (_schedulerEntryImpl instanceof StorageTypeAware) {
+			return ((StorageTypeAware) _schedulerEntryImpl).getStorageType();
+		}
+
+		return StorageType.PERSISTED;
 	}
-	  
+
 	/**
-	   * setModuleServiceLifecycle: So this requires some explanation...
-	   * 
-	   * OSGi will start a component once all of it's dependencies are satisfied.  However, there
-	   * are times where you want to hold off until the portal is completely ready to go.
-	   * 
-	   * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
-	   * component which will not be available until, surprise surprise, the portal has finished
-	   * initializing.
-	   * 
-	   * With this reference, this component activation waits until portal initialization has completed.
-	   * @param moduleServiceLifecycle
-	   */
+	 * setModuleServiceLifecycle: So this requires some explanation...
+	 *
+	 * OSGi will start a component once all of it's dependencies are satisfied.  However, there
+	 * are times where you want to hold off until the portal is completely ready to go.
+	 *
+	 * This reference declaration is waiting for the ModuleServiceLifecycle's PORTAL_INITIALIZED
+	 * component which will not be available until, surprise surprise, the portal has finished
+	 * initializing.
+	 *
+	 * With this reference, this component activation waits until portal initialization has completed.
+	 * @param moduleServiceLifecycle
+	 */
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
 	protected void setModuleServiceLifecycle(ModuleServiceLifecycle moduleServiceLifecycle) {
 	}
-	  
+
 	@Reference(unbind = "-")
 	protected void setTriggerFactory(TriggerFactory triggerFactory) {
 		_triggerFactory = triggerFactory;
@@ -341,9 +432,9 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 	protected void setSchedulerEngineHelper(SchedulerEngineHelper schedulerEngineHelper) {
 		_schedulerEngineHelper = schedulerEngineHelper;
 	}
-	
+
 	private SchedulerEngineHelper _schedulerEngineHelper;
 	private TriggerFactory _triggerFactory;
 	private volatile boolean _initialized;
-	private SchedulerEntryImpl _schedulerEntryImpl = null;	
+	private SchedulerEntryImpl _schedulerEntryImpl = null;
 }

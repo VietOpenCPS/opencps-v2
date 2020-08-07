@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "VotingResultResponse")
+@XmlRootElement(name = "data")
 public class VotingResultResponse {
 	private int total;
 	private String agency;

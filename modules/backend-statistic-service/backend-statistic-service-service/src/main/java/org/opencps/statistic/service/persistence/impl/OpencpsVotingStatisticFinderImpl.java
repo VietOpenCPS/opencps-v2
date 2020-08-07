@@ -2,10 +2,7 @@ package org.opencps.statistic.service.persistence.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.SQLQuery;
-import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -287,6 +284,41 @@ public class OpencpsVotingStatisticFinderImpl extends OpencpsVotingStatisticFind
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<Object[]> searchVotingByGovAgencyAndServiceCode(long groupId, String startDay,
+																String endDay, String govAgency, String serviceCode) {
+		Session session;
+		try
+		{
+			session = openSession();
+			String SQL = _customSQL.get(getClass(),OpencpsVotingStatisticFinder.class.getName() + ".searchVotingByGovAgencyAndServiceCode");
+			SQLQuery query = session.createSQLQuery(SQL);
+			query.setCacheable(false);
+
+			query.addScalar("veryGoodCount", Type.INTEGER);
+			query.addScalar("goodCount",Type.INTEGER);
+			query.addScalar("badCount",Type.INTEGER);
+			query.addScalar("govAgencyCode",Type.STRING);
+			query.addScalar("govAgencyName",Type.STRING);
+			query.addScalar("groupId",Type.INTEGER);
+			query.addScalar("votingCode",Type.STRING);
+			query.addScalar("subject",Type.STRING);
+
+			QueryPos queryPos = QueryPos.getInstance(query);
+			queryPos.add(govAgency);
+			queryPos.add(serviceCode);
+			queryPos.add(startDay);
+			queryPos.add(endDay);
+			queryPos.add(groupId);
+			return (List<Object[]>) query.list();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	@ServiceReference(type = CustomSQL.class)

@@ -29,7 +29,9 @@ import java.util.Map;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.dossiermgt.action.TTTTIntegrationAction;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
+import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -255,6 +257,18 @@ public class PublishEventScheduler extends BaseMessageListener {
 				_log.error(e);
 			}				
 		}
+
+		else if (ServerConfigTerm.TTTT_INTEGRATION.equals(sc.getProtocol())) {
+			_log.info("Integrating dossier to TTTT...");
+			try {
+				TTTTIntegrationAction integrationAction = new TTTTIntegrationImpl();
+				return integrationAction.syncDoActionDossier(dossier);
+			} catch (Exception e) {
+				_log.error(e);
+				return false;
+			}
+		}
+
 		return true;
 	}
 
