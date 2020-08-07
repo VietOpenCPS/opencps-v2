@@ -527,6 +527,9 @@ public class DeliverableUtils {
 					formData.put(DeliverableTerm.XA_PHUONG, quequan[0]);
 					formData.put(DeliverableTerm.QUAN_HUYEN, quequan[1]);
 					formData.put(DeliverableTerm.TINH_TP, quequan[2]);
+					formData.put(DeliverableTerm.XA_PHUONG_TEXT, quequan[0]);
+					formData.put(DeliverableTerm.QUAN_HUYEN_TEXT, quequan[1]);
+					formData.put(DeliverableTerm.TINH_TP_TEXT, quequan[2]);
 					deliverableObj.put(DeliverableTerm.XA_PHUONG, quequan[0]);
 					deliverableObj.put(DeliverableTerm.QUAN_HUYEN, quequan[1]);
 					deliverableObj.put(DeliverableTerm.TINH_TP, quequan[2]);
