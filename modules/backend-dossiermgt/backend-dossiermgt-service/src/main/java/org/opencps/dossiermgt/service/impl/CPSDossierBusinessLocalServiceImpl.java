@@ -7566,7 +7566,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (oldDossierFile != null && modifiedDate != null) {
 				if (oldDossierFile.getModifiedDate() != null
 						&& oldDossierFile.getModifiedDate().getTime() < modifiedDate) {
-					_log.debug("__Start add file at:" + new Date());
+					_log.info("__Start update file at:" + new Date());
 					DossierFile dossierFile = null;
 
 					if (dataHandler != null && dataHandler.getInputStream() != null) {
@@ -7606,7 +7606,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					throw new DataConflictException("Conflict dossier file");
 				}
 			} else {
-				_log.debug("__Start add file at:" + new Date());
+				_log.info("__Start add file at:" + new Date());
 				DossierFile dossierFile = null;
 
 				if (dataHandler != null && dataHandler.getInputStream() != null) {

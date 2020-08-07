@@ -522,6 +522,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				DossierPartLocalServiceUtil.fetchByTemplatePartNo(
 					model.getGroupId(), model.getDossierTemplateNo(),
 					model.getDossierPartNo());
+			_log.info("TRACE LOG DossierPart :" + model.getGroupId() + " // " + model.getDossierTemplateNo() + "//" + model.getDossierPartNo());
 
 			// Neu ho so khong co ky so thi khong can tao giay phep
 			if (!dossierPart.getESign() ||
@@ -581,6 +582,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getDossierId(),
 					jsMappingData.getString(DossierFileTerm.FILE_ATTACHS));
 			}
+			_log.info("--- File Attach : " + fileAttachs);
 
 			// them trang thai mong muon khi hoan thanh thu tuc
 			String expertState = DossierFileTerm.EXPECT_STATE_DEFAULT;
@@ -619,17 +621,17 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getGroupId(), dDeliverableCode)
 				: DeliverableLocalServiceUtil.fetchByGID_DID(
 					model.getGroupId(), model.getDossierId());
-			_log.debug("------------------------------------");
-			_log.debug("LOG TRACE DOSSIER ORIGINALITY: " + dossier.getOriginality());
+			_log.info("------------------------------------");
+			_log.info("LOG TRACE DOSSIER ORIGINALITY: " + dossier.getOriginality() + " -- DossierNo :" + dossier.getDossierNo() + " " + dossier.getDossierId());
 			if (dossierPart.getDeliverableAction() == 0 &&
 				Validator.isNull(deliverable) && dossier.getOriginality() != 9) {
 
 				// add new deliverable
 
-				_log.debug(
+				_log.info(
 					"============addDeliverableSign=============" +
 						model.getDeliverableCode() + "___" + deliverable);
-				_log.debug("Dossier Originality : " + dossier.getOriginality());
+				_log.info("Dossier Originality : " + dossier.getOriginality());
 				deliverable =
 					DeliverableLocalServiceUtil.addDeliverableSign(
 						model.getGroupId(),
@@ -651,7 +653,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				// backup a deliverable log and update deliverable
 
-				_log.debug(
+				_log.info(
 					"============backup a deliverable log and update deliverable=============");
 				// backup
 				JSONObject deliverableLog =
@@ -684,6 +686,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 				// update
 				deliverable.setDeliverableCode(dDeliverableCode);
+				_log.info("---- LOG FILE entryId :" +dossierFileAttach.getFileEntryId() + " ----------");
 				deliverable.setFileEntryId(
 					dossierFileAttach != null
 						? dossierFileAttach.getFileEntryId() : 0l);
@@ -714,23 +717,27 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				deliverable.setFormData(formDataContent.toString());
 
 				deliverable.setFileAttachs(fileAttachs);
+				_log.info("UPDATE Deliverable :" +  JSONFactoryUtil.looseSerialize(deliverable));
 
 				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 			}
 			else {
-				_log.debug(
+				_log.info(
 					"==============deliverable other key update============");
 			}
 
 			// update fileEntryId if not exits dossierFileAttach
-			long formReportFileId = deliverable.getFormReportFileId() > 0
-				? deliverable.getFormReportFileId()
-				: dlvType.getFormReportFileId();
+			long formReportFileId = 0;
+			if(deliverable !=null) {
+				 formReportFileId = deliverable.getFormReportFileId() > 0
+						? deliverable.getFormReportFileId()
+						: dlvType.getFormReportFileId();
+			}
 
 			if (deliverable != null && formReportFileId > 0 &&
 				!(dossierFileAttach != null &&
 					dossierFileAttach.getFileEntryId() > 0)) {
-
+				_log.info(" ------- DossierFileAttach : " +  dossierFileAttach.getFileEntryId());
 				InputStream is = null;
 				String jrxmlTemplate = StringPool.BLANK;
 

@@ -132,7 +132,7 @@ public class DossierFileLocalServiceImpl
 		long userId = serviceContext.getUserId();
 
 		_log.debug("****Start add file at:" + new Date());
-
+		_log.info("****Start add file *****");
 		validateAddDossierFile(
 			groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo,
 			fileTemplateNo);
@@ -204,6 +204,7 @@ public class DossierFileLocalServiceImpl
 
 		object.setReferenceUid(referenceUid);
 		object.setDossierTemplateNo(dossierTemplateNo);
+		_log.info("****Log fileEntryId add file at:" + fileEntryId);
 		object.setFileEntryId(fileEntryId);
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
@@ -1022,7 +1023,7 @@ public class DossierFileLocalServiceImpl
 				_log.debug(e);
 			}
 		}
-		_log.debug("fileEntryId: "+fileEntryId);
+		_log.info("fileEntryId: "+fileEntryId);
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
