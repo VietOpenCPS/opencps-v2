@@ -199,6 +199,11 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				//
 				ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(site.getGroupId(),
 						"SERVER_STATISTIC_SYNC", DossierStatisticConstants.STATISTIC_PROTOCOL);
+				if (serverConfig == null) {
+					serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(0,
+							"SERVER_STATISTIC_SYNC", DossierStatisticConstants.STATISTIC_PROTOCOL);
+				}
+
 				JSONObject jsonEndPoint = JSONFactoryUtil.createJSONObject();
 				if (serverConfig != null) {
 					JSONObject scObject = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
@@ -217,7 +222,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				}
 				int monthCurrent = LocalDate.now().getMonthValue();
 //				int monthCurrent = 4;
-				_log.info("monthCurrent: "+monthCurrent);
+				_log.info("jsonEndPoint: "+jsonEndPoint);
 				int yearCurrent = LocalDate.now().getYear();
 				Map<Integer, Boolean> mapFlagCurrent = new HashMap<>();
 				for (int month = 1; month <= monthCurrent; month ++) {
@@ -262,7 +267,6 @@ public class DossierStatisticEngine extends BaseMessageListener {
 								if (calculateData != null && jsonEndPoint != null) {
 									for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
 										if (mapInt.getKey() == month) {
-											
 											StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 											JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
 											//
@@ -297,7 +301,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 //						_log.debug("STATISTICS CALCULATE ONE MONTH SITE : " + site.getName(Locale.getDefault()) + " END TIME " + (System.currentTimeMillis() - startTime) + " ms");;
 					} else {
-						_log.info("START CAL monthCurrent: "+monthCurrent);
+						//_log.info("START CAL monthCurrent: "+monthCurrent);
 						try {
 //							Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 							processUpdateStatistic(site.getGroupId(), month, yearCurrent, payload,
@@ -305,7 +309,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 							if (calculateData != null && jsonEndPoint != null) {
 								for (Map.Entry<Integer, Map<String, DossierStatisticData>> mapInt : calculateData.entrySet()) {
 									if (mapInt.getKey() == month) {
-										
+										//_log.info("month: "+ month + "| SIZE: "+ mapInt.getValue().size());
 										StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
 										JSONArray jsonArr = statisticEngineUpdate.convertMapDataList(mapInt.getValue());
 										//
@@ -438,6 +442,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 						}
 					}
 				}
+				_log.info("SIZE TOTAL MONTH: "+lstDossierDataObjs.size());
 				engineUpdateAction.updateStatistic(lstDossierDataObjs);
 //				_log.info("CALCULATE AFTER LAST MONTH YEAR UPDATE STATISTIC DATE TO DATABASE: " + (System.currentTimeMillis() - startTime) + " ms");
 
@@ -445,6 +450,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 //				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.findByG_NM_Y(site.getGroupId(), 0, LocalDate.now().getYear());
+				//_log.info("lstCurrents: "+lstCurrents.size());
 				Comparator<OpencpsDossierStatistic> compareByYearMonth = new Comparator<OpencpsDossierStatistic>() {
 					@Override
 					public int compare(OpencpsDossierStatistic o1, OpencpsDossierStatistic o2) {

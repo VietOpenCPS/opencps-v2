@@ -2299,21 +2299,34 @@ public class OpencpsStatisticRestApplication extends Application {
 
 	@POST
 	@Path("/updateStatistic")
-	public Response updateDossierStatistic(@FormParam("jsonDataList") List<JSONObject> jsonDataList) {
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response updateDossierStatistic(@FormParam("data") String data) {
 
+		_log.info("START UPDATE SYNC DVC");
 		JSONObject jsonResult = JSONFactoryUtil.createJSONObject();
 		try {
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
-			if (jsonDataList != null && jsonDataList.size() > 0) {
-				engineUpdateAction.updateStatistic(jsonDataList);
+			if (Validator.isNotNull(data)) {
+				JSONArray jsonArr = JSONFactoryUtil.createJSONArray(data);
+				List<JSONObject> jsonDataList =null;
+				if (jsonArr != null && jsonArr.length() > 0) {
+					jsonDataList = new ArrayList<JSONObject>();
+					for (int i = 0; i < jsonArr.length(); i++) {
+						jsonDataList.add(jsonArr.getJSONObject(i));
+					}
+				}
+				if (jsonDataList != null && jsonDataList.size() > 0) {
+					engineUpdateAction.updateStatistic(jsonDataList);
+				}
 			}
-
+			
 			jsonResult.put("value", "SUCCESSFULL");
-			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toJSONString()).build();
 		} catch (Exception e) {
-			_log.debug(e);
+			_log.info(e);
 			jsonResult.put("value", "FAIL");
-			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult).build();
+			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
 		}
 	}
 

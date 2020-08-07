@@ -27,11 +27,11 @@ public class DossierStatisticResponse {
 	}
 
 	public List<DossierStatisticData> getDossierStatisticData() {
-        if (dossierStatisticData == null) {
-        	dossierStatisticData = new ArrayList<DossierStatisticData>();
-        }
-        return this.dossierStatisticData;
-    }
+		if (dossierStatisticData == null) {
+			dossierStatisticData = new ArrayList<DossierStatisticData>();
+		}
+		return this.dossierStatisticData;
+	}
 
 	public void setDossierStatisticData(List<DossierStatisticData> dossierStatisticData) {
 		this.dossierStatisticData = dossierStatisticData;

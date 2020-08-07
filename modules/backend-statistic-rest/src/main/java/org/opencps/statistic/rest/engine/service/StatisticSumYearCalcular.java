@@ -740,14 +740,16 @@ public class StatisticSumYearCalcular {
 				}
 			}
 
+			//_log.info("agencyRequest: "+JSONFactoryUtil.looseSerialize(agencyRequest));
 			GovAgencyResponse agencyResponse = null;
 			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
-
+			//_log.info("agencyResponse: "+JSONFactoryUtil.looseSerialize(agencyResponse));
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
 
 			govDataList.ifPresent(source -> {
@@ -884,7 +886,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 			//
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
@@ -1023,7 +1026,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
@@ -1115,7 +1119,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());

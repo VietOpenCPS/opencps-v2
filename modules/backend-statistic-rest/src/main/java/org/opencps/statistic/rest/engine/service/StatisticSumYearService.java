@@ -232,9 +232,11 @@ public class StatisticSumYearService {
 		//
 		if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
 
-			JSONObject[] jsonArr = new JSONObject[lstDossierDataObjs.size()];
-			lstDossierDataObjs.toArray(jsonArr);
+			JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
 			//
+			for (JSONObject data : lstDossierDataObjs) {
+				jsonArr.put(data);
+			}
 			String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 					JSONFactoryUtil.looseSerialize(jsonArr));
 			if (Validator.isNotNull(sbUpdate)) {
@@ -428,8 +430,11 @@ public class StatisticSumYearService {
 //			calcular9.filterSumAllYear(companyId, groupId, month, false, false, false, lstGroupGovs, lstScs);
 			if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
 
-				JSONObject[] jsonArr = new JSONObject[lstDossierDataObjs.size()];
-				lstDossierDataObjs.toArray(jsonArr);
+				JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
+				//
+				for (JSONObject data : lstDossierDataObjs) {
+					jsonArr.put(data);
+				}
 				//
 				String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
 						JSONFactoryUtil.looseSerialize(jsonArr));
