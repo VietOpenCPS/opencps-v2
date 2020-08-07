@@ -2,6 +2,7 @@ package org.opencps.statistic.rest.engine.service;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -12,6 +13,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +32,7 @@ import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
+import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 
 import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
@@ -174,8 +177,8 @@ public class StatisticSumYearService {
 //		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, domainResponses);
 	}
 
-	public void batchCaculateSumYear(long companyId, long groupId, int year, List<String> lstGroupGovs, List<ServerConfig> lstScs,
-			List<OpencpsDossierStatistic> lstCurrents)
+	public void batchCaculateSumYear(long companyId, long groupId, int year, List<ServerConfig> lstScs,
+			List<OpencpsDossierStatistic> lstCurrents, JSONObject jsonEndPoint)
 			throws PortalException, UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		
 		//int year = LocalDate.now().getYear();
@@ -191,42 +194,64 @@ public class StatisticSumYearService {
 		StatisticSumYearCalcular calcular8 = new StatisticSumYearCalcular();
 //		StatisticSumYearCalcular calcular9 = new StatisticSumYearCalcular();
 		
-		List<String> nonGroupGovs = new ArrayList<String>();
 		List<DomainResponse> domainResponses = getDomain(groupId, -1, year);
 		
 //		_log.info("RUN#1" + groupId + "year" + year);
 		/* filter all */
 //		calcular1.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses);
-		lstDossierDataObjs.addAll(calcular1.getFilterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular1.getFilterSumYear(companyId, groupId, year, false, false, false, lstScs, lstCurrents, domainResponses));
 //		_log.info("RUN#2" + groupId + "year" + year);
 		/* filter domain = null, agency = null, systemId != null */
-		lstDossierDataObjs.addAll(calcular2.getFilterSumYear(companyId, groupId, year, false, false, true, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular2.getFilterSumYear(companyId, groupId, year, false, false, true, lstScs, lstCurrents, domainResponses));
 		
 		//LOG.info("RUN#3" + groupId + "year" + year);
 		/* filter domain = null, agency != null, systemId = null */
-		lstDossierDataObjs.addAll(calcular3.getFilterSumYear(companyId, groupId, year, false, true, false, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular3.getFilterSumYear(companyId, groupId, year, false, true, false, lstScs, lstCurrents, domainResponses));
 		
 		//LOG.info("RUN#4" + groupId + "year" + year);
 		/* filter domain != null, agency = null, systemId = null */
-		lstDossierDataObjs.addAll(calcular4.getFilterSumYear(companyId, groupId, year, true, false, false, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular4.getFilterSumYear(companyId, groupId, year, true, false, false, lstScs, lstCurrents, domainResponses));
 
 		//LOG.info("RUN#5" + groupId + "year" + year);
 		/* filter domain = null, agency != null, systemId != null */
-		lstDossierDataObjs.addAll(calcular5.getFilterSumYear(companyId, groupId, year, false, true, true, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular5.getFilterSumYear(companyId, groupId, year, false, true, true, lstScs, lstCurrents, domainResponses));
 
 		//LOG.info("RUN#6" + groupId + "year" + year);
 		/* filter domain != null, agency = null, systemId != null */
-		lstDossierDataObjs.addAll(calcular6.getFilterSumYear(companyId, groupId, year, true, false, true, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular6.getFilterSumYear(companyId, groupId, year, true, false, true, lstScs, lstCurrents, domainResponses));
 		
 		//LOG.info("RUN#7" + groupId + "year" + year);
 		/* filter domain != null, agency != null, systemId = null */
-		lstDossierDataObjs.addAll(calcular7.getFilterSumYear(companyId, groupId, year, true, true, false, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular7.getFilterSumYear(companyId, groupId, year, true, true, false, lstScs, lstCurrents, domainResponses));
 		
 		//LOG.info("RUN#8" + groupId + "year" + year);
 		/* filter domain != null, agency != null, systemId != null */
-		lstDossierDataObjs.addAll(calcular8.getFilterSumYear(companyId, groupId, year, true, true, true, nonGroupGovs, lstScs, lstCurrents, domainResponses));
+		lstDossierDataObjs.addAll(calcular8.getFilterSumYear(companyId, groupId, year, true, true, true, lstScs, lstCurrents, domainResponses));
 
 //		calcular9.filterSumYear(companyId, groupId, year, false, false, false, lstGroupGovs, lstScs, lstCurrents, domainResponses);
+		//
+		if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
+
+			JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
+			//
+			for (JSONObject data : lstDossierDataObjs) {
+				jsonArr.put(data);
+			}
+			String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
+					JSONFactoryUtil.looseSerialize(jsonArr));
+			if (Validator.isNotNull(sbUpdate)) {
+				try {
+					JSONObject jsonUpdate = JSONFactoryUtil.createJSONObject(sbUpdate);
+					//
+					if (jsonUpdate.has("value")
+							&& "SUCCESSFULL".equals(jsonUpdate.getString("value"))) {
+					}
+				} catch (JSONException e1) {
+					_log.debug(e1);
+				}
+			}
+		}
+
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 		engineUpdateAction.updateStatistic(lstDossierDataObjs);
 	}
@@ -357,7 +382,7 @@ public class StatisticSumYearService {
 		
 	}
 
-	public void batchCaculateSumAllYear(long companyId, long groupId, int month, List<String> lstGroupGovs, List<ServerConfig> lstScs) {
+	public void batchCaculateSumAllYear(long companyId, long groupId, int month, List<ServerConfig> lstScs, JSONObject jsonEndPoint) {
 		//int year = LocalDate.now().getYear();
 		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		
@@ -369,43 +394,63 @@ public class StatisticSumYearService {
 		StatisticSumYearCalcular calcular6 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular7 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular8 = new StatisticSumYearCalcular();
-//		StatisticSumYearCalcular calcular9 = new StatisticSumYearCalcular();
-		
-		List<String> nonGroupGovs = new ArrayList<String>();
 		
 		try {
 			//LOG.info("RUN#1" + groupId + "year" + year);
 			/* filter all */
-			lstDossierDataObjs.addAll(calcular1.getFilterSumAllYear(companyId, groupId, month, false, false, false, lstGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular1.getFilterSumAllYear(companyId, groupId, month, false, false, false, lstScs));
 			//LOG.info("RUN#2" + groupId + "year" + year);
 			/* filter domain = null, agency = null, systemId != null */
-			lstDossierDataObjs.addAll(calcular2.getFilterSumAllYear(companyId, groupId, month, false, false, true, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular2.getFilterSumAllYear(companyId, groupId, month, false, false, true, lstScs));
 			
 			//LOG.info("RUN#3" + groupId + "year" + year);
 			/* filter domain = null, agency != null, systemId = null */
-			lstDossierDataObjs.addAll(calcular3.getFilterSumAllYear(companyId, groupId, month, false, true, false, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular3.getFilterSumAllYear(companyId, groupId, month, false, true, false, lstScs));
 			
 			//LOG.info("RUN#4" + groupId + "year" + year);
 			/* filter domain != null, agency = null, systemId = null */
-			lstDossierDataObjs.addAll(calcular4.getFilterSumAllYear(companyId, groupId, month, true, false, false, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular4.getFilterSumAllYear(companyId, groupId, month, true, false, false, lstScs));
 
 			//LOG.info("RUN#5" + groupId + "year" + year);
 			/* filter domain = null, agency != null, systemId != null */
-			lstDossierDataObjs.addAll(calcular5.getFilterSumAllYear(companyId, groupId, month, false, true, true, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular5.getFilterSumAllYear(companyId, groupId, month, false, true, true, lstScs));
 
 			//LOG.info("RUN#6" + groupId + "year" + year);
 			/* filter domain != null, agency = null, systemId != null */
-			lstDossierDataObjs.addAll(calcular6.getFilterSumAllYear(companyId, groupId, month, true, false, true, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular6.getFilterSumAllYear(companyId, groupId, month, true, false, true, lstScs));
 			
 			//LOG.info("RUN#7" + groupId + "year" + year);
 			/* filter domain != null, agency != null, systemId = null */
-			lstDossierDataObjs.addAll(calcular7.getFilterSumAllYear(companyId, groupId, month, true, true, false, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular7.getFilterSumAllYear(companyId, groupId, month, true, true, false, lstScs));
 			
 			//LOG.info("RUN#8" + groupId + "year" + year);
 			/* filter domain != null, agency != null, systemId != null */
-			lstDossierDataObjs.addAll(calcular8.getFilterSumAllYear(companyId, groupId, month, true, true, true, nonGroupGovs, lstScs));
+			lstDossierDataObjs.addAll(calcular8.getFilterSumAllYear(companyId, groupId, month, true, true, true, lstScs));
 
-//			calcular9.filterSumAllYear(companyId, groupId, month, false, false, false, lstGroupGovs, lstScs);	
+//			calcular9.filterSumAllYear(companyId, groupId, month, false, false, false, lstGroupGovs, lstScs);
+			if (lstDossierDataObjs != null && lstDossierDataObjs.size() > 0 && jsonEndPoint != null) {
+
+				JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
+				//
+				for (JSONObject data : lstDossierDataObjs) {
+					jsonArr.put(data);
+				}
+				//
+				String sbUpdate = DossierStatisticUtils.invokeUpdateStatistic(jsonEndPoint,
+						JSONFactoryUtil.looseSerialize(jsonArr));
+				if (Validator.isNotNull(sbUpdate)) {
+					try {
+						JSONObject jsonUpdate = JSONFactoryUtil.createJSONObject(sbUpdate);
+						//
+						if (jsonUpdate.has("value")
+								&& "SUCCESSFULL".equals(jsonUpdate.getString("value"))) {
+						}
+					} catch (JSONException e1) {
+						_log.debug(e1);
+					}
+				}
+			}
+
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 			engineUpdateAction.updateStatistic(lstDossierDataObjs);
 		} catch (Exception e) {

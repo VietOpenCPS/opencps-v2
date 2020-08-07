@@ -1,6 +1,70 @@
 package org.opencps.statistic.rest.dto;
 
-public class DossierStatisticData {
+public class DossierStatisticManualData {
+
+	private int month = 0;
+	private int year = 0;
+	private int totalCount = 0;
+	private int deniedCount = 0;
+	private int cancelledCount = 0;
+	private int processCount = 0;
+	private int remainingCount = 0;
+	private int receivedCount = 0;
+	private int onlineCount = 0;
+
+	private int onegateCount = 0;
+	private int outsideCount = 0;
+	private int insideCount = 0;
+	private int releaseCount = 0;
+	private int betimesCount = 0;
+	private int ontimeCount = 0;
+	private int overtimeCount = 0;
+	private int overtimeInside = 0;
+	private int overtimeOutside = 0;
+	private int doneCount = 0;
+	private int releasingCount = 0;
+	private int unresolvedCount = 0;
+	private int processingCount = 0;
+	private int undueCount = 0;
+	private int overdueCount = 0;
+	private int interoperatingCount = 0;
+	private int waitingCount = 0;
+	private int ontimePercentage = 0;
+	private String govAgencyCode;
+	private String govAgencyName;
+	private String domainCode;
+	private String domainName;
+	private boolean reporting;
+	private long companyId;
+	private long groupId;
+	private String system;
+	private int viaPostalCount;
+	private int saturdayCount;
+	private int dossierOnline3Count;
+	private int dossierOnline4Count;
+	private int receiveDossierSatCount;
+	private int releaseDossierSatCount;
+	private String groupAgencyCode;
+	private int fromViaPostalCount;
+	private int onlineBetimesCount = 0;
+	private int onlineOntimeCount = 0;
+	private int onlineOvertimeCount = 0;
+	private int onegateBetimesCount = 0;
+	private int onegateOntimeCount = 0;
+	private int onegateOvertimeCount = 0;
+	
+	// Ho so dang giai quyet: truc tiep, truc tuyen
+	private int onlineProcessingCount = 0;
+	private int onegateProcessingCount = 0;
+	
+	// Ho so (da) giai quyet: truc tiep, truc tuyen (truoc han, dung han, qua han)
+	private int onlineReleaseBetimesCount = 0;
+	private int onlineReleaseOntimeCount = 0;
+	private int onlineReleaseOvertimeCount = 0;
+	private int onegateReleaseBetimesCount = 0;
+	private int onegateReleaseOntimeCount = 0;
+	private int onegateReleaseOvertimeCount = 0;
+
 	public int getMonth() {
 		return month;
 	}
@@ -225,11 +289,11 @@ public class DossierStatisticData {
 		this.domainName = domainName;
 	}
 
-	public int getReporting() {
+	public boolean isReporting() {
 		return reporting;
 	}
 
-	public void setReporting(int reporting) {
+	public void setReporting(boolean reporting) {
 		this.reporting = reporting;
 	}
 
@@ -281,71 +345,6 @@ public class DossierStatisticData {
 		this.system = system;
 	}
 
-	private int month = 0;
-	private int year = 0;
-	private int totalCount = 0;
-	private int deniedCount = 0;
-	private int cancelledCount = 0;
-	private int processCount = 0;
-	private int remainingCount = 0;
-	private int receivedCount = 0;
-	private int onlineCount = 0;
-
-	private int onegateCount = 0;
-	private int outsideCount = 0;
-	private int insideCount = 0;
-	private int releaseCount = 0;
-	private int betimesCount = 0;
-	private int ontimeCount = 0;
-	private int overtimeCount = 0;
-	private int overtimeInside = 0;
-	private int overtimeOutside = 0;
-	private int doneCount = 0;
-	private int releasingCount = 0;
-	private int unresolvedCount = 0;
-	private int processingCount = 0;
-	private int undueCount = 0;
-	private int overdueCount = 0;
-	private int interoperatingCount = 0;
-	private int waitingCount = 0;
-	private int ontimePercentage = 0;
-	private String govAgencyCode;
-	private String govAgencyName;
-	private String domainCode;
-	private String domainName;
-	private int reporting;
-	private long companyId;
-	private long groupId;
-	private String system;
-	private int viaPostalCount;
-	private int saturdayCount;
-	private int dossierOnline3Count;
-	private int dossierOnline4Count;
-	private int receiveDossierSatCount;
-	private int releaseDossierSatCount;
-	private String groupAgencyCode;
-	private int fromViaPostalCount;
-	private int onlineBetimesCount = 0;
-	private int onlineOntimeCount = 0;
-	private int onlineOvertimeCount = 0;
-	private int onegateBetimesCount = 0;
-	private int onegateOntimeCount = 0;
-	private int onegateOvertimeCount = 0;
-	
-	// Ho so dang giai quyet: truc tiep, truc tuyen
-	private int onlineProcessingCount = 0;
-	private int onegateProcessingCount = 0;
-	
-	// Ho so (da) giai quyet: truc tiep, truc tuyen (truoc han, dung han, qua han)
-	private int onlineReleaseBetimesCount = 0;
-	private int onlineReleaseOntimeCount = 0;
-	private int onlineReleaseOvertimeCount = 0;
-	private int onegateReleaseBetimesCount = 0;
-	private int onegateReleaseOntimeCount = 0;
-	private int onegateReleaseOvertimeCount = 0;
-	
-	
-	
 	public int getFromViaPostalCount() {
 		return fromViaPostalCount;
 	}

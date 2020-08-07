@@ -251,6 +251,10 @@ public interface DossierMarkLocalService extends BaseLocalService,
 	public List<DossierMark> getDossierMarksByFileMark(long groupId,
 		long dossierId, int fileMark);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DossierMark> getDossierMarksByFileMarkAndRecordCount(
+		long groupId, long dossierId, int fileMark, String recordCount);
+
 	/**
 	* Returns all the dossier marks matching the UUID and company.
 	*

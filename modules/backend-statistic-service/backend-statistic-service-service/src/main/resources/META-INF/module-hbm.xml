@@ -44,7 +44,7 @@
 		<property name="govAgencyName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="domainCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="domainName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="reporting" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+		<property name="reporting" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="overtimeInside" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="overtimeOutside" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="interoperatingCount" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />

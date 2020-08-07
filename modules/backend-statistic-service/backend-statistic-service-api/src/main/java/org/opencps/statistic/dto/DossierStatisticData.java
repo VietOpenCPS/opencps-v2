@@ -225,11 +225,11 @@ public class DossierStatisticData {
 		this.domainName = domainName;
 	}
 
-	public boolean isReporting() {
+	public int getReporting() {
 		return reporting;
 	}
 
-	public void setReporting(boolean reporting) {
+	public void setReporting(int reporting) {
 		this.reporting = reporting;
 	}
 
@@ -313,7 +313,7 @@ public class DossierStatisticData {
 	private String govAgencyName;
 	private String domainCode;
 	private String domainName;
-	private boolean reporting;
+	private int reporting;
 	private long companyId;
 	private long groupId;
 	private String system;

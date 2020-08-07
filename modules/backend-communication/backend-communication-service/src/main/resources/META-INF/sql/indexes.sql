@@ -15,7 +15,7 @@ create index IX_51758EA8 on opencps_serverconfig (groupId, protocol[$COLUMN_LENG
 create index IX_BA6B5400 on opencps_serverconfig (groupId, serverNo[$COLUMN_LENGTH:255$], protocol[$COLUMN_LENGTH:255$]);
 create index IX_B089E85A on opencps_serverconfig (protocol[$COLUMN_LENGTH:255$]);
 create index IX_14749CB0 on opencps_serverconfig (serverName[$COLUMN_LENGTH:4096$]);
-create index IX_97108B26 on opencps_serverconfig (serverNo[$COLUMN_LENGTH:255$]);
+create index IX_59A8B732 on opencps_serverconfig (serverNo[$COLUMN_LENGTH:255$], protocol[$COLUMN_LENGTH:255$]);
 
 create index IX_8EDCA035 on opencps_zalomap (groupId);
 create index IX_41837937 on opencps_zalomap (telNo[$COLUMN_LENGTH:128$]);

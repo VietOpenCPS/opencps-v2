@@ -21,7 +21,7 @@ public class StatisticEngineFetchEntry {
 	protected Log _log = LogFactoryUtil.getLog(StatisticEngineFetchEntry.class);
 	
 	public void updateDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
-			Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
+			Date fromStatisticDate, Date toStatisticDate, int reporting) {
 //		int month = LocalDate.now().getMonthValue();
 		//int year = LocalDate.now().getYear();
 		Calendar dateStatistic = Calendar.getInstance();
@@ -187,7 +187,7 @@ public class StatisticEngineFetchEntry {
 	private static final int LEVEL_4 = 4;
 	
 	public void updateSumDossierStatisticData(DossierStatisticData statisticData, GetDossierData dossierData,
-			Date fromStatisticDate, Date toStatisticDate, boolean reporting) {
+			Date fromStatisticDate, Date toStatisticDate, int reporting) {
 //		int month = LocalDate.now().getMonthValue();
 		//int year = LocalDate.now().getYear();
 		Calendar dateStatistic = Calendar.getInstance();
