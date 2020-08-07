@@ -549,7 +549,20 @@ public class DeliverableUtils {
 					deliverableObj.put(DeliverableTerm.NGAY, birdthday[0]);
 					deliverableObj.put(DeliverableTerm.THANG, birdthday[1]);
 					deliverableObj.put(DeliverableTerm.NAM, birdthday[2]);
-				} else {
+				}else if (value.equals(DeliverableTerm.NGAY_QD) && getCellValueV3(currentRow.getCell(i)) != null) {
+					String[] ngayQD = null;
+					if (CellType.STRING == currentRow.getCell(i).getCellType()) {
+						ngayQD = currentRow.getCell(i).getStringCellValue().split("\\.");
+						String ngayquyetdinh = ngayQD[0]+"/"+ngayQD[1]+"/"+ngayQD[2];
+						formData.put(DeliverableTerm.NGAY_QD, ngayquyetdinh);
+						deliverableObj.put(DeliverableTerm.NGAY_QD, ngayquyetdinh);
+					} else if (CellType.NUMERIC == currentRow.getCell(i).getCellType() 
+							&& DateUtil.isCellDateFormatted(currentRow.getCell(i))) {
+						String ngayqd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(currentRow.getCell(i).getDateCellValue());
+						formData.put(DeliverableTerm.NGAY_QD, ngayqd);
+						deliverableObj.put(DeliverableTerm.NGAY_QD, ngayqd);
+					}
+				}else {
 					formData.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
 					deliverableObj.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
 				}			
