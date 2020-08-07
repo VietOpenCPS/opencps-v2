@@ -640,7 +640,8 @@ public class DossierDocumentUtils {
 		JSONArray dossierMarkArr = JSONFactoryUtil.createJSONArray();
 		long dossierId = dossier.getDossierId();
 		String templateNo = dossier.getDossierTemplateNo();
-		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarksByFileMark(groupId, dossierId, 0);
+		//List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarksByFileMark(groupId, dossierId, 0);
+		List<DossierMark> dossierMarkList = DossierMarkLocalServiceUtil.getDossierMarksByFileMarkAndRecordCount(groupId, dossierId, 0, String.valueOf(0));
 		if (dossierMarkList != null && dossierMarkList.size() > 0) {
 			JSONObject jsonMark = null;
 			String partNo;

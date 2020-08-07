@@ -304,6 +304,13 @@ public class DossierMarkLocalServiceWrapper implements DossierMarkLocalService,
 			dossierId, fileMark);
 	}
 
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.DossierMark> getDossierMarksByFileMarkAndRecordCount(
+		long groupId, long dossierId, int fileMark, String recordCount) {
+		return _dossierMarkLocalService.getDossierMarksByFileMarkAndRecordCount(groupId,
+			dossierId, fileMark, recordCount);
+	}
+
 	/**
 	* Returns all the dossier marks matching the UUID and company.
 	*
