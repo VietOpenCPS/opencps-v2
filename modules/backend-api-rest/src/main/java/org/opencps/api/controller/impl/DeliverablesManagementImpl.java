@@ -971,14 +971,17 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);				
 				String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
 				Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
+				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
 				if (deliverableObj != null) {				
 					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
 					deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
 				} else {
 					String ngayQD = deliverable.getString(DeliverableTerm.NGAY_QD);
 					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
 					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 				}
 
 				deliverable.put(Field.GROUP_ID, groupId);
@@ -988,6 +991,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());		
 				deliverable.put(DeliverableTerm.FILE_ATTACH, false);
 				deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+				deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 	
 				DeliverableLocalServiceUtil.adminProcessData(
 						deliverable);
