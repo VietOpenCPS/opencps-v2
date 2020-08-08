@@ -3884,6 +3884,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
+			_log.info("Log dossierFile : " + JSONFactoryUtil.looseSerialize(dossierFile));
 
 			_log.info("__End bind to dossierFile" + new Date());
 
@@ -8071,115 +8072,166 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject elmentOption = JSONFactoryUtil.createJSONObject();
 		long fileEntryId= 0;
 		DossierPart dossierPart = null;
+		String deliverableCodeFile = "";
+		Deliverable deliverable = null;
+		List<DossierFile> listDossierFileUpdate = new ArrayList<>();
 		//CreateDossierFile(ProcessAction) : id , id
 		//DossierPart : Deliverable !=null ==> tìm được TP hồ sơ
-		if (Validator.isNotNull(proAction.getCreateDossierFiles())) {
-			String[] proCrDossierFile = proAction.getCreateDossierFiles().split(StringPool.COMMA);
-			for (String idDossierFile : proCrDossierFile) {
-				dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier.getDossierTemplateNo(), idDossierFile);
-				_log.info("TRACE_LOG_INFO DossierPart: " + JSONFactoryUtil.looseSerialize(dossierPart));
-				if (dossierPart.getPartNo().equals(idDossierFile)) {
+		try {
+			if (Validator.isNotNull(proAction.getCreateDossierFiles())) {
+				String[] proCrDossierFile = proAction.getCreateDossierFiles().split(StringPool.COMMA);
+				for (String idDossierFile : proCrDossierFile) {
+					dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier.getDossierTemplateNo(), idDossierFile);
+					_log.info("TRACE_LOG_INFO DossierPart: " + JSONFactoryUtil.looseSerialize(dossierPart));
+					if (dossierPart.getPartNo().equals(idDossierFile)) {
 //					_log.info("TRACE_LOG_INFO dossierPartNo : " + dossierPart.getPartNo() + " ---- createDossierFile : " + idDossierFile);
-					checkCreateFile = true;
-				}
-				if (Validator.isNotNull(dossierPart.getPartNo())) {
-					if (checkCreateFile) {
-						if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
-							if (Validator.isNotNull(listDossierFile)) {
-								for (DossierFile item : listDossierFile) {
-									_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
-									DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
-											0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
-											dossier.getDossierId(),
-											PortalUUIDUtil.generate(),
-											item.getDossierTemplateNo(),
-											item.getDossierPartNo(),
-											item.getDossierPartType(),
-											item.getFileTemplateNo(),
-											item.getDisplayName(), item.getFormData(),
-											item.getFileEntryId(), false,
-											item.getEForm(), item.isNew(),
-											item.getRemoved(), item.getSignCheck(),
-											item.getSignInfo(), item.getFormScript(),
-											item.getFormReport(),
-											item.getFormSchema(),
-											item.getDeliverableCode());
-//									_log.info("TRACE_LOG_INFO DossierFile :  " + JSONFactoryUtil.looseSerialize(dossierFile));
-									elmentOption.put(DossierFileTerm.DOSSIER_FILE_ID, item.getDossierFileId());
-									elmentOption.put(DossierFileTerm.DOSSIER_ID, item.getDossierId());
-									elmentOption.put(DossierFileTerm.GROUP_ID, item.getGroupId());
-									elmentOption.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, item.getDossierTemplateNo());
-									elmentOption.put(DossierFileTerm.DOSSIER_PART_NO, item.getDossierPartNo());
-									elmentOption.put(DossierFileTerm.FILE_TEMPLATE_NO, item.getFileTemplateNo());
-//									_log.info("TRACE_LOG_INFO DossierFileOld :  " + JSONFactoryUtil.looseSerialize(item));
-									options.put(elmentOption);
-								}
-							}
-						} else if ("2".equals(String.valueOf(dossierPart.getPartType()))) {
-							Attachment file = null;
-							addDossierFileByEForm(request, header, company,
-									locale, user, serviceContext,
-									file, String.valueOf(dossier.getDossierId()), dossierPart.getPartNo(),
-									null, null, dossierPart.getSampleData());
-						}
+						checkCreateFile = true;
 					}
-				}
-
-				//Tạo Deliverable cho hồ sơ
-				List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
-				if (listDossierHS != null && !listDossierHS.isEmpty()) {
-					if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-
-						DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, dossierPart.getDeliverableType());
-						for (DossierFile item : listDossierHS) {
-							if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
-								//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
-								if (item.getFileTemplateNo().equals(DossierTerm.KQGP)) {
-									if (item.getEForm() == false) {
-										fileEntryId = item.getFileEntryId();
-										_log.info("LOG Eform = false -- log fileEntryId :" + item.getFileEntryId());
+					if (Validator.isNotNull(dossierPart.getPartNo())) {
+						if (checkCreateFile) {
+							if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
+								if (Validator.isNotNull(listDossierFile)) {
+									for (DossierFile item : listDossierFile) {
+//									_log.info("TRACE_LOG_INFO checkCreateFile " + checkCreateFile);
+										_log.info("Log clone file entryId:" + item.getFileEntryId());
+										DossierFile dossierFile = DossierFileLocalServiceUtil.updateDossierFile(
+												0, groupId, company.getCompanyId(), user.getUserId(), user.getFullName(),
+												dossier.getDossierId(),
+												PortalUUIDUtil.generate(),
+												item.getDossierTemplateNo(),
+												item.getDossierPartNo(),
+												item.getDossierPartType(),
+												item.getFileTemplateNo(),
+												item.getDisplayName(), item.getFormData(),
+												item.getFileEntryId(), false,
+												item.getEForm(), item.isNew(),
+												item.getRemoved(), item.getSignCheck(),
+												item.getSignInfo(), item.getFormScript(),
+												item.getFormReport(),
+												item.getFormSchema(),
+												Validator.isNotNull(item.getDeliverableCode()) ? item.getDeliverableCode() : null);
+										_log.info("DELIVERABLECODE: " + item.getDeliverableCode());
+										_log.info("TRACE_LOG_INFO DossierFile :  " + JSONFactoryUtil.looseSerialize(dossierFile));
+										elmentOption.put(DossierFileTerm.DOSSIER_FILE_ID, item.getDossierFileId());
+										elmentOption.put(DossierFileTerm.DOSSIER_ID, item.getDossierId());
+										elmentOption.put(DossierFileTerm.GROUP_ID, item.getGroupId());
+										elmentOption.put(DossierFileTerm.DOSSIER_TEMPLATE_NO, item.getDossierTemplateNo());
+										elmentOption.put(DossierFileTerm.DOSSIER_PART_NO, item.getDossierPartNo());
+										elmentOption.put(DossierFileTerm.FILE_TEMPLATE_NO, item.getFileTemplateNo());
+//									_log.info("TRACE_LOG_INFO DossierFileOld :  " + JSONFactoryUtil.looseSerialize(item));
+										options.put(elmentOption);
 									}
 								}
-								Deliverable deliverable = Validator.isNotNull(item.getDeliverableCode())
-										? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-										dossier.getGroupId(), item.getDeliverableCode())
-										: DeliverableLocalServiceUtil.fetchByGID_DID(
-										dossier.getGroupId(), dossier.getDossierId());
-								//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
-								if (dossierPart.getDeliverableAction() == 0 && Validator.isNull(deliverable)) {
+							} else if ("2".equals(String.valueOf(dossierPart.getPartType()))) {
+								Attachment file = null;
+								addDossierFileByEForm(request, header, company,
+										locale, user, serviceContext,
+										file, String.valueOf(dossier.getDossierId()), dossierPart.getPartNo(),
+										null, null, dossierPart.getSampleData());
+							}
+						}
+					}
 
-									boolean eSignature = proAction.getESignature();
-									if (eSignature == true && item.getEForm() == true) {
+					//Tạo Deliverable cho hồ sơ
+					List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
+					if (listDossierHS != null && !listDossierHS.isEmpty()) {
+						if (Validator.isNotNull(dossierPart.getDeliverableType())) {
 
+							DeliverableType deliverableType = DeliverableTypeLocalServiceUtil.fetchByG_DLT(groupId, dossierPart.getDeliverableType());
+							for (DossierFile item : listDossierHS) {
+								if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
+									if (item.getFileTemplateNo().equals(DossierTerm.KQGP)) {
+										if (item.getEForm() == false) {
+											fileEntryId = item.getFileEntryId();
+											_log.info("LOG Eform = false -- log fileEntryId :" + item.getFileEntryId());
+											//Lấy file KQGP để update lại deliverableCode
+											listDossierFileUpdate.add(item);
+										}
+									}
+								}
+							}
+							for (DossierFile item : listDossierHS) {
+								if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
+									//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
+									deliverable = Validator.isNotNull(item.getDeliverableCode())
+											? DeliverableLocalServiceUtil.getByF_GID_DCODE(
+											dossier.getGroupId(), item.getDeliverableCode())
+											: DeliverableLocalServiceUtil.fetchByGID_DID(
+											dossier.getGroupId(), dossier.getDossierId());
+									//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
+									if (dossierPart.getDeliverableAction() == 0 && Validator.isNull(deliverable)) {
+
+										boolean eSignature = proAction.getESignature();
+										if (eSignature == true) {
 //										_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
-										String deliverableTypes = deliverableType.getTypeCode();
-										String deliverableCode = dossier.getDossierNo();
-										String deliverableName = deliverableType.getTypeName();
-										String govAgencyCode = dossier.getGovAgencyCode();
-										String govAgencyName = dossier.getGovAgencyName();
-										String applicationIdNo = dossier.getApplicantIdNo();
-										String applicationName = dossier.getApplicantName();
-										long dosserId = dossier.getDossierId();
-										long formScriptFileId = deliverableType.getFormScriptFileId();
-										long formReportFileId = deliverableType.getFormReportFileId();
-										String formData = "";
-										String deliverableState = "";
-										//Xử lý formData cho ds người có công
-										// Mapping formData --> với cấu hình của deliverableType
-										if (Validator.isNotNull(item.getFormData())) {
+											deliverableCodeFile = item.getDeliverableCode();
+											String deliverableTypes = deliverableType.getTypeCode();
+											String deliverableCode = dossier.getDossierNo();
+											String deliverableName = deliverableType.getTypeName();
+											String govAgencyCode = dossier.getGovAgencyCode();
+											String govAgencyName = dossier.getGovAgencyName();
+											String applicationIdNo = dossier.getApplicantIdNo();
+											String applicationName = dossier.getApplicantName();
+											long dosserId = dossier.getDossierId();
+											long formScriptFileId = deliverableType.getFormScriptFileId();
+											long formReportFileId = deliverableType.getFormReportFileId();
+											String formData = "";
+											String deliverableState = "";
+											//Xử lý formData cho ds người có công
+											// Mapping formData --> với cấu hình của deliverableType
+											if (Validator.isNotNull(item.getFormData())) {
 												formData = AutoFillFormData.sampleDataBinding(
 														deliverableType.getMappingData(), dossier.getDossierId(),
 														serviceContext);
+											}
+											if (Validator.isNotNull(formData)) {
+												JSONObject dataDeliverable =
+														JSONFactoryUtil.createJSONObject(formData);
+												Iterator<String> keys = dataDeliverable.keys();
+												while (keys.hasNext()) {
+													String key = keys.next();
+													String value = dataDeliverable.getString(key);
+													if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
+														deliverableState = value;
+														break;
+													} else if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
+														deliverableCode = value;
+														break;
+													} else if (key.equals(DossierTerm.DELIVERABLE_NAME)) {
+														deliverableName = value;
+														break;
+													} else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
+														govAgencyCode = value;
+														break;
+													} else if (key.equals(DossierTerm.GOV_AGENCY_NAME)) {
+														govAgencyName = value;
+														break;
+													}
+												}
+											}
+											deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
+													groupId, deliverableTypes, deliverableName,
+													deliverableCode, govAgencyCode, govAgencyName,
+													applicationIdNo, applicationName, "",
+													"", "", "", deliverableState,
+													dosserId, fileEntryId > 0 ? fileEntryId : item.getFileEntryId(), formScriptFileId, formReportFileId,
+													formData, "",
+													serviceContext);
+											_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
+											break;
 										}
-										deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
-												groupId, deliverableTypes, deliverableName,
-												deliverableCode, govAgencyCode, govAgencyName,
-												applicationIdNo, applicationName, "",
-												"", "", "", deliverableState,
-												dosserId, Validator.isNull(fileEntryId) ? item.getFileEntryId() : fileEntryId, formScriptFileId, formReportFileId,
-												formData, "",
-												serviceContext);
-//										_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
+									}
+								}
+							}
+							//Update DeliverableCode cho dossierFile KQGP
+							if (Validator.isNotNull(deliverable)) {
+								for (DossierFile item : listDossierFileUpdate) {
+									if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
+										if (Validator.isNotNull(deliverableCodeFile) && !deliverableCodeFile.equals(item.getDeliverableCode())) {
+											item.setDeliverableCode(deliverableCodeFile);
+											DossierFileLocalServiceUtil.updateDossierFile(item);
+											_log.info("LOG UPDATE DOSSIER FILE " + JSONFactoryUtil.looseSerialize(item));
+										}
 									}
 								}
 							}
@@ -8187,6 +8239,8 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 			}
+		}catch (Exception e){
+			e.getMessage();
 		}
 
 		return options;

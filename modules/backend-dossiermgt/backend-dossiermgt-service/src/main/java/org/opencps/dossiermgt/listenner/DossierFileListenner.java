@@ -621,7 +621,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getGroupId(), dDeliverableCode)
 				: DeliverableLocalServiceUtil.fetchByGID_DID(
 					model.getGroupId(), model.getDossierId());
-			_log.info("------------------------------------");
+			_log.info("------------------------------------ Deliverable " + deliverable);
 			_log.info("LOG TRACE DOSSIER ORIGINALITY: " + dossier.getOriginality() + " -- DossierNo :" + dossier.getDossierNo() + " " + dossier.getDossierId());
 			if (dossierPart.getDeliverableAction() == 0 &&
 				Validator.isNull(deliverable) && dossier.getOriginality() != 9) {
@@ -767,7 +767,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 				}
 
-				_log.debug(
+				_log.info(
 					"========update fileEntryId if not exits dossierFileAttach");
 				// Process update deliverable file Id
 				Message message = new Message();
@@ -786,10 +786,16 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				message.put(ConstantUtils.MSG_ENG, msgData);
 				MessageBusUtil.sendMessage(
 					ConstantUtils.JASPER_DESTINATION, message);
+				_log.info("LOG INFO message : " + JSONFactoryUtil.looseSerialize(message));
+				_log.info("LOG INFO message : " + JSONFactoryUtil.looseSerialize(fileAttachs));
+
 			}
+//			_log.info("End onAfterUpdate Deliverable" + deliverable.getFileEntryId());
 		}
 		catch (Exception e) {
 			_log.error(e);
+			_log.info(e.getMessage());
+			e.printStackTrace();
 		}
 
 	}

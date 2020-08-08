@@ -2952,6 +2952,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String groupDossierIdHs =
 				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2994,7 +2998,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3162,6 +3166,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
 				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
 				: null;
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -3202,7 +3210,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,createDateStart,createDateEnd);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3332,7 +3340,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String documentNo, String documentDate, String strSystemId,
 			Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, Integer vnpostalStatus, Integer fromViaPostal,
-			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai)
+			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai,
+			String createDateStart, String createDateEnd)
 			throws ParseException {
 
 		//Dossier Counter
@@ -4482,6 +4491,34 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			if (Validator.isNotNull(toReleaseDate)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
 						DossierTerm.RELEASE_DATE_LUCENE, null, toReleaseDateFilter,
+						false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE_LUCENE, createDateStartFilter,
+						createDateEndFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE_LUCENE, createDateStartFilter,
+						null, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.RELEASE_DATE_LUCENE, null, createDateEndFilter,
 						false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);

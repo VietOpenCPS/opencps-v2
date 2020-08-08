@@ -426,7 +426,7 @@ public class DossierFileLocalServiceImpl
 			"Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " +
 				dossierPartNo);
 		long fileEntryId = 0;
-
+		_log.info("Log input stream : " + inputStream);
 		if (inputStream != null) {
 			try {
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
@@ -436,6 +436,7 @@ public class DossierFileLocalServiceImpl
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
 				}
+				_log.info("Log get fileEntry " + fileEntryId);
 			}
 			catch (Exception e) {
 				// e.printStackTrace();
@@ -478,6 +479,7 @@ public class DossierFileLocalServiceImpl
 		object.setReferenceUid(referenceUid);
 		object.setDossierTemplateNo(dossierTemplateNo);
 		object.setFileEntryId(fileEntryId);
+		_log.info("Log get fileEntry " + fileEntryId);
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
 		object.setDossierPartType(dossierPart.getPartType());

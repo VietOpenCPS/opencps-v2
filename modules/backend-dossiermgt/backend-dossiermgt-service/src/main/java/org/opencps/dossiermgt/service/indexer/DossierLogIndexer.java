@@ -20,7 +20,9 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -71,6 +73,11 @@ public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 		document.addTextSortable(DossierLogTerm.CONTENT, object.getContent());
 		document.addTextSortable(DossierLogTerm.NOTIFICATION_TYPE, notifyType);
 		document.addTextSortable(DossierLogTerm.PAYLOAD, object.getPayload());
+		if (Validator.isNotNull(object.getCreateDate())) {
+			document.addDateSortable(DossierTerm.CREATE_DATE_LUCENE, object.getCreateDate());
+		} else {
+			document.addTextSortable(DossierTerm.CREATE_DATE_LUCENE, StringPool.BLANK);
+		}
 		
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(object.getDossierId());

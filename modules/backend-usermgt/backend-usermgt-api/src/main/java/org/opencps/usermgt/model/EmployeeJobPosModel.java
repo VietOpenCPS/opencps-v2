@@ -252,6 +252,20 @@ public interface EmployeeJobPosModel extends BaseModel<EmployeeJobPos>,
 	 */
 	public void setWorkingUnitId(long workingUnitId);
 
+	/**
+	 * Returns the status of this employee job pos.
+	 *
+	 * @return the status of this employee job pos
+	 */
+	public long getStatus();
+
+	/**
+	 * Sets the status of this employee job pos.
+	 *
+	 * @param status the status of this employee job pos
+	 */
+	public void setStatus(long status);
+
 	@Override
 	public boolean isNew();
 

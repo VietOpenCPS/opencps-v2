@@ -37,6 +37,7 @@ import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -173,6 +174,20 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 		try {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+			String createDateStart =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getCreateDateStart());
+			String createDateEnd =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getCreateDateEnd());
+
+			if(Validator.isNotNull(createDateStart)){
+				params.put(DossierTerm.CREATE_DATE_START, createDateStart);
+			}
+			if(Validator.isNotNull(createDateEnd)){
+				params.put(DossierTerm.CREATE_DATE_END, createDateEnd);
+			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);

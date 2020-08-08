@@ -596,6 +596,7 @@ public class EmployeeJobPosLocalServiceImpl extends EmployeeJobPosLocalServiceBa
 		object.setEmployeeId(objectData.getLong(EmployeeJobPosTerm.EMPLOYEE_ID));
 		object.setJobPostId(objectData.getLong(EmployeeJobPosTerm.JOBPOST_ID));
 		object.setWorkingUnitId(objectData.getLong(EmployeeJobPosTerm.WORKING_UNIT_ID));
+		object.setStatus(objectData.getLong(EmployeeJobPosTerm.STATUS));
 
 		try {
 
