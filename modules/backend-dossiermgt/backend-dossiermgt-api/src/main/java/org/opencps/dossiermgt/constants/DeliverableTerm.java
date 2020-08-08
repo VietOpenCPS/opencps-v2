@@ -57,6 +57,9 @@ public class DeliverableTerm {
 	public static final String XA_PHUONG = "xaphuong";
 	public static final String QUAN_HUYEN = "quanhuyen";
 	public static final String TINH_TP = "tinhthanhpho";
+	public static final String XA_PHUONG_TEXT = "xaphuong_text";
+	public static final String QUAN_HUYEN_TEXT = "quanhuyen_text";
+	public static final String TINH_TP_TEXT = "tinhthanhpho_text";
 	public static final String CMND = "applicantIdNo";
 	public static final String NGAY = "ngay";
 	public static final String THANG = "thang";
