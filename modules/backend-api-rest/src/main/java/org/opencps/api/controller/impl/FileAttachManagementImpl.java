@@ -1,8 +1,13 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFileVersionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -13,8 +18,14 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.File;
 import java.io.InputStream;
@@ -311,4 +322,104 @@ public class FileAttachManagementImpl implements FileAttachManagement {
 		}
 	}
 
+	@Override
+	public Response updateFileEntryId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, long fileEntryId, Attachment attachment, String fileName, String fileType,
+			long fileSize) {
+
+		InputStream inputStream = null;
+
+		try {
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+			DataHandler dataHandler = attachment.getDataHandler();
+
+			inputStream = dataHandler.getInputStream();
+
+			FileEntry fileEntry = null;
+
+			if (inputStream != null && fileSize > 0 && Validator.isNotNull(fileName)) {
+
+				fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+				serviceContext.setAddGroupPermissions(true);
+				serviceContext.setAddGuestPermissions(true);
+
+				PermissionChecker checker =
+					PermissionCheckerFactoryUtil.create(user);
+				PermissionThreadLocal.setPermissionChecker(checker);
+
+				fileEntry = DLAppLocalServiceUtil.updateFileEntry(
+					user.getUserId(), fileEntryId, fileName, fileType,
+					System.currentTimeMillis() + StringPool.DASH + fileName, fileEntry.getDescription(),
+					StringPool.BLANK, true, inputStream, fileSize, serviceContext);
+			}
+
+			return Response.status(HttpURLConnection.HTTP_OK).
+					entity(JSONFactoryUtil.looseSerialize(fileEntry)).build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return BusinessExceptionImpl.processException(e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (Exception io) {
+					_log.error(io);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public Response getFileEntryIds(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, long id) {
+
+		try {
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			JSONArray data = JSONFactoryUtil.createJSONArray();
+			List<DLFileVersion> fileVersions =
+					DLFileVersionLocalServiceUtil.getFileVersions(id, WorkflowConstants.STATUS_APPROVED);
+			for (DLFileVersion ver : fileVersions) {
+				data.put(JSONFactoryUtil.looseSerialize(ver));
+			}
+			result.put("total", fileVersions.size());
+			result.put("data", data);
+			return Response.status(HttpURLConnection.HTTP_OK).
+					entity(result.toString()).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	@Override
+	public Response getFileEntryIdByVersion(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user,
+			ServiceContext serviceContext, long id, String version) {
+
+		try {
+			List<DLFileVersion> fileVersions =
+					DLFileVersionLocalServiceUtil.getFileVersions(id, WorkflowConstants.STATUS_APPROVED);
+			for (DLFileVersion ver : fileVersions) {
+				if (ver.getVersion().equals(version)) {
+					File file = DLFileEntryLocalServiceUtil.getFile(id, version, true);
+
+					ResponseBuilder responseBuilder = Response.ok((Object) file);
+					String inlineFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), ver.getFileName());
+					responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION, inlineFilename);
+					responseBuilder.header(HttpHeaders.CONTENT_TYPE, ver.getMimeType());
+					responseBuilder.header(ConstantUtils.CONTENT_LENGTH, file.length());
+
+					return responseBuilder.build();
+				}
+			}
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+			result.put("total", 0);
+			return Response.status(HttpURLConnection.HTTP_OK).
+					entity(result.toString()).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
 }
