@@ -73,11 +73,11 @@ public class DossierLogIndexer extends BaseIndexer<DossierLog> {
 		document.addTextSortable(DossierLogTerm.CONTENT, object.getContent());
 		document.addTextSortable(DossierLogTerm.NOTIFICATION_TYPE, notifyType);
 		document.addTextSortable(DossierLogTerm.PAYLOAD, object.getPayload());
-		if (Validator.isNotNull(object.getCreateDate())) {
-			document.addDateSortable(DossierTerm.CREATE_DATE_LUCENE, object.getCreateDate());
-		} else {
-			document.addTextSortable(DossierTerm.CREATE_DATE_LUCENE, StringPool.BLANK);
-		}
+//		if (Validator.isNotNull(object.getCreateDate())) {
+//			document.addDateSortable(DossierTerm.CREATE_DATE_LUCENE, object.getCreateDate());
+//		} else {
+//			document.addTextSortable(DossierTerm.CREATE_DATE_LUCENE, StringPool.BLANK);
+//		}
 		
 		try {
 			Dossier dossier = DossierLocalServiceUtil.getDossier(object.getDossierId());

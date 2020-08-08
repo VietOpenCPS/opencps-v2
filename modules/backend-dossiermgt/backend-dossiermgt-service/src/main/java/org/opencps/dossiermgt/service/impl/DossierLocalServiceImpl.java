@@ -4502,14 +4502,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		if (Validator.isNotNull(createDateStart)) {
 			if (Validator.isNotNull(createDateEnd)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
-						DossierTerm.CREATE_DATE_LUCENE, createDateStartFilter,
+						DossierTerm.CREATE_DATE, createDateStartFilter,
 						createDateEndFilter, true, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 			else {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
-						DossierTerm.CREATE_DATE_LUCENE, createDateStartFilter,
+						DossierTerm.CREATE_DATE, createDateStartFilter,
 						null, true, false);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
@@ -4518,7 +4518,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		else {
 			if (Validator.isNotNull(createDateEnd)) {
 				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
-						DossierTerm.RELEASE_DATE_LUCENE, null, createDateEndFilter,
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
 						false, true);
 
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
