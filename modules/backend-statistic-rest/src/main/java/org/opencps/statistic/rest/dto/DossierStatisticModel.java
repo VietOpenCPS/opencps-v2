@@ -77,7 +77,7 @@ public class DossierStatisticModel implements Serializable {
 	@FormParam(value="domainName")
 	protected String domainName;
 	@FormParam(value="reporting")
-	protected Boolean reporting;
+	protected int reporting;
 	@FormParam(value="overtimeInside")
 	protected int overtimeInside;
 	@FormParam(value="overtimeOutside")
@@ -342,10 +342,10 @@ public class DossierStatisticModel implements Serializable {
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
 	}
-	public Boolean getReporting() {
+	public int getReporting() {
 		return reporting;
 	}
-	public void setReporting(Boolean reporting) {
+	public void setReporting(int reporting) {
 		this.reporting = reporting;
 	}
 	public int getOvertimeInside() {

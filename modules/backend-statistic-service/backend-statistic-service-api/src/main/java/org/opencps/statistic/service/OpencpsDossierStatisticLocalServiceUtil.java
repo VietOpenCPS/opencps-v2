@@ -85,9 +85,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -112,11 +111,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
-		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount, int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -154,9 +153,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -182,11 +180,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
-		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount, int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -215,7 +213,7 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
 		String domainCode, String domainName, String groupGovAgencyCode,
-		boolean reporting, int onegateCount, int outsideCount, int insideCount,
+		int reporting, int onegateCount, int outsideCount, int insideCount,
 		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
 		int dossierOnline4Count, int receiveDossierSatCount,
 		int releaseDossierSatCount, int fromViaPostalCount)
@@ -404,8 +402,34 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		return getService().findByG_NM_Y(groupId, notMonth, year);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByM_Y_GOV_DOM_GRO_SYS(
+		int month, int year, String govAgencyCode, String domainCode,
+		String groupAgencyCode, String system) {
+		return getService()
+				   .findByM_Y_GOV_DOM_GRO_SYS(month, year, govAgencyCode,
+			domainCode, groupAgencyCode, system);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByNOT_GROUPID(
+		long groupId) {
+		return getService().findByNOT_GROUPID(groupId);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> findByREPO_ARR(
+		int[] reporting) {
+		return getService().findByREPO_ARR(reporting);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByG_Y_GO_DO_GR_SY(
+		long groupId, int year, String[] groupAgencyArr, String domainCode,
+		String groupAgency, String system) {
+		return getService()
+				   .getByG_Y_GO_DO_GR_SY(groupId, year, groupAgencyArr,
+			domainCode, groupAgency, system);
 	}
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYear(
@@ -418,14 +442,28 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static org.opencps.statistic.model.OpencpsDossierStatistic getByGovMonthYearDomain(
 		long groupId, String govAgencyCode, int month, int year,
-		String domainCode, boolean reporting) {
+		String domainCode, int reporting) {
 		return getService()
 				   .getByGovMonthYearDomain(groupId, govAgencyCode, month,
 			year, domainCode, reporting);
 	}
 
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByMonthYearAndNotReport(
+		long groupId, int month, int year, int reporting) {
+		return getService()
+				   .getByMonthYearAndNotReport(groupId, month, year, reporting);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getByNOT_G_M_Y_GOV_DOM_GRO_SYS(
+		long groupId, int month, int year, String govAgencyCode,
+		String domainCode, String groupAgencyCode, String system) {
+		return getService()
+				   .getByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, month, year,
+			govAgencyCode, domainCode, groupAgencyCode, system);
+	}
+
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthsYearAndReport(
-		long groupId, int[] month, int year, boolean reporting) {
+		long groupId, int[] month, int year, int reporting) {
 		return getService()
 				   .getDossierStatisticByMonthsYearAndReport(groupId, month,
 			year, reporting);
@@ -437,7 +475,7 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 	}
 
 	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(
-		long groupId, int month, int year, boolean reporting) {
+		long groupId, int month, int year, int reporting) {
 		return getService()
 				   .getDossierStatisticByMonthYearAndReport(groupId, month,
 			year, reporting);
@@ -456,6 +494,18 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {
 		return getService().getIndexableActionableDynamicQuery();
+	}
+
+	public static org.opencps.statistic.model.OpencpsDossierStatistic getInfoByMonthYearAndNotReport(
+		long groupId, int month, int year, int reporting) {
+		return getService()
+				   .getInfoByMonthYearAndNotReport(groupId, month, year,
+			reporting);
+	}
+
+	public static java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> getListByReporting(
+		int reporting) {
+		return getService().getListByReporting(reporting);
 	}
 
 	/**
@@ -604,6 +654,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		getService().updateBatchStatistic(dossierDataObjs);
 	}
 
+	public static org.opencps.statistic.model.OpencpsDossierStatistic updateDossierStatistic(
+		org.opencps.statistic.model.OpencpsDossierStatistic statistic) {
+		return getService().updateDossierStatistic(statistic);
+	}
+
 	public static org.opencps.statistic.model.OpencpsDossierStatistic updateOnlyStatistic(
 		org.opencps.statistic.model.OpencpsDossierStatistic dossierStatistic,
 		long companyId, long groupId, long userId, String userName, int month,
@@ -615,9 +670,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -644,11 +698,11 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int viaPostalCount, int saturdayCount, int dossierOnline3Count,
-		int dossierOnline4Count, int receiveDossierSatCount,
-		int releaseDossierSatCount, int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int viaPostalCount,
+		int saturdayCount, int dossierOnline3Count, int dossierOnline4Count,
+		int receiveDossierSatCount, int releaseDossierSatCount,
+		int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -691,8 +745,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int dossierOnline3Count, int dossierOnline4Count,
 		int receiveDossierSatCount, int releaseDossierSatCount,
 		String govAgencyCode, String govAgencyName, String domainCode,
-		String domainName, boolean reporting, int onegateCount,
-		int outsideCount, int insideCount, int fromViaPostalCount)
+		String domainName, int reporting, int onegateCount, int outsideCount,
+		int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
@@ -720,9 +774,8 @@ public class OpencpsDossierStatisticLocalServiceUtil {
 		int overdueCount, int pausingCount, int ontimePercentage,
 		int overtimeInside, int overtimeOutside, int interoperatingCount,
 		int waitingCount, String govAgencyCode, String govAgencyName,
-		String domainCode, String domainName, boolean reporting,
-		int onegateCount, int outsideCount, int insideCount,
-		int fromViaPostalCount)
+		String domainCode, String domainName, int reporting, int onegateCount,
+		int outsideCount, int insideCount, int fromViaPostalCount)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()

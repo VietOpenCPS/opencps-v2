@@ -2774,6 +2774,638 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_1 = "serverConfig.protocol IS NULL";
 	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_2 = "serverConfig.protocol = ?";
 	private static final String _FINDER_COLUMN_F_G_S_P_PROTOCOL_3 = "(serverConfig.protocol IS NULL OR serverConfig.protocol = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_SNO_PT = new FinderPath(ServerConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServerConfigModelImpl.FINDER_CACHE_ENABLED, ServerConfigImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySNO_PT",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT =
+		new FinderPath(ServerConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServerConfigModelImpl.FINDER_CACHE_ENABLED, ServerConfigImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBySNO_PT",
+			new String[] { String.class.getName(), String.class.getName() },
+			ServerConfigModelImpl.SERVERNO_COLUMN_BITMASK |
+			ServerConfigModelImpl.PROTOCOL_COLUMN_BITMASK |
+			ServerConfigModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_SNO_PT = new FinderPath(ServerConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServerConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySNO_PT",
+			new String[] { String.class.getName(), String.class.getName() });
+
+	/**
+	 * Returns all the server configs where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the matching server configs
+	 */
+	@Override
+	public List<ServerConfig> findBySNO_PT(String serverNo, String protocol) {
+		return findBySNO_PT(serverNo, protocol, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param start the lower bound of the range of server configs
+	 * @param end the upper bound of the range of server configs (not inclusive)
+	 * @return the range of matching server configs
+	 */
+	@Override
+	public List<ServerConfig> findBySNO_PT(String serverNo, String protocol,
+		int start, int end) {
+		return findBySNO_PT(serverNo, protocol, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param start the lower bound of the range of server configs
+	 * @param end the upper bound of the range of server configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching server configs
+	 */
+	@Override
+	public List<ServerConfig> findBySNO_PT(String serverNo, String protocol,
+		int start, int end, OrderByComparator<ServerConfig> orderByComparator) {
+		return findBySNO_PT(serverNo, protocol, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the server configs where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServerConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param start the lower bound of the range of server configs
+	 * @param end the upper bound of the range of server configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching server configs
+	 */
+	@Override
+	public List<ServerConfig> findBySNO_PT(String serverNo, String protocol,
+		int start, int end, OrderByComparator<ServerConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT;
+			finderArgs = new Object[] { serverNo, protocol };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_SNO_PT;
+			finderArgs = new Object[] {
+					serverNo, protocol,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServerConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServerConfig>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServerConfig serverConfig : list) {
+					if (!Objects.equals(serverNo, serverConfig.getServerNo()) ||
+							!Objects.equals(protocol, serverConfig.getProtocol())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(4);
+			}
+
+			query.append(_SQL_SELECT_SERVERCONFIG_WHERE);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServerConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				if (!pagination) {
+					list = (List<ServerConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServerConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching server config
+	 * @throws NoSuchServerConfigException if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig findBySNO_PT_First(String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator)
+		throws NoSuchServerConfigException {
+		ServerConfig serverConfig = fetchBySNO_PT_First(serverNo, protocol,
+				orderByComparator);
+
+		if (serverConfig != null) {
+			return serverConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("serverNo=");
+		msg.append(serverNo);
+
+		msg.append(", protocol=");
+		msg.append(protocol);
+
+		msg.append("}");
+
+		throw new NoSuchServerConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the first server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching server config, or <code>null</code> if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig fetchBySNO_PT_First(String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator) {
+		List<ServerConfig> list = findBySNO_PT(serverNo, protocol, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching server config
+	 * @throws NoSuchServerConfigException if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig findBySNO_PT_Last(String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator)
+		throws NoSuchServerConfigException {
+		ServerConfig serverConfig = fetchBySNO_PT_Last(serverNo, protocol,
+				orderByComparator);
+
+		if (serverConfig != null) {
+			return serverConfig;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("serverNo=");
+		msg.append(serverNo);
+
+		msg.append(", protocol=");
+		msg.append(protocol);
+
+		msg.append("}");
+
+		throw new NoSuchServerConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the last server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching server config, or <code>null</code> if a matching server config could not be found
+	 */
+	@Override
+	public ServerConfig fetchBySNO_PT_Last(String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator) {
+		int count = countBySNO_PT(serverNo, protocol);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServerConfig> list = findBySNO_PT(serverNo, protocol, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the server configs before and after the current server config in the ordered set where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverConfigId the primary key of the current server config
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next server config
+	 * @throws NoSuchServerConfigException if a server config with the primary key could not be found
+	 */
+	@Override
+	public ServerConfig[] findBySNO_PT_PrevAndNext(long serverConfigId,
+		String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator)
+		throws NoSuchServerConfigException {
+		ServerConfig serverConfig = findByPrimaryKey(serverConfigId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ServerConfig[] array = new ServerConfigImpl[3];
+
+			array[0] = getBySNO_PT_PrevAndNext(session, serverConfig, serverNo,
+					protocol, orderByComparator, true);
+
+			array[1] = serverConfig;
+
+			array[2] = getBySNO_PT_PrevAndNext(session, serverConfig, serverNo,
+					protocol, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ServerConfig getBySNO_PT_PrevAndNext(Session session,
+		ServerConfig serverConfig, String serverNo, String protocol,
+		OrderByComparator<ServerConfig> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		query.append(_SQL_SELECT_SERVERCONFIG_WHERE);
+
+		boolean bindServerNo = false;
+
+		if (serverNo == null) {
+			query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_1);
+		}
+		else if (serverNo.equals("")) {
+			query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_3);
+		}
+		else {
+			bindServerNo = true;
+
+			query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_2);
+		}
+
+		boolean bindProtocol = false;
+
+		if (protocol == null) {
+			query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_1);
+		}
+		else if (protocol.equals("")) {
+			query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_3);
+		}
+		else {
+			bindProtocol = true;
+
+			query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ServerConfigModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindServerNo) {
+			qPos.add(serverNo);
+		}
+
+		if (bindProtocol) {
+			qPos.add(protocol);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(serverConfig);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ServerConfig> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the server configs where serverNo = &#63; and protocol = &#63; from the database.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 */
+	@Override
+	public void removeBySNO_PT(String serverNo, String protocol) {
+		for (ServerConfig serverConfig : findBySNO_PT(serverNo, protocol,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(serverConfig);
+		}
+	}
+
+	/**
+	 * Returns the number of server configs where serverNo = &#63; and protocol = &#63;.
+	 *
+	 * @param serverNo the server no
+	 * @param protocol the protocol
+	 * @return the number of matching server configs
+	 */
+	@Override
+	public int countBySNO_PT(String serverNo, String protocol) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_SNO_PT;
+
+		Object[] finderArgs = new Object[] { serverNo, protocol };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SERVERCONFIG_WHERE);
+
+			boolean bindServerNo = false;
+
+			if (serverNo == null) {
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_1);
+			}
+			else if (serverNo.equals("")) {
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_3);
+			}
+			else {
+				bindServerNo = true;
+
+				query.append(_FINDER_COLUMN_SNO_PT_SERVERNO_2);
+			}
+
+			boolean bindProtocol = false;
+
+			if (protocol == null) {
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_1);
+			}
+			else if (protocol.equals("")) {
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_3);
+			}
+			else {
+				bindProtocol = true;
+
+				query.append(_FINDER_COLUMN_SNO_PT_PROTOCOL_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindServerNo) {
+					qPos.add(serverNo);
+				}
+
+				if (bindProtocol) {
+					qPos.add(protocol);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_SNO_PT_SERVERNO_1 = "serverConfig.serverNo IS NULL AND ";
+	private static final String _FINDER_COLUMN_SNO_PT_SERVERNO_2 = "serverConfig.serverNo = ? AND ";
+	private static final String _FINDER_COLUMN_SNO_PT_SERVERNO_3 = "(serverConfig.serverNo IS NULL OR serverConfig.serverNo = '') AND ";
+	private static final String _FINDER_COLUMN_SNO_PT_PROTOCOL_1 = "serverConfig.protocol IS NULL";
+	private static final String _FINDER_COLUMN_SNO_PT_PROTOCOL_2 = "serverConfig.protocol = ?";
+	private static final String _FINDER_COLUMN_SNO_PT_PROTOCOL_3 = "(serverConfig.protocol IS NULL OR serverConfig.protocol = '')";
 
 	public ServerConfigPersistenceImpl() {
 		setModelClass(ServerConfig.class);
@@ -3187,6 +3819,15 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_P,
 				args);
 
+			args = new Object[] {
+					serverConfigModelImpl.getServerNo(),
+					serverConfigModelImpl.getProtocol()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SNO_PT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -3245,6 +3886,27 @@ public class ServerConfigPersistenceImpl extends BasePersistenceImpl<ServerConfi
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_P, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_P,
+					args);
+			}
+
+			if ((serverConfigModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serverConfigModelImpl.getOriginalServerNo(),
+						serverConfigModelImpl.getOriginalProtocol()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_SNO_PT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT,
+					args);
+
+				args = new Object[] {
+						serverConfigModelImpl.getServerNo(),
+						serverConfigModelImpl.getProtocol()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_SNO_PT, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SNO_PT,
 					args);
 			}
 		}

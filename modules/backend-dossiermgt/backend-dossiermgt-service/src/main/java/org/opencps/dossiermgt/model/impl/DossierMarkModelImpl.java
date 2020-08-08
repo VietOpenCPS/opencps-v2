@@ -121,8 +121,9 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 	public static final long DOSSIERPARTNO_COLUMN_BITMASK = 4L;
 	public static final long FILEMARK_COLUMN_BITMASK = 8L;
 	public static final long GROUPID_COLUMN_BITMASK = 16L;
-	public static final long UUID_COLUMN_BITMASK = 32L;
-	public static final long DOSSIERMARKID_COLUMN_BITMASK = 64L;
+	public static final long RECORDCOUNT_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long DOSSIERMARKID_COLUMN_BITMASK = 128L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.DossierMark"));
 
@@ -499,7 +500,17 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 
 	@Override
 	public void setRecordCount(String recordCount) {
+		_columnBitmask |= RECORDCOUNT_COLUMN_BITMASK;
+
+		if (_originalRecordCount == null) {
+			_originalRecordCount = _recordCount;
+		}
+
 		_recordCount = recordCount;
+	}
+
+	public String getOriginalRecordCount() {
+		return GetterUtil.getString(_originalRecordCount);
 	}
 
 	@Override
@@ -635,6 +646,8 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 		dossierMarkModelImpl._originalFileMark = dossierMarkModelImpl._fileMark;
 
 		dossierMarkModelImpl._setOriginalFileMark = false;
+
+		dossierMarkModelImpl._originalRecordCount = dossierMarkModelImpl._recordCount;
 
 		dossierMarkModelImpl._columnBitmask = 0;
 	}
@@ -839,6 +852,7 @@ public class DossierMarkModelImpl extends BaseModelImpl<DossierMark>
 	private boolean _setOriginalFileMark;
 	private String _fileComment;
 	private String _recordCount;
+	private String _originalRecordCount;
 	private long _columnBitmask;
 	private DossierMark _escapedModel;
 }

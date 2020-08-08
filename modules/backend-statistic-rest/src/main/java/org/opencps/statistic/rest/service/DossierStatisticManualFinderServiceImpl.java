@@ -7,13 +7,14 @@ import java.util.List;
 
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.converter.DossierStatisticConverter;
+import org.opencps.statistic.rest.dto.DossierStatisticManualResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
 
 public class DossierStatisticManualFinderServiceImpl implements DossierStatisticManualFinderService {
 	@Override
-	public DossierStatisticResponse finderDossierStatisticSystem(DossierStatisticRequest dossierStatisticRequest)
+	public DossierStatisticManualResponse finderDossierStatisticSystem(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException, SystemException {		
 		List<OpencpsDossierStatisticManual> dossierStatistics = OpencpsDossierStatisticManualLocalServiceUtil
 				.searchDossierStatisticSystem(dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),
@@ -25,7 +26,7 @@ public class DossierStatisticManualFinderServiceImpl implements DossierStatistic
 	}
 
 	@Override
-	public DossierStatisticResponse finderDossierStatistics(DossierStatisticRequest dossierStatisticRequest)
+	public DossierStatisticManualResponse finderDossierStatistics(DossierStatisticRequest dossierStatisticRequest)
 			throws PortalException {
 		List<OpencpsDossierStatisticManual> dossierStatistics = OpencpsDossierStatisticManualLocalServiceUtil.fetchDossierStatistic(
 				dossierStatisticRequest.getGroupId(), dossierStatisticRequest.getMonth(),

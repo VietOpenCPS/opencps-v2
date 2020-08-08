@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,12 +15,15 @@ public class GovAgencyResponse {
 	public void setTotal(int total) {
 		this.total = total;
 	}
-	public List<GovAgencyData> getData() {
-		return data;
-	}
 	public void setData(List<GovAgencyData> data) {
 		this.data = data;
 	}
+	public List<GovAgencyData> getData() {
+        if (data == null) {
+        	data = new ArrayList<GovAgencyData>();
+        }
+        return this.data;
+    }
 	private int total;
 
 	private List<GovAgencyData> data;

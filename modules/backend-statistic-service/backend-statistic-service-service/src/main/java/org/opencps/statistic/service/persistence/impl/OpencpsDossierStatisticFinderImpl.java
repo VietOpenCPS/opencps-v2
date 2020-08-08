@@ -28,6 +28,8 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 			+ ".searchStatisic";
 	private static final String SEARCH_DOSSIER_STATISTIC_SYSTEM = OpencpsDossierStatisticFinder.class.getName()
 			+ ".searchStatisicSystem";
+	private static final String UPDATE_DOSSIER_STATISTIC = OpencpsDossierStatisticFinder.class.getName()
+			+ ".updateStatisic";
 
 	private static final String TOTAL = "total";
 
@@ -650,7 +652,44 @@ public class OpencpsDossierStatisticFinderImpl extends OpencpsDossierStatisticFi
 
 		return null;
 	}
-	
+
+	public int updateStatistic(long groupId, int month, int year, int reporting) {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = _customSQL.get(getClass(), UPDATE_DOSSIER_STATISTIC);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(true);
+			q.addEntity("OpencpsDossierStatistic", OpencpsDossierStatisticImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			/* add groupId */
+			qPos.add(reporting);
+
+			/* add groupId */
+			qPos.add(groupId);
+
+			/* add month parameter */
+			qPos.add(month);
+
+			/* add year parameter */
+			qPos.add(year);
+
+			return q.executeUpdate();
+		} catch (Exception e) {
+			LOG.error(e);
+		} finally {
+			closeSession(session);
+		}
+
+		return 0;
+	}
+
 	@ServiceReference(type = CustomSQL.class)
 	private CustomSQL _customSQL;
 }
