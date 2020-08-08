@@ -146,7 +146,7 @@ public class StatisticEngineFetchEntry {
 					} else { 
 						if (finishDate != null) {
 							// số đã trả kết quả
-							statisticData.setDoneCount(statisticData.getDoneCount() + 1);								
+							statisticData.setDoneCount(statisticData.getDoneCount() + 1);
 						} else {
 							statisticData.setReleasingCount(statisticData.getReleasingCount() + 1);
 						}

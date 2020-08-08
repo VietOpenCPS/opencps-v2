@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -773,8 +774,47 @@ public class DossierActionsImpl implements DossierActions {
 					} else {
 
 						Double durationCount = serviceProcess.getDurationCount();
-						String strDateOption = StringPool.BLANK;
+						//Process after dueDate
+						String dueDatePattern = serviceProcess.getDueDatePattern();
+						JSONObject jsonDueDate = null;
+						try {
+							jsonDueDate = Validator.isNotNull(dueDatePattern) ? JSONFactoryUtil.createJSONObject(dueDatePattern) : null;
+						} catch (JSONException e) {
+							_log.debug(e);
+						}
+						List<Integer> dueHour = null;
+						if (jsonDueDate != null) {
+							JSONObject afterHours = jsonDueDate.getJSONObject(DossierDocumentTerm.AFTER_HOUR);
+								if (afterHours != null && afterHours.has(DossierDocumentTerm.START_HOUR) && afterHours.has(DossierDocumentTerm.DUE_HOUR)) {
+								//_log.info("STRART check new: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(receiveDate);
+								//
+								String receiveHour = afterHours.getString(DossierDocumentTerm.START_HOUR);
+								//_log.info("receiveHour: " + receiveHour);
 
+								if (Validator.isNotNull(receiveHour)) {
+									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
+									if (splitHour != null) {
+										int hourStart = GetterUtil.getInteger(splitHour[0]);
+										int minuteStart = GetterUtil.getInteger(splitHour[1]);
+										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) > hourStart
+												|| (receiveCalendar.get(Calendar.HOUR_OF_DAY) == hourStart
+														&& receiveCalendar.get(Calendar.MINUTE) > minuteStart)) {
+											dueHour = new ArrayList<>();
+											String[] splitdueHour = StringUtil.split(afterHours.getString(DossierDocumentTerm.DUE_HOUR),
+													StringPool.COLON);
+											if (splitdueHour != null) {
+												dueHour.add(0, GetterUtil.getInteger(splitdueHour[0]));
+												dueHour.add(1, GetterUtil.getInteger(splitdueHour[1]));
+											}
+										}
+									}
+								}
+							}
+						}
+
+						String strDateOption = StringPool.BLANK;
 						JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
 
 						// dateOption from PostAction
@@ -799,7 +839,17 @@ public class DossierActionsImpl implements DossierActions {
 							DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
 									serviceProcess.getDueDatePattern());
 							dueDate = dueDatePharse.getDueDate();
-							dossier.setDueDate(dueDate);
+							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
+								Calendar dueCalendar = Calendar.getInstance();
+								dueCalendar.setTime(dueDate);
+								//
+								dueCalendar.set(Calendar.HOUR_OF_DAY, dueHour.get(0));
+								dueCalendar.set(Calendar.MINUTE, dueHour.get(1));
+								//
+								dossier.setDueDate(dueCalendar.getTime());
+							} else {
+								dossier.setDueDate(dueDate);
+							}
 							receivingObj.put(ProcessActionTerm.DURATION_PHASE, dueDatePharse.getDuration());
 						} else if (Validator.isNotNull(strDateOption) && Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
 
@@ -809,7 +859,17 @@ public class DossierActionsImpl implements DossierActions {
 							
 							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							dueDate = dueDateUtils.getDueDate();
-							dossier.setDueDate(dueDate);
+							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
+								Calendar dueCalendar = Calendar.getInstance();
+								dueCalendar.setTime(dueDate);
+								//
+								dueCalendar.set(Calendar.HOUR_OF_DAY, dueHour.get(0));
+								dueCalendar.set(Calendar.MINUTE, dueHour.get(1));
+								//
+								dossier.setDueDate(dueCalendar.getTime());
+							} else {
+								dossier.setDueDate(dueDate);
+							}
 						}
 						_log.info("dueDate============" + strDateOption + dueDate);
 						_log.info("processAction============" + processAction);
