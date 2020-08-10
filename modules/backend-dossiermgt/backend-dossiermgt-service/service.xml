@@ -2329,6 +2329,12 @@
 			<finder-column name="dossierId" />
 			<finder-column name="fileMark" comparator="!="/>
 		</finder>
+		<finder return-type="Collection" name="G_DID_MARK_RC">
+			<finder-column name="groupId" />
+			<finder-column name="dossierId" />
+			<finder-column name="fileMark" comparator="!="/>
+			<finder-column name="recordCount" comparator="!="/>
+		</finder>
 	</entity>
 	
 	<entity local-service="true" name="ActionConfig" remote-service="false" 

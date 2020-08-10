@@ -9,6 +9,8 @@ import java.util.List;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
+import org.opencps.statistic.rest.dto.DossierStatisticManualData;
+import org.opencps.statistic.rest.dto.DossierStatisticManualResponse;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.springframework.core.convert.converter.Converter;
 
@@ -87,20 +89,20 @@ public class DossierStatisticConverter {
 		return null;
 	}
 
-	public static Converter<List<OpencpsDossierStatisticManual>, DossierStatisticResponse> getDossierStatisticManualResponse() {
+	public static Converter<List<OpencpsDossierStatisticManual>, DossierStatisticManualResponse> getDossierStatisticManualResponse() {
 		try {
 			return (source) -> {
 
-				DossierStatisticResponse dossierStatisticResponse = new DossierStatisticResponse();
+				DossierStatisticManualResponse dossierStatisticResponse = new DossierStatisticManualResponse();
 
 				dossierStatisticResponse.setTotal(source.size());
 
-				List<DossierStatisticData> dossierStatisticDatas = new ArrayList<>();
+				List<DossierStatisticManualData> dossierStatisticDatas = new ArrayList<>();
 
 				for (OpencpsDossierStatisticManual dossierStatistic : source) {
 
 
-					DossierStatisticData dossierStatisticData = new DossierStatisticData();
+					DossierStatisticManualData dossierStatisticData = new DossierStatisticManualData();
 
 					dossierStatisticData.setGroupId(dossierStatistic.getGroupId());
 					dossierStatisticData.setMonth(dossierStatistic.getMonth());
