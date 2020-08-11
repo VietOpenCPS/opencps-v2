@@ -1,6 +1,7 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -66,8 +68,9 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			System.out.println("START CALCULATOR TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 			
 			List<ServerConfig> configList = ServerConfigLocalServiceUtil.getByServerAndProtocol("SERVER_STATISTIC_DVC", DossierStatisticConstants.STATISTIC_PROTOCOL);
+			ServerConfig config = null;
 			if (configList != null && configList.size() > 0) {
-				ServerConfig config = configList.get(0);
+				config = configList.get(0);
 				if (config == null) {
 					return;
 				}
@@ -76,6 +79,13 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 				return ;
 			}
 
+			JSONObject scObject = JSONFactoryUtil.createJSONObject(config.getConfigs());
+			long groupId = 0;
+			if (scObject != null) {
+				if (scObject.has(Field.GROUP_ID)) {
+					groupId = scObject.getLong(Field.GROUP_ID) > 0 ? scObject.getLong(Field.GROUP_ID) : 35417;
+				}
+			}
 			StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
 
 			int[] reportArr = {0, 1};
@@ -148,14 +158,14 @@ public class DossierSyncStatisticScheduler extends BaseMessageListener {
 			for (Map.Entry<String, DossierStatisticKey> entry : mapKey.entrySet()) {
 				DossierStatisticKey objectKey = entry.getValue();
 				List<OpencpsDossierStatistic> dossierStatisticList = OpencpsDossierStatisticLocalServiceUtil
-						.getByNOT_G_M_Y_GOV_DOM_GRO_SYS(35417, objectKey.getMonth(), objectKey.getYear(),
+						.getByNOT_G_M_Y_GOV_DOM_GRO_SYS(groupId, objectKey.getMonth(), objectKey.getYear(),
 								objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
 								objectKey.getSystem());
 				//_log.info("mapKey.getKey: "+entry.getKey());
 				//int size = dossierStatisticList != null ? dossierStatisticList.size() : -1;
 				//_log.info("mapKey_dossierStatisticList: "+ size);
 				//
-				DossierStatisticData dossierStatistic = processCalStatistic(35417, objectKey.getMonth(), objectKey.getYear(), objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
+				DossierStatisticData dossierStatistic = processCalStatistic(groupId, objectKey.getMonth(), objectKey.getYear(), objectKey.getGovAgencyCode(), objectKey.getDomainCode(), objectKey.getGroupAgencyCode(),
 						objectKey.getSystem(), objectKey.getReporting(), dossierStatisticList);
 				//
 				if (dossierStatistic != null) {

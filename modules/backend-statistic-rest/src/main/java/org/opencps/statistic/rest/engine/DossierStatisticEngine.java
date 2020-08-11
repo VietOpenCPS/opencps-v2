@@ -140,6 +140,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			Map<Integer, Map<String, DossierStatisticData>> calculateData = new HashMap<>();
 			
 			for (Group site : sites) {
+//				if (site.getGroupId() != 45027) {
+//					continue;
+//				}
 				Map<Integer, Map<Integer, Map<String, DossierStatisticData>>> calculateDatas = new HashMap<>();
 				List<ServerConfig> lstScs =  ServerConfigLocalServiceUtil.getByProtocol(site.getGroupId(), DossierStatisticConstants.STATISTIC_PROTOCOL);
 //				_log.info("CALCULATE AFTER GET SERVER CONFIG: " + (System.currentTimeMillis() - startTime) + " ms");
