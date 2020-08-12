@@ -93,6 +93,18 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 						jsonData = processMergeDossierProcessRole(dossier, 1, jsonData, dAction);
 					}
 					jsonData = DossierDocumentUtils.processMergeDossierFormData(dossier, jsonData, sp);
+					jsonData.put("documentCode", StringPool.BLANK);
+					//
+					List<DossierDocument> documentList = DossierDocumentLocalServiceUtil.getByG_DocTypeList(groupId, dossier.getDossierId(), typeCode, -1, -1);
+					if (documentList != null && documentList.size() > 0) {
+						for (DossierDocument document : documentList) {
+							if (Validator.isNotNull(document.getDocumentCode())) {
+								jsonData.put("documentCode", document.getDocumentCode());
+								break;
+							}
+						}
+					}
+
 					org.opencps.usermgt.model.Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 					if (employee != null) {
 						jsonData.put(Field.USER_NAME, employee.getFullName());
