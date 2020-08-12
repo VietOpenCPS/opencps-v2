@@ -48,4 +48,6 @@ public interface OpencpsDossierStatisticFinder {
 	public java.util.List<org.opencps.statistic.model.OpencpsDossierStatistic> searchByDomainAgencySystem(
 		long groupId, int month, int year, String domain, String govAgency,
 		String system, String groupAgencyCode, int start, int end);
+
+	public int updateStatistic(long groupId, int month, int year, int reporting);
 }

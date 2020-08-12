@@ -220,6 +220,11 @@ public class ServerConfigLocalServiceUtil {
 		return getService().getByProtocol(protocol);
 	}
 
+	public static java.util.List<org.opencps.communication.model.ServerConfig> getByServerAndProtocol(
+		String serverNo, String protocol) {
+		return getService().getByServerAndProtocol(serverNo, protocol);
+	}
+
 	public static org.opencps.communication.model.ServerConfig getByServerNoAndProtocol(
 		long groupId, String serverNo, String protocol) {
 		return getService().getByServerNoAndProtocol(groupId, serverNo, protocol);

@@ -1407,6 +1407,7 @@ public class DeliverableLocalServiceImpl
 		object.setSubject(objectData.getString(DeliverableTerm.SUBJECT));
 		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		object.setApplicantIdNo(objectData.getString(DeliverableTerm.APPLICANT_ID_NO));
 		// new field to save QD
 		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
@@ -1679,6 +1680,10 @@ public class DeliverableLocalServiceImpl
 		}
 
 		return booleanQuery;
+	}
+	
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
+		return deliverablePersistence.fetchByF_GID_AID(groupId, applicantIdNo);
 	}
 
 	private static Log _log =

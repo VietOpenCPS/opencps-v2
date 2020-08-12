@@ -325,5 +325,10 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 
 	public List<ServerConfig> getByProtocol(String protocol) {
 		return serverConfigPersistence.findByP(protocol);
-	}	
+	}
+
+	public List<ServerConfig> getByServerAndProtocol(String serverNo, String protocol) {
+		return serverConfigPersistence.findBySNO_PT(serverNo, protocol);
+	}
+
 }
