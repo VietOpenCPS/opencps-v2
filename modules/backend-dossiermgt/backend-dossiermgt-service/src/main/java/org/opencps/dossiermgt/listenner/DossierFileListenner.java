@@ -650,76 +650,77 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						serviceContext);
 			}
 			else if (Validator.isNotNull(deliverable)) {
+				if(model.getDossierPartType() != 7) {
+					// backup a deliverable log and update deliverable
 
-				// backup a deliverable log and update deliverable
+					_log.info(
+							"============backup a deliverable log and update deliverable=============");
+					// backup
+					JSONObject deliverableLog =
+							JSONFactoryUtil.createJSONObject();
+					long actionDate =
+							Validator.isNotNull(deliverable.getIssueDate())
+									? deliverable.getIssueDate().getTime()
+									: Validator.isNotNull(deliverable.getRevalidate())
+									? deliverable.getRevalidate().getTime()
+									: new Date().getTime();
 
-				_log.info(
-					"============backup a deliverable log and update deliverable=============");
-				// backup
-				JSONObject deliverableLog =
-					JSONFactoryUtil.createJSONObject();
-				long actionDate =
-					Validator.isNotNull(deliverable.getIssueDate())
-						? deliverable.getIssueDate().getTime()
-						: Validator.isNotNull(deliverable.getRevalidate())
-							? deliverable.getRevalidate().getTime()
-							: new Date().getTime();
+					deliverableLog.put(Field.GROUP_ID, model.getGroupId());
+					deliverableLog.put(Field.COMPANY_ID, model.getCompanyId());
+					deliverableLog.put(Field.USER_ID, model.getUserId());
+					deliverableLog.put(Field.USER_NAME, model.getUserName());
+					deliverableLog.put(
+							DeliverableTerm.DELIVERABLE_ID, deliverable.getDeliverableId());
+					deliverableLog.put(DeliverableLogTerm.DOSSIERUID, dossier.getReferenceUid());
+					deliverableLog.put(DeliverableLogTerm.AUTHOR, model.getUserName());
+					deliverableLog.put(DeliverableLogTerm.CONTENT, DeliverableLogTerm.CONTENT_DEFAULT);
+					deliverableLog.put(
+							DeliverableLogTerm.DELIVERABLEACTION,
+							dossierPart.getDeliverableAction());
+					deliverableLog.put(DeliverableLogTerm.ACTIONDATE, actionDate);
+					deliverableLog.put(DeliverableLogTerm.PAYLOAD, deliverable.getFormData());
+					deliverableLog.put(
+							DeliverableLogTerm.FILEENTRYID, deliverable.getFileEntryId());
+					DeliverableLogLocalServiceUtil.adminProcessData(
+							deliverableLog);
 
-				deliverableLog.put(Field.GROUP_ID, model.getGroupId());
-				deliverableLog.put(Field.COMPANY_ID, model.getCompanyId());
-				deliverableLog.put(Field.USER_ID, model.getUserId());
-				deliverableLog.put(Field.USER_NAME, model.getUserName());
-				deliverableLog.put(
-					DeliverableTerm.DELIVERABLE_ID, deliverable.getDeliverableId());
-				deliverableLog.put(DeliverableLogTerm.DOSSIERUID, dossier.getReferenceUid());
-				deliverableLog.put(DeliverableLogTerm.AUTHOR, model.getUserName());
-				deliverableLog.put(DeliverableLogTerm.CONTENT, DeliverableLogTerm.CONTENT_DEFAULT);
-				deliverableLog.put(
-						DeliverableLogTerm.DELIVERABLEACTION,
-					dossierPart.getDeliverableAction());
-				deliverableLog.put(DeliverableLogTerm.ACTIONDATE, actionDate);
-				deliverableLog.put(DeliverableLogTerm.PAYLOAD, deliverable.getFormData());
-				deliverableLog.put(
-						DeliverableLogTerm.FILEENTRYID, deliverable.getFileEntryId());
-				DeliverableLogLocalServiceUtil.adminProcessData(
-					deliverableLog);
+					// update
+					deliverable.setDeliverableCode(dDeliverableCode);
+					_log.info("---- LOG FILE entryId :" + dossierFileAttach.getFileEntryId() + " ----------");
+					deliverable.setFileEntryId(
+							dossierFileAttach != null
+									? dossierFileAttach.getFileEntryId() : 0l);
+					deliverable.setApplicantName(
+							Validator.isNotNull(applicantName)
+									? applicantName : deliverable.getApplicantName());
+					deliverable.setSubject(
+							Validator.isNotNull(subject)
+									? applicantName : deliverable.getSubject());
+					deliverable.setIssueDate(
+							Validator.isNotNull(issueDate)
+									? APIDateTimeUtils.convertStringToDate(
+									issueDate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getIssueDate());
+					deliverable.setExpireDate(
+							Validator.isNotNull(expireDate)
+									? APIDateTimeUtils.convertStringToDate(
+									expireDate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getExpireDate());
+					deliverable.setRevalidate(
+							Validator.isNotNull(revalidate)
+									? APIDateTimeUtils.convertStringToDate(
+									revalidate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getRevalidate());
 
-				// update
-				deliverable.setDeliverableCode(dDeliverableCode);
-				_log.info("---- LOG FILE entryId :" +dossierFileAttach.getFileEntryId() + " ----------");
-				deliverable.setFileEntryId(
-					dossierFileAttach != null
-						? dossierFileAttach.getFileEntryId() : 0l);
-				deliverable.setApplicantName(
-					Validator.isNotNull(applicantName)
-						? applicantName : deliverable.getApplicantName());
-				deliverable.setSubject(
-					Validator.isNotNull(subject)
-						? applicantName : deliverable.getSubject());
-				deliverable.setIssueDate(
-					Validator.isNotNull(issueDate)
-						? APIDateTimeUtils.convertStringToDate(
-							issueDate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getIssueDate());
-				deliverable.setExpireDate(
-					Validator.isNotNull(expireDate)
-						? APIDateTimeUtils.convertStringToDate(
-							expireDate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getExpireDate());
-				deliverable.setRevalidate(
-					Validator.isNotNull(revalidate)
-						? APIDateTimeUtils.convertStringToDate(
-							revalidate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getRevalidate());
+					formDataContent = mergeObject(
+							deliverable.getFormData(), formDataContent.toString());
+					deliverable.setFormData(formDataContent.toString());
 
-				formDataContent = mergeObject(
-					deliverable.getFormData(), formDataContent.toString());
-				deliverable.setFormData(formDataContent.toString());
+					deliverable.setFileAttachs(fileAttachs);
+					_log.info("UPDATE Deliverable :" + JSONFactoryUtil.looseSerialize(deliverable));
 
-				deliverable.setFileAttachs(fileAttachs);
-				_log.info("UPDATE Deliverable :" +  JSONFactoryUtil.looseSerialize(deliverable));
-
-				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				}
 			}
 			else {
 				_log.info(

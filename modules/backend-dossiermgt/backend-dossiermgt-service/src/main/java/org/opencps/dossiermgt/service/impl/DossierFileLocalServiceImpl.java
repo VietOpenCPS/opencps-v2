@@ -525,15 +525,17 @@ public class DossierFileLocalServiceImpl
 		String deliverableCode = StringPool.BLANK;
 
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-			DeliverableType deliverableType =
-				DeliverableTypeLocalServiceUtil.getByCode(
-					groupId, dossierPart.getDeliverableType());
+			if(dossierPart.getPartType() != 7) {
+				DeliverableType deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								groupId, dossierPart.getDeliverableType());
 
-			deliverableCode =
-				DeliverableNumberGenerator.generateDeliverableNumber(
-					groupId, serviceContext.getCompanyId(),
-					deliverableType.getDeliverableTypeId());
-			object.setDeliverableCode(deliverableCode);
+				deliverableCode =
+						DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, serviceContext.getCompanyId(),
+								deliverableType.getDeliverableTypeId());
+				object.setDeliverableCode(deliverableCode);
+			}
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {

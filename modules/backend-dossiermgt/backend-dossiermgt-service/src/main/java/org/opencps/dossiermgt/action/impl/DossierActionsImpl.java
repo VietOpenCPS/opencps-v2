@@ -4368,4 +4368,31 @@ public class DossierActionsImpl implements DossierActions {
 		return DossierLocalServiceUtil.updateDossier(dossier);
 	}
 
+	@Override
+	public JSONObject getDossierActionsList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params, Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext) {
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+		Hits hits = null;
+
+		try {
+
+			hits = DossierActionLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+
+			_log.debug("LOG HITS :" + hits.toList().size());
+			result.put(ConstantUtils.DATA, hits.toList());
+
+			long total = DossierActionLocalServiceUtil.countLucene(params, searchContext);
+
+			result.put(ConstantUtils.TOTAL, total);
+
+			return result;
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
 }

@@ -1,6 +1,7 @@
 package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -15,32 +16,41 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.opencps.api.controller.DossierLogManagement;
+import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierLogUtils;
+import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.dossier.model.DossierResultsModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossieraction.model.DossierActionResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierlog.model.DossierLogResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.DossierLogActions;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.impl.DossierLogActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class DossierLogManagementImpl implements DossierLogManagement {
 
@@ -165,13 +175,21 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 	}
 
 	@Override
-	public Response getRevisionLogByGroupId(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, DossierLogSearchModel query) {
-		DossierLogResultsModel results = new DossierLogResultsModel();
-		DossierLogActions action = new DossierLogActionsImpl();
+	public Response getRevisionLogByGroupId(HttpServletRequest request, HttpHeaders header, Company company,
+											Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
 		LinkedHashMap<String, Object> params =
 				new LinkedHashMap<>();
+		List<Dossier> lstDossier = new ArrayList<>();
+		DossierActions actions = new DossierActionsImpl();
+		DossierActionResultsModel results = new DossierActionResultsModel();
+
 
 		try {
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
+			}
+			String dossierIds = "";
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 
@@ -205,15 +223,36 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 				};
 			}
 
-			JSONObject dossierLogJsonObject = action.getRevisionLogByGroupId(groupId, company.getCompanyId(), sorts,
-				 query.getStart(), query.getEnd(),params,serviceContext);
 
-			List<Document> documents = (List<Document>) dossierLogJsonObject.get(ConstantUtils.DATA);
+			if (lstDossier.size() < 1) {
+				lstDossier = DossierLocalServiceUtil.findDossierByGroup(groupId);
+			}
+			if (lstDossier.isEmpty()) {
+				throw new Exception(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.DOSSIER_MESSAGE_KHONGTIMTHAY));
+			}
+			if (lstDossier != null && lstDossier.size() > 0) {
+			for(Dossier dossier : lstDossier) {
+				if(Validator.isNotNull(dossier.getDossierId())){
+					dossierIds += dossier.getDossierId() + ",";
+				}
+			}
+			if(Validator.isNotNull(dossierIds)){
+				params.put(DossierTerm.DOSSIER_ID, dossierIds);
+			}
+				JSONObject jsonData = actions.getDossierActionsList(
+						user.getUserId(), company.getCompanyId(), groupId, params,
+						sorts, query.getStart(), query.getEnd(), serviceContext);
+				if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+					results.getData().addAll(
+							DossierUtils.mappingForListDossierActions(
+									(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			results.setTotal(dossierLogJsonObject.getInt(ConstantUtils.TOTAL));
-			results.getData().addAll(DossierLogUtils.mappingToDossierLogResultsModel(documents));
+				}
 
+				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+		}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

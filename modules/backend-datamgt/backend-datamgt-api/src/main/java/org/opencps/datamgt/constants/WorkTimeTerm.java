@@ -36,6 +36,8 @@ public class WorkTimeTerm {
 
 	public static final String HOURS = "hours";
 
+	public static final String STATUS = "status";
+
 	// sortable
 	public static final String WORKTIME_ID_SORTABLE = "workTimeId_sortable";
 

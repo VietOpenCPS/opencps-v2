@@ -43,6 +43,7 @@ public class WorkTimeSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setDay(model.getDay());
 		soapModel.setHours(model.getHours());
+		soapModel.setStatus(model.getStatus());
 
 		return soapModel;
 	}
@@ -175,6 +176,14 @@ public class WorkTimeSoap implements Serializable {
 		_hours = hours;
 	}
 
+	public int getStatus() {
+		return _status;
+	}
+
+	public void setStatus(int status) {
+		_status = status;
+	}
+
 	private String _uuid;
 	private long _workTimeId;
 	private long _companyId;
@@ -185,4 +194,5 @@ public class WorkTimeSoap implements Serializable {
 	private Date _modifiedDate;
 	private int _day;
 	private String _hours;
+	private int _status;
 }

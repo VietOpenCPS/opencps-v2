@@ -63,26 +63,7 @@ public class DossierLogSearchModel {
     protected String sort;
     @FormParam(value = "order")
     protected String order;
-    @FormParam(value = "createDateStart")
-    protected String createDateStart;
-    @FormParam(value = "createDateEnd")
-    protected String createDateEnd;
 
-    public String getCreateDateStart() {
-        return createDateStart;
-    }
-
-    public void setCreateDateStart(String createDateStart) {
-        this.createDateStart = createDateStart;
-    }
-
-    public String getCreateDateEnd() {
-        return createDateEnd;
-    }
-
-    public void setCreateDateEnd(String createDateEnd) {
-        this.createDateEnd = createDateEnd;
-    }
 
     /**
      * Gets the value of the notificationType property.

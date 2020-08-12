@@ -9,6 +9,7 @@
 package org.opencps.api.dossier.model;
 
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -307,6 +308,26 @@ public class DossierSearchModel {
 	protected boolean notAgencysScope;
 	@QueryParam(value = "groupCongVan")
 	protected String groupCongVan;
+	@FormParam(value = "createDateStart")
+	protected String createDateStart;
+	@FormParam(value = "createDateEnd")
+	protected String createDateEnd;
+
+	public String getCreateDateStart() {
+		return createDateStart;
+	}
+
+	public void setCreateDateStart(String createDateStart) {
+		this.createDateStart = createDateStart;
+	}
+
+	public String getCreateDateEnd() {
+		return createDateEnd;
+	}
+
+	public void setCreateDateEnd(String createDateEnd) {
+		this.createDateEnd = createDateEnd;
+	}
 
 	public String getGroupCongVan() {
 		return groupCongVan;
