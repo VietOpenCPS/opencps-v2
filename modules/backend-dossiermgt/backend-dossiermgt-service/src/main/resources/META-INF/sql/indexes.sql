@@ -139,7 +139,7 @@ create index IX_7C31F3D6 on opencps_dossierlog (uuid_[$COLUMN_LENGTH:75$], compa
 create unique index IX_FC3177D8 on opencps_dossierlog (uuid_[$COLUMN_LENGTH:75$], groupId);
 
 create index IX_217E22C8 on opencps_dossiermark (groupId, dossierId, dossierPartNo[$COLUMN_LENGTH:255$]);
-create index IX_14BA1164 on opencps_dossiermark (groupId, dossierId, fileMark);
+create index IX_1031790A on opencps_dossiermark (groupId, dossierId, fileMark, recordCount[$COLUMN_LENGTH:512$]);
 create index IX_F8E80F2F on opencps_dossiermark (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_DE389571 on opencps_dossiermark (uuid_[$COLUMN_LENGTH:75$], groupId);
 

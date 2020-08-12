@@ -18,7 +18,7 @@ import org.opencps.usermgt.model.UserLogin;
 import org.opencps.usermgt.service.UserLoginLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
-//@Component(immediate = true, property = { "key=logout.events.pre" }, service = LifecycleAction.class)
+@Component(immediate = true, property = { "key=logout.events.pre" }, service = LifecycleAction.class)
 public class OpenCPSLogoutAction extends Action {
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response)  {

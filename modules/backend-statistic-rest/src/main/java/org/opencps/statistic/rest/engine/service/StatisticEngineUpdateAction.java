@@ -81,7 +81,7 @@ public class StatisticEngineUpdateAction {
 					payload.getUndueCount(), payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(),
 					payload.getOvertimeInside(), payload.getOvertimeOutside(), payload.getInteroperatingCount(),
 					payload.getWaitingCount(), payload.getGovAgencyCode(), payload.getGovAgencyName(),
-					payload.getDomainCode(), payload.getDomainName(), payload.getGroupAgencyCode(), payload.isReporting(), payload.getOnegateCount(),
+					payload.getDomainCode(), payload.getDomainName(), payload.getGroupAgencyCode(), payload.getReporting(), payload.getOnegateCount(),
 					payload.getOutsideCount(), payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(),
 					payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
 					payload.getFromViaPostalCount());
@@ -119,8 +119,18 @@ public class StatisticEngineUpdateAction {
 	}
 
 	//Get list dossierStatistic by groupId, month, year and reporting
-	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, boolean reporting) {
+	public List<OpencpsDossierStatistic> getDossierStatisticByMonthYearAndReport(long groupId, int month, int year, int reporting) {
 		return OpencpsDossierStatisticLocalServiceUtil.getDossierStatisticByMonthYearAndReport(groupId, month, year, reporting);
+	}
+
+	//Get list dossierStatistic by groupId, month, year and not reporting
+	public List<OpencpsDossierStatistic> getByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getByMonthYearAndNotReport(groupId, month, year, reporting);
+	}
+
+	//Get list dossierStatistic by groupId, month, year and not reporting
+	public OpencpsDossierStatistic getStatisticByMonthYearAndNotReport(long groupId, int month, int year, int reporting) {
+		return OpencpsDossierStatisticLocalServiceUtil.getInfoByMonthYearAndNotReport(groupId, month, year, reporting);
 	}
 
 	//Remove record by domain and govAgencyCode
@@ -257,7 +267,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
-					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+					payload.getDomainName(), payload.getReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
 					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
 					payload.getFromViaPostalCount());
 		} catch (PortalException | SystemException e) {
@@ -281,7 +291,7 @@ public class StatisticEngineUpdateAction {
 					payload.getOverdueCount(), pausingCount, payload.getOntimePercentage(), payload.getOvertimeInside(),
 					payload.getOvertimeOutside(), payload.getInteroperatingCount(), payload.getWaitingCount(),
 					payload.getGovAgencyCode(), payload.getGovAgencyName(), payload.getDomainCode(),
-					payload.getDomainName(), payload.isReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
+					payload.getDomainName(), payload.getReporting(), payload.getOnegateCount(), payload.getOutsideCount(),
 					payload.getInsideCount(), payload.getViaPostalCount(), payload.getSaturdayCount(), payload.getDossierOnline3Count(), payload.getDossierOnline4Count(), payload.getReceiveDossierSatCount(), payload.getReleaseDossierSatCount(),
 					payload.getFromViaPostalCount());
 		} catch (PortalException | SystemException e) {

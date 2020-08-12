@@ -96,7 +96,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 		attributes.put("govAgencyName", getGovAgencyName());
 		attributes.put("domainCode", getDomainCode());
 		attributes.put("domainName", getDomainName());
-		attributes.put("reporting", isReporting());
+		attributes.put("reporting", getReporting());
 		attributes.put("overtimeInside", getOvertimeInside());
 		attributes.put("overtimeOutside", getOvertimeOutside());
 		attributes.put("interoperatingCount", getInteroperatingCount());
@@ -328,7 +328,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 			setDomainName(domainName);
 		}
 
-		Boolean reporting = (Boolean)attributes.get("reporting");
+		Integer reporting = (Integer)attributes.get("reporting");
 
 		if (reporting != null) {
 			setReporting(reporting);
@@ -857,7 +857,7 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	* @return the reporting of this opencps dossier statistic
 	*/
 	@Override
-	public boolean getReporting() {
+	public int getReporting() {
 		return _opencpsDossierStatistic.getReporting();
 	}
 
@@ -999,16 +999,6 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	@Override
 	public boolean isNew() {
 		return _opencpsDossierStatistic.isNew();
-	}
-
-	/**
-	* Returns <code>true</code> if this opencps dossier statistic is reporting.
-	*
-	* @return <code>true</code> if this opencps dossier statistic is reporting; <code>false</code> otherwise
-	*/
-	@Override
-	public boolean isReporting() {
-		return _opencpsDossierStatistic.isReporting();
 	}
 
 	@Override
@@ -1448,12 +1438,12 @@ public class OpencpsDossierStatisticWrapper implements OpencpsDossierStatistic,
 	}
 
 	/**
-	* Sets whether this opencps dossier statistic is reporting.
+	* Sets the reporting of this opencps dossier statistic.
 	*
 	* @param reporting the reporting of this opencps dossier statistic
 	*/
 	@Override
-	public void setReporting(boolean reporting) {
+	public void setReporting(int reporting) {
 		_opencpsDossierStatistic.setReporting(reporting);
 	}
 

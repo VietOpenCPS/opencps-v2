@@ -33,7 +33,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-//@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
+@Component(immediate = true, property = { "key=login.events.post" }, service = LifecycleAction.class)
 public class OpenCPSLoginAction extends Action {
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
@@ -45,69 +45,88 @@ public class OpenCPSLoginAction extends Action {
 	        String cityName = StringPool.BLANK;
 	        String latitude = StringPool.BLANK;
 	        String longitude = StringPool.BLANK;
-        	
-			try {
-//	        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
-				File database = new File(UserMgtConfigUtil.getGeoDBPath());
-				DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
-				InetAddress ipAddress = InetAddress.getByName(clientIP);
-		        CityResponse cityResponse = dbReader.city(ipAddress);
-		         
-		        cityName = cityResponse.getCity().getName();
-		        latitude = 
-		        		cityResponse.getLocation().getLatitude().toString();
-		        longitude = 
-		        		cityResponse.getLocation().getLongitude().toString();
-		        
-			} catch (IOException e) {
-				_log.debug(e);
-			} catch (GeoIp2Exception e) {
-				_log.debug(e);
-			}
-	        Calendar c = Calendar.getInstance();
-	        int year = c.get(Calendar.YEAR);
-	        int month = c.get(Calendar.MONTH) + 1;
-	        int day = c.get(Calendar.DAY_OF_MONTH);
-	        Date now = new Date();
-	        boolean isMobile = false;
-	        boolean isDesktop = false;
-	        boolean isTablet = false;
-	        
-	        DeviceResolver resolver = new LiteDeviceResolver();
-	        
-	        Device currentDevice = resolver.resolveDevice(request);
-	        if(currentDevice.isMobile()) { 
-	        	/* Mobile */ 
-	        	isMobile = true;
-	        }
-	        if(currentDevice.isTablet()) { 
-	        	/* Tablet */ 
-	        	isTablet = true;
-	        }
-	        if(currentDevice.isNormal()) { 
-	        	/* Desktop */ 
-	        	isDesktop = true;
-	        }
+	        //
 			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
-			
 			User user = UserLocalServiceUtil.fetchUser(userId);
-			TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, isDesktop, isMobile, isTablet, userId, user.getScreenName());
+			if (user != null) {
+				try {
+//	        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
+					File database = new File(UserMgtConfigUtil.getGeoDBPath());
+					if (database != null) {
+						DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
+						InetAddress ipAddress = InetAddress.getByName(clientIP);
+						if (dbReader != null && ipAddress != null) {
+							CityResponse cityResponse = dbReader.city(ipAddress);
+							if (cityResponse != null) {
+								cityName = cityResponse.getCity().getName();
+								latitude =
+										cityResponse.getLocation().getLatitude().toString();
+								longitude =
+										cityResponse.getLocation().getLongitude().toString();
+							}
+						}
+					}
+
+		        /*cityName = cityResponse.getCity().getName();
+		        latitude =
+		        		cityResponse.getLocation().getLatitude().toString();
+		        longitude =
+		        		cityResponse.getLocation().getLongitude().toString();
+		        */
+				} catch (IOException e) {
+					_log.debug(e);
+				} catch (GeoIp2Exception e) {
+					_log.debug(e);
+				}
+				Calendar c = Calendar.getInstance();
+				int year = c.get(Calendar.YEAR);
+				int month = c.get(Calendar.MONTH) + 1;
+				int day = c.get(Calendar.DAY_OF_MONTH);
+				Date now = new Date();
+				boolean isMobile = false;
+				boolean isDesktop = false;
+				boolean isTablet = false;
+
+				DeviceResolver resolver = new LiteDeviceResolver();
+
+				Device currentDevice = resolver.resolveDevice(request);
+				if (currentDevice != null) {
+					if(currentDevice.isMobile()) {
+						/* Mobile */
+						isMobile = true;
+					}
+					if(currentDevice.isTablet()) {
+						/* Tablet */
+						isTablet = true;
+					}
+					if(currentDevice.isNormal()) {
+						/* Desktop */
+						isDesktop = true;
+					}
+				}
+
+				TrackClientLocalServiceUtil.updateTrackClient(0, sessionId, completeUrl, year, month, day, now, null, clientIP, StringPool.BLANK, cityName, StringPool.BLANK, latitude, longitude, 0, isDesktop, isMobile, isTablet, userId, user.getScreenName());
+
+			}
+
         }
 		if (UserMgtConfigUtil.isTrackUserEnable()) {
 			Long userId = request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) != null ? (Long) request.getAttribute(CommonTerm.LOGIN_ACTION_USER_ID) : 0;
 			
 			User user = UserLocalServiceUtil.fetchUser(userId);
-			String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
-	        String clientIP = HttpUtil.getPublicIP(request);
-	        
+			if (user != null) {
+				String sessionId = request.getSession() != null ? request.getSession().getId() : StringPool.BLANK;
+				String clientIP = HttpUtil.getPublicIP(request);
 
-			try {
-				UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId,
-						user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, clientIP);
-			} catch (SystemException e) {
-				_log.debug(e);
-			} catch (PortalException e) {
-				_log.debug(e);
+
+				try {
+					UserLoginLocalServiceUtil.updateUserLogin(user.getCompanyId(), user.getGroupId(), userId,
+							user.getFullName(), new Date(), new Date(), 0l, sessionId, 0, null, clientIP);
+				} catch (SystemException e) {
+					_log.debug(e);
+				} catch (PortalException e) {
+					_log.debug(e);
+				}
 			}
 		}
 

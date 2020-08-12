@@ -15,12 +15,10 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.converter.DossierStatisticConverter;
@@ -598,8 +596,9 @@ public class StatisticSumYearCalcular {
 	}
 
 	/* Tính theo năm */
-	public List<JSONObject> getFilterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency, boolean isSystem, List<String> lstGroupGovs,
-			List<ServerConfig> lstScs, List<OpencpsDossierStatistic> lstCurrents, List<DomainResponse> domainResponses)
+	public List<JSONObject> getFilterSumYear(long companyId, long groupId, int year, boolean isDomain, boolean isAgency,
+			boolean isSystem, List<ServerConfig> lstScs, List<OpencpsDossierStatistic> lstCurrents,
+			List<DomainResponse> domainResponses)
 			throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
@@ -741,14 +740,16 @@ public class StatisticSumYearCalcular {
 				}
 			}
 
+			//_log.info("agencyRequest: "+JSONFactoryUtil.looseSerialize(agencyRequest));
 			GovAgencyResponse agencyResponse = null;
 			if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
-
+			//_log.info("agencyResponse: "+JSONFactoryUtil.looseSerialize(agencyResponse));
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
 
 			govDataList.ifPresent(source -> {
@@ -885,7 +886,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 			//
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
@@ -1024,7 +1026,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
@@ -1116,7 +1119,8 @@ public class StatisticSumYearCalcular {
 				agencyResponse = callService.callRestService(agencyRequest);
 			}
 			else {
-				agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				//agencyResponse = StatisticDataUtil.getLocalGovAgency(agencyRequest);
+				agencyResponse = StatisticDataUtil.getLocalGovAgency(lstCurrents);
 			}
 
 			Optional<List<GovAgencyData>> govDataList = Optional.ofNullable(agencyResponse.getData());
@@ -1174,6 +1178,7 @@ public class StatisticSumYearCalcular {
 			}
 
 		}
+		/**
 		if (!isDomain && !isAgency && !isSystem) {
 			for (String gc : lstGroupGovs) {
 				try {
@@ -1215,6 +1220,7 @@ public class StatisticSumYearCalcular {
 				}
 			}
 		}
+		**/
 		
 		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		for (DossierStatisticData dossierStatisticData : lstDatas) {
@@ -1844,7 +1850,7 @@ public class StatisticSumYearCalcular {
 
 	/* Caculate all year */
 	public List<JSONObject> getFilterSumAllYear(long companyId, long groupId, int month, boolean isDomain, boolean isAgency,
-			boolean isSystem, List<String> lstGroupGovs, List<ServerConfig> lstScs) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
+			boolean isSystem, List<ServerConfig> lstScs) throws UpstreamServiceTimedOutException, UpstreamServiceFailedException {
 		DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 //		List<ServerConfig> lstScs = ServerConfigLocalServiceUtil.getByProtocol(groupId,
 //				DossierStatisticConstants.STATISTIC_PROTOCOL);
@@ -2407,6 +2413,7 @@ public class StatisticSumYearCalcular {
 		}
 		
 		//Each group gov agency
+		/**
 		if (!isDomain && !isAgency && !isSystem) {
 			for (String gc : lstGroupGovs) {
 //				_log.info("Case 9999999");
@@ -2451,6 +2458,8 @@ public class StatisticSumYearCalcular {
 				}					
 			}			
 		}
+		**/
+		
 		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		for (DossierStatisticData dossierStatisticData : lstDatas) {
 
@@ -2580,6 +2589,8 @@ public class StatisticSumYearCalcular {
 				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
 				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
 				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
+				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
+				releasingCount = releasingCount+ data.getReleasingCount();
 			}
 		} else {
 			for (DossierStatisticData data : source) {
@@ -2604,6 +2615,7 @@ public class StatisticSumYearCalcular {
 				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
 				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
+				releasingCount = releasingCount+ data.getReleasingCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
@@ -2646,6 +2658,7 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setMonth(month);
 		dossierStatisticData.setYear(year);
 		dossierStatisticData.setDoneCount(doneCount);
+		dossierStatisticData.setReleasingCount(releasingCount);
 		dossierStatisticData.setRemainingCount(remainingCount);
 		dossierStatisticData.setOnegateCount(onegateCount);
 		dossierStatisticData.setOvertimeInside(overtimeInside);
@@ -2663,6 +2676,7 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setDossierOnline4Count(dossierOnline4Count);
 		dossierStatisticData.setReceiveDossierSatCount(receiveDossierSatCount);
 		dossierStatisticData.setReleaseDossierSatCount(releaseDossierSatCount);
+		dossierStatisticData.setFromViaPostalCount(fromViaPostalCount);
 		dossierStatisticData.setGroupAgencyCode(groupAgencyCode);
 		
 //		updateGovService.updateDossierStatistic(dossierStatisticData);

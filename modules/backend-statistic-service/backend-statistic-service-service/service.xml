@@ -44,7 +44,7 @@
 		<column name="govAgencyName" type="String" />
 		<column name="domainCode" type="String" />
 		<column name="domainName" type="String" />
-		<column name="reporting" type="boolean" />
+		<column name="reporting" type="int" />
 		<column name="overtimeInside" type="int"/>
 		<column name="overtimeOutside" type="int"/>
 		<column name="interoperatingCount" type="int"/>
@@ -147,9 +147,47 @@
 		
 		<finder return-type="Collection" name="G_NM_Y">
 			<finder-column name="groupId"></finder-column>
-            <finder-column name="month" comparator="!="></finder-column>
+			<finder-column name="month" comparator="!="></finder-column>
 			<finder-column name="year"></finder-column>
-		</finder>				
+		</finder>
+
+		<finder return-type="Collection" name="F_REPO">
+			<finder-column name="reporting" arrayable-operator="OR"/>
+		</finder>
+		<finder return-type="Collection" name="F_NOT_GID">
+			<finder-column name="groupId" comparator="!="/>
+		</finder>
+		<finder return-type="Collection" name="M_Y_GOV_DOM_GRO_SYS">
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system"/>
+		</finder>
+		<finder return-type="Collection" name="NOT_G_M_Y_GOV_DOM_GRO_SYS">
+			<finder-column name="groupId" comparator="!="/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system"/>
+		</finder>
+		<finder return-type="Collection" name="GID_M_Y_NOT_RP">
+			<finder-column name="groupId"/>
+			<finder-column name="month"/>
+			<finder-column name="year"/>
+			<finder-column name="reporting" comparator="!="/>
+		</finder>
+		<finder return-type="Collection" name="G_Y_GO_DO_GR_SY">
+			<finder-column name="groupId"/>
+			<finder-column name="year"/>
+			<finder-column name="govAgencyCode" arrayable-operator="OR"/>
+			<finder-column name="domainCode"/>
+			<finder-column name="groupAgencyCode"/>
+			<finder-column name="system"/>
+		</finder>
 	</entity>
 
 	<entity local-service="true" name="OpencpsVotingStatistic"

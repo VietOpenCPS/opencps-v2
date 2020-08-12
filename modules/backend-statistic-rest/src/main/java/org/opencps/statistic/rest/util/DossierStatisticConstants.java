@@ -47,6 +47,7 @@ public interface DossierStatisticConstants {
 	String VOTING_ENDPOINT_KEY = "votingEndpoint";
 	String USERNAME_KEY = "username";
 	String SECRET_KEY = "password";
+	String URL_ENDPOINT = "url";
 	
 	String SERVICE_DOMAIN_CODE = "SERVICE_DOMAIN";
 	String GOV_AGENCY_CODE = "GOVERNMENT_AGENCY";
