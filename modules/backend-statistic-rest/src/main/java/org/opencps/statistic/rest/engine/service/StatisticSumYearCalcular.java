@@ -2589,6 +2589,8 @@ public class StatisticSumYearCalcular {
 				dossierOnline4Count = dossierOnline4Count + data.getDossierOnline4Count();
 				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
 				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
+				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
+				releasingCount = releasingCount+ data.getReleasingCount();
 			}
 		} else {
 			for (DossierStatisticData data : source) {
@@ -2613,6 +2615,7 @@ public class StatisticSumYearCalcular {
 				receiveDossierSatCount = receiveDossierSatCount + data.getReceiveDossierSatCount();
 				releaseDossierSatCount = releaseDossierSatCount + data.getReleaseDossierSatCount();
 				fromViaPostalCount = fromViaPostalCount + data.getFromViaPostalCount();
+				releasingCount = releasingCount+ data.getReleasingCount();
 			}
 			//
 			processingCount = latest.getProcessingCount();
@@ -2655,6 +2658,7 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setMonth(month);
 		dossierStatisticData.setYear(year);
 		dossierStatisticData.setDoneCount(doneCount);
+		dossierStatisticData.setReleasingCount(releasingCount);
 		dossierStatisticData.setRemainingCount(remainingCount);
 		dossierStatisticData.setOnegateCount(onegateCount);
 		dossierStatisticData.setOvertimeInside(overtimeInside);
@@ -2672,6 +2676,7 @@ public class StatisticSumYearCalcular {
 		dossierStatisticData.setDossierOnline4Count(dossierOnline4Count);
 		dossierStatisticData.setReceiveDossierSatCount(receiveDossierSatCount);
 		dossierStatisticData.setReleaseDossierSatCount(releaseDossierSatCount);
+		dossierStatisticData.setFromViaPostalCount(fromViaPostalCount);
 		dossierStatisticData.setGroupAgencyCode(groupAgencyCode);
 		
 //		updateGovService.updateDossierStatistic(dossierStatisticData);
