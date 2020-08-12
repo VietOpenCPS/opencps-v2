@@ -4866,9 +4866,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						String formData = payload;
 						JSONObject formDataObj = processMergeDossierFormData(dossier,
 								JSONFactoryUtil.createJSONObject(formData));
-						//					_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
+						formDataObj.put("documentCode", Validator.isNotNull(documentCode) ? documentCode: StringPool.BLANK);
+						//_log.info("Dossier document form data action outside: " + formDataObj.toJSONString());
 						Message message = new Message();
-						//					_log.info("Document script: " + dt.getDocumentScript());
+						//_log.info("Document script: " + dt.getDocumentScript());
 						JSONObject msgData = JSONFactoryUtil.createJSONObject();
 						msgData.put(ConstantUtils.CLASS_NAME, DossierDocument.class.getName());
 						msgData.put(Field.CLASS_PK, dossierDocument.getDossierDocumentId());
