@@ -2,6 +2,8 @@ package org.opencps.api.controller.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -35,12 +37,22 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.WorkingUnitManagement;
 import org.opencps.api.controller.exception.ErrorMsg;
+import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.WorkingUnitUtils;
 import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
 import org.opencps.api.workingunit.model.WorkingUnitModel;
 import org.opencps.api.workingunit.model.WorkingUnitResults;
+import org.opencps.auth.api.BackendAuth;
+import org.opencps.auth.api.BackendAuthImpl;
+import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.usermgt.action.WorkingUnitInterface;
 import org.opencps.usermgt.action.impl.WorkingUnitActions;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
@@ -263,6 +275,57 @@ public class WorkingUnitManagementImpl implements WorkingUnitManagement {
 			return responseBuilder.build();
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response importFile(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Attachment file) {
+		try {
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNull(file)) {
+				return Response.status(204).entity(
+					JSONFactoryUtil.looseSerialize(result)).build();
+			}
+
+			BackendAuth auth = new BackendAuthImpl();
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+			long companyId = user.getCompanyId();
+			String userName = user.getFullName();
+
+			DataHandler dataHandle = file.getDataHandler();
+			JSONArray workingUnits = WorkingUnitUtils.readExcel(dataHandle.getInputStream());
+
+			int size = 0;
+			for (int i = 0; i < workingUnits.length(); i++) {
+
+				JSONObject workingUnit = workingUnits.getJSONObject(i);				
+
+				workingUnit.put(Field.GROUP_ID, groupId);
+				workingUnit.put(Field.USER_ID, userId);
+				workingUnit.put(Field.COMPANY_ID, companyId);
+				workingUnit.put(Field.USER_NAME, userName);				
+	
+				WorkingUnitLocalServiceUtil.adminProcessData(workingUnit);
+				size += 1;
+			}
+
+			result.put(ConstantUtils.TOTAL, size);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
+		}
+		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
