@@ -34,7 +34,9 @@ public class EmployeeJobPosTerm {
 	public static final String MAIN_JOBPOS = "mainJobPos";
 
 	public static final String WORKING_UNIT_ID = "workingUnitId";
-	
+
+	public static final String STATUS = "status";
+
 	public static final String WORKING_UNIT_NAME = "workingUnitName";
 	
 	// sortable

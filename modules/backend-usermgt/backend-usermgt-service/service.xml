@@ -138,6 +138,7 @@
 		<column name="fileSignPath" type="String" />
 		<column name="jobPosTitle" type="String" />
 		<column name="scope" type="String" />
+		<column name="workingUnitId" type="long" />
 		
 		<!-- Order -->
 		<order by="asc">
@@ -298,6 +299,7 @@
 		<column name="employeeId" type="long" />
 		<column name="jobPostId" type="long" />
 		<column name="workingUnitId" type="long" />
+		<column name="status" type="long" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />

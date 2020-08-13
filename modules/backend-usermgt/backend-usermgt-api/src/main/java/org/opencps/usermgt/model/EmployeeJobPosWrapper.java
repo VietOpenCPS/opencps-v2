@@ -71,6 +71,7 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 		attributes.put("employeeId", getEmployeeId());
 		attributes.put("jobPostId", getJobPostId());
 		attributes.put("workingUnitId", getWorkingUnitId());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -141,6 +142,12 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 
 		if (workingUnitId != null) {
 			setWorkingUnitId(workingUnitId);
+		}
+
+		Long status = (Long)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -242,6 +249,16 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _employeeJobPos.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the status of this employee job pos.
+	*
+	* @return the status of this employee job pos
+	*/
+	@Override
+	public long getStatus() {
+		return _employeeJobPos.getStatus();
 	}
 
 	/**
@@ -428,6 +445,16 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_employeeJobPos.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the status of this employee job pos.
+	*
+	* @param status the status of this employee job pos
+	*/
+	@Override
+	public void setStatus(long status) {
+		_employeeJobPos.setStatus(status);
 	}
 
 	/**

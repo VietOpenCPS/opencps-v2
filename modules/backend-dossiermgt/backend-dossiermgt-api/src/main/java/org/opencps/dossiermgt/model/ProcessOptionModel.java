@@ -355,6 +355,20 @@ public interface ProcessOptionModel extends BaseModel<ProcessOption>,
 	 */
 	public void setRegisterBookCode(String registerBookCode);
 
+	/**
+	 * Returns the status of this process option.
+	 *
+	 * @return the status of this process option
+	 */
+	public long getStatus();
+
+	/**
+	 * Sets the status of this process option.
+	 *
+	 * @param status the status of this process option
+	 */
+	public void setStatus(long status);
+
 	@Override
 	public boolean isNew();
 

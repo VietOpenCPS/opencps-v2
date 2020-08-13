@@ -514,6 +514,20 @@ public interface EmployeeModel extends BaseModel<Employee>, GroupedModel,
 	 */
 	public void setScope(String scope);
 
+	/**
+	 * Returns the working unit ID of this employee.
+	 *
+	 * @return the working unit ID of this employee
+	 */
+	public long getWorkingUnitId();
+
+	/**
+	 * Sets the working unit ID of this employee.
+	 *
+	 * @param workingUnitId the working unit ID of this employee
+	 */
+	public void setWorkingUnitId(long workingUnitId);
+
 	@Override
 	public boolean isNew();
 

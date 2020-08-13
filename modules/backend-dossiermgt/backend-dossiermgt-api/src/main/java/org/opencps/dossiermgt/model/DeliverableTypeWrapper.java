@@ -81,6 +81,7 @@ public class DeliverableTypeWrapper implements DeliverableType,
 		attributes.put("mappingData", getMappingData());
 		attributes.put("docSync", getDocSync());
 		attributes.put("govAgencies", getGovAgencies());
+		attributes.put("fileTemplateId", getFileTemplateId());
 
 		return attributes;
 	}
@@ -212,6 +213,12 @@ public class DeliverableTypeWrapper implements DeliverableType,
 		if (govAgencies != null) {
 			setGovAgencies(govAgencies);
 		}
+
+		Long fileTemplateId = (Long)attributes.get("fileTemplateId");
+
+		if (fileTemplateId != null) {
+			setFileTemplateId(fileTemplateId);
+		}
 	}
 
 	@Override
@@ -297,6 +304,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _deliverableType.getExpandoBridge();
+	}
+
+	/**
+	* Returns the file template ID of this deliverable type.
+	*
+	* @return the file template ID of this deliverable type
+	*/
+	@Override
+	public long getFileTemplateId() {
+		return _deliverableType.getFileTemplateId();
 	}
 
 	/**
@@ -578,6 +595,16 @@ public class DeliverableTypeWrapper implements DeliverableType,
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
 		_deliverableType.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets the file template ID of this deliverable type.
+	*
+	* @param fileTemplateId the file template ID of this deliverable type
+	*/
+	@Override
+	public void setFileTemplateId(long fileTemplateId) {
+		_deliverableType.setFileTemplateId(fileTemplateId);
 	}
 
 	/**

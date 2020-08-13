@@ -192,5 +192,6 @@
 		<field name="hours" type="String">
 			<hint name="max-length">128</hint>
 		</field>
+		<field name="status" type="int" />
 	</model>
 </model-hints>

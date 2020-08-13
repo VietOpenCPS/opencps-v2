@@ -453,6 +453,7 @@
 		<column name="submissionNote" type="String" />
 		<column name="sampleCount" type="long" />
 		<column name="registerBookCode" type="String"></column>
+		<column name="status" type="long" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -2104,6 +2105,7 @@
 		<column name="mappingData" type="String" />
 		<column name="docSync" type="int" />
 		<column name="govAgencies" type="String" />
+		<column name="fileTemplateId" type="long" />
 
 		<finder return-type="DeliverableType" name="G_DLT">
 			<finder-column name="groupId" />
