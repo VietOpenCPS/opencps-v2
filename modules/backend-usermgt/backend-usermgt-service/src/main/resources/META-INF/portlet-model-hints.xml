@@ -193,6 +193,7 @@
 		<field name="employeeId" type="long" />
 		<field name="jobPostId" type="long" />
 		<field name="workingUnitId" type="long" />
+		<field name="status" type="int" />
 	</model>
 	<model name="org.opencps.usermgt.model.FileItem">
 		<field name="uuid" type="String" />
