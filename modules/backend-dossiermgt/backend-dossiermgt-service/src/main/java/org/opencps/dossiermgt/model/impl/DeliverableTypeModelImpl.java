@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DeliverableTypeModel;
 
+import javax.ws.rs.DefaultValue;
 import java.io.Serializable;
 
 import java.sql.Types;
@@ -88,7 +89,8 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			{ "counter", Types.BIGINT },
 			{ "mappingData", Types.VARCHAR },
 			{ "docSync", Types.INTEGER },
-			{ "govAgencies", Types.VARCHAR }
+			{ "govAgencies", Types.VARCHAR },
+			{ "fileTemplateId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -114,9 +116,10 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		TABLE_COLUMNS_MAP.put("mappingData", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("docSync", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("govAgencies", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fileTemplateId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(128) null,typeName VARCHAR(575) null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,codePattern VARCHAR(275) null,dataConfig TEXT null,tableConfig TEXT null,counter LONG,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_deliverabletype (uuid_ VARCHAR(75) null,deliverableTypeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,typeCode VARCHAR(128) null,typeName VARCHAR(575) null,formScript TEXT null,formReport TEXT null,formScriptFileId LONG,formReportFileId LONG,codePattern VARCHAR(275) null,dataConfig TEXT null,tableConfig TEXT null,counter LONG,mappingData TEXT null,docSync INTEGER,govAgencies VARCHAR(255) null,fileTemplateId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_deliverabletype";
 	public static final String ORDER_BY_JPQL = " ORDER BY deliverableType.deliverableTypeId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_deliverabletype.deliverableTypeId ASC";
@@ -198,6 +201,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		attributes.put("mappingData", getMappingData());
 		attributes.put("docSync", getDocSync());
 		attributes.put("govAgencies", getGovAgencies());
+		attributes.put("fileTemplateId", getFileTemplateId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -331,6 +335,12 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 
 		if (govAgencies != null) {
 			setGovAgencies(govAgencies);
+		}
+
+		Long fileTemplateId = (Long)attributes.get("fileTemplateId");
+
+		if (fileTemplateId != null) {
+			setFileTemplateId(fileTemplateId);
 		}
 	}
 
@@ -664,6 +674,16 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 	}
 
 	@Override
+	public long getFileTemplateId() {
+		return _fileTemplateId;
+	}
+
+	@Override
+	public void setFileTemplateId(long fileTemplateId) {
+		_fileTemplateId = fileTemplateId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				DeliverableType.class.getName()));
@@ -721,6 +741,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		deliverableTypeImpl.setMappingData(getMappingData());
 		deliverableTypeImpl.setDocSync(getDocSync());
 		deliverableTypeImpl.setGovAgencies(getGovAgencies());
+		deliverableTypeImpl.setFileTemplateId(getFileTemplateId());
 
 		deliverableTypeImpl.resetOriginalValues();
 
@@ -926,12 +947,14 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			deliverableTypeCacheModel.govAgencies = null;
 		}
 
+		deliverableTypeCacheModel.fileTemplateId = getFileTemplateId();
+
 		return deliverableTypeCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -975,6 +998,8 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 		sb.append(getDocSync());
 		sb.append(", govAgencies=");
 		sb.append(getGovAgencies());
+		sb.append(", fileTemplateId=");
+		sb.append(getFileTemplateId());
 		sb.append("}");
 
 		return sb.toString();
@@ -982,7 +1007,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(70);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.DeliverableType");
@@ -1072,6 +1097,10 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 			"<column><column-name>govAgencies</column-name><column-value><![CDATA[");
 		sb.append(getGovAgencies());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fileTemplateId</column-name><column-value><![CDATA[");
+		sb.append(getFileTemplateId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1110,6 +1139,7 @@ public class DeliverableTypeModelImpl extends BaseModelImpl<DeliverableType>
 	private String _mappingData;
 	private int _docSync;
 	private String _govAgencies;
+	private long _fileTemplateId;
 	private long _columnBitmask;
 	private DeliverableType _escapedModel;
 }

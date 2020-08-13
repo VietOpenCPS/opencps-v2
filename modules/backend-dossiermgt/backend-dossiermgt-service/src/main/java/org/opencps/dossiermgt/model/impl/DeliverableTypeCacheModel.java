@@ -65,7 +65,7 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -109,6 +109,8 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 		sb.append(docSync);
 		sb.append(", govAgencies=");
 		sb.append(govAgencies);
+		sb.append(", fileTemplateId=");
+		sb.append(fileTemplateId);
 		sb.append("}");
 
 		return sb.toString();
@@ -221,6 +223,8 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 			deliverableTypeImpl.setGovAgencies(govAgencies);
 		}
 
+		deliverableTypeImpl.setFileTemplateId(fileTemplateId);
+
 		deliverableTypeImpl.resetOriginalValues();
 
 		return deliverableTypeImpl;
@@ -257,6 +261,8 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 
 		docSync = objectInput.readInt();
 		govAgencies = objectInput.readUTF();
+
+		fileTemplateId = objectInput.readLong();
 	}
 
 	@Override
@@ -357,6 +363,8 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 		else {
 			objectOutput.writeUTF(govAgencies);
 		}
+
+		objectOutput.writeLong(fileTemplateId);
 	}
 
 	public String uuid;
@@ -380,4 +388,5 @@ public class DeliverableTypeCacheModel implements CacheModel<DeliverableType>,
 	public String mappingData;
 	public int docSync;
 	public String govAgencies;
+	public long fileTemplateId;
 }

@@ -211,4 +211,7 @@ public interface DossierActions {
 		String postalDistrictName,String postalWardCode,String postalWardName,String postalTelNo);
 
 	public Dossier updatePaymentAmountMetaData(long groupId,long dossierId,long paymentAmount );
+
+	public JSONObject getDossierActionsList(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
+											Sort[] sorts, Integer start, Integer end, ServiceContext serviceContext);
 }

@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossierlog.model.DossierLogModel;
 import org.opencps.api.dossierlog.model.DossierLogResultsModel;
 import org.opencps.api.dossierlog.model.DossierLogSearchIdResultsModel;
@@ -49,6 +50,20 @@ public interface DossierLogManagement {
 	public Response getDossierLogs(@Context HttpServletRequest request, @Context HttpHeaders header,
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @BeanParam DossierLogSearchModel query);
+
+	@GET
+	@Path("/revesionLog")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get all DossierLogs", response = DossierLogResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all DossierLogs", response = DossierLogResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getRevisionLogByGroupId(@Context HttpServletRequest request, @Context HttpHeaders header,
+								   @Context Company company, @Context Locale locale, @Context User user,
+								   @Context ServiceContext serviceContext, @BeanParam DossierSearchModel query);
 	
 	@GET
 	@Path("/{id}/logs")

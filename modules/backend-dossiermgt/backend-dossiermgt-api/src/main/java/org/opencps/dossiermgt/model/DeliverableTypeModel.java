@@ -401,6 +401,20 @@ public interface DeliverableTypeModel extends BaseModel<DeliverableType>,
 	 */
 	public void setGovAgencies(String govAgencies);
 
+	/**
+	 * Returns the file template ID of this deliverable type.
+	 *
+	 * @return the file template ID of this deliverable type
+	 */
+	public long getFileTemplateId();
+
+	/**
+	 * Sets the file template ID of this deliverable type.
+	 *
+	 * @param fileTemplateId the file template ID of this deliverable type
+	 */
+	public void setFileTemplateId(long fileTemplateId);
+
 	@Override
 	public boolean isNew();
 

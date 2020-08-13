@@ -110,7 +110,8 @@ create table opencps_employee (
 	fileCertPath VARCHAR(512) null,
 	fileSignPath VARCHAR(512) null,
 	jobPosTitle VARCHAR(75) null,
-	scope VARCHAR(128) null
+	scope VARCHAR(128) null,
+	workingUnitId LONG
 );
 
 create table opencps_employee_jobpos (
@@ -124,7 +125,8 @@ create table opencps_employee_jobpos (
 	modifiedDate DATE null,
 	employeeId LONG,
 	jobPostId LONG,
-	workingUnitId LONG
+	workingUnitId LONG,
+	status LONG
 );
 
 create table opencps_fileitem (

@@ -179,5 +179,6 @@ create table opencps_workTime (
 	createDate DATE null,
 	modifiedDate DATE null,
 	day INTEGER,
-	hours VARCHAR(128) null
+	hours VARCHAR(128) null,
+	status INTEGER
 );

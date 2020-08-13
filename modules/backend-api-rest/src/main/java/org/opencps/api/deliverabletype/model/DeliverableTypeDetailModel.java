@@ -53,7 +53,8 @@ import javax.xml.bind.annotation.XmlType;
     "counter",
     "formScript",
     "formReport",
-    "mappingData"
+    "mappingData",
+    "fileTemplateId"
 })
 @XmlRootElement(name = "DeliverableTypeDetailModel")
 public class DeliverableTypeDetailModel {
@@ -68,6 +69,15 @@ public class DeliverableTypeDetailModel {
     protected String formScript;
     protected String formReport;
     protected String mappingData;
+    protected Long fileTemplateId;
+
+    public Long getFileTemplateId() {
+        return fileTemplateId;
+    }
+
+    public void setFileTemplateId(Long fileTemplateId) {
+        this.fileTemplateId = fileTemplateId;
+    }
 
     /**
      * Gets the value of the deliverableTypeId property.

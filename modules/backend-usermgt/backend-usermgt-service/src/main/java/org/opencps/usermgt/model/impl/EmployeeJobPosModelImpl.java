@@ -79,7 +79,8 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "employeeId", Types.BIGINT },
 			{ "jobPostId", Types.BIGINT },
-			{ "workingUnitId", Types.BIGINT }
+			{ "workingUnitId", Types.BIGINT },
+			{ "status", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -95,9 +96,10 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		TABLE_COLUMNS_MAP.put("employeeId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("jobPostId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("workingUnitId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("status", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG,status LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee_jobpos";
 	public static final String ORDER_BY_JPQL = " ORDER BY employeeJobPos.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee_jobpos.createDate ASC";
@@ -171,6 +173,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		attributes.put("employeeId", getEmployeeId());
 		attributes.put("jobPostId", getJobPostId());
 		attributes.put("workingUnitId", getWorkingUnitId());
+		attributes.put("status", getStatus());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -244,6 +247,12 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 
 		if (workingUnitId != null) {
 			setWorkingUnitId(workingUnitId);
+		}
+
+		Long status = (Long)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -460,6 +469,16 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 	}
 
 	@Override
+	public long getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(long status) {
+		_status = status;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				EmployeeJobPos.class.getName()));
@@ -507,6 +526,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		employeeJobPosImpl.setEmployeeId(getEmployeeId());
 		employeeJobPosImpl.setJobPostId(getJobPostId());
 		employeeJobPosImpl.setWorkingUnitId(getWorkingUnitId());
+		employeeJobPosImpl.setStatus(getStatus());
 
 		employeeJobPosImpl.resetOriginalValues();
 
@@ -647,12 +667,14 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 
 		employeeJobPosCacheModel.workingUnitId = getWorkingUnitId();
 
+		employeeJobPosCacheModel.status = getStatus();
+
 		return employeeJobPosCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -676,6 +698,8 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		sb.append(getJobPostId());
 		sb.append(", workingUnitId=");
 		sb.append(getWorkingUnitId());
+		sb.append(", status=");
+		sb.append(getStatus());
 		sb.append("}");
 
 		return sb.toString();
@@ -683,7 +707,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(40);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.EmployeeJobPos");
@@ -733,6 +757,10 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 			"<column><column-name>workingUnitId</column-name><column-value><![CDATA[");
 		sb.append(getWorkingUnitId());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>status</column-name><column-value><![CDATA[");
+		sb.append(getStatus());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -766,6 +794,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 	private long _workingUnitId;
 	private long _originalWorkingUnitId;
 	private boolean _setOriginalWorkingUnitId;
+	private long _status;
 	private long _columnBitmask;
 	private EmployeeJobPos _escapedModel;
 }

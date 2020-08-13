@@ -1666,10 +1666,26 @@ public class DeliverableLocalServiceImpl
 			for (Map.Entry<String, String> entry : mapFilter.entrySet()) {
 				String key = entry.getKey();
 				if (key.contains("@LIKE")) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(
-							key.split("@")[0],
-							StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-					queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+					if(entry.getValue().contains(StringPool.PERIOD)){
+						String[] subQuerieArr = new String[] {
+//								DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
+//								DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+								DeliverableTerm.DELIVERABLE_CODE_SEARCH
+						};
+						String keywordArr = SpecialCharacterUtils.splitSpecial(entry.getValue());
+						for (String fieldSearch : subQuerieArr) {
+							WildcardQuery wildQuery = new WildcardQueryImpl(
+									fieldSearch,
+									StringPool.STAR + keywordArr.toLowerCase() + StringPool.STAR);
+							queryBool.add(wildQuery, BooleanClauseOccur.SHOULD);
+						}
+						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+					}else {
+						WildcardQuery wildQuery = new WildcardQueryImpl(
+								key.split("@")[0],
+								StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+						queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+					}
 				} else if (key.contains("@EQUAL")) {
 					MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
 					query.addFields(key.split("@")[0]);

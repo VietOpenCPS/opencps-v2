@@ -18,24 +18,13 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.DeliverableType;
-import org.opencps.dossiermgt.model.DossierDocument;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.model.RegistrationForm;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationFormLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 
 public class Engine implements MessageListener {
 
@@ -123,6 +112,19 @@ public class Engine implements MessageListener {
     			dossierFile.setFileEntryId(fileEntryId);
     			dossierFile.setIsNew(false);
     			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+				if (dossierFile.getDossierPartType() == 7) {
+					List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(dossierFile.getGroupId(), String.valueOf(dossierFile.getDossierId()));
+					if (lstDossiers != null && lstDossiers.size() > 0)
+						for (Dossier dossier: lstDossiers) {
+							DossierFile fileJasper = DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(dossier.getGroupId(), dossier.getDossierId(),
+									dossierFile.getDossierPartNo(), true, false);
+							if (fileJasper != null && fileEntryId > 0) {
+								fileJasper.setFileEntryId(fileEntryId);
+								fileJasper.setIsNew(false);
+								DossierFileLocalServiceUtil.updateDossierFile(fileJasper);
+							}
+						}
+				}
     
     			//Indexer<DossierFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierFile.class);
     			//indexer.reindex(dossierFile);

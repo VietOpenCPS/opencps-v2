@@ -2952,6 +2952,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String groupDossierIdHs =
 				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
+//		String createDateStart =
+//				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+//		String createDateEnd =
+//				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -3162,6 +3166,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
 				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
 				: null;
+//		String createDateStart =
+//				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+//		String createDateEnd =
+//				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -4487,6 +4495,34 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 			}
 		}
+//		String createDateStartFilter =
+//				createDateStart + ConstantsTerm.HOUR_START;
+//		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+//		if (Validator.isNotNull(createDateStart)) {
+//			if (Validator.isNotNull(createDateEnd)) {
+//				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+//						DossierTerm.CREATE_DATE, createDateStartFilter,
+//						createDateEndFilter, true, true);
+//
+//				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+//			}
+//			else {
+//				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+//						DossierTerm.CREATE_DATE, createDateStartFilter,
+//						null, true, false);
+//
+//				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+//			}
+//		}
+//		else {
+//			if (Validator.isNotNull(createDateEnd)) {
+//				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+//						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+//						false, true);
+//
+//				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+//			}
+//		}
 
 		// Process Statistic
 		// TODO
