@@ -237,7 +237,7 @@ public class OneMinute extends BaseMessageListener {
 
 								if (messageEntry.isSendEmail()) {
 									_log.info("messageEntry.isSendEmail(): " + messageEntry.isSendEmail());
-									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK);
+									MBEmailSenderFactoryUtil.send(messageEntry, StringPool.BLANK, new ServiceContext());
 								}
 								if (messageEntry.isSendNotify() || messageEntry.isSendZalo()) {
 									_log.debug("messageEntry.isSendNotify(): " + messageEntry.isSendNotify());
