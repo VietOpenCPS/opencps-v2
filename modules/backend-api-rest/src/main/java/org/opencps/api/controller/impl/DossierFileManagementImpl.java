@@ -28,6 +28,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -41,11 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DossierFileManagement;
-import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
-import org.opencps.api.controller.util.DossierFileUtils;
-import org.opencps.api.controller.util.ImportZipFileUtils;
-import org.opencps.api.controller.util.MessageUtil;
-import org.opencps.api.controller.util.ReadXMLFileUtils;
+import org.opencps.api.controller.util.*;
 import org.opencps.api.dossierfile.model.DossierFileCopyInputModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
@@ -69,8 +68,23 @@ import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import service.ImportFile;
+import service.dependencies.ImportFileImpl;
 
 public class DossierFileManagementImpl implements DossierFileManagement {
+	private ImportFile fileHandle;
+	private int corePoolSize = 3;
+	private int maximumPoolSize = 5;
+	private int queueCapacity = 10;
+	private ThreadPoolExecutor threadPoolExecutor;
+	private ArrayBlockingQueue arrayBlockingQueue;
+
+	public DossierFileManagementImpl() {
+		ImportFile fileHandle = new ImportFileImpl();
+		this.fileHandle = fileHandle;
+		this.arrayBlockingQueue = new ArrayBlockingQueue<>(queueCapacity);
+		this.threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 10, TimeUnit.SECONDS, arrayBlockingQueue);
+	}
 
 	private static final Log _log =
 		LogFactoryUtil.getLog(DossierFileManagementImpl.class);
@@ -861,6 +875,68 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 		}
 		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+
+	private boolean isAuth(ServiceContext serviceContext) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		if (!auth.isAuth(serviceContext)) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isAdmin(ServiceContext serviceContext) {
+		backend.auth.api.BackendAuth auth2 = new backend.auth.api.BackendAuthImpl();
+		if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Response importExcelFileEntry(HttpServletRequest request, HttpHeaders header, Company company,
+										 Locale locale, User user, ServiceContext serviceContext,
+										 Attachment file){
+		try {
+			_log.info("Importing excel file...");
+			if(!this.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+
+			if(!this.isAdmin(serviceContext)) {
+				return Response.status(
+						HttpURLConnection.HTTP_UNAUTHORIZED).entity(
+						MessageUtil.getMessage(ConstantUtils.API_USER_NOTHAVEPERMISSION)).build();
+			}
+
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+
+			if(file == null || file.getDataHandler() == null) {
+				throw new Exception("File not found");
+			}
+
+			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+			if (!flagCheck) {
+				return Response.status(HttpStatus.SC_FORBIDDEN)
+						.entity(MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FILEFORMATERROR)).build();
+			}
+
+			//excel to xml
+			InputStream fileExcel = file.getDataHandler().getInputStream();
+			String xmlString = ExcelUtils.createXmlStringFromExcelFile(fileExcel);
+
+			//import file
+			threadPoolExecutor.execute(()->fileHandle.importExcelFile(xmlString, groupId, userId, serviceContext));
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		}catch (Exception e) {
+			_log.error("*****!!!!!!Import file excel ERROR!!!!!!*****");
+			_log.error(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
