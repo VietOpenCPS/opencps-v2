@@ -23,9 +23,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,12 +35,18 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.opencps.adminconfig.model.AdminConfig;
 import org.opencps.adminconfig.service.AdminConfigLocalServiceUtil;
 import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
+import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.springframework.http.HttpStatus;
 
@@ -152,7 +156,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			try {
 				
 				if (message.getString(TYPE).equals(ADMIN)) {
-					
+
 					String code = message.getString(CODE);
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
@@ -517,5 +521,174 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			return BusinessExceptionImpl.processException(e);
 		}		
 	}
-	
+
+	private static final String TABLE_CONFIG = "tableConfig";
+	private static final String TABLE_DATA = "tableData";
+	private static final String STT = "STT";
+	@Override
+	public Response exportDataConfig(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+									 User user, ServiceContext serviceContext, String columnName, String content) {
+		HSSFWorkbook workbook = null;
+		try {
+
+			JSONObject headerInfo = JSONFactoryUtil.createJSONObject(columnName);
+			JSONObject headerData = headerInfo.getJSONObject(TABLE_CONFIG);
+			// Create Workbook
+			workbook = new HSSFWorkbook();
+
+			// Create sheet
+			String sheetName = headerData.getString(CODE);
+			HSSFSheet mainSheet = workbook.createSheet(sheetName);
+			int rowIndex = 0;
+			int stt = 0;
+
+			// Write header
+			JSONArray headersName = headerData.getJSONArray(HEARDER_NAME);
+			writeHeader(mainSheet, rowIndex, headersName);
+
+			// Write data
+			rowIndex++;
+			stt++;
+			Response response = onMessage(request, header, company, locale, user, serviceContext, content);
+			JSONObject contentInfo = JSONFactoryUtil.createJSONObject(response.getEntity().toString());
+			JSONArray contentData = contentInfo.getJSONArray(TABLE_DATA);
+			for (int i = 0; i < contentData.length(); i++) {
+				// Create row
+				Row row = mainSheet.createRow(rowIndex);
+				// Write data on row
+				JSONArray objectDataRow = contentData.getJSONArray(i);
+				writeData(mainSheet, objectDataRow, row, headersName, stt);
+				rowIndex++;
+				stt++;
+			}
+
+			// Auto resize column witdth
+			int numberOfColumn = mainSheet.getRow(0).getPhysicalNumberOfCells();
+			autosizeColumn(mainSheet, numberOfColumn);
+
+			// Create file excel
+
+			String fileName = headerData.getString(NAME) + StringPool.UNDERLINE
+					+ String.format("%d.xls", System.currentTimeMillis());
+			_log.info("fileName: "+fileName);
+
+			File exportDir = new File(StatisticManagementConstants.FOLDER_EXPORTED);
+			if (!exportDir.exists()) {
+				exportDir.mkdirs();
+			}
+
+			File file = new File(exportDir+ StringPool.SLASH + fileName);
+
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			workbook.write(bos);
+			byte[] input = bos.toByteArray();
+			try {
+				FileOutputStream out = new FileOutputStream(file);
+				out.write(input);
+				out.flush();
+				out.close();
+				workbook.close();
+			}
+			catch (Exception e) {
+				_log.debug(e);
+			}
+
+			Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+			responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,attachmentFilename);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_EXCEL);
+
+			return responseBuilder.build();
+
+		} catch (Exception e) {
+			_log.error(e);
+			return BusinessExceptionImpl.processException(e);
+		}  finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+					_log.debug(e);
+				}
+			}
+		}
+	}
+
+	// Create Column Name
+	private static void writeHeader(HSSFSheet sheet, int rowIndex, JSONArray headerArr ) {
+		// create CellStyle
+		CellStyle cellStyle = createStyleForHeader(sheet);
+
+		// Create row
+		Row row = sheet.createRow(rowIndex);
+
+		// Create first cell - STT
+		Cell firstCell = row.createCell(0);
+		firstCell.setCellStyle(cellStyle);
+		firstCell.setCellValue(STT);
+
+		// Create cell
+		for(int i = 1; i< headerArr.length(); i++) {
+			Cell cell = row.createCell(i);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(headerArr.getString(i));
+		}
+	}
+
+	// Create Content Data
+	private static void writeData(HSSFSheet sheet, JSONArray objectDataRow, Row row, JSONArray headerName, int stt) {
+		// create CellStyle
+		CellStyle cellStyle = createStyleForContent(sheet);
+		Cell firstCell = row.createCell(0);
+		firstCell.setCellStyle(cellStyle);
+		firstCell.setCellValue(stt);
+		for (int i = 1; i < headerName.length(); i++) {
+			Cell cell = row.createCell(i);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(objectDataRow.get(i).toString());
+		}
+	}
+	// Auto resize column width
+	private static void autosizeColumn(HSSFSheet sheet, int lastColumn) {
+		for (int columnIndex = 0; columnIndex < lastColumn; columnIndex++) {
+			sheet.autoSizeColumn(columnIndex);
+		}
+	}
+
+	// Create CellStyle for header
+	private static CellStyle createStyleForHeader(HSSFSheet sheet) {
+		// Create font
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 14); // font size
+		font.setColor(IndexedColors.BLACK.getIndex()); // text color
+
+		// Create CellStyle
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		return cellStyle;
+	}
+
+	// Create CellStyle for content
+	private static CellStyle createStyleForContent(HSSFSheet sheet) {
+		// Create font
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setBold(false);
+		font.setFontHeightInPoints((short) 11); // font size
+		font.setColor(IndexedColors.BLACK.getIndex()); // text color
+
+		// Create CellStyle
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		cellStyle.setFont(font);
+		cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		cellStyle.setWrapText(true);
+		cellStyle.setAlignment(HorizontalAlignment.LEFT);
+		return cellStyle;
+	}
+
 }

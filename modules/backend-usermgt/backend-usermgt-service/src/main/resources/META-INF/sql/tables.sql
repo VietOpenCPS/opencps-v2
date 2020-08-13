@@ -126,7 +126,7 @@ create table opencps_employee_jobpos (
 	employeeId LONG,
 	jobPostId LONG,
 	workingUnitId LONG,
-	status LONG
+	status INTEGER
 );
 
 create table opencps_fileitem (

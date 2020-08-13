@@ -139,7 +139,7 @@
 		<column name="jobPosTitle" type="String" />
 		<column name="scope" type="String" />
 		<column name="workingUnitId" type="long" />
-		
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />
@@ -299,7 +299,7 @@
 		<column name="employeeId" type="long" />
 		<column name="jobPostId" type="long" />
 		<column name="workingUnitId" type="long" />
-		<column name="status" type="long" />
+		<column name="status" type="int" />
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="createDate" />

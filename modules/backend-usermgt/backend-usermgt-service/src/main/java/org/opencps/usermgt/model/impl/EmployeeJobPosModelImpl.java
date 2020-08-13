@@ -80,7 +80,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 			{ "employeeId", Types.BIGINT },
 			{ "jobPostId", Types.BIGINT },
 			{ "workingUnitId", Types.BIGINT },
-			{ "status", Types.BIGINT }
+			{ "status", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,10 +96,10 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 		TABLE_COLUMNS_MAP.put("employeeId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("jobPostId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("workingUnitId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("status", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG,status LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee_jobpos (uuid_ VARCHAR(75) null,employeeJobPosId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeId LONG,jobPostId LONG,workingUnitId LONG,status INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee_jobpos";
 	public static final String ORDER_BY_JPQL = " ORDER BY employeeJobPos.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee_jobpos.createDate ASC";
@@ -249,7 +249,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 			setWorkingUnitId(workingUnitId);
 		}
 
-		Long status = (Long)attributes.get("status");
+		Integer status = (Integer)attributes.get("status");
 
 		if (status != null) {
 			setStatus(status);
@@ -469,12 +469,12 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 	}
 
 	@Override
-	public long getStatus() {
+	public int getStatus() {
 		return _status;
 	}
 
 	@Override
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_status = status;
 	}
 
@@ -794,7 +794,7 @@ public class EmployeeJobPosModelImpl extends BaseModelImpl<EmployeeJobPos>
 	private long _workingUnitId;
 	private long _originalWorkingUnitId;
 	private boolean _setOriginalWorkingUnitId;
-	private long _status;
+	private int _status;
 	private long _columnBitmask;
 	private EmployeeJobPos _escapedModel;
 }

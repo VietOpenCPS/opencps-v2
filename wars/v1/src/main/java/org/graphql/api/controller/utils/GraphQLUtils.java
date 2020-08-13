@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.graphql.api.controller.impl.DeliverableService;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.EmployeeJobPos;
 import org.opencps.usermgt.model.JobPos;
@@ -131,9 +132,18 @@ public class GraphQLUtils {
 			while (jsonKeys.hasNext()) {
 
 				String key = jsonKeys.next();
-				mapFilter.put(key + "_data@LIKE",
-						Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
-								: StringPool.BLANK);
+				String value = formDataKeyObject.getString(key);
+				if(value.contains(StringPool.FORWARD_SLASH)){
+					if(!key.equals(DeliverableTerm.SO_QD)) {
+						mapFilter.put(key + "_data@EQUAL",
+								Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
+										: StringPool.BLANK);
+					}
+				}else {
+					mapFilter.put(key + "_data@LIKE",
+							Validator.isNotNull(formDataKeyObject.get(key)) ? String.valueOf(formDataKeyObject.get(key))
+									: StringPool.BLANK);
+				}
 			}
 		} catch (Exception e) {
 			_log.debug(e);

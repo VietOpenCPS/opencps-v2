@@ -185,11 +185,11 @@ public class EmployeeJobPosSoap implements Serializable {
 		_workingUnitId = workingUnitId;
 	}
 
-	public long getStatus() {
+	public int getStatus() {
 		return _status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_status = status;
 	}
 
@@ -204,5 +204,5 @@ public class EmployeeJobPosSoap implements Serializable {
 	private long _employeeId;
 	private long _jobPostId;
 	private long _workingUnitId;
-	private long _status;
+	private int _status;
 }

@@ -65,7 +65,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -164,7 +164,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 
 		workingUnitId = objectInput.readLong();
 
-		status = objectInput.readLong();
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -201,7 +201,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 
 		objectOutput.writeLong(workingUnitId);
 
-		objectOutput.writeLong(status);
+		objectOutput.writeInt(status);
 	}
 
 	public String uuid;
@@ -215,5 +215,5 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 	public long employeeId;
 	public long jobPostId;
 	public long workingUnitId;
-	public long status;
+	public int status;
 }

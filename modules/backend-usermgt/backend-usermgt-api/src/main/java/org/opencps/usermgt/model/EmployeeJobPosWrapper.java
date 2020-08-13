@@ -144,7 +144,7 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 			setWorkingUnitId(workingUnitId);
 		}
 
-		Long status = (Long)attributes.get("status");
+		Integer status = (Integer)attributes.get("status");
 
 		if (status != null) {
 			setStatus(status);
@@ -257,7 +257,7 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 	* @return the status of this employee job pos
 	*/
 	@Override
-	public long getStatus() {
+	public int getStatus() {
 		return _employeeJobPos.getStatus();
 	}
 
@@ -453,7 +453,7 @@ public class EmployeeJobPosWrapper implements EmployeeJobPos,
 	* @param status the status of this employee job pos
 	*/
 	@Override
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_employeeJobPos.setStatus(status);
 	}
 

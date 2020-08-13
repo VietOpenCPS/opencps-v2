@@ -100,6 +100,9 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.action.DictcollectionInterface;
+import org.opencps.datamgt.action.impl.DictCollectionActions;
+import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -642,7 +645,17 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 				//Don vi nhan
 				String donvinhan = query.getDonvinhan();
-				String groupCongVan = query.getGroupCongVan();
+				String processAgency = query.getProcessAgency();
+				if(Validator.isNotNull(processAgency)){
+					if(processAgency.equals(DossierTerm.FIRSTSCOPE)){
+						if (Validator.isNotNull(employee)) {
+							String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+							params.put(DossierTerm.PROCESS_AGENCY_METADATA, employeeArr[0]);
+						}
+					}else {
+						params.put(DossierTerm.PROCESS_AGENCY_METADATA, processAgency);
+					}
+				}
 				if (Validator.isNotNull(donvinhan)) {
 					String[] donvinhanArr = donvinhan.split(StringPool.COMMA);
 					boolean firtScopeDVN = false;
@@ -736,14 +749,12 @@ public class DossierManagementImpl implements DossierManagement {
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
-				if(Validator.isNull(groupCongVan)){
 					results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 
 					results.getData().addAll(
 							DossierUtils.mappingForGetList(
 									(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 									query.getAssigned(), query));
-				}else{
 //					List<Dossier> lstSearchDossierByDocumentTary = new ArrayList<>();
 //					List<Dossier> lstDossier = new ArrayList<>();
 //					List<Dossier> lstAdd = new ArrayList<>();
@@ -792,7 +803,6 @@ public class DossierManagementImpl implements DossierManagement {
 //					}
 //					results.setTotal(lstAdd.size());
 //					results.getData().addAll(DossierUtils.mappingForListDossier(lstAdd));
-				}
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 		}
@@ -7986,15 +7996,19 @@ public class DossierManagementImpl implements DossierManagement {
 												_log.debug(
 														"DO ACTION: " +
 																proAction.getActionCode());
-												dossierResult = actions.doAction(
-														groupId, userId, dossier, oldOption,
-														proAction, actionCode, actionUser,
-														input.getActionNote(),
-														input.getPayload(),
-														input.getAssignUsers(),
-														input.getPayment(),
-														actConfig.getSyncType(),
-														serviceContext, errorModel);
+//												dossierResult = actions.doAction(
+//														groupId, userId, dossier, oldOption,
+//														proAction, actionCode, actionUser,
+//														input.getActionNote(),
+//														input.getPayload(),
+//														input.getAssignUsers(),
+//														input.getPayment(),
+//														actConfig.getSyncType(),
+//														serviceContext, errorModel);
+												if(Validator.isNotNull(proAction.getPostAction())){
+													updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
+												}
+
 												boolean checkCreateFile = false;
 												options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext,request,header,locale);
 												if(options.length() >0){
@@ -8063,6 +8077,73 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.debug(e);
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+	public void updateMetaDataByPostAction(String postAction, long userId, long groupId, Dossier dossier,
+										   ServiceContext serviceContext){
+		try {
+			DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+			String unit = "";
+			JSONObject jsonPostAction = JSONFactoryUtil.createJSONObject(postAction);
+			Iterator<String> keys = jsonPostAction.keys();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				String value = jsonPostAction.getString(key);
+				if(key.equals(DossierTerm.PROCESS_AGENCY)){
+					JSONObject agencysData = JSONFactoryUtil.createJSONObject(value);
+					Iterator<String> agencysIterator = agencysData.keys();
+					while (agencysIterator.hasNext()) {
+						String keyAgencys = agencysIterator.next();
+						String valueAgencys = agencysData.getString(keyAgencys);
+						if(keyAgencys.equals(DictItemTerm.ITEM_CODE)){
+							if(valueAgencys.equals(DictItemTerm.SCOPE)){
+								 unit = splitByUnitEmployee(groupId,userId);
+							}else{
+								unit = valueAgencys;
+							}
+							break;
+						}else if(keyAgencys.equals(DictItemTerm.isParrentCode)){
+							if(valueAgencys.equals(DictItemTerm.SCOPE)){
+								unit = splitByUnitEmployee(groupId,userId);
+							}else{
+								DictItem dictItem = dictItemDataUtil.getDictItemByItemCode(DictItemTerm.DON_VI_CONG_VAN, valueAgencys, groupId, serviceContext);
+								if(Validator.isNotNull(dictItem)){
+									DictItem parentItem = DictItemLocalServiceUtil.fetchDictItem(dictItem.getParentItemId());
+									unit = parentItem.getItemCode();
+
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+			//Update MedataData
+			if(Validator.isNotNull(dossier)) {
+				if (Validator.isNotNull(unit)) {
+					JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
+					Iterator<String> keyMetaData = jsonMetaData.keys();
+					if(!jsonMetaData.has(DossierTerm.PROCESS_AGENCY_METADATA)){
+						jsonMetaData.put(DossierTerm.PROCESS_AGENCY_METADATA, unit);
+						dossier.setMetaData(jsonMetaData.toJSONString());
+					}else {
+						while (keyMetaData.hasNext()) {
+							String key = keyMetaData.next();
+							String value = jsonMetaData.getString(key);
+							if(key.equals(DossierTerm.PROCESS_AGENCY_METADATA)){
+								jsonMetaData.put(DossierTerm.PROCESS_AGENCY_METADATA, value + "," + unit);
+								dossier.setMetaData(jsonMetaData.toJSONString());
+								break;
+							}
+						}
+						//update MetaData in Dossier
+					}
+					DossierLocalServiceUtil.updateDossier(dossier);
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 	public JSONArray cloneDossierFile(Dossier dossier, List<DossierFile> listDossierFile, ProcessAction proAction,
 									  Long groupId, boolean checkCreateFile, User user,
@@ -8489,6 +8570,15 @@ public class DossierManagementImpl implements DossierManagement {
 		}catch (Exception e) {
 			_log.info(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	public String splitByUnitEmployee(long groupId, long userId){
+		try {
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+			return employeeArr[0];
+		}catch (Exception e){
+			return null;
 		}
 	}
 }
