@@ -38,5 +38,13 @@ public interface AdminConfigManagement {
 	public Response onMessage(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@FormParam("text") String text);
-	
+
+	@POST
+	@Path("/export-excel")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
+	public Response exportDataConfig(@Context HttpServletRequest request, @Context HttpHeaders header,
+									 @Context Company company, @Context Locale locale, @Context User user,
+									 @Context ServiceContext serviceContext, @FormParam("columnName") String columnName,
+									 @FormParam("content") String content);
 }

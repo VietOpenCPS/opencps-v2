@@ -65,7 +65,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -89,6 +89,8 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 		sb.append(jobPostId);
 		sb.append(", workingUnitId=");
 		sb.append(workingUnitId);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -134,6 +136,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 		employeeJobPosImpl.setEmployeeId(employeeId);
 		employeeJobPosImpl.setJobPostId(jobPostId);
 		employeeJobPosImpl.setWorkingUnitId(workingUnitId);
+		employeeJobPosImpl.setStatus(status);
 
 		employeeJobPosImpl.resetOriginalValues();
 
@@ -160,6 +163,8 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 		jobPostId = objectInput.readLong();
 
 		workingUnitId = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -195,6 +200,8 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 		objectOutput.writeLong(jobPostId);
 
 		objectOutput.writeLong(workingUnitId);
+
+		objectOutput.writeInt(status);
 	}
 
 	public String uuid;
@@ -208,4 +215,5 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 	public long employeeId;
 	public long jobPostId;
 	public long workingUnitId;
+	public int status;
 }
