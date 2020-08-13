@@ -738,11 +738,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONArray philephi = JSONFactoryUtil.createJSONArray();
 				//????????????????????????
 				JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-				philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_PHI);
 				philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
-				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
-				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_PHI));
+				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getServiceAmount());
 				philephi.put(philephiJ);
+				JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
+				philephiJ2.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_LEPHI);
+				philephiJ2.put(PayGateTerm.MAPHILEPHI, "2");
+				philephiJ2.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_LEPHI));
+				philephiJ2.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+				philephi.put(philephiJ2);
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
 				// TODO: 
@@ -1534,11 +1540,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 //			}
 //		}
 		JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-		philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_PHI);
 		philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
-		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
-		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_PHI));
+		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getServiceAmount());
 		phiLePhi.put(philephiJ);
+		JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
+		philephiJ2.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_LEPHI);
+		philephiJ2.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ2.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_LEPHI));
+		philephiJ2.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+		phiLePhi.put(philephiJ2);
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
 
 		// bb khi madichvu = 1

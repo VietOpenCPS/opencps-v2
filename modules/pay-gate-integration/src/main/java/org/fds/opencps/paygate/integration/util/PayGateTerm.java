@@ -95,9 +95,13 @@ public class PayGateTerm {
 
 	public static final String PHILEPHI = "PhiLePhi";
 	public static final String LOAIPHILEPHI = "LoaiPhiLePhi";
+	public static final String LOAIPHILEPHI_PHI = "1";
+	public static final String LOAIPHILEPHI_LEPHI = "2";
 	
 	public static final String MAPHILEPHI = "MaPhiLePhi";
 	public static final String TENPHILEPHI = "TenPhiLePhi";
+	public static final String TENPHILEPHI_PHI = "TenPhiLePhiPhi";
+	public static final String TENPHILEPHI_LEPHI = "TenPhiLePhiLePhi";
 	public static final String SOTIEN = "SoTien";
 	public static final String MADONVI = "MaDonVi";
 	public static final String TENDONVI = "TenDonVi";
