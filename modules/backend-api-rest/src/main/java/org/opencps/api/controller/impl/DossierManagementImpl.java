@@ -593,8 +593,11 @@ public class DossierManagementImpl implements DossierManagement {
 				if (Validator.isNotNull(query.getDelegateType())) {
 					params.put(DossierTerm.DELEGATE_TYPE, query.getDelegateType());
 				}
+				String documentNoSearch = StringPool.BLANK;
+
 				if (Validator.isNotNull(query.getDocumentNo())) {
-					params.put(DossierTerm.DOCUMENT_NO, query.getDocumentNo());
+					documentNoSearch = SpecialCharacterUtils.splitSpecial(query.getDocumentNo());
+					params.put(DossierTerm.DOCUMENT_NO, documentNoSearch);
 				}
 				if (Validator.isNotNull(query.getDocumentDate())) {
 					params.put(DossierTerm.DOCUMENT_DATE, query.getDocumentDate());

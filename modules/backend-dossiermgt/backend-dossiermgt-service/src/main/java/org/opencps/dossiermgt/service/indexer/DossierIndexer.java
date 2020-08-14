@@ -821,6 +821,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
 			document.addNumberSortable(DossierTerm.DELEGATE_TYPE, object.getDelegateType());
 			document.addTextSortable(DossierTerm.DOCUMENT_NO, object.getDocumentNo());
+			if (Validator.isNotNull(object.getDocumentNo())) {
+				String documentNoSearch = SpecialCharacterUtils.splitSpecial(object.getDocumentNo());
+				document.addTextSortable(DossierTerm.DOCUMENT_NO_SEARCH, documentNoSearch);
+			}
+
 			if (Validator.isNotNull(object.getDocumentDate())) {
 				document.addDateSortable(DossierTerm.DOCUMENT_DATE, object.getDocumentDate());
 			}

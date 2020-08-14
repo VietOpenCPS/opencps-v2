@@ -4749,12 +4749,24 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.DELEGATE_TYPE);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		//query like
 		if (Validator.isNotNull(documentNo)) {
-			MultiMatchQuery query =
-					new MultiMatchQuery(String.valueOf(documentNo));
-			query.addField(DossierTerm.DOCUMENT_NO);
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { DossierTerm.DOCUMENT_NO_SEARCH };
+
+			String[] keyDocument = documentNo.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keyDocument) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch, key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
+
 		if (Validator.isNotNull(documentDate)) {
 			Date filterDocumentDate = APIDateTimeUtils.convertStringToDate(
 					documentDate, APIDateTimeUtils._NORMAL_DATE);
