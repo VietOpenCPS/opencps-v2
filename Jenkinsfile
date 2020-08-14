@@ -71,7 +71,7 @@ def checkoutSCM() {
         $class: 'GitSCM',
         branches: scm.branches,
         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-        extensions       : [[$class : 'CloneOption', shallow: false, timeout: 75],
+        extensions       : [[$class : 'CloneOption', shallow: false, timeout: 120],
                             [$class: 'CleanBeforeCheckout']],
         userRemoteConfigs: scm.userRemoteConfigs
     ])
