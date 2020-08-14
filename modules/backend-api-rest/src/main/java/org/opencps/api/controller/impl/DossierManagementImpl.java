@@ -755,54 +755,6 @@ public class DossierManagementImpl implements DossierManagement {
 							DossierUtils.mappingForGetList(
 									(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 									query.getAssigned(), query));
-//					List<Dossier> lstSearchDossierByDocumentTary = new ArrayList<>();
-//					List<Dossier> lstDossier = new ArrayList<>();
-//					List<Dossier> lstAdd = new ArrayList<>();
-//					List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA), groupCongVan);
-//					String dossierIds ="";
-//					String [] dossierId ;
-//					if(lstId !=null && !lstId.isEmpty()){
-//						for(Long id : lstId){
-//							if(Validator.isNotNull(id)){
-//								lstDossier = DossierLocalServiceUtil.findByG_GDID(groupId,String.valueOf(id));
-//							}
-//							lstAdd.addAll(lstDossier);
-//						}
-//					}
-//
-//					if(Validator.isNotNull(groupCongVan)) {
-//						if (lstAdd != null && !lstAdd.isEmpty()) {
-//							for (Dossier item : lstAdd){
-//								if(Validator.isNotNull(item.getMetaData())) {
-//									String metaData = item.getMetaData();
-//									JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
-//									Iterator<String> keys = jsonMetaData.keys();
-//									while (keys.hasNext()) {
-//										String key = keys.next();
-//										String value = jsonMetaData.getString(key);
-//										if (key.equals(DossierTerm.DON_VI_NHAN)) {
-//											if (groupCongVan.equals(DossierTerm.SCOPE_)) {
-//												if (Validator.isNotNull(employee.getScope())) {
-//													String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-//													if (value.equals(employeeArr[0])) {
-//														lstSearchDossierByDocumentTary.add(item);
-//														break;
-//													}
-//												}
-//											} else {
-//												if (groupCongVan.equals(value)) {
-//													lstSearchDossierByDocumentTary.add(item);
-//													break;
-//												}
-//											}
-//										}
-//									}
-//								}
-//							}
-//						}
-//					}
-//					results.setTotal(lstAdd.size());
-//					results.getData().addAll(DossierUtils.mappingForListDossier(lstAdd));
 				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 		}
@@ -1199,6 +1151,59 @@ public class DossierManagementImpl implements DossierManagement {
 			Integer fromViaPostal = query.getFromViaPostal();
 			if (fromViaPostal != null) {
 				params.put(DossierTerm.FROM_VIA_POSTAL, fromViaPostal);
+			}
+			// Nếu donvigui == _scope ==> Get Employee lấy được _scope gán giá trị cho param
+			//Task update: Nếu input có firtscope ==> lấy đơn vị đầu tiên của Employee
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+			String donvigui = query.getDonvigui();
+			if (Validator.isNotNull(donvigui)) {
+				if(Validator.isNotNull(donvigui)){
+					if(donvigui.equals(DossierTerm.FIRSTSCOPE)){
+						if (Validator.isNotNull(employee)) {
+							String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+							params.put(DossierTerm.DON_VI_GUI, employeeArr[0]);
+						}
+					}else if (donvigui.equals(DossierTerm.SCOPE_)) {
+							if (Validator.isNotNull(employee)) {
+								params.put(DossierTerm.DON_VI_GUI, employee.getScope());
+							}
+						}
+					else {
+						params.put(DossierTerm.DON_VI_GUI, donvigui);
+					}
+				}
+			}
+
+			//Don vi nhan
+			String processAgency = query.getProcessAgency();
+			if(Validator.isNotNull(processAgency)){
+				if(processAgency.equals(DossierTerm.FIRSTSCOPE)){
+					if (Validator.isNotNull(employee)) {
+						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+						params.put(DossierTerm.PROCESS_AGENCY_METADATA, employeeArr[0]);
+					}
+				}else {
+					params.put(DossierTerm.PROCESS_AGENCY_METADATA, processAgency);
+				}
+			}
+
+			String donvinhan = query.getDonvinhan();
+			if (Validator.isNotNull(donvinhan)) {
+				if(Validator.isNotNull(donvinhan)){
+					if(donvinhan.equals(DossierTerm.FIRSTSCOPE)){
+						if (Validator.isNotNull(employee)) {
+							String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+							params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
+						}
+					}else if (donvinhan.equals(DossierTerm.SCOPE_)) {
+						if (Validator.isNotNull(employee)) {
+							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
+						}
+					}
+					else {
+						params.put(DossierTerm.DON_VI_NHAN, donvinhan);
+					}
+				}
 			}
 
 			Sort[] sorts = null;
@@ -6558,7 +6563,9 @@ public class DossierManagementImpl implements DossierManagement {
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
 				}
-				groupDossierIdNew = groupDossierIdNew.substring(1);
+				if(Validator.isNotNull(groupDossierIdNew)) {
+					groupDossierIdNew = groupDossierIdNew.substring(1);
+				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
 			}
@@ -7996,15 +8003,15 @@ public class DossierManagementImpl implements DossierManagement {
 												_log.debug(
 														"DO ACTION: " +
 																proAction.getActionCode());
-//												dossierResult = actions.doAction(
-//														groupId, userId, dossier, oldOption,
-//														proAction, actionCode, actionUser,
-//														input.getActionNote(),
-//														input.getPayload(),
-//														input.getAssignUsers(),
-//														input.getPayment(),
-//														actConfig.getSyncType(),
-//														serviceContext, errorModel);
+												dossierResult = actions.doAction(
+														groupId, userId, dossier, oldOption,
+														proAction, actionCode, actionUser,
+														input.getActionNote(),
+														input.getPayload(),
+														input.getAssignUsers(),
+														input.getPayment(),
+														actConfig.getSyncType(),
+														serviceContext, errorModel);
 												if(Validator.isNotNull(proAction.getPostAction())){
 													updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
 												}

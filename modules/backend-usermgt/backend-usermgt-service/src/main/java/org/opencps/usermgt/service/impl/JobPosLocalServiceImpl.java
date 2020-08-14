@@ -617,5 +617,10 @@ public class JobPosLocalServiceImpl extends JobPosLocalServiceBaseImpl {
 	
 	public List<JobPos> findByF_jobPosIds(long groupId, long[] jobPosIds) {
 		return jobPosPersistence.findByF_jobPosIds(groupId, jobPosIds);
-	}	
+	}
+
+	@Override
+	public JobPos fetchByF_CODE(long groupId, String jobPosCode) {
+		return jobPosPersistence.fetchByF_CODE(groupId, jobPosCode);
+	}
 }

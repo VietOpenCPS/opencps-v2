@@ -16,7 +16,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.liferay.portal.kernel.model.User;
 import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
+import org.opencps.api.serviceprocess.model.ProcessStepDataModel;
+import org.opencps.api.serviceprocess.model.RoleDataModel;
 
 
 /**
@@ -69,7 +72,9 @@ import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
  "returnFiles",
  "checkInput",
  "configNote",
- "dossierParts"
+ "dossierParts",
+ "postProcessStepRole",
+ "lstUser"
 })
 @XmlRootElement(name = "DossierDetailNextActionModel")
 public class DossierDetailNextActionModel {
@@ -94,6 +99,16 @@ public class DossierDetailNextActionModel {
 	protected Integer checkInput;
 	protected String configNote;
 	protected List<DossierTemplatePartDataModel> dossierParts;
+	protected List<RoleDataModel> postProcessStepRole;
+	protected List<org.opencps.api.dossier.model.UserModel> lstUser;
+
+	public List<RoleDataModel> getPostProcessStepRole() {
+		return postProcessStepRole;
+	}
+
+	public void setPostProcessStepRole(List<RoleDataModel> postProcessStepRole) {
+		this.postProcessStepRole = postProcessStepRole;
+	}
 
 	public Long getProcessActionId() {
 		return processActionId;

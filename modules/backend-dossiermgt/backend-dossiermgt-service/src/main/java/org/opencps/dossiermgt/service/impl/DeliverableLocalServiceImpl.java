@@ -1679,20 +1679,15 @@ public class DeliverableLocalServiceImpl
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}else if(entry.getValue().contains(StringPool.SPACE)){
-						String[] subQuerieArr = new String[] {
-								DeliverableTerm.APPLICANT_NAME
-						};
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
-						for (String fieldSearch : subQuerieArr) {
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
 								WildcardQuery wildQuery = new WildcardQueryImpl(
-										fieldSearch,
+										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
 								query.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 							queryBool.add(query, BooleanClauseOccur.SHOULD);
-						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}
 					else {
@@ -1703,42 +1698,15 @@ public class DeliverableLocalServiceImpl
 					}
 				} else if (key.contains("@EQUAL")) {
 					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
-						String[] subQuerieArr = new String[] {
-								DeliverableTerm.NGAY_DATA ,DeliverableTerm.THANG_DATA ,
-								DeliverableTerm.NAM_DATA
-						};
-						if(key.contains(DeliverableTerm.NGAY_QD)){
-//							MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
-//							query.addFields(key.split("@")[0]);
-//							queryBool.add(query, BooleanClauseOccur.MUST);
-							WildcardQuery wildQuery = new WildcardQueryImpl(
-									key.split("@")[0],
-									entry.getValue().toLowerCase());
-							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
-						}
-						else {
-//							String[] keywordArr = entry.getValue().split(StringPool.FORWARD_SLASH);
-//							for (String fieldSearch : subQuerieArr) {
-// 									if(fieldSearch.equals(DeliverableTerm.NGAY_DATA)){
-//										WildcardQuery wildQuery = new WildcardQueryImpl(
-//												fieldSearch,
-//												StringPool.STAR + keywordArr[0].toLowerCase() + StringPool.STAR);
-//										queryBool.add(wildQuery, BooleanClauseOccur.MUST);
-//									}
-//									else if(fieldSearch.equals(DeliverableTerm.THANG_DATA)){
-//										WildcardQuery wildQuery = new WildcardQueryImpl(
-//												fieldSearch,
-//												StringPool.STAR + keywordArr[1].toLowerCase() + StringPool.STAR);
-//										queryBool.add(wildQuery, BooleanClauseOccur.MUST);
-//									}
-//									else{
-//										WildcardQuery wildQuery = new WildcardQueryImpl(
-//												fieldSearch,
-//												StringPool.STAR + keywordArr[2].toLowerCase() + StringPool.STAR);
-//										queryBool.add(wildQuery, BooleanClauseOccur.MUST);
-//									}
-//							}
-//							booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+					 	String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
+					 	if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
 					}else {
 						 MultiMatchQuery query = new MultiMatchQuery(entry.getValue());

@@ -756,7 +756,11 @@ public class DossierActionsImpl implements DossierActions {
 					if (lstUser != null && !lstUser.isEmpty()) {
 						result.put(ProcessActionTerm.LIST_USER, lstUser);
 					}
+					if(processStepRoleList !=null && processStepRoleList.size() > 0){
+							result.put(ProcessActionTerm.PROCESS_STEP_ROLE, processStepRoleList);
+					}
 				}
+
 
 				if (processAction != null) {
 					ServiceProcess serviceProcess = ServiceProcessLocalServiceUtil.fetchServiceProcess(serviceProcessId);
@@ -3489,12 +3493,18 @@ public class DossierActionsImpl implements DossierActions {
 									moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 									user.setModelAttributes(moderator);
 									user.setModelAttributes(assigned);
+									//Add RoleCode
+									HashMap<String, Object> roleCode = new HashMap<>();
+									roleCode.put(ProcessStepRoleTerm.ROLE_CODE, processStepRole.getRoleCode());
+									user.setModelAttributes(roleCode);
 
 									lstUser.add(user);
 								}
 							}
 						}
+
 					}
+
 				}
 			}
 		} else {
