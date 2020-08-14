@@ -1,7 +1,6 @@
 
 package org.opencps.api.controller.util;
 
-import com.google.gson.JsonArray;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -510,61 +509,23 @@ public class DeliverableUtils {
 		try {
 			for (int i = 0; i <= nOfColumns; i++) {
 				
-				String value = formDataFormat.getString(String.valueOf(i));
+				String key = formDataFormat.getString(String.valueOf(i));
+				Object objectValue = getCellValueV3(currentRow.getCell(i));
 				
-				if (validateRequiredField(value) == true) {
-					if (getCellValueV3(currentRow.getCell(i)) != null) {
-						formData.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
-						deliverableObj.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
-					} else {
-						// in ra file co du lieu loi
+				if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && key.split(",").length > 1) {
+					String[] newValue = currentRow.getCell(i).getStringCellValue().split(",");
+					for (int index =0; index< key.split(",").length; index++) {
+						formData.put(key.split(",")[index], newValue[index]);
+						deliverableObj.put(key.split(",")[index], newValue[index]);
 					}
-				} else if (value.equals(DeliverableTerm.G_T) && getCellValueV3(currentRow.getCell(i)) == null) {
-					formData.put(formDataFormat.getString(String.valueOf(i)), DeliverableTerm.K_C_T_T);
-					deliverableObj.put(formDataFormat.getString(String.valueOf(i)), DeliverableTerm.K_C_T_T);
-				}else if (value.equals(DeliverableTerm.QUE_QUAN) && getCellValueV3(currentRow.getCell(i)) != null) {
-					String[] quequan = currentRow.getCell(i).getStringCellValue().split(",");
-					formData.put(DeliverableTerm.XA_PHUONG, quequan[0]);
-					formData.put(DeliverableTerm.QUAN_HUYEN, quequan[1]);
-					formData.put(DeliverableTerm.TINH_TP, quequan[2]);
-					formData.put(DeliverableTerm.XA_PHUONG_TEXT, quequan[0]);
-					formData.put(DeliverableTerm.QUAN_HUYEN_TEXT, quequan[1]);
-					formData.put(DeliverableTerm.TINH_TP_TEXT, quequan[2]);
-					deliverableObj.put(DeliverableTerm.XA_PHUONG, quequan[0]);
-					deliverableObj.put(DeliverableTerm.QUAN_HUYEN, quequan[1]);
-					deliverableObj.put(DeliverableTerm.TINH_TP, quequan[2]);
-				}else if (value.equals(DeliverableTerm.NAM_SINH) && getCellValueV3(currentRow.getCell(i)) != null) {
-					
-					String[] birdthday = null;
-					if (CellType.STRING == currentRow.getCell(i).getCellType()) {
-						birdthday = currentRow.getCell(i).getStringCellValue().split("\\.");
-					} else if (CellType.NUMERIC == currentRow.getCell(i).getCellType() 
-							&& DateUtil.isCellDateFormatted(currentRow.getCell(i))) {
-						String namsinh = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(currentRow.getCell(i).getDateCellValue());
-						birdthday = namsinh.split("/");
-					}
-					formData.put(DeliverableTerm.NGAY, birdthday[0]);
-					formData.put(DeliverableTerm.THANG, birdthday[1]);
-					formData.put(DeliverableTerm.NAM, birdthday[2]);
-					deliverableObj.put(DeliverableTerm.NGAY, birdthday[0]);
-					deliverableObj.put(DeliverableTerm.THANG, birdthday[1]);
-					deliverableObj.put(DeliverableTerm.NAM, birdthday[2]);
-				}else if (value.equals(DeliverableTerm.NGAY_QD) && getCellValueV3(currentRow.getCell(i)) != null) {
-					String[] ngayQD = null;
-					if (CellType.STRING == currentRow.getCell(i).getCellType()) {
-						ngayQD = currentRow.getCell(i).getStringCellValue().split("\\.");
-						String ngayquyetdinh = ngayQD[0]+"/"+ngayQD[1]+"/"+ngayQD[2];
-						formData.put(DeliverableTerm.NGAY_QD, ngayquyetdinh);
-						deliverableObj.put(DeliverableTerm.NGAY_QD, ngayquyetdinh);
-					} else if (CellType.NUMERIC == currentRow.getCell(i).getCellType() 
-							&& DateUtil.isCellDateFormatted(currentRow.getCell(i))) {
-						String ngayqd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(currentRow.getCell(i).getDateCellValue());
-						formData.put(DeliverableTerm.NGAY_QD, ngayqd);
-						deliverableObj.put(DeliverableTerm.NGAY_QD, ngayqd);
-					}
+				}else if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && currentRow.getCell(i).getStringCellValue().split("\\.").length > 1) {
+					String cellStringValue = currentRow.getCell(i).getStringCellValue();
+					Date date = APIDateTimeUtils.convertSpecialVNStrToDate(cellStringValue);
+					formData.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));
+					deliverableObj.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));					
 				}else {
-					formData.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
-					deliverableObj.put(formDataFormat.getString(String.valueOf(i)), getCellValueV3(currentRow.getCell(i)));
+					formData.put(key, objectValue);
+					deliverableObj.put(key, objectValue);
 				}			
 			}
 			deliverableObj.put("formData", formData);
@@ -576,14 +537,6 @@ public class DeliverableUtils {
 		return deliverableObj;
 	}
 	
-	private static boolean validateRequiredField(String value) {
-		boolean result = false;
-		if (value.equals(DeliverableTerm.HO_TEN)|| value.equals(DeliverableTerm.SO_QD) 
-				|| value.equals(DeliverableTerm.CHE_DO_TC)|| value.equals(DeliverableTerm.DON_VI_HCD)) {
-			result = true;
-		}
-		return result;
-	}
 
 	private static Object getCellValueV3(Cell cell) {
 		
@@ -610,7 +563,7 @@ public class DeliverableUtils {
 			return null;
 		}
 	}
-		
+	
 	private static Log _log = LogFactoryUtil.getLog(DeliverableUtils.class);
 
 }

@@ -981,7 +981,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
 					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode); 
 				}
 
 				deliverable.put(Field.GROUP_ID, groupId);
@@ -993,8 +993,7 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
 				deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
 	
-				DeliverableLocalServiceUtil.adminProcessData(
-						deliverable);
+				DeliverableLocalServiceUtil.adminProcessData(deliverable);
 				size += 1;
 			}
 
