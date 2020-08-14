@@ -164,7 +164,8 @@ create table opencps_deliverabletype (
 	counter LONG,
 	mappingData TEXT null,
 	docSync INTEGER,
-	govAgencies VARCHAR(255) null
+	govAgencies VARCHAR(255) null,
+	fileTemplateId LONG
 );
 
 create table opencps_deliverabletyperole (
@@ -823,7 +824,8 @@ create table opencps_processoption (
 	instructionNote TEXT null,
 	submissionNote TEXT null,
 	sampleCount LONG,
-	registerBookCode VARCHAR(100) null
+	registerBookCode VARCHAR(100) null,
+	status LONG
 );
 
 create table opencps_processsequence (

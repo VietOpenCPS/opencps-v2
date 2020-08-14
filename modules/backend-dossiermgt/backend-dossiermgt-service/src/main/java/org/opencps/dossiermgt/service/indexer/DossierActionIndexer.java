@@ -73,6 +73,7 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 		document.addTextSortable(DossierActionTerm.STEP_NAME, object.getStepName());
 		document.addTextSortable(DossierActionTerm.STEP_INSTRUCTION, object.getStepInstruction());
 		document.addTextSortable(DossierActionTerm.PAYLOAD, object.getPayload());
+		document.addNumberSortable(DossierActionTerm.DOSSIERACTION_ID, object.getDossierActionId());
 
 		return document;
 	}

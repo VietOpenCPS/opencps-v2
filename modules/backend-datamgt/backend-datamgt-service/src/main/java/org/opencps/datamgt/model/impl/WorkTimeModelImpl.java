@@ -78,7 +78,8 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "day", Types.INTEGER },
-			{ "hours", Types.VARCHAR }
+			{ "hours", Types.VARCHAR },
+			{ "status", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -93,9 +94,10 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("day", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("hours", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_workTime (uuid_ VARCHAR(75) null,workTimeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,day INTEGER,hours VARCHAR(128) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_workTime (uuid_ VARCHAR(75) null,workTimeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,day INTEGER,hours VARCHAR(128) null,status INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_workTime";
 	public static final String ORDER_BY_JPQL = " ORDER BY workTime.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_workTime.createDate ASC";
@@ -166,6 +168,7 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("day", getDay());
 		attributes.put("hours", getHours());
+		attributes.put("status", getStatus());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -233,6 +236,12 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 
 		if (hours != null) {
 			setHours(hours);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -420,6 +429,16 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 	}
 
 	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		_status = status;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				WorkTime.class.getName()));
@@ -466,6 +485,7 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 		workTimeImpl.setModifiedDate(getModifiedDate());
 		workTimeImpl.setDay(getDay());
 		workTimeImpl.setHours(getHours());
+		workTimeImpl.setStatus(getStatus());
 
 		workTimeImpl.resetOriginalValues();
 
@@ -601,12 +621,14 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 			workTimeCacheModel.hours = null;
 		}
 
+		workTimeCacheModel.status = getStatus();
+
 		return workTimeCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -628,6 +650,8 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 		sb.append(getDay());
 		sb.append(", hours=");
 		sb.append(getHours());
+		sb.append(", status=");
+		sb.append(getStatus());
 		sb.append("}");
 
 		return sb.toString();
@@ -635,7 +659,7 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(34);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.datamgt.model.WorkTime");
@@ -681,6 +705,10 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 			"<column><column-name>hours</column-name><column-value><![CDATA[");
 		sb.append(getHours());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>status</column-name><column-value><![CDATA[");
+		sb.append(getStatus());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -709,6 +737,7 @@ public class WorkTimeModelImpl extends BaseModelImpl<WorkTime>
 	private int _originalDay;
 	private boolean _setOriginalDay;
 	private String _hours;
+	private int _status;
 	private long _columnBitmask;
 	private WorkTime _escapedModel;
 }

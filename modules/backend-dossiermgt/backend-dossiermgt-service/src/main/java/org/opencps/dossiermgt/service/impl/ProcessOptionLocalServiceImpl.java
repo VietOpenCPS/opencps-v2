@@ -488,6 +488,7 @@ public class ProcessOptionLocalServiceImpl extends ProcessOptionLocalServiceBase
 		object.setSubmissionNote(objectData.getString(ProcessOptionTerm.SUBMISSION_NOTE));
 		object.setSampleCount(objectData.getLong(DossierTerm.SAMPLE_COUNT));
 		object.setRegisterBookCode(objectData.getString(DossierTerm.REGISTER_BOOK_CODE));
+		object.setStatus(objectData.getLong(ProcessOptionTerm.STATUS));
 		
 		processOptionPersistence.update(object);
 

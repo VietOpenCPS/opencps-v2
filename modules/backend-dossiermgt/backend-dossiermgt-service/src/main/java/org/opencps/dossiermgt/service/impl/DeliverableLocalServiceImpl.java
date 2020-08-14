@@ -1407,6 +1407,7 @@ public class DeliverableLocalServiceImpl
 		object.setSubject(objectData.getString(DeliverableTerm.SUBJECT));
 		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		object.setApplicantIdNo(objectData.getString(DeliverableTerm.APPLICANT_ID_NO));
 		// new field to save QD
 		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
@@ -1665,10 +1666,26 @@ public class DeliverableLocalServiceImpl
 			for (Map.Entry<String, String> entry : mapFilter.entrySet()) {
 				String key = entry.getKey();
 				if (key.contains("@LIKE")) {
-					WildcardQuery wildQuery = new WildcardQueryImpl(
-							key.split("@")[0],
-							StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-					queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+					if(entry.getValue().contains(StringPool.PERIOD)){
+						String[] subQuerieArr = new String[] {
+//								DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
+//								DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
+								DeliverableTerm.DELIVERABLE_CODE_SEARCH
+						};
+						String keywordArr = SpecialCharacterUtils.splitSpecial(entry.getValue());
+						for (String fieldSearch : subQuerieArr) {
+							WildcardQuery wildQuery = new WildcardQueryImpl(
+									fieldSearch,
+									StringPool.STAR + keywordArr.toLowerCase() + StringPool.STAR);
+							queryBool.add(wildQuery, BooleanClauseOccur.SHOULD);
+						}
+						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+					}else {
+						WildcardQuery wildQuery = new WildcardQueryImpl(
+								key.split("@")[0],
+								StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+						queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+					}
 				} else if (key.contains("@EQUAL")) {
 					MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
 					query.addFields(key.split("@")[0]);
@@ -1679,6 +1696,10 @@ public class DeliverableLocalServiceImpl
 		}
 
 		return booleanQuery;
+	}
+	
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo) {
+		return deliverablePersistence.fetchByF_GID_AID(groupId, applicantIdNo);
 	}
 
 	private static Log _log =

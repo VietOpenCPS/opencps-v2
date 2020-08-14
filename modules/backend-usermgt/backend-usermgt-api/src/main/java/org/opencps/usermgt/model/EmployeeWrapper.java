@@ -87,6 +87,7 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 		attributes.put("fileSignPath", getFileSignPath());
 		attributes.put("jobPosTitle", getJobPosTitle());
 		attributes.put("scope", getScope());
+		attributes.put("workingUnitId", getWorkingUnitId());
 
 		return attributes;
 	}
@@ -259,6 +260,12 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 
 		if (scope != null) {
 			setScope(scope);
+		}
+
+		Long workingUnitId = (Long)attributes.get("workingUnitId");
+
+		if (workingUnitId != null) {
+			setWorkingUnitId(workingUnitId);
 		}
 	}
 
@@ -590,6 +597,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public int getWorkingStatus() {
 		return _employee.getWorkingStatus();
+	}
+
+	/**
+	* Returns the working unit ID of this employee.
+	*
+	* @return the working unit ID of this employee
+	*/
+	@Override
+	public long getWorkingUnitId() {
+		return _employee.getWorkingUnitId();
 	}
 
 	@Override
@@ -956,6 +973,16 @@ public class EmployeeWrapper implements Employee, ModelWrapper<Employee> {
 	@Override
 	public void setWorkingStatus(int workingStatus) {
 		_employee.setWorkingStatus(workingStatus);
+	}
+
+	/**
+	* Sets the working unit ID of this employee.
+	*
+	* @param workingUnitId the working unit ID of this employee
+	*/
+	@Override
+	public void setWorkingUnitId(long workingUnitId) {
+		_employee.setWorkingUnitId(workingUnitId);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package org.opencps.api.controller;
 import java.net.HttpURLConnection;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -19,9 +20,14 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.deliverabletype.model.DeliverableTypeInputModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
+import org.opencps.api.dossierfile.model.DossierFileResultsModel;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.json.JSONObject;
@@ -121,6 +127,26 @@ public interface DeliverableTypesManagement {
 			@Context ServiceContext serviceContext,
 			@ApiParam(value = "id of DeliverableType", required = true) @PathParam("id") long deliverableTypeId,
 			@ApiParam(value = "FormScript of dossierfile", required = true) @FormParam("formScript") String formScript);
+
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Path("/{id}/fileTemplateId")
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Update fileTemplateId)", response = DeliverableType.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns the DeliverableType was updated", response = DeliverableTypesResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response updatefileTemplateById(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "Attachment files", required = false) @Multipart("file") Attachment file,
+			@ApiParam(value = "id of dossier", required = true) @PathParam("id") String id);
 	
 	@GET
 	@Path("/{id}/formreport")

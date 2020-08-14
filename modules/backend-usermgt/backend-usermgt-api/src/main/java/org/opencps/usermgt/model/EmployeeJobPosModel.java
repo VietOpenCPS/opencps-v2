@@ -265,7 +265,6 @@ public interface EmployeeJobPosModel extends BaseModel<EmployeeJobPos>,
 	 * @param status the status of this employee job pos
 	 */
 	public void setStatus(int status);
-
 	@Override
 	public boolean isNew();
 

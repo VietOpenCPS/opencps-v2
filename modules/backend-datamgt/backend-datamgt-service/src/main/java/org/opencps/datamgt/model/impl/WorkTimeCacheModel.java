@@ -64,7 +64,7 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -86,6 +86,8 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 		sb.append(day);
 		sb.append(", hours=");
 		sb.append(hours);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -137,6 +139,8 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 			workTimeImpl.setHours(hours);
 		}
 
+		workTimeImpl.setStatus(status);
+
 		workTimeImpl.resetOriginalValues();
 
 		return workTimeImpl;
@@ -159,6 +163,8 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 
 		day = objectInput.readInt();
 		hours = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -197,6 +203,8 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 		else {
 			objectOutput.writeUTF(hours);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public String uuid;
@@ -209,4 +217,5 @@ public class WorkTimeCacheModel implements CacheModel<WorkTime>, Externalizable 
 	public long modifiedDate;
 	public int day;
 	public String hours;
+	public int status;
 }
