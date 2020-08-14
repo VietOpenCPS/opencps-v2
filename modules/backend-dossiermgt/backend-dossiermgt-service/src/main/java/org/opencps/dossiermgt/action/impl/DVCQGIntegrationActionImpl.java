@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,12 +64,7 @@ import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoMappingLocalServiceUtil;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
-import org.opencps.statistic.model.impl.OpencpsDossierStatisticBaseImpl;
-import org.opencps.statistic.model.impl.OpencpsVotingStatisticImpl;
-import org.opencps.statistic.model.impl.OpencpsVotingStatisticModelImpl;
-import org.opencps.statistic.service.OpencpsVotingStatisticLocalService;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
-import org.opencps.statistic.service.persistence.OpencpsVotingStatisticUtil;
 import org.opencps.usermgt.model.Answer;
 import org.opencps.usermgt.model.Applicant;
 import org.opencps.usermgt.model.Question;
@@ -498,9 +492,12 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		return object;
 	}
 
+	private Date getCurrentDate() {
+		return new Date(System.currentTimeMillis());
+	}
+
 	private JSONObject createSyncTTKMDossierBodyRequest(long groupId, Dossier dossier, ServerConfig serverConfig,
 			HttpServletRequest request) {
-
 		JSONObject object = JSONFactoryUtil.createJSONObject();
 		object.put("MaHoSo", dossier.getReferenceUid());
 		object.put("MaHoSoDonVi", dossier.getDossierNo());
@@ -511,13 +508,16 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		}
 		object.put("MaDoiTuong", madoituong); // ko bb
 		object.put("NoiDung", dossier.getDossierNote());// ko bb
-		object.put("NgayXuLy", convertDate2String(dossier.getReceiveDate()));
+
+		Date ngayXuLy = dossier.getReceiveDate() != null ? dossier.getReceiveDate() : getCurrentDate();
+		object.put("NgayXuLy", convertDate2String(ngayXuLy));
 
 		int trangthai = GetterUtil.getInteger(getMappingStatus(groupId, dossier));
 
-		if (trangthai == 4) {
+		//2 = tiep nhan, 5 = Yeu cau bo sung/ tu choi
+		if (trangthai == 4 || trangthai == 6  || trangthai == 9 || trangthai == 10 ) {
 			trangthai = 2;
-		} else if (trangthai == 3) {
+		} else if (trangthai == 3 || trangthai == 7 || trangthai == 8) {
 			trangthai = 5;
 		}
 

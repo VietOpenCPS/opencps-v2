@@ -886,7 +886,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			String fileName = (new Date()).getTime() + ConstantUtils.DOT_XLS;
 			
 			try { 
-				FileOutputStream out = new FileOutputStream(new File(exportDir.getAbsolutePath() + StringPool.SLASH + (new Date()).getTime() + ConstantUtils.DOT_XLS)); 
+				FileOutputStream out = new FileOutputStream(xlsFile);
 				workbook.write(out); 
 				out.close();
 				workbook.close();
