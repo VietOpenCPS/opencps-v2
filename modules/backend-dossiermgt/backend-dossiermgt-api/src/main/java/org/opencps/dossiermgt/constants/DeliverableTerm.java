@@ -50,16 +50,6 @@ public class DeliverableTerm {
 	public static final String CHE_DO_TC = "chedo_text";
 	public static final String DON_VI_HCD = "donvi";
 	public static final String DON_VI_QD = "Đơn vị ra quyết định";
-	public static final String G_T = "gioitinh_text";
-	public static final String K_C_T_T = "Không có thông tin";
-	public static final String DEAD_OR_ALIVE = "tinhtrang";
-	public static final String QUE_QUAN = "xaphuong,quanhuyen,tinhthanhpho";
-	public static final String XA_PHUONG = "xaphuong";
-	public static final String QUAN_HUYEN = "quanhuyen";
-	public static final String TINH_TP = "tinhthanhpho";
-	public static final String XA_PHUONG_TEXT = "xaphuong_text";
-	public static final String QUAN_HUYEN_TEXT = "quanhuyen_text";
-	public static final String TINH_TP_TEXT = "tinhthanhpho_text";
 	public static final String CMND = "applicantIdNo";
 	public static final String NGAY = "ngay";
 	public static final String THANG = "thang";
