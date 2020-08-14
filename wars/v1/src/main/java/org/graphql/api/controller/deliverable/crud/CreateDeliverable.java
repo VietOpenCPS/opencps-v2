@@ -60,10 +60,11 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			inputObject.put(WebKeys.GROUPID, groupId);
 			inputObject.put(WebKeys.USERID, request.getAttribute(WebKeys.USER_ID));
 			inputObject.put(WebKeys.COMPANYID, request.getAttribute(WebKeys.COMPANY_ID));
+			JSONObject formData = inputObject.getJSONObject("formData");
 			
 			if (!inputObject.has("deliverableCode")) {
 				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, inputObject.getString("deliverableType"));
-				String ngayQD = inputObject.getString("ngayquyetdinh");
+				String ngayQD = formData.getString("ngayquyetdinh");
 				String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
 						groupId, delType.getCodePattern(), ngayQD);
 				inputObject.put("deliverableCode", deliverableCode);
