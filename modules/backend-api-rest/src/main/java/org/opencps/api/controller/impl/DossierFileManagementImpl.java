@@ -253,6 +253,51 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 	}
 
 	@Override
+	public Response downloadByReferenceUid(HttpServletRequest request, HttpHeaders header, Company company,
+										   Locale locale, User user, ServiceContext serviceContext,
+										   String referenceUid) {
+		try {
+			if(Validator.isNull(referenceUid) || referenceUid.isEmpty()) {
+				throw new Exception("No file id");
+			}
+
+			List<DossierFile> listDossierFile = DossierFileLocalServiceUtil.getByReferenceUid(referenceUid);
+
+			if(Validator.isNull(listDossierFile) || listDossierFile.isEmpty()){
+				throw new Exception("File id not found in our system");
+			}
+
+			DossierFile dossierFile = listDossierFile.get(0);
+			if(Validator.isNull(dossierFile)) {
+				throw new Exception("List file is null");
+			}
+
+			if(Validator.isNull(dossierFile.getFileEntryId())) {
+				throw new Exception("File has no entry ID");
+			}
+
+			FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
+					dossierFile.getFileEntryId());
+			File file = DLFileEntryLocalServiceUtil.getFile(
+					fileEntry.getFileEntryId(), fileEntry.getVersion(), true);
+
+			ResponseBuilder responseBuilder = Response.ok((Object) file);
+			String attachmentFilename = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), fileEntry.getFileName());
+			responseBuilder.header(
+					ConstantUtils.CONTENT_DISPOSITION,
+					attachmentFilename);
+			responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
+
+			return responseBuilder.build();
+		}catch (Exception e){
+			_log.error(e.getMessage());
+
+			return Response.status(
+					HttpURLConnection.HTTP_NO_CONTENT).build();
+		}
+	}
+
+	@Override
 	public Response downloadByDossierId_ReferenceUid(
 		HttpServletRequest request, HttpHeaders header, Company company,
 		Locale locale, User user, ServiceContext serviceContext, String id,

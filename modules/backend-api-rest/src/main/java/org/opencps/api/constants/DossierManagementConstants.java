@@ -20,4 +20,30 @@ public class DossierManagementConstants {
 	public static final String MODERATOR = "moderator";
 	public static final String ASSIGNED = "assigned";
 	public static final String TO_USERS = "toUsers";
+
+	public static String mappingDossierStatusWithDVCQG(String dossierStatus) {
+		switch (dossierStatus) {
+			case "new":
+				return "1";
+			case "receiving":
+				return "2";
+			case "unresolved":
+				return "3";
+			case "processing":
+				return "4";
+			case "waiting":
+				return "5";
+			case "paying":
+				return "6";
+			case "cancelled":
+				return "7";
+			case "denied":
+				return "8";
+			case "releasing":
+				return "9";
+			case "done":
+				return "10";
+			default: return "11";
+		}
+	}
 }
