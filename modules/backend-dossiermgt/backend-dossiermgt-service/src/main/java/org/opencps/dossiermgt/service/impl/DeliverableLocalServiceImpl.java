@@ -1668,8 +1668,6 @@ public class DeliverableLocalServiceImpl
 				if (key.contains("@LIKE")) {
 					if(entry.getValue().contains(StringPool.PERIOD)){
 						String[] subQuerieArr = new String[] {
-//								DeliverableTerm.DELIVERABLE_TYPE, DeliverableTerm.DELIVERABLE_NAME,
-//								DeliverableTerm.GOV_AGENCY_NAME, DeliverableTerm.APPLICANT_NAME,
 								DeliverableTerm.DELIVERABLE_CODE_SEARCH
 						};
 						String keywordArr = SpecialCharacterUtils.splitSpecial(entry.getValue());
@@ -1680,16 +1678,41 @@ public class DeliverableLocalServiceImpl
 							queryBool.add(wildQuery, BooleanClauseOccur.SHOULD);
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-					}else {
+					}else if(entry.getValue().contains(StringPool.SPACE)){
+						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
+							BooleanQuery query = new BooleanQueryImpl();
+							for (String keyValue : keywordArr) {
+								WildcardQuery wildQuery = new WildcardQueryImpl(
+										key.split("@")[0],
+										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
+								query.add(wildQuery, BooleanClauseOccur.MUST);
+							}
+							queryBool.add(query, BooleanClauseOccur.SHOULD);
+						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+					}
+					else {
 						WildcardQuery wildQuery = new WildcardQueryImpl(
 								key.split("@")[0],
 								StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
 						queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 					}
 				} else if (key.contains("@EQUAL")) {
-					MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
-					query.addFields(key.split("@")[0]);
-					queryBool.add(query, BooleanClauseOccur.MUST);
+					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
+					 	String keywordDate = SpecialCharacterUtils.splitSpecial(entry.getValue());
+					 	if(key.split("@")[0].contains(DeliverableTerm.NGAY_SINH)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAYSINH_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.NGAY_QD)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
+						}
+					}else {
+						 MultiMatchQuery query = new MultiMatchQuery(entry.getValue());
+						 query.addFields(key.split("@")[0]);
+						 queryBool.add(query, BooleanClauseOccur.MUST);
+					 }
 				}
 			}
 			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);

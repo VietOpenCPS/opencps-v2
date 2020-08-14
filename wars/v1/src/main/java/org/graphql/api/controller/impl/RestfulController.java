@@ -1594,7 +1594,7 @@ public class RestfulController {
 		try {
 
 			//long userId = 0;
-//			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
+			if (Validator.isNotNull(request.getAttribute(WebKeys.USER_ID))) {
 				//userId = Long.valueOf(request.getAttribute(WebKeys.USER_ID).toString());
 				long groupId = 0;
 
@@ -1701,7 +1701,7 @@ public class RestfulController {
 					_log.error(e);
 				}
 
-//			}
+			}
 
 		} catch (Exception e) {
 			_log.debug(e);

@@ -40,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
     "userName",
     "moderator",
     "assigned",
-    "jobPosTitle"
+    "jobPosTitle",
+    "roleCode"
 })
 public class DossierActionNextActiontoUser {
 
@@ -49,7 +50,16 @@ public class DossierActionNextActiontoUser {
     protected Boolean moderator;
     protected Integer assigned;
     protected String jobPosTitle;
-    
+    protected String roleCode;
+
+    public String getRoleCode() {
+        return roleCode;
+    }
+
+    public void setRoleCode(String roleCode) {
+        this.roleCode = roleCode;
+    }
+
     public String getJobPosTitle() {
 		return jobPosTitle;
 	}

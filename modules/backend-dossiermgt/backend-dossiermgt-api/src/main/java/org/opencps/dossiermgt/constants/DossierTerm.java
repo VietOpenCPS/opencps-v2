@@ -416,4 +416,6 @@ public class DossierTerm {
 	public static final String CREATE_DATE_START = "createDateStart";
 	public static final String CREATE_DATE_END = "createDateEnd";
 	public static final String CREATE_DATE_LUCENE = "createDateLucene";
+	public static final String PROCESS_AGENCY = "PROCESS_AGENCY";
+	public static final String PROCESS_AGENCY_METADATA = "processAgency";
 }

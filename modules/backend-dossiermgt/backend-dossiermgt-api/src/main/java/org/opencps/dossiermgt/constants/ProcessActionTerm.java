@@ -92,5 +92,6 @@ public class ProcessActionTerm {
 	public static final String PRECONDITION_SEND_VIAPOSTAL = "sendviapostal=1";
 	public static final String PRECONDITION_SEND_COLLECTION_VNPOST = "sendcollectionvnpost=1";
 	public static final String PRECONDITION_REC_COLLECTION_VNPOST = "receivedcollectionvnpost=1";
+	public static final String PROCESS_STEP_ROLE = "processStepRole";
 
 }

@@ -64,5 +64,8 @@ public class DeliverableTerm {
 	public static final String NGAY = "ngay";
 	public static final String THANG = "thang";
 	public static final String NAM = "nam";
+	public static final String NGAYSINH_SEARCH = "ngaysinhSearch";
+	public static final String NGAY_SINH = "ngaysinh";
+	public static final String NGAY_QD_SEARCH = "ngayquyetdinhSearch";
 	
 }

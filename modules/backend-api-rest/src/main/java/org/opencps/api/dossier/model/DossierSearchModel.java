@@ -312,6 +312,16 @@ public class DossierSearchModel {
 	protected String createDateStart;
 	@FormParam(value = "createDateEnd")
 	protected String createDateEnd;
+	@QueryParam(value = "processAgency")
+	protected String processAgency;
+
+	public String getProcessAgency() {
+		return processAgency;
+	}
+
+	public void setProcessAgency(String processAgency) {
+		this.processAgency = processAgency;
+	}
 
 	public String getCreateDateStart() {
 		return createDateStart;
