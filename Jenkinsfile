@@ -5,7 +5,7 @@ if (env.CHANGE_ID) {
         buildPullRequest()
     }
 } else {
-    if(env.BRANCH_NAME=='master'){
+    if(env.BRANCH_NAME=='master' || env.BRANCH_NAME=='CI-Test'){
         buildPushCommit()
     }
 }
