@@ -1696,9 +1696,11 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			List<PaymentFile> lstPfs = null;
 			int paymentStatus = query.getPaymentStatus();
+			String paymentMethod = query.getPaymentMethod();
 			if (groupId > 0) {
 				if (paymentStatus != -1) {
-					lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+					//lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+					lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				}
 				else {
 					lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
@@ -1706,7 +1708,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			}
 			else {
 				if (paymentStatus != -1) {
-					lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
+					//lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
+					lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				}
 				else {
 					lstPfs = PaymentFileLocalServiceUtil.findAll();

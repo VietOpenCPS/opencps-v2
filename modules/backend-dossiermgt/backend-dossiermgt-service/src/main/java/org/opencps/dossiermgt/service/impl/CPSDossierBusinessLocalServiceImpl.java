@@ -1892,6 +1892,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							if (foundApplicant != null) {
 								JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 								payloadObj.put("filesAttach", filesAttach);
+								payloadObj = verifyPayloadMail(payloadObj);
+								_log.info("====================payloadattach2=========" + payloadObj);
 								String fromFullName = user.getFullName();
 								if (Validator.isNotNull(OpenCPSConfigUtil.getMailToApplicantFrom())) {
 									fromFullName = OpenCPSConfigUtil.getMailToApplicantFrom();
@@ -4896,7 +4898,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		if (OpenCPSConfigUtil.isNotificationEnable()) {
-			createNotificationQueueOutsideProcess(userId, groupId, dossier, proAction, actionConfig, context);
+			createNotificationQueueOutsideProcess(userId, groupId, dossier, proAction, actionConfig, payload, context);
 		}
 
 		if (DossierActionTerm.OUTSIDE_ACTION_ROLLBACK.equals(actionCode)) {
@@ -5011,13 +5013,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private void createNotificationQueueOutsideProcess(long userId, long groupId, Dossier dossier,
-													   ProcessAction proAction, ActionConfig actionConfig, ServiceContext context) {
+													   ProcessAction proAction, ActionConfig actionConfig, String actionPayload, ServiceContext context) {
 		DossierAction dossierAction = dossierActionLocalService.fetchDossierAction(dossier.getDossierActionId());
 		User u = UserLocalServiceUtil.fetchUser(userId);
 		JSONObject payloadObj = JSONFactoryUtil.createJSONObject();
-		payloadObj = buildNotificationPayload(dossier, payloadObj);
 
 		try {
+			payloadObj = buildNotificationPayload(dossier, JSONFactoryUtil.createJSONObject(actionPayload));
 			JSONObject dossierObj = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
@@ -5094,6 +5096,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							}
 							JSONObject filesAttach = getFileAttachMailForApplicant(dossier, proAction);
 							payloadObj.put("filesAttach", filesAttach);
+							payloadObj = verifyPayloadMail(payloadObj);
+							_log.info("====================payloadattach1=========" + payloadObj);
 							NotificationQueueLocalServiceUtil.addNotificationQueue(userId, groupId, notificationType,
 									Dossier.class.getName(), String.valueOf(dossier.getDossierId()),
 									payloadObj.toJSONString(), fromFullName, dossier.getApplicantName(), toUserId,
@@ -8937,6 +8941,24 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			_log.debug(e);
 		}
 		return 0;
+	}
+
+	private JSONObject verifyPayloadMail (JSONObject payload) {
+		Iterator payloadKeys = payload.keys();
+		String tmp_key;
+		JSONObject result = payload;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		try {
+			while (payloadKeys.hasNext()) {
+				tmp_key = (String) payloadKeys.next();
+				if (tmp_key.toLowerCase().indexOf("date") >= 0 && payload.getLong(tmp_key) > 0) {
+					result.put(tmp_key + "Str", sdf.format(new Date(payload.getLong(tmp_key))));
+				}
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return result;
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(CPSDossierBusinessLocalServiceImpl.class);

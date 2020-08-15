@@ -94,4 +94,27 @@ public interface FileAttachManagement {
 	public Response read(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@PathParam("id") long id, @PathParam("version") String version);
+
+	@PUT
+	@Path("/versions/{id}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response updateFileEntryId(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@DefaultValue("0") @PathParam("id") long id, @Multipart("file") Attachment attachment, @Multipart("fileName") String fileName,
+			@Multipart("fileType") String fileType, @Multipart("fileSize") long fileSize);
+	
+	@GET
+	@Path("/versions/{id}")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response getFileEntryIds(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("id") long id);
+	
+	@GET
+	@Path("/versions/{id}/{version}")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response getFileEntryIdByVersion(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
+			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
+			@PathParam("id") long id, @PathParam("version") String version);
 }

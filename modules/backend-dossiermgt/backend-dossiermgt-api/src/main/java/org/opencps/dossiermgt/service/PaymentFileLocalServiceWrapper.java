@@ -285,6 +285,21 @@ public class PaymentFileLocalServiceWrapper implements PaymentFileLocalService,
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPaymentStatusAndMethod(
+		int paymentStatus, String paymentMethod, int start, int end) {
+		return _paymentFileLocalService.findByPaymentStatusAndMethod(paymentStatus,
+			paymentMethod, start, end);
+	}
+
+	@Override
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPaymentStatusAndMethod(
+		int paymentStatus, String paymentMethod, long groupId, int start,
+		int end) {
+		return _paymentFileLocalService.findByPaymentStatusAndMethod(paymentStatus,
+			paymentMethod, groupId, start, end);
+	}
+
+	@Override
 	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findByPT(
 		int paymentStatus) {
 		return _paymentFileLocalService.findByPT(paymentStatus);
