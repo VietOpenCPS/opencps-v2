@@ -80,9 +80,11 @@ import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.base.DeliverableLocalServiceBaseImpl;
 import org.opencps.usermgt.model.Applicant;
+import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.ApplicantLocalServiceUtil;
 
 import aQute.bnd.annotation.ProviderType;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 /**
  * The implementation of the deliverable local service. <p> All custom service
@@ -1562,7 +1564,7 @@ public class DeliverableLocalServiceImpl
 	//Search V1 custom
 	@SuppressWarnings("deprecation")
 	public Hits searchLucene(String keywords, String groupId, String type, Map<String, String> mapFilter, Sort[] sorts, int start, int end,
-			SearchContext searchContext) throws ParseException, SearchException {
+			SearchContext searchContext, long userId) throws ParseException, SearchException {
 
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
 
@@ -1585,7 +1587,7 @@ public class DeliverableLocalServiceImpl
 
 		// Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(
-			keywords, groupId, type, mapFilter, booleanQuery);
+			keywords, groupId, type, mapFilter, booleanQuery, userId);
 		// Search follow param input
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1594,7 +1596,7 @@ public class DeliverableLocalServiceImpl
 
 	@SuppressWarnings("deprecation")
 	public long countLucene(
-		String keywords, String groupId, String type, Map<String, String> mapFilter, SearchContext searchContext)
+		String keywords, String groupId, String type, Map<String, String> mapFilter, SearchContext searchContext, long userId)
 		throws ParseException, SearchException {
 
 		Indexer<Deliverable> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Deliverable.class);
@@ -1615,7 +1617,7 @@ public class DeliverableLocalServiceImpl
 
 		// Search follow params default
 		BooleanQuery booleanCommon = processSearchCommon(
-			keywords, groupId, type, mapFilter, booleanQuery);
+			keywords, groupId, type, mapFilter, booleanQuery, userId);
 		// Search follow param input
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -1623,7 +1625,7 @@ public class DeliverableLocalServiceImpl
 	}
 
 	private BooleanQuery processSearchCommon(String keywords, String groupId, String type,
-			Map<String, String> mapFilter, BooleanQuery booleanQuery) throws ParseException {
+			Map<String, String> mapFilter, BooleanQuery booleanQuery, long userId) throws ParseException {
 
 		// LamTV: Process search LIKE
 		if (Validator.isNotNull(keywords)) {
@@ -1660,12 +1662,14 @@ public class DeliverableLocalServiceImpl
 			query.addFields(DeliverableTerm.DELIVERABLE_TYPE);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
+		System.out.println("------Start Map filter------");
 		if (mapFilter != null) {
+			System.out.println("------Map filter not null------");
 			BooleanQuery queryBool = new BooleanQueryImpl();
 			for (Map.Entry<String, String> entry : mapFilter.entrySet()) {
 				String key = entry.getKey();
 				if (key.contains("@LIKE")) {
+					System.out.println("------@LIKE------");
 					if(entry.getValue().contains(StringPool.PERIOD)){
 						String[] subQuerieArr = new String[] {
 								DeliverableTerm.DELIVERABLE_CODE_SEARCH
@@ -1679,6 +1683,7 @@ public class DeliverableLocalServiceImpl
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}else if(entry.getValue().contains(StringPool.SPACE)){
+						System.out.println("------@SPACE------");
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
@@ -1691,10 +1696,38 @@ public class DeliverableLocalServiceImpl
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}
 					else {
-						WildcardQuery wildQuery = new WildcardQueryImpl(
-								key.split("@")[0],
-								StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-						queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+						System.out.println("------@ELSE------");
+						if(entry.getValue().equals(DossierTerm.SCOPE_)){
+							System.out.println("------SCOPE multiple------");
+							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(Long.parseLong(groupId), userId);
+							if(Validator.isNotNull(employee)){
+								System.out.println("------Employee not null------");
+								String listScope = employee.getScope();
+								if (listScope.contains(StringPool.COMMA)) {
+									System.out.println("------Scope has comma------");
+									String[] keywordArr = listScope.split(StringPool.COMMA);
+									BooleanQuery subQuery = new BooleanQueryImpl();
+									for (String keyArr : keywordArr) {
+										MultiMatchQuery query = new MultiMatchQuery(keyArr);
+										query.addField(DossierTerm.GOV_AGENCY_CODE);
+										subQuery.add(query, BooleanClauseOccur.SHOULD);
+									}
+									booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+								}
+								System.out.println("------Scope has no comma------");
+							} else {
+								System.out.println("------SCOPE single------");
+								WildcardQuery wildQuery = new WildcardQueryImpl(
+										key.split("@")[0],
+										StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							}
+						}else {
+							WildcardQuery wildQuery = new WildcardQueryImpl(
+									key.split("@")[0],
+									StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+						}
 					}
 				} else if (key.contains("@EQUAL")) {
 					 if(entry.getValue().contains(StringPool.FORWARD_SLASH)){
