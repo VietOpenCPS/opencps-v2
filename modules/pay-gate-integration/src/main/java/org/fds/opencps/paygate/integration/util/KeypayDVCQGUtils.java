@@ -54,11 +54,17 @@ public class KeypayDVCQGUtils {
 		} else {
 			bankInfo = banksInfo.getJSONObject(PayGateTerm.DEFAULT);
 		}
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_LOAI_PHI_LE_PHI, "2");
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_MA_PHI_LE_PHI, "2");
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_TEN_PHI_LE_PHI, epaymentProfileDVCQG.getString(PayGateTerm.TENPHILEPHI));
-		philephiJ.put(KeypayDVCQGTerm.PHI_LE_PHI_SO_TIEN, paymentFile.getPaymentAmount());
+		philephiJ.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_PHI);
+		philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.TENPHILEPHI, epaymentProfileDVCQG.getString(PayGateTerm.TENPHILEPHI_PHI));
+		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getServiceAmount());
 		philephi.put(philephiJ);
+		JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
+		philephiJ2.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_LEPHI);
+		philephiJ2.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ2.put(PayGateTerm.TENPHILEPHI, epaymentProfileDVCQG.getString(PayGateTerm.TENPHILEPHI_LEPHI));
+		philephiJ2.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+		philephi.put(philephiJ2);
 		data.put(KeypayDVCQGTerm.PHI_LE_PHI, philephi);
 
 		data.put(KeypayDVCQGTerm.TK_THU_HUONG, bankInfo.getString(PayGateTerm.TKTHUHUONG));
