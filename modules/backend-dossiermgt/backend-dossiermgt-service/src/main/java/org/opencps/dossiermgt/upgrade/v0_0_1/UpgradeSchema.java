@@ -51,7 +51,7 @@ public class UpgradeSchema extends UpgradeProcess {
 				ServiceInfoTable.class, 
 				new AlterTableAddColumn("serviceNameTitle VARCHAR(500) null"),
 				new AlterTableAddColumn("isNotarization BOOLEAN"));
-		alter(DossierTable.class, new AlterTableAddColumn("partNameTitle VARCHAR(500) null"));
+//		alter(DossierTable.class, new AlterTableAddColumn("partNameTitle VARCHAR(500) null"));
 		alter(DossierTemplateTable.class, new AlterTableAddColumn("formMeta TEXT null"));
 		alter(
 				BookingTable.class, 
