@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.User;
 import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
 import org.opencps.api.serviceprocess.model.ProcessStepDataModel;
 import org.opencps.api.serviceprocess.model.RoleDataModel;
+import org.opencps.api.user.model.UserModel;
 
 
 /**
@@ -100,7 +101,15 @@ public class DossierDetailNextActionModel {
 	protected String configNote;
 	protected List<DossierTemplatePartDataModel> dossierParts;
 	protected List<RoleDataModel> postProcessStepRole;
-	protected List<org.opencps.api.dossier.model.UserModel> lstUser;
+	protected List<UserModel> lstUser;
+
+	public List<UserModel> getLstUser() {
+		return lstUser;
+	}
+
+	public void setLstUser(List<UserModel> lstUser) {
+		this.lstUser = lstUser;
+	}
 
 	public List<RoleDataModel> getPostProcessStepRole() {
 		return postProcessStepRole;

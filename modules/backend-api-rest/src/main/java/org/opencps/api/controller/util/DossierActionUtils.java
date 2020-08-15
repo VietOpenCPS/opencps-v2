@@ -666,6 +666,57 @@ public class DossierActionUtils {
 							}
 						}
 					}
+					List<RoleDataModel> outputProcess = new ArrayList<>();
+					if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
+						for (ProcessStepRole item : lstProcesStepRole) {
+							List<org.opencps.api.user.model.UserModel> lstOutputUser = new ArrayList();
+							if(item.getModerator()) {
+								RoleDataModel roleDataModel = new RoleDataModel();
+								roleDataModel.setProcessStepId(String.valueOf(item.getProcessStepId()));
+								roleDataModel.setRoleId((int) item.getRoleId());
+								roleDataModel.setModerator(String.valueOf(item.getModerator()));
+								roleDataModel.setRoleCode(item.getRoleCode());
+								if(Validator.isNotNull(item.getRoleCode())){
+									JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId,roleDataModel.getRoleCode());
+									roleDataModel.setRoleName(jobPos.getTitle());
+								}
+								roleDataModel.setCondition(item.getCondition());
+								if(lstUser !=null && lstUser.size() >0){
+									for (User user : lstUser) {
+										org.opencps.api.user.model.UserModel userModel = new org.opencps.api.user.model.UserModel();
+										userModel.setUserId(user.getUserId());
+										Employee employee =
+												mapEmps.get(user.getUserId());
+										if (Validator.isNotNull(employee)) {
+											userModel.setUserName(employee.getFullName());
+										}
+										if (Validator.isNotNull(employee.getJobPosTitle())) {
+											userModel.setJobPosTitle(employee.getJobPosTitle());
+										} else {
+											if (Validator.isNotNull(user.getJobTitle())) {
+												userModel.setJobPosTitle(user.getJobTitle());
+											} else {
+												if (mapJps.containsKey(employee.getMainJobPostId())) {
+													String jobPosTitle = mapJps.get(employee.getMainJobPostId());
+													userModel.setJobPosTitle(jobPosTitle);
+												}
+											}
+										}
+										userModel.setModerator(false);
+										userModel.setAssigned(0);
+										lstOutputUser.add(userModel);
+									}
+								}
+								if(lstOutputUser !=null && lstOutputUser.size() >0){
+									roleDataModel.setLstUser(lstOutputUser);
+								}
+								outputProcess.add(roleDataModel);
+							}
+						}
+					}
+					if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
+						model.setPostProcessStepRole(outputProcess);
+					}
 										
 //					for (User user : lstUser) {
 //						long userId = user.getUserId();
@@ -725,42 +776,6 @@ public class DossierActionUtils {
 //					}					
 				}
 				model.setToUsers(outputUsers);
-				RoleDataModel roleDataModel = new RoleDataModel();
-				UserModel userModel = new UserModel();
-				List<UserModel> lstOutputUser = new ArrayList();
-				List<RoleDataModel> outputProcess = new ArrayList<>();
-				if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
-					for (ProcessStepRole item : lstProcesStepRole) {
-						if(item.getModerator()) {
-							roleDataModel.setProcessStepId(String.valueOf(item.getProcessStepId()));
-							roleDataModel.setRoleId((int) item.getRoleId());
-							roleDataModel.setModerator(String.valueOf(item.getModerator()));
-							roleDataModel.setRoleCode(item.getRoleCode());
-							if(Validator.isNotNull(item.getRoleCode())){
-								JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId,roleDataModel.getRoleCode());
-								roleDataModel.setRoleName(jobPos.getTitle());
-							}
-							roleDataModel.setCondition(item.getCondition());
-							if(lstUser !=null && lstUser.size() >0){
-								for (User user : lstUser) {
-									userModel.setUserId((int) user.getUserId());
-									userModel.setUserName(user.getFirstName());
-									userModel.setStatus(user.getStatus());
-									userModel.setJobPosTitle(user.getJobTitle());
-									lstOutputUser.add(userModel);
-								}
-								if(lstOutputUser !=null && lstOutputUser.size() >0){
-									roleDataModel.setLstUser(lstOutputUser);
-								}
-							}
-							outputProcess.add(roleDataModel);
-
-						}
-					}
-				}
-				if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
-					model.setPostProcessStepRole(outputProcess);
-				}
 
 				List<DossierActionNextActioncreateFiles> outputCreeateFiles =
 					null;

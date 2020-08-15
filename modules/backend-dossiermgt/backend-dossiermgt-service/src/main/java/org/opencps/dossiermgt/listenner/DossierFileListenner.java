@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DeliverableLogTerm;
@@ -567,8 +568,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				JSONObject mapp = mappingContent(
 					jsMappingData, jsFormData, model.getDossierId());
 				// uu tien cac truong thong tin formData
-				formDataContent =
-					mergeObject(mapp.toString(), jsFormData.toString());
+//				formDataContent =
+//					mergeObject(mapp.toString(), jsFormData.toString());
+				formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+						dlvType.getMappingData(), dossier.getDossierId(),
+						serviceContext);
 			}
 			// else if (jsMappingData.has("deliverables")) {
 			// formDataContent = mappingContent(jsMappingData, jsFormData);
@@ -686,7 +690,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 
 					// update
 					deliverable.setDeliverableCode(dDeliverableCode);
-					_log.info("---- LOG FILE entryId :" + dossierFileAttach.getFileEntryId() + " ----------");
+//					_log.info("---- LOG FILE entryId :" + dossierFileAttach.getFileEntryId() + " ----------");
 					deliverable.setFileEntryId(
 							dossierFileAttach != null
 									? dossierFileAttach.getFileEntryId() : 0l);

@@ -3395,7 +3395,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			for (String key : keywordArr) {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_GUI);
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
+				subQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}

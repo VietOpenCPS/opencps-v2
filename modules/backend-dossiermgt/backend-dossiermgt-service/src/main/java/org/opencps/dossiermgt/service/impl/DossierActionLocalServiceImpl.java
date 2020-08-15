@@ -381,14 +381,24 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 				for (String key : keywordArr) {
 					MultiMatchQuery query = new MultiMatchQuery(key);
 					query.addField(DossierTerm.DOSSIER_ID);
-					subQuery.add(query, BooleanClauseOccur.MUST);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.SHOULD);
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
 				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
 				query.addField(DossierTerm.DOSSIER_ID);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+//			if (Validator.isNotNull(donvigui)) {
+//				String[] keywordArr = donvigui.split(StringPool.COMMA);
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (String key : keywordArr) {
+//					MultiMatchQuery query = new MultiMatchQuery(key);
+//					query.addField(DossierTerm.DON_VI_GUI);
+//					subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			}
 
 		}
 

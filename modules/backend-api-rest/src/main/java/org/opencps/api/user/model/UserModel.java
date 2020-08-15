@@ -49,7 +49,12 @@ import javax.xml.bind.annotation.XmlType;
     "email",
     "fullName",
     "contactEmail",
-    "contactTelNo"
+    "contactTelNo",
+    "moderator",
+    "status",
+    "assigned",
+    "jobPosTitle",
+    "userName"
 })
 @XmlRootElement(name = "UserModel")
 public class UserModel {
@@ -62,6 +67,51 @@ public class UserModel {
     protected String fullName;
     protected String contactEmail;
     protected String contactTelNo;
+    protected boolean moderator;
+    protected Integer status;
+    protected Integer assigned;
+    protected String jobPosTitle;
+    protected String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isModerator() {
+        return moderator;
+    }
+
+    public void setModerator(boolean moderator) {
+        this.moderator = moderator;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(Integer assigned) {
+        this.assigned = assigned;
+    }
+
+    public String getJobPosTitle() {
+        return jobPosTitle;
+    }
+
+    public void setJobPosTitle(String jobPosTitle) {
+        this.jobPosTitle = jobPosTitle;
+    }
 
     /**
      * Gets the value of the className property.

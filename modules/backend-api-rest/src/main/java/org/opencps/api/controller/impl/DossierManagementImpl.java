@@ -8113,7 +8113,12 @@ public class DossierManagementImpl implements DossierManagement {
 							break;
 						}else if(keyAgencys.equals(DictItemTerm.isParrentCode)){
 							if(valueAgencys.equals(DictItemTerm.SCOPE)){
-								unit = splitByUnitEmployee(groupId,userId);
+								String unitEmployee = splitByUnitEmployee(groupId,userId);
+								DictItem dictItem = dictItemDataUtil.getDictItemByItemCode(DictItemTerm.DON_VI_CONG_VAN, unitEmployee, groupId, serviceContext);
+								if(Validator.isNotNull(dictItem)){
+									DictItem parentItem = DictItemLocalServiceUtil.fetchDictItem(dictItem.getParentItemId());
+									unit = parentItem.getItemCode();
+								}
 							}else{
 								DictItem dictItem = dictItemDataUtil.getDictItemByItemCode(DictItemTerm.DON_VI_CONG_VAN, valueAgencys, groupId, serviceContext);
 								if(Validator.isNotNull(dictItem)){

@@ -9,7 +9,7 @@
 package org.opencps.api.serviceprocess.model;
 
 import com.liferay.portal.kernel.model.User;
-import org.opencps.api.dossier.model.UserModel;
+import org.opencps.api.user.model.UserModel;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -58,13 +58,13 @@ public class RoleDataModel {
     protected String condition;
     protected String roleCode;
     protected String processStepId;
-    protected List<org.opencps.api.dossier.model.UserModel> lstUser;
+    protected List<org.opencps.api.user.model.UserModel> lstUser;
 
-    public List<UserModel> getLstUser() {
+    public List<org.opencps.api.user.model.UserModel> getLstUser() {
         return lstUser;
     }
 
-    public void setLstUser(List<UserModel> lstUser) {
+    public void setLstUser(List<org.opencps.api.user.model.UserModel> lstUser) {
         this.lstUser = lstUser;
     }
 

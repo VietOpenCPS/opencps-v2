@@ -1708,11 +1708,12 @@ public class DeliverableLocalServiceImpl
 									String[] keywordArr = listScope.split(StringPool.COMMA);
 									BooleanQuery subQuery = new BooleanQueryImpl();
 									for (String keyArr : keywordArr) {
-										MultiMatchQuery query = new MultiMatchQuery(keyArr);
-										query.addField(DossierTerm.GOV_AGENCY_CODE);
-										subQuery.add(query, BooleanClauseOccur.SHOULD);
+										WildcardQuery query = new WildcardQueryImpl(key.split("@")[0],
+												StringPool.STAR + keyArr.toLowerCase() + StringPool.STAR);
+										subQuery.add(query, BooleanClauseOccur.MUST);
 									}
-									booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+									queryBool.add(subQuery, BooleanClauseOccur.SHOULD);
+									booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 								}
 								System.out.println("------Scope has no comma------");
 							} else {
