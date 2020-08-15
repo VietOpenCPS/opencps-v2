@@ -81,6 +81,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
@@ -1586,7 +1587,7 @@ public class RestfulController {
 	@ResponseStatus(HttpStatus.OK)
 	public String getDeliverableTest(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable("type") String type, @QueryParam("start") Integer start, @QueryParam("end") Integer end,
-			@QueryParam("keyword") String keyword,
+			@QueryParam("keyword") String keyword, @Context User user,
 			@QueryParam("formDataKey") String formDataKey) {
 
 		JSONObject result = JSONFactoryUtil.createJSONObject();
@@ -1663,7 +1664,7 @@ public class RestfulController {
 				try {
 
 					hits = DeliverableLocalServiceUtil.searchLucene(keySearch, String.valueOf(groupId), type, mapFilter, sorts,
-							start, end, searchContext);
+							start, end, searchContext, user.getUserId());
 
 					if (hits != null) {
 						List<Document> docList = hits.toList();
@@ -1689,7 +1690,7 @@ public class RestfulController {
 //						}
 
 						long total = DeliverableLocalServiceUtil.countLucene(keySearch, String.valueOf(groupId), type, mapFilter,
-								searchContext);
+								searchContext, user.getUserId());
 
 						result.put(ConstantUtils.TOTAL, total);
 						System.out.println("total: " + total);
