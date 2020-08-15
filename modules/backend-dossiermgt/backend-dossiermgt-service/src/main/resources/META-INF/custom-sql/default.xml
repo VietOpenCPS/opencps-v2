@@ -92,4 +92,23 @@
             WHERE replace(replace(JSON_EXTRACT(metaData, "$.ma_to_khai"),'["',''), '"]','') = ? and d.groupId  = ?;
         ]]>
     </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.PaymentFileFinder.findPaymentByS_M">
+        <![CDATA[
+            SELECT opencps_paymentfile.*
+            FROM   opencps_paymentfile 
+            WHERE  
+            	(opencps_paymentfile.paymentMethod = ?) AND 
+				(opencps_paymentfile.paymentStatus = ?)
+        ]]>
+    </sql>
+    <sql id="org.opencps.dossiermgt.service.persistence.PaymentFileFinder.findPaymentByG_S_M">
+        <![CDATA[
+            SELECT opencps_paymentfile.*
+            FROM   opencps_paymentfile 
+            WHERE  
+            	(opencps_paymentfile.paymentMethod = ?) AND 
+				(opencps_paymentfile.paymentStatus = ?) AND
+				(opencps_paymentfile.groupId = ?)
+        ]]>
+    </sql>
 </custom-sql>

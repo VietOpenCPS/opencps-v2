@@ -66,7 +66,8 @@ import javax.xml.bind.annotation.XmlType;
     "fromDueDate",
     "toDueDate",
     "fromStatisticDate",
-    "toStatisticDate"
+    "toStatisticDate",
+    "paymentMethod"
 })
 @XmlRootElement(name = "FeeSearchModel")
 public class FeeSearchModel {
@@ -105,6 +106,8 @@ public class FeeSearchModel {
     protected String fromStatisticDate;
 	@QueryParam(value="toStatisticDate")
     protected String toStatisticDate;
+	@QueryParam(value="paymentMethod")
+    protected String paymentMethod;
 
     /**
      * Gets the value of the keyword property.
@@ -502,6 +505,23 @@ public class FeeSearchModel {
 		this.toStatisticDate = toStatisticDate;
 	}
     
+	/**
+	 * Gets the payment method.
+	 *
+	 * @return the payment method
+	 */
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	/**
+	 * Sets the payment method.
+	 *
+	 * @param paymentMethod the new payment method
+	 */
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
     
 
 }
