@@ -24,4 +24,11 @@ import aQute.bnd.annotation.ProviderType;
 public interface PaymentFileFinder {
 	public String findSumPaymentAmountDay(long groupId, String date, int start,
 		int end);
+
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findPaymentByS_M(
+		int paymentStatus, String paymentMethod, int start, int end);
+
+	public java.util.List<org.opencps.dossiermgt.model.PaymentFile> findPaymentByG_S_M(
+		int paymentStatus, String paymentMethod, long groupId, int start,
+		int end);
 }

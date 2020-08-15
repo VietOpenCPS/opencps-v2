@@ -986,4 +986,14 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	public List<PaymentFile> findByPT(int paymentStatus) {
 		return paymentFilePersistence.findByPT(paymentStatus);
 	}
+	
+	public List<PaymentFile> findByPaymentStatusAndMethod(int paymentStatus,
+			String paymentMethod, int start, int end) {
+		return paymentFileFinder.findPaymentByS_M(paymentStatus, paymentMethod, start, end);
+	}
+	
+	public List<PaymentFile> findByPaymentStatusAndMethod(int paymentStatus,
+			String paymentMethod, long groupId, int start, int end) {
+		return paymentFileFinder.findPaymentByG_S_M(paymentStatus, paymentMethod, groupId, start, end);
+	}
 }
