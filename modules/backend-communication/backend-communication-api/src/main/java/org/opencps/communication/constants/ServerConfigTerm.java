@@ -44,6 +44,8 @@ public class ServerConfigTerm {
 
 	public static final String LAST_SYNC = "lastSync";
 
+	public static final String ACTIVE = "active";
+
 	public static final String SERVER_CONFIG_NOT_FOUND_EX_MES = "ServerConfigNotFoundException";
 
 	public static final String SERVER_NO_DUPLICATE_EX_MES = "ServerNoDuplicateException";
@@ -56,6 +58,6 @@ public class ServerConfigTerm {
 	public static final String PAGINATION_TYPE = "paginationType";
 	public static final String EXPANDO_ATTRIBUTES = "expandoAttributes";
 
-	
+	public static final String EMAIL_CONFIG_PT = "EMAIL_CONFIG";
 
 }

@@ -281,6 +281,27 @@ public interface ServerConfigModel extends BaseModel<ServerConfig>, GroupedModel
 	 */
 	public void setLastSync(Date lastSync);
 
+	/**
+	 * Returns the active of this server config.
+	 *
+	 * @return the active of this server config
+	 */
+	public boolean getActive();
+
+	/**
+	 * Returns <code>true</code> if this server config is active.
+	 *
+	 * @return <code>true</code> if this server config is active; <code>false</code> otherwise
+	 */
+	public boolean isActive();
+
+	/**
+	 * Sets whether this server config is active.
+	 *
+	 * @param active the active of this server config
+	 */
+	public void setActive(boolean active);
+
 	@Override
 	public boolean isNew();
 

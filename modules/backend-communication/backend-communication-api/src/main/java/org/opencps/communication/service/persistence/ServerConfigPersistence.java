@@ -906,4 +906,7 @@ public interface ServerConfigPersistence extends BasePersistence<ServerConfig> {
 	* @return the number of server configs
 	*/
 	public int countAll();
+
+	@Override
+	public java.util.Set<String> getBadColumnNames();
 }

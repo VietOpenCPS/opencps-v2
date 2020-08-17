@@ -78,7 +78,8 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 			{ "serverName", Types.VARCHAR },
 			{ "protocol", Types.VARCHAR },
 			{ "configs", Types.CLOB },
-			{ "lastSync", Types.TIMESTAMP }
+			{ "lastSync", Types.TIMESTAMP },
+			{ "active_", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -96,9 +97,10 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		TABLE_COLUMNS_MAP.put("protocol", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("configs", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("lastSync", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_serverconfig (serverConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(255) null,serverNo VARCHAR(255) null,serverName TEXT null,protocol VARCHAR(255) null,configs TEXT null,lastSync DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_serverconfig (serverConfigId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,govAgencyCode VARCHAR(255) null,serverNo VARCHAR(255) null,serverName TEXT null,protocol VARCHAR(255) null,configs TEXT null,lastSync DATE null,active_ BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_serverconfig";
 	public static final String ORDER_BY_JPQL = " ORDER BY serverConfig.createDate ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_serverconfig.createDate ASC";
@@ -172,6 +174,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		attributes.put("protocol", getProtocol());
 		attributes.put("configs", getConfigs());
 		attributes.put("lastSync", getLastSync());
+		attributes.put("active", isActive());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -257,6 +260,12 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 
 		if (lastSync != null) {
 			setLastSync(lastSync);
+		}
+
+		Boolean active = (Boolean)attributes.get("active");
+
+		if (active != null) {
+			setActive(active);
 		}
 	}
 
@@ -486,6 +495,21 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		_lastSync = lastSync;
 	}
 
+	@Override
+	public boolean getActive() {
+		return _active;
+	}
+
+	@Override
+	public boolean isActive() {
+		return _active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		_active = active;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -530,6 +554,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		serverConfigImpl.setProtocol(getProtocol());
 		serverConfigImpl.setConfigs(getConfigs());
 		serverConfigImpl.setLastSync(getLastSync());
+		serverConfigImpl.setActive(isActive());
 
 		serverConfigImpl.resetOriginalValues();
 
@@ -692,12 +717,14 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 			serverConfigCacheModel.lastSync = Long.MIN_VALUE;
 		}
 
+		serverConfigCacheModel.active = isActive();
+
 		return serverConfigCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{serverConfigId=");
 		sb.append(getServerConfigId());
@@ -725,6 +752,8 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 		sb.append(getConfigs());
 		sb.append(", lastSync=");
 		sb.append(getLastSync());
+		sb.append(", active=");
+		sb.append(isActive());
 		sb.append("}");
 
 		return sb.toString();
@@ -732,7 +761,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.communication.model.ServerConfig");
@@ -790,6 +819,10 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 			"<column><column-name>lastSync</column-name><column-value><![CDATA[");
 		sb.append(getLastSync());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>active</column-name><column-value><![CDATA[");
+		sb.append(isActive());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -819,6 +852,7 @@ public class ServerConfigModelImpl extends BaseModelImpl<ServerConfig>
 	private String _originalProtocol;
 	private String _configs;
 	private Date _lastSync;
+	private boolean _active;
 	private long _columnBitmask;
 	private ServerConfig _escapedModel;
 }

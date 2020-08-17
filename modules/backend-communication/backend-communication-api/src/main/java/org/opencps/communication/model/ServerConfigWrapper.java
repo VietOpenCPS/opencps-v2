@@ -71,6 +71,7 @@ public class ServerConfigWrapper implements ServerConfig,
 		attributes.put("protocol", getProtocol());
 		attributes.put("configs", getConfigs());
 		attributes.put("lastSync", getLastSync());
+		attributes.put("active", isActive());
 
 		return attributes;
 	}
@@ -154,6 +155,12 @@ public class ServerConfigWrapper implements ServerConfig,
 		if (lastSync != null) {
 			setLastSync(lastSync);
 		}
+
+		Boolean active = (Boolean)attributes.get("active");
+
+		if (active != null) {
+			setActive(active);
+		}
 	}
 
 	@Override
@@ -164,6 +171,16 @@ public class ServerConfigWrapper implements ServerConfig,
 	@Override
 	public int compareTo(ServerConfig serverConfig) {
 		return _serverConfig.compareTo(serverConfig);
+	}
+
+	/**
+	* Returns the active of this server config.
+	*
+	* @return the active of this server config
+	*/
+	@Override
+	public boolean getActive() {
+		return _serverConfig.getActive();
 	}
 
 	/**
@@ -331,6 +348,16 @@ public class ServerConfigWrapper implements ServerConfig,
 		return _serverConfig.hashCode();
 	}
 
+	/**
+	* Returns <code>true</code> if this server config is active.
+	*
+	* @return <code>true</code> if this server config is active; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isActive() {
+		return _serverConfig.isActive();
+	}
+
 	@Override
 	public boolean isCachedModel() {
 		return _serverConfig.isCachedModel();
@@ -349,6 +376,16 @@ public class ServerConfigWrapper implements ServerConfig,
 	@Override
 	public void persist() {
 		_serverConfig.persist();
+	}
+
+	/**
+	* Sets whether this server config is active.
+	*
+	* @param active the active of this server config
+	*/
+	@Override
+	public void setActive(boolean active) {
+		_serverConfig.setActive(active);
 	}
 
 	@Override
