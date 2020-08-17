@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
@@ -41,6 +40,7 @@ import org.opencps.api.serverconfig.model.ServerConfigInputModel;
 import org.opencps.api.serverconfig.model.ServerConfigResultsModel;
 import org.opencps.api.serverconfig.model.ServerConfigSearchModel;
 import org.opencps.api.serverconfig.model.ServerConfigSingleInputModel;
+import org.opencps.api.test.model.TestConfigModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -52,7 +52,6 @@ import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.rest.utils.SyncServerTerm;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-import org.springframework.web.client.RestTemplate;
 
 public class ServerConfigManagementImpl implements ServerConfigManagement {
 	Log _log = LogFactoryUtil.getLog(ServerConfigManagementImpl.class);
@@ -708,4 +707,28 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 		}
 	}
 
+	@Override
+	public Response getTest(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+				 User user, ServiceContext serviceContext, TestConfigModel query) {
+
+		try {
+			int id = query.getServerId();
+			String serverNo = query.getServerNo();
+			String serverName = query.getServerName();
+			String serverName111 = query.getServerName11();
+			String serverName22 = query.getServerName22();
+			String serverName33 = query.getServerName33();
+			System.out.println("serverNo: "+serverNo);
+			System.out.println("serverName: "+serverName);
+			System.out.println("serverName111: "+serverName111);
+			System.out.println("serverName22: "+serverName22);
+			System.out.println("serverName33: "+serverName33);
+			System.out.println("id: "+id);
+
+			return Response.status(200).entity("OK").build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+
+	}
 }

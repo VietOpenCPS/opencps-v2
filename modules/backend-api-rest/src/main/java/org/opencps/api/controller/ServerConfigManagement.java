@@ -16,6 +16,7 @@ import org.opencps.api.serverconfig.model.ServerConfigInputModel;
 import org.opencps.api.serverconfig.model.ServerConfigResultsModel;
 import org.opencps.api.serverconfig.model.ServerConfigSearchModel;
 import org.opencps.api.serverconfig.model.ServerConfigSingleInputModel;
+import org.opencps.api.test.model.TestConfigModel;
 import org.opencps.exception.model.ExceptionModel;
 
 import com.liferay.portal.kernel.model.Company;
@@ -186,4 +187,18 @@ public interface ServerConfigManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext, @PathParam("serverNo") String serverNo,
 			@PathParam("protocolCode") String protocolCode, @BeanParam ServerConfigSearchModel query);
+
+	@GET
+	@Path("/test/server")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@ApiOperation(value = "Get all ServerConfig", response = ServerConfigResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of all ServerConfig", response = ServerConfigResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+
+	public Response getTest(@Context HttpServletRequest request, @Context HttpHeaders header,
+				  @Context Company company, @Context Locale locale, @Context User user,
+				  @Context ServiceContext serviceContext, @BeanParam TestConfigModel query);
 }
