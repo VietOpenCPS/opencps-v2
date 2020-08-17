@@ -50,6 +50,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -60,6 +61,7 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -1137,6 +1139,17 @@ public class DossierUtils {
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setPostalCodeSend(input.getPostalCodeSend());
 		model.setProcessNo(input.getProcessNo());
+		
+		// add key dossierSyncState in table dossierSync flowing lastActionCode
+		if (input.getDossierActionId() != 0 && model.getLastActionCode() != null) {
+			DossierSync dossierSync = DossierSyncLocalServiceUtil.getByDID_DAD_AC(
+					input.getGroupId(), input.getDossierId(), input.getDossierActionId(), model.getLastActionCode());
+			if (dossierSync != null) {
+				model.setDossierSyncState(dossierSync.getState());
+			}else {
+				model.setDossierSyncState(0);
+			} 
+		}
 
 		return model;
 	}

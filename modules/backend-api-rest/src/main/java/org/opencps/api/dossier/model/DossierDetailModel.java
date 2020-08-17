@@ -207,7 +207,8 @@ import javax.xml.bind.annotation.XmlType;
     "vnpostalProfile",
     "fromViaPostal",
 	"postalCodeSend",
-	"processNo"
+	"processNo",
+	"dossierSyncState"
 })
 @XmlRootElement(name = "DossierDetailModel")
 public class DossierDetailModel {
@@ -322,6 +323,7 @@ public class DossierDetailModel {
 	protected Integer fromViaPostal;
 	protected String postalCodeSend;
 	protected String processNo;
+	protected Integer dossierSyncState;
 
 	public String getProcessNo() {
 		return processNo;
@@ -2233,5 +2235,15 @@ public class DossierDetailModel {
 	public void setMetaData(String metaData) {
 		this.metaData = metaData;
 	}
+
+	public Integer getDossierSyncState() {
+		return dossierSyncState;
+	}
+
+	public void setDossierSyncState(Integer dossierSyncState) {
+		this.dossierSyncState = dossierSyncState;
+	}
+	
+	
 
 }
