@@ -179,7 +179,6 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 											Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
 		LinkedHashMap<String, Object> params =
 				new LinkedHashMap<>();
-		List<Dossier> lstDossier = new ArrayList<>();
 		DossierActions actions = new DossierActionsImpl();
 		DossierActionResultsModel results = new DossierActionResultsModel();
 
@@ -189,10 +188,10 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 				query.setStart(QueryUtil.ALL_POS);
 				query.setEnd(QueryUtil.ALL_POS);
 			}
-			String dossierIds = "";
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 
+			String dossierNo = query.getDossierNo();
 			String createDateStart =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getCreateDateStart());
@@ -205,6 +204,9 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			}
 			if(Validator.isNotNull(createDateEnd)){
 				params.put(DossierTerm.CREATE_DATE_END, createDateEnd);
+			}
+			if(Validator.isNotNull(dossierNo)){
+				params.put(DossierTerm.DOSSIER_NO, dossierNo);
 			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -223,35 +225,17 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 				};
 			}
 
+			JSONObject jsonData = actions.getDossierActionsList(
+					user.getUserId(), company.getCompanyId(), groupId, params,
+					sorts, query.getStart(), query.getEnd(), serviceContext);
+			if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+				results.getData().addAll(
+						DossierUtils.mappingForListDossierActions(
+								(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-			if (lstDossier.size() < 1) {
-				lstDossier = DossierLocalServiceUtil.findDossierByGroup(groupId);
 			}
-			if (lstDossier.isEmpty()) {
-				throw new Exception(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.DOSSIER_MESSAGE_KHONGTIMTHAY));
-			}
-			if (lstDossier != null && lstDossier.size() > 0) {
-			for(Dossier dossier : lstDossier) {
-				if(Validator.isNotNull(dossier.getDossierId())){
-					dossierIds += "," + dossier.getDossierId();
-				}
-			}
-			if(Validator.isNotNull(dossierIds)){
-				dossierIds = dossierIds.substring(1);
-				params.put(DossierTerm.DOSSIER_ID, dossierIds);
-			}
-				JSONObject jsonData = actions.getDossierActionsList(
-						user.getUserId(), company.getCompanyId(), groupId, params,
-						sorts, query.getStart(), query.getEnd(), serviceContext);
-				if (jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0) {
-					results.getData().addAll(
-							DossierUtils.mappingForListDossierActions(
-									(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
-				}
-
-				results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-		}
+			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 

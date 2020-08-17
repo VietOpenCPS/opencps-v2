@@ -22,23 +22,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.*;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -375,35 +363,35 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+//		if (Validator.isNotNull(dossierIds)) {
+//
+//			BooleanQuery subQuery = new BooleanQueryImpl();
+//			String[] keywordArr = dossierIds.split(StringPool.COMMA);
+//			for (int i = 0; i < keywordArr.length; i++) {
+//				MultiMatchQuery query = new MultiMatchQuery(keywordArr[i]);
+//				query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
+//				subQuery.add(query, BooleanClauseOccur.SHOULD);
+//			}
+//			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 
-
-		if (Validator.isNotNull(dossierIds)) {
-			if (dossierIds.contains(StringPool.COMMA)) {
-				String[] keywordArr = dossierIds.split(StringPool.COMMA);
-//				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					MultiMatchQuery query = new MultiMatchQuery(key);
-					query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
-					booleanQuery.add(query, BooleanClauseOccur.MUST);
-				}
-//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
-				query.addField(DossierActionTerm.DOSSIER_ID);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-//			if (Validator.isNotNull(donvigui)) {
-//				String[] keywordArr = donvigui.split(StringPool.COMMA);
+//			if (dossierIds.contains(StringPool.COMMA)) {
+//				String[] keywordArr = dossierIds.split(StringPool.COMMA);
 //				BooleanQuery subQuery = new BooleanQueryImpl();
 //				for (String key : keywordArr) {
-//					MultiMatchQuery query = new MultiMatchQuery(key);
-//					query.addField(DossierTerm.DON_VI_GUI);
+//					WildcardQuery query = new WildcardQueryImpl(DossierActionTerm.DOSSIER_ID_SEARCH +
+//							StringPool.UNDERLINE + ConstantUtils.DATA,StringPool.STAR + key + StringPool.STAR );
 //					subQuery.add(query, BooleanClauseOccur.SHOULD);
 //				}
 //				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			} else {
+//				WildcardQuery query = new WildcardQueryImpl(dossierIds,DossierActionTerm.DOSSIER_ID);
+//
+////				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
+////				query.addField(DossierActionTerm.DOSSIER_ID);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
 //			}
 
-		}
+//		}
 
 
 		String createDateStartFilter =
@@ -445,7 +433,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		String dossierNo = String.valueOf((params.get(DossierActionTerm.DOSSIER_NO)));
 		String createDateStart =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
 		String createDateEnd =
@@ -489,25 +477,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
-
-		if (Validator.isNotNull(dossierIds)) {
-			if (dossierIds.contains(StringPool.COMMA)) {
-				String[] keywordArr = dossierIds.split(StringPool.COMMA);
-//				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (String key : keywordArr) {
-					MultiMatchQuery query = new MultiMatchQuery(key);
-					query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
-					booleanQuery.add(query, BooleanClauseOccur.MUST);
-				}
-//				booleanQuery.add(subQuery, BooleanClauseOccur.SHOULD);
-			} else {
-				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
-				query.addField(DossierTerm.DOSSIER_ID);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
-
+		if (Validator.isNotNull(dossierNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
+			query.addFields(DossierTerm.DOSSIER_NO);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
 		String createDateStartFilter =
 				createDateStart + ConstantsTerm.HOUR_START;
 		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
