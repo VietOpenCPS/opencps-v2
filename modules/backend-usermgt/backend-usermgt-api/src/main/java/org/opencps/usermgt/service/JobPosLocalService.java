@@ -226,6 +226,8 @@ public interface JobPosLocalService extends BaseLocalService,
 	public List<JobPos> findByF_mappingRoleIds(long groupId,
 		long[] mappingRoleIds);
 
+	public JobPos fetchByF_CODE(long groupId,String jobPosCode);
+
 	public List<JobPos> findByG(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

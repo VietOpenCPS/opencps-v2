@@ -227,18 +227,19 @@ public class OneGateControllerImpl implements OneGateController {
 
 									if (hasPermission) {
 										JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+										if(Validator.isNotNull(processOption.getStatus()) && processOption.getStatus() == 1) {
+											elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID,
+													processOption.getProcessOptionId());
+											elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
+											elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE,
+													processOption.getInstructionNote());
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NO,
+													processOption.getTemplateNo_0020());
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NAME,
+													processOption.getTemplateName());
 
-										elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID,
-												processOption.getProcessOptionId());
-										elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
-										elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE,
-												processOption.getInstructionNote());
-										elmOption.put(DossierTemplateTerm.TEMPLATE_NO,
-												processOption.getTemplateNo_0020());
-										elmOption.put(DossierTemplateTerm.TEMPLATE_NAME,
-												processOption.getTemplateName());
-
-										options.put(elmOption);
+											options.put(elmOption);
+										}
 									}
 
 									if (options.length() > 0) {

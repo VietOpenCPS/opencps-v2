@@ -262,6 +262,7 @@
 
 		<column name="day" type="int" />
 		<column name="hours" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 		<order by="asc">

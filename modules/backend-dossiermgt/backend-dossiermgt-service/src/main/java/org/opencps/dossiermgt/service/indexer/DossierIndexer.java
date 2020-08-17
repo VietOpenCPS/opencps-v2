@@ -140,6 +140,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			} else {
 				document.addTextSortable(DossierTerm.RELEASE_DATE_LUCENE, StringPool.BLANK);
 			}
+//			if (Validator.isNotNull(object.getCreateDate())) {
+//				document.addDateSortable(DossierTerm.CREATE_DATE, object.getCreateDate());
+//			} else {
+//				document.addTextSortable(DossierTerm.CREATE_DATE, StringPool.BLANK);
+//			}
 			if (Validator.isNotNull(object.getFinishDate())) {
 				document.addDateSortable(DossierTerm.FINISH_DATE_LUCENE, object.getFinishDate());
 			} else {
@@ -816,6 +821,11 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 //			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
 			document.addNumberSortable(DossierTerm.DELEGATE_TYPE, object.getDelegateType());
 			document.addTextSortable(DossierTerm.DOCUMENT_NO, object.getDocumentNo());
+			if (Validator.isNotNull(object.getDocumentNo())) {
+				String documentNoSearch = SpecialCharacterUtils.splitSpecial(object.getDocumentNo());
+				document.addTextSortable(DossierTerm.DOCUMENT_NO_SEARCH, documentNoSearch);
+			}
+
 			if (Validator.isNotNull(object.getDocumentDate())) {
 				document.addDateSortable(DossierTerm.DOCUMENT_DATE, object.getDocumentDate());
 			}

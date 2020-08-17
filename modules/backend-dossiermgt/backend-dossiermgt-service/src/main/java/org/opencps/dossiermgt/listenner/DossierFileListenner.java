@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierLogUtils;
 import org.opencps.dossiermgt.constants.DeliverableLogTerm;
@@ -522,6 +523,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				DossierPartLocalServiceUtil.fetchByTemplatePartNo(
 					model.getGroupId(), model.getDossierTemplateNo(),
 					model.getDossierPartNo());
+			_log.info("TRACE LOG DossierPart :" + model.getGroupId() + " // " + model.getDossierTemplateNo() + "//" + model.getDossierPartNo());
 
 			// Neu ho so khong co ky so thi khong can tao giay phep
 			if (!dossierPart.getESign() ||
@@ -566,8 +568,11 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				JSONObject mapp = mappingContent(
 					jsMappingData, jsFormData, model.getDossierId());
 				// uu tien cac truong thong tin formData
-				formDataContent =
-					mergeObject(mapp.toString(), jsFormData.toString());
+//				formDataContent =
+//					mergeObject(mapp.toString(), jsFormData.toString());
+				formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+						dlvType.getMappingData(), dossier.getDossierId(),
+						serviceContext);
 			}
 			// else if (jsMappingData.has("deliverables")) {
 			// formDataContent = mappingContent(jsMappingData, jsFormData);
@@ -581,6 +586,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getDossierId(),
 					jsMappingData.getString(DossierFileTerm.FILE_ATTACHS));
 			}
+			_log.info("--- File Attach : " + fileAttachs);
 
 			// them trang thai mong muon khi hoan thanh thu tuc
 			String expertState = DossierFileTerm.EXPECT_STATE_DEFAULT;
@@ -619,15 +625,17 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					model.getGroupId(), dDeliverableCode)
 				: DeliverableLocalServiceUtil.fetchByGID_DID(
 					model.getGroupId(), model.getDossierId());
-
+			_log.info("------------------------------------ Deliverable " + deliverable);
+			_log.info("LOG TRACE DOSSIER ORIGINALITY: " + dossier.getOriginality() + " -- DossierNo :" + dossier.getDossierNo() + " " + dossier.getDossierId());
 			if (dossierPart.getDeliverableAction() == 0 &&
-				Validator.isNull(deliverable)) {
+				Validator.isNull(deliverable) && dossier.getOriginality() != 9) {
 
 				// add new deliverable
 
-				_log.debug(
+				_log.info(
 					"============addDeliverableSign=============" +
 						model.getDeliverableCode() + "___" + deliverable);
+				_log.info("Dossier Originality : " + dossier.getOriginality());
 				deliverable =
 					DeliverableLocalServiceUtil.addDeliverableSign(
 						model.getGroupId(),
@@ -646,89 +654,95 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 						serviceContext);
 			}
 			else if (Validator.isNotNull(deliverable)) {
+				if(model.getDossierPartType() != 7) {
+					// backup a deliverable log and update deliverable
 
-				// backup a deliverable log and update deliverable
+					_log.info(
+							"============backup a deliverable log and update deliverable=============");
+					// backup
+					JSONObject deliverableLog =
+							JSONFactoryUtil.createJSONObject();
+					long actionDate =
+							Validator.isNotNull(deliverable.getIssueDate())
+									? deliverable.getIssueDate().getTime()
+									: Validator.isNotNull(deliverable.getRevalidate())
+									? deliverable.getRevalidate().getTime()
+									: new Date().getTime();
 
-				_log.debug(
-					"============backup a deliverable log and update deliverable=============");
-				// backup
-				JSONObject deliverableLog =
-					JSONFactoryUtil.createJSONObject();
-				long actionDate =
-					Validator.isNotNull(deliverable.getIssueDate())
-						? deliverable.getIssueDate().getTime()
-						: Validator.isNotNull(deliverable.getRevalidate())
-							? deliverable.getRevalidate().getTime()
-							: new Date().getTime();
+					deliverableLog.put(Field.GROUP_ID, model.getGroupId());
+					deliverableLog.put(Field.COMPANY_ID, model.getCompanyId());
+					deliverableLog.put(Field.USER_ID, model.getUserId());
+					deliverableLog.put(Field.USER_NAME, model.getUserName());
+					deliverableLog.put(
+							DeliverableTerm.DELIVERABLE_ID, deliverable.getDeliverableId());
+					deliverableLog.put(DeliverableLogTerm.DOSSIERUID, dossier.getReferenceUid());
+					deliverableLog.put(DeliverableLogTerm.AUTHOR, model.getUserName());
+					deliverableLog.put(DeliverableLogTerm.CONTENT, DeliverableLogTerm.CONTENT_DEFAULT);
+					deliverableLog.put(
+							DeliverableLogTerm.DELIVERABLEACTION,
+							dossierPart.getDeliverableAction());
+					deliverableLog.put(DeliverableLogTerm.ACTIONDATE, actionDate);
+					deliverableLog.put(DeliverableLogTerm.PAYLOAD, deliverable.getFormData());
+					deliverableLog.put(
+							DeliverableLogTerm.FILEENTRYID, deliverable.getFileEntryId());
+					DeliverableLogLocalServiceUtil.adminProcessData(
+							deliverableLog);
 
-				deliverableLog.put(Field.GROUP_ID, model.getGroupId());
-				deliverableLog.put(Field.COMPANY_ID, model.getCompanyId());
-				deliverableLog.put(Field.USER_ID, model.getUserId());
-				deliverableLog.put(Field.USER_NAME, model.getUserName());
-				deliverableLog.put(
-					DeliverableTerm.DELIVERABLE_ID, deliverable.getDeliverableId());
-				deliverableLog.put(DeliverableLogTerm.DOSSIERUID, dossier.getReferenceUid());
-				deliverableLog.put(DeliverableLogTerm.AUTHOR, model.getUserName());
-				deliverableLog.put(DeliverableLogTerm.CONTENT, DeliverableLogTerm.CONTENT_DEFAULT);
-				deliverableLog.put(
-						DeliverableLogTerm.DELIVERABLEACTION,
-					dossierPart.getDeliverableAction());
-				deliverableLog.put(DeliverableLogTerm.ACTIONDATE, actionDate);
-				deliverableLog.put(DeliverableLogTerm.PAYLOAD, deliverable.getFormData());
-				deliverableLog.put(
-						DeliverableLogTerm.FILEENTRYID, deliverable.getFileEntryId());
-				DeliverableLogLocalServiceUtil.adminProcessData(
-					deliverableLog);
+					// update
+					deliverable.setDeliverableCode(dDeliverableCode);
+//					_log.info("---- LOG FILE entryId :" + dossierFileAttach.getFileEntryId() + " ----------");
+					deliverable.setFileEntryId(
+							dossierFileAttach != null
+									? dossierFileAttach.getFileEntryId() : 0l);
+					deliverable.setApplicantName(
+							Validator.isNotNull(applicantName)
+									? applicantName : deliverable.getApplicantName());
+					deliverable.setSubject(
+							Validator.isNotNull(subject)
+									? applicantName : deliverable.getSubject());
+					deliverable.setIssueDate(
+							Validator.isNotNull(issueDate)
+									? APIDateTimeUtils.convertStringToDate(
+									issueDate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getIssueDate());
+					deliverable.setExpireDate(
+							Validator.isNotNull(expireDate)
+									? APIDateTimeUtils.convertStringToDate(
+									expireDate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getExpireDate());
+					deliverable.setRevalidate(
+							Validator.isNotNull(revalidate)
+									? APIDateTimeUtils.convertStringToDate(
+									revalidate, APIDateTimeUtils._NORMAL_DATE)
+									: deliverable.getRevalidate());
 
-				// update
-				deliverable.setDeliverableCode(dDeliverableCode);
-				deliverable.setFileEntryId(
-					dossierFileAttach != null
-						? dossierFileAttach.getFileEntryId() : 0l);
-				deliverable.setApplicantName(
-					Validator.isNotNull(applicantName)
-						? applicantName : deliverable.getApplicantName());
-				deliverable.setSubject(
-					Validator.isNotNull(subject)
-						? applicantName : deliverable.getSubject());
-				deliverable.setIssueDate(
-					Validator.isNotNull(issueDate)
-						? APIDateTimeUtils.convertStringToDate(
-							issueDate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getIssueDate());
-				deliverable.setExpireDate(
-					Validator.isNotNull(expireDate)
-						? APIDateTimeUtils.convertStringToDate(
-							expireDate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getExpireDate());
-				deliverable.setRevalidate(
-					Validator.isNotNull(revalidate)
-						? APIDateTimeUtils.convertStringToDate(
-							revalidate, APIDateTimeUtils._NORMAL_DATE)
-						: deliverable.getRevalidate());
+					formDataContent = mergeObject(
+							deliverable.getFormData(), formDataContent.toString());
+					deliverable.setFormData(formDataContent.toString());
 
-				formDataContent = mergeObject(
-					deliverable.getFormData(), formDataContent.toString());
-				deliverable.setFormData(formDataContent.toString());
+					deliverable.setFileAttachs(fileAttachs);
+					_log.info("UPDATE Deliverable :" + JSONFactoryUtil.looseSerialize(deliverable));
 
-				deliverable.setFileAttachs(fileAttachs);
-
-				DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
+				}
 			}
 			else {
-				_log.debug(
+				_log.info(
 					"==============deliverable other key update============");
 			}
 
 			// update fileEntryId if not exits dossierFileAttach
-			long formReportFileId = deliverable.getFormReportFileId() > 0
-				? deliverable.getFormReportFileId()
-				: dlvType.getFormReportFileId();
+			long formReportFileId = 0;
+			if(deliverable !=null) {
+				 formReportFileId = deliverable.getFormReportFileId() > 0
+						? deliverable.getFormReportFileId()
+						: dlvType.getFormReportFileId();
+			}
 
 			if (deliverable != null && formReportFileId > 0 &&
 				!(dossierFileAttach != null &&
 					dossierFileAttach.getFileEntryId() > 0)) {
-
+				_log.info(" ------- DossierFileAttach : " +  dossierFileAttach.getFileEntryId());
 				InputStream is = null;
 				String jrxmlTemplate = StringPool.BLANK;
 
@@ -758,7 +772,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					}
 				}
 
-				_log.debug(
+				_log.info(
 					"========update fileEntryId if not exits dossierFileAttach");
 				// Process update deliverable file Id
 				Message message = new Message();
@@ -777,10 +791,16 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 				message.put(ConstantUtils.MSG_ENG, msgData);
 				MessageBusUtil.sendMessage(
 					ConstantUtils.JASPER_DESTINATION, message);
+				_log.info("LOG INFO message : " + JSONFactoryUtil.looseSerialize(message));
+				_log.info("LOG INFO message : " + JSONFactoryUtil.looseSerialize(fileAttachs));
+
 			}
+//			_log.info("End onAfterUpdate Deliverable" + deliverable.getFileEntryId());
 		}
 		catch (Exception e) {
 			_log.error(e);
+			_log.info(e.getMessage());
+			e.printStackTrace();
 		}
 
 	}

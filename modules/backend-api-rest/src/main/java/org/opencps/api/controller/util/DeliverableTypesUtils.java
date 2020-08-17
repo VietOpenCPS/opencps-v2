@@ -49,6 +49,9 @@ public class DeliverableTypesUtils {
 		model.setFormScript(deliverableType.getFormScript());
 		model.setFormReport(deliverableType.getFormReport());
 		model.setMappingData(deliverableType.getMappingData());
+		if(Validator.isNotNull(deliverableType.getFileTemplateId())){
+			model.setFileTemplateId(deliverableType.getFileTemplateId());
+		}
 
 		return model;
 	}

@@ -10,8 +10,11 @@ import com.liferay.portal.kernel.util.Validator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.graphql.api.controller.utils.WebKeys;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,6 +60,15 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			inputObject.put(WebKeys.GROUPID, groupId);
 			inputObject.put(WebKeys.USERID, request.getAttribute(WebKeys.USER_ID));
 			inputObject.put(WebKeys.COMPANYID, request.getAttribute(WebKeys.COMPANY_ID));
+			JSONObject formData = inputObject.getJSONObject("formData");
+			
+			if (!inputObject.has("deliverableCode")) {
+				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, inputObject.getString("deliverableType"));
+				String ngayQD = formData.getString("ngayquyetdinh");
+				String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
+						groupId, delType.getCodePattern(), ngayQD);
+				inputObject.put("deliverableCode", deliverableCode);
+			}
 
 			_log.info("inputObject: "+JSONFactoryUtil.looseSerialize(inputObject));
 			result = DeliverableLocalServiceUtil.adminProcessData(inputObject);

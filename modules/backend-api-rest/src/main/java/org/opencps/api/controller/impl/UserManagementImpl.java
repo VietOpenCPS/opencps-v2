@@ -75,8 +75,10 @@ import org.opencps.usermgt.action.impl.UserActions;
 import org.opencps.usermgt.constants.UserRegisterTerm;
 import org.opencps.usermgt.constants.UserTerm;
 import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.model.JobPos;
 import org.opencps.usermgt.scheduler.utils.RegisterLGSPUtils;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
@@ -912,30 +914,26 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 			List<Role> roles = user.getRoles();
-
+			long mappingRoleId;
+			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			JobPos jobPos;
+			String roleCode;
 			for (Role role : roles) {
-//				String roleName = StringPool.BLANK;
-				//String roleName;
-
-				JSONObject result = JSONFactoryUtil.createJSONObject();
-
-				//result.put(UserTerm.EMAIL, StringPool.BLANK);
-				//result.put(UserTerm.ROLE, StringPool.BLANK);
-				//result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, 0);
-
-//				if ("Administrator".equalsIgnoreCase(role.getName())) {
-//					roleName = "Administrator";
-//				}
 //
-//				if ("Administrator_data".equalsIgnoreCase(role.getName())) {
-//					roleName = "Administrator_data";
-//				}
-				
-				//String roleName = role.getName();
+				JSONObject result = JSONFactoryUtil.createJSONObject();
+				mappingRoleId = role.getRoleId();
+
 				result.put(UserTerm.EMAIL,
 						Validator.isNotNull(user.getEmailAddress()) ? user.getEmailAddress() : StringPool.BLANK);
 				result.put(UserTerm.ROLE, Validator.isNotNull(role.getName()) ? role.getName() : StringPool.BLANK);
 				result.put(UserTerm.DEACTIVE_ACCOUNT_FLAG, user.getStatus());
+				jobPos = JobPosLocalServiceUtil.fetchByF_mappingRoleId(groupId, mappingRoleId);
+				if(Validator.isNull(jobPos)) {
+					roleCode = "";
+				} else {
+					roleCode = jobPos.getJobPosCode() != null? jobPos.getJobPosCode() : "";
+				}
+				result.put(UserTerm.ROLE_CODE, roleCode);
 
 				dataUser.put(result);
 			}

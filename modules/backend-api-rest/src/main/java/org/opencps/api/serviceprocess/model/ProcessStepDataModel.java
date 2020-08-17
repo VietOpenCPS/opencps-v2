@@ -59,7 +59,8 @@ import javax.xml.bind.annotation.XmlType;
     "customProcessUrl",
     "editable",
     "lockState",
-    "checkInput"
+    "checkInput",
+    "serviceProcessId"
 })
 public class ProcessStepDataModel {
 
@@ -77,6 +78,15 @@ public class ProcessStepDataModel {
     protected String editable;
     protected String lockState;
     protected Integer checkInput;
+    protected long serviceProcessId;
+
+    public long getServiceProcessId() {
+        return serviceProcessId;
+    }
+
+    public void setServiceProcessId(long serviceProcessId) {
+        this.serviceProcessId = serviceProcessId;
+    }
 
     public Integer getCheckInput() {
 		return checkInput;

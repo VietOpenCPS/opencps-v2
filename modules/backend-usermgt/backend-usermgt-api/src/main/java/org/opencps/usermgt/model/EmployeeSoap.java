@@ -61,6 +61,7 @@ public class EmployeeSoap implements Serializable {
 		soapModel.setFileSignPath(model.getFileSignPath());
 		soapModel.setJobPosTitle(model.getJobPosTitle());
 		soapModel.setScope(model.getScope());
+		soapModel.setWorkingUnitId(model.getWorkingUnitId());
 
 		return soapModel;
 	}
@@ -337,6 +338,14 @@ public class EmployeeSoap implements Serializable {
 		_scope = scope;
 	}
 
+	public long getWorkingUnitId() {
+		return _workingUnitId;
+	}
+
+	public void setWorkingUnitId(long workingUnitId) {
+		_workingUnitId = workingUnitId;
+	}
+
 	private String _uuid;
 	private long _employeeId;
 	private long _companyId;
@@ -365,4 +374,5 @@ public class EmployeeSoap implements Serializable {
 	private String _fileSignPath;
 	private String _jobPosTitle;
 	private String _scope;
+	private long _workingUnitId;
 }

@@ -36,8 +36,11 @@ import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -47,6 +50,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -322,6 +326,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
 
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
@@ -365,14 +373,63 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		}
 
 
-		String dossierId = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		if (Validator.isNotNull(dossierIds)) {
+			if (dossierIds.contains(StringPool.COMMA)) {
+				String[] keywordArr = dossierIds.split(StringPool.COMMA);
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					MultiMatchQuery query = new MultiMatchQuery(key);
+					query.addField(DossierTerm.DOSSIER_ID);
+					subQuery.add(query, BooleanClauseOccur.SHOULD);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
+				query.addField(DossierTerm.DOSSIER_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+//			if (Validator.isNotNull(donvigui)) {
+//				String[] keywordArr = donvigui.split(StringPool.COMMA);
+//				BooleanQuery subQuery = new BooleanQueryImpl();
+//				for (String key : keywordArr) {
+//					MultiMatchQuery query = new MultiMatchQuery(key);
+//					query.addField(DossierTerm.DON_VI_GUI);
+//					subQuery.add(query, BooleanClauseOccur.SHOULD);
+//				}
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//			}
 
-		if (Validator.isNotNull(dossierId)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierId);
+		}
 
-			query.addFields(DossierActionTerm.DOSSIER_ID);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -385,6 +442,11 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
+
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -424,14 +486,51 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String dossierId = String.valueOf(params.get(DossierActionTerm.DOSSIER_ID));
+		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		if (Validator.isNotNull(dossierIds)) {
+			if (dossierIds.contains(StringPool.COMMA)) {
+				String[] keywordArr = dossierIds.split(StringPool.COMMA);
+				BooleanQuery subQuery = new BooleanQueryImpl();
+				for (String key : keywordArr) {
+					MultiMatchQuery query = new MultiMatchQuery(key);
+					query.addField(DossierTerm.DOSSIER_ID);
+					subQuery.add(query, BooleanClauseOccur.MUST);
+				}
+				booleanQuery.add(subQuery, BooleanClauseOccur.SHOULD);
+			} else {
+				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
+				query.addField(DossierTerm.DOSSIER_ID);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
 
-		if (Validator.isNotNull(dossierId)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierId);
+		}
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
 
-			query.addFields(DossierActionTerm.DOSSIER_ID);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
 
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

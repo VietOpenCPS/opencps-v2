@@ -368,6 +368,7 @@ public class WorkTimeLocalServiceImpl extends WorkTimeLocalServiceBaseImpl {
 
 		object.setDay(objectData.getInt(WorkTimeTerm.DAY));
 		object.setHours(objectData.getString(WorkTimeTerm.HOURS));
+		object.setStatus(objectData.getInt(WorkTimeTerm.STATUS));
 		
 		workTimePersistence.update(object);
 

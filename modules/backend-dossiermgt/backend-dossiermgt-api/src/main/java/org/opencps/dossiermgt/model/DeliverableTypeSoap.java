@@ -54,6 +54,7 @@ public class DeliverableTypeSoap implements Serializable {
 		soapModel.setMappingData(model.getMappingData());
 		soapModel.setDocSync(model.getDocSync());
 		soapModel.setGovAgencies(model.getGovAgencies());
+		soapModel.setFileTemplateId(model.getFileTemplateId());
 
 		return soapModel;
 	}
@@ -276,6 +277,14 @@ public class DeliverableTypeSoap implements Serializable {
 		_govAgencies = govAgencies;
 	}
 
+	public long getFileTemplateId() {
+		return _fileTemplateId;
+	}
+
+	public void setFileTemplateId(long fileTemplateId) {
+		_fileTemplateId = fileTemplateId;
+	}
+
 	private String _uuid;
 	private long _deliverableTypeId;
 	private long _companyId;
@@ -297,4 +306,5 @@ public class DeliverableTypeSoap implements Serializable {
 	private String _mappingData;
 	private int _docSync;
 	private String _govAgencies;
+	private long _fileTemplateId;
 }

@@ -65,7 +65,7 @@ public class EmployeeJobPosCacheModel implements CacheModel<EmployeeJobPos>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(uuid);

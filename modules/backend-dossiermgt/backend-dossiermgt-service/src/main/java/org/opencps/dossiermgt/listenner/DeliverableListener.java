@@ -238,6 +238,7 @@ public class DeliverableListener extends BaseModelListener<Deliverable> {
 
 			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil
 					.getFileEntry(openCPSDeliverableType.getFormReportFileId());
+			_log.info("File entryId JrxmlTemplate :" + dlFileEntry);
 
 			is = dlFileEntry.getContentStream();
 
