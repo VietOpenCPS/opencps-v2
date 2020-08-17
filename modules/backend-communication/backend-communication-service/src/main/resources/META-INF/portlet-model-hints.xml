@@ -123,6 +123,7 @@
 			<hint-collection name="LONGEST_TEXT" />
 		</field>
 		<field name="lastSync" type="Date" />
+		<field name="active" type="boolean" />
 	</model>
 	<model name="org.opencps.communication.model.ZaloMap">
 		<field name="zaloMapId" type="long" />

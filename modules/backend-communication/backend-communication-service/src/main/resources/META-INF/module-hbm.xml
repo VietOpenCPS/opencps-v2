@@ -83,6 +83,7 @@
 		<property name="protocol" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="configs" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
 		<property name="lastSync" type="org.hibernate.type.TimestampType" />
+		<property column="active_" name="active" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="org.opencps.communication.model.impl.ZaloMapImpl" table="opencps_zalomap">
 		<id name="zaloMapId" type="long">

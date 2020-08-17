@@ -46,6 +46,7 @@ public class ServerConfigSoap implements Serializable {
 		soapModel.setProtocol(model.getProtocol());
 		soapModel.setConfigs(model.getConfigs());
 		soapModel.setLastSync(model.getLastSync());
+		soapModel.setActive(model.isActive());
 
 		return soapModel;
 	}
@@ -202,6 +203,18 @@ public class ServerConfigSoap implements Serializable {
 		_lastSync = lastSync;
 	}
 
+	public boolean getActive() {
+		return _active;
+	}
+
+	public boolean isActive() {
+		return _active;
+	}
+
+	public void setActive(boolean active) {
+		_active = active;
+	}
+
 	private long _serverConfigId;
 	private long _groupId;
 	private long _companyId;
@@ -215,4 +228,5 @@ public class ServerConfigSoap implements Serializable {
 	private String _protocol;
 	private String _configs;
 	private Date _lastSync;
+	private boolean _active;
 }
