@@ -85,9 +85,12 @@ public class AutoFillFormData {
 			String _sampleCount = StringPool.BLANK;
 			String _documentDate = StringPool.BLANK;
 			String _documentNo = StringPool.BLANK;
+			String _employee_userName = StringPool.BLANK;
+//			String _govAgencyCode = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
-
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+					serviceContext.getUserId());
 			_curDate = sfd.format(new Date());
 
 			if (Validator.isNotNull(dossier)) {
@@ -158,8 +161,8 @@ public class AutoFillFormData {
 				}
 
 				try {
-					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
-							serviceContext.getUserId());
+//					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+//							serviceContext.getUserId());
 
 					// _log.info("GET EMPLOYEE ID ____" +
 					// serviceContext.getUserId());
@@ -174,6 +177,7 @@ public class AutoFillFormData {
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
+					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -266,8 +270,16 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentDate);
 					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 						jsonMap.put(entry.getKey(), _documentNo);
+					}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+						jsonMap.put(entry.getKey(), _employee_userName);
+					}else if ((StringPool.UNDERLINE + EmployeeTerm._FIRSTSCOPE).equals(value)) {
+						if(Validator.isNotNull(employee)) {
+							String _govAgencyCode[] = employee.getScope().split(StringPool.COMMA);
+							jsonMap.put(entry.getKey(), _govAgencyCode[0]);
+						}
 					}
-//					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
+
+
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
 						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
 						if(Validator.isNotNull(dossier.getMetaData())) {
@@ -353,6 +365,8 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _documentDate);
 						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 							jsonMap.put(entry.getKey(), _documentNo);
+						}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_userName;
 						}
 					}
 

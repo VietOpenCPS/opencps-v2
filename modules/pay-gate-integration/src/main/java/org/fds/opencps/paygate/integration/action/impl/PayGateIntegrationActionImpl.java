@@ -286,9 +286,9 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 	@Override
 	public JSONObject doConfirm(User user, ServiceContext serviceContext, String billcode, String merchant_code,
 			String order_id, String check_sum) {
-		_log.info("=============call to doconfirm===================");
-		_log.info("=============call to doconfirm===================");
+		_log.info("=============call to doconfirm===================" + check_sum);
 		String mcUrl = PayGateTerm.getMcUrlByBillCode(billcode) + StringPool.SLASH + PayGateTerm.ENDPOINT_CONFIRM;
+		_log.info("=========mcUrl===========" + mcUrl);
 		HashMap<String, String> properties = new HashMap<String, String>();
 		Map<String, Object> params = new HashMap<>();
 
@@ -322,6 +322,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 		params.put(PayGateTerm.VT_TRANSACTION_ID, vt_transaction_id);
 		params.put(PayGateTerm.ORDER_ID, order_id);
 		params.put(PayGateTerm.CHECK_SUM, check_sum);
+		_log.info("=============call to rec===================");
 		return callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, mcUrl, properties, params, StringPool.BLANK,
 				StringPool.BLANK);
 	}
@@ -360,7 +361,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		try {
 
-			_log.info("=============mcDO confirm========");
+			_log.info("=============mcDO confirm========" + check_sum);
 			long dossierId = VTPayTerm.getDossierIdByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
@@ -408,12 +409,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String _tmp_check_sum = access_code + billcode + merchant_code + order_id + paymentFile.getPaymentAmount();
 
 			try {
-				SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
-				Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
-				mac.init(signingKey);
-				String _tmp_check_sum_encode = toHexString(
-						mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
-				_log.info("checksum==========" + _tmp_check_sum_encode);
+//				SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
+//				Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
+//				mac.init(signingKey);
+//				String _tmp_check_sum_encode = toHexString(
+//						mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
+				String _tmp_check_sum_encode = PayGateUtil.hmacVTP(_tmp_check_sum, hash_key);
+				_log.info("_tmp_check_sum=i=========" + _tmp_check_sum);
+				_log.info(check_sum + "===checksum==========" + _tmp_check_sum_encode);
 				if (!_tmp_check_sum_encode.equals(check_sum)) {
 					return confirmResponseData(billcode, order_id, merchant_code, check_sum,
 							paymentFile.getPaymentAmount(), PayGateTerm.ERROR_CODE_02);
@@ -455,11 +458,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String access_code = config.getString(PayGateTerm.ACCESS_CODE);
 			String hash_key = config.getString(PayGateTerm.HASH_KEY);
 			String _tmp_check_sum = access_code + error_code + merchant_code + order_id;
-			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
-			Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
-			mac.init(signingKey);
-			String check_sum_encoded = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
+//			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
+//			Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
+//			mac.init(signingKey);
+//			String check_sum_encoded = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
+			String check_sum_encoded = PayGateUtil.hmacVTP(_tmp_check_sum, hash_key);
 
+			_log.info("_tmp_check_sum====" + _tmp_check_sum);
+			_log.info("check_sum_encoded====" + check_sum_encoded);
 			_log.info("payment_status====" + payment_status);
 			_log.info("error_code====" + error_code);
 			_log.info("paymentFile.getPaymentMethod()====" + paymentFile.getPaymentMethod());
@@ -480,10 +486,10 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
 					params.put(PayGateTerm.URL, action.getString(PayGateTerm.URL));
 					params.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
-					params.put(PayGateTerm.ORDER_ID, order_id);
+					params.put(PayGateTerm.ORDER_ID, PayGateUtil.createOrderIdFull(dossier.getDossierId(), dossier.getDossierNo()));
 					params.put(PayGateTerm.USERNAME, action.getString(PayGateTerm.USERNAME));
 					params.put(PayGateTerm.PWD, action.getString(PayGateTerm.PWD));
-
+					_log.info("========ORDER_ID======" + params.get(PayGateTerm.ORDER_ID));
 					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 							properties, params, action.getString(PayGateTerm.USERNAME),
 							action.getString(PayGateTerm.PWD));
@@ -561,11 +567,12 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			String url_search = schema.getString(PayGateTerm.URL_SEARCH);
 
 			String _tmp_check_sum = access_code + cmd + merchant_code + order_id + version;
-			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
-			Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
-			mac.init(signingKey);
-			String check_sum_encoded = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
+//			SecretKeySpec signingKey = new SecretKeySpec(hash_key.getBytes(), PayGateTerm.HMAC_SHA1);
+//			Mac mac = Mac.getInstance(PayGateTerm.HMAC_SHA1);
+//			mac.init(signingKey);
+//			String check_sum_encoded = toHexString(mac.doFinal(_tmp_check_sum.getBytes(StandardCharsets.UTF_8)));
 
+			String check_sum_encoded = PayGateUtil.hmacVTP(_tmp_check_sum, hash_key);
 			HashMap<String, String> properties = new HashMap<String, String>();
 			Map<String, Object> params = new HashMap<>();
 
@@ -580,6 +587,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			params.put(PayGateTerm.CHECK_SUM, check_sum_encoded);
 
 			_log.info(_tmp_check_sum);
+			_log.info(check_sum_encoded);
 			_log.info(params);
 			JSONObject searchResult = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, url_search, properties,
 					params, StringPool.BLANK, StringPool.BLANK);
@@ -606,6 +614,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			String dossierNo = VTPayTerm.getDossierNoByOrderId(order_id);
 			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierNo);
+			_log.info("========ORDER_ID======" + order_id);
 			_log.info(groupId + "dossierId=====" + dossier);
 			//			PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil
 			//					.getPaymentConfigByGovAgencyCode(dossier.getGroupId(), dossier.getGovAgencyCode());
@@ -738,11 +747,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				JSONArray philephi = JSONFactoryUtil.createJSONArray();
 				//????????????????????????
 				JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-				philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+				philephiJ.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_PHI);
 				philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
-				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
-				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+				philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_PHI));
+				philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getServiceAmount());
 				philephi.put(philephiJ);
+				JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
+				philephiJ2.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_LEPHI);
+				philephiJ2.put(PayGateTerm.MAPHILEPHI, "2");
+				philephiJ2.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_LEPHI));
+				philephiJ2.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+				philephi.put(philephiJ2);
 				bill_info.put(PayGateTerm.PHILEPHI, philephi);
 
 				// TODO: 
@@ -1534,11 +1549,17 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 //			}
 //		}
 		JSONObject philephiJ = JSONFactoryUtil.createJSONObject();
-		philephiJ.put(PayGateTerm.LOAIPHILEPHI, "2");
+		philephiJ.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_PHI);
 		philephiJ.put(PayGateTerm.MAPHILEPHI, "2");
-		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI));
-		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getPaymentAmount());
+		philephiJ.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_PHI));
+		philephiJ.put(PayGateTerm.SOTIEN, paymentFile.getServiceAmount());
 		phiLePhi.put(philephiJ);
+		JSONObject philephiJ2 = JSONFactoryUtil.createJSONObject();
+		philephiJ2.put(PayGateTerm.LOAIPHILEPHI, PayGateTerm.LOAIPHILEPHI_LEPHI);
+		philephiJ2.put(PayGateTerm.MAPHILEPHI, "2");
+		philephiJ2.put(PayGateTerm.TENPHILEPHI, schema.getString(PayGateTerm.TENPHILEPHI_LEPHI));
+		philephiJ2.put(PayGateTerm.SOTIEN, paymentFile.getFeeAmount());
+		phiLePhi.put(philephiJ2);
 		receipt_info.put(PayGateTerm.PHILEPHI, phiLePhi);
 
 		// bb khi madichvu = 1

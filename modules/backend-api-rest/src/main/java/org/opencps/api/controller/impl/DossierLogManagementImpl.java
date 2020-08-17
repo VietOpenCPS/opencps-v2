@@ -233,10 +233,11 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			if (lstDossier != null && lstDossier.size() > 0) {
 			for(Dossier dossier : lstDossier) {
 				if(Validator.isNotNull(dossier.getDossierId())){
-					dossierIds += dossier.getDossierId() + ",";
+					dossierIds += "," + dossier.getDossierId();
 				}
 			}
 			if(Validator.isNotNull(dossierIds)){
+				dossierIds = dossierIds.substring(1);
 				params.put(DossierTerm.DOSSIER_ID, dossierIds);
 			}
 				JSONObject jsonData = actions.getDossierActionsList(

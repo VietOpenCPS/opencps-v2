@@ -100,7 +100,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_TYPE, object.getDeliverableType());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
-		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE.toLowerCase() + StringPool.UNDERLINE + ConstantUtils.DATA, object.getGovAgencyCode());
+		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getGovAgencyCode());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
 		document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
 		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());

@@ -50,6 +50,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -326,10 +327,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
 		String createDateStart =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
 		String createDateEnd =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
+
 
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
@@ -373,20 +376,20 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 		}
 
 
-		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+
 		if (Validator.isNotNull(dossierIds)) {
 			if (dossierIds.contains(StringPool.COMMA)) {
 				String[] keywordArr = dossierIds.split(StringPool.COMMA);
-				BooleanQuery subQuery = new BooleanQueryImpl();
+//				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String key : keywordArr) {
 					MultiMatchQuery query = new MultiMatchQuery(key);
-					query.addField(DossierTerm.DOSSIER_ID);
-					subQuery.add(query, BooleanClauseOccur.SHOULD);
+					query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
 				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			} else {
 				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
-				query.addField(DossierTerm.DOSSIER_ID);
+				query.addField(DossierActionTerm.DOSSIER_ID);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 //			if (Validator.isNotNull(donvigui)) {
@@ -442,6 +445,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
 		String createDateStart =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
 		String createDateEnd =
@@ -486,17 +490,17 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+
 		if (Validator.isNotNull(dossierIds)) {
 			if (dossierIds.contains(StringPool.COMMA)) {
 				String[] keywordArr = dossierIds.split(StringPool.COMMA);
-				BooleanQuery subQuery = new BooleanQueryImpl();
+//				BooleanQuery subQuery = new BooleanQueryImpl();
 				for (String key : keywordArr) {
 					MultiMatchQuery query = new MultiMatchQuery(key);
-					query.addField(DossierTerm.DOSSIER_ID);
-					subQuery.add(query, BooleanClauseOccur.MUST);
+					query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
 				}
-				booleanQuery.add(subQuery, BooleanClauseOccur.SHOULD);
+//				booleanQuery.add(subQuery, BooleanClauseOccur.SHOULD);
 			} else {
 				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
 				query.addField(DossierTerm.DOSSIER_ID);

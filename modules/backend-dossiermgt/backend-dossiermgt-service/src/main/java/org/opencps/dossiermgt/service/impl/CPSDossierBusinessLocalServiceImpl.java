@@ -1727,7 +1727,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		}
 		//Integrate TTTT
-		this.integrateTTTT(dossier, context, dossierAction.getDossierActionId());
+		if (dossierAction != null) {
+			integrateTTTT(dossier, context, dossierAction.getDossierActionId());
+		}
 
 		return dossierAction;
 	}

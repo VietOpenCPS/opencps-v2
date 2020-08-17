@@ -582,7 +582,14 @@ public class RestfulController {
 												
 											} else {
 												if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-													response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+													Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+													if (applicant != null) {
+														response.setHeader(Field.USER_ID, String.valueOf(applicant.getApplicantId()));
+													}
+													else {
+														response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+													}
+
 													response.setStatus(HttpServletResponse.SC_OK);
 													return "pending";
 												} else {
@@ -597,7 +604,35 @@ public class RestfulController {
 										
 									}
 								} else {
-									return "";
+									Company company = null;
+									try {
+										company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+									} catch (PortalException ex) {
+										_log.debug(ex);
+									}
+									if (company != null) {
+										User checkUser = UserLocalServiceUtil.fetchUserByEmailAddress(company.getCompanyId(), emailAddress);
+
+										if (checkUser != null && checkUser.getStatus() == WorkflowConstants.STATUS_PENDING) {
+											_log.info("checkUser: "+JSONFactoryUtil.looseSerialize(checkUser));
+											_log.info("checkUserId: "+checkUser.getUserId());
+											Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(checkUser.getUserId());
+											_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
+											if (applicant != null) {
+												response.setHeader(Field.USER_ID, String.valueOf(applicant.getApplicantId()));
+											}
+											else {
+												response.setHeader(Field.USER_ID, String.valueOf(checkUser.getUserId()));
+											}
+											response.setStatus(HttpServletResponse.SC_OK);
+											return "pending";
+										} else {
+											return "";
+										}
+									}
+									else {
+										return "";
+									}
 								}
 							}
 						}
@@ -662,7 +697,15 @@ public class RestfulController {
 							}
 						} else {
 							if (user != null && user.getStatus() == WorkflowConstants.STATUS_PENDING) {
-								response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+								_log.info("checkUser: "+JSONFactoryUtil.looseSerialize(user));
+								Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(user.getUserId());
+								_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
+								if (applicant != null) {
+									response.setHeader(Field.USER_ID, String.valueOf(applicant.getApplicantId()));
+								}
+								else {
+									response.setHeader(Field.USER_ID, String.valueOf(user.getUserId()));
+								}
 								response.setStatus(HttpServletResponse.SC_OK);
 								return "pending";
 							} else {
@@ -718,7 +761,15 @@ public class RestfulController {
 					}
 				}
 				else if (checkUser != null && checkUser.getStatus() == WorkflowConstants.STATUS_PENDING) {
-					response.setHeader(Field.USER_ID, String.valueOf(checkUser.getUserId()));
+					Applicant applicant = ApplicantLocalServiceUtil.fetchByMappingID(checkUser.getUserId());
+					_log.info("checkUser.getUserId(): "+checkUser.getUserId());
+					_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
+					if (applicant != null) {
+						response.setHeader(Field.USER_ID, String.valueOf(applicant.getApplicantId()));
+					}
+					else {
+						response.setHeader(Field.USER_ID, String.valueOf(checkUser.getUserId()));
+					}
 					response.setStatus(HttpServletResponse.SC_OK);
 					return "pending";
 				}

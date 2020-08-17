@@ -5,6 +5,8 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import com.liferay.petra.string.StringPool;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -56,6 +58,7 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 
 		// add number fields
 		document.addNumberSortable(DossierActionTerm.DOSSIER_ID, object.getDossierId());
+		document.addTextSortable(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA, String.valueOf(object.getDossierId()));
 		document.addNumberSortable(DossierActionTerm.SERVICE_PROCESS_ID, object.getServiceProcessId());
 		document.addNumberSortable(DossierActionTerm.PREVIOUS_ACTION_ID, object.getPreviousActionId());
 		document.addNumberSortable(DossierActionTerm.ACTION_OVER_DUE, object.getActionOverdue());
