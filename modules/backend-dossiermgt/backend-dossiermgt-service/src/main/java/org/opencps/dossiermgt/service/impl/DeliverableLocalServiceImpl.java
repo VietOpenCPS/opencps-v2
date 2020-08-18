@@ -1409,7 +1409,9 @@ public class DeliverableLocalServiceImpl
 		object.setSubject(objectData.getString(DeliverableTerm.SUBJECT));
 		object.setFormScript(objectData.getString(DeliverableTerm.FORM_SCRIPT));
 		object.setFormReport(objectData.getString(DeliverableTerm.FORM_REPORT));
+		if (objectData.has(DeliverableTerm.APPLICANT_ID_NO)) {
 		object.setApplicantIdNo(objectData.getString(DeliverableTerm.APPLICANT_ID_NO));
+		}
 		// new field to save QD
 		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {

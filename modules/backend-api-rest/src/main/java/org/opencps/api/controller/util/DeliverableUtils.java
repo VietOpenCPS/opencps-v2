@@ -518,12 +518,12 @@ public class DeliverableUtils {
 						formData.put(key.split(",")[index], newValue[index]);
 						deliverableObj.put(key.split(",")[index], newValue[index]);
 					}
-				}else if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && currentRow.getCell(i).getStringCellValue().split("\\.").length > 1) {
+				}/*else if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && currentRow.getCell(i).getStringCellValue().split("\\.").length > 1) {
 					String cellStringValue = currentRow.getCell(i).getStringCellValue();
 					Date date = APIDateTimeUtils.convertSpecialVNStrToDate(cellStringValue);
 					formData.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));
 					deliverableObj.put(key, new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(date));					
-				}else {
+				}*/else {
 					formData.put(key, objectValue);
 					deliverableObj.put(key, objectValue);
 				}			
