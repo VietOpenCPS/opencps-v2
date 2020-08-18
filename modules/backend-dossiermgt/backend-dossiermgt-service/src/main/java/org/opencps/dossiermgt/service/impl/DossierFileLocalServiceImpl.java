@@ -132,7 +132,7 @@ public class DossierFileLocalServiceImpl
 		long userId = serviceContext.getUserId();
 
 		_log.debug("****Start add file at:" + new Date());
-
+		_log.info("****Start add file *****");
 		validateAddDossierFile(
 			groupId, dossierId, referenceUid, dossierTemplateNo, dossierPartNo,
 			fileTemplateNo);
@@ -204,6 +204,7 @@ public class DossierFileLocalServiceImpl
 
 		object.setReferenceUid(referenceUid);
 		object.setDossierTemplateNo(dossierTemplateNo);
+		_log.info("****Log fileEntryId add file at:" + fileEntryId);
 		object.setFileEntryId(fileEntryId);
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
@@ -425,7 +426,7 @@ public class DossierFileLocalServiceImpl
 			"Dossier template no: " + dossierTemplateNo + ", dossierPartNo: " +
 				dossierPartNo);
 		long fileEntryId = 0;
-
+		_log.info("Log input stream : " + inputStream);
 		if (inputStream != null) {
 			try {
 				FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
@@ -435,6 +436,7 @@ public class DossierFileLocalServiceImpl
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
 				}
+				_log.info("Log get fileEntry " + fileEntryId);
 			}
 			catch (Exception e) {
 				// e.printStackTrace();
@@ -477,6 +479,7 @@ public class DossierFileLocalServiceImpl
 		object.setReferenceUid(referenceUid);
 		object.setDossierTemplateNo(dossierTemplateNo);
 		object.setFileEntryId(fileEntryId);
+		_log.info("Log get fileEntry " + fileEntryId);
 		object.setDossierPartNo(dossierPartNo);
 		object.setFileTemplateNo(fileTemplateNo);
 		object.setDossierPartType(dossierPart.getPartType());
@@ -522,15 +525,17 @@ public class DossierFileLocalServiceImpl
 		String deliverableCode = StringPool.BLANK;
 
 		if (Validator.isNotNull(dossierPart.getDeliverableType())) {
-			DeliverableType deliverableType =
-				DeliverableTypeLocalServiceUtil.getByCode(
-					groupId, dossierPart.getDeliverableType());
+			if(dossierPart.getPartType() != 7) {
+				DeliverableType deliverableType =
+						DeliverableTypeLocalServiceUtil.getByCode(
+								groupId, dossierPart.getDeliverableType());
 
-			deliverableCode =
-				DeliverableNumberGenerator.generateDeliverableNumber(
-					groupId, serviceContext.getCompanyId(),
-					deliverableType.getDeliverableTypeId());
-			object.setDeliverableCode(deliverableCode);
+				deliverableCode =
+						DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, serviceContext.getCompanyId(),
+								deliverableType.getDeliverableTypeId());
+				object.setDeliverableCode(deliverableCode);
+			}
 		}
 
 		if (Validator.isNotNull(dossierPart.getSampleData())) {
@@ -1022,7 +1027,7 @@ public class DossierFileLocalServiceImpl
 				_log.debug(e);
 			}
 		}
-		_log.debug("fileEntryId: "+fileEntryId);
+		_log.info("fileEntryId: "+fileEntryId);
 		Date now = new Date();
 
 		User userAction = userLocalService.getUser(userId);
@@ -1088,11 +1093,11 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
-		if(Validator.isNotNull(dossierFile.getFormData())){
-			dossierFile.setFormData(dossierFile.getFormData());
-		}else{
+//		if(Validator.isNotNull(dossierFile.getFormData())){
+//			dossierFile.setFormData(dossierFile.getFormData());
+//		}else{
 			dossierFile.setFormData(formData);
-		}
+//		}
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file

@@ -178,6 +178,7 @@
 		<field name="scope" type="String">
 			<hint name="max-length">128</hint>
 		</field>
+		<field name="workingUnitId" type="long" />
 	</model>
 	<model name="org.opencps.usermgt.model.EmployeeJobPos">
 		<field name="uuid" type="String" />

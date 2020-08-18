@@ -25,6 +25,7 @@ public class ProcessOptionTerm {
 	public static final String PLUGIN_FORM = "pluginForm";
 	public static final String SAMPLE_DATA = "sampleData";
 	public static final String AUTO_RUN = "autoRun";
+	public static final String STATUS = "status";
 	
 	public static final String PROCESS_SEQUENCE_ID = "processSequenceId";
 	public static final String SEQUENCE_ROLE = "sequenceRole";

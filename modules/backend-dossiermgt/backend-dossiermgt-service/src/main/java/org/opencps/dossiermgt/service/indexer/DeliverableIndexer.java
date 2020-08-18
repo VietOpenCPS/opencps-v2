@@ -100,6 +100,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_NAME, object.getDeliverableName());
 		document.addTextSortable(DeliverableTerm.DELIVERABLE_TYPE, object.getDeliverableType());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE, object.getGovAgencyCode());
+		document.addTextSortable(DeliverableTerm.GOV_AGENCY_CODE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getGovAgencyCode());
 		document.addTextSortable(DeliverableTerm.GOV_AGENCY_NAME, object.getGovAgencyName());
 		document.addTextSortable(DeliverableTerm.APPLICANT_ID_NO, object.getApplicantIdNo());
 		document.addTextSortable(DeliverableTerm.APPLICANT_NAME, object.getApplicantName());
@@ -146,6 +147,14 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			while (keys.hasNext()) {
 				String key = keys.next();
 				String indexKey = key + StringPool.UNDERLINE + ConstantUtils.DATA;
+				if(jsonObject.getString(key).contains(StringPool.FORWARD_SLASH)) {
+					if (key.equals(DeliverableTerm.NGAY_SINH)) {
+						document.addTextSortable(DeliverableTerm.NGAYSINH_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+					if (key.equals(DeliverableTerm.NGAY_QD)) {
+						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
+				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));
 				}

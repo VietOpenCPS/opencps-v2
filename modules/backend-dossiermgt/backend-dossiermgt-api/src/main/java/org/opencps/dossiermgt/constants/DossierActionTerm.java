@@ -7,6 +7,7 @@ public class DossierActionTerm {
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String DOSSIER_ID = "dossierId";
+	public static final String DOSSIER_NO = "dossierNo";
 	public static final String SERVICE_PROCESS_ID = "serviceProcessId";
 	public static final String PREVIOUS_ACTION_ID = "previousActionId";
 	public static final String ACTION_CODE = "actionCode";

@@ -1,5 +1,6 @@
 package org.opencps.api.controller;
 
+import java.net.HttpURLConnection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,12 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.opencps.api.workingunit.model.DataSearchModel;
 import org.opencps.api.workingunit.model.WorkingUnitInputModel;
+import org.opencps.exception.model.ExceptionModel;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -84,5 +91,24 @@ public interface WorkingUnitManagement {
 	public Response getLogo(@Context HttpServletRequest request, @Context HttpHeaders header, @Context Company company,
 			@Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
 			@PathParam("id") long id);
+	
+	@POST
+	@Path("/import/files")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "import working unit excel file")
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return a list Working unit was imported"),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response importFile(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
 
 }

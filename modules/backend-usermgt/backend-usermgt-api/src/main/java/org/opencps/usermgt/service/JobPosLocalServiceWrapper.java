@@ -17,6 +17,7 @@ package org.opencps.usermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import org.opencps.usermgt.model.JobPos;
 
 /**
  * Provides a wrapper for {@link JobPosLocalService}.
@@ -256,6 +257,11 @@ public class JobPosLocalServiceWrapper implements JobPosLocalService,
 		long groupId, long[] mappingRoleIds) {
 		return _jobPosLocalService.findByF_mappingRoleIds(groupId,
 			mappingRoleIds);
+	}
+
+	@Override
+	public JobPos fetchByF_CODE(long groupId, String jobPosCode) {
+		return _jobPosLocalService.fetchByF_CODE(groupId,jobPosCode);
 	}
 
 	@Override

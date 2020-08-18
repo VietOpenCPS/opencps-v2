@@ -8,9 +8,13 @@
 
 package org.opencps.api.serviceprocess.model;
 
+import com.liferay.portal.kernel.model.User;
+import org.opencps.api.user.model.UserModel;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.List;
 
 
 /**
@@ -42,7 +46,9 @@ import javax.xml.bind.annotation.XmlType;
     "roleName",
     "moderator",
     "condition",
-    "roleCode"
+    "roleCode",
+    "processStepId",
+    "lstUser"
 })
 public class RoleDataModel {
 
@@ -51,7 +57,24 @@ public class RoleDataModel {
     protected String moderator;
     protected String condition;
     protected String roleCode;
-    
+    protected String processStepId;
+    protected List<org.opencps.api.user.model.UserModel> lstUser;
+
+    public List<org.opencps.api.user.model.UserModel> getLstUser() {
+        return lstUser;
+    }
+
+    public void setLstUser(List<org.opencps.api.user.model.UserModel> lstUser) {
+        this.lstUser = lstUser;
+    }
+
+    public String getProcessStepId() {
+        return processStepId;
+    }
+
+    public void setProcessStepId(String processStepId) {
+        this.processStepId = processStepId;
+    }
 
     public String getRoleCode() {
 		return roleCode;

@@ -239,6 +239,20 @@ public interface WorkTimeModel extends BaseModel<WorkTime>, GroupedModel,
 	 */
 	public void setHours(String hours);
 
+	/**
+	 * Returns the status of this work time.
+	 *
+	 * @return the status of this work time
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this work time.
+	 *
+	 * @param status the status of this work time
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public boolean isNew();
 

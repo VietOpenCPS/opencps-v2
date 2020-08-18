@@ -68,7 +68,8 @@ create table opencps_serverconfig (
 	serverName TEXT null,
 	protocol VARCHAR(255) null,
 	configs TEXT null,
-	lastSync DATE null
+	lastSync DATE null,
+	active_ BOOLEAN
 );
 
 create table opencps_zalomap (

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverablesManagement;
+import org.opencps.api.controller.util.DeliverableTypesUtils;
 import org.opencps.api.controller.util.DeliverableUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.OneGateUtils;
@@ -31,15 +32,19 @@ import org.opencps.dossiermgt.action.DeliverableActions;
 import org.opencps.dossiermgt.action.DeliverableLogActions;
 import org.opencps.dossiermgt.action.impl.DeliverableActionsImpl;
 import org.opencps.dossiermgt.action.impl.DeliverableLogActionsImpl;
+import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableLog;
+import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.persistence.DeliverableTypeUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
@@ -922,6 +927,77 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 						serviceContext.getThemeDisplay(), StringPool.BLANK));
 
 			}
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(
+				JSONFactoryUtil.looseSerialize(result)).build();
+		}
+		catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	
+	@Override
+	public Response importDeliverables3(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, Attachment file, String deliverableTypeCode) {
+		try {
+
+			JSONObject result = JSONFactoryUtil.createJSONObject();
+
+			if (Validator.isNull(deliverableTypeCode) || Validator.isNull(file)) {
+				return Response.status(204).entity(
+					JSONFactoryUtil.looseSerialize(result)).build();
+			}
+
+			BackendAuth auth = new BackendAuthImpl();
+
+			// Check user is login
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			long groupId =
+				GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			long userId = user.getUserId();
+			long companyId = user.getCompanyId();
+			String userName = user.getFullName();
+
+			DataHandler dataHandle = file.getDataHandler();
+			JSONArray deliverables = DeliverableUtils.readExcelDeliverableV3(dataHandle.getInputStream());
+
+			int size = 0;
+			for (int i = 0; i < deliverables.length(); i++) {
+
+				JSONObject deliverable = deliverables.getJSONObject(i);
+				
+				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);				
+				String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
+				Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
+				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
+				if (deliverableObj != null) {				
+					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+					deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+				} else {
+					String ngayQD = deliverable.getString(DeliverableTerm.NGAY_QD);
+					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode); 
+				}
+
+				deliverable.put(Field.GROUP_ID, groupId);
+				deliverable.put(Field.USER_ID, userId);
+				deliverable.put(Field.COMPANY_ID, companyId);
+				deliverable.put(Field.USER_NAME, userName);				
+				deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());		
+				deliverable.put(DeliverableTerm.FILE_ATTACH, false);
+				deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+				deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
+	
+				DeliverableLocalServiceUtil.adminProcessData(deliverable);
+				size += 1;
+			}
+
+			result.put(ConstantUtils.TOTAL, size);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerialize(result)).build();

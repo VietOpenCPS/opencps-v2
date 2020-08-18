@@ -409,6 +409,10 @@ public class JobPosLocalServiceUtil {
 			description, serviceContext);
 	}
 
+	public static org.opencps.usermgt.model.JobPos fetchByF_CODE(
+			long groupId, String jobPosCode) {
+		return getService().fetchByF_CODE( groupId,jobPosCode);
+	}
 	public static JobPosLocalService getService() {
 		return _serviceTracker.getService();
 	}
