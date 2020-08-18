@@ -73,7 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "fromStepCode",
     "sequenceNo",
     "nextActionId",
-    "dossierDocumentId"
+    "dossierDocumentId",
+    "dossierNo"
 })
 public class DossierActionModel {
 
@@ -103,7 +104,15 @@ public class DossierActionModel {
     protected String sequenceNo;
     protected Long nextActionId;
     protected Long dossierDocumentId;
+    protected String dossierNo;
 
+    public String getDossierNo() {
+        return dossierNo;
+    }
+
+    public void setDossierNo(String dossierNo) {
+        this.dossierNo = dossierNo;
+    }
 
     public String getSyncActionCode() {
         return syncActionCode;

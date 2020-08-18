@@ -1849,6 +1849,7 @@ public class DossierUtils {
 			model.setActionNote(GetterUtil.getLong(doc.get(DossierActionTerm.ACTION_NOTE)));
 			model.setSyncActionCode(doc.get(DossierActionTerm.SYNC_ACTION_CODE));
 			model.setPayload(doc.get(DossierActionTerm.PAYLOAD));
+			model.setDossierNo(doc.get(DossierActionTerm.DOSSIER_NO));
 
 			ouputs.add(model);
 		}

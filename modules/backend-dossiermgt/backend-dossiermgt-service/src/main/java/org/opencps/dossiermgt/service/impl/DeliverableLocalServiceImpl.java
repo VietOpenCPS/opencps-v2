@@ -1698,28 +1698,24 @@ public class DeliverableLocalServiceImpl
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}
 					else {
-						System.out.println("------@ELSE------");
 						if(entry.getValue().equals(DossierTerm.SCOPE_)){
-							System.out.println("------SCOPE multiple------");
 							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(Long.parseLong(groupId), userId);
 							if(Validator.isNotNull(employee)){
-								System.out.println("------Employee not null------");
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
-									System.out.println("------Scope has comma------");
 									String[] keywordArr = listScope.split(StringPool.COMMA);
 									BooleanQuery subQuery = new BooleanQueryImpl();
-									for (String keyArr : keywordArr) {
-										WildcardQuery query = new WildcardQueryImpl(key.split("@")[0],
-												StringPool.STAR + keyArr.toLowerCase() + StringPool.STAR);
-										subQuery.add(query, BooleanClauseOccur.MUST);
-									}
-									queryBool.add(subQuery, BooleanClauseOccur.SHOULD);
-									booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+										for (String keyValue : keywordArr) {
+											MultiMatchQuery query = new MultiMatchQuery(keyValue);
+											query.addFields(key.split("@")[0]);
+											queryBool.add(query, BooleanClauseOccur.SHOULD);
+//										WildcardQuery query = new WildcardQueryImpl(key.split("@")[0],
+//												StringPool.STAR + keyValue + StringPool.STAR);
+//										subQuery.add(query, BooleanClauseOccur.SHOULD);
+										}
+									booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 								}
-								System.out.println("------Scope has no comma------");
 							} else {
-								System.out.println("------SCOPE single------");
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
