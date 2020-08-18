@@ -45,6 +45,8 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DeliverableTypeUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
@@ -66,6 +68,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -967,21 +970,31 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 			for (int i = 0; i < deliverables.length(); i++) {
 
 				JSONObject deliverable = deliverables.getJSONObject(i);
+				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
 				
 				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, deliverableTypeCode);				
-				String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
-				Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
-				JSONObject formData = deliverable.getJSONObject(DeliverableTerm.FORM_DATA);
-				if (deliverableObj != null) {				
-					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-					deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
-					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
-				} else {
+				if (deliverable.has(DeliverableTerm.CMND)) {
+					String applicantIdNo = deliverable.getString(DeliverableTerm.CMND);
+					Deliverable deliverableObj = DeliverableLocalServiceUtil.fetchByGID_AID(groupId, applicantIdNo);
+					deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
+					
+					if (deliverableObj != null) {				
+						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+						deliverable.put(DeliverableTerm.DELIVERABLE_ID, deliverableObj.getDeliverableId());
+						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableObj.getDeliverableCode());
+					} else {
+						String ngayQD = deliverable.getString(DeliverableTerm.NGAY_QD);
+						String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
+						deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+						deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
+						formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode); 
+					}
+				}else {
 					String ngayQD = deliverable.getString(DeliverableTerm.NGAY_QD);
 					String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(groupId, delType.getCodePattern(), ngayQD);
 					deliverable.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 					deliverable.put(DeliverableTerm.DELIVERABLE_ID, 0);
-					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode); 
+					formData.put(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
 				}
 
 				deliverable.put(Field.GROUP_ID, groupId);
@@ -990,9 +1003,16 @@ public class DeliverablesManagementImpl implements DeliverablesManagement {
 				deliverable.put(Field.USER_NAME, userName);				
 				deliverable.put(DeliverableTerm.DELIVERABLE_TYPE, delType.getTypeCode());		
 				deliverable.put(DeliverableTerm.FILE_ATTACH, false);
-				deliverable.put(DeliverableTerm.APPLICANT_ID_NO, applicantIdNo);
 				deliverable.put(DeliverableTerm.FORM_DATA, formData.toString());
-	
+				
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				String scope = employee.getScope();
+				if (scope.split(",").length > 1) {
+					String[] govAgencyCode = scope.split(",");
+					scope = govAgencyCode[0];
+				}
+				deliverable.put(DeliverableTerm.GOV_AGENCY_CODE, scope);
+					
 				DeliverableLocalServiceUtil.adminProcessData(deliverable);
 				size += 1;
 			}
