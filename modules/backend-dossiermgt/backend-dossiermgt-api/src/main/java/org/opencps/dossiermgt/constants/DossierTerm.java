@@ -201,6 +201,7 @@ public class DossierTerm {
 
 	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_CODE_SEARCH = "domainCodeSearch";
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
 
