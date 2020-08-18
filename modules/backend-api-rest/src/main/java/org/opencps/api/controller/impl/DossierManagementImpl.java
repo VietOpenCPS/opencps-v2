@@ -50,9 +50,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 import javax.activation.DataHandler;
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8601,7 +8599,7 @@ public class DossierManagementImpl implements DossierManagement {
 	@Override
 	public Response addDossierFile(HttpServletRequest request, HttpHeaders header, Company company,
 								   Locale locale, User user, ServiceContext serviceContext, Attachment file,
-								   String partNo, @Nullable String dossierIds) {
+								   String partNo, String dossierIds) {
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
