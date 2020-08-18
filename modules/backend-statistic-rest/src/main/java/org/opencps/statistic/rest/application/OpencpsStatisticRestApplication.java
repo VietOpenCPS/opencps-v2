@@ -1743,6 +1743,7 @@ public class OpencpsStatisticRestApplication extends Application {
 							{
 								JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
 								_log.warn("err mutiplie dossierFilePayments[] " );
+								StringBuilder chitietDonGia = new StringBuilder();
 								for (int i = 0; i < dossierFilePayments.length() ; i++)
 								{
 									JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
@@ -1750,14 +1751,19 @@ public class OpencpsStatisticRestApplication extends Application {
 									{
 										String donGia = dossierFilePayment.getString("don_gia");
 										String recordCount = dossierFilePayment.getString("recordCount");
+									
 										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount))
 										{
 											dossierObj.put("don_gia",donGia);
 											dossierObj.put("recordCount",recordCount);
+											if (!donGia.contentEquals("empty") && !recordCount.contentEquals("empty")) {
+												chitietDonGia.append(donGia + " x " + recordCount + " ; ");
+											}
 										}
 									}
 								}
 								dossierObj.put("dossierFilePayments", dossierFilePayments);
+								dossierObj.put("chitietdongia", chitietDonGia.toString());
 							}
 							dossierObj.put("no", count++);
 							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
