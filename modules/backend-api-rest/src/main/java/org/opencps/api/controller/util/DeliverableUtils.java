@@ -27,9 +27,11 @@ import java.util.List;
 import javax.activation.DataHandler;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -513,10 +515,18 @@ public class DeliverableUtils {
 				Object objectValue = getCellValueV3(currentRow.getCell(i));
 				
 				if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && key.split(",").length > 1) {
-					String[] newValue = currentRow.getCell(i).getStringCellValue().split(",");
-					for (int index =0; index< key.split(",").length; index++) {
-						formData.put(key.split(",")[index], newValue[index]);
-						deliverableObj.put(key.split(",")[index], newValue[index]);
+					String value = currentRow.getCell(i).getStringCellValue();
+					int size = key.split(",").length;
+					if (value.split(",").length > 0) {
+						String[] newValue = value.split(",");						
+						int sizeofNewValue = newValue.length;						 
+							for (int index = size; index > 0; index--) {
+								if(sizeofNewValue > 0) {
+									formData.put(key.split(",")[index-1], newValue[sizeofNewValue-1]);
+									deliverableObj.put(key.split(",")[index-1], newValue[sizeofNewValue-1]);
+									sizeofNewValue--;
+								}								
+							}												
 					}
 				}/*else if (objectValue != null && currentRow.getCell(i).getCellType() == CellType.STRING && currentRow.getCell(i).getStringCellValue().split("\\.").length > 1) {
 					String cellStringValue = currentRow.getCell(i).getStringCellValue();
@@ -540,7 +550,7 @@ public class DeliverableUtils {
 
 	private static Object getCellValueV3(Cell cell) {
 		
-		if (cell == null) {
+		if (cell == null) { 
 
 			return null;
 		} else if (CellType.STRING == cell.getCellType()) {
@@ -558,7 +568,15 @@ public class DeliverableUtils {
 			} else {
 				return new BigDecimal(cell.getNumericCellValue());
 			}			
-		} else {
+		} else if (CellType.FORMULA == cell.getCellType()) {
+			if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
+				return cell.getNumericCellValue();
+			}else if (cell.getCachedFormulaResultType() == CellType.STRING) {
+				return cell.getRichStringCellValue();
+			}else {
+				return null;
+			}
+        }else {
 
 			return null;
 		}
