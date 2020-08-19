@@ -68,10 +68,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -4402,21 +4399,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(domain)) {
-			String[] lstDomain = StringUtil.split(domain);
-			if (lstDomain != null && lstDomain.length > 0) {
+			String[] arrayDomain = StringUtil.split(domain);
+			if (arrayDomain != null && arrayDomain.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < lstDomain.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstDomain[i]);
-					query.addField(DossierTerm.DOMAIN_CODE);
+				for(String id : arrayDomain){
+					String domainCodeSearch = SpecialCharacterUtils.splitSpecial(id);
+					MultiMatchQuery query = new MultiMatchQuery(domainCodeSearch);
+					query.addField(DossierTerm.DOMAIN_CODE_SEARCH);
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
-			else {
-				MultiMatchQuery query = new MultiMatchQuery(domain);
-				query.addFields(DossierTerm.DOMAIN_CODE);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
+//			else {
+//				MultiMatchQuery query = new MultiMatchQuery(domain);
+//				query.addFields(DossierTerm.DOMAIN_CODE);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
 		}   		
 
 		// LamTV: Process search LIKE

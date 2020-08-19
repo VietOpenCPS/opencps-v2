@@ -50,7 +50,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -8594,6 +8593,106 @@ public class DossierManagementImpl implements DossierManagement {
 			return employeeArr[0];
 		}catch (Exception e){
 			return null;
+		}
+	}
+
+	@Override
+	public Response addDossierFile(HttpServletRequest request, HttpHeaders header, Company company,
+								   Locale locale, User user, ServiceContext serviceContext, Attachment file,
+								   String partNo, String dossierIds) {
+		BackendAuth auth = new BackendAuthImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try{
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<DossierFileModel> lstResult = new ArrayList<>();
+			Dossier dossier = null;
+			if(Validator.isNotNull(dossierIds)) {
+				String arrayDossierId[] = dossierIds.split(StringPool.COMMA);
+
+				for (String id : arrayDossierId){
+					if(!"0".equals(id)) {
+						dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
+						if (Validator.isNull(dossier)) {
+							dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+						}
+					}else{
+						dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+					}
+					String referenceUid = UUID.randomUUID().toString();
+					DossierFile dossierFile = null;
+					DossierFileActions action = new DossierFileActionsImpl();
+					DossierPart dossierPart =
+							DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+									groupId, dossier.getDossierTemplateNo(), partNo);
+					_log.info("__file:" + file);
+					DataHandler dataHandler =
+							(file != null) ? file.getDataHandler() : null;
+					if (dataHandler != null && dataHandler.getInputStream() != null) {
+						_log.info("__Start add file at:" + new Date());
+
+						dossierFile =
+								DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(
+										groupId, dossier.getDossierId(), partNo, true, false);
+						if (dossierFile == null) {
+							dossierFile = action.addDossierFileEForm(
+									groupId, dossier.getDossierId(), referenceUid,
+									dossier.getDossierTemplateNo(), partNo,
+									dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dataHandler.getName(), 0,
+									dataHandler.getInputStream(), StringPool.BLANK, DossierFileTerm.IS_SYNC_TRUE,
+									serviceContext);
+						} else {
+							try {
+								FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+										user.getUserId(), groupId,
+										dataHandler.getInputStream(),
+										dossierPart.getPartName(), StringPool.BLANK, 0,
+										serviceContext);
+
+								if (fileEntry != null) {
+									dossierFile.setFileEntryId(
+											fileEntry.getFileEntryId());
+								}
+							} catch (Exception e) {
+								_log.debug(e);
+							}
+						}
+
+						_log.info("__End add file at:" + new Date());
+					}
+					else {
+						dossierFile =
+								DossierFileLocalServiceUtil.getByGID_DID_PART_EFORM(
+										groupId, dossier.getDossierId(), partNo, true, false);
+						if (dossierFile == null) {
+							_log.info("dossierFile NULL");
+							dossierFile = action.addDossierFileEForm(
+									groupId, dossier.getDossierId(), referenceUid,
+									dossier.getDossierTemplateNo(), partNo,
+									dossierPart.getFileTemplateNo(),
+									dossierPart.getPartName(), dossierPart.getPartName(), 0,
+									null, StringPool.BLANK, DossierFileTerm.IS_SYNC_TRUE, serviceContext);
+						}
+					}
+					_log.info("__End update dossier file at:" + new Date());
+
+					DossierFileModel result =
+							DossierFileUtils.mappingToDossierFileModel(dossierFile);
+					if(Validator.isNotNull(result)){
+						lstResult.add(result);
+					}
+					_log.info("Log dossierFile : " + JSONFactoryUtil.looseSerialize(dossierFile));
+
+					_log.info("__End bind to dossierFile" + new Date());
+				}
+			}
+			return Response.status(HttpURLConnection.HTTP_OK).entity(lstResult).build();
+		}catch (Exception e) {
+			_log.debug(e.getMessage());
+			return BusinessExceptionImpl.processException(e);
 		}
 	}
 }

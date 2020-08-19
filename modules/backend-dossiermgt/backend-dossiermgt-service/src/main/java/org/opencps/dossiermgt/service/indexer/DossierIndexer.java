@@ -790,7 +790,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 					domainName = service.getDomainName();
 				}
 			}
-			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
+			document.addTextSortable(DossierTerm.DOMAIN_CODE,domainCode);
+			document.addTextSortable(DossierTerm.DOMAIN_CODE_SEARCH, SpecialCharacterUtils.splitSpecial(domainCode));
 			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
 			document.addTextSortable(DossierTerm.ORIGIN_DOSSIER_ID, String.valueOf(object.getOriginDossierId()));
 			document.addTextSortable(DossierTerm.ORIGIN, String.valueOf(object.getOriginDossierId()));
