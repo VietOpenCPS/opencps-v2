@@ -453,7 +453,7 @@
 		<column name="submissionNote" type="String" />
 		<column name="sampleCount" type="long" />
 		<column name="registerBookCode" type="String"></column>
-		<column name="status" type="long" />
+		<column name="status" type="int" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />

@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
@@ -81,6 +82,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
 		}
 		if (Validator.isNotNull(object.getIssueDate())) {
+			document.addTextSortable(DeliverableTerm.ISSUE_DATE_SEARCH , SpecialCharacterUtils.splitSpecial(APIDateTimeUtils
+					.convertDateToString(object.getIssueDate(), APIDateTimeUtils._NORMAL_DATE)));
 			document.addNumberSortable(DeliverableTerm.ISSUE_DATE, object.getIssueDate().getTime());
 		} else {
 			document.addNumberSortable(DeliverableTerm.ISSUE_DATE, 0);

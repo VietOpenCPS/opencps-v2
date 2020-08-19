@@ -1307,7 +1307,7 @@
 		<field name="registerBookCode" type="String">
 			<hint name="max-length">100</hint>
 		</field>
-		<field name="status" type="long" />
+		<field name="status" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
 		<field name="uuid" type="String" />

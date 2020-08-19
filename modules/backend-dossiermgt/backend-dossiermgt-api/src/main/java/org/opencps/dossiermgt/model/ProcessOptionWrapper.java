@@ -193,7 +193,7 @@ public class ProcessOptionWrapper implements ProcessOption,
 			setRegisterBookCode(registerBookCode);
 		}
 
-		Long status = (Long)attributes.get("status");
+		Integer status = (Integer)attributes.get("status");
 
 		if (status != null) {
 			setStatus(status);
@@ -376,7 +376,7 @@ public class ProcessOptionWrapper implements ProcessOption,
 	* @return the status of this process option
 	*/
 	@Override
-	public long getStatus() {
+	public int getStatus() {
 		return _processOption.getStatus();
 	}
 
@@ -642,7 +642,7 @@ public class ProcessOptionWrapper implements ProcessOption,
 	* @param status the status of this process option
 	*/
 	@Override
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_processOption.setStatus(status);
 	}
 

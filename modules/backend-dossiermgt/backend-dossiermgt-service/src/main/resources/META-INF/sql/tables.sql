@@ -825,7 +825,7 @@ create table opencps_processoption (
 	submissionNote TEXT null,
 	sampleCount LONG,
 	registerBookCode VARCHAR(100) null,
-	status LONG
+	status INTEGER
 );
 
 create table opencps_processsequence (
