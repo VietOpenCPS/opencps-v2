@@ -1642,7 +1642,7 @@ public class DossierActionsImpl implements DossierActions {
 											if (!user.isLockout() && user.isActive() &&
 												Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 
-												HashMap<String, Object> moderator = new HashMap<>();
+												Map<String, Object> moderator = new HashMap<>();
 												moderator.put(ProcessStepRoleTerm.MODERATOR, serviceProcessRole.getModerator());
 												user.setModelAttributes(moderator);
 												lstUser.add(user);
@@ -1665,7 +1665,7 @@ public class DossierActionsImpl implements DossierActions {
 											if (!user.isLockout() && user.isActive() &&
 												Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 
-												HashMap<String, Object> moderator = new HashMap<>();
+												Map<String, Object> moderator = new HashMap<>();
 												moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 												user.setModelAttributes(moderator);
 												lstUser.add(user);
@@ -1676,6 +1676,14 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 
+						}
+
+						if (lstUser != null && lstUser.size() > 0) {
+							for (User user1: lstUser) {
+								Map<String, Object> moderator = user1.getModelAttributes();
+								//Map<String, Object> moderator = user1.getModelAttributes();
+								_log.info("moderator: "+moderator);
+							}
 						}
 
 						result.put(ProcessActionTerm.PENDING, pending);
@@ -3523,6 +3531,13 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 
@@ -3599,7 +3614,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 
@@ -3636,7 +3657,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 
