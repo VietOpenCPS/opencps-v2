@@ -89,7 +89,7 @@ public class KeypayDVCQGUtils {
 		data.put(KeypayDVCQGTerm.MA_CO_QUAN_QD, epaymentProfileDVCQG.getString(PayGateTerm.MACOQUANQD));
 		data.put(KeypayDVCQGTerm.TEN_CO_QUAN_QD, epaymentProfileDVCQG.getString(PayGateTerm.TENCOQUANQD));
 		data.put(KeypayDVCQGTerm.KHO_BAC, StringPool.BLANK);
-		data.put(KeypayDVCQGTerm.NGAY_QD, StringPool.BLANK);
+		data.put(KeypayDVCQGTerm.NGAY_QD, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 		data.put(KeypayDVCQGTerm.SO_QD, StringPool.BLANK);
 		data.put(KeypayDVCQGTerm.THOI_GIAN_VI_PHAM, StringPool.BLANK);
 		data.put(KeypayDVCQGTerm.DIA_DIEM_VI_PHAM, StringPool.BLANK);
