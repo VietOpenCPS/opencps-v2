@@ -12,8 +12,7 @@
  * details.
  */
 
-package org.opencps.usermgt.upgrade;
-
+package org.opencps.adminconfig.upgrade;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,8 +20,7 @@ import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
-import org.opencps.usermgt.upgrade.v0_0_1.UpgradeSchema;
-import org.opencps.usermgt.upgrade.v0_0_3.UpgradeSchema0_0_3;
+import org.opencps.adminconfig.upgrade.v0_0_1.UpgradeSchema;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -30,20 +28,17 @@ import org.osgi.service.component.annotations.Reference;
  * @author nhanhoang
  */
 @Component(immediate = true, service = UpgradeStepRegistrator.class)
-public class UsermgtServiceUpgrade implements UpgradeStepRegistrator {
-	
-	
+public class BackendAdminUpgrade implements UpgradeStepRegistrator {
 
 	@Override
 	public void register(Registry registry) {
-		
-		_log.info("===UsermgtServiceUpgrade===");
-		
-		registry.register("1.0.0", "1.0.1", new DummyUpgradeStep());
-		registry.register("1.0.1", "1.0.2", new UpgradeSchema());
-		registry.register("1.0.2", "1.0.3", new UpgradeSchema0_0_3());
+
+		_log.info("===BackendAdminUpgrade===");
+
+		registry.register("1.0.0", "1.0.1", new DummyUpgradeStep(), new UpgradeSchema());
+
 		// See LPS-82746
-		
+
 	}
 
 	@Reference(unbind = "-")
@@ -53,10 +48,7 @@ public class UsermgtServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Reference
 	private SettingsFactory _settingsFactory;
-	
-	
-	
-	private static final Log _log = LogFactoryUtil.getLog(
-			UsermgtServiceUpgrade.class);
+
+	private final Log _log = LogFactoryUtil.getLog(BackendAdminUpgrade.class);
 
 }

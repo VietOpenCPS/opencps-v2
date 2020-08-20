@@ -12,14 +12,15 @@
  * details.
  */
 
-package org.opencps.usermgt.upgrade.v0_0_1;
+package org.opencps.communication.upgrade.v1_0_1;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
-import org.opencps.usermgt.upgrade.v0_0_1.util.EmployeeTable;
+import org.opencps.communication.upgrade.v1_0_1.util.LGSPTokenTable;
+import org.opencps.communication.upgrade.v1_0_1.util.NotificationQueueTable;
 
 /**
  * @author nhanhoang
@@ -30,20 +31,29 @@ public class UpgradeSchema extends UpgradeProcess {
 	
 	@Override
 	protected void doUpgrade() throws Exception {
-
+		
 		upgrade(new UpgradeMVCCVersion());
 
-		if (!hasTable(EmployeeTable.TABLE_NAME)) {
-			runSQL(EmployeeTable.TABLE_SQL_CREATE);
+		
+		if (!hasTable(NotificationQueueTable.TABLE_NAME)) {
+
+			runSQL(NotificationQueueTable.TABLE_SQL_CREATE);
+
 		} else {
-			upgradeTable(EmployeeTable.TABLE_NAME, 
-					EmployeeTable.TABLE_COLUMNS, 
-					EmployeeTable.TABLE_SQL_CREATE,
-					EmployeeTable.TABLE_SQL_ADD_INDEXES);
-
+			upgradeTable(NotificationQueueTable.TABLE_NAME, NotificationQueueTable.TABLE_COLUMNS, NotificationQueueTable.TABLE_SQL_CREATE,
+					NotificationQueueTable.TABLE_SQL_ADD_INDEXES);
 		}
+		
+		if (!hasTable(LGSPTokenTable.TABLE_NAME)) {
 
-		alter(EmployeeTable.class, new AlterTableAddColumn("jobPosTitle VARCHAR(75) null"));
+			runSQL(LGSPTokenTable.TABLE_SQL_CREATE);
+
+		} else {
+			upgradeTable(LGSPTokenTable.TABLE_NAME, LGSPTokenTable.TABLE_COLUMNS, LGSPTokenTable.TABLE_SQL_CREATE,
+					LGSPTokenTable.TABLE_SQL_ADD_INDEXES);
+		}
+		
+		
 
 	}
 

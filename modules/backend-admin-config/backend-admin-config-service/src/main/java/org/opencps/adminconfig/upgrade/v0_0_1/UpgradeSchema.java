@@ -12,38 +12,37 @@
  * details.
  */
 
-package org.opencps.usermgt.upgrade.v0_0_1;
+package org.opencps.adminconfig.upgrade.v0_0_1;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
-import org.opencps.usermgt.upgrade.v0_0_1.util.EmployeeTable;
+import org.opencps.adminconfig.upgrade.util.ReportRoleTable;
 
 /**
  * @author nhanhoang
  */
 public class UpgradeSchema extends UpgradeProcess {
 	private Log _log = LogFactoryUtil.getLog(UpgradeSchema.class.getName());
-	
-	
+
 	@Override
 	protected void doUpgrade() throws Exception {
 
 		upgrade(new UpgradeMVCCVersion());
 
-		if (!hasTable(EmployeeTable.TABLE_NAME)) {
-			runSQL(EmployeeTable.TABLE_SQL_CREATE);
-		} else {
-			upgradeTable(EmployeeTable.TABLE_NAME, 
-					EmployeeTable.TABLE_COLUMNS, 
-					EmployeeTable.TABLE_SQL_CREATE,
-					EmployeeTable.TABLE_SQL_ADD_INDEXES);
+		if (!hasTable(ReportRoleTable.TABLE_NAME)) {
+			
+			runSQL(ReportRoleTable.TABLE_SQL_CREATE);
 
+		}else {
+			
+			upgradeTable(ReportRoleTable.TABLE_NAME, 
+					ReportRoleTable.TABLE_COLUMNS, 
+					ReportRoleTable.TABLE_SQL_CREATE,
+					ReportRoleTable.TABLE_SQL_ADD_INDEXES);
 		}
-
-		alter(EmployeeTable.class, new AlterTableAddColumn("jobPosTitle VARCHAR(75) null"));
 
 	}
 

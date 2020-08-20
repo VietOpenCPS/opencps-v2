@@ -68,10 +68,10 @@ public class PublishEventScheduler extends BaseMessageListener {
 			return;
 		}
 		try {
-			_log.info("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("OpenCPS PUBLISH DOSSIERS IS  : " + APIDateTimeUtils.convertDateToString(new Date()));
 			
 			List<PublishQueue> lstPqs = PublishQueueLocalServiceUtil.getByStatuses(new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT }, 0, 10);
-			_log.info("lstPqs  : " + lstPqs.size());
+			_log.debug("lstPqs  : " + lstPqs.size());
 			for (PublishQueue pq : lstPqs) {
 				try {
 					pq.setStatus(PublishQueueTerm.STATE_ALREADY_SENT);
@@ -100,7 +100,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 					_log.debug(e);
 				}
 			}
-			_log.info("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
+			_log.debug("OpenCPS PUBlISH DOSSIERS HAS BEEN DONE : " + APIDateTimeUtils.convertDateToString(new Date()));
 		}
 		catch (Exception e) {
 			_log.debug(e);
@@ -114,7 +114,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 		if (Validator.isNotNull(dossier) && Validator.isNotNull(dossier.getOriginDossierId()) && (dossier.getOriginDossierId() != 0 || Validator.isNotNull(dossier.getOriginDossierNo()))) {
 			return true;
 		}
-		_log.info("pq: "+JSONFactoryUtil.looseSerialize(pq));
+		_log.debug("pq: "+JSONFactoryUtil.looseSerialize(pq));
 		long groupId = pq.getGroupId();
 		ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(groupId, pq.getServerNo());
 		
@@ -154,7 +154,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 						pfiModel.setServiceAmount(paymentFile.getServiceAmount());
 						pfiModel.setShipAmount(paymentFile.getShipAmount());
 						
-						//_log.info("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
+						//_log.debug("SONDT PAYMENT PFIMODEL SYNC INFORM ======================== " + JSONFactoryUtil.looseSerialize(pfiModel));
 						client.postPaymentFiles(pfiModel.getReferenceUid(), pfiModel);
 					}
 					
@@ -249,7 +249,7 @@ public class PublishEventScheduler extends BaseMessageListener {
 				DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
 				
 				JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
-				_log.info("result DVCQG: "+result);
+				_log.debug("result DVCQG: "+result);
 				if(result.has("error_code") && "0".equals(result.getString("error_code"))) {
 					PublishQueueLocalServiceUtil.updatePublishQueue(
 							sc.getGroupId(), pq.getPublishQueueId(), 2, dossier.getDossierId(), 
