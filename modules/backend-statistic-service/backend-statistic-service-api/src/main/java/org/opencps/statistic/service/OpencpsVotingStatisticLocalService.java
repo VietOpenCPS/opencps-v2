@@ -299,6 +299,10 @@ public interface OpencpsVotingStatisticLocalService extends BaseLocalService,
 		int month, int year);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Object[]> searchVotingByGovAgencyAndServiceCode(long groupId,
+		String startDay, String endDay, String govAgency, String serviceCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpencpsVotingStatistic> searchVotingStatistic(long groupId,
 		int month, int year, String votingCode, String domain,
 		String govAgencyCode, int start, int end)

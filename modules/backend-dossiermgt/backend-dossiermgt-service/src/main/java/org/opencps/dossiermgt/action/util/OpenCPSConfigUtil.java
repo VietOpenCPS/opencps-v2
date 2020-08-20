@@ -11,6 +11,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class OpenCPSConfigUtil {
+	public static final String OPENCPS_DVC_ENABLE = "org.opencps.dvc.enable";
+	public static final String OPENCPS_SYNC_FROM_DVC_TO_DVCQG = "org.opencps.syncToDVCQG.enable";
 	public static final String OPENCPS_NOTIFICATION_ENABLE = "org.opencps.notification.enable";
 	public static final String OPENCPS_CACHE_TTL = "cache.default.ttl.seconds";
 	private static final int DEFAULT_TTL = 3600;
@@ -54,6 +56,16 @@ public class OpenCPSConfigUtil {
 		String notificationEnableProperty = PropsUtil.get(OPENCPS_NOTIFICATION_ENABLE);
 		return Validator.isNotNull(notificationEnableProperty) ? Boolean.parseBoolean(notificationEnableProperty)
 				: false;
+	}
+
+	public static boolean isDVC() {
+		String dvcEnableProperty = PropsUtil.get(OPENCPS_DVC_ENABLE);
+		return Validator.isNotNull(dvcEnableProperty) ? Boolean.parseBoolean(dvcEnableProperty) : true;
+	}
+
+	public static boolean isCanSyncToDVCQG() {
+		String dvcEnableProperty = PropsUtil.get(OPENCPS_SYNC_FROM_DVC_TO_DVCQG);
+		return Validator.isNotNull(dvcEnableProperty) ? Boolean.parseBoolean(dvcEnableProperty) : false;
 	}
 
 	public static boolean isDossierDocumentEnable() {

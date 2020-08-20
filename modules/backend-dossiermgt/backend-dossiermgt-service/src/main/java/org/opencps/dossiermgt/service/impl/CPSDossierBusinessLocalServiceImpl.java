@@ -1332,7 +1332,29 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					actionUser, actionNote, payload, assignUsers, payment, syncType, context);
 		}
 
+		//Integrate TTTT
+		this.integrateTTTT(dossier, context, dossierAction.getDossierActionId());
+
 		return dossierAction;
+	}
+
+	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
+		//Add tich hop Thong tin truyen thong
+		try{
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(
+					dossier.getGroupId(), ServerConfigTerm.TTTT_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					publishQueueLocalService.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, context);
+				}
+			}
+		}catch(Exception e) {
+			_log.error(e);
+		}
 	}
 
 	private void createNotificationQueue(User user, long groupId, Dossier dossier, ProcessAction proAction,

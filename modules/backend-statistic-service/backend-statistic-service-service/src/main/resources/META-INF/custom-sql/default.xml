@@ -83,6 +83,29 @@
 		]]>
 	</sql>
 
+	<sql id="org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder.searchVotingByGovAgencyAndServiceCode">
+		<![CDATA[
+		select
+			sum(case when ovr.selected = 1 then 1 else 0 end) as veryGoodCount,
+			sum(case when ovr.selected = 2 then 1 else 0 end) as goodCount,
+			sum(case when ovr.selected = 3 then 1 else 0 end) as badCount,
+			od.govAgencyCode,
+			od.govAgencyName,
+			ov.groupId,
+			ov.votingCode,
+			ov.subject
+		from opencps_voting ov left join opencps_dossier od on ov.classPK = od.dossierId
+										and od.govAgencyCode = ?
+										and od.serviceCode = ?
+
+							   left join opencps_votingresult ovr on ov.votingId = ovr.votingId
+										and (ovr.createDate between ? and ?)
+										and od.dossierId is not null
+		where ov.classPK !=0 and ov.groupId = ?
+		group by ov.votingCode
+		]]>
+	</sql>
+
 	<sql id="org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder.searchStatisic">
 		<![CDATA[
 			SELECT opencps_person_statistic.* 

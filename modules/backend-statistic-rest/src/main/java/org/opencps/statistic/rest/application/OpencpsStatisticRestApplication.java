@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,6 +109,7 @@ import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
+import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
@@ -416,6 +418,115 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 
 		return null;
+	}
+
+	@GET
+	@Path("/votingsSummaryByGovAgency")
+	public VotingResultResponse searchVotingByGovAgencyAndServiceCode(@HeaderParam("groupId") long groupId,
+																@BeanParam VotingSearchModel query) {
+		try {
+			System.out.println("API voting summary by GovAgency");
+			String fromStatisticDate = query.getFromStatisticDate() != null ? query.getFromStatisticDate() : "1/1/2019";
+			String toStatisticDate = query.getToStatisticDate() != null ? query.getToStatisticDate() : "1/1/2100";
+
+			if(query.getAgency() == null || query.getAgency().isEmpty()) {
+				throw new Exception("Gov Agency not found");
+			}
+
+			if(query.getServiceCode() == null || query.getServiceCode().isEmpty()) {
+				throw new Exception("Service Code not found");
+			}
+
+			String govAgency   = query.getAgency();
+			String serviceCode = query.getServiceCode();
+
+			String fromDateMysql = StatisticUtils.changeFormatDate(fromStatisticDate) != null
+					? StatisticUtils.changeFormatDate(fromStatisticDate)
+					: "2019-01-01";
+			String toDateMysql   = StatisticUtils.changeFormatDate(toStatisticDate) != null
+					? StatisticUtils.changeFormatDate(toStatisticDate)
+					: "2100-01-01";
+
+			List<Object[]> listVoting = OpencpsVotingStatisticLocalServiceUtil.searchVotingByGovAgencyAndServiceCode(groupId,
+					fromDateMysql, toDateMysql, govAgency, serviceCode);
+
+			VotingResultStatisticData oneVoting;
+			List<VotingResultStatisticData> listVotingResult = new ArrayList<>();
+
+			Integer badCount;
+			Integer companyId = 0;
+			String domain = "";
+			String domainName = "";
+			Integer goodCount;
+			String govAgencyCode;
+			String govAgencyName;
+			Integer month = 0;
+			Integer percentBad = 0;
+			Integer percentGood = 0;
+			Integer percentVeryGood = 0;
+			Integer totalVoted =0;
+			Integer veryGoodCount;
+			String votingCode;
+			String subject;
+			Integer year= 2020;
+
+			int size = listVoting.size();
+			for (int i = 0; i < size; i++)
+			{
+				oneVoting = new VotingResultStatisticData();
+				if(listVoting.get(i) != null) {
+					veryGoodCount = listVoting.get(i)[0] != null ? (Integer) listVoting.get(i)[0] : 0;
+					goodCount     = listVoting.get(i)[1] != null ? (Integer) listVoting.get(i)[1] : 0;
+					badCount      = listVoting.get(i)[2] != null ? (Integer) listVoting.get(i)[2] : 0;
+					govAgencyCode = listVoting.get(i)[3] != null ? (String) listVoting.get(i)[3] : "";
+					govAgencyName = listVoting.get(i)[4] != null ? (String) listVoting.get(i)[4] : "";
+					votingCode    = listVoting.get(i)[6] != null ? (String) listVoting.get(i)[6] : "";
+					subject       = listVoting.get(i)[7] != null ? (String) listVoting.get(i)[7] : "";
+				} else {
+					veryGoodCount = 0;
+					goodCount     = 0;
+					badCount      = 0;
+					govAgencyCode = "";
+					govAgencyName = "";
+					votingCode    = "";
+					subject       = "";
+				}
+				oneVoting.setBadCount(badCount);
+				oneVoting.setCompanyId(companyId);
+				oneVoting.setDomain(domain);
+				oneVoting.setDomainName(domainName);
+				oneVoting.setGoodCount(goodCount);
+				oneVoting.setGovAgencyCode(govAgencyCode);
+				oneVoting.setGovAgencyName(govAgencyName);
+				oneVoting.setGroupId(groupId);
+				oneVoting.setMonth(month);
+				oneVoting.setPercentBad(percentBad);
+				oneVoting.setPercentGood(percentGood);
+				oneVoting.setPercentVeryGood(percentVeryGood);
+				oneVoting.setTotalVoted(veryGoodCount + goodCount + badCount);
+				oneVoting.setVeryGoodCount(veryGoodCount);
+				oneVoting.setVotingCode(votingCode);
+				oneVoting.setVotingSubject(subject);
+				oneVoting.setYear(year);
+				listVotingResult.add(oneVoting);
+			}
+			VotingResultResponse statisticResponse = new VotingResultResponse();
+			statisticResponse.setTotal(listVotingResult.size());
+			statisticResponse.setData(listVotingResult);
+
+			System.out.println("End API voting summary by GovAgency");
+			return statisticResponse;
+		}catch (Exception e) {
+			System.out.println("ERROR API voting summary by GovAgency: " + e.getMessage());
+			LOG.error("error", e);
+			OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+			serviceExceptionDetails.setFaultCode(String.valueOf(HttpURLConnection.HTTP_INTERNAL_ERROR));
+			serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+			throwException(new OpencpsServiceException(serviceExceptionDetails));
+			return null;
+		}
 	}
 
 	@GET
