@@ -248,11 +248,11 @@ public class ProcessOptionSoap implements Serializable {
 		_registerBookCode = registerBookCode;
 	}
 
-	public long getStatus() {
+	public int getStatus() {
 		return _status;
 	}
 
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_status = status;
 	}
 
@@ -274,5 +274,5 @@ public class ProcessOptionSoap implements Serializable {
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
-	private long _status;
+	private int _status;
 }

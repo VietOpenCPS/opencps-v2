@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.DeliverableTypeModel;
 
-import javax.ws.rs.DefaultValue;
 import java.io.Serializable;
 
 import java.sql.Types;

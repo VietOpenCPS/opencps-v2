@@ -57,5 +57,6 @@ public class DeliverableTerm {
 	public static final String NGAYSINH_SEARCH = "ngaysinhSearch";
 	public static final String NGAY_SINH = "ngaysinh";
 	public static final String NGAY_QD_SEARCH = "ngayquyetdinhSearch";
+	public static final String ISSUE_DATE_SEARCH = "issueDateSearch";
 	
 }

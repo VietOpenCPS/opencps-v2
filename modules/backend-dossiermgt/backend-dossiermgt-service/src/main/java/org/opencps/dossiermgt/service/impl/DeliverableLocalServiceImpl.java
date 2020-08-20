@@ -1739,6 +1739,10 @@ public class DeliverableLocalServiceImpl
 							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
 							query.addFields(DeliverableTerm.NGAY_QD_SEARCH);
 							queryBool.add(query, BooleanClauseOccur.MUST);
+						}else if(key.split("@")[0].contains(DeliverableTerm.ISSUE_DATE)){
+							MultiMatchQuery query = new MultiMatchQuery(keywordDate);
+							query.addFields(DeliverableTerm.ISSUE_DATE_SEARCH);
+							queryBool.add(query, BooleanClauseOccur.MUST);
 						}
 					}else {
 						 MultiMatchQuery query = new MultiMatchQuery(entry.getValue());

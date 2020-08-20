@@ -227,7 +227,7 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 		sampleCount = objectInput.readLong();
 		registerBookCode = objectInput.readUTF();
 
-		status = objectInput.readLong();
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -303,7 +303,7 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 			objectOutput.writeUTF(registerBookCode);
 		}
 
-		objectOutput.writeLong(status);
+		objectOutput.writeInt(status);
 	}
 
 	public String uuid;
@@ -324,5 +324,5 @@ public class ProcessOptionCacheModel implements CacheModel<ProcessOption>,
 	public String submissionNote;
 	public long sampleCount;
 	public String registerBookCode;
-	public long status;
+	public int status;
 }

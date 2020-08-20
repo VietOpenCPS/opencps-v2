@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ProcessOptionModel;
 
-import javax.ws.rs.DefaultValue;
 import java.io.Serializable;
 
 import java.sql.Types;
@@ -87,7 +86,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			{ "submissionNote", Types.VARCHAR },
 			{ "sampleCount", Types.BIGINT },
 			{ "registerBookCode", Types.VARCHAR },
-			{ "status", Types.BIGINT }
+			{ "status", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -110,10 +109,10 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		TABLE_COLUMNS_MAP.put("submissionNote", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sampleCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("registerBookCode", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("status", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null,status LONG)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null,status INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processoption";
 	public static final String ORDER_BY_JPQL = " ORDER BY processOption.processOptionId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processoption.processOptionId ASC";
@@ -313,7 +312,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			setRegisterBookCode(registerBookCode);
 		}
 
-		Long status = (Long)attributes.get("status");
+		Integer status = (Integer)attributes.get("status");
 
 		if (status != null) {
 			setStatus(status);
@@ -638,12 +637,12 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	}
 
 	@Override
-	public long getStatus() {
+	public int getStatus() {
 		return _status;
 	}
 
 	@Override
-	public void setStatus(long status) {
+	public void setStatus(int status) {
 		_status = status;
 	}
 
@@ -1070,7 +1069,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
-	private long _status;
+	private int _status;
 	private long _columnBitmask;
 	private ProcessOption _escapedModel;
 }

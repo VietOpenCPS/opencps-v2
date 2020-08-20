@@ -680,37 +680,40 @@ public class DossierActionUtils {
 									JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId,roleDataModel.getRoleCode());
 									roleDataModel.setRoleName(jobPos.getTitle());
 								}
-								roleDataModel.setCondition(item.getCondition());
 								if(lstUser !=null && lstUser.size() >0){
 									for (User user : lstUser) {
-										org.opencps.api.user.model.UserModel userModel = new org.opencps.api.user.model.UserModel();
-										userModel.setUserId(user.getUserId());
 										Employee employee =
 												mapEmps.get(user.getUserId());
-										if (Validator.isNotNull(employee)) {
-											userModel.setUserName(employee.getFullName());
-										}
-										if (Validator.isNotNull(employee.getJobPosTitle())) {
-											userModel.setJobPosTitle(employee.getJobPosTitle());
-										} else {
-											if (Validator.isNotNull(user.getJobTitle())) {
-												userModel.setJobPosTitle(user.getJobTitle());
+										if (employee.getFullName().contains(roleDataModel.getRoleName())) {
+											org.opencps.api.user.model.UserModel userModel = new org.opencps.api.user.model.UserModel();
+											userModel.setUserId(user.getUserId());
+
+											if (Validator.isNotNull(employee)) {
+												userModel.setUserName(employee.getFullName());
+											}
+											if (Validator.isNotNull(employee.getJobPosTitle())) {
+												userModel.setJobPosTitle(employee.getJobPosTitle());
 											} else {
-												if (mapJps.containsKey(employee.getMainJobPostId())) {
-													String jobPosTitle = mapJps.get(employee.getMainJobPostId());
-													userModel.setJobPosTitle(jobPosTitle);
+												if (Validator.isNotNull(user.getJobTitle())) {
+													userModel.setJobPosTitle(user.getJobTitle());
+												} else {
+													if (mapJps.containsKey(employee.getMainJobPostId())) {
+														String jobPosTitle = mapJps.get(employee.getMainJobPostId());
+														userModel.setJobPosTitle(jobPosTitle);
+													}
 												}
 											}
+											userModel.setModerator(false);
+											userModel.setAssigned(0);
+											lstOutputUser.add(userModel);
+											if(lstOutputUser !=null && lstOutputUser.size() >0){
+												roleDataModel.setLstUser(lstOutputUser);
+											}
+											outputProcess.add(roleDataModel);
 										}
-										userModel.setModerator(false);
-										userModel.setAssigned(0);
-										lstOutputUser.add(userModel);
 									}
 								}
-								if(lstOutputUser !=null && lstOutputUser.size() >0){
-									roleDataModel.setLstUser(lstOutputUser);
-								}
-								outputProcess.add(roleDataModel);
+
 							}
 						}
 					}

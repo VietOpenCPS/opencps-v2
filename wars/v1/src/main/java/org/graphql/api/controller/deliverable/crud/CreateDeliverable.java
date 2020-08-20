@@ -11,11 +11,13 @@ import com.liferay.portal.kernel.util.Validator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.graphql.api.controller.utils.WebKeys;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.kernel.util.DateTimeUtil;
 import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+
+import java.util.Date;
 
 /**
  * Created binhth
@@ -71,9 +75,22 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			
 			if (!inputObject.has("deliverableCode")) {
 				DeliverableType delType = DeliverableTypeLocalServiceUtil.getByCode(groupId, inputObject.getString("deliverableType"));
-				String ngayQD = formData.getString("ngayquyetdinh");
-				String deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
-						groupId, delType.getCodePattern(), ngayQD);
+				String issueDate = formData.getString("issueDate");
+				Date sysDate = new Date();
+				String deliverableCode = "";
+				if(Validator.isNotNull(issueDate) ) {
+					Date issue = APIDateTimeUtils
+							.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE);
+					if(Validator.isNotNull(issue)){
+						deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
+								groupId, delType.getCodePattern(), issueDate);
+					}
+				}else{
+					String dateNow = APIDateTimeUtils
+							.convertDateToString(sysDate, APIDateTimeUtils._NORMAL_PARTTERN);
+					deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
+							groupId, delType.getCodePattern(), dateNow);
+				}
 				inputObject.put("deliverableCode", deliverableCode);
 			}
 			Employee employee = null;
