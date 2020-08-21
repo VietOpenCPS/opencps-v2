@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+    <xsd:element name="TestConfigModel">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="serverNo" type="xsd:normalizedString" minOccurs="0" />
+                <xsd:element name="serverName" type="xsd:token" minOccurs="0" />
+                <xsd:element name="serverName11">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:maxLength value="255" />
+                            <xsd:whiteSpace value="collapse" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="serverId" type="xsd:int" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
