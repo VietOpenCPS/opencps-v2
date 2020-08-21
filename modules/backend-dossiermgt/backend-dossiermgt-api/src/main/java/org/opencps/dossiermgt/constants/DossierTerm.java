@@ -197,6 +197,7 @@ public class DossierTerm {
 	public static final String MAPPING_PERMISSION = "permission";
 	public static final String MAPPING_DOSSIER = "dossiers";
 	public static final String PROCESS_SEQUENCE_ARR = "processSequenceArr";
+	public static final String ROLE_PERMISSION = "rolePermission";
 
 	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
@@ -407,4 +408,11 @@ public class DossierTerm {
 	public static final String VNPOST_CLS = "VNPOST_CLS";
 	public static final String URL_VIA_POST = "apiGetVnPost";
 	public static final String TOKEN_VN_POST = "tokenVnPost";
+	public static final String DELIVERABLE_CODE = "deliverableCode";
+	public static final String SEARCH_CV_T_DV = "searchCongVanTheoDonViNhan";
+	public static final String DOSSIER_FILE = "dossierFile";
+	public static final String HTML = "dossierFile";
+	public static final String KQGP = "@KQGP";
+	public static final String DELIVERABLE_STATE = "deliverableState";
+	public static final String DELIVERABLE_NAME = "deliverableName";
 }

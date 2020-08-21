@@ -183,6 +183,9 @@ public interface DeliverableTypeLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DeliverableType fetchByG_DLT(long groupId, String typeCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DeliverableType fetchDeliverableType(long deliverableTypeId);
 
 	/**

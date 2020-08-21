@@ -287,6 +287,13 @@ public class DossierMarkLocalServiceUtil {
 				   .getDossierMarksByFileMark(groupId, dossierId, fileMark);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.DossierMark> getDossierMarksByFileMarkAndRecordCount(
+		long groupId, long dossierId, int fileMark, String recordCount) {
+		return getService()
+				   .getDossierMarksByFileMarkAndRecordCount(groupId, dossierId,
+			fileMark, recordCount);
+	}
+
 	/**
 	* Returns all the dossier marks matching the UUID and company.
 	*

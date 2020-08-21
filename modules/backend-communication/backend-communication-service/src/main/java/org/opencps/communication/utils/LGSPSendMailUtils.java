@@ -58,11 +58,18 @@ public class LGSPSendMailUtils {
 							if (messageEntry.getToAddress() != null && messageEntry.getToAddress().length > 0) {
 								InternetAddress[] addressArr = messageEntry.getToAddress();
 
-								for (InternetAddress internetAddress : addressArr) {
-									sbToAdd.append(internetAddress.getAddress().trim());
-									sbToAdd.append(StringPool.SEMICOLON);
+								for (int j = 0; j < addressArr.length; j ++) {
+									InternetAddress internetAddress = addressArr[j];
+									if (i == 0) {
+										sbToAdd.append(internetAddress.getAddress().trim());
+									}
+									else {
+										sbToAdd.append(StringPool.SEMICOLON);
+										sbToAdd.append(internetAddress.getAddress().trim());
+
+									}
 								}
-								sbToAdd.append("dvcmuc34tinhdongthap@gmail.com");
+								//sbToAdd.append("dvcmuc34tinhdongthap@gmail.com");
 							}
 							_log.info("sbToAdd: " + sbToAdd.toString());
 							jsonBody.put("mailReceiver", sbToAdd.toString());

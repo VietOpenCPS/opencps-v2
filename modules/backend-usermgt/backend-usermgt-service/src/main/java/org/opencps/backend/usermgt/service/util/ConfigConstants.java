@@ -5,6 +5,8 @@ public class ConfigConstants {
 	/** CONSTANT UTILS */
 	public static final String LANGUAGE_ID = "vi_VN";
 	public static final String PAGINATION_TYPE_REGULAR = "regular";
+	public static final Integer PRIORITY_REGISTER = 1;
+	public static final Integer PRIORITY_FORGOT_PASS = 2;
 //	public static final String SEARCH_KEYWORD = "keywords";
 //	public static final String TREE_INDEX = "treeIndex_sortable";
 //	public static final String TOTAL = "total";

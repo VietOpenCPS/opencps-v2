@@ -410,6 +410,20 @@ public interface NotificationtemplateModel extends BaseModel<Notificationtemplat
 	 */
 	public void setGrouping(boolean grouping);
 
+	/**
+	 * Returns the priority of this notificationtemplate.
+	 *
+	 * @return the priority of this notificationtemplate
+	 */
+	public int getPriority();
+
+	/**
+	 * Sets the priority of this notificationtemplate.
+	 *
+	 * @param priority the priority of this notificationtemplate
+	 */
+	public void setPriority(int priority);
+
 	@Override
 	public boolean isNew();
 

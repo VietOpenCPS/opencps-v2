@@ -54,6 +54,7 @@ public class NotificationtemplateSoap implements Serializable {
 		soapModel.setGuestUrlPattern(model.getGuestUrlPattern());
 		soapModel.setInterval(model.getInterval());
 		soapModel.setGrouping(model.isGrouping());
+		soapModel.setPriority(model.getPriority());
 
 		return soapModel;
 	}
@@ -285,6 +286,14 @@ public class NotificationtemplateSoap implements Serializable {
 		_grouping = grouping;
 	}
 
+	public int getPriority() {
+		return _priority;
+	}
+
+	public void setPriority(int priority) {
+		_priority = priority;
+	}
+
 	private long _notificationTemplateId;
 	private long _groupId;
 	private long _companyId;
@@ -305,4 +314,5 @@ public class NotificationtemplateSoap implements Serializable {
 	private String _guestUrlPattern;
 	private String _interval;
 	private boolean _grouping;
+	private int _priority;
 }

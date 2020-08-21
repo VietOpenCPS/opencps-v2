@@ -444,6 +444,26 @@ public interface DossierFileManagement {
 		@Context ServiceContext serviceContext,
 		@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
 
+	@POST
+	@Path("/import/excel")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "import file excel)", response = DossierFileModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns result upload file excel", response = DossierFileResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response importExcelFileEntry(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "Attachment files", required = true) @Multipart("file") Attachment file);
+
+
 	@GET
 	@Path("/{id}/applicant/{applicantIdNo}/files/{fileTemplateNo}/search")
 	@Consumes({

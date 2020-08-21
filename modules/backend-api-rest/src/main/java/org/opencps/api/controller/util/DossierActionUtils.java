@@ -533,7 +533,7 @@ public class DossierActionUtils {
 					model.setPayment(payment);
 				}
 
-				JSONObject receivingObj = jsonData.getJSONObject(ConstantUtils.RECEIVING);
+				JSONObject receivingObj = jsonData.getJSONObject(ProcessActionTerm.RECEIVING);
 				// _log.info("Receiving object: " +
 				// receivingObj.toJSONString());
 				if (receivingObj != null) {
@@ -543,6 +543,7 @@ public class DossierActionUtils {
 					receiving.setReceiveDate(
 						receivingObj.getLong(DossierTerm.RECEIVE_DATE));
 					receiving.setEditable(receivingObj.getBoolean(ConstantUtils.EDITABLE));
+					receiving.setDurationPhase(receivingObj.getString(ProcessActionTerm.DURATION_PHASE));
 
 					model.setReceiving(receiving);
 				}

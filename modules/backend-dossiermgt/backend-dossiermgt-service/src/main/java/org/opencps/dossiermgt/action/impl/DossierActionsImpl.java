@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -773,35 +774,104 @@ public class DossierActionsImpl implements DossierActions {
 					} else {
 
 						Double durationCount = serviceProcess.getDurationCount();
+						//Process after dueDate
+						String dueDatePattern = serviceProcess.getDueDatePattern();
+						JSONObject jsonDueDate = null;
+						try {
+							jsonDueDate = Validator.isNotNull(dueDatePattern) ? JSONFactoryUtil.createJSONObject(dueDatePattern) : null;
+						} catch (JSONException e) {
+							_log.debug(e);
+						}
+						List<Integer> dueHour = null;
+						if (jsonDueDate != null) {
+							JSONObject afterHours = jsonDueDate.getJSONObject(DossierDocumentTerm.AFTER_HOUR);
+								if (afterHours != null && afterHours.has(DossierDocumentTerm.START_HOUR) && afterHours.has(DossierDocumentTerm.DUE_HOUR)) {
+								//_log.info("STRART check new: ");
+								Calendar receiveCalendar = Calendar.getInstance();
+								receiveCalendar.setTime(receiveDate);
+								//
+								String receiveHour = afterHours.getString(DossierDocumentTerm.START_HOUR);
+								//_log.info("receiveHour: " + receiveHour);
 
+								if (Validator.isNotNull(receiveHour)) {
+									String[] splitHour = StringUtil.split(receiveHour, StringPool.COLON);
+									if (splitHour != null) {
+										int hourStart = GetterUtil.getInteger(splitHour[0]);
+										int minuteStart = GetterUtil.getInteger(splitHour[1]);
+										if (receiveCalendar.get(Calendar.HOUR_OF_DAY) > hourStart
+												|| (receiveCalendar.get(Calendar.HOUR_OF_DAY) == hourStart
+														&& receiveCalendar.get(Calendar.MINUTE) > minuteStart)) {
+											dueHour = new ArrayList<>();
+											String[] splitdueHour = StringUtil.split(afterHours.getString(DossierDocumentTerm.DUE_HOUR),
+													StringPool.COLON);
+											if (splitdueHour != null) {
+												dueHour.add(0, GetterUtil.getInteger(splitdueHour[0]));
+												dueHour.add(1, GetterUtil.getInteger(splitdueHour[1]));
+											}
+										}
+									}
+								}
+							}
+						}
+
+						String strDateOption = StringPool.BLANK;
 						JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(processAction.getPostAction());
+
+						// dateOption from PostAction
 						String strChangeDateKey = CPSDossierBusinessLocalServiceImpl.CHANGE_DATE;
 						if (jsonPostData != null && jsonPostData.has(strChangeDateKey)) {
 							JSONObject jsonChangeDate = jsonPostData.getJSONObject(CPSDossierBusinessLocalServiceImpl.CHANGE_DATE);
 							if (jsonChangeDate != null && jsonChangeDate.has(DossierTerm.DATE_OPTION)) {
-								String strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
-								if (Validator.isNotNull(strDateOption) && (
-										Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
-										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
-										|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
-									
-									DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
-											serviceProcess.getDueDatePattern());
-									dueDate = dueDatePharse.getDueDate();
-									dossier.setDueDate(dueDate);
-								} else if (Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
-
-									dueDate = null;
-								}
+								strDateOption = jsonChangeDate.getString(DossierTerm.DATE_OPTION);
 							}
+						}
+						// dateOption from action config
+						if (Validator.isNull(processAction.getPostAction())) {
+
+							ActionConfig action = ActionConfigLocalServiceUtil.getByCode(groupId, processAction.getActionCode());
+							strDateOption = String.valueOf(action.getDateOption());
+						}
+						if (Validator.isNotNull(strDateOption) && (
+								Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_1
+								|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_2
+								|| Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_DUEDATE_PHASE_3)) {
+							
+							DueDatePhaseUtil dueDatePharse = new DueDatePhaseUtil(dossier.getGroupId(), new Date(), Integer.valueOf(strDateOption),
+									serviceProcess.getDueDatePattern());
+							dueDate = dueDatePharse.getDueDate();
+							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
+								Calendar dueCalendar = Calendar.getInstance();
+								dueCalendar.setTime(dueDate);
+								//
+								dueCalendar.set(Calendar.HOUR_OF_DAY, dueHour.get(0));
+								dueCalendar.set(Calendar.MINUTE, dueHour.get(1));
+								//
+								dossier.setDueDate(dueCalendar.getTime());
+							} else {
+								dossier.setDueDate(dueDate);
+							}
+							receivingObj.put(ProcessActionTerm.DURATION_PHASE, dueDatePharse.getDuration());
+						} else if (Validator.isNotNull(strDateOption) && Integer.valueOf(strDateOption) == DossierTerm.DATE_OPTION_TEN) {
+
+							dueDate = null;
 						} else if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
 							//dueDate = HolidayUtils.getDueDate(new Date(), serviceProcess.getDurationCount(), serviceProcess.getDurationUnit(), groupId);
 							
 							DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCount, serviceProcess.getDurationUnit(), groupId);
 							dueDate = dueDateUtils.getDueDate();
-							dossier.setDueDate(dueDate);
+							if (dueDate != null && dueHour != null && dueHour.size() == 2) {
+								Calendar dueCalendar = Calendar.getInstance();
+								dueCalendar.setTime(dueDate);
+								//
+								dueCalendar.set(Calendar.HOUR_OF_DAY, dueHour.get(0));
+								dueCalendar.set(Calendar.MINUTE, dueHour.get(1));
+								//
+								dossier.setDueDate(dueCalendar.getTime());
+							} else {
+								dossier.setDueDate(dueDate);
+							}
 						}
-						_log.info("dueDate============" + dueDate);
+						_log.info("dueDate============" + strDateOption + dueDate);
 						_log.info("processAction============" + processAction);
 					}
 
@@ -1572,7 +1642,7 @@ public class DossierActionsImpl implements DossierActions {
 											if (!user.isLockout() && user.isActive() &&
 												Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 
-												HashMap<String, Object> moderator = new HashMap<>();
+												Map<String, Object> moderator = new HashMap<>();
 												moderator.put(ProcessStepRoleTerm.MODERATOR, serviceProcessRole.getModerator());
 												user.setModelAttributes(moderator);
 												lstUser.add(user);
@@ -1595,7 +1665,7 @@ public class DossierActionsImpl implements DossierActions {
 											if (!user.isLockout() && user.isActive() &&
 												Validator.isNotNull(emp) && emp.getWorkingStatus() == 1) {
 
-												HashMap<String, Object> moderator = new HashMap<>();
+												Map<String, Object> moderator = new HashMap<>();
 												moderator.put(ProcessStepRoleTerm.MODERATOR, processStepRole.getModerator());
 												user.setModelAttributes(moderator);
 												lstUser.add(user);
@@ -1606,6 +1676,14 @@ public class DossierActionsImpl implements DossierActions {
 								}
 							}
 
+						}
+
+						if (lstUser != null && lstUser.size() > 0) {
+							for (User user1: lstUser) {
+								Map<String, Object> moderator = user1.getModelAttributes();
+								//Map<String, Object> moderator = user1.getModelAttributes();
+								_log.info("moderator: "+moderator);
+							}
 						}
 
 						result.put(ProcessActionTerm.PENDING, pending);
@@ -3453,6 +3531,13 @@ public class DossierActionsImpl implements DossierActions {
 			}
 		}
 
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 
@@ -3529,7 +3614,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 
@@ -3566,7 +3657,13 @@ public class DossierActionsImpl implements DossierActions {
 				}
 			}
 		}
-
+		if (lstUser != null && lstUser.size() > 0) {
+			for (User user1: lstUser) {
+				Map<String, Object> moderator = user1.getModelAttributes();
+				//Map<String, Object> moderator = user1.getModelAttributes();
+				_log.info("moderator: "+moderator);
+			}
+		}
 		return lstUser;
 	}
 

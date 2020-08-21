@@ -1,5 +1,6 @@
 package org.opencps.statistic.rest.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,7 +27,10 @@ public class DossierStatisticResponse {
 	}
 
 	public List<DossierStatisticData> getDossierStatisticData() {
-		return dossierStatisticData;
+		if (dossierStatisticData == null) {
+			dossierStatisticData = new ArrayList<DossierStatisticData>();
+		}
+		return this.dossierStatisticData;
 	}
 
 	public void setDossierStatisticData(List<DossierStatisticData> dossierStatisticData) {

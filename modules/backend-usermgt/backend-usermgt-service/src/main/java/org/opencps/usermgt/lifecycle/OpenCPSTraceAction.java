@@ -34,7 +34,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceResolver;
 import org.springframework.mobile.device.LiteDeviceResolver;
 
-//@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
+@Component(immediate = true, property = { "key=servlet.service.events.post" }, service = LifecycleAction.class)
 public class OpenCPSTraceAction extends Action {
 
 	@Override
@@ -50,34 +50,41 @@ public class OpenCPSTraceAction extends Action {
         boolean isMobile = false;
         boolean isDesktop = false;
         boolean isTablet = false;
+
         DeviceResolver resolver = new LiteDeviceResolver();
-        
         Device currentDevice = resolver.resolveDevice(request);
-        if(currentDevice.isMobile()) { 
-        	/* Mobile */ 
-        	isMobile = true;
-        }
-        if(currentDevice.isTablet()) { 
-        	/* Tablet */ 
-        	isTablet = true;
-        }
-        if(currentDevice.isNormal()) { 
-        	/* Desktop */ 
-        	isDesktop = true;
-        }
+        if (currentDevice != null) {
+			if(currentDevice.isMobile()) {
+				/* Mobile */
+				isMobile = true;
+			}
+			if(currentDevice.isTablet()) {
+				/* Tablet */
+				isTablet = true;
+			}
+			if(currentDevice.isNormal()) {
+				/* Desktop */
+				isDesktop = true;
+			}
+		}
         
 		try {
 //        	InputStream geoStream = this.getClass().getResourceAsStream("/GeoLite2-City.mmdb");
 			File database = new File(UserMgtConfigUtil.getGeoDBPath());
-			DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
-			InetAddress ipAddress = InetAddress.getByName(clientIP);
-	        CityResponse cityResponse = dbReader.city(ipAddress);
-	         
-	        cityName = cityResponse.getCity().getName();
-	        latitude = 
-	        		cityResponse.getLocation().getLatitude().toString();
-	        longitude = 
-	        		cityResponse.getLocation().getLongitude().toString();
+			if (database != null) {
+				DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
+				InetAddress ipAddress = InetAddress.getByName(clientIP);
+				if (dbReader != null && ipAddress != null) {
+					CityResponse cityResponse = dbReader.city(ipAddress);
+					if (cityResponse != null) {
+						cityName = cityResponse.getCity().getName();
+						latitude =
+								cityResponse.getLocation().getLatitude().toString();
+						longitude =
+								cityResponse.getLocation().getLongitude().toString();
+					}
+				}
+			}
 	        
 		} catch (IOException | GeoIp2Exception e) {
 			_log.debug(e);

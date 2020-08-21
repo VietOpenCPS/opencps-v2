@@ -33,6 +33,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalService;
 import org.opencps.dossiermgt.service.persistence.AccessTokenPersistence;
 import org.opencps.dossiermgt.service.persistence.ActionConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.ApplicableInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.BookingFinder;
 import org.opencps.dossiermgt.service.persistence.BookingPersistence;
 import org.opencps.dossiermgt.service.persistence.ConfigCounterPersistence;
@@ -67,6 +68,7 @@ import org.opencps.dossiermgt.service.persistence.NewsBoardPersistence;
 import org.opencps.dossiermgt.service.persistence.NotarizationFinder;
 import org.opencps.dossiermgt.service.persistence.NotarizationPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
+import org.opencps.dossiermgt.service.persistence.PaymentFeeInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFileFinder;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
@@ -80,6 +82,7 @@ import org.opencps.dossiermgt.service.persistence.RegistrationFormPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationLogPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationPersistence;
 import org.opencps.dossiermgt.service.persistence.RegistrationTemplatesPersistence;
+import org.opencps.dossiermgt.service.persistence.ServiceConfigMappingPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceFileTemplatePersistence;
 import org.opencps.dossiermgt.service.persistence.ServiceInfoMappingPersistence;
@@ -188,6 +191,44 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	public void setActionConfigPersistence(
 		ActionConfigPersistence actionConfigPersistence) {
 		this.actionConfigPersistence = actionConfigPersistence;
+	}
+
+	/**
+	 * Returns the applicable info local service.
+	 *
+	 * @return the applicable info local service
+	 */
+	public org.opencps.dossiermgt.service.ApplicableInfoLocalService getApplicableInfoLocalService() {
+		return applicableInfoLocalService;
+	}
+
+	/**
+	 * Sets the applicable info local service.
+	 *
+	 * @param applicableInfoLocalService the applicable info local service
+	 */
+	public void setApplicableInfoLocalService(
+		org.opencps.dossiermgt.service.ApplicableInfoLocalService applicableInfoLocalService) {
+		this.applicableInfoLocalService = applicableInfoLocalService;
+	}
+
+	/**
+	 * Returns the applicable info persistence.
+	 *
+	 * @return the applicable info persistence
+	 */
+	public ApplicableInfoPersistence getApplicableInfoPersistence() {
+		return applicableInfoPersistence;
+	}
+
+	/**
+	 * Sets the applicable info persistence.
+	 *
+	 * @param applicableInfoPersistence the applicable info persistence
+	 */
+	public void setApplicableInfoPersistence(
+		ApplicableInfoPersistence applicableInfoPersistence) {
+		this.applicableInfoPersistence = applicableInfoPersistence;
 	}
 
 	/**
@@ -1378,6 +1419,44 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the payment fee info local service.
+	 *
+	 * @return the payment fee info local service
+	 */
+	public org.opencps.dossiermgt.service.PaymentFeeInfoLocalService getPaymentFeeInfoLocalService() {
+		return paymentFeeInfoLocalService;
+	}
+
+	/**
+	 * Sets the payment fee info local service.
+	 *
+	 * @param paymentFeeInfoLocalService the payment fee info local service
+	 */
+	public void setPaymentFeeInfoLocalService(
+		org.opencps.dossiermgt.service.PaymentFeeInfoLocalService paymentFeeInfoLocalService) {
+		this.paymentFeeInfoLocalService = paymentFeeInfoLocalService;
+	}
+
+	/**
+	 * Returns the payment fee info persistence.
+	 *
+	 * @return the payment fee info persistence
+	 */
+	public PaymentFeeInfoPersistence getPaymentFeeInfoPersistence() {
+		return paymentFeeInfoPersistence;
+	}
+
+	/**
+	 * Sets the payment fee info persistence.
+	 *
+	 * @param paymentFeeInfoPersistence the payment fee info persistence
+	 */
+	public void setPaymentFeeInfoPersistence(
+		PaymentFeeInfoPersistence paymentFeeInfoPersistence) {
+		this.paymentFeeInfoPersistence = paymentFeeInfoPersistence;
+	}
+
+	/**
 	 * Returns the payment file local service.
 	 *
 	 * @return the payment file local service
@@ -1890,6 +1969,44 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the service config mapping local service.
+	 *
+	 * @return the service config mapping local service
+	 */
+	public org.opencps.dossiermgt.service.ServiceConfigMappingLocalService getServiceConfigMappingLocalService() {
+		return serviceConfigMappingLocalService;
+	}
+
+	/**
+	 * Sets the service config mapping local service.
+	 *
+	 * @param serviceConfigMappingLocalService the service config mapping local service
+	 */
+	public void setServiceConfigMappingLocalService(
+		org.opencps.dossiermgt.service.ServiceConfigMappingLocalService serviceConfigMappingLocalService) {
+		this.serviceConfigMappingLocalService = serviceConfigMappingLocalService;
+	}
+
+	/**
+	 * Returns the service config mapping persistence.
+	 *
+	 * @return the service config mapping persistence
+	 */
+	public ServiceConfigMappingPersistence getServiceConfigMappingPersistence() {
+		return serviceConfigMappingPersistence;
+	}
+
+	/**
+	 * Sets the service config mapping persistence.
+	 *
+	 * @param serviceConfigMappingPersistence the service config mapping persistence
+	 */
+	public void setServiceConfigMappingPersistence(
+		ServiceConfigMappingPersistence serviceConfigMappingPersistence) {
+		this.serviceConfigMappingPersistence = serviceConfigMappingPersistence;
+	}
+
+	/**
 	 * Returns the service file template local service.
 	 *
 	 * @return the service file template local service
@@ -2334,6 +2451,10 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ActionConfigLocalService actionConfigLocalService;
 	@BeanReference(type = ActionConfigPersistence.class)
 	protected ActionConfigPersistence actionConfigPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.ApplicableInfoLocalService.class)
+	protected org.opencps.dossiermgt.service.ApplicableInfoLocalService applicableInfoLocalService;
+	@BeanReference(type = ApplicableInfoPersistence.class)
+	protected ApplicableInfoPersistence applicableInfoPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.BookingLocalService.class)
 	protected org.opencps.dossiermgt.service.BookingLocalService bookingLocalService;
 	@BeanReference(type = BookingPersistence.class)
@@ -2460,6 +2581,10 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.PaymentConfigLocalService paymentConfigLocalService;
 	@BeanReference(type = PaymentConfigPersistence.class)
 	protected PaymentConfigPersistence paymentConfigPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.PaymentFeeInfoLocalService.class)
+	protected org.opencps.dossiermgt.service.PaymentFeeInfoLocalService paymentFeeInfoLocalService;
+	@BeanReference(type = PaymentFeeInfoPersistence.class)
+	protected PaymentFeeInfoPersistence paymentFeeInfoPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.PaymentFileLocalService.class)
 	protected org.opencps.dossiermgt.service.PaymentFileLocalService paymentFileLocalService;
 	@BeanReference(type = PaymentFilePersistence.class)
@@ -2514,6 +2639,10 @@ public abstract class CPSDossierBusinessLocalServiceBaseImpl
 	protected org.opencps.dossiermgt.service.ServiceConfigLocalService serviceConfigLocalService;
 	@BeanReference(type = ServiceConfigPersistence.class)
 	protected ServiceConfigPersistence serviceConfigPersistence;
+	@BeanReference(type = org.opencps.dossiermgt.service.ServiceConfigMappingLocalService.class)
+	protected org.opencps.dossiermgt.service.ServiceConfigMappingLocalService serviceConfigMappingLocalService;
+	@BeanReference(type = ServiceConfigMappingPersistence.class)
+	protected ServiceConfigMappingPersistence serviceConfigMappingPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.ServiceFileTemplateLocalService.class)
 	protected org.opencps.dossiermgt.service.ServiceFileTemplateLocalService serviceFileTemplateLocalService;
 	@BeanReference(type = ServiceFileTemplatePersistence.class)

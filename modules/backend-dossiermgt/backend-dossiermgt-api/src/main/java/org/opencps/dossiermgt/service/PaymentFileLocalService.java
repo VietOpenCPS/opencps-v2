@@ -241,6 +241,12 @@ public interface PaymentFileLocalService extends BaseLocalService,
 
 	public List<PaymentFile> findByG_PT(long groupId, int paymentStatus);
 
+	public List<PaymentFile> findByPaymentStatusAndMethod(int paymentStatus,
+		String paymentMethod, int start, int end);
+
+	public List<PaymentFile> findByPaymentStatusAndMethod(int paymentStatus,
+		String paymentMethod, long groupId, int start, int end);
+
 	public List<PaymentFile> findByPT(int paymentStatus);
 
 	public String findSumPaymentAmountDay(long groupId, String date);

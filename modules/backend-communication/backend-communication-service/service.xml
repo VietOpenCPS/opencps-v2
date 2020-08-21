@@ -39,6 +39,7 @@
 		<column name="guestUrlPattern" type="String" />
 		<column name="interval" type="String" />
 		<column name="grouping" type="boolean" />
+		<column name="priority" type="int" />
 		<!-- Order -->
 
 		<order by="asc">
@@ -105,11 +106,11 @@
 		<column name="toTelNo" type="String" />
 		<column name="publicationDate" type="Date" />
 		<column name="expireDate" type="Date" />
-
+		<column name="priority" type="int" />
 		<!-- Order -->
 
-		<order by="asc">
-			<order-column name="createDate" />
+		<order by="desc">
+			<order-column name="priority" />
 		</order>
 
 		<finder name="G" return-type="Collection">
@@ -202,6 +203,10 @@
 		</finder>
 		<finder return-type="ServerConfig" name="F_G_S_P">
 			<finder-column name="groupId"/>
+			<finder-column name="serverNo"/>
+			<finder-column name="protocol"/>
+		</finder>
+		<finder return-type="Collection" name="SNO_PT">
 			<finder-column name="serverNo"/>
 			<finder-column name="protocol"/>
 		</finder>

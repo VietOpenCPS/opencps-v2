@@ -307,6 +307,11 @@ public class DeliverableTypeLocalServiceImpl extends DeliverableTypeLocalService
 
 	}
 
+	@Override
+	public DeliverableType fetchByG_DLT(long groupId, String typeCode) {
+		return deliverableTypePersistence.fetchByG_DLT(groupId,typeCode);
+	}
+
 	private void validateRemoveDeliverableType(long groupId, String deliverableTypeId) {
 		// TODO Auto-generated method stub
 

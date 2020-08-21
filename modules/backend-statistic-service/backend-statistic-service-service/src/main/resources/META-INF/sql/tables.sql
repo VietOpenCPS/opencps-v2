@@ -60,7 +60,7 @@ create table opencps_statistic (
 	govAgencyName TEXT null,
 	domainCode VARCHAR(255) null,
 	domainName TEXT null,
-	reporting BOOLEAN,
+	reporting INTEGER,
 	overtimeInside INTEGER,
 	overtimeOutside INTEGER,
 	interoperatingCount INTEGER,

@@ -137,4 +137,7 @@ public class OpencpsVotingStatisticLocalServiceImpl
 	public List<OpencpsVotingStatistic> fetchByG_M_Y_G_D(long groupId, int month, int year, String govAgencyCode, String domainCode) {
 		return opencpsVotingStatisticPersistence.findByM_Y_DM_G(groupId, month, year,  govAgencyCode, domainCode);
 	}
+	public List<Object[]> searchVotingStatisticCountPoint(long groupId, String startDay, String endDay) {
+		return opencpsVotingStatisticFinder.searchVotingStatisticCountPoint(groupId, startDay, endDay);
+	}
 }

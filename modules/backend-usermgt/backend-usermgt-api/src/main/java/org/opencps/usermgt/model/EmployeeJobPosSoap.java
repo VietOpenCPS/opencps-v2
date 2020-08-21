@@ -44,6 +44,7 @@ public class EmployeeJobPosSoap implements Serializable {
 		soapModel.setEmployeeId(model.getEmployeeId());
 		soapModel.setJobPostId(model.getJobPostId());
 		soapModel.setWorkingUnitId(model.getWorkingUnitId());
+		soapModel.setStatus(model.getStatus());
 
 		return soapModel;
 	}
@@ -184,6 +185,14 @@ public class EmployeeJobPosSoap implements Serializable {
 		_workingUnitId = workingUnitId;
 	}
 
+	public int getStatus() {
+		return _status;
+	}
+
+	public void setStatus(int status) {
+		_status = status;
+	}
+
 	private String _uuid;
 	private long _employeeJobPosId;
 	private long _companyId;
@@ -195,4 +204,5 @@ public class EmployeeJobPosSoap implements Serializable {
 	private long _employeeId;
 	private long _jobPostId;
 	private long _workingUnitId;
+	private int _status;
 }

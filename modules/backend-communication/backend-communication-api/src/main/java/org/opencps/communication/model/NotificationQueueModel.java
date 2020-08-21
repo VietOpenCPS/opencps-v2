@@ -368,6 +368,20 @@ public interface NotificationQueueModel extends BaseModel<NotificationQueue>,
 	 */
 	public void setExpireDate(Date expireDate);
 
+	/**
+	 * Returns the priority of this notification queue.
+	 *
+	 * @return the priority of this notification queue
+	 */
+	public int getPriority();
+
+	/**
+	 * Sets the priority of this notification queue.
+	 *
+	 * @param priority the priority of this notification queue
+	 */
+	public void setPriority(int priority);
+
 	@Override
 	public boolean isNew();
 

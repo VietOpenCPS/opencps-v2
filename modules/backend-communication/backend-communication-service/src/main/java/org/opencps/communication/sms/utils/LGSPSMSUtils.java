@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.communication.utils.LGSPRestfulUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,116 +21,79 @@ import javax.ws.rs.core.MediaType;
 public class LGSPSMSUtils {
 
 	public static String sendSMS(long groupId, String body, String title, String toTelNo) {
+		JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
+		if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
+				&& jsonToken.has("expiryDate")) {
 
-		StringBuilder sbToken = new StringBuilder();
-		try {
-
-			URL urlToken = new URL("http://api.dongthap.gov.vn/api/v1/Authentication/Token");
-
-			java.net.HttpURLConnection conToken = (java.net.HttpURLConnection) urlToken.openConnection();
-			conToken.setRequestMethod(HttpMethod.POST);
-			conToken.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
-			conToken.setRequestProperty("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
-			conToken.setRequestProperty("Auth", "WVdSdGFXND06WVdSdGFXNUFNZz09");
-			conToken.setRequestProperty("Content-Length", String.valueOf(0));
-
-			conToken.setUseCaches(false);
-			conToken.setDoInput(true);
-			conToken.setDoOutput(true);
-			
-			OutputStream os = conToken.getOutputStream();
-			os.close();
-
-			BufferedReader brfToken = new BufferedReader(new InputStreamReader(conToken.getInputStream()));
-
-			int cpToken;
-			while ((cpToken = brfToken.read()) != -1) {
-				sbToken.append((char) cpToken);
+			String strUrlSendSMS = "http://api.dongthap.gov.vn/api/v1/congdan/SendSms";
+			String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
+			//_log.info("authStrEnc: "+ authStrEnc);
+			String toTelNoRpl = toTelNo;
+			if ("+84".equals(toTelNo.substring(0, 2))) {
+				toTelNoRpl = toTelNo.replace("+84", "0");
+			} else if ("84".equals(toTelNo.substring(0, 1))) {
+				toTelNoRpl = toTelNo.replace("84", "0");
 			}
-		} catch (Exception e) {
-			_log.debug(e);
-		}
 
-		if (sbToken != null && Validator.isNotNull(sbToken.toString())) {
-			JSONObject jsonToken = null;
-			try {
-				jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
-			if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
-					&& jsonToken.has("expiryDate")) {
+			for (int i = 0; i < 8; i++) {
+				StringBuilder sbSendSMS = new StringBuilder();
+				try {
+					URL urlSendSMS = new URL(strUrlSendSMS);
 
-				String strUrlSendSMS = "http://api.dongthap.gov.vn/api/v1/congdan/SendSms";
-				String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
-				//_log.info("authStrEnc: "+ authStrEnc);
-				String toTelNoRpl = toTelNo;
-				if ("+84".equals(toTelNo.substring(0, 2))) {
-					toTelNoRpl = toTelNo.replace("+84", "0");
-				} else if ("84".equals(toTelNo.substring(0, 1))) {
-					toTelNoRpl = toTelNo.replace("84", "0");
-				}
-				
-				for (int i = 0; i < 8; i++) {
-					StringBuilder sbSendSMS = new StringBuilder();
-					try {
-						URL urlSendSMS = new URL(strUrlSendSMS);
+					JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
 
-						JSONObject jsonBody = JSONFactoryUtil.createJSONObject();
+					jsonBody.put("content", body);
+					jsonBody.put("sender", "He thong dich vu cong va mot cua dien tu Tinh Dong Thap");
+					jsonBody.put("receiver", toTelNoRpl);
+					jsonBody.put("applicationTitle", title);
+					//
+					java.net.HttpURLConnection conSendSMS = (java.net.HttpURLConnection) urlSendSMS.openConnection();
+					conSendSMS.setRequestMethod(HttpMethod.POST);
+					conSendSMS.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+					conSendSMS.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+					conSendSMS.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
+					_log.debug("BASIC AUTHEN: " + authStrEnc);
+					conSendSMS.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
+							StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
 
-						jsonBody.put("content", body);
-						jsonBody.put("sender", "He thong dich vu cong va mot cua dien tu Tinh Dong Thap");
-						jsonBody.put("receiver", toTelNoRpl);
-						jsonBody.put("applicationTitle", title);
-						//
-						java.net.HttpURLConnection conSendSMS = (java.net.HttpURLConnection) urlSendSMS.openConnection();
-						conSendSMS.setRequestMethod(HttpMethod.POST);
-						conSendSMS.setRequestProperty(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-						conSendSMS.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-						conSendSMS.setRequestProperty(HttpHeaders.AUTHORIZATION, authStrEnc);
-						_log.debug("BASIC AUTHEN: " + authStrEnc);
-						conSendSMS.setRequestProperty(HttpHeaders.CONTENT_LENGTH,
-								StringPool.BLANK + Integer.toString(jsonBody.toString().getBytes().length));
+					conSendSMS.setUseCaches(false);
+					conSendSMS.setDoInput(true);
+					conSendSMS.setDoOutput(true);
+					_log.debug("POST DATA: " + jsonBody.toString());
+					OutputStream osSMS = conSendSMS.getOutputStream();
+					osSMS.write(jsonBody.toString().getBytes());
+					osSMS.close();
 
-						conSendSMS.setUseCaches(false);
-						conSendSMS.setDoInput(true);
-						conSendSMS.setDoOutput(true);
-						_log.debug("POST DATA: " + jsonBody.toString());
-						OutputStream osSMS = conSendSMS.getOutputStream();
-						osSMS.write(jsonBody.toString().getBytes());
-						osSMS.close();
+					BufferedReader brfSMS = new BufferedReader(new InputStreamReader(conSendSMS.getInputStream()));
 
-						BufferedReader brfSMS = new BufferedReader(new InputStreamReader(conSendSMS.getInputStream()));
-
-						int cpSendSMS;
-						while ((cpSendSMS = brfSMS.read()) != -1) {
-							sbSendSMS.append((char) cpSendSMS);
-						}
-						_log.info("RESULT PROXY: " + sbSendSMS.toString());
-						if (Validator.isNotNull(sbSendSMS.toString()) ) {
-							JSONObject jsonResult = JSONFactoryUtil.createJSONObject(sbSendSMS.toString());
-							if (jsonResult != null && jsonResult.has("result") && 
-									"SUCCESSFUL".equals(jsonResult.getString("result"))) {
-								break;
-							}
-						}
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e1) {
-							_log.info("Time not delay");
-						}
-						//
-					} catch (Exception e) {
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e1) {
-							_log.info("Time not delay");
-						}
-						_log.debug(e);
+					int cpSendSMS;
+					while ((cpSendSMS = brfSMS.read()) != -1) {
+						sbSendSMS.append((char) cpSendSMS);
 					}
+					_log.info("RESULT PROXY: " + sbSendSMS.toString());
+					if (Validator.isNotNull(sbSendSMS.toString()) ) {
+						JSONObject jsonResult = JSONFactoryUtil.createJSONObject(sbSendSMS.toString());
+						if (jsonResult != null && jsonResult.has("result") &&
+								"SUCCESSFUL".equals(jsonResult.getString("result"))) {
+							break;
+						}
+					}
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+						_log.info("Time not delay");
+					}
+					//
+				} catch (Exception e) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+						_log.info("Time not delay");
+					}
+					_log.debug(e);
 				}
-				
 			}
+
 		}
 
 		return StringPool.BLANK;

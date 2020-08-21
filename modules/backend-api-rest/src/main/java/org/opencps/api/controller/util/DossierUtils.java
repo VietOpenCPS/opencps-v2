@@ -36,8 +36,10 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
+import org.opencps.dossiermgt.action.util.DossierContentGenerator;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierOverDueUtils;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.DossierPublishModel;
@@ -704,6 +706,7 @@ public class DossierUtils {
 				//_log.info("flagCeil: "+flagCeil);
 				//_log.info("overDue: "+overDue);
 				//_log.info("durationCount: "+durationCount);
+				// tính thời gian giải quyết còn lại của hồ sơ (overdue = true)
 				if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, 0.0) > 0) {
 					//return (int)durationCount + strOverDue;
 					return overDue + strOverDue;
@@ -729,10 +732,12 @@ public class DossierUtils {
 
 //		_log.info("overDue: "+overDue);
 //		_log.info("strOverDue: "+strOverDue);
-		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, durationCount) > 0) {
-			return Math.abs((int)durationCount) + strOverDue;
+		// tính thời gian giải quyết còn lại của hồ sơ
+		if (Double.compare(durationCount, 0.0) > 0 && Double.compare(overDue, 0.0) > 0) {
+//			return Math.abs((int)durationCount) + strOverDue;
+			return overDue + strOverDue;
 		} else {
-			return Math.abs((int)overDue) + strOverDue;
+			return durationCount + strOverDue;
 		}
 	}
 
@@ -983,7 +988,11 @@ public class DossierUtils {
 		model.setContactTelNo(input.getContactTelNo());
 		model.setContactEmail(input.getContactEmail());
 		model.setDossierNote(input.getDossierNote());
-		model.setSubmissionNote(input.getSubmissionNote());
+		if(Validator.isNotNull(input.getSubmissionNote())) {
+			String submissionNote = DossierContentGenerator.getSubmissionNote(
+					input.getDossierId(), input.getSubmissionNote());
+			model.setSubmissionNote(submissionNote);
+		}
 		model.setBriefNote(input.getBriefNote());
 		model.setDossierNo(input.getDossierNo());
 		model.setSubmitting(Boolean.toString(input.getSubmitting()));
@@ -1442,6 +1451,21 @@ public class DossierUtils {
 		return model;
 	}
 
+	public static JSONObject mappingDossierJSON(DossierAction dAction, long dossierDocumentId,JSONObject elmData) {
+		elmData.put(DossierActionTerm.DOSSIERACTION_ID, dAction.getDossierActionId());
+		elmData.put(DossierActionTerm.DOSSIER_ID,dAction.getDossierId());
+		elmData.put(DossierActionTerm.DOSSIER_DOCUMENT_ID,dossierDocumentId);
+		elmData.put(DossierActionTerm.FROM_STEP_CODE,dAction.getFromStepCode());
+		elmData.put(DossierActionTerm.NEXT_ACTION_ID,dAction.getNextActionId());
+		elmData.put(DossierActionTerm.GROUP_ID,dAction.getGroupId());
+		elmData.put(DossierActionTerm.PREVIOUS_ACTION_ID,dAction.getPreviousActionId());
+		elmData.put(DossierActionTerm.SEQUENCE_NO,dAction.getSequenceNo());
+		elmData.put(DossierActionTerm.SERVICE_PROCESS_ID,dAction.getServiceProcessId());
+		elmData.put(DossierActionTerm.ROLLBACK_ABLE,dAction.getRollbackable());
+
+		return elmData;
+	}
+
 	//Mapping publish dossier
 	public static List<DossierDataPublishModel> mappingForGetPublishList(List<Document> docs) {
 		List<DossierDataPublishModel> ouputs = new ArrayList<DossierDataPublishModel>();
@@ -1668,4 +1692,98 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
+	public static List<Long> mappingForListCongVan(List<Document> docs) {
+		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
+		if(Validator.isNotNull(docs)) {
+			for (Document doc : docs) {
+				int originality = GetterUtil.getInteger(doc.get(DossierTerm.ORIGINALLITY));
+				DossierDataModel model = new DossierDataModel();
+				model.setDossierIdCTN(doc.get(DossierTerm.DOSSIER_ID_CTN));
+				model.setDossierId(GetterUtil.getInteger(doc.get(Field.ENTRY_CLASS_PK)));
+				model.setDossierName(doc.get(DossierTerm.DOSSIER_NAME));
+				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+				model.setServiceName(doc.get(DossierTerm.SERVICE_NAME));
+				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+				model.setApplicantName(doc.get(DossierTerm.APPLICANT_NAME) != null ? doc.get(DossierTerm.APPLICANT_NAME).toUpperCase().replace(";", "; ") : StringPool.BLANK);
+				model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
+				model.setOriginality(originality);
+				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+				model.setDueDateComing(doc.get(DossierTerm.DUE_DATE_COMING));
+				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+				model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+				model.setStepCode(doc.get(DossierTerm.STEP_CODE));
+				model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
+				model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
+				model.setServerNo(doc.get(DossierTerm.SERVER_NO));
+				String groupDossierId = "";
+				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
+					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
+					for (String key : idGroup) {
+						groupDossierId += key + ",";
+					}
+					model.setGroupDossierIds(groupDossierId);
+				}
+				model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
+
+				ouputs.add(model);
+			}
+		}
+		List<Long> lstId = new ArrayList<>();
+		if(ouputs !=null){
+			for(DossierDataModel item : ouputs) {
+				//GroupDossierId : id,id,id
+				if (Validator.isNotNull(item.getGroupDossierIds())) {
+					String groupDossierIds = String.valueOf(item.getGroupDossierIds());
+					String[] id = groupDossierIds.split(StringPool.COMMA);
+					for (String key : id) {
+						if(!key.contains(lstId.toString())){
+							lstId.add(Long.valueOf(key));
+						}
+					}
+				}
+			}
+		}
+
+		return lstId;
+	}
+	public static List<DossierDataModel> mappingForListDossier(List<Dossier> docs) {
+		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
+		for (Dossier doc : docs) {
+			int originality = GetterUtil.getInteger(doc.getOriginality());
+			DossierDataModel model = new DossierDataModel();
+ 			model.setDossierId(GetterUtil.getInteger(doc.getDossierId()));
+			model.setDossierName(doc.getDossierName());
+			model.setGroupId(GetterUtil.getInteger(doc.getGroupId()));
+			model.setServiceCode(doc.getServiceCode());
+			model.setServiceName(doc.getServiceName());
+			model.setGovAgencyCode(doc.getGovAgencyCode());
+			model.setGovAgencyName(doc.getGovAgencyName());
+			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
+			model.setDossierNo(doc.getDossierNo());
+			model.setOriginality(originality);
+			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getExtendDate())) {
+				model.setExtendDate(doc.getExtendDate().toGMTString());
+			}
+			model.setDossierStatus(doc.getDossierStatus());
+ 			model.setDossierTemplateNo(doc.getDossierTemplateNo());
+			model.setDossierTemplateName(doc.getDossierTemplateName());
+			model.setServerNo(doc.getServerNo());
+			model.setGroupDossierId(GetterUtil.getLong(doc.getGroupDossierId()));
+			model.setDocumentNo(GetterUtil.getString(doc.getDocumentNo()));
+			if (Validator.isNotNull(doc.getDocumentDate())) {
+				model.setDocumentDate(APIDateTimeUtils.convertDateToString(doc.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN));
+			}
+//			model.setDocumentDate(GetterUtil.getString(doc.getDocumentDate()));
+			if(Validator.isNotNull(doc.getMetaData())) {
+				model.setMetaData(GetterUtil.getString(doc.getMetaData()));
+			}
+			ouputs.add(model);
+		}
+
+		return ouputs;
+	}
+
 }

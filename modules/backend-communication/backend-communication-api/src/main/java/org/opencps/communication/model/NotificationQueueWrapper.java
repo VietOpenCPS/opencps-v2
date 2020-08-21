@@ -76,6 +76,7 @@ public class NotificationQueueWrapper implements NotificationQueue,
 		attributes.put("toTelNo", getToTelNo());
 		attributes.put("publicationDate", getPublicationDate());
 		attributes.put("expireDate", getExpireDate());
+		attributes.put("priority", getPriority());
 
 		return attributes;
 	}
@@ -188,6 +189,12 @@ public class NotificationQueueWrapper implements NotificationQueue,
 
 		if (expireDate != null) {
 			setExpireDate(expireDate);
+		}
+
+		Integer priority = (Integer)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
 		}
 	}
 
@@ -329,6 +336,16 @@ public class NotificationQueueWrapper implements NotificationQueue,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _notificationQueue.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the priority of this notification queue.
+	*
+	* @return the priority of this notification queue
+	*/
+	@Override
+	public int getPriority() {
+		return _notificationQueue.getPriority();
 	}
 
 	/**
@@ -595,6 +612,16 @@ public class NotificationQueueWrapper implements NotificationQueue,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_notificationQueue.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the priority of this notification queue.
+	*
+	* @param priority the priority of this notification queue
+	*/
+	@Override
+	public void setPriority(int priority) {
+		_notificationQueue.setPriority(priority);
 	}
 
 	/**

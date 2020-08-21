@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -83,7 +82,8 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 			{ "toEmail", Types.VARCHAR },
 			{ "toTelNo", Types.VARCHAR },
 			{ "publicationDate", Types.TIMESTAMP },
-			{ "expireDate", Types.TIMESTAMP }
+			{ "expireDate", Types.TIMESTAMP },
+			{ "priority", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -106,12 +106,13 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		TABLE_COLUMNS_MAP.put("toTelNo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("publicationDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("expireDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("priority", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_notificationqueue (notificationQueueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,className VARCHAR(512) null,classPK VARCHAR(255) null,payload TEXT null,fromUsername VARCHAR(512) null,toUsername VARCHAR(512) null,toUserId LONG,toEmail VARCHAR(255) null,toTelNo VARCHAR(255) null,publicationDate DATE null,expireDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_notificationqueue (notificationQueueId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,notificationType VARCHAR(255) null,className VARCHAR(512) null,classPK VARCHAR(255) null,payload TEXT null,fromUsername VARCHAR(512) null,toUsername VARCHAR(512) null,toUserId LONG,toEmail VARCHAR(255) null,toTelNo VARCHAR(255) null,publicationDate DATE null,expireDate DATE null,priority INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_notificationqueue";
-	public static final String ORDER_BY_JPQL = " ORDER BY notificationQueue.createDate ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationqueue.createDate ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY notificationQueue.priority DESC";
+	public static final String ORDER_BY_SQL = " ORDER BY opencps_notificationqueue.priority DESC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -130,7 +131,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	public static final long GROUPID_COLUMN_BITMASK = 8L;
 	public static final long NOTIFICATIONTYPE_COLUMN_BITMASK = 16L;
 	public static final long TOEMAIL_COLUMN_BITMASK = 32L;
-	public static final long CREATEDATE_COLUMN_BITMASK = 64L;
+	public static final long PRIORITY_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(backend.communication.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.communication.model.NotificationQueue"));
 
@@ -189,6 +190,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		attributes.put("toTelNo", getToTelNo());
 		attributes.put("publicationDate", getPublicationDate());
 		attributes.put("expireDate", getExpireDate());
+		attributes.put("priority", getPriority());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -305,6 +307,12 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		if (expireDate != null) {
 			setExpireDate(expireDate);
 		}
+
+		Integer priority = (Integer)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
+		}
 	}
 
 	@Override
@@ -397,8 +405,6 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public void setCreateDate(Date createDate) {
-		_columnBitmask = -1L;
-
 		_createDate = createDate;
 	}
 
@@ -634,6 +640,18 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		return _originalExpireDate;
 	}
 
+	@Override
+	public int getPriority() {
+		return _priority;
+	}
+
+	@Override
+	public void setPriority(int priority) {
+		_columnBitmask = -1L;
+
+		_priority = priority;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -683,6 +701,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		notificationQueueImpl.setToTelNo(getToTelNo());
 		notificationQueueImpl.setPublicationDate(getPublicationDate());
 		notificationQueueImpl.setExpireDate(getExpireDate());
+		notificationQueueImpl.setPriority(getPriority());
 
 		notificationQueueImpl.resetOriginalValues();
 
@@ -693,8 +712,17 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	public int compareTo(NotificationQueue notificationQueue) {
 		int value = 0;
 
-		value = DateUtil.compareTo(getCreateDate(),
-				notificationQueue.getCreateDate());
+		if (getPriority() < notificationQueue.getPriority()) {
+			value = -1;
+		}
+		else if (getPriority() > notificationQueue.getPriority()) {
+			value = 1;
+		}
+		else {
+			value = 0;
+		}
+
+		value = value * -1;
 
 		if (value != 0) {
 			return value;
@@ -885,12 +913,14 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 			notificationQueueCacheModel.expireDate = Long.MIN_VALUE;
 		}
 
+		notificationQueueCacheModel.priority = getPriority();
+
 		return notificationQueueCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{notificationQueueId=");
 		sb.append(getNotificationQueueId());
@@ -928,6 +958,8 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 		sb.append(getPublicationDate());
 		sb.append(", expireDate=");
 		sb.append(getExpireDate());
+		sb.append(", priority=");
+		sb.append(getPriority());
 		sb.append("}");
 
 		return sb.toString();
@@ -935,7 +967,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.communication.model.NotificationQueue");
@@ -1013,6 +1045,10 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 			"<column><column-name>expireDate</column-name><column-value><![CDATA[");
 		sb.append(getExpireDate());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>priority</column-name><column-value><![CDATA[");
+		sb.append(getPriority());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1049,6 +1085,7 @@ public class NotificationQueueModelImpl extends BaseModelImpl<NotificationQueue>
 	private Date _publicationDate;
 	private Date _expireDate;
 	private Date _originalExpireDate;
+	private int _priority;
 	private long _columnBitmask;
 	private NotificationQueue _escapedModel;
 }

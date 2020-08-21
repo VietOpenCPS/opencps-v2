@@ -206,6 +206,12 @@ public class DeliverableTypeLocalServiceWrapper
 	}
 
 	@Override
+	public org.opencps.dossiermgt.model.DeliverableType fetchByG_DLT(
+		long groupId, String typeCode) {
+		return _deliverableTypeLocalService.fetchByG_DLT(groupId, typeCode);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.DeliverableType fetchDeliverableType(
 		long deliverableTypeId) {
 		return _deliverableTypeLocalService.fetchDeliverableType(deliverableTypeId);

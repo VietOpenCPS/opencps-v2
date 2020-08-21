@@ -144,6 +144,7 @@
 		<property name="employeeId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="jobPostId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="workingUnitId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.usermgt.model.impl.FileItemImpl" table="opencps_fileitem">
 		<id name="fileItemId" type="long">

@@ -24903,6 +24903,620 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_1 = "dossier.dossierCounter IS NULL";
 	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_2 = "dossier.dossierCounter = ?";
 	private static final String _FINDER_COLUMN_DC_DOSSIERCOUNTER_3 = "(dossier.dossierCounter IS NULL OR dossier.dossierCounter = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_D_OR_D = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByD_OR_D",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D =
+		new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, DossierImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByD_OR_D",
+			new String[] { Long.class.getName() },
+			DossierModelImpl.DOSSIERID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_D_OR_D = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByD_OR_D",
+			new String[] { Long.class.getName() });
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_D_OR_D = new FinderPath(DossierModelImpl.ENTITY_CACHE_ENABLED,
+			DossierModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByD_OR_D",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the dossiers where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long dossierId) {
+		return findByD_OR_D(dossierId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long dossierId, int start, int end) {
+		return findByD_OR_D(dossierId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long dossierId, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByD_OR_D(dossierId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long dossierId, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D;
+			finderArgs = new Object[] { dossierId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_D_OR_D;
+			finderArgs = new Object[] { dossierId, start, end, orderByComparator };
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(finderPath, finderArgs,
+					this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if ((dossierId != dossier.getDossierId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_D_OR_D_DOSSIERID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByD_OR_D_First(long dossierId,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByD_OR_D_First(dossierId, orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the first dossier in the ordered set where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByD_OR_D_First(long dossierId,
+		OrderByComparator<Dossier> orderByComparator) {
+		List<Dossier> list = findByD_OR_D(dossierId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier
+	 * @throws NoSuchDossierException if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier findByD_OR_D_Last(long dossierId,
+		OrderByComparator<Dossier> orderByComparator)
+		throws NoSuchDossierException {
+		Dossier dossier = fetchByD_OR_D_Last(dossierId, orderByComparator);
+
+		if (dossier != null) {
+			return dossier;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("dossierId=");
+		msg.append(dossierId);
+
+		msg.append("}");
+
+		throw new NoSuchDossierException(msg.toString());
+	}
+
+	/**
+	 * Returns the last dossier in the ordered set where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching dossier, or <code>null</code> if a matching dossier could not be found
+	 */
+	@Override
+	public Dossier fetchByD_OR_D_Last(long dossierId,
+		OrderByComparator<Dossier> orderByComparator) {
+		int count = countByD_OR_D(dossierId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Dossier> list = findByD_OR_D(dossierId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns all the dossiers where dossierId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierIds the dossier IDs
+	 * @return the matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long[] dossierIds) {
+		return findByD_OR_D(dossierIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the dossiers where dossierId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierIds the dossier IDs
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @return the range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long[] dossierIds, int start, int end) {
+		return findByD_OR_D(dossierIds, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierIds the dossier IDs
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long[] dossierIds, int start, int end,
+		OrderByComparator<Dossier> orderByComparator) {
+		return findByD_OR_D(dossierIds, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the dossiers where dossierId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link DossierModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param dossierId the dossier ID
+	 * @param start the lower bound of the range of dossiers
+	 * @param end the upper bound of the range of dossiers (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching dossiers
+	 */
+	@Override
+	public List<Dossier> findByD_OR_D(long[] dossierIds, int start, int end,
+		OrderByComparator<Dossier> orderByComparator, boolean retrieveFromCache) {
+		if (dossierIds == null) {
+			dossierIds = new long[0];
+		}
+		else if (dossierIds.length > 1) {
+			dossierIds = ArrayUtil.unique(dossierIds);
+
+			Arrays.sort(dossierIds);
+		}
+
+		if (dossierIds.length == 1) {
+			return findByD_OR_D(dossierIds[0], start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] { StringUtil.merge(dossierIds) };
+		}
+		else {
+			finderArgs = new Object[] {
+					StringUtil.merge(dossierIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<Dossier> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<Dossier>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_D_OR_D,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (Dossier dossier : list) {
+					if (!ArrayUtil.contains(dossierIds, dossier.getDossierId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_DOSSIER_WHERE);
+
+			if (dossierIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_D_OR_D_DOSSIERID_7);
+
+				query.append(StringUtil.merge(dossierIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(DossierModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				if (!pagination) {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Dossier>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_D_OR_D,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_D_OR_D,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the dossiers where dossierId = &#63; from the database.
+	 *
+	 * @param dossierId the dossier ID
+	 */
+	@Override
+	public void removeByD_OR_D(long dossierId) {
+		for (Dossier dossier : findByD_OR_D(dossierId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(dossier);
+		}
+	}
+
+	/**
+	 * Returns the number of dossiers where dossierId = &#63;.
+	 *
+	 * @param dossierId the dossier ID
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByD_OR_D(long dossierId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_D_OR_D;
+
+		Object[] finderArgs = new Object[] { dossierId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			query.append(_FINDER_COLUMN_D_OR_D_DOSSIERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(dossierId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of dossiers where dossierId = any &#63;.
+	 *
+	 * @param dossierIds the dossier IDs
+	 * @return the number of matching dossiers
+	 */
+	@Override
+	public int countByD_OR_D(long[] dossierIds) {
+		if (dossierIds == null) {
+			dossierIds = new long[0];
+		}
+		else if (dossierIds.length > 1) {
+			dossierIds = ArrayUtil.unique(dossierIds);
+
+			Arrays.sort(dossierIds);
+		}
+
+		Object[] finderArgs = new Object[] { StringUtil.merge(dossierIds) };
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_D_OR_D,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_DOSSIER_WHERE);
+
+			if (dossierIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_D_OR_D_DOSSIERID_7);
+
+				query.append(StringUtil.merge(dossierIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_D_OR_D,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_D_OR_D,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_D_OR_D_DOSSIERID_2 = "dossier.dossierId = ?";
+	private static final String _FINDER_COLUMN_D_OR_D_DOSSIERID_7 = "dossier.dossierId IN (";
 
 	public DossierPersistenceImpl() {
 		setModelClass(Dossier.class);
@@ -25760,6 +26374,12 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_VNP_STT,
 				args);
 
+			args = new Object[] { dossierModelImpl.getDossierId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_D_OR_D, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -26262,6 +26882,23 @@ public class DossierPersistenceImpl extends BasePersistenceImpl<Dossier>
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_G_VNP_STT, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_VNP_STT,
+					args);
+			}
+
+			if ((dossierModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						dossierModelImpl.getOriginalDossierId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_D_OR_D, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D,
+					args);
+
+				args = new Object[] { dossierModelImpl.getDossierId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_D_OR_D, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_D_OR_D,
 					args);
 			}
 		}

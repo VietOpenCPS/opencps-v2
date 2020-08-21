@@ -193,5 +193,24 @@ public class PayGateUtil {
 		}		
 		return convertDate;
 	}
+	
+	public static String hmacVTP(String data, String key) throws java.security.SignatureException {//key do viettel cung cap
+		String result = StringPool.BLANK;
+		String HMAC_SHA1_ALGORITHM = "HmacSHA1";
+		try {
+			SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
+			Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+			mac.init(signingKey);
+			byte[] rawHmac = mac.doFinal(data.getBytes());
+			result = new String(Base64.getEncoder().encodeToString((rawHmac)));
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+		return result;
+	}
+	
+	public static final String createOrderIdFull (long dossierId, String dossierNo) {
+		return dossierId + "___" + dossierNo;
+	}
 	private static Log _log = LogFactoryUtil.getLog(PayGateUtil.class);
 }

@@ -912,7 +912,8 @@ public class UserManagementImpl implements UserManagement {
 
 		try {
 			List<Role> roles = user.getRoles();
-
+			if (roles != null && roles.size() > 0)
+				_log.info("roles:" + roles.size());
 			for (Role role : roles) {
 //				String roleName = StringPool.BLANK;
 				//String roleName;

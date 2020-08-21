@@ -82,6 +82,23 @@
 			ORDER BY month DESC
 		]]>
 	</sql>
+	//anh
+	<sql id="org.opencps.statistic.service.persistence.OpencpsVotingStatisticFinder.searchVotingStatisticCountPoint">
+		<![CDATA[
+			select votingCode, subject, sum(case when selected = 1 then numberSelected*2
+					   when selected = 2 then numberSelected*1
+                       when selected = 3 then numberSelected*0
+                       else 0 end)  as point
+		    from
+				(select OV.votingCode, OV.subject, OVR.selected, count(*) as numberSelected
+				from opencps_voting OV
+				left join opencps_votingresult OVR
+				on OV.votingId = OVR.votingId and (OVR.createDate BETWEEN ? AND ?) and OV.groupId = OVR.groupId
+				where OV.classPK !=0 and OV.groupId = ?
+				group by OV.votingId, OVR.selected) as abc
+			group by votingCode
+		]]>
+	</sql>
 
 	<sql id="org.opencps.statistic.service.persistence.OpencpsPersonStatisticFinder.searchStatisic">
 		<![CDATA[
@@ -126,6 +143,16 @@
 				(opencps_statistic_manual.groupAgencyCode = ?) AND 
 				(opencps_statistic_manual.groupId = ?)
 			ORDER BY month DESC
+		]]>
+	</sql>
+	<sql id="org.opencps.statistic.service.persistence.OpencpsDossierStatisticFinder.updateStatisic">
+		<![CDATA[
+			UPDATE opencps_statistic 
+			SET opencps_statistic.reporting = ?
+			WHERE 
+				(opencps_statistic.groupId = ?) AND
+				(opencps_statistic.month = ?) AND
+				(opencps_statistic.year = ?)
 		]]>
 	</sql>
 
