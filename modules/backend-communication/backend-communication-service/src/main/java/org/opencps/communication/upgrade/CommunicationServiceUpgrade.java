@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.opencps.communication.upgrade.v1_0_1.UpgradeSchema;
+import org.opencps.communication.upgrade.v1_0_1.UpgradeSchema1_0_2;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -39,6 +40,7 @@ public class CommunicationServiceUpgrade implements UpgradeStepRegistrator {
 		_log.info("===CommunicationServiceUpgrade===");
 		
 		registry.register("1.0.0", "1.0.1", new DummyUpgradeStep(), new UpgradeSchema());
+		registry.register("1.0.1", "1.0.2", new DummyUpgradeStep(), new UpgradeSchema1_0_2());
 		
 		// See LPS-82746
 		

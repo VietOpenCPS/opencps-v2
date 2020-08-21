@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.opencps.usermgt.upgrade.v0_0_1;
+package org.opencps.usermgt.upgrade.v0_0_3;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -20,41 +20,19 @@ import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
 import org.opencps.usermgt.upgrade.v0_0_1.util.EmployeeJobPosTable;
-import org.opencps.usermgt.upgrade.v0_0_1.util.EmployeeTable;
 
 /**
  * @author nhanhoang
  */
-public class UpgradeSchema extends UpgradeProcess {
-	private Log _log = LogFactoryUtil.getLog(UpgradeSchema.class.getName());
-	
-	
+public class UpgradeSchema1_0_4 extends UpgradeProcess {
+	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_4.class.getName());
+
 	@Override
 	protected void doUpgrade() throws Exception {
 
 		upgrade(new UpgradeMVCCVersion());
 
-		if (!hasTable(EmployeeTable.TABLE_NAME)) {
-			runSQL(EmployeeTable.TABLE_SQL_CREATE);
-		} else {
-			upgradeTable(EmployeeTable.TABLE_NAME, 
-					EmployeeTable.TABLE_COLUMNS, 
-					EmployeeTable.TABLE_SQL_CREATE,
-					EmployeeTable.TABLE_SQL_ADD_INDEXES);
-
-		}
-
-		alter(EmployeeTable.class, new AlterTableAddColumn("jobPosTitle VARCHAR(75) null"));
-		
-		if (!hasTable(EmployeeJobPosTable.TABLE_NAME)) {
-			runSQL(EmployeeJobPosTable.TABLE_SQL_CREATE);
-		} else {
-			upgradeTable(EmployeeJobPosTable.TABLE_NAME, 
-					EmployeeJobPosTable.TABLE_COLUMNS, 
-					EmployeeJobPosTable.TABLE_SQL_CREATE,
-					EmployeeJobPosTable.TABLE_SQL_ADD_INDEXES);
-
-		}
+		alter(EmployeeJobPosTable.class, new AlterTableAddColumn("status INTEGER"));
 
 	}
 

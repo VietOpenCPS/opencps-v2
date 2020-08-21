@@ -19,15 +19,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeMVCCVersion;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
-import org.opencps.communication.upgrade.v1_0_1.util.LGSPTokenTable;
 import org.opencps.communication.upgrade.v1_0_1.util.NotificationQueueTable;
 import org.opencps.communication.upgrade.v1_0_1.util.NotificationTemplateTable;
 
 /**
  * @author nhanhoang
  */
-public class UpgradeSchema extends UpgradeProcess {
-	private Log _log = LogFactoryUtil.getLog(UpgradeSchema.class.getName());
+public class UpgradeSchema1_0_2 extends UpgradeProcess {
+	private Log _log = LogFactoryUtil.getLog(UpgradeSchema1_0_2.class.getName());
 	
 	
 	@Override
@@ -36,34 +35,8 @@ public class UpgradeSchema extends UpgradeProcess {
 		upgrade(new UpgradeMVCCVersion());
 
 		
-		if (!hasTable(NotificationQueueTable.TABLE_NAME)) {
-
-			runSQL(NotificationQueueTable.TABLE_SQL_CREATE);
-
-		} else {
-			upgradeTable(NotificationQueueTable.TABLE_NAME, NotificationQueueTable.TABLE_COLUMNS, NotificationQueueTable.TABLE_SQL_CREATE,
-					NotificationQueueTable.TABLE_SQL_ADD_INDEXES);
-		}
-		
-		if (!hasTable(LGSPTokenTable.TABLE_NAME)) {
-
-			runSQL(LGSPTokenTable.TABLE_SQL_CREATE);
-
-		} else {
-			upgradeTable(LGSPTokenTable.TABLE_NAME, LGSPTokenTable.TABLE_COLUMNS, LGSPTokenTable.TABLE_SQL_CREATE,
-					LGSPTokenTable.TABLE_SQL_ADD_INDEXES);
-		}
-		
-		if (!hasTable(NotificationTemplateTable.TABLE_NAME)) {
-
-			runSQL(NotificationTemplateTable.TABLE_SQL_CREATE);
-
-		} else {
-			upgradeTable(NotificationTemplateTable.TABLE_NAME, NotificationTemplateTable.TABLE_COLUMNS, NotificationTemplateTable.TABLE_SQL_CREATE,
-					NotificationTemplateTable.TABLE_SQL_ADD_INDEXES);
-		}
-		
-		
+		alter(NotificationQueueTable.class, new AlterTableAddColumn("priority INTEGER"));
+		alter(NotificationTemplateTable.class, new AlterTableAddColumn("priority INTEGER"));
 		
 
 	}
