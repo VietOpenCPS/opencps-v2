@@ -96,7 +96,7 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			Employee employee = null;
 			if(Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
 				 employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				 inputObject.put("userName", employee.getUserName());
+				 inputObject.put("userName", employee.getFullName());
 			}
 			if(!inputObject.has("govAgencyCode")){
 				if(Validator.isNotNull(employee)){

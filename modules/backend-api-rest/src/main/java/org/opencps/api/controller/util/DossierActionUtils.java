@@ -684,7 +684,7 @@ public class DossierActionUtils {
 									for (User user : lstUser) {
 										Employee employee =
 												mapEmps.get(user.getUserId());
-										if (employee.getFullName().contains(roleDataModel.getRoleName())) {
+										if (employee.getFullName().toLowerCase().contains(roleDataModel.getRoleName().toLowerCase())) {
 											org.opencps.api.user.model.UserModel userModel = new org.opencps.api.user.model.UserModel();
 											userModel.setUserId(user.getUserId());
 

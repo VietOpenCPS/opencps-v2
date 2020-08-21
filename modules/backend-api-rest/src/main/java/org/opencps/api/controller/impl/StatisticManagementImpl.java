@@ -704,6 +704,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 					bodyArr = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getJSONArray(StatisticManagementConstants.BODY);
 					headerRows = contentArr.getJSONObject(i).getJSONObject(StatisticManagementConstants.TABLE).getInt(StatisticManagementConstants.HEADER_ROWS);
 					for (int tempi = 0; tempi <= headerRows; tempi++) {
+//						_log.info("EXPORT STATISTIC headerRows : " + headerRows + "bodyArr " + bodyArr);
 						JSONArray tempObj = bodyArr.getJSONArray(tempi);
 						int startCol = 0;
 						
@@ -711,7 +712,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 
 						for (int tempj = 0; tempj < tempObj.length(); tempj++) {
 							JSONObject columnObj = tempObj.getJSONObject(tempj);
-							
+//							_log.info("EXPORT STATISTIC tempj : " + tempj);
 							_log.debug("EXPORT STATISTIC ROW: " + startRow + ", COLUMN: " + startCol);
 							int spanCol = 1;
 							int spanRow = 1;
@@ -724,6 +725,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
+//								_log.info("EXPORT STATISTIC cellStyle : " + cellStyle);
 								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
 									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
 									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
@@ -773,9 +775,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 								spanRow = columnObj.getInt(StatisticManagementConstants.ROW_SPAN);
 							}
 							if (columnObj != null) {
+//								_log.info("EXPORT STATISTIC columnObj: " + columnObj);
 								row.createCell(startCol).setCellValue(columnObj != null ? columnObj.getString(StatisticManagementConstants.TEXT) : StringPool.BLANK);						
 								CellStyle cellStyle = row.getCell(startCol).getCellStyle();
 								cellStyle.setWrapText(true);
+//								_log.info("EXPORT STATISTIC cellStyle: " + cellStyle);
 								if (columnObj.has(StatisticManagementConstants.ALIGNMENT)) {
 									String alignment = columnObj.getString(StatisticManagementConstants.ALIGNMENT);
 									if (StatisticManagementConstants.ALIGNMENT_LEFT.equals(alignment)) {
@@ -788,6 +792,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 										cellStyle.setAlignment(HorizontalAlignment.CENTER);
 									}
 									row.getCell(startCol).setCellStyle(cellStyle);
+									mainSheet.autoSizeColumn(startCol);
 								}
 								if (columnObj != null && columnObj.has(StatisticManagementConstants.COL_SPAN)) {
 									spanCol = columnObj.getInt(StatisticManagementConstants.COL_SPAN);
@@ -798,6 +803,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
 //									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
 								}
+								mainSheet.autoSizeColumn(startRow);
 							}
 							startCol++;
 						}

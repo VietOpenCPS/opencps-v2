@@ -1684,7 +1684,7 @@ public class DeliverableLocalServiceImpl
 							queryBool.add(wildQuery, BooleanClauseOccur.SHOULD);
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-					}else if(entry.getValue().contains(StringPool.SPACE)){
+					}else if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
 						System.out.println("------@SPACE------");
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
 							BooleanQuery query = new BooleanQueryImpl();
@@ -1722,10 +1722,12 @@ public class DeliverableLocalServiceImpl
 								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 						}else {
-							WildcardQuery wildQuery = new WildcardQueryImpl(
-									key.split("@")[0],
-									StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							if(Validator.isNotNull(entry.getValue())) {
+								WildcardQuery wildQuery = new WildcardQueryImpl(
+										key.split("@")[0],
+										StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							}
 						}
 					}
 				} else if (key.contains("@EQUAL")) {
