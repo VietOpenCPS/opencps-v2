@@ -330,6 +330,7 @@ public class DossierTerm {
 	public static final String CONTAIN_TEMPLATE = "template=";
 	public static final String CONTAIN_ORIGINAL = "originality=";
 	public static final String CONTAIN_STEP_DONE = "stepdone=";
+	public static final String CONTAIN_POST_STATUS = "postStatus=";
 	public static final String CONTAIN_STEP_NOT_DONE = "stepnotdone=";
 	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
 	public static final String CONTAIN_ROLE_DONE = "roledone=";
