@@ -69,4 +69,8 @@ public class DossierActionTerm {
 	public static final String REJECT_CORRECTING = "reject_correcting";
 	public static final String CORRECTING = "correcting";
 	public static final String LST_USER = "lstUser";
+	public static final String ACTION_CODE_EXPORT = "Người thao tác";
+	public static final String ACTION_NAME_EXPORT = "Thao tác";
+	public static final String CREATE_DATE_EXPORT = "Người tạo";
+	public static final String ACTION_NOTE_EXPORT = "Ghi chú";
 }
