@@ -174,6 +174,7 @@ public class DossierMgtUtils {
 		obj.put(DossierTerm.DELEGATE_NAME, dossier.getDelegateName());
 		obj.put(DossierTerm.DELEGATE_EMAIL, dossier.getDelegateEmail());
 		obj.put(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+		obj.put(DossierTerm.USER_ID, dossier.getUserId());
 		String serviceCode = dossier.getServiceCode();
 		ServiceProcess serviceProcess;
 		try {
