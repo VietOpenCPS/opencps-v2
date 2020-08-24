@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
@@ -85,6 +86,7 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 				document.addTextSortable(DossierActionTerm.DOSSIER_NO, dossier.getDossierNo());
 			}
 		}
+		document.addTextSortable(DossierTerm.USER_NAME, object.getUserName());
 
 		return document;
 	}

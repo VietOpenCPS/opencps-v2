@@ -7,6 +7,7 @@ public class DossierTerm {
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
+	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String REFERENCE_UID = "referenceUid";

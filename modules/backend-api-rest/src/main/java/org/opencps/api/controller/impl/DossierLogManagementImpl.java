@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.opencps.api.controller.DossierLogManagement;
 import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierLogUtils;
@@ -173,7 +175,8 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
-
+	private static final String STT = "STT";
+	private static final String DOSSIER_ACTION = "DOSSIER_ACTION";
 	@Override
 	public Response getRevisionLogByGroupId(HttpServletRequest request, HttpHeaders header, Company company,
 											Locale locale, User user, ServiceContext serviceContext, DossierSearchModel query) {
@@ -192,6 +195,9 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 
 			String dossierNo = query.getDossierNo();
+			String userName = query.getUserName();
+			String actionUser = query.getActionUser();
+			boolean isExport = query.isExport();
 			String createDateStart =
 					APIDateTimeUtils.convertNormalDateToLuceneDate(
 							query.getCreateDateStart());
@@ -207,6 +213,12 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			}
 			if(Validator.isNotNull(dossierNo)){
 				params.put(DossierTerm.DOSSIER_NO, dossierNo);
+			}
+			if(Validator.isNotNull(userName)){
+				params.put(DossierTerm.USER_NAME, userName);
+			}
+			if(Validator.isNotNull(actionUser)){
+				params.put(DossierTerm.ACTION_USER, actionUser);
 			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
@@ -234,10 +246,24 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 								(List<Document>) jsonData.get(ConstantUtils.DATA)));
 
 			}
-
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
-
+			if(isExport){
+				HSSFWorkbook workbook = null;
+				try {
+					JSONObject headerData = jsonData.getJSONObject(ConstantUtils.DATA);
+					workbook = new HSSFWorkbook();
+					// Create sheet
+					String sheetName = headerData.getString(DOSSIER_ACTION);
+					HSSFSheet mainSheet = workbook.createSheet(sheetName);
+					int rowIndex = 0;
+					int stt = 0;
+					return null;
+				}catch (Exception e){
+					return BusinessExceptionImpl.processException(e);
+				}
+			}else {
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+			}
 
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);

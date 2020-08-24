@@ -1919,6 +1919,9 @@ public class DossierManagementImpl implements DossierManagement {
 											input.getPayment(),
 											actConfig.getSyncType(),
 											serviceContext, errorModel);
+										if(Validator.isNotNull(proAction.getPostAction())){
+											updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
+										}
 									}
 									else {
 										// TODO: Error
@@ -8103,11 +8106,13 @@ public class DossierManagementImpl implements DossierManagement {
 					while (agencysIterator.hasNext()) {
 						String keyAgencys = agencysIterator.next();
 						String valueAgencys = agencysData.getString(keyAgencys);
+						_log.info("Itemcode : " + valueAgencys);
 						if(keyAgencys.equals(DictItemTerm.ITEM_CODE)){
 							if(valueAgencys.equals(DictItemTerm.SCOPE)){
 								 unit = splitByUnitEmployee(groupId,userId);
 							}else{
 								unit = valueAgencys;
+								_log.info("UNIT:" + unit);
 							}
 							break;
 						}else if(keyAgencys.equals(DictItemTerm.isParrentCode)){
@@ -8139,6 +8144,7 @@ public class DossierManagementImpl implements DossierManagement {
 					if(!jsonMetaData.has(DossierTerm.PROCESS_AGENCY_METADATA)){
 						jsonMetaData.put(DossierTerm.PROCESS_AGENCY_METADATA, unit);
 						dossier.setMetaData(jsonMetaData.toJSONString());
+						_log.info("Dossier:" + dossier.getMetaData());
 					}else {
 						while (keyMetaData.hasNext()) {
 							String key = keyMetaData.next();

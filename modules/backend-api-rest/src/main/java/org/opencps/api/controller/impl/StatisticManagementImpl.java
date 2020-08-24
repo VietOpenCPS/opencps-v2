@@ -562,11 +562,15 @@ public class StatisticManagementImpl implements StatisticManagement {
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 			long userId = user.getUserId();
 			_log.debug("userId: " + userId);
+			// Permission params
+			String permission =
+					userId + StringPool.UNDERLINE + ConstantUtils.PERMISSION_WRITE;
 			
 			// Declare params
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
 			params.put(Field.GROUP_ID, String.valueOf(groupId));
 			params.put(Field.USER_ID, String.valueOf(userId));
+			params.put(DossierTerm.MAPPING_PERMISSION, permission);
 
 			//Count if employee scope
 			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
