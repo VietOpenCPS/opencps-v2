@@ -160,7 +160,6 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 
 		// Other fields
 		dictItem.setDictCollectionId(dictCollectionId);
-		itemCode = itemCode;
 		dictItem.setItemCode(itemCode);
 		dictItem.setItemName(itemName);
 		dictItem.setItemNameEN(itemNameEN);
