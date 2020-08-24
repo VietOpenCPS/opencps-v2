@@ -260,7 +260,7 @@ public class DossierSearchModel {
     @QueryParam(value = "systemId")
     protected String systemId;
     @QueryParam(value = "viapostal")
-    protected Integer viapostal;
+    protected String viapostal;
     @QueryParam(value = "undueTime")
     protected String undueTime;
     @QueryParam(value = "fromDueDate")
@@ -279,7 +279,7 @@ public class DossierSearchModel {
     protected String dossierCounter;
 
     @QueryParam(value = "vnpostalStatus")
-    protected Integer vnpostalStatus;
+    protected String vnpostalStatus;
     @QueryParam(value = "fromViaPostal")
     protected Integer fromViaPostal;
 	@QueryParam(value = "donvigui")
@@ -394,11 +394,11 @@ public class DossierSearchModel {
 		this.fromViaPostal = fromViaPostal;
 	}
 
-	public Integer getVnpostalStatus() {
+	public String getVnpostalStatus() {
 		return vnpostalStatus;
 	}
 
-	public void setVnpostalStatus(Integer vnpostalStatus) {
+	public void setVnpostalStatus(String vnpostalStatus) {
 		this.vnpostalStatus = vnpostalStatus;
 	}
 
@@ -442,11 +442,11 @@ public class DossierSearchModel {
 		this.dossierCounter = dossierCounter;
 	}
 
-	public Integer getViapostal() {
+	public String getViapostal() {
 		return viapostal;
 	}
 
-	public void setViapostal(Integer viapostal) {
+	public void setViapostal(String viapostal) {
 		this.viapostal = viapostal;
 	}
 
