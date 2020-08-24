@@ -538,13 +538,15 @@ public class DossierFileLocalServiceImpl
 			}
 		}
 
-		if (Validator.isNotNull(dossierPart.getSampleData())) {
+		_log.info("DossierFile Update formData :" + object.getFormData());
+		if (Validator.isNotNull(dossierPart.getSampleData()) && object.getFormData() == null) {
 			String formData = AutoFillFormData.sampleDataBinding(
 				dossierPart.getSampleData(), dossierId, serviceContext);
 			JSONObject formDataObj = JSONFactoryUtil.createJSONObject(formData);
 			formDataObj.put(DeliverableTerm.LICENCE_NO, deliverableCode);
 			formData = formDataObj.toJSONString();
 			object.setFormData(formData);
+			_log.info("DossierFileLocalServiceImpl FormData :" + formData);
 		}
 
 		return dossierFilePersistence.update(object);

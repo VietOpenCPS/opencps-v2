@@ -315,7 +315,10 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
-		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+//		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		String dossierNo = (String) params.get(DossierTerm.DOSSIER_NO);
+		String userName = (String) params.get(DossierTerm.USER_NAME);
+		String actionUser = (String) params.get(DossierTerm.ACTION_USER);
 		String createDateStart =
 				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
 		String createDateEnd =
@@ -363,36 +366,21 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-//		if (Validator.isNotNull(dossierIds)) {
-//
-//			BooleanQuery subQuery = new BooleanQueryImpl();
-//			String[] keywordArr = dossierIds.split(StringPool.COMMA);
-//			for (int i = 0; i < keywordArr.length; i++) {
-//				MultiMatchQuery query = new MultiMatchQuery(keywordArr[i]);
-//				query.addField(DossierActionTerm.DOSSIER_ID_SEARCH + StringPool.UNDERLINE + ConstantUtils.DATA);
-//				subQuery.add(query, BooleanClauseOccur.SHOULD);
-//			}
-//			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-
-//			if (dossierIds.contains(StringPool.COMMA)) {
-//				String[] keywordArr = dossierIds.split(StringPool.COMMA);
-//				BooleanQuery subQuery = new BooleanQueryImpl();
-//				for (String key : keywordArr) {
-//					WildcardQuery query = new WildcardQueryImpl(DossierActionTerm.DOSSIER_ID_SEARCH +
-//							StringPool.UNDERLINE + ConstantUtils.DATA,StringPool.STAR + key + StringPool.STAR );
-//					subQuery.add(query, BooleanClauseOccur.SHOULD);
-//				}
-//				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
-//			} else {
-//				WildcardQuery query = new WildcardQueryImpl(dossierIds,DossierActionTerm.DOSSIER_ID);
-//
-////				MultiMatchQuery query = new MultiMatchQuery(dossierIds);
-////				query.addField(DossierActionTerm.DOSSIER_ID);
-//				booleanQuery.add(query, BooleanClauseOccur.MUST);
-//			}
-
-//		}
-
+		if (Validator.isNotNull(dossierNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
+			query.addFields(DossierTerm.DOSSIER_NO);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(userName)) {
+			MultiMatchQuery query = new MultiMatchQuery(userName);
+			query.addFields(DossierTerm.USER_NAME);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(actionUser)) {
+			MultiMatchQuery query = new MultiMatchQuery(actionUser);
+			query.addFields(DossierTerm.ACTION_USER);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 
 		String createDateStartFilter =
 				createDateStart + ConstantsTerm.HOUR_START;

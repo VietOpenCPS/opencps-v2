@@ -512,7 +512,17 @@ public class DossierUtils {
 			model.setDelegateWardCode(doc.get(DossierTerm.DELEGATE_WARDCODE));
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
-			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
+			String arrayGroupDossierId [] = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
+			String groupDossierIds = "";
+			if(Validator.isNotNull(arrayGroupDossierId)){
+				for(String id : arrayGroupDossierId){
+					groupDossierIds += "," + id;
+				}
+				if(Validator.isNotNull(groupDossierIds)){
+					groupDossierIds = groupDossierIds.substring(1);
+				}
+				model.setGroupDossierIds(groupDossierIds);
+			}
 			if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS))) {
 				model.setGroupDossierIdHs(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS)));
 			}

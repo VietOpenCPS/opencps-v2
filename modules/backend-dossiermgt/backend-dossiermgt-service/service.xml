@@ -1187,6 +1187,48 @@
 
 	</entity>
 
+	<entity name="PostConnect" table="opencps_postconnect"
+			local-service="true" remote-service="false"  uuid="true">
+		<column name="postConnectId" primary="true" type="long" />
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="dossierId" type="long" />
+		<column name="postService" type="int" />
+		<column name="postType" type="int" />
+		<column name="orderNumber" type="String" />
+		<column name="postStatus" type="int" />
+		<column name="metadata" type="String" />
+		<column name="syncState" type="int" />
+		<column name="retry" type="int" />
+
+		<!-- Finder methods -->
+		<finder name="F_GID_SYNC_STATE" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="syncState" />
+		</finder>
+
+		<finder name="F_SYNC_STATE" return-type="Collection">
+			<finder-column name="syncState" />
+		</finder>
+
+		<finder name="F_ORDER_NUMBER" return-type="PostConnect">
+			<finder-column name="orderNumber" />
+		</finder>
+
+		<finder name="F_ORDER_NUMBER_POST_STATUS" return-type="PostConnect">
+			<finder-column name="orderNumber" />
+			<finder-column name="postStatus" />
+		</finder>
+	</entity>
+
 	<entity local-service="true" name="ServiceProcess"
 		remote-service="false"  table="opencps_serviceprocess" uuid="true">
 

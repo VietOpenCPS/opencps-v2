@@ -11,11 +11,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.BaseIndexer;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
-import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.*;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -157,6 +154,8 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					if (key.equals(DeliverableTerm.NGAY_QD)) {
 						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
+				}else if(jsonObject.getString(key).contains(StringPool.SPACE)){
+					document.addTextSortable(indexKey, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));

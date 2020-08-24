@@ -742,7 +742,7 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 			if (deliverable != null && formReportFileId > 0 &&
 				!(dossierFileAttach != null &&
 					dossierFileAttach.getFileEntryId() > 0)) {
-				_log.info(" ------- DossierFileAttach : " +  dossierFileAttach.getFileEntryId());
+//				_log.info(" ------- DossierFileAttach : " +  dossierFileAttach.getFileEntryId());
 				InputStream is = null;
 				String jrxmlTemplate = StringPool.BLANK;
 
