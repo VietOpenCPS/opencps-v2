@@ -66,7 +66,7 @@ public class Result  implements java.io.Serializable {
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Result)) return false;
         Result other = (Result) obj;
-        if (obj == null) return false;
+        // if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);
