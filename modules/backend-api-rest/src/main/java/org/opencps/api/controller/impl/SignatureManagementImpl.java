@@ -69,7 +69,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -429,7 +429,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {
@@ -593,7 +593,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -647,7 +647,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {
@@ -751,7 +751,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		BackendAuth auth = new BackendAuthImpl();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
@@ -805,7 +805,7 @@ public class SignatureManagementImpl implements SignatureManagement{
 		_log.info("SONDT SIGNNATUREMGT_IMPL ==============  " + JSONFactoryUtil.looseSerialize(input));
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		long dossierId = Long.valueOf(id);
+		long dossierId = id;
 		long userId = user.getUserId();
 
 		if (!auth.isAuth(serviceContext)) {

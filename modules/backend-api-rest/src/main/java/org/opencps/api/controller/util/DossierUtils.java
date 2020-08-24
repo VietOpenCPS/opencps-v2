@@ -76,9 +76,9 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierUtils {
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
-	private static final long VALUE_HOUR_TO_DAY = 8;
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000L * 60L * 60L * 24L;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000L * 60L * 60L;
+	private static final long VALUE_HOUR_TO_DAY = 8L;
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 
@@ -683,7 +683,8 @@ public class DossierUtils {
 		if (retval < 0) {
 			strOverDue = " ngày";
 			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP);
+				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+				dueCount = (int) dueCount;
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
 			}
@@ -721,7 +722,8 @@ public class DossierUtils {
 		} else {
 			strOverDue = " giờ";
 			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP);
+				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
+				dueCount = (int) dueCount;
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
 			}
@@ -1043,11 +1045,13 @@ public class DossierUtils {
 
 				Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-				if (dossierAction.getActionOverdue() != 0) {
-					model.setStepOverdue(StringPool.TRUE);
-				} else {
-					model.setStepOverdue(StringPool.TRUE);
-				}
+				// TODO: check this line
+//				if (dossierAction.getActionOverdue() != 0) {
+//					model.setStepOverdue(StringPool.TRUE);
+//				} else {
+//					model.setStepOverdue(StringPool.TRUE);
+//				}
+				model.setStepOverdue(StringPool.TRUE);
 
 				model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
 

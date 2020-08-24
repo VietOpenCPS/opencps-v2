@@ -358,12 +358,13 @@ public class SystemManagementImpl implements SystemManagement {
 					}
 				}
 			}
-			List<MenuConfig> lstMenuConfigs = MenuConfigLocalServiceUtil.getByGroupId(groupId);
-			if (lstMenuConfigs.isEmpty()) {
-			}
-			else {
-				
-			}
+			// TODO: do st here???
+//			List<MenuConfig> lstMenuConfigs = MenuConfigLocalServiceUtil.getByGroupId(groupId);
+//			if (lstMenuConfigs.isEmpty()) {
+//			}
+//			else {
+//				
+//			}
 			List<ServerConfig> lstServerConfigs = ServerConfigLocalServiceUtil.getGroupId(groupId);
 			if (lstServerConfigs.isEmpty()) {
 			}

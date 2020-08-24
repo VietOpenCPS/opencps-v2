@@ -235,7 +235,8 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 
 			}
 
-			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+			results.setTotal(jsonData != null && jsonData.getInt(ConstantUtils.TOTAL) > 0 ?
+					jsonData.getInt(ConstantUtils.TOTAL) : 0);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 
 

@@ -444,11 +444,11 @@ public class RegistrationManagementImpl implements RegistrationManagement {
 			Registration regInfo = null;
 			long registrationId = 0;
 			//TODO
-			agencyNo = "";
+			String agencyNoFake = StringPool.BLANK;
 //			if (Validator.isNotNull(applicantNo) && Validator.isNotNull(agencyNo)) {
 				_log.info("groupId "+groupId);
 				_log.info("applicantNo "+applicantNo);
-				regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNo);
+				regInfo = RegistrationLocalServiceUtil.getByApplicantAndAgency(groupId, applicantNo, agencyNoFake);
 //				_log.info("id reg "+regInfo.getRegistrationId());
 //			}
 			if (regInfo != null) {

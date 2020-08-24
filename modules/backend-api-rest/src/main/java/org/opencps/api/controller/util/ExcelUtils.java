@@ -39,9 +39,10 @@ public class ExcelUtils {
     }
 
     public static String createXmlStringFromExcelFile(InputStream fileInputStream) throws Exception{
-        try {
+    	Workbook wb = null;
+    	try {
             boolean firstRow = true;
-            Workbook wb = WorkbookFactory.create(fileInputStream);
+            wb = WorkbookFactory.create(fileInputStream);
             Sheet sheet = wb.getSheet("Sheet1");
 
             if(sheet == null) {
@@ -88,6 +89,11 @@ public class ExcelUtils {
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+        finally {
+			if (wb != null) {
+				wb.close();
+			}
+		}
     }
 
 }

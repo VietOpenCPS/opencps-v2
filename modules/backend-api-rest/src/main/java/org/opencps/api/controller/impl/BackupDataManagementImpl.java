@@ -500,19 +500,20 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 								//
 								configList.getActionConfig().add(config);
 							}
-							//Method which uses JAXB to convert object to XML
-							File file = ReadXMLFileUtils.convertActionConfigToXML(configList);
-							//
-							ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
-							
-							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
-									fileXmlName);
-							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
-
-							return responseBuilder.build();
 						}
+
+						//Method which uses JAXB to convert object to XML
+						File file = ReadXMLFileUtils.convertActionConfigToXML(configList);
+						//
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+						String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+						
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								fileXmlName);
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+
+						return responseBuilder.build();
 					}
 				}
 				/** Export ActionConfig - END **/
@@ -537,19 +538,20 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 								//
 								configList.getStepConfig().add(config);
 							}
-							//Method which uses JAXB to convert object to XML
-							File file = ReadXMLFileUtils.convertStepConfigToXML(configList);
-							//
-							ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
-							
-							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
-									fileXmlName);
-							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
-
-							return responseBuilder.build();
 						}
+
+						//Method which uses JAXB to convert object to XML
+						File file = ReadXMLFileUtils.convertStepConfigToXML(configList);
+						//
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+						String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+						
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								fileXmlName);
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+
+						return responseBuilder.build();
 					}
 				}
 				/** Export StepConfig - END **/
@@ -599,19 +601,19 @@ public class BackupDataManagementImpl implements BackupDataManagement{
 								//
 								configList.getMenuConfig().add(config);
 							}
-							//Method which uses JAXB to convert object to XML
-							File file = ReadXMLFileUtils.convertMenuConfigToXML(configList);
-							//
-							ResponseBuilder responseBuilder = Response.ok((Object) file);
-
-							String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
-							
-							responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
-									fileXmlName);
-							responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
-
-							return responseBuilder.build();
 						}
+						//Method which uses JAXB to convert object to XML
+						File file = ReadXMLFileUtils.convertMenuConfigToXML(configList);
+						//
+						ResponseBuilder responseBuilder = Response.ok((Object) file);
+
+						String fileXmlName = String.format(MessageUtil.getMessage(ConstantUtils.ATTACHMENT_FILENAME), file.getName());
+						
+						responseBuilder.header(ConstantUtils.CONTENT_DISPOSITION,
+								fileXmlName);
+						responseBuilder.header(HttpHeaders.CONTENT_TYPE, ConstantUtils.MEDIA_TYPE_XML);
+
+						return responseBuilder.build();
 					}
 				}
 				/** Export MenuConfig - END **/

@@ -397,7 +397,7 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 								dataHandler.getName(), StringPool.BLANK, 0,
 								serviceContext);
 
-						if (fileEntry != null) {
+						if (fileEntry != null && deliverableType != null) {
 							deliverableType.setFileTemplateId(
 									fileEntry.getFileEntryId());
 						}
