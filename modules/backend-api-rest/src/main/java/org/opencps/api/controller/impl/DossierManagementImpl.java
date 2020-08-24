@@ -475,7 +475,7 @@ public class DossierManagementImpl implements DossierManagement {
 					params.put(DossierTerm.SYSTEM_ID, 0);
 				}
 				//ViaPostal
-				Integer viaPostal = query.getViapostal();
+				String viaPostal = query.getViapostal();
 				if (viaPostal != null) {
 					params.put(DossierTerm.VIA_POSTAL, viaPostal);
 				}
@@ -1032,6 +1032,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String applicantIdNo = query.getApplicantIdNo();
 			String serviceName = query.getServiceName();
 
+			params.put(DossierTerm.ONLINE, query.getOnline());
 			params.put(DossierTerm.STATUS, status);
 			params.put(DossierTerm.SUBSTATUS, substatus);
 			params.put(DossierTerm.AGENCYS, agencys);
@@ -1079,7 +1080,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 
 			//ViaPostal
-			Integer viaPostal = query.getViapostal();
+			String viaPostal = query.getViapostal();
 			if (viaPostal != null) {
 				params.put(DossierTerm.VIA_POSTAL, viaPostal);
 			}
@@ -1145,7 +1146,7 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			params.put(DossierTerm.REGISTER, query.getRegister());
 
-			Integer vnpostalStatus = query.getVnpostalStatus();
+			String vnpostalStatus = query.getVnpostalStatus();
 			if (vnpostalStatus != null) {
 				params.put(DossierTerm.VNPOSTAL_STATUS, vnpostalStatus);
 			}
