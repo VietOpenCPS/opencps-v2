@@ -40,7 +40,9 @@ public class SpecialCharacterUtils {
 				StringPool.BACK_SLASH,
 				StringPool.FORWARD_SLASH,
 				StringPool.PERIOD,
-				StringPool.COMMA };
+				StringPool.COMMA,
+				StringPool.SPACE
+		};
 
 		String valueSplit = StringPool.BLANK;
 		for (int i = 0; i < charSpecialArr.length; i++) {

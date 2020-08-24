@@ -1681,10 +1681,10 @@ public class DeliverableLocalServiceImpl
 							WildcardQuery wildQuery = new WildcardQueryImpl(
 									fieldSearch,
 									StringPool.STAR + keywordArr.toLowerCase() + StringPool.STAR);
-							queryBool.add(wildQuery, BooleanClauseOccur.SHOULD);
+							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-					}else if(entry.getValue().contains(StringPool.SPACE)){
+					}else if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
 						System.out.println("------@SPACE------");
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
 							BooleanQuery query = new BooleanQueryImpl();
@@ -1692,9 +1692,9 @@ public class DeliverableLocalServiceImpl
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
-								query.add(wildQuery, BooleanClauseOccur.MUST);
+								query.add(wildQuery, BooleanClauseOccur.SHOULD);
 							}
-							queryBool.add(query, BooleanClauseOccur.SHOULD);
+//							queryBool.add(query, BooleanClauseOccur.SHOULD);
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}
 					else {
@@ -1713,7 +1713,7 @@ public class DeliverableLocalServiceImpl
 //												StringPool.STAR + keyValue + StringPool.STAR);
 //										subQuery.add(query, BooleanClauseOccur.SHOULD);
 										}
-									booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+									booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 								}
 							} else {
 								WildcardQuery wildQuery = new WildcardQueryImpl(
@@ -1722,10 +1722,12 @@ public class DeliverableLocalServiceImpl
 								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 						}else {
-							WildcardQuery wildQuery = new WildcardQueryImpl(
-									key.split("@")[0],
-									StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
-							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							if(Validator.isNotNull(entry.getValue())) {
+								WildcardQuery wildQuery = new WildcardQueryImpl(
+										key.split("@")[0],
+										StringPool.STAR + entry.getValue().toLowerCase() + StringPool.STAR);
+								queryBool.add(wildQuery, BooleanClauseOccur.MUST);
+							}
 						}
 					}
 				} else if (key.contains("@EQUAL")) {

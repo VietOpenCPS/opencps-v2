@@ -261,7 +261,7 @@ public class DossierSearchModel {
     @QueryParam(value = "systemId")
     protected String systemId;
     @QueryParam(value = "viapostal")
-    protected Integer viapostal;
+    protected String viapostal;
     @QueryParam(value = "undueTime")
     protected String undueTime;
     @QueryParam(value = "fromDueDate")
@@ -280,7 +280,7 @@ public class DossierSearchModel {
     protected String dossierCounter;
 
     @QueryParam(value = "vnpostalStatus")
-    protected Integer vnpostalStatus;
+    protected String vnpostalStatus;
     @QueryParam(value = "fromViaPostal")
     protected Integer fromViaPostal;
 	@QueryParam(value = "donvigui")
@@ -314,6 +314,36 @@ public class DossierSearchModel {
 	protected String createDateEnd;
 	@QueryParam(value = "processAgency")
 	protected String processAgency;
+	@QueryParam(value = "actionUser")
+	protected String actionUser;
+	@QueryParam(value = "userName")
+	protected String userName;
+	@QueryParam(value = "export")
+	protected boolean export;
+
+	public boolean isExport() {
+		return export;
+	}
+
+	public void setExport(boolean export) {
+		this.export = export;
+	}
+
+	public String getActionUser() {
+		return actionUser;
+	}
+
+	public void setActionUser(String actionUser) {
+		this.actionUser = actionUser;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public String getProcessAgency() {
 		return processAgency;
@@ -435,11 +465,11 @@ public class DossierSearchModel {
 		this.fromViaPostal = fromViaPostal;
 	}
 
-	public Integer getVnpostalStatus() {
+	public String getVnpostalStatus() {
 		return vnpostalStatus;
 	}
 
-	public void setVnpostalStatus(Integer vnpostalStatus) {
+	public void setVnpostalStatus(String vnpostalStatus) {
 		this.vnpostalStatus = vnpostalStatus;
 	}
 
@@ -483,11 +513,11 @@ public class DossierSearchModel {
 		this.dossierCounter = dossierCounter;
 	}
 
-	public Integer getViapostal() {
+	public String getViapostal() {
 		return viapostal;
 	}
 
-	public void setViapostal(Integer viapostal) {
+	public void setViapostal(String viapostal) {
 		this.viapostal = viapostal;
 	}
 

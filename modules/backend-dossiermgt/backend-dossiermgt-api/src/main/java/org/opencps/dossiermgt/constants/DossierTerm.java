@@ -7,6 +7,7 @@ public class DossierTerm {
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
+	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String REFERENCE_UID = "referenceUid";
@@ -332,6 +333,7 @@ public class DossierTerm {
 	public static final String CONTAIN_TEMPLATE = "template=";
 	public static final String CONTAIN_ORIGINAL = "originality=";
 	public static final String CONTAIN_STEP_DONE = "stepdone=";
+	public static final String CONTAIN_POST_STATUS = "postStatus=";
 	public static final String CONTAIN_STEP_NOT_DONE = "stepnotdone=";
 	public static final String CONTAIN_VIA_POSTAL = "viapostal=";
 	public static final String CONTAIN_ROLE_DONE = "roledone=";

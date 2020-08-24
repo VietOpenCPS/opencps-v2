@@ -8,6 +8,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -301,10 +303,21 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				responseBuilder.header(HttpHeaders.CONTENT_TYPE, fileEntry.getMimeType());
 
 				return responseBuilder.build();
-			}
-			else {
+			}else {
+				String jrxmlTemplate = dossierFile.getFormReport();
+				Message message = new Message();
+
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put(org.opencps.dossiermgt.action.util.ConstantUtils.CLASS_NAME, DossierFile.class.getName());
+				msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
+				msgData.put(org.opencps.dossiermgt.action.util.ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
+				msgData.put(org.opencps.dossiermgt.action.util.ConstantUtils.FORM_DATA, dossierFile.getFormData());
+				msgData.put(Field.USER_ID, serviceContext.getUserId());
+				message.put(org.opencps.dossiermgt.action.util.ConstantUtils.MSG_ENG, msgData);
+				MessageBusUtil.sendMessage(org.opencps.dossiermgt.action.util.ConstantUtils.JASPER_DESTINATION, message);
+
 				return Response.status(
-					HttpURLConnection.HTTP_NO_CONTENT).build();
+					HttpURLConnection.HTTP_OK).build();
 			}
 
 		}
