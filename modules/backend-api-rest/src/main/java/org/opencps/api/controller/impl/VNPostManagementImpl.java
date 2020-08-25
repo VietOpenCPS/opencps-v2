@@ -9,6 +9,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
@@ -30,6 +32,7 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ProcessActionTerm;
@@ -60,16 +63,24 @@ public class VNPostManagementImpl implements VNPostManagement
 
 	@Override
 	public Response testPostBill(HttpServletRequest request, HttpHeaders header,Locale locale) {
-		ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(544833, ViettelPostTerm.SERVER_NO,
-				ViettelPostTerm.PROTOCOL);
+//		ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(544833, ViettelPostTerm.SERVER_NO,
+//				ViettelPostTerm.PROTOCOL);
 		try{
-			ViettelPostManagement viettelPostManagement = new ViettelPostManagementImpl(serverConfig);
-			String token = viettelPostManagement.getToken();
-			JSONObject dossier = JSONFactoryUtil.createJSONObject();
-			dossier.put("dossierId", 2121);
-			dossier.put("postalTelNo", "0987654567");
+//			ViettelPostManagement viettelPostManagement = new ViettelPostManagementImpl(serverConfig);
+//			String token = viettelPostManagement.getToken();
+//			JSONObject dossier = JSONFactoryUtil.createJSONObject();
+//			dossier.put("dossierId", 2121);
+//			dossier.put("postalTelNo", "0987654567");
+//
+//			viettelPostManagement.postBill(token, dossier);
+			Message message = new Message();
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
 
-			viettelPostManagement.postBill(token, dossier);
+			message.put(ConstantUtils.MSG_ENG, msgData);
+			message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils
+					.convertDossierToJSON(DossierLocalServiceUtil.getDossier(96204), 0));
+
+			MessageBusUtil.sendMessage(DossierTerm.VNPOST_DOSSIER_DESTINATION, message);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
@@ -109,7 +120,7 @@ public class VNPostManagementImpl implements VNPostManagement
 				dossierId  = postConnect.getDossierId();
 				groupId    = postConnect.getGroupId();
 				//todo change this code
-				userId     = 270502;
+				userId     = postConnect.getUserId();
 				companyId  = postConnect.getCompanyId();
 				postStatus = postConnect.getPostStatus();
 				dossier    = DossierLocalServiceUtil.getDossier(dossierId);
@@ -133,8 +144,8 @@ public class VNPostManagementImpl implements VNPostManagement
 
 				if(Validator.isNull(jsonData) || jsonData.length() == 0) {
 					_log.error("List next action null for dossierId: " + dossierId);
-					postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
-					PostConnectLocalServiceUtil.updatePostConnect(postConnect);
+//					postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
+//					PostConnectLocalServiceUtil.updatePostConnect(postConnect);
 					continue;
 				}
 
@@ -154,8 +165,8 @@ public class VNPostManagementImpl implements VNPostManagement
 
 						if(Validator.isNull(postStatusInPre)) {
 							_log.error("PostStatus In Precondition is null with dossierId: " + dossierId);
-							postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
-							PostConnectLocalServiceUtil.updatePostConnect(postConnect);
+//							postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
+//							PostConnectLocalServiceUtil.updatePostConnect(postConnect);
 							continue;
 						}
 						_log.info("PostStatus In Precondition : " + postStatusInPre);
@@ -170,12 +181,12 @@ public class VNPostManagementImpl implements VNPostManagement
 					}
 				}
 
-				if (updateStatus) {
-					postConnect.setSyncState(PublishQueueTerm.STATE_RECEIVED_ACK);
-				} else {
-					postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
-				}
-				PostConnectLocalServiceUtil.updatePostConnect(postConnect);
+//				if (updateStatus) {
+//					postConnect.setSyncState(PublishQueueTerm.STATE_RECEIVED_ACK);
+//				} else {
+//					postConnect.setSyncState(PublishQueueTerm.STATE_ACK_ERROR);
+//				}
+//				PostConnectLocalServiceUtil.updatePostConnect(postConnect);
 			}
 			_log.info("End Viettel post schedule!!!");
 		} catch (Exception e){
