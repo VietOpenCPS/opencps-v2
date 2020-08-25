@@ -260,15 +260,6 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 throw new Exception("Response get price all is invalid data");
             }
 
-//            boolean isError = response.getBoolean("error");
-//            if(isError) {
-//                String message = response.getString("message") != null ? response.getString("message") : "";
-//                if(message.isEmpty()){
-//                    message = "Message error null";
-//                }
-//                throw new Exception(message);
-//            }
-
             JSONObject orderService = Validator.isNotNull(response.get(0)) ? (JSONObject) response.get(0) : null;
 
             if(Validator.isNull(orderService)) {
