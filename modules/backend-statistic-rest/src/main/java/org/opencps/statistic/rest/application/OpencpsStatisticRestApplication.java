@@ -1742,8 +1742,11 @@ public class OpencpsStatisticRestApplication extends Application {
 							if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment"))
 							{
 								JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
-								_log.warn("err mutiplie dossierFilePayments[] " );
-								StringBuilder chitietDonGia = new StringBuilder();
+								_log.info("err mutiplie dossierFilePayments[] " );
+								//StringBuilder chitietDonGia = new StringBuilder();
+								StringBuilder sbDonGia = new StringBuilder();
+								StringBuilder sbRecordCount = new StringBuilder();
+								JSONObject jsonMoney = JSONFactoryUtil.createJSONObject();
 								for (int i = 0; i < dossierFilePayments.length() ; i++)
 								{
 									JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
@@ -1752,18 +1755,45 @@ public class OpencpsStatisticRestApplication extends Application {
 										String donGia = dossierFilePayment.getString("don_gia");
 										String recordCount = dossierFilePayment.getString("recordCount");
 									
-										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount))
+										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount) && !"empty".equalsIgnoreCase(donGia)
+												&& !"empty".equalsIgnoreCase(recordCount))
 										{
-											dossierObj.put("don_gia",donGia);
-											dossierObj.put("recordCount",recordCount);
-											if (!donGia.contentEquals("empty") && !recordCount.contentEquals("empty")) {
-												chitietDonGia.append(donGia + " x " + recordCount + " ; ");
+											if (jsonMoney.has(donGia)) {
+												int recordJson = Integer.valueOf(jsonMoney.getString(donGia));
+												int counter = recordJson + Integer.valueOf(recordCount);
+												//
+												jsonMoney.put(donGia, String.valueOf(counter));
+											} else {
+												jsonMoney.put(donGia, recordCount);
 											}
+//											if (!donGia.contentEquals("empty") && !recordCount.contentEquals("empty")) {
+//												chitietDonGia.append(donGia + " x " + recordCount + " ; ");
+//											}
 										}
 									}
 								}
+								if (Validator.isNotNull(jsonMoney)) {
+									Iterator<String> keys = jsonMoney.keys();
+									while(keys.hasNext()) {
+										String key = keys.next();
+										if (sbDonGia.length() > 0) {
+											sbDonGia.append(StringPool.RETURN_NEW_LINE);
+											sbDonGia.append(key);
+										} else {
+											sbDonGia.append(key);
+										}
+										if (sbRecordCount.length() > 0) {
+											sbRecordCount.append(StringPool.RETURN_NEW_LINE);
+											sbRecordCount.append(jsonMoney.getString(key));
+										} else {
+											sbRecordCount.append(jsonMoney.getString(key));
+										}
+									}
+								}
+								dossierObj.put("don_gia",sbDonGia.toString());
+								dossierObj.put("recordCount",sbRecordCount.toString());
 								dossierObj.put("dossierFilePayments", dossierFilePayments);
-								dossierObj.put("chitietdongia", chitietDonGia.toString());
+								//dossierObj.put("chitietdongia", chitietDonGia.toString());
 							}
 							dossierObj.put("no", count++);
 							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
@@ -1806,7 +1836,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		ResponseBuilder builder = Response.ok("");
 		return builder.build();
 	}
-	
+
 	@GET
 	@Path("/feesummary")
 	public Response feeReportSummary(@HeaderParam("groupId") long groupId,

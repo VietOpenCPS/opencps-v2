@@ -975,6 +975,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		//Thiết lập quyền thao tác hồ sơ
 
 		int allowAssignUser = proAction.getAllowAssignUser();
+		//_log.info("allowAssignUser: "+allowAssignUser);
 		JSONArray assignedUsersArray = JSONFactoryUtil.createJSONArray(assignUsers);
 		if (allowAssignUser != ProcessActionTerm.NOT_ASSIGNED) {
 			if (Validator.isNotNull(assignUsers) && assignedUsersArray.length() > 0) {
@@ -990,6 +991,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			}
 		} else {
 			//Process role as step
+			//_log.info("curStep.getRoleAsStep(): "+curStep.getRoleAsStep());
 			if (curStep != null && Validator.isNotNull(curStep.getRoleAsStep())) {
 				copyRoleAsStep(curStep, dossier);
 			} else {
@@ -1065,17 +1067,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		if ((option != null || previousAction != null) && proAction != null) {
 			long serviceProcessId = (option != null ? option.getServiceProcessId()
 					: previousAction.getServiceProcessId());
-			Serializable serviceProcessCache = cache.getFromCache(CACHE_ServiceProcess,
-					groupId + StringPool.UNDERLINE + serviceProcessId);
-			if (serviceProcessCache == null) {
-				serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
-				if (serviceProcess != null) {
-					cache.addToCache(CACHE_ServiceProcess, groupId + StringPool.UNDERLINE + serviceProcessId,
-							(Serializable) serviceProcess, ttl);
-				}
-			} else {
-				serviceProcess = (ServiceProcess) serviceProcessCache;
-			}
+//			Serializable serviceProcessCache = cache.getFromCache(CACHE_ServiceProcess,
+//					groupId + StringPool.UNDERLINE + serviceProcessId);
+//			if (serviceProcessCache == null) {
+			serviceProcess = serviceProcessLocalService.fetchServiceProcess(serviceProcessId);
+//				if (serviceProcess != null) {
+//					cache.addToCache(CACHE_ServiceProcess, groupId + StringPool.UNDERLINE + serviceProcessId,
+//							(Serializable) serviceProcess, ttl);
+//				}
+//			} else {
+//				serviceProcess = (ServiceProcess) serviceProcessCache;
+//			}
 			String paymentFee = StringPool.BLANK;
 
 			String postStepCode = proAction.getPostStepCode();
@@ -1231,6 +1233,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(postStepCode)) {
 				postStepCode = previousAction.getFromStepCode();
+				_log.info("postStepCode: "+postStepCode);
 				ProcessStep backCurStep = processStepLocalService.fetchBySC_GID(postStepCode, groupId,
 						serviceProcessId);
 				String curStatus = backCurStep.getDossierStatus();
@@ -1300,32 +1303,41 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				dossierActionLocalService.updateDossierAction(dossierAction);
 
 				// chỉ cán bộ thao tác trước đó có moderator = 1
+				_log.info("previousAction.getStepCode(): "+previousAction.getStepCode());
+				_log.info("previousAction.getFromStepCode(): "+previousAction.getFromStepCode());
 				List<DossierActionUser> lstDaus = DossierActionUserLocalServiceUtil
-						.getByDossierAndStepCode(dossier.getDossierId(), previousAction.getStepCode());
-
-				for (DossierActionUser dau : lstDaus) {
-
-					if (dau.getUserId() == backCurStep.getUserId()) {
-						dau.setModerator(1);
-					} else {
-						dau.setModerator(0);
+						.getByDossierAndStepCode(dossier.getDossierId(), previousAction.getFromStepCode());
+				_log.info("lstDaus: "+JSONFactoryUtil.looseSerialize(lstDaus));
+				if (lstDaus != null && lstDaus.size() > 0) {
+					for (DossierActionUser dau : lstDaus) {
+						dau.setDossierActionId(newAction.getDossierActionId());
+						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 					}
-					DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
 				}
+//				if (lstDaus != null && lstDaus.size() > 0) {
+//					for (DossierActionUser dau : lstDaus) {
+//						if (dau.getUserId() == backCurStep.getUserId()) {
+//							dau.setModerator(1);
+//						} else {
+//							dau.setModerator(0);
+//						}
+//						DossierActionUserLocalServiceUtil.updateDossierActionUser(dau);
+//					}
+//				}
 
-				ProcessAction processAction = processActionLocalService.fetchBySPID_AC(serviceProcessId,
-						newAction.getActionCode());
+//				ProcessAction processAction = processActionLocalService.fetchBySPID_AC(serviceProcessId,
+//						newAction.getActionCode());
 
-				_log.debug("|processAction.getPostStepCode()=" + processAction.getPostStepCode()
-						+ "|processAction.getActionCode()=" + processAction.getActionCode()
-						+ "|processAction.getProcessActionId()=" + processAction.getProcessActionId() + "|"
-						+ processAction.getAllowAssignUser() + "|" + processAction.getAssignUserId());
+//				_log.debug("|processAction.getPostStepCode()=" + processAction.getPostStepCode()
+//						+ "|processAction.getActionCode()=" + processAction.getActionCode()
+//						+ "|processAction.getProcessActionId()=" + processAction.getProcessActionId() + "|"
+//						+ processAction.getAllowAssignUser() + "|" + processAction.getAssignUserId());
 
-				int allowAssignUser = processAction.getAllowAssignUser();
+//				int allowAssignUser = processAction.getAllowAssignUser();
 
 				//thiet lap phan quyen cho user
-				initDossierActionUser(newAction.getStepCode(), newAction.getServiceProcessId(), dossier, processAction,
-						allowAssignUser, newAction, userId, groupId, allowAssignUser);
+//				initDossierActionUser(newAction.getStepCode(), newAction.getServiceProcessId(), dossier, processAction,
+//						allowAssignUser, newAction, userId, groupId, allowAssignUser);
 
 				if (syncType == 2) {
 					//Tạo thông tin đồng bộ hồ sơ
@@ -5118,7 +5130,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	/**
-	 * @param pattern
 	 * @param lenght
 	 * @return
 	 */
@@ -5597,48 +5608,57 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					try {
 						serviceProcess = serviceProcessLocalService.getServiceByCode(dossier.getGroupId(),
 								dossier.getServiceCode(), dossier.getGovAgencyCode(), dossier.getDossierTemplateNo());
+//						_log.info("stepCode: "+ JSONFactoryUtil.looseSerialize(serviceProcess));
 						if (serviceProcess != null) {
 							ProcessStep processStep = processStepLocalService.fetchBySC_GID(stepCode,
 									dossier.getGroupId(), serviceProcess.getServiceProcessId());
+//							_log.info("processStep: "+ JSONFactoryUtil.looseSerialize(processStep));
 							if (processStep == null)
 								continue;
 							List<ProcessStepRole> lstRoles = processStepRoleLocalService
 									.findByP_S_ID(processStep.getProcessStepId());
-							for (ProcessStepRole psr : lstRoles) {
-								List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
-								for (User u : users) {
-									if (mapEmps.containsKey(u.getUserId())) {
-										Employee emp = mapEmps.get(u.getUserId());
-										if (checkGovDossierEmployee(dossier, emp)) {
-											DossierUserPK duPk = new DossierUserPK();
-											duPk.setDossierId(dossier.getDossierId());
-											duPk.setUserId(u.getUserId());
-											int moderator = (psr.getModerator() ? 1 : 0);
+//							_log.info("lstRoles: "+ JSONFactoryUtil.looseSerialize(lstRoles));
+							if (lstRoles != null && lstRoles.size() > 0) {
+								_log.info("stepCode: "+ stepCode + "|lstRoles : "+JSONFactoryUtil.looseSerialize(lstRoles.get(0)));
+								for (ProcessStepRole psr : lstRoles) {
+									List<User> users = UserLocalServiceUtil.getRoleUsers(psr.getRoleId());
+//									_log.info("users: "+JSONFactoryUtil.looseSerialize(users));
+									//_log.info("mapEmps: "+JSONFactoryUtil.looseSerialize(mapEmps));
+									for (User u : users) {
+										if (mapEmps.containsKey(u.getUserId())) {
+											Employee emp = mapEmps.get(u.getUserId());
+											_log.info("user: "+ u.getEmailAddress() + "|checkGovDossierEmployee: "+ checkGovDossierEmployee(dossier, emp));
+											if (checkGovDossierEmployee(dossier, emp)) {
+												DossierUserPK duPk = new DossierUserPK();
+												duPk.setDossierId(dossier.getDossierId());
+												duPk.setUserId(u.getUserId());
+												int moderator = (psr.getModerator() ? 1 : 0);
 
-											DossierUser duModel = dossierUserLocalService.fetchDossierUser(duPk);
+												DossierUser duModel = dossierUserLocalService.fetchDossierUser(duPk);
 
-											if (duModel == null) {
-												dossierUserLocalService.addDossierUser(dossier.getGroupId(),
-														dossier.getDossierId(), u.getUserId(), moderator, true);
-											} else {
-												try {
-													if (duModel.getModerator() == 0 && moderator == 1) {
-														dossierUserLocalService.updateDossierUser(
-																dossier.getDossierId(), u.getUserId(), moderator, true);
+												if (duModel == null) {
+													dossierUserLocalService.addDossierUser(dossier.getGroupId(),
+															dossier.getDossierId(), u.getUserId(), moderator, true);
+												} else {
+													try {
+														if (duModel.getModerator() == 0 && moderator == 1) {
+															dossierUserLocalService.updateDossierUser(
+																	dossier.getDossierId(), u.getUserId(), moderator, true);
+														}
+													} catch (NoSuchDossierUserException e) {
+														_log.error(e);
 													}
-												} catch (NoSuchDossierUserException e) {
-													_log.error(e);
 												}
-											}
 
-											DossierActionUserPK dauPk = new DossierActionUserPK();
-											dauPk.setDossierActionId(dossier.getDossierActionId());
-											dauPk.setUserId(u.getUserId());
-											int assigned = moderator == 1 ? 1 : 0;
-											dossierActionUserLocalService.addOrUpdateDossierActionUser(u.getUserId(),
-													dossier.getGroupId(), dossier.getDossierActionId(),
-													dossier.getDossierId(), curStep.getStepCode(), moderator, assigned,
-													true);
+												DossierActionUserPK dauPk = new DossierActionUserPK();
+												dauPk.setDossierActionId(dossier.getDossierActionId());
+												dauPk.setUserId(u.getUserId());
+												int assigned = moderator == 1 ? 1 : 0;
+												dossierActionUserLocalService.addOrUpdateDossierActionUser(u.getUserId(),
+														dossier.getGroupId(), dossier.getDossierActionId(),
+														dossier.getDossierId(), curStep.getStepCode(), moderator, assigned,
+														true);
+											}
 										}
 									}
 								}
@@ -5675,19 +5695,26 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 		boolean flag = false;
 		long userId = serviceContext.getUserId();
+		_log.info("userId: "+userId);
 		Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+		_log.info("employee: "+JSONFactoryUtil.looseSerialize(employee));
 		if (employee != null) {
 			long employeeId = employee.getEmployeeId();
 			if (employeeId > 0) {
 				List<EmployeeJobPos> empJobList = EmployeeJobPosLocalServiceUtil.findByF_EmployeeId(employeeId);
+				_log.info("empJobList: "+JSONFactoryUtil.looseSerialize(empJobList));
 				if (empJobList != null && empJobList.size() > 0) {
 					for (EmployeeJobPos employeeJobPos : empJobList) {
+						_log.info("employeeJobPos: "+JSONFactoryUtil.looseSerialize(employeeJobPos));
 						long jobPosId = employeeJobPos.getJobPostId();
 						if (jobPosId > 0) {
 							JobPos job = JobPosLocalServiceUtil.fetchJobPos(jobPosId);
 							if (job != null) {
 								ServiceProcessRolePK pk = new ServiceProcessRolePK(serviceProcessId,
 										job.getMappingRoleId());
+								_log.info("serviceProcessId: "+serviceProcessId);
+								_log.info("job.getMappingRoleId(): "+job.getMappingRoleId());
+								_log.info("pk: "+JSONFactoryUtil.looseSerialize(pk));
 								ServiceProcessRole role = serviceProcessRoleLocalService.fetchServiceProcessRole(pk);
 								if (role != null && role.getModerator()) {
 									flag = true;

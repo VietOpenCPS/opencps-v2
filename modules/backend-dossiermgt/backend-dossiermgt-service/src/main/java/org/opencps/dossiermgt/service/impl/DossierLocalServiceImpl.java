@@ -3952,6 +3952,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 									DossierTerm.DUE_DATE_TIMESTAMP,
 									String.valueOf(nowTime), null, true, true);
 					subQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
+				} else if (top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate =
+							new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryReleaseDate =
+							new MultiMatchQuery(String.valueOf(0));
+					queryReleaseDate.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryReleaseDate, BooleanClauseOccur.MUST_NOT);
+
+					MultiMatchQuery query =
+							new MultiMatchQuery(String.valueOf(1));
+					query.addFields(DossierTerm.VALUE_STATISTIC_RELEASE);
+					subQuery.add(query, BooleanClauseOccur.MUST);
 				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);

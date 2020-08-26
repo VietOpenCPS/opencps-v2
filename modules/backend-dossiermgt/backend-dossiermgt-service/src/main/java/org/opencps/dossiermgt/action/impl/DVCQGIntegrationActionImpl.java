@@ -187,9 +187,18 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				LoaiDoiTuong = 2;
 			}
 		}
+//		_log.info("groupId: "+groupId);
+//		_log.info("dossier.getApplicantIdNo(): "+dossier.getApplicantIdNo());
 		Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getApplicantIdNo());
+		if (applicant == null) {
+			applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, dossier.getDelegateIdNo());
+		}
 		String madoituong = StringPool.BLANK;
+		_log.info("applicant: "+JSONFactoryUtil.looseSerialize(applicant));
+//		JSONObject jsonApplicant = getSharingData(config, body, accessToken);
 		if (applicant != null && "dvcqg".contentEquals(applicant.getMappingClassName())) {
+			_log.info("className: "+applicant.getMappingClassName());
+			_log.info("madoituong: "+applicant.getMappingClassPK());
 			madoituong = applicant.getMappingClassPK();
 		}
 		object.put("LoaiDoiTuong", String.valueOf(LoaiDoiTuong));
@@ -313,6 +322,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			object.put("TaiLieuNop", TaiLieuNop);// ko bb
 
 		}
+		_log.info("object: "+JSONFactoryUtil.looseSerialize(object));
 
 		return object;
 	}
@@ -1910,12 +1920,19 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 		try {
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+			_log.info("config: "+JSONFactoryUtil.looseSerialize(config));
+
 			String adapter_url = config.getString("adapter_url");
 			String share_endpoint = config.getString("share_endpoint");
 			String madonvi = config.getString("madonvi");
 			String dstcode = config.getString("dstcode");
+			_log.info("adapter_url: "+adapter_url);
+			_log.info("share_endpoint: "+share_endpoint);
+			_log.info("madonvi: "+madonvi);
+			_log.info("dstcode: "+dstcode);
 			String accessToken = getAccessToken(serverConfig.getCompanyId(), serverConfig.getGroupId(), "dvcqg",
 					config);
+			_log.info("accessToken: "+accessToken);
 			if (Validator.isNull(accessToken) || Validator.isNull(data)) {
 				return result;
 			}
@@ -1931,6 +1948,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 			}
 
 			String endpoint = adapter_url + share_endpoint;
+			_log.info("endpoint: "+endpoint);
 
 			URL url = new URL(endpoint);
 
@@ -1966,6 +1984,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 					sb.append(output);
 				}
 
+				_log.info("sb.toString(): "+sb.toString());
 				// System.out.println("response: " + sb.toString());
 
 				result = JSONFactoryUtil.createJSONObject(sb.toString());

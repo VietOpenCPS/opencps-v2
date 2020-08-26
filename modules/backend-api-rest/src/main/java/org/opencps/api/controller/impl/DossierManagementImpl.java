@@ -3281,17 +3281,17 @@ public class DossierManagementImpl implements DossierManagement {
 		Locale locale, User user, ServiceContext serviceContext, String id) {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		Dossier dossier = null;
+		//Dossier dossier = null;
 
-		if (Validator.isNumber(id)) {
-
-			dossier = DossierLocalServiceUtil.fetchDossier(Integer.parseInt(id));
-		} else {
-
-			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
-		}
+		Dossier dossier = DossierUtils.getDossier(id, groupId);
+//		if (Validator.isNumber(id)) {
+//			dossier = DossierLocalServiceUtil.fetchDossier(Integer.parseInt(id));
+//		} else {
+//			dossier = DossierLocalServiceUtil.getByRef(groupId, id);
+//		}
+		JSONObject result = JSONFactoryUtil.createJSONObject();
 		if (dossier == null) {
-
+			result.put("result", "ERROR");
 			return Response.status(HttpStatus.SC_NOT_FOUND).entity(null).build();
 		}
 		List<Role> userRoles = user.getRoles();
@@ -3307,7 +3307,8 @@ public class DossierManagementImpl implements DossierManagement {
 			DossierAction dossierAction =
 				DossierActionLocalServiceUtil.fetchDossierAction(
 					dossier.getDossierActionId());
-			if (dossierAction != null && isAdmin) {
+			//if (dossierAction != null && isAdmin) {
+			if (dossierAction != null) {
 				DossierActionLocalServiceUtil.updateState(
 					dossierAction.getDossierActionId(),
 					DossierActionTerm.STATE_ROLLBACK);
@@ -3375,7 +3376,8 @@ public class DossierManagementImpl implements DossierManagement {
 //					DossierMgtUtils.processSyncRollbackDossier(dossier);
 //				}
 //			}
-			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+		result.put("result", "SUCCESSFUL");
+		return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(result)).build();
 //		}
 //		else {
 //			return Response.status(404).entity(null).build();
