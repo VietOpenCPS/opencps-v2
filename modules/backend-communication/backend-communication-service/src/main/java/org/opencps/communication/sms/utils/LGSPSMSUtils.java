@@ -82,6 +82,7 @@ public class LGSPSMSUtils {
 						Thread.sleep(500);
 					} catch (InterruptedException e1) {
 						_log.info("Time not delay");
+						Thread.currentThread().interrupt();
 					}
 					//
 				} catch (Exception e) {
@@ -89,6 +90,7 @@ public class LGSPSMSUtils {
 						Thread.sleep(500);
 					} catch (InterruptedException e1) {
 						_log.info("Time not delay");
+						Thread.currentThread().interrupt();
 					}
 					_log.debug(e);
 				}

@@ -103,7 +103,7 @@ public class ResultMultiReceiver  extends ws.bulkSms.impl.Result  implements jav
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ResultMultiReceiver)) return false;
         ResultMultiReceiver other = (ResultMultiReceiver) obj;
-        if (obj == null) return false;
+        // if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);

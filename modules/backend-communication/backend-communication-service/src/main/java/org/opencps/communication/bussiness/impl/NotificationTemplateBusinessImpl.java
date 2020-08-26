@@ -263,6 +263,6 @@ public class NotificationTemplateBusinessImpl
 		return notificationType;
 	}
 
-	public Log _log =
+	private final Log _log =
 		LogFactoryUtil.getLog(NotificationTemplateBusinessImpl.class);
 }

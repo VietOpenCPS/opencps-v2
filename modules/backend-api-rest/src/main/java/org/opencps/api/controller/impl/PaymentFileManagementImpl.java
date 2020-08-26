@@ -954,7 +954,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		     // TODO: PP continue
 				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-						|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+						|| PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())) {
 					JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					JSONObject banksInfo = schema.getJSONObject("BankInfo");
 					JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
@@ -1143,7 +1143,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 			// TODO: PP continue
 			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-					|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+					|| PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())) {
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				JSONObject banksInfo = schema.getJSONObject("BankInfo");
 				JSONObject bankInfo = JSONFactoryUtil.createJSONObject();

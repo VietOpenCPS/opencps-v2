@@ -29,7 +29,7 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 
 public class HolidayActions implements HolidayInterface {
 
-	public Log _log = LogFactoryUtil.getLog(HolidayActions.class);
+	private static final Log _log = LogFactoryUtil.getLog(HolidayActions.class);
 
 	public boolean delete(long userId, long groupId, long companyId, String day, ServiceContext serviceContext)
 			throws NotFoundException, UnauthenticationException, UnauthorizationException {

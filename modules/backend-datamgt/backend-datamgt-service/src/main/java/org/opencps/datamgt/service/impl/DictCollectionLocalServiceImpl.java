@@ -146,11 +146,11 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		if (Validator.isNotNull(collectionCode)) {
-
-			collectionCode = collectionCode;
-
-		}
+//		if (Validator.isNotNull(collectionCode)) {
+//
+//			collectionCode = collectionCode;
+//
+//		}
 
 		long dictCollectionId = counterLocalService.increment(DictCollection.class.getName());
 
@@ -281,12 +281,6 @@ public class DictCollectionLocalServiceImpl extends DictCollectionLocalServiceBa
 
 		if (Validator.isNull(dictCollection)) {
 			throw new NotFoundException();
-		}
-
-		if (Validator.isNotNull(collectionCode)) {
-
-			collectionCode = collectionCode;
-
 		}
 
 		// Audit fields

@@ -48,23 +48,23 @@ public class ServerConfigTempListener extends BaseModelListener<ServerConfig> {
 				}
 				_log.debug("model Id=" + model.getServerConfigId() + "=active status=" + model.getActive());
 				_log.debug(configs);
-				JSONObject jConfigs = Validator.isNotNull(configs) ? JSONFactoryUtil.createJSONObject(configs) : null;
+				JSONObject jConfigs = configs != null ? JSONFactoryUtil.createJSONObject(configs) : null;
 				boolean changeActiveId = String.valueOf(activeId).equals(preferences.getValue(ServerConfigTerm.EMAIL_CONFIG_PT, String.valueOf(0)));
 				boolean isModelUpdate = model.getActive();
 				if (changeActiveId || isModelUpdate || Validator.isNull(configs)) {
 					preferences.setValue(ServerConfigTerm.EMAIL_CONFIG_PT, String.valueOf(activeId));
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_PORT, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_PORT) : String.valueOf(0));
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_USER, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_USER) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_HOST, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_HOST) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL) : String.valueOf(false));
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD) : StringPool.BLANK);
-					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT, Validator.isNotNull(configs) ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT) : String.valueOf(0));
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_PORT, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_PORT) : String.valueOf(0));
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_USER, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_USER) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_POP3_HOST, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_POP3_HOST) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL) : String.valueOf(false));
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_USER) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD) : StringPool.BLANK);
+					preferences.setValue(PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT, configs != null ? jConfigs.getString(PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT) : String.valueOf(0));
 				}
 				preferences.store();
 			}

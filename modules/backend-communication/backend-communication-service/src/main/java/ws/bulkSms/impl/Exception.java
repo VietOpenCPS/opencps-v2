@@ -42,7 +42,7 @@ public class Exception  extends org.apache.axis.AxisFault  implements java.io.Se
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Exception)) return false;
         Exception other = (Exception) obj;
-        if (obj == null) return false;
+        // if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);

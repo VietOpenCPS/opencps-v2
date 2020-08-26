@@ -292,12 +292,6 @@ public class DictGroupLocalServiceImpl extends DictGroupLocalServiceBaseImpl {
 			throw new NotFoundException();
 		}
 
-		if (Validator.isNotNull(groupCode)) {
-
-			groupCode = groupCode;
-
-		}
-
 		// Audit fields
 		dictGroup.setUserId(user.getUserId());
 		dictGroup.setUserName(user.getFullName());

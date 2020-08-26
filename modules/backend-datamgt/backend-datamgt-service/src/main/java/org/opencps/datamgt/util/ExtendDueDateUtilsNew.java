@@ -17,7 +17,7 @@ public class ExtendDueDateUtilsNew {
 	public static final int VALUE_TIME_ZONE = 7;
 //	private static final long VALUE_CONVERT_DATE_WORKING_TIMESTAMP = 1000 * 60 * 60 * 8;
 //	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
-	private static final long VALUE_CONVERT_MINUTE_TIMESTAMP = 1000 * 60;
+	private static final long VALUE_CONVERT_MINUTE_TIMESTAMP = 1000L * 60L;
 	// get value day off
 	//private static volatile String strDayOff = StringPool.BLANK;
 	// get value time working
@@ -327,8 +327,8 @@ public class ExtendDueDateUtilsNew {
 
 	/** Process Time Off between AM and PM **/
 	private static long countTimeOffNoon() {
-		long start = endHourAM * 60 + endMinuteAM;
-		long end = startHourPM * 60 + startMinutePM;
+		long start = (long)endHourAM * (long)60 + (long)endMinuteAM;
+		long end = (long)startHourPM * (long)60 + (long)startMinutePM;
 		return (end - start) * VALUE_CONVERT_MINUTE_TIMESTAMP;
 	}
 

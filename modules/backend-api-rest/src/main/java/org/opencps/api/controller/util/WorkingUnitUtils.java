@@ -200,7 +200,7 @@ public class WorkingUnitUtils {
 			if (DateUtil.isCellDateFormatted(cell)) {
 				return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(cell.getDateCellValue());
 			} else {
-				return new BigDecimal(cell.getNumericCellValue());
+				return BigDecimal.valueOf(cell.getNumericCellValue());
 			}			
 		} else {
 
