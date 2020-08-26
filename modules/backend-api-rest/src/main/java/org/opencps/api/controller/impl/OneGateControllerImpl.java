@@ -197,6 +197,7 @@ public class OneGateControllerImpl implements OneGateController {
 							if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
 								serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 										serviceInfo.getServiceCode());
+								elmData.put(ServiceInfoTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG,

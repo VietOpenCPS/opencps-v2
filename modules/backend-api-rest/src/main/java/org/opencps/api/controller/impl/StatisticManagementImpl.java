@@ -796,7 +796,12 @@ public class StatisticManagementImpl implements StatisticManagement {
 										cellStyle.setAlignment(HorizontalAlignment.CENTER);
 									}
 									row.getCell(startCol).setCellStyle(cellStyle);
-									mainSheet.autoSizeColumn(startCol);
+//									mainSheet.autoSizeColumn(startCol);
+									// Auto resize column witdth
+//									int numberOfColumn = mainSheet.getRow(startCol).getPhysicalNumberOfCells();
+//									autosizeColumn(mainSheet, numberOfColumn);
+//									int numberOfColumnRow = mainSheet.getRow(startRow).getPhysicalNumberOfCells();
+//									autosizeColumn(mainSheet, numberOfColumnRow);
 								}
 								if (columnObj != null && columnObj.has(StatisticManagementConstants.COL_SPAN)) {
 									spanCol = columnObj.getInt(StatisticManagementConstants.COL_SPAN);
@@ -807,7 +812,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 									mainSheet.addMergedRegion(new CellRangeAddress(startRow, startRow + spanRow - 1, startCol, startCol + spanCol - 1));		
 //									_log.debug("EXPORT STATISTIC: " + (columnObj != null ? columnObj.getString("text") : StringPool.BLANK) + ", " + startRow + ", " + (startRow + spanRow - 1) + ", " + startCol + ", " + (startCol + spanCol - 1));
 								}
-								mainSheet.autoSizeColumn(startRow);
+//								mainSheet.autoSizeColumn(startRow);
 							}
 							startCol++;
 						}
@@ -1150,6 +1155,11 @@ public class StatisticManagementImpl implements StatisticManagement {
 		}
 		
 		return Response.ok().entity(result.toJSONString()).build();
+	}
+	private static void autosizeColumn(HSSFSheet sheet, int lastColumn) {
+		for (int columnIndex = 0; columnIndex < lastColumn; columnIndex++) {
+			sheet.autoSizeColumn(columnIndex);
+		}
 	}
 
 //	private void setRegionBorderWithMedium(CellRangeAddress region, Sheet sheet) {

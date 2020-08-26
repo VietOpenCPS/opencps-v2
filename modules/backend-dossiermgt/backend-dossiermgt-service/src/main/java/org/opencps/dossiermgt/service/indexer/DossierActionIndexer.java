@@ -71,6 +71,9 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 		document.addTextSortable(DossierActionTerm.ACTION_CODE, object.getActionCode());
 		document.addTextSortable(DossierActionTerm.ACTION_NAME, object.getActionName());
 		document.addTextSortable(DossierActionTerm.ACTION_USER, object.getActionUser());
+		if(Validator.isNotNull(object.getActionUser())){
+			document.addTextSortable(DossierTerm.ACTION_USER_SEARCH, object.getActionUser().toLowerCase());
+		}
 		document.addTextSortable(DossierActionTerm.ACTION_NOTE, object.getActionNote());
 		document.addTextSortable(DossierActionTerm.SYNC_ACTION_CODE, object.getSyncActionCode());
 		document.addTextSortable(DossierActionTerm.PENDING, Boolean.toString(object.getPending()));

@@ -915,6 +915,7 @@ public class RestfulController {
 		serviceContext.setUserId(userId);
 		serviceContext.setCompanyId(companyId);
 		serviceContext.setScopeGroupId(groupId);
+		_log.info("TABLE LOG :" + code);
 		
 		try {
 			if (multipartFile != null) {
@@ -984,6 +985,7 @@ public class RestfulController {
 
 						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
 						//
+						_log.info("LOG Update Deliverable :" + fileAttach.getFileEntryId());
 						String formData = openCPSDeliverable.getFormData();
 						if (Validator.isNotNull(formData)) {
 							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formData);
@@ -992,6 +994,7 @@ public class RestfulController {
 						}
 
 						DeliverableLocalServiceUtil.updateDeliverable(openCPSDeliverable);
+						_log.info("LOG Update Deliverable :" + openCPSDeliverable.getFileEntryId());
 
 					}
 

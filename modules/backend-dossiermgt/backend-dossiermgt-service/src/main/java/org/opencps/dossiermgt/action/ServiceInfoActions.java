@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import javax.ws.rs.core.Response;
+
 public interface ServiceInfoActions {
 
 	public JSONObject getServiceInfos(long userId, long companyId, long groupId, LinkedHashMap<String, Object> params,
@@ -55,7 +57,7 @@ public interface ServiceInfoActions {
 	public JSONObject getStatisticByAdministration(long groupId, Sort[] sorts, ServiceContext context)
 			throws ParseException, SearchException;
 
-	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context)
+	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject)
 			throws ParseException, SearchException;
 
 	public JSONObject getStatisticByLevel(ServiceContext context, long groupId) throws ParseException, SearchException;
