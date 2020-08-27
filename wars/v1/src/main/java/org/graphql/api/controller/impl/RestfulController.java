@@ -51,6 +51,9 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProviderRegistry;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceHandler;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -68,6 +71,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -121,6 +125,7 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.opencps.usermgt.service.util.LGSPRestfulUtils;
 import org.opencps.usermgt.service.util.SendMailLGSPUtils;
 import org.opencps.usermgt.service.util.ServiceProps;
+import org.osgi.service.component.annotations.Reference;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -279,6 +284,36 @@ public class RestfulController {
 		dataUser.put(result);
 
 		return dataUser.toJSONString();
+	}
+	
+	@Reference
+	private OpenIdConnectServiceHandler _openIdConnectServiceHandler;
+	
+	@Reference
+	private OpenIdConnectProviderRegistry _openIdConnectProviderRegistry;
+	
+	@Reference
+	private OpenIdConnect _openIdConnect;
+	
+	private void checkKeycloakAuthen(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+		
+		if(_openIdConnect.isEnabled(2019)) {
+			Collection<String> openIdConnectProviderNames =
+					_openIdConnectProviderRegistry.getOpenIdConnectProviderNames();
+			
+			String openIdConnectProviderName = StringPool.BLANK;
+			
+			for (String openIdConnectProvider : openIdConnectProviderNames) {
+				openIdConnectProviderName = openIdConnectProvider;
+			}
+			
+			try {
+				_openIdConnectServiceHandler.requestAuthentication(openIdConnectProviderName, httpServletRequest, httpServletResponse);
+			} catch (PortalException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
