@@ -1413,9 +1413,10 @@ public class DeliverableLocalServiceImpl
 		object.setApplicantIdNo(objectData.getString(DeliverableTerm.APPLICANT_ID_NO));
 		}
 		// new field to save QD
-		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
+//		object.setFileAttachs(objectData.getString(DeliverableTerm.FILE_ATTACHS));
 		if (objectData.getLong(DeliverableTerm.FILE_ENTRY_ID) > 0) {
 			object.setFileEntryId(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID));
+			object.setFileAttachs(String.valueOf(objectData.getLong(DeliverableTerm.FILE_ENTRY_ID)));
 		}
 		object.setDeliverableState(Integer.valueOf(objectData.getInt(DeliverableTerm.DELIVERABLE_STATE, 1)));
 

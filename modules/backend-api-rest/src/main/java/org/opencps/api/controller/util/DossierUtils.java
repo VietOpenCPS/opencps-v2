@@ -278,7 +278,6 @@ public class DossierUtils {
 	//					_log.info("subTimeStamp: "+subTimeStamp);
 						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId, false);
-						
 //						DueDateUtils overdue = new DueDateUtils(now, dueDateCalc, durationUnit, groupId);
 //						_log.debug("NOW: " + now + ", DUE DATE: " + dueDateCalc + ", UNIT: " + durationUnit);
 //						double overdueDate = overdue.getOverDueCalcToHours();
@@ -340,8 +339,16 @@ public class DossierUtils {
 								long dueDateActionTimeStamp = dueDate.getTime();
 								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
 //								_log.info("START STEP OVERDUE");
-								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
+								String stepOverDue = "";
+								DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+								ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
+										dossierAction.getGroupId(), dossierAction.getServiceProcessId());
+								if(Validator.isNotNull(step.getDurationCount()) && step.getDurationCount() > 0) {
+								 stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 										dueDateActionTimeStamp, groupId, true);
+								}else{
+									stepOverDue = StringPool.BLANK;
+								}
 //								DueDateUtils overdue = new DueDateUtils(now, dueDate, durationUnit, groupId);
 //								
 //								double overdueDate = overdue.getOverDueCalcToHours();
@@ -1720,7 +1727,7 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
-	public static List<Long> mappingForListCongVan(List<Document> docs, String groupCongVan) {
+	public static List<String> mappingForListCongVan(List<Document> docs, String groupCongVan) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		if(Validator.isNotNull(docs)) {
 			for (Document doc : docs) {
@@ -1745,6 +1752,7 @@ public class DossierUtils {
 				model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 				model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 				model.setServerNo(doc.get(DossierTerm.SERVER_NO));
+				model.setDocumentNo(doc.get(DossierTerm.DOCUMENT_NO));
 				String groupDossierId = "";
 				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
 					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
@@ -1760,37 +1768,64 @@ public class DossierUtils {
 			}
 		}
 		List<Long> lstId = new ArrayList<>();
+		List<String> lstDocumentNo = new ArrayList<>();
+		//Danh sach ho so
 		if(ouputs !=null) {
 			if(Validator.isNull(groupCongVan)) {
 				for (DossierDataModel item : ouputs) {
 					//GroupDossierId : id,id,id
-					if (Validator.isNotNull(item.getGroupDossierIds())) {
+//					if (Validator.isNotNull(item.getGroupDossierIds())) {
 						// 26/08/2020 DuongNT
 						// Lấy danh sách công văn theo hồ sơ điều kiện là groupDossierId cuối cùng
-						String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
-						.lastIndexOf(",") + 1));
-//						String[] id = groupDossierIds.split(StringPool.COMMA);
-//						for (String key : id) {
-							if (!groupDossierIds.contains(lstId.toString())) {
-								lstId.add(Long.valueOf(groupDossierIds));
+//						String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+//						.lastIndexOf(",") + 1));
+//						String[] id = item.getGroupDossierIds().split(StringPool.COMMA);
+//						for(int i = item.getGroupDossierIds().length() - 1; i >=0; i--) {
+//							Dossier dossier = DossierLocalServiceUtil.fetchDossier(i);
+//							if(Validator.isNotNull(dossier)){
+//								if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+//									lstId.add(Long.valueOf(dossier.getDossierId()));
+//									break;
+//								}
+//							}
+//						}
+//					}
+					//Lay danh sach cong van theo ho danh sach ho (documentNo)
+					if(Validator.isNotNull(item.getDocumentNo())){
+						String documentNo = "";
+						if(!lstDocumentNo.contains(item.getDocumentNo())){
+							documentNo +=  item.getDocumentNo();
+							if(Validator.isNotNull(documentNo)){
+								lstDocumentNo.add(documentNo);
 							}
+						}
+
+
+
+//						if(Validator.isNull(lstDocumentNo)){
+//							lstDocumentNo.add(item.getDocumentNo());
+//						}else{
+//							for(String docNo :lstDocumentNo){
+//								if(item.getDocumentNo().equals())
+//							}
 //						}
 					}
 				}
-			}else{
-				for (DossierDataModel item : ouputs) {
-					//DossierId : id,id,id
-					if (Validator.isNotNull(item.getDossierId())) {
-						String dossierId = String.valueOf(item.getDossierId());
-						if (!dossierId.contains(lstId.toString())) {
-							lstId.add(Long.valueOf(item.getDossierId()));
-						}
-					}
-				}
 			}
+//			else{
+//				for (DossierDataModel item : ouputs) {
+//					//DossierId : id,id,id
+//					if (Validator.isNotNull(item.getDossierId())) {
+//						String dossierId = String.valueOf(item.getDossierId());
+//						if (!dossierId.contains(lstId.toString())) {
+//							lstId.add(Long.valueOf(item.getDossierId()));
+//						}
+//					}
+//				}
+//			}
 		}
 
-		return lstId;
+		return lstDocumentNo;
 	}
 	public static List<DossierDataModel> mappingForListDossier(List<Dossier> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -1807,7 +1842,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}

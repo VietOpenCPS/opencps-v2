@@ -1540,17 +1540,17 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
 					serviceContext);
-			if(Validator.isNotNull(dossier.getGroupDossierId())){
-				//Update DocumentNo của hồ sơ cho công văn
-				Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossier.getGroupDossierId()));
-				if(Validator.isNotNull(dossier.getDocumentNo())) {
-					if (Validator.isNotNull(dossierUpdate)) {
-						dossierUpdate.setDocumentNo(dossier.getDocumentNo());
-						DossierLocalServiceUtil.updateDossier(dossierUpdate);
-						_log.info("LOG Dossier : " + JSONFactoryUtil.looseSerialize(dossierUpdate));
-					}
-				}
-			}
+//			if(Validator.isNotNull(dossier.getGroupDossierId())){
+//				//Update DocumentNo của hồ sơ cho công văn
+//				Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossier.getGroupDossierId()));
+//				if(Validator.isNotNull(dossier.getDocumentNo())) {
+//					if (Validator.isNotNull(dossierUpdate)) {
+//						dossierUpdate.setDocumentNo(dossier.getDocumentNo());
+//						DossierLocalServiceUtil.updateDossier(dossierUpdate);
+//						_log.info("LOG Dossier : " + JSONFactoryUtil.looseSerialize(dossierUpdate));
+//					}
+//				}
+//			}
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -6594,9 +6594,9 @@ public class DossierManagementImpl implements DossierManagement {
 					groupDossierIdNew = groupDossierIdNew.substring(1);
 				}
 				//Update DocumentNo
-				if(!String.valueOf(groupDossierId).contains(groupDossierIdNew)){
-					dossier.setDocumentNo(null);
-				}
+//				if(!String.valueOf(groupDossierId).contains(groupDossierIdNew)){
+//					dossier.setDocumentNo(null);
+//				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
@@ -7973,6 +7973,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			List<DossierFile> listDossierFile = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, Long.valueOf(dossierId));
 			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossierId);
+			Dossier dossierCongVan = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossierId));
+			_log.info("DossierCongVan :" + JSONFactoryUtil.looseSerialize(dossierCongVan.getDocumentNo()));
 			if(Validator.isNotNull(lstDossiers)) {
 				for (Dossier dossier : lstDossiers) {
 
@@ -8061,6 +8063,11 @@ public class DossierManagementImpl implements DossierManagement {
 														input.getPayment(),
 														actConfig.getSyncType(),
 														serviceContext, errorModel);
+												if(Validator.isNotNull(dossierCongVan.getDocumentNo())){
+													dossier.setDocumentNo(dossierCongVan.getDocumentNo());
+													DossierLocalServiceUtil.updateDossier(dossier);
+													_log.info("LOG INFO DOSSIER UPDATE DOCUMENT_NO: " + dossier.getDocumentNo() );
+												}
 												if(Validator.isNotNull(proAction.getPostAction())){
 													updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
 												}
@@ -8361,8 +8368,9 @@ public class DossierManagementImpl implements DossierManagement {
 													applicationIdNo, applicationName, "",
 													"", "", "", deliverableState,
 													dosserId, fileEntryId > 0 ? fileEntryId : item.getFileEntryId(), formScriptFileId, formReportFileId,
-													formData, "",
+													formData, String.valueOf(fileEntryId),
 													serviceContext);
+											_log.info("FileAttach deliverable" + fileEntryId);
 											deliverableCodeFile = deliverable.getDeliverableCode();
 											_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 											break;
@@ -8584,50 +8592,65 @@ public class DossierManagementImpl implements DossierManagement {
 					user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
-				long[] dossierIds = new long[lstId.size()];
-				if(lstId !=null && !lstId.isEmpty()){
+			List<String> lstDocumentNo = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
+//				long[] dossierIds = new long[lstId.size()];
+//				if(lstId !=null && !lstId.isEmpty()){
+//					int i = 0;
+//					for(Long id : lstId){
+//						dossierIds[i++] = id;
+//					}
+//				}
+			String [] documentNos = new String[lstDocumentNo.size()];
+			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()){
 					int i = 0;
-					for(Long id : lstId){
-						dossierIds[i++] = id;
+					for(String id : lstDocumentNo){
+						documentNos[i++] = id;
 					}
 				}
-				if(Validator.isNotNull(dossierIds)) {
-					if(dossierIds.length > 0) {
-						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+				if(Validator.isNotNull(documentNos)) {
+					if(documentNos.length > 0) {
+//						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+						lstDossier = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
 					}
 				}
-				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
-					if (lstDossier != null && !lstDossier.isEmpty()) {
-						for (Dossier item : lstDossier){
-							if(Validator.isNotNull(item.getMetaData())) {
-								String metaData = item.getMetaData();
-								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
-								Iterator<String> keys = jsonMetaData.keys();
-								while (keys.hasNext()) {
-									String key = keys.next();
-									String value = jsonMetaData.getString(key);
-									if (key.equals(DossierTerm.DON_VI_NHAN)) {
-										if (searchCongVanTheoDonViNhan.equals(DossierTerm.SCOPE_)) {
-											if (Validator.isNotNull(employee.getScope())) {
-												String[] employeeArr = employee.getScope().split(StringPool.COMMA);
- 												if (value.equals(employeeArr[0])) {
-													lstSearchDossierCV.add(item);
-													break;
-												}
-											}
-										} else {
-											if (searchCongVanTheoDonViNhan.equals(value)) {
-												lstSearchDossierCV.add(item);
-												break;
-											}
-										}
-									}
-								}
-							}
-						}
+			if(Validator.isNotNull(lstDossier)){
+				for(Dossier dossier : lstDossier){
+					if(dossier.getOriginality() == 9){
+						lstSearchDossierCV.add(dossier);
 					}
 				}
+			}
+//				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+//					if (lstDossier != null && !lstDossier.isEmpty()) {
+//						for (Dossier item : lstDossier){
+//							if(Validator.isNotNull(item.getMetaData())) {
+//								String metaData = item.getMetaData();
+//								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+//								Iterator<String> keys = jsonMetaData.keys();
+//								while (keys.hasNext()) {
+//									String key = keys.next();
+//									String value = jsonMetaData.getString(key);
+//									if (key.equals(DossierTerm.DON_VI_NHAN)) {
+//										if (searchCongVanTheoDonViNhan.equals(DossierTerm.SCOPE_)) {
+//											if (Validator.isNotNull(employee.getScope())) {
+//												String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+// 												if (value.equals(employeeArr[0])) {
+//													lstSearchDossierCV.add(item);
+//													break;
+//												}
+//											}
+//										} else {
+//											if (searchCongVanTheoDonViNhan.equals(value)) {
+//												lstSearchDossierCV.add(item);
+//												break;
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
 			results.setTotal(lstSearchDossierCV.size());
  			results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
