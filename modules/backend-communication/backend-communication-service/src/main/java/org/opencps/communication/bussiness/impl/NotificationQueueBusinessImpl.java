@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 /**
@@ -107,8 +105,5 @@ public class NotificationQueueBusinessImpl
 
 		return NotificationQueueLocalServiceUtil.updateNotificationQueue(notificationQueue);
 	}
-
-	public Log _log =
-		LogFactoryUtil.getLog(NotificationQueueBusinessImpl.class);
 
 }

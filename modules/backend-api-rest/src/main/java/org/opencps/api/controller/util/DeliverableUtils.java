@@ -566,7 +566,7 @@ public class DeliverableUtils {
 			if (DateUtil.isCellDateFormatted(cell)) {
 				return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(cell.getDateCellValue());
 			} else {
-				return new BigDecimal(cell.getNumericCellValue());
+				return BigDecimal.valueOf(cell.getNumericCellValue());
 			}			
 		} else if (CellType.FORMULA == cell.getCellType()) {
 			if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {

@@ -202,7 +202,7 @@ public class ConvertDossierFromV1Dot9Utils {
 
 				// DossierFile dossierFile = null;
 				//
-				// System.out.println(oldDossierFile.getReferenceUid());
+				// _log.debug(oldDossierFile.getReferenceUid());
 				// dossierFile = action.updateDossierFile(
 				// groupId, dossier.getDossierId(),
 				// oldDossierFile.getReferenceUid(), "sourceFileName",
@@ -244,7 +244,7 @@ public class ConvertDossierFromV1Dot9Utils {
 		}
 		catch (Exception e) {
 
-//			System.out.println(j.getString("fileUrl"));
+//			_log.debug(j.getString("fileUrl"));
 			_log.info(e);
 		}
 	}
@@ -275,7 +275,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			// if (line.equalsIgnoreCase("quit")) {
 			// break;
 			// }
-			// System.out.println("Line entered : " + line);
+			// _log.debug("Line entered : " + line);
 			// }
 			// }
 
@@ -434,21 +434,21 @@ public class ConvertDossierFromV1Dot9Utils {
 			objectData.getString(TEMP_DOSSIERNO));
 
 		if (dossier != null) {
-			System.out.println(
+			_log.debug(
 				"updata dossier ====== ====== ===== " +
 					objectData.getString(TEMP_DOSSIERNO));
 			objectData.put(TEMP_DOSSIERID, dossier.getDossierId());
 			dossier = DossierLocalServiceUtil.adminProcessData(objectData);
 		}
 		else {
-			System.out.println(
+			_log.debug(
 				"insert dossier ====== ====== ===== " +
 					objectData.getString(TEMP_DOSSIERNO));
 
 			dossier = DossierLocalServiceUtil.adminProcessData(objectData);
 		}
 
-		System.out.println(dossier.getDossierId());
+		_log.debug(dossier.getDossierId());
 
 		objectData.put(TEMP_DOSSIERID, dossier.getDossierId());
 		return objectData;
@@ -485,7 +485,7 @@ public class ConvertDossierFromV1Dot9Utils {
 	public static void insertUserDossier(long groupId, long dossierId) {
 
 		List<Employee> employees = EmployeeLocalServiceUtil.findByG(groupId);
-		System.out.println(
+		_log.debug(
 			groupId + "start import dossier user..." + dossierId);
 		for (Employee e : employees) {
 			if (e.getMappingUserId() > 0) {
@@ -495,7 +495,7 @@ public class ConvertDossierFromV1Dot9Utils {
 					groupId, dossierId, e.getMappingUserId(), 1, true);
 			}
 		}
-		System.out.println(
+		_log.debug(
 			groupId + "start import dossier user done..." + dossierId);
 	}
 
@@ -503,14 +503,14 @@ public class ConvertDossierFromV1Dot9Utils {
 
 		Applicant applicant = mappingID > 0 ?
 			ApplicantLocalServiceUtil.fetchByMappingID(mappingID) : null;
-		if (Validator.isNotNull(applicant)) {
+		if (applicant != null) {
 
 			DossierUserActions duActions = new DossierUserActionsImpl();;
 			duActions.addDossierUser(
 				applicant.getGroupId(), dossierId, applicant.getMappingUserId(),
 				1, true);
 		}
-		System.out.println(
+		_log.debug(
 			mappingID + "start import dossier user done..." + dossierId);
 	}
 
@@ -539,7 +539,7 @@ public class ConvertDossierFromV1Dot9Utils {
 			appUser, appSecret,
 			properties, params, serviceContext);
 
-		System.out.println(resPostDossier);
+		_log.debug(resPostDossier);
 
 		return resPostDossier;
 

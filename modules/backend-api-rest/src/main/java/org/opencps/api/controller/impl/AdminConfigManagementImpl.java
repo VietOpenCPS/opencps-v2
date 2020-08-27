@@ -582,8 +582,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			workbook.write(bos);
 			byte[] input = bos.toByteArray();
+			FileOutputStream out = null;
 			try {
-				FileOutputStream out = new FileOutputStream(file);
+				out = new FileOutputStream(file);
 				out.write(input);
 				out.flush();
 				out.close();
@@ -591,6 +592,9 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			}
 			catch (Exception e) {
 				_log.debug(e);
+				if (out != null) {
+					out.close();
+				}
 			}
 
 			Response.ResponseBuilder responseBuilder = Response.ok((Object) file);

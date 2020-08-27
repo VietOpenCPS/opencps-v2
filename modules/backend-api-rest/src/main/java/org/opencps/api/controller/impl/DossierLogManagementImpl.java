@@ -264,7 +264,6 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 					HSSFSheet mainSheet = workbook.createSheet(sheetName);
 					int rowIndex = 0;
 					int stt = 0;
-
 //					 Write header
 					JSONArray jsonArr = JSONFactoryUtil.createJSONArray();
 					jsonArr.put(STT);

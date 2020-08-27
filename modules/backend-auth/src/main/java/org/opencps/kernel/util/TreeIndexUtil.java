@@ -48,7 +48,7 @@ public class TreeIndexUtil {
 			}
 
 			treeIndex = parentTreeIndex + StringPool.PERIOD + ext +
-				Integer.toHexString(Integer.valueOf(sibling));
+				Integer.toHexString(sibling);
 		}
 
 		return treeIndex;

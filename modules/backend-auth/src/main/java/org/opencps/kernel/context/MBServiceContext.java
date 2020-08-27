@@ -17,7 +17,7 @@ public class MBServiceContext extends ServiceContext {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ServiceContext _serviceContext;
+	private ServiceContext _serviceContext;
 
 	public MBServiceContext(long companyId, long groupId, long... userId) {
 		ServiceContext serviceContext = new ServiceContext();

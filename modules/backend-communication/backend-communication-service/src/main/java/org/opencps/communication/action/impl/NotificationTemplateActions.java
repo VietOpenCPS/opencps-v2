@@ -30,7 +30,7 @@ import backend.auth.api.exception.UnauthorizationException;
 
 public class NotificationTemplateActions implements NotificationTemplateInterface {
 
-	public Log _log = LogFactoryUtil.getLog(NotificationTemplateActions.class);
+	private final Log _log = LogFactoryUtil.getLog(NotificationTemplateActions.class);
 
 	@Override
 	public JSONObject getNotificationTemplates(long userId, long companyId, long groupId,

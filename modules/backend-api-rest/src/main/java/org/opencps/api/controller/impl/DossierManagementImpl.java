@@ -235,7 +235,7 @@ public class DossierManagementImpl implements DossierManagement {
 											}
 										}
 										// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
-										if(Validator.isNotNull(result)){
+										if(Validator.isNotNull(result) && dossier != null){
 											dossier.setPostalCodeSend(dossierNo);
 											DossierLocalServiceUtil.updateDossier(dossier);
 										}
@@ -5664,7 +5664,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		BackendAuth auth = new BackendAuthImpl();
-		long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+		long VALUE_CONVERT_HOUR_TIMESTAMP = 1000L * 60L * 60L;
 
 		try {
 			if (!auth.isAuth(serviceContext)) {
@@ -6731,7 +6731,7 @@ public class DossierManagementImpl implements DossierManagement {
 						statusArr,
 						dossiers.getString(DossierTerm.APPLICANT_ID_TYPE),
 						Validator.isNotNull(input.getOriginality())
-							? Integer.valueOf(input.getOriginality()) : 0);
+							? input.getOriginality() : 0);
 				if (dossierList != null && dossierList.size() > 0) {
 					for (Dossier dossierImport : dossierList) {
 						if (applicantName.equalsIgnoreCase(

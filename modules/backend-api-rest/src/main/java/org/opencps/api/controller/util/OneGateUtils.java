@@ -181,11 +181,13 @@ public class OneGateUtils {
 
 			Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-			if (dossierAction.getActionOverdue() != 0) {
-				model.setStepOverdue(StringPool.TRUE);
-			} else {
-				model.setStepOverdue(StringPool.TRUE);
-			}
+			// TODO: check this condition
+//			if (dossierAction.getActionOverdue() != 0) {
+//				model.setStepOverdue(StringPool.TRUE);
+//			} else {
+//				model.setStepOverdue(StringPool.TRUE);
+//			}
+			model.setStepOverdue(StringPool.TRUE);
 
 			model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
 

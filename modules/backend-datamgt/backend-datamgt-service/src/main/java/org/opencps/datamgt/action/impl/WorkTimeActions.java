@@ -26,7 +26,7 @@ import org.opencps.datamgt.constants.DataMGTConstants;
 
 public class WorkTimeActions implements WorkTimeInterface {
 
-	public Log _log = LogFactoryUtil.getLog(WorkTimeActions.class);
+	private static final Log _log = LogFactoryUtil.getLog(WorkTimeActions.class);
 
 	@Override
 	public boolean delete(long userId, long groupId, long companyId, int n, ServiceContext serviceContext)
