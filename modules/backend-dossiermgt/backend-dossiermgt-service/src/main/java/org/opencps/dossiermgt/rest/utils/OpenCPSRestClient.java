@@ -262,6 +262,7 @@ public class OpenCPSRestClient {
 			JSONObject jsonObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON,
 					baseUrl, requestURL, username,
 					password, properties, params, context);
+			_log.info("LOG info USER : " + username);
 			
 			
 			result = OpenCPSConverter.convertProcessAction(jsonObj);

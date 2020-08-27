@@ -1745,8 +1745,9 @@ public class DossierUtils {
 				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
 					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
 					for (String key : idGroup) {
-						groupDossierId += key + ",";
+						groupDossierId += ","  + key ;
 					}
+					groupDossierId.substring(1);
 					model.setGroupDossierIds(groupDossierId);
 				}
 				model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
@@ -1760,13 +1761,16 @@ public class DossierUtils {
 				for (DossierDataModel item : ouputs) {
 					//GroupDossierId : id,id,id
 					if (Validator.isNotNull(item.getGroupDossierIds())) {
-						String groupDossierIds = String.valueOf(item.getGroupDossierIds());
-						String[] id = groupDossierIds.split(StringPool.COMMA);
-						for (String key : id) {
-							if (!key.contains(lstId.toString())) {
-								lstId.add(Long.valueOf(key));
+						// 26/08/2020 DuongNT
+						// Lấy danh sách công văn theo hồ sơ điều kiện là groupDossierId cuối cùng
+						String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+						.lastIndexOf(",") + 1));
+//						String[] id = groupDossierIds.split(StringPool.COMMA);
+//						for (String key : id) {
+							if (!groupDossierIds.contains(lstId.toString())) {
+								lstId.add(Long.valueOf(groupDossierIds));
 							}
-						}
+//						}
 					}
 				}
 			}else{

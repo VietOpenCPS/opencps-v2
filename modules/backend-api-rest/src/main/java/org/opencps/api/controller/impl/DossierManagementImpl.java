@@ -124,6 +124,7 @@ import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
 import org.opencps.dossiermgt.service.persistence.DossierFileUtil;
 import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
@@ -1539,6 +1540,17 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
 					serviceContext);
+			if(Validator.isNotNull(dossier.getGroupDossierId())){
+				//Update DocumentNo của hồ sơ cho công văn
+				Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossier.getGroupDossierId()));
+				if(Validator.isNotNull(dossier.getDocumentNo())) {
+					if (Validator.isNotNull(dossierUpdate)) {
+						dossierUpdate.setDocumentNo(dossier.getDocumentNo());
+						DossierLocalServiceUtil.updateDossier(dossierUpdate);
+						_log.info("LOG Dossier : " + JSONFactoryUtil.looseSerialize(dossierUpdate));
+					}
+				}
+			}
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -2155,6 +2167,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// return
 			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
+				_log.info("DossierResult :" + JSONFactoryUtil.looseSerialize(dossierResult));
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc =
 					DossierDocumentLocalServiceUtil.getByActiocId(
@@ -6571,6 +6584,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if(Validator.isNotNull(dossier)){
 				String[] groupDossierIdArr = dossier.getGroupDossierId().split(StringPool.COMMA);
 				for (String groupDossierIdStr : groupDossierIdArr) {
+					//Nếu hồ sơ truyền lên đã tồn tại ==> xóa công văn cha đó
+					// ==> cộng lại 1 chuỗi id công văn cha mới nếu có và update hồ sơ
 					if(!groupDossierIdStr.equals(String.valueOf(groupDossierId))){
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
@@ -6578,7 +6593,12 @@ public class DossierManagementImpl implements DossierManagement {
 				if(Validator.isNotNull(groupDossierIdNew)) {
 					groupDossierIdNew = groupDossierIdNew.substring(1);
 				}
+				//Update DocumentNo
+				if(!String.valueOf(groupDossierId).contains(groupDossierIdNew)){
+					dossier.setDocumentNo(null);
+				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
+
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
 			}
 		}catch (Exception e){
@@ -6648,6 +6668,23 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 					_log.info("dossier group: "+dossier.getGroupDossierId());
+					if(Validator.isNotNull(dossier)){
+						String groupDossierIds [] = dossier.getGroupDossierId().split(StringPool.COMMA);
+						if(Validator.isNotNull(groupDossierIds)){
+							for(String id : groupDossierIds){
+								Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
+								if(Validator.isNotNull(dossierUpdate)){
+									dossier.setDocumentNo(dossierUpdate.getDocumentNo());
+									DossierLocalServiceUtil.updateDossier(dossier);
+									_log.info("DossierUpdate : " + JSONFactoryUtil.looseSerialize(dossier));
+								}else{
+									dossier.setDocumentNo(null);
+									DossierLocalServiceUtil.updateDossier(dossier);
+									_log.info("DossierUpdate : " + JSONFactoryUtil.looseSerialize(dossier));
+								}
+							}
+						}
+					}
 				}
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());
