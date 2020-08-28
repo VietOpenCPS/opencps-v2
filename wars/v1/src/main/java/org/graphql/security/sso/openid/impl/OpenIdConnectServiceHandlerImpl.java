@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.graphql.security.sso.openid;
+package org.graphql.security.sso.openid.impl;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -27,7 +27,9 @@ import com.liferay.portal.security.sso.openid.connect.OpenIdConnectFlowState;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProvider;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProviderRegistry;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
-import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceHandler;
+import org.graphql.security.sso.openid.OpenIdConnectServiceHandler;
+import org.graphql.security.sso.openid.OpenIdConnectUserInfoProcessor;
+
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectConstants;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 
@@ -297,7 +299,7 @@ public class OpenIdConnectServiceHandlerImpl
 			StringBundler sb = new StringBundler(2);
 
 			sb.append(_portal.getPortalURL(httpServletRequest));
-			sb.append(OpenIdConnectConstants.REDIRECT_URL_PATTERN);
+			sb.append("/c/opencps/login/openidconnect");
 
 			return new URI(sb.toString());
 		}

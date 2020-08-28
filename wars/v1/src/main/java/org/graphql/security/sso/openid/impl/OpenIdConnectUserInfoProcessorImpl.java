@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.graphql.security.sso.openid;
+package org.graphql.security.sso.openid.impl;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +32,7 @@ import java.util.Locale;
 
 import javax.mail.internet.InternetAddress;
 
+import org.graphql.security.sso.openid.OpenIdConnectUserInfoProcessor;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -127,7 +128,7 @@ public class OpenIdConnectUserInfoProcessorImpl
 		Company company = _companyLocalService.getCompany(companyId);
 
 		if (!company.isStrangers()) {
-//			throw new StrangersNotAllowedException(companyId);
+			throw new StrangersNotAllowedException(companyId);
 		}
 
 		if (!company.isStrangersWithMx() &&

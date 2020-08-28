@@ -1,3 +1,4 @@
+/*
 buildscript {
 	repositories {
 		maven {
@@ -9,6 +10,7 @@ buildscript {
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.css.builder", version: "3.0.0"
 	}
 }
+*/
 
 dependencies {
 	compile group: "org.springframework", name: "spring-webmvc-portlet", version: "4.1.9.RELEASE"

@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectProviderRegistry;
-import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceHandler;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -97,6 +96,7 @@ import org.graphql.api.controller.utils.WebKeys;
 import org.graphql.api.errors.OpenCPSNotFoundException;
 import org.graphql.api.model.FileTemplateMiniItem;
 import org.graphql.api.model.UsersUserItem;
+import org.graphql.security.sso.openid.OpenIdConnectServiceHandler;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
@@ -295,9 +295,9 @@ public class RestfulController {
 	@Reference
 	private OpenIdConnect _openIdConnect;
 	
-	private void checkKeycloakAuthen(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+	private boolean checkKeycloakAuthen(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		
-		if(_openIdConnect.isEnabled(2019)) {
+		if(_openIdConnect.isEnabled(20099)) {
 			Collection<String> openIdConnectProviderNames =
 					_openIdConnectProviderRegistry.getOpenIdConnectProviderNames();
 			
@@ -305,15 +305,21 @@ public class RestfulController {
 			
 			for (String openIdConnectProvider : openIdConnectProviderNames) {
 				openIdConnectProviderName = openIdConnectProvider;
+				
+				_log.info("===openIdConnectProviderName:"+openIdConnectProviderName);
 			}
 			
 			try {
 				_openIdConnectServiceHandler.requestAuthentication(openIdConnectProviderName, httpServletRequest, httpServletResponse);
+				
+				return true;
 			} catch (PortalException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
+		return false;
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
@@ -328,6 +334,13 @@ public class RestfulController {
 				? GetterUtil.getBoolean(PropsUtil.get("opencps.register.lgsp")) : false;
 
 		try {
+			
+			boolean checkKeycloakAuthen = checkKeycloakAuthen(request, response);
+			
+			if(checkKeycloakAuthen) {
+				_log.info("====authen true====");
+				return "/c";
+			}
 
 			String jCaptchaResponse = request.getParameter("j_captcha_response");
 			_log.info("jCaptchaResponse: "+jCaptchaResponse);

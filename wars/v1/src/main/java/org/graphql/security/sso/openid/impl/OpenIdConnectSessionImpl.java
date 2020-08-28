@@ -12,10 +12,9 @@
  * details.
  */
 
-package org.graphql.security.sso.openid;
+package org.graphql.security.sso.openid.impl;
 
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectFlowState;
-import com.liferay.portal.security.sso.openid.connect.OpenIdConnectSession;
 
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
@@ -24,6 +23,8 @@ import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 import java.io.Serializable;
+
+import org.graphql.security.sso.openid.OpenIdConnectSession;
 
 /**
  * @author Edward C. Han
