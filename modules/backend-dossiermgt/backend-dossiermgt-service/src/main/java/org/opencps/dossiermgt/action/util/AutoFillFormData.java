@@ -213,7 +213,7 @@ public class AutoFillFormData {
 				String value = String.valueOf(entry.getValue());
 
 				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
-
+//					_log.info("Value" + value);
 					if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _subjectName);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.SUBJECT_ID).equals(value)) {
@@ -272,10 +272,11 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentNo);
 					}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_userName);
-					}else if ((StringPool.UNDERLINE + EmployeeTerm._FIRSTSCOPE).equals(value)) {
+					}else if ((EmployeeTerm._FIRSTSCOPE).equals(value)) {
 						if(Validator.isNotNull(employee)) {
 							String _govAgencyCode[] = employee.getScope().split(StringPool.COMMA);
 							jsonMap.put(entry.getKey(), _govAgencyCode[0]);
+							_log.info("LOG FirstScope :" + _govAgencyCode[0]);
 						}
 					}
 

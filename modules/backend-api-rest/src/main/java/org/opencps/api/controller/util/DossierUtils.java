@@ -1727,7 +1727,7 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
-	public static List<String> mappingForListCongVan(List<Document> docs, String groupCongVan) {
+	public static List<DossierDataModel> mappingForListCongVan(List<Document> docs, String groupCongVan) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		if(Validator.isNotNull(docs)) {
 			for (Document doc : docs) {
@@ -1767,12 +1767,12 @@ public class DossierUtils {
 				ouputs.add(model);
 			}
 		}
-		List<Long> lstId = new ArrayList<>();
-		List<String> lstDocumentNo = new ArrayList<>();
-		//Danh sach ho so
-		if(ouputs !=null) {
-			if(Validator.isNull(groupCongVan)) {
-				for (DossierDataModel item : ouputs) {
+//		List<Long> lstId = new ArrayList<>();
+//		List<String> lstDocumentNo = new ArrayList<>();
+//		//Danh sach ho so
+//		if(ouputs !=null) {
+//			if(Validator.isNull(groupCongVan)) {
+//				for (DossierDataModel item : ouputs) {
 					//GroupDossierId : id,id,id
 //					if (Validator.isNotNull(item.getGroupDossierIds())) {
 						// 26/08/2020 DuongNT
@@ -1791,41 +1791,20 @@ public class DossierUtils {
 //						}
 //					}
 					//Lay danh sach cong van theo ho danh sach ho (documentNo)
-					if(Validator.isNotNull(item.getDocumentNo())){
-						String documentNo = "";
-						if(!lstDocumentNo.contains(item.getDocumentNo())){
-							documentNo +=  item.getDocumentNo();
-							if(Validator.isNotNull(documentNo)){
-								lstDocumentNo.add(documentNo);
-							}
-						}
-
-
-
-//						if(Validator.isNull(lstDocumentNo)){
-//							lstDocumentNo.add(item.getDocumentNo());
-//						}else{
-//							for(String docNo :lstDocumentNo){
-//								if(item.getDocumentNo().equals())
+//					if(Validator.isNotNull(item.getDocumentNo())) {
+//						String documentNo = "";
+//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
+//							documentNo += item.getDocumentNo();
+//							if (Validator.isNotNull(documentNo)) {
+//								lstDocumentNo.add(documentNo);
 //							}
-//						}
-					}
-				}
-			}
-//			else{
-//				for (DossierDataModel item : ouputs) {
-//					//DossierId : id,id,id
-//					if (Validator.isNotNull(item.getDossierId())) {
-//						String dossierId = String.valueOf(item.getDossierId());
-//						if (!dossierId.contains(lstId.toString())) {
-//							lstId.add(Long.valueOf(item.getDossierId()));
 //						}
 //					}
 //				}
 //			}
-		}
+//		}
 
-		return lstDocumentNo;
+		return ouputs;
 	}
 	public static List<DossierDataModel> mappingForListDossier(List<Dossier> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();

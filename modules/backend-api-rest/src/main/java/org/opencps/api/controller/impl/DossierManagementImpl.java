@@ -8328,7 +8328,7 @@ public class DossierManagementImpl implements DossierManagement {
 											long formScriptFileId = deliverableType.getFormScriptFileId();
 											long formReportFileId = deliverableType.getFormReportFileId();
 											String formData = "";
-											String deliverableState = "";
+											String deliverableState = "1";
 											//Xử lý formData cho ds người có công
 											// Mapping formData --> với cấu hình của deliverableType
 											if (Validator.isNotNull(deliverableType.getMappingData())) {
@@ -8340,28 +8340,22 @@ public class DossierManagementImpl implements DossierManagement {
 											if (Validator.isNotNull(formData)) {
 												JSONObject dataDeliverable =
 														JSONFactoryUtil.createJSONObject(formData);
+												_log.info("Deliverable form" + dataDeliverable);
 												Iterator<String> keys = dataDeliverable.keys();
 												while (keys.hasNext()) {
 													String key = keys.next();
 													String value = dataDeliverable.getString(key);
+													_log.info("KEY: " + key + " Value " + value);
 													if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
 														deliverableState = value;
 														break;
-													} else if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
-														deliverableCode = value;
-														break;
-													} else if (key.equals(DossierTerm.DELIVERABLE_NAME)) {
-														deliverableName = value;
-														break;
-													} else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
+													}  else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
 														govAgencyCode = value;
-														break;
-													} else if (key.equals(DossierTerm.GOV_AGENCY_NAME)) {
-														govAgencyName = value;
 														break;
 													}
 												}
 											}
+											_log.info("Log deliverable State:" + deliverableState);
 											deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
 													groupId, deliverableTypes, deliverableName,
 													deliverableCode, govAgencyCode, govAgencyName,
@@ -8427,7 +8421,8 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-		List<Dossier> lstDossier = new ArrayList<>();
+		List<Dossier> lstDossierDoc = new ArrayList<>();
+		List<Dossier> lstDossierId = new ArrayList<>();
 		List<Dossier> lstSearchDossierCV = new ArrayList<>();
 		try {
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
@@ -8592,34 +8587,71 @@ public class DossierManagementImpl implements DossierManagement {
 					user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			List<String> lstDocumentNo = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
-//				long[] dossierIds = new long[lstId.size()];
-//				if(lstId !=null && !lstId.isEmpty()){
-//					int i = 0;
-//					for(Long id : lstId){
-//						dossierIds[i++] = id;
-//					}
-//				}
-			String [] documentNos = new String[lstDocumentNo.size()];
-			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()){
-					int i = 0;
-					for(String id : lstDocumentNo){
-						documentNos[i++] = id;
-					}
-				}
-				if(Validator.isNotNull(documentNos)) {
-					if(documentNos.length > 0) {
-//						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
-						lstDossier = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
-					}
-				}
-			if(Validator.isNotNull(lstDossier)){
-				for(Dossier dossier : lstDossier){
-					if(dossier.getOriginality() == 9){
-						lstSearchDossierCV.add(dossier);
+			List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
+			List<Long> lstId = new ArrayList<>();
+			List<String> lstDocumentNo = new ArrayList<>();
+			if(ouputs !=null) {
+				for (DossierDataModel item : ouputs) {
+					if(Validator.isNotNull(item.getDocumentNo())) {
+						String documentNo = "";
+						if (!lstDocumentNo.contains(item.getDocumentNo())) {
+							documentNo += item.getDocumentNo();
+							if (Validator.isNotNull(documentNo)) {
+								lstDocumentNo.add(documentNo);
+							}
+						}
+					}else{
+						if(Validator.isNotNull(item.getGroupDossierIds())) {
+							String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+									.lastIndexOf(",") + 1));
+							if (!groupDossierIds.contains(lstId.toString())) {
+								lstId.add(Long.valueOf(groupDossierIds));
+							}
+						}
 					}
 				}
 			}
+			if(Validator.isNotNull(lstId)) {
+				long[] dossierIds = new long[lstId.size()];
+				if (lstId != null && !lstId.isEmpty()) {
+					int i = 0;
+					for (Long id : lstId) {
+						dossierIds[i++] = id;
+					}
+					if (Validator.isNotNull(dossierIds)) {
+						if (dossierIds.length > 0) {
+							lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+						}
+					}
+				}
+			}
+
+			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()) {
+				String [] documentNos = new String[lstDocumentNo.size()];
+				int i = 0;
+				for (String id : lstDocumentNo) {
+					documentNos[i++] = id;
+				}
+				if (Validator.isNotNull(documentNos)) {
+					if (documentNos.length > 0) {
+						lstDossierDoc = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
+					}
+					if(Validator.isNotNull(lstDossierDoc)) {
+						List<Dossier> lstNew = new ArrayList<>(lstDossierDoc);
+						if (Validator.isNotNull(lstDossierId)) {
+							lstNew.addAll(lstDossierId);
+						}
+						if (Validator.isNotNull(lstNew)) {
+							for (Dossier dossier : lstNew) {
+								if (dossier.getOriginality() == 9) {
+									lstSearchDossierCV.add(dossier);
+								}
+							}
+						}
+					}
+				}
+			}
+
 //				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
 //					if (lstDossier != null && !lstDossier.isEmpty()) {
 //						for (Dossier item : lstDossier){
