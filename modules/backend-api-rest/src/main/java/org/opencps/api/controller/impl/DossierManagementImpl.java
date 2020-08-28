@@ -50,6 +50,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
@@ -8414,5 +8415,94 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.info(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response doActionSpecial(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DoActionModel input, Long dueDate, String listDossierId,
+			String listActionCode) {
+		
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DossierAction dossierAction = null;
+		List<ProcessAction> processActionList = null;
+		List<String> dossierIds = null;
+		List<String> actionCodes = null;
+		
+		if (listDossierId.split(",").length > 1) {
+			dossierIds = Arrays.asList(listDossierId.split(","));
+		}
+		
+		if (listActionCode.split(",").length > 1) {
+			actionCodes = Arrays.asList(listActionCode.split(","));
+		}
+		
+		for (String dossierId : dossierIds) {
+			
+			Dossier dossier = DossierUtils.getDossier(dossierId, groupId);
+			
+			try {
+				if (dossier != null) {
+					long serviceProcessId = 0;
+					String stepCode = StringPool.BLANK;
+					long dossierActionId = dossier.getDossierActionId();
+					List<String> listActCode = new ArrayList<String>();
+					List<String> newListActCode = new ArrayList<String>();
+					
+					if (dossierActionId > 0) {
+						dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					}
+					
+					if (dossierAction != null) {
+						serviceProcessId = dossierAction.getServiceProcessId();
+						stepCode = dossierAction.getStepCode();
+					}
+					
+					if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+						processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
+								serviceProcessId, stepCode);
+						if (processActionList != null && processActionList.size() > 0) {
+							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
+							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
+						}
+					}else {
+						ProcessOption option = null;
+						if (dossierAction != null) {
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossier.getDossierTemplateNo());
+							option = ProcessOptionLocalServiceUtil.fetchBySP_DT(dossierAction.getServiceProcessId(), dossierTemplate.getDossierTemplateId());
+						}else {
+							option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+								dossier.getDossierTemplateNo(), groupId);
+						}
+	
+						if (option != null) {
+							serviceProcessId = option.getServiceProcessId();
+						}
+						processActionList = ProcessActionLocalServiceUtil
+							.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
+						if (processActionList != null && processActionList.size() > 0) {
+							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
+							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
+						}						
+					}
+					
+				}				
+			} catch (Exception e) {
+				_log.error(e);
+			}		
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).build();
+	}
+	
+	private void getActionCode(List<String> listActCode, List<ProcessAction> processActionList,
+			List<String> actionCodes,List<String> newListActCode, DoActionModel input) {
+		
+		listActCode = processActionList.stream().map(processAction -> {return processAction.getActionCode();
+		}).collect(Collectors.toList());
+		for (String actionCode : actionCodes) {
+			if (listActCode.contains(actionCode)) {								
+				newListActCode.add(actionCode);								
+			}
+		}
+		input.setActionCode(newListActCode.get(0));
 	}
 }
