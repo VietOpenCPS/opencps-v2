@@ -3525,9 +3525,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		System.out.println("====online 3511==" + online);
-		_log.info("====online 3511==" + online);
-		_log.debug("====online 3511==" + online);
+//		System.out.println("====online 3511==" + online);
+//		_log.info("====online 3511==" + online);
+//		_log.debug("====online 3511==" + online);
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 			query.addField(DossierTerm.ONLINE);

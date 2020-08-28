@@ -115,7 +115,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		document.addTextSortable(DeliverableTerm.FILE_ATTACHS, object.getFileAttachs());
 		document.addTextSortable(DeliverableTerm.FORM_SCRIPT, object.getFormScript());
 		document.addTextSortable(DeliverableTerm.FORM_REPORT, object.getFormReport());
-		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE, object.getDeliverableState());
+		document.addNumberSortable(DeliverableTerm.DELIVERABLE_STATE + StringPool.UNDERLINE + ConstantUtils.DATA, object.getDeliverableState());
 
 		// add form data detail
 		String formData = object.getFormData();
@@ -155,7 +155,7 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
 				}else if(jsonObject.getString(key).contains(StringPool.SPACE)){
-					document.addTextSortable(indexKey, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					document.addTextSortable(indexKey, jsonObject.getString(key).toLowerCase());
 				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));

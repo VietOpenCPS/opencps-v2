@@ -377,9 +377,16 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(actionUser)) {
-			MultiMatchQuery query = new MultiMatchQuery(actionUser);
-			query.addFields(DossierTerm.ACTION_USER);
+			String actionUserArr[] = actionUser.split(StringPool.SPACE);
+			BooleanQuery query = new BooleanQueryImpl();
+			for(String arr :actionUserArr){
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+						DossierTerm.ACTION_USER_SEARCH,
+						StringPool.STAR + arr.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery,BooleanClauseOccur.SHOULD);
+			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
 		}
 
 		String createDateStartFilter =
