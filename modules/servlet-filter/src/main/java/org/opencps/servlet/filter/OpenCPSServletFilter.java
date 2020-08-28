@@ -49,14 +49,20 @@ import org.osgi.service.component.annotations.Component;
 		//"dispatcher=ERROR",
 		//"dispatcher=INCLUDE",
 		"servlet-context-name=", "servlet-filter-name=Blade Servlet Filter",
-		"url-pattern=/web/guest/XrdAdapter/RestService/forward/*", "url-pattern=/web/guest/VXPAdapter/RestService/forward/*", "url-pattern=/web/guest/addtthcKhuyenMai" }, service = Filter.class)
+		"url-pattern=/web/guest/XrdAdapter/RestService/forward/*",
+		"url-pattern=/web/guest/VXPAdapter/RestService/forward/*",
+		"url-pattern=/web/guest/addtthcKhuyenMai",
+		"url-pattern=/web/guest/search/call",
+		"url-pattern=/web/guest/downloadfile/*"
+
+}, service = Filter.class)
 public class OpenCPSServletFilter extends BaseFilter {
 
 	@Override
 	protected Log getLog() {
 		return _log;
 	}
-
+	private final Integer LENGTH_URL_DOWNLOAD_FILE = 60;
 	@Override
 	protected void processFilter(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws Exception {
@@ -68,6 +74,30 @@ public class OpenCPSServletFilter extends BaseFilter {
 			httpServletRequest.getRequestDispatcher("/o/rest/v2/nps/createdossierfromdvcqg").forward(httpServletRequest,
 					httpServletResponse);
 		}
+
+		if(Validator.isNotNull(requestURI) && (requestURI.contains("search/call"))) {
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/dossiers/direct").forward(httpServletRequest,
+					httpServletResponse);
+		}
+
+		if(Validator.isNotNull(requestURI) && (requestURI.contains("downloadfile"))) {
+			String referenceUid;
+			try {
+				if(requestURI.length() == LENGTH_URL_DOWNLOAD_FILE) {
+					referenceUid = requestURI.substring(requestURI.length() - 36);
+				} else {
+					referenceUid = "";
+				}
+
+			} catch (Exception e) {
+				referenceUid = "";
+			}
+			httpServletRequest.getRequestDispatcher("/o/rest/v2/dossiers/downloadfile/" + referenceUid ).forward(httpServletRequest,
+					httpServletResponse);
+		}
+
+
+
 		processFilter(OpenCPSServletFilter.class.getName(), httpServletRequest, httpServletResponse, filterChain);
 
 	}
