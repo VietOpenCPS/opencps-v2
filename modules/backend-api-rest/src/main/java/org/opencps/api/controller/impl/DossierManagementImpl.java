@@ -3746,7 +3746,7 @@ public class DossierManagementImpl implements DossierManagement {
 							assignUserObj.put(Field.USER_NAME, emp.getFullName());
 						}
 						else {
-							assignUserObj.put(Field.USER_NAME, da.getUserName());
+							assignUserObj.put(Field.USER_NAME, da.getActionUser());
 						}
 
 						assignUserArr.put(assignUserObj);
@@ -8489,7 +8489,7 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-		List<Dossier> lstDossierDoc = new ArrayList<>();
+		List<Dossier> lstNew = new ArrayList<>();
 		List<Dossier> lstDossierId = new ArrayList<>();
 		List<Dossier> lstSearchDossierCV = new ArrayList<>();
 		try {
@@ -8657,23 +8657,34 @@ public class DossierManagementImpl implements DossierManagement {
 
 			List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
 			List<Long> lstId = new ArrayList<>();
-			List<String> lstDocumentNo = new ArrayList<>();
+//			List<String> lstDocumentNo = new ArrayList<>();
 			if(ouputs !=null) {
 				for (DossierDataModel item : ouputs) {
-					if(Validator.isNotNull(item.getDocumentNo())) {
-						String documentNo = "";
-						if (!lstDocumentNo.contains(item.getDocumentNo())) {
-							documentNo += item.getDocumentNo();
-							if (Validator.isNotNull(documentNo)) {
-								lstDocumentNo.add(documentNo);
-							}
+//					if(Validator.isNotNull(item.getDocumentNo())) {
+//						String documentNo = "";
+//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
+//							documentNo += item.getDocumentNo();
+//							if (Validator.isNotNull(documentNo)) {
+//								lstDocumentNo.add(documentNo);
+//							}
+//						}
+//					}else{
+					if(Validator.isNotNull(item.getGroupDossierIds())) {
+//							String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+//									.lastIndexOf(",") + 1));
+						String[] groupDossierIds = item.getGroupDossierIds().split(StringPool.COMMA);
+						Integer lastIndex = groupDossierIds.length;
+						if (lastIndex >= 1) {
+							lastIndex--;
 						}
-					}else{
-						if(Validator.isNotNull(item.getGroupDossierIds())) {
-							String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
-									.lastIndexOf(",") + 1));
-							if (!groupDossierIds.contains(lstId.toString())) {
-								lstId.add(Long.valueOf(groupDossierIds));
+						Dossier dossier ;
+						for (int i = lastIndex; i >= 0; i--) {
+							dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(groupDossierIds[i]));
+							if (Validator.isNotNull(dossier)) {
+								if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+									lstId.add(Long.valueOf(groupDossierIds[i]));
+									break;
+								}
 							}
 						}
 					}
@@ -8690,29 +8701,10 @@ public class DossierManagementImpl implements DossierManagement {
 						if (dossierIds.length > 0) {
 							lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
 						}
-					}
-				}
-			}
-
-			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()) {
-				String [] documentNos = new String[lstDocumentNo.size()];
-				int i = 0;
-				for (String id : lstDocumentNo) {
-					documentNos[i++] = id;
-				}
-				if (Validator.isNotNull(documentNos)) {
-					if (documentNos.length > 0) {
-						lstDossierDoc = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
-					}
-					if(Validator.isNotNull(lstDossierDoc)) {
-						List<Dossier> lstNew = new ArrayList<>(lstDossierDoc);
 						if (Validator.isNotNull(lstDossierId)) {
-							lstNew.addAll(lstDossierId);
-						}
-						if (Validator.isNotNull(lstNew)) {
-							for (Dossier dossier : lstNew) {
+							for (Dossier dossier : lstDossierId) {
 								if (dossier.getOriginality() == 9) {
-									lstSearchDossierCV.add(dossier);
+									lstNew.add(dossier);
 								}
 							}
 						}
@@ -8720,39 +8712,70 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 
-//				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
-//					if (lstDossier != null && !lstDossier.isEmpty()) {
-//						for (Dossier item : lstDossier){
-//							if(Validator.isNotNull(item.getMetaData())) {
-//								String metaData = item.getMetaData();
-//								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
-//								Iterator<String> keys = jsonMetaData.keys();
-//								while (keys.hasNext()) {
-//									String key = keys.next();
-//									String value = jsonMetaData.getString(key);
-//									if (key.equals(DossierTerm.DON_VI_NHAN)) {
-//										if (searchCongVanTheoDonViNhan.equals(DossierTerm.SCOPE_)) {
-//											if (Validator.isNotNull(employee.getScope())) {
-//												String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-// 												if (value.equals(employeeArr[0])) {
-//													lstSearchDossierCV.add(item);
-//													break;
-//												}
-//											}
-//										} else {
-//											if (searchCongVanTheoDonViNhan.equals(value)) {
-//												lstSearchDossierCV.add(item);
-//												break;
-//											}
-//										}
-//									}
+//			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()) {
+//				String [] documentNos = new String[lstDocumentNo.size()];
+//				int i = 0;
+//				for (String id : lstDocumentNo) {
+//					documentNos[i++] = id;
+//				}
+//				if (Validator.isNotNull(documentNos)) {
+//					if (documentNos.length > 0) {
+//						lstDossierDoc = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
+//					}
+//					if(Validator.isNotNull(lstDossierDoc)) {
+//						List<Dossier> lstNew = new ArrayList<>(lstDossierDoc);
+//						if (Validator.isNotNull(lstDossierId)) {
+//							lstNew.addAll(lstDossierId);
+//						}
+//						if (Validator.isNotNull(lstNew)) {
+//							for (Dossier dossier : lstNew) {
+//								if (dossier.getOriginality() == 9) {
+//									lstSearchDossierCV.add(dossier);
 //								}
 //							}
 //						}
 //					}
 //				}
-			results.setTotal(lstSearchDossierCV.size());
- 			results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
+//			}
+
+				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+					if (lstNew != null && !lstNew.isEmpty()) {
+						for (Dossier item : lstNew){
+							if(Validator.isNotNull(item.getMetaData())) {
+								String metaData = item.getMetaData();
+								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
+								Iterator<String> keys = jsonMetaData.keys();
+								while (keys.hasNext()) {
+									String key = keys.next();
+									String value = jsonMetaData.getString(key);
+									if (key.equals(DossierTerm.DON_VI_NHAN)) {
+										if (searchCongVanTheoDonViNhan.equals(DossierTerm.SCOPE_)) {
+											if (Validator.isNotNull(employee.getScope())) {
+												String[] employeeArr = employee.getScope().split(StringPool.COMMA);
+ 												if (value.equals(employeeArr[0])) {
+													lstSearchDossierCV.add(item);
+													break;
+												}
+											}
+										} else {
+											if (searchCongVanTheoDonViNhan.equals(value)) {
+												lstSearchDossierCV.add(item);
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+					results.setTotal(lstSearchDossierCV.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
+				}else{
+					results.setTotal(lstNew.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstNew));
+				}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}catch (Exception e) {
 			_log.info(e.getMessage());

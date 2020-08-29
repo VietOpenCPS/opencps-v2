@@ -1367,13 +1367,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
-			if(Validator.isNotNull(userId)){
-				dossierAction.setUserId(userId);
-				User userAction = userLocalService.getUser(userId);
-				if(Validator.isNotNull(userAction)) {
-					dossierAction.setUserName(userAction.getFullName());
-				}
-			}
+//			if(Validator.isNotNull(userId)){
+//				_log.info("LOG USER :" + userId);
+//				dossierAction.setUserId(userId);
+//				User userAction = userLocalService.getUser(userId);
+//				if(Validator.isNotNull(userAction)) {
+//					dossierAction.setUserName(userAction.getFullName());
+//				}
+//			}
 
 			//			dossier = dossierLocalService.updateDossier(dossier);
 			_log.info("DOSSIER ACTION CPS DOSSIER : " +  JSONFactoryUtil.looseSerialize(dossierAction));

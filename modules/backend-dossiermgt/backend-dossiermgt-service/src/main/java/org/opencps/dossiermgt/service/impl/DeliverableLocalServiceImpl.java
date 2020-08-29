@@ -1715,16 +1715,9 @@ public class DeliverableLocalServiceImpl
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
 									String[] keywordArr = listScope.split(StringPool.COMMA);
-									BooleanQuery subQuery = new BooleanQueryImpl();
-										for (String keyValue : keywordArr) {
-											MultiMatchQuery query = new MultiMatchQuery(keyValue);
-											query.addFields(key.split("@")[0]);
-											queryBool.add(query, BooleanClauseOccur.SHOULD);
-//										WildcardQuery query = new WildcardQueryImpl(key.split("@")[0],
-//												StringPool.STAR + keyValue + StringPool.STAR);
-//										subQuery.add(query, BooleanClauseOccur.SHOULD);
-										}
-									booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+									MultiMatchQuery query = new MultiMatchQuery(keywordArr[0]);
+									query.addFields(key.split("@")[0]);
+									booleanQuery.add(query, BooleanClauseOccur.MUST);
 								}
 							} else {
 								WildcardQuery wildQuery = new WildcardQueryImpl(
