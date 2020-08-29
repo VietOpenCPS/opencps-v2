@@ -72,8 +72,9 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 		String deliverableCode = object.getDeliverableCode();
 		if (Validator.isNotNull(deliverableCode)) {
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH,
-					SpecialCharacterUtils.splitSpecial(deliverableCode));
+			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH ,
+//							+ StringPool.UNDERLINE + ConstantUtils.DATA,
+					SpecialCharacterUtils.splitSpecial(deliverableCode.toLowerCase()));
 		} else {
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
 			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);

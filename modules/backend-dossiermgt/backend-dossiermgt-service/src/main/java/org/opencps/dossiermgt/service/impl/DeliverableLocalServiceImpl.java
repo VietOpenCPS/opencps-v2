@@ -1684,36 +1684,40 @@ public class DeliverableLocalServiceImpl
 							queryBool.add(wildQuery, BooleanClauseOccur.MUST);
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
-					}else if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
-
+					}else
+					if(entry.getValue().contains(StringPool.SPACE)
+//							|| entry.getValue().contains(StringPool.PERIOD)
+							&& !"".equals(entry.getValue())){
+//						String[] keywordArr = {""};
+//						if(entry.getValue().contains(StringPool.SPACE)){
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
+//						}else if(entry.getValue().contains(StringPool.PERIOD)){
+//							String[] keyArr = entry.getValue().split(StringPool.PERIOD);
+//							for (String keyValue : keyArr) {
+//								WildcardQuery wildQuery = new WildcardQueryImpl(
+//										key.split("@")[0],
+//										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
+////								query.add(wildQuery, BooleanClauseOccur.SHOULD);
+//							}
+//						}
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
-//						String keyValue = SpecialCharacterUtils.splitSpecial(entry.getValue());
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
 								query.add(wildQuery, BooleanClauseOccur.SHOULD);
 							}
 						booleanQuery.add(query, BooleanClauseOccur.MUST);
-					}
-					else {
+					}else {
 						if(entry.getValue().equals(DossierTerm.SCOPE_)){
 							Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(Long.parseLong(groupId), userId);
 							if(Validator.isNotNull(employee)){
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
 									String[] keywordArr = listScope.split(StringPool.COMMA);
-//									BooleanQuery subQuery = new BooleanQueryImpl();
-										for (String keyValue : keywordArr) {
-											MultiMatchQuery query = new MultiMatchQuery(keyValue);
-											query.addFields(key.split("@")[0]);
-											queryBool.add(query, BooleanClauseOccur.SHOULD);
-//										WildcardQuery query = new WildcardQueryImpl(key.split("@")[0],
-//												StringPool.STAR + keyValue + StringPool.STAR);
-//										subQuery.add(query, BooleanClauseOccur.SHOULD);
-										}
-									booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+									MultiMatchQuery query = new MultiMatchQuery(keywordArr[0]);
+									query.addFields(key.split("@")[0]);
+									booleanQuery.add(query, BooleanClauseOccur.MUST);
 								}
 							} else {
 								WildcardQuery wildQuery = new WildcardQueryImpl(

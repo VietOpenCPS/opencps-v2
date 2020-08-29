@@ -7749,6 +7749,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierPersistence.findByD_OR_D(dossierId);
 	}
 
+	@Override
+	public List<Dossier> fetchByDOC_OR_NO(String[] documentNo) {
+		return dossierPersistence.findByDOC_OR_NO(documentNo);
+	}
+
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
 	}

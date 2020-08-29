@@ -30,13 +30,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.opencps.api.dossier.model.DoActionModel;
-import org.opencps.api.dossier.model.DossierDetailModel;
-import org.opencps.api.dossier.model.DossierInputModel;
-import org.opencps.api.dossier.model.DossierMultipleInputModel;
-import org.opencps.api.dossier.model.DossierPublishModel;
-import org.opencps.api.dossier.model.DossierResultsModel;
-import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.*;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossierfile.model.DossierFileResultsModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -53,10 +47,32 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Path("/dossiers")
 @Api(value = "/dossiers", tags = "dossiers")
 public interface DossierManagement {
+
+	@POST
+	@Path("/direct")
+	@Consumes({
+			MediaType.APPLICATION_JSON
+	})
+	@Produces({
+			MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Get direct Dossiers")
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response getDirectDossiers(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext, DossierRequestDVCQGModel dossierRequestDVCQGModel);
+
 
 	@GET
 	@Produces({
@@ -1752,6 +1768,31 @@ public interface DossierManagement {
 			@Context Company company, @Context Locale locale, @Context User user,
 			@Context ServiceContext serviceContext,
 			@BeanParam DossierSearchModel query);
+
+	@POST
+	@Path("/special/actions")
+	@Consumes({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+		MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+	})
+	@ApiOperation(value = "Processed to doing special ProcessAction on the Dossier", response = DoActionModel.class)
+	@ApiResponses(value = {
+		@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a ProcessAction has been Processed", response = DoActionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+		@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+
+	public Response doActionSpecial(
+		@Context HttpServletRequest request, @Context HttpHeaders header,
+		@Context Company company, @Context Locale locale, @Context User user,
+		@Context ServiceContext serviceContext,
+		@BeanParam DoActionModel input, @FormParam("dueDate") Long dueDate,
+		@FormParam("listDossierId") String listDossierId, @FormParam("listActionCode") String listActionCode);
+
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Path("/eforms/{partNo}")

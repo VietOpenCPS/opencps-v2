@@ -18,6 +18,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -700,11 +701,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			User userAction = userLocalService.getUser(context.getUserId());
 			userId = userAction.getUserId();
 			fullName = userAction.getFullName();
+			_log.info("Log info updateDossierAction : " + userId + " --- fullName :" + fullName);
 		}
 
 		if (dossierActionId == 0) {
 			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
-
+			_log.info("Log info updateDossierAction : " + dossierActionId);
 			object = dossierActionPersistence.create(dossierActionId);
 
 			// Add audit fields
@@ -744,6 +746,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
+			_log.info("Log info updateDossierAction : " + userId + " --- fullName :" + fullName);
 			dossierPersistence.update(dossier);
 
 //			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);

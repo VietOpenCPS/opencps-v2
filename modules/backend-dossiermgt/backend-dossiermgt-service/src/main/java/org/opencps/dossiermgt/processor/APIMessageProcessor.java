@@ -97,6 +97,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 				DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierSync.getDossierActionId());
 				dossierAction.setPending(false);
 				DossierActionLocalServiceUtil.updateDossierAction(dossierAction);
+				_log.info("LOG DOSSIER_ACTION " + JSONFactoryUtil.looseSerialize(dossierAction));
 			}
 			else {
 				int retry = dossierSync.getRetry();

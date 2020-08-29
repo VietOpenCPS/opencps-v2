@@ -47,7 +47,9 @@ import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.kernel.util.DateTimeUtil;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -257,9 +259,19 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 													.eq(filter.getString(VALUE_FILTER)));
 										}
 									} else if (QUERY_LIKE.equals(filter.getString(COMPARE))) {
-										dynamicQuery.add(
-												PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
-														+ filter.getString(VALUE_FILTER) + StringPool.PERCENT));
+										String value = (String) filter.get(VALUE_FILTER);
+										if(value.contains(StringPool.MINUS)){
+											Date valueDate = APIDateTimeUtils.convertStringToDate(value,APIDateTimeUtils._NSW_PATTERN);
+//											dynamicQuery.add(
+//													PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
+//															+ APIDateTimeUtils.convertDateToString(valueDate, APIDateTimeUtils._NORMAL_PARTTERN) + StringPool.PERCENT));
+											dynamicQuery.add(
+													PropertyFactoryUtil.forName(filter.getString(KEY)).eq(valueDate));
+										}else {
+											dynamicQuery.add(
+													PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
+															+ filter.getString(VALUE_FILTER) + StringPool.PERCENT));
+										}
 									} else if (COMPARE_LT.equals(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
 												.lt(filter.getLong(VALUE_FILTER)));
