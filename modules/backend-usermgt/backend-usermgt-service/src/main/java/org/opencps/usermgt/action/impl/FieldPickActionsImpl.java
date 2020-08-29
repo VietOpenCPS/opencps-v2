@@ -54,7 +54,7 @@ public class FieldPickActionsImpl implements FieldPickActions
 					String key = (String) keysInput.next();
 					if (jsonDB.has(key))
 					{
-						String valueOfKey = jsonInput.getString(key);
+						String valueOfKey = jsonDB.getString(key);
 						formDataUpdate.put(key,valueOfKey);
 					}
 					else

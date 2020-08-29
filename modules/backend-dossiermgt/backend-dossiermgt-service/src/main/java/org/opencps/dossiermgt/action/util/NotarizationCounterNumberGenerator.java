@@ -316,7 +316,7 @@ public class NotarizationCounterNumberGenerator {
 			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
 			Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
 			// increment CurrentCounter
-			_counterNumber = configCounter.getStartCounter() + 1;
+			_counterNumber = configCounter.getStartCounter() + 1L;
 			while (counter == null) {
 				if (counterDetail != null) {
 					counterDetail.setCurrentId(_counterNumber);

@@ -238,6 +238,7 @@ public class Engine implements MessageListener {
 						if (tryCount == MAX_TRY_COUNT) break;
 					}
 					catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
 						break;
 					}
 				}
@@ -277,6 +278,7 @@ public class Engine implements MessageListener {
 						if (paymentFile != null || tryCount == MAX_TRY_COUNT) break;
 					}
 					catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
 						break;
 					}
 				}

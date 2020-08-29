@@ -331,6 +331,11 @@ public class RestfulController {
 					}
 				}
 			}
+			
+			String authorization = request.getParameter(WebKeys.AUTHORIZATION);
+			if (Validator.isNotNull(jCaptchaResponse)) {
+				strBasic = authorization;
+			}
 
 			_log.info("syncUserLGSP: "+ syncUserLGSP);
 			if (syncUserLGSP) {
@@ -1905,11 +1910,12 @@ public class RestfulController {
 				destDir.mkdir();
 			}
 			File file = new File("jcaptcha/" + captchaId  + ".png");
+			boolean fileExits = true;
 			if (!file.exists()) {
-				file.createNewFile();				
+				fileExits = file.createNewFile();				
 			}
 	
-			if (file.exists()) {
+			if (file.exists() && fileExits) {
 			    BufferedImage challengeImage = instance.getImageChallengeForID(
 			    captchaId, Locale.US );
 			    try {

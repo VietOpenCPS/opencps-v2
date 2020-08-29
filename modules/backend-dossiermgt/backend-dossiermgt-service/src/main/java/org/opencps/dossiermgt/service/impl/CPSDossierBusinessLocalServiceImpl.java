@@ -8575,8 +8575,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String VNPOST_CITY_CODE = ReadFilePropertiesUtils.get(ConstantUtils.VNPOST_CITY_CODE);
 	public static final String REGISTER_BOOK = ReadFilePropertiesUtils.get(ConstantUtils.REGISTER_BOOK);
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000L * 60L * 60L * 24L;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000L * 60L * 60L;
 
 	private static ProcessAction getProcessAction(long userId, long groupId, Dossier dossier, String actionCode,
 												  long serviceProcessId) throws PortalException {

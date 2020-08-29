@@ -3239,7 +3239,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 						MaHoSo + "| Not found server config width protocal: DVCQG_TTKM");
 			}
 
-			user = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
+			User userMapping = UserLocalServiceUtil.getUser(applicant.getMappingUserId());
 
 			JSONObject config = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
 			// String serverNo = config.getString("serverNo");
@@ -3311,7 +3311,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 				_log.debug(e);
 			}
 
-			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, user, serviceContext,
+			Dossier dossier = CPSDossierBusinessLocalServiceUtil.addDossier(groupId, company, userMapping, serviceContext,
 					inputModel);
 
 			_log.debug(JSONFactoryUtil.looseSerialize(dossier));
@@ -3450,7 +3450,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 
 	private int calculatePercentage(int obtained, int total) {
 		if(total > 0) {
-			return Math.round(obtained * 100 / total);
+			return Math.round( (float) obtained * 100 / total);
 		}
 		return 0;
 	}
