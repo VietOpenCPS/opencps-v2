@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.ServiceInfoActions;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
@@ -44,6 +46,8 @@ import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceFileTemplateLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+
+import javax.ws.rs.core.Response;
 
 public class ServiceInfoActionsImpl implements ServiceInfoActions {
 
@@ -264,7 +268,7 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 	}
 
 	@Override
-	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context)
+	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject)
 			throws ParseException, SearchException {
 		JSONObject result = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
@@ -287,9 +291,35 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 				searchContext);
 
 		List<Document> documents = hits.toList();
+		String domainCodes = "";
+		try {
+			//Lấy lĩnh vực theo thủ tục hành chính
+			if(Validator.isNotNull(jsonObject)){
+				Iterator<String> keys = jsonObject.keys();
+				while (keys.hasNext()) {
+					String key = keys.next();
+					String value = jsonObject.getString(key);
+					if(key.equals(DossierTerm.DATA)){
+						JSONArray dataArray = JSONFactoryUtil.createJSONArray(value);
+						JSONObject currentObject = JSONFactoryUtil.createJSONObject();
+						for (int i = 0; i < dataArray.length(); i++) {
+							currentObject = dataArray.getJSONObject(i);
+							if(Validator.isNotNull(currentObject.getString(ServiceInfoTerm.DOMAIN_CODE))) {
+								domainCodes += currentObject.getString(ServiceInfoTerm.DOMAIN_CODE) + ",";
+							}
+						}
+					}
+				}
+			}
+		}catch (Exception e){
+			_log.info("EXCEPTION :" + e.getMessage());
+		}
 
 		for (Document doc : documents) {
-
+			String itemCode = "";
+			if(Validator.isNotNull(doc.get(DictItemTerm.ITEM_CODE))){
+				itemCode = doc.get(DictItemTerm.ITEM_CODE);
+			}
 			long admCount = 0;
 
 			//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
@@ -303,17 +333,21 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
 			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
-
 			if (admCount != 0) {
-				count = admCount + count;
-
 				JSONObject elm = JSONFactoryUtil.createJSONObject();
-
-				elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-				elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
-				elm.put(ConstantUtils.VALUE_COUNT, admCount);
-
-				data.put(elm);
+				if(Validator.isNotNull(domainCodes)){
+					String domainCodeArr[] = domainCodes.split(StringPool.COMMA);
+					for(String code : domainCodeArr){
+						if(code.equals(itemCode)){
+							count = admCount + count;
+							elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+							elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+							elm.put(ConstantUtils.VALUE_COUNT, admCount);
+							data.put(elm);
+							break;
+						}
+					}
+				}
 			}
 
 			result.put(ConstantUtils.TOTAL, count);

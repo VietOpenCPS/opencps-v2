@@ -1,12 +1,20 @@
 package org.opencps.backend.dossiermgt.logistic;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
+import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
@@ -15,12 +23,6 @@ import org.opencps.dossiermgt.rest.model.ViettelPostUpdateOrder;
 import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
-import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ViettelPostManagementImpl implements ViettelPostManagement {
     private JSONObject configJson;
@@ -85,17 +87,14 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
     }
 
     @Override
-    public void postBill(String token, JSONObject dossierObj) throws Exception{
+    public void postBill(String token, String orderServiceFromVT, JSONObject dossierObj) throws Exception{
         try {
             if(Validator.isNull(dossierObj)) {
                 throw new Exception("dossierObj null");
             }
 
-            String apiCreateBill = this.configJson.getString(ViettelPostTerm.API_POST_ORDER);
-
+            String apiCreateBill   = this.configJson.getString(ViettelPostTerm.API_POST_ORDER);
             String orderPayment    = this.configJson.getString(ViettelPostTerm.ORDER_PAYMENT_CONFIG);
-            String orderService    = this.configJson.getString(ViettelPostTerm.ORDER_SERVICE_CONFIG);
-
             String senderWard      = this.configJson.getString(ViettelPostTerm.SENDER_WARD_CONFIG);
             String senderDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
             String senderProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
@@ -168,9 +167,9 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             body.put(ViettelPostTerm.PRODUCT_LENGTH, 0);
             body.put(ViettelPostTerm.PRODUCT_WIDTH, 0);
             body.put(ViettelPostTerm.PRODUCT_HEIGHT, 0);
-            body.put(ViettelPostTerm.PRODUCT_TYPE, 0);
+            body.put(ViettelPostTerm.PRODUCT_TYPE, "HH");
             body.put(ViettelPostTerm.ORDER_PAYMENT, orderPaymentInt);
-            body.put(ViettelPostTerm.ORDER_SERVICE, Validator.isNotNull(orderService)? orderService : "VCN");
+            body.put(ViettelPostTerm.ORDER_SERVICE, orderServiceFromVT);
             body.put(ViettelPostTerm.ORDER_SERVICE_ADD, "");
             body.put(ViettelPostTerm.ORDER_VOUCHER, "");
             body.put(ViettelPostTerm.ORDER_NOTE, "");
@@ -183,7 +182,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             body.put(ViettelPostTerm.MONEY_FEEOTHER, 0);
             body.put(ViettelPostTerm.MONEY_TOTALVAT, 0);
             body.put(ViettelPostTerm.MONEY_TOTAL, 0);
-
+            _log.info("Body json post bill: " + body);
             JSONObject response = apiService.callApi(apiCreateBill, headers, body);
             if(Validator.isNull(response)) {
                 throw new Exception("Response create bill null");
@@ -214,6 +213,70 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             );
         }catch (Exception e) {
             _log.debug(e);
+        }
+    }
+
+    @Override
+    public String getOrderService(String token, JSONObject dossierObj) throws Exception {
+        try {
+            String senderDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
+            String senderProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
+            String receiveDistrict  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE))
+                    ? dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE) : "0" ;
+            String receiveProvince  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_CITY_CODE))
+                    ? dossierObj.getString(DossierTerm.POSTAL_CITY_CODE) : "0" ;
+
+
+            Integer receiveDistrictInt = 0;
+            Integer receiveProvinceInt = 0;
+            Integer senderDistrictInt = 0;
+            Integer senderProvinceInt = 0;
+
+            try{
+                senderDistrictInt  = Validator.isNotNull(senderDistrict)? Integer.parseInt(senderDistrict) : 0;
+                senderProvinceInt  = Validator.isNotNull(senderProvince)? Integer.parseInt(senderProvince) : 0;
+
+                receiveDistrictInt = Validator.isNotNull(receiveDistrict) ? Integer.parseInt(receiveDistrict) : 0;
+                receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
+
+            } catch (Exception e) {
+                _log.error("GET ORDER SERVICE|Parse string to int fail");
+            }
+
+            String apiGetOrderService = this.configJson.getString(ViettelPostTerm.API_GET_PRICE);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(ViettelPostTerm.TOKEN, token);
+            Map<String, Object> body = new HashMap<>();
+            body.put(ViettelPostTerm.SENDER_PROVINCE, senderProvinceInt);
+            body.put(ViettelPostTerm.SENDER_DISTRICT, senderDistrictInt);
+            body.put(ViettelPostTerm.RECEIVER_PROVINCE, receiveProvinceInt);
+            body.put(ViettelPostTerm.RECEIVER_DISTRICT, receiveDistrictInt);
+            body.put(ViettelPostTerm.PRODUCT_TYPE, "HH");
+            body.put(ViettelPostTerm.PRODUCT_WEIGHT, 0);
+            body.put(ViettelPostTerm.PRODUCT_PRICE, 0);
+            body.put(ViettelPostTerm.MONEY_COLLECTION, "0");
+            body.put(ViettelPostTerm.TYPE, 1);
+            _log.info("Body json get order service: " + body);
+            JSONArray response = apiService.callApiWithResponseArray(apiGetOrderService, headers, body);
+
+            if(Validator.isNull(response) || response.length() == 0) {
+                throw new Exception("Response get price all is invalid data");
+            }
+
+            JSONObject orderService = Validator.isNotNull(response.get(0)) ? (JSONObject) response.get(0) : null;
+
+            if(Validator.isNull(orderService)) {
+                throw new Exception("Response get(0) price all null");
+            }
+
+            if(Validator.isNull(orderService.getString(ViettelPostTerm.MA_DV_CHINH))
+                || orderService.getString(ViettelPostTerm.MA_DV_CHINH).isEmpty()) {
+               throw new Exception("Ma DV CHINH is null");
+            }
+
+            return orderService.getString(ViettelPostTerm.MA_DV_CHINH);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 

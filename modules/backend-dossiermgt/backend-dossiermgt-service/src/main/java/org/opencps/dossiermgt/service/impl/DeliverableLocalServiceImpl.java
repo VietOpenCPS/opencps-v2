@@ -1685,17 +1685,17 @@ public class DeliverableLocalServiceImpl
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}else if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
-						System.out.println("------@SPACE------");
+
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
+//						String keyValue = SpecialCharacterUtils.splitSpecial(entry.getValue());
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
 								query.add(wildQuery, BooleanClauseOccur.SHOULD);
 							}
-//							queryBool.add(query, BooleanClauseOccur.SHOULD);
-						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
+						booleanQuery.add(query, BooleanClauseOccur.MUST);
 					}
 					else {
 						if(entry.getValue().equals(DossierTerm.SCOPE_)){

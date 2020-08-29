@@ -1955,6 +1955,9 @@ public class DossierManagementImpl implements DossierManagement {
 											input.getPayment(),
 											actConfig.getSyncType(),
 											serviceContext, errorModel);
+										if(Validator.isNotNull(proAction.getPostAction())){
+											updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
+										}
 									}
 									else {
 										// TODO: Error
@@ -2199,6 +2202,9 @@ public class DossierManagementImpl implements DossierManagement {
 									input.getActionNote(), input.getPayload(),
 									input.getAssignUsers(), input.getPayment(),
 									0, serviceContext, errorModel);
+								if(Validator.isNotNull(proAction.getPostAction())){
+									updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
+								}
 							}
 							else {
 								// TODO: Error

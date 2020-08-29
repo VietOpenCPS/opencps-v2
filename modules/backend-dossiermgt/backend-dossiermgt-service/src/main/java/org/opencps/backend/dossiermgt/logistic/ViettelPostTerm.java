@@ -52,7 +52,8 @@ public class ViettelPostTerm {
     public static final String MONEY_FEEOTHER = "MONEY_FEEOTHER";
     public static final String MONEY_TOTALVAT = "MONEY_TOTALVAT";
     public static final String MONEY_TOTAL = "MONEY_TOTAL";
-    public static final String LIST_ITEM = "LIST_ITEM";
+    public static final String TYPE = "TYPE";
+    public static final String MA_DV_CHINH = "MA_DV_CHINH";
     //config viettle post
     public static final String TYPE_POST_CONFIG = "typePost";
     public static final String ORDER_PAYMENT_CONFIG = "viettelOrderPayment";
@@ -60,7 +61,7 @@ public class ViettelPostTerm {
     public static final String GROUP_ADDRESS_ID_CONFIG = "viettelGroupAddressId";
     public static final String CUS_ID_CONFIG = "viettelCusId";
     public static final String API_POST_ORDER = "viettelApiPostOrder";
-    public static final String API_UPDATE_ORDER = "viettelApiUpdateOrder";
+    public static final String API_GET_PRICE = "viettelApiUpdateOrder";
     public static final String API_GET_TOKEN = "viettelApiGetToken";
     public static final String USER = "viettelCustomerKey";
     public static final String VT_SECRECT_KEY = "viettelSecretKey";

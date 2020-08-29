@@ -1,5 +1,6 @@
 package org.opencps.backend.dossiermgt.serviceapi;
 
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -45,4 +46,22 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
             return null;
         }
     }
+
+    @Override
+    public JSONArray callApiWithResponseArray(String url, HttpHeaders headers, Map<String, Object> body) {
+        try {
+            _log.info("Calling api viettle: " + url);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
+            _log.info("Response api viettle: " + response);
+
+            JSONArray jsonArray = JSONFactoryUtil.createJSONArray(response.getBody());
+            System.out.println(jsonArray);
+            return jsonArray;
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+            return null;
+        }
+    }
+
 }

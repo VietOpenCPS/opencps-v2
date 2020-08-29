@@ -58,9 +58,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
+import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.ServiceInfoManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceInfoUtils;
+import org.opencps.api.dossier.model.DossierSearchDetailModel;
+import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplateResultsModel;
 import org.opencps.api.serviceinfo.model.FileTemplateSearchModel;
@@ -689,6 +692,13 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
 		try {
+			OneGateController controller = new OneGateControllerImpl();
+			DossierSearchModel dossierSearchModel = new DossierSearchModel();
+			String domain = "";
+			String public_ = "";
+			Response response = controller.getServiceconfigs(request, header, company, locale, user, serviceContext,
+					domain, public_, requestCC, dossierSearchModel);
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject(response.getEntity().toString());
 			//Sort agency
 			Sort[] sorts = null;
 			if (Validator.isNull(search.getSort())) {
@@ -704,8 +714,9 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
 			}
 			else {
-				results = actions.getStatisticByDomain(groupId, sorts, serviceContext);
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj);
 			}
+
 //			_log.info(results);
 //			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 //		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
