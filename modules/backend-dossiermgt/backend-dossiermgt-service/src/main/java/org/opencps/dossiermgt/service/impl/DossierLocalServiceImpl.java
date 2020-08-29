@@ -1545,7 +1545,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String dossierRef = DossierNumberGenerator.generateDossierNumber(
 				groupId, dossier.getCompanyId(), dossierId,
-				option.getProcessOptionId(),
+				option != null ? option.getProcessOptionId() : 0,
 				serviceProcess != null
 						? serviceProcess.getDossierNoPattern() : StringPool.BLANK,
 				params);

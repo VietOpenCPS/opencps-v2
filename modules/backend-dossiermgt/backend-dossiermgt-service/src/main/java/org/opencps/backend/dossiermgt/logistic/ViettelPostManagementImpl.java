@@ -265,7 +265,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
 
             JSONObject orderService = Validator.isNotNull(response.get(0)) ? (JSONObject) response.get(0) : null;
 
-            if(Validator.isNull(orderService)) {
+            if(orderService == null) {
                 throw new Exception("Response get(0) price all null");
             }
 
