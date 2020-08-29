@@ -57,6 +57,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -77,16 +80,7 @@ import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.controller.util.DossierMarkUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
-import org.opencps.api.dossier.model.DoActionModel;
-import org.opencps.api.dossier.model.DossierActionDetailModel;
-import org.opencps.api.dossier.model.DossierDataModel;
-import org.opencps.api.dossier.model.DossierDetailModel;
-import org.opencps.api.dossier.model.DossierInputModel;
-import org.opencps.api.dossier.model.DossierMultipleInputModel;
-import org.opencps.api.dossier.model.DossierPublishModel;
-import org.opencps.api.dossier.model.DossierResultPublishModel;
-import org.opencps.api.dossier.model.DossierResultsModel;
-import org.opencps.api.dossier.model.DossierSearchModel;
+import org.opencps.api.dossier.model.*;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
 import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.api.dossiermark.model.DossierMarkInputModel;
@@ -157,6 +151,8 @@ import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
+import org.opencps.dossiermgt.constants.*;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
 import org.opencps.dossiermgt.model.DossierDocument;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -178,6 +174,8 @@ import org.opencps.dossiermgt.model.ServiceProcess;
 import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
+import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
 import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
 import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
@@ -229,7 +227,82 @@ public class DossierManagementImpl implements DossierManagement {
 	public static final String RT_SUBMITTING = "submitting";
 
 	public static final String ALL_AGENCY = "all";
-	
+
+	private static final String CONFIG_DVCQG_INTEGRATION = "DVCQG_INTEGRATION";
+	private static final String ERROR_CODE = "error_code";
+	private static final String ERROR_MESSAGE = "message";
+
+
+	private String getBodyError(String code, String message) {
+		JSONObject body = JSONFactoryUtil.createJSONObject();
+		body.put(ERROR_CODE, code);
+		body.put(ERROR_MESSAGE, message);
+		return body.toString();
+	}
+
+	@Override
+	public Response getDirectDossiers(HttpServletRequest request, HttpHeaders header,
+									  Company company, Locale locale, User user, ServiceContext serviceContext,
+									  DossierRequestDVCQGModel dossierRequestDVCQGModel) {
+		try {
+			JSONObject body = JSONFactoryUtil.createJSONObject();
+			String errorBody;
+			ServerConfig serverConfig = null;
+			List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol(CONFIG_DVCQG_INTEGRATION);
+
+			if (serverConfigs != null && !serverConfigs.isEmpty()) {
+				serverConfig = serverConfigs.get(0);
+			}
+
+			if (serverConfig == null) {
+				_log.error("------ Log Exception ------ " + " " + "No server config");
+				errorBody = this.getBodyError("-1", "No server config");
+				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+			}
+
+			long groupId = serverConfig.getGroupId();
+			Dossier dossier = DossierLocalServiceUtil.getByDossierNo(groupId, dossierRequestDVCQGModel.getMasohoso());
+			if(Validator.isNull(dossier)){
+				_log.error("------ Log Exception ------ " + " " + "masohoso not found");
+				errorBody = this.getBodyError("-1", "masohoso not found");
+				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+			}
+
+			String dossierNo   = dossier.getDossierNo() != null ? dossier.getDossierNo() : "";
+			String serviceCode = dossier.getServiceCode() != null ? dossier.getServiceCode() : "";
+			String serviceName = dossier.getServiceName() != null ? dossier.getServiceName() : "";
+			String dossierStatus = dossier.getDossierStatus() != null ? dossier.getDossierStatus() : "";
+			String isOnline = dossier.getOnline() ? "1" : "0";
+			String govAgencyName = dossier.getGovAgencyName() != null ? dossier.getGovAgencyName() : "";
+
+			ServiceInfo serviceInfo = ServiceInfoLocalServiceUtil.getByCode(groupId, serviceCode);
+			if(Validator.isNull(serviceInfo)) {
+				_log.error("------ Log Exception ------ " + " " + "MaLinhVuc not found");
+				errorBody = this.getBodyError("-1", "MaLinhVuc not found");
+				return Response.status(HttpURLConnection.HTTP_OK).entity(errorBody).build();
+			}
+
+			String domainCode = serviceInfo.getDomainCode() != null ? serviceInfo.getDomainCode() : "";
+			String domainName = serviceInfo.getDomainName() != null ? serviceInfo.getDomainName() : "";
+
+			body.put("MaHoSo", dossierNo);
+			body.put("MaTTHC", serviceCode);
+			body.put("TenTTHC", serviceName);
+			body.put("MaLinhVuc", domainCode);
+			body.put("TenLinhVuc", domainName);
+			//todo LoaiDoiTuong dang ko biet loai nao, can` ban` lai voi a Duan
+			body.put("LoaiDoiTuong", "3");
+			body.put("TrangThaiHoSo", DossierManagementConstants.mappingDossierStatusWithDVCQG(dossierStatus));
+			body.put("HinhThuc", isOnline);
+			body.put("DonViXuLy", govAgencyName);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(body.toJSONString()).build();
+		} catch (Exception e) {
+			_log.error("------ Log Exception ------ " + " " + e.getMessage());
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response getDossiers(
@@ -1615,6 +1688,17 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
 					serviceContext);
+//			if(Validator.isNotNull(dossier.getGroupDossierId())){
+//				//Update DocumentNo của hồ sơ cho công văn
+//				Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossier.getGroupDossierId()));
+//				if(Validator.isNotNull(dossier.getDocumentNo())) {
+//					if (Validator.isNotNull(dossierUpdate)) {
+//						dossierUpdate.setDocumentNo(dossier.getDocumentNo());
+//						DossierLocalServiceUtil.updateDossier(dossierUpdate);
+//						_log.info("LOG Dossier : " + JSONFactoryUtil.looseSerialize(dossierUpdate));
+//					}
+//				}
+//			}
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -2231,6 +2315,7 @@ public class DossierManagementImpl implements DossierManagement {
 			// return
 			// Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(dossierAction)).build();
 			if (dossierResult != null) {
+				_log.info("DossierResult :" + JSONFactoryUtil.looseSerialize(dossierResult));
 				long dossierActionId = dossierResult.getDossierActionId();
 				DossierDocument doc =
 					DossierDocumentLocalServiceUtil.getByActiocId(
@@ -3741,7 +3826,7 @@ public class DossierManagementImpl implements DossierManagement {
 							assignUserObj.put(Field.USER_NAME, emp.getFullName());
 						}
 						else {
-							assignUserObj.put(Field.USER_NAME, da.getUserName());
+							assignUserObj.put(Field.USER_NAME, da.getActionUser());
 						}
 
 						assignUserArr.put(assignUserObj);
@@ -6647,6 +6732,8 @@ public class DossierManagementImpl implements DossierManagement {
 			if(Validator.isNotNull(dossier)){
 				String[] groupDossierIdArr = dossier.getGroupDossierId().split(StringPool.COMMA);
 				for (String groupDossierIdStr : groupDossierIdArr) {
+					//Nếu hồ sơ truyền lên đã tồn tại ==> xóa công văn cha đó
+					// ==> cộng lại 1 chuỗi id công văn cha mới nếu có và update hồ sơ
 					if(!groupDossierIdStr.equals(String.valueOf(groupDossierId))){
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
@@ -6654,7 +6741,12 @@ public class DossierManagementImpl implements DossierManagement {
 				if(Validator.isNotNull(groupDossierIdNew)) {
 					groupDossierIdNew = groupDossierIdNew.substring(1);
 				}
+				//Update DocumentNo
+//				if(!String.valueOf(groupDossierId).contains(groupDossierIdNew)){
+//					dossier.setDocumentNo(null);
+//				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
+
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
 			}
 		}catch (Exception e){
@@ -6723,6 +6815,23 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 					dossier = DossierLocalServiceUtil.updateDossier(dossier);
 					_log.info("dossier group: "+dossier.getGroupDossierId());
+					if(Validator.isNotNull(dossier)){
+						String groupDossierIds [] = dossier.getGroupDossierId().split(StringPool.COMMA);
+						if(Validator.isNotNull(groupDossierIds)){
+							for(String id : groupDossierIds){
+								Dossier dossierUpdate = DossierLocalServiceUtil.fetchDossier(Long.valueOf(id));
+								if(Validator.isNotNull(dossierUpdate)){
+									dossier.setDocumentNo(dossierUpdate.getDocumentNo());
+									DossierLocalServiceUtil.updateDossier(dossier);
+									_log.info("DossierUpdate : " + JSONFactoryUtil.looseSerialize(dossier));
+								}else{
+									dossier.setDocumentNo(null);
+									DossierLocalServiceUtil.updateDossier(dossier);
+									_log.info("DossierUpdate : " + JSONFactoryUtil.looseSerialize(dossier));
+								}
+							}
+						}
+					}
 				}
 				DossierDetailModel result =
 					DossierUtils.mappingForGetDetail(dossier, user.getUserId());
@@ -8012,6 +8121,8 @@ public class DossierManagementImpl implements DossierManagement {
 			}
 			List<DossierFile> listDossierFile = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, Long.valueOf(dossierId));
 			List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(groupId, dossierId);
+			Dossier dossierCongVan = DossierLocalServiceUtil.fetchDossier(Long.valueOf(dossierId));
+			_log.info("DossierCongVan :" + JSONFactoryUtil.looseSerialize(dossierCongVan.getDocumentNo()));
 			if(Validator.isNotNull(lstDossiers)) {
 				for (Dossier dossier : lstDossiers) {
 
@@ -8100,6 +8211,11 @@ public class DossierManagementImpl implements DossierManagement {
 														input.getPayment(),
 														actConfig.getSyncType(),
 														serviceContext, errorModel);
+												if(Validator.isNotNull(dossierCongVan.getDocumentNo())){
+													dossier.setDocumentNo(dossierCongVan.getDocumentNo());
+													DossierLocalServiceUtil.updateDossier(dossier);
+													_log.info("LOG INFO DOSSIER UPDATE DOCUMENT_NO: " + dossier.getDocumentNo() );
+												}
 												if(Validator.isNotNull(proAction.getPostAction())){
 													updateMetaDataByPostAction(proAction.getPostAction(), userId, groupId, dossier, serviceContext);
 												}
@@ -8360,7 +8476,7 @@ public class DossierManagementImpl implements DossierManagement {
 											long formScriptFileId = deliverableType.getFormScriptFileId();
 											long formReportFileId = deliverableType.getFormReportFileId();
 											String formData = "";
-											String deliverableState = "";
+											String deliverableState = "1";
 											//Xử lý formData cho ds người có công
 											// Mapping formData --> với cấu hình của deliverableType
 											if (Validator.isNotNull(deliverableType.getMappingData())) {
@@ -8372,36 +8488,31 @@ public class DossierManagementImpl implements DossierManagement {
 											if (Validator.isNotNull(formData)) {
 												JSONObject dataDeliverable =
 														JSONFactoryUtil.createJSONObject(formData);
+												_log.info("Deliverable form" + dataDeliverable);
 												Iterator<String> keys = dataDeliverable.keys();
 												while (keys.hasNext()) {
 													String key = keys.next();
 													String value = dataDeliverable.getString(key);
+													_log.info("KEY: " + key + " Value " + value);
 													if (key.equals(DossierTerm.DELIVERABLE_STATE)) {
 														deliverableState = value;
 														break;
-													} else if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
-														deliverableCode = value;
-														break;
-													} else if (key.equals(DossierTerm.DELIVERABLE_NAME)) {
-														deliverableName = value;
-														break;
-													} else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
+													}  else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
 														govAgencyCode = value;
-														break;
-													} else if (key.equals(DossierTerm.GOV_AGENCY_NAME)) {
-														govAgencyName = value;
 														break;
 													}
 												}
 											}
+											_log.info("Log deliverable State:" + deliverableState);
 											deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
 													groupId, deliverableTypes, deliverableName,
 													deliverableCode, govAgencyCode, govAgencyName,
 													applicationIdNo, applicationName, "",
 													"", "", "", deliverableState,
 													dosserId, fileEntryId > 0 ? fileEntryId : item.getFileEntryId(), formScriptFileId, formReportFileId,
-													formData, "",
+													formData, String.valueOf(fileEntryId),
 													serviceContext);
+											_log.info("FileAttach deliverable" + fileEntryId);
 											deliverableCodeFile = deliverable.getDeliverableCode();
 											_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 											break;
@@ -8458,7 +8569,8 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		long userId = user.getUserId();
 		DossierActions actions = new DossierActionsImpl();
-		List<Dossier> lstDossier = new ArrayList<>();
+		List<Dossier> lstNew = new ArrayList<>();
+		List<Dossier> lstDossierId = new ArrayList<>();
 		List<Dossier> lstSearchDossierCV = new ArrayList<>();
 		try {
 			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
@@ -8623,22 +8735,92 @@ public class DossierManagementImpl implements DossierManagement {
 					user.getUserId(), company.getCompanyId(), groupId, params,
 					sorts, query.getStart(), query.getEnd(), serviceContext);
 
-			List<Long> lstId = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
+			List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
+			List<Long> lstId = new ArrayList<>();
+//			List<String> lstDocumentNo = new ArrayList<>();
+			if(ouputs !=null) {
+				for (DossierDataModel item : ouputs) {
+//					if(Validator.isNotNull(item.getDocumentNo())) {
+//						String documentNo = "";
+//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
+//							documentNo += item.getDocumentNo();
+//							if (Validator.isNotNull(documentNo)) {
+//								lstDocumentNo.add(documentNo);
+//							}
+//						}
+//					}else{
+					if(Validator.isNotNull(item.getGroupDossierIds())) {
+//							String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+//									.lastIndexOf(",") + 1));
+						String[] groupDossierIds = item.getGroupDossierIds().split(StringPool.COMMA);
+						Integer lastIndex = groupDossierIds.length;
+						if (lastIndex >= 1) {
+							lastIndex--;
+						}
+						Dossier dossier ;
+						for (int i = lastIndex; i >= 0; i--) {
+							dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(groupDossierIds[i]));
+							if (Validator.isNotNull(dossier)) {
+								if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+									lstId.add(Long.valueOf(groupDossierIds[i]));
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+			if(Validator.isNotNull(lstId)) {
 				long[] dossierIds = new long[lstId.size()];
-				if(lstId !=null && !lstId.isEmpty()){
+				if (lstId != null && !lstId.isEmpty()) {
 					int i = 0;
-					for(Long id : lstId){
+					for (Long id : lstId) {
 						dossierIds[i++] = id;
 					}
-				}
-				if(Validator.isNotNull(dossierIds)) {
-					if(dossierIds.length > 0) {
-						lstDossier = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+					if (Validator.isNotNull(dossierIds)) {
+						if (dossierIds.length > 0) {
+							lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+						}
+						if (Validator.isNotNull(lstDossierId)) {
+							for (Dossier dossier : lstDossierId) {
+								if (dossier.getOriginality() == 9) {
+									lstNew.add(dossier);
+								}
+							}
+						}
 					}
 				}
+			}
+
+//			if(lstDocumentNo !=null && !lstDocumentNo.isEmpty()) {
+//				String [] documentNos = new String[lstDocumentNo.size()];
+//				int i = 0;
+//				for (String id : lstDocumentNo) {
+//					documentNos[i++] = id;
+//				}
+//				if (Validator.isNotNull(documentNos)) {
+//					if (documentNos.length > 0) {
+//						lstDossierDoc = DossierLocalServiceUtil.fetchByDOC_OR_NO(documentNos);
+//					}
+//					if(Validator.isNotNull(lstDossierDoc)) {
+//						List<Dossier> lstNew = new ArrayList<>(lstDossierDoc);
+//						if (Validator.isNotNull(lstDossierId)) {
+//							lstNew.addAll(lstDossierId);
+//						}
+//						if (Validator.isNotNull(lstNew)) {
+//							for (Dossier dossier : lstNew) {
+//								if (dossier.getOriginality() == 9) {
+//									lstSearchDossierCV.add(dossier);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+
 				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
-					if (lstDossier != null && !lstDossier.isEmpty()) {
-						for (Dossier item : lstDossier){
+					if (lstNew != null && !lstNew.isEmpty()) {
+						for (Dossier item : lstNew){
 							if(Validator.isNotNull(item.getMetaData())) {
 								String metaData = item.getMetaData();
 								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(metaData);
@@ -8667,8 +8849,13 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
-			results.setTotal(lstSearchDossierCV.size());
- 			results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
+				if(Validator.isNotNull(searchCongVanTheoDonViNhan)) {
+					results.setTotal(lstSearchDossierCV.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstSearchDossierCV));
+				}else{
+					results.setTotal(lstNew.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstNew));
+				}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 		}catch (Exception e) {
 			_log.info(e.getMessage());
@@ -8784,5 +8971,94 @@ public class DossierManagementImpl implements DossierManagement {
 			_log.debug(e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
+	}
+
+	@Override
+	public Response doActionSpecial(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+			User user, ServiceContext serviceContext, DoActionModel input, Long dueDate, String listDossierId,
+			String listActionCode) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		DossierAction dossierAction = null;
+		List<ProcessAction> processActionList = null;
+		List<String> dossierIds = null;
+		List<String> actionCodes = null;
+
+		if (listDossierId.split(",").length > 1) {
+			dossierIds = Arrays.asList(listDossierId.split(","));
+		}
+
+		if (listActionCode.split(",").length > 1) {
+			actionCodes = Arrays.asList(listActionCode.split(","));
+		}
+
+		for (String dossierId : dossierIds) {
+
+			Dossier dossier = DossierUtils.getDossier(dossierId, groupId);
+
+			try {
+				if (dossier != null) {
+					long serviceProcessId = 0;
+					String stepCode = StringPool.BLANK;
+					long dossierActionId = dossier.getDossierActionId();
+					List<String> listActCode = new ArrayList<String>();
+					List<String> newListActCode = new ArrayList<String>();
+
+					if (dossierActionId > 0) {
+						dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+					}
+
+					if (dossierAction != null) {
+						serviceProcessId = dossierAction.getServiceProcessId();
+						stepCode = dossierAction.getStepCode();
+					}
+
+					if (Validator.isNotNull(stepCode) && serviceProcessId > 0) {
+						processActionList = ProcessActionLocalServiceUtil.getProcessActionByG_SPID_PRESC(groupId,
+								serviceProcessId, stepCode);
+						if (processActionList != null && processActionList.size() > 0) {
+							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
+							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
+						}
+					}else {
+						ProcessOption option = null;
+						if (dossierAction != null) {
+							DossierTemplate dossierTemplate = DossierTemplateLocalServiceUtil.getByTemplateNo(dossier.getGroupId(), dossier.getDossierTemplateNo());
+							option = ProcessOptionLocalServiceUtil.fetchBySP_DT(dossierAction.getServiceProcessId(), dossierTemplate.getDossierTemplateId());
+						}else {
+							option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+								dossier.getDossierTemplateNo(), groupId);
+						}
+
+						if (option != null) {
+							serviceProcessId = option.getServiceProcessId();
+						}
+						processActionList = ProcessActionLocalServiceUtil
+							.getByServiceStepCode(groupId, serviceProcessId, StringPool.BLANK);
+						if (processActionList != null && processActionList.size() > 0) {
+							getActionCode(listActCode, processActionList, actionCodes, newListActCode, input);
+							doAction(request, header, company, locale, user, serviceContext, dossierId, input, dueDate);
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				_log.error(e);
+			}
+		}
+		return Response.status(HttpURLConnection.HTTP_OK).build();
+	}
+
+	private void getActionCode(List<String> listActCode, List<ProcessAction> processActionList,
+			List<String> actionCodes,List<String> newListActCode, DoActionModel input) {
+
+		listActCode = processActionList.stream().map(processAction -> {return processAction.getActionCode();
+		}).collect(Collectors.toList());
+		for (String actionCode : actionCodes) {
+			if (listActCode.contains(actionCode)) {
+				newListActCode.add(actionCode);
+			}
+		}
+		input.setActionCode(newListActCode.get(0));
 	}
 }

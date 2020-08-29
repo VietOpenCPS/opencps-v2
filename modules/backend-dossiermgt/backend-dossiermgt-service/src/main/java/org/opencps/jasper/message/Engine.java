@@ -97,7 +97,9 @@ public class Engine implements MessageListener {
 			if(engineClass.isAssignableFrom(DossierFile.class)) {
 
     			DossierFile dossierFile = DossierFileLocalServiceUtil.fetchDossierFile(classPK);
-    
+//    			if(Validator.isNotNull(dossierFile)){
+//    				_log.info("LOG_DOSSIER_FILE : " + JSONFactoryUtil.looseSerialize(dossierFile));
+//				}
     			ServiceContext serviceContext = new ServiceContext();
     			serviceContext.setUserId(dossierFile.getUserId());
     			serviceContext.setCompanyId(dossierFile.getCompanyId());
@@ -110,8 +112,12 @@ public class Engine implements MessageListener {
     			fileEntryId = fileEntry.getFileEntryId();
     
     			dossierFile.setFileEntryId(fileEntryId);
+//    			if(Validator.isNotNull(fileEntryId)){
+//    				_log.info("File entry ID" + fileEntryId);
+//				}
     			dossierFile.setIsNew(false);
     			DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
+//    			_log.info("LOG DOSSIER_FILE UPDATE : " + JSONFactoryUtil.looseSerialize(dossierFile));
 				if (dossierFile.getDossierPartType() == 7) {
 					List<Dossier> lstDossiers = DossierLocalServiceUtil.findByG_GDID(dossierFile.getGroupId(), String.valueOf(dossierFile.getDossierId()));
 					if (lstDossiers != null && lstDossiers.size() > 0)
@@ -122,6 +128,7 @@ public class Engine implements MessageListener {
 								fileJasper.setFileEntryId(fileEntryId);
 								fileJasper.setIsNew(false);
 								DossierFileLocalServiceUtil.updateDossierFile(fileJasper);
+//								_log.info("LOG FILE_JASPER UPDATE : " + JSONFactoryUtil.looseSerialize(fileJasper));
 							}
 						}
 				}
@@ -180,6 +187,7 @@ public class Engine implements MessageListener {
 				_log.info("flagAttach: "+flagAttach);
 				if (!flagAttach) {
 					deliverable.setFileEntryId(fileEntryId);
+//					_log.info("fileEntryId Deliverable: "+fileEntryId);
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 				}
 
@@ -187,10 +195,12 @@ public class Engine implements MessageListener {
 				DossierFile dossierFile = DossierFileLocalServiceUtil
 						.getByDeliverableCode(deliverable.getDeliverableCode());
 				if (dossierFile != null) {
+//					_log.info("DossierFile deliverable : " + dossierFile);
 					DossierFile dossierFileAttach = DossierFileLocalServiceUtil.getByGID_DID_TEMP_PART_EFORM(
 							dossierFile.getGroupId(), dossierFile.getDossierId(), dossierFile.getDossierTemplateNo(),
 							dossierFile.getDossierPartNo(), false, false);
 					if (dossierFileAttach != null) {
+//						_log.info("DossierFileAttach :" + JSONFactoryUtil.looseSerialize(dossierFileAttach));
 						String formDataAttach = dossierFileAttach.getFormData();
 						if (Validator.isNotNull(formDataAttach)) {
 							JSONObject jsonData = JSONFactoryUtil.createJSONObject(formDataAttach);
@@ -198,6 +208,7 @@ public class Engine implements MessageListener {
 							if (Validator.isNotNull(deliverableCode)) {
 								dossierFileAttach.setFileEntryId(fileEntryId);
 								dossierFileAttach.setDisplayName(fileEntry.getFileName());
+//								_log.info("DossierFileAttach :" + dossierFileAttach.getDisplayName() + "FILE ENtryId :" + dossierFileAttach.getFileEntryId());
 								//
 								DossierFileLocalServiceUtil.updateDossierFile(dossierFileAttach);
 							}
@@ -217,13 +228,13 @@ public class Engine implements MessageListener {
 //							}
 //						}
 
-						System.out.println("==========addDossierByDeliverable=========" + deliverable.getDeliverableCode());
-						DossierFileLocalServiceUtil.addDossierByDeliverable(dossierFile.getGroupId(),
-								dossierFile.getCompanyId(), dossierFile.getUserId(), dossierFile.getUserName(),
-								dossierFile.getDossierId(), StringPool.BLANK, dossierFile.getDossierTemplateNo(),
-								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
-								dossierFile.getFileTemplateNo(), fileEntry.getFileName(), dossierFile.getFormData(),
-								fileEntryId, dossierFile.getOriginal(), false, false, false, deliverable.getDeliverableCode());
+//						System.out.println("==========addDossierByDeliverable=========" + deliverable.getDeliverableCode());
+//						DossierFileLocalServiceUtil.addDossierByDeliverable(dossierFile.getGroupId(),
+//								dossierFile.getCompanyId(), dossierFile.getUserId(), dossierFile.getUserName(),
+//								dossierFile.getDossierId(), StringPool.BLANK, dossierFile.getDossierTemplateNo(),
+//								dossierFile.getDossierPartNo(), dossierFile.getDossierPartType(),
+//								dossierFile.getFileTemplateNo(), fileEntry.getFileName(), dossierFile.getFormData(),
+//								fileEntryId, dossierFile.getOriginal(), false, false, false, deliverable.getDeliverableCode());
 					}
 				}
 			}

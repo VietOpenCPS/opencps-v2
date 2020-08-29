@@ -986,6 +986,7 @@ public class RestfulController {
 								.fetchDeliverable(Long.valueOf(pk));
 
 						openCPSDeliverable.setFileEntryId(fileAttach.getFileEntryId());
+						openCPSDeliverable.setFileAttachs(String.valueOf(fileAttach.getFileEntryId()));
 						//
 						_log.info("LOG Update Deliverable :" + fileAttach.getFileEntryId());
 						String formData = openCPSDeliverable.getFormData();

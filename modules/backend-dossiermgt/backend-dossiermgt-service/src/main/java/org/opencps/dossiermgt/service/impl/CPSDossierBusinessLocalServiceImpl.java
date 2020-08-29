@@ -1228,6 +1228,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			//Xử lý phiếu thanh toán
 			processPaymentFile(groupId, userId, payment, option, proAction, previousAction, dossier, context);
 
+			if(Validator.isNotNull(postStepCode)){
+				_log.info("PostStepCode :" + postStepCode);
+			}
 			//Bước sau không có thì mặc định quay lại bước trước đó
 			if (Validator.isNull(postStepCode)) {
 				postStepCode = previousAction.getFromStepCode();
@@ -1291,12 +1294,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						actionCode, actionUser, proAction.getActionName(), actionNote, actionOverdue, postStepCode,
 						backCurStep.getStepName(), backCurStep.getSequenceNo(), null, 0l, payload,
 						previousAction.getStepInstruction(), state, eventStatus, rollbackable, context);
-
+				_log.info("Log info DossierAction New : " + JSONFactoryUtil.looseSerialize(newAction));
 				dossier.setDossierActionId(newAction.getDossierActionId());
 				dossierLocalService.updateDossier(dossier);
 				//_log.info("TRACE_LOG_INFO doAction CPS Update L1 dossier: "+JSONFactoryUtil.looseSerialize(dossier));
 				//update
 				dossierAction.setNextActionId(newAction.getDossierActionId());
+				//Tiến trình xử lý
+				if(Validator.isNotNull(userId)){
+					dossierAction.setUserId(userId);
+					User userAction = userLocalService.getUser(userId);
+					dossierAction.setUserName(userAction.getFullName());
+				}
+
 				dossierActionLocalService.updateDossierAction(dossierAction);
 
 				// chỉ cán bộ thao tác trước đó có moderator = 1
@@ -1357,9 +1367,17 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			dossierAction = createActionAndAssignUser(groupId, userId, curStep, actionConfig, dossierAction,
 					previousAction, proAction, dossier, actionCode, actionUser, actionNote, payload, assignUsers,
 					paymentFee, serviceProcess, option, flagChanged, dateOption, context);
+//			if(Validator.isNotNull(userId)){
+//				_log.info("LOG USER :" + userId);
+//				dossierAction.setUserId(userId);
+//				User userAction = userLocalService.getUser(userId);
+//				if(Validator.isNotNull(userAction)) {
+//					dossierAction.setUserName(userAction.getFullName());
+//				}
+//			}
 
 			//			dossier = dossierLocalService.updateDossier(dossier);
-
+			_log.info("DOSSIER ACTION CPS DOSSIER : " +  JSONFactoryUtil.looseSerialize(dossierAction));
 			//Tạo văn bản đính kèm
 			if (OpenCPSConfigUtil.isDossierDocumentEnable()) {
 				if (!flagDocument) {
@@ -1712,6 +1730,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 								  String assignUsers, String payment, int syncType, ServiceContext context)
 			throws PortalException, SystemException, Exception {
 		context.setUserId(userId);
+		_log.info("USER doAction : " + userId + " " + " Context" + context.getUserId());
 		DossierAction dossierAction = null;
 
 		ActionConfig actionConfig = null;
