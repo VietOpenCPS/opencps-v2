@@ -333,7 +333,7 @@ public class RestfulController {
 			}
 			
 			String authorization = request.getParameter(WebKeys.AUTHORIZATION);
-			if (Validator.isNotNull(jCaptchaResponse)) {
+			if (Validator.isNotNull(authorization)) {
 				strBasic = authorization;
 			}
 
