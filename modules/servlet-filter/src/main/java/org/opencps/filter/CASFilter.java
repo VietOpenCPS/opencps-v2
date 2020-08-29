@@ -14,18 +14,12 @@
 
 package org.opencps.filter;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -262,7 +256,7 @@ public class CASFilter extends BaseFilter {
 ////				"service", "ticket", true);
 //		}
 
-		String ticket = ParamUtil.getString(httpServletRequest, "ticket");
+//		String ticket = ParamUtil.getString(httpServletRequest, "ticket");
 
 //		if (Validator.isNull(ticket)) {
 //			//String loginUrl = casConfiguration.loginURL();

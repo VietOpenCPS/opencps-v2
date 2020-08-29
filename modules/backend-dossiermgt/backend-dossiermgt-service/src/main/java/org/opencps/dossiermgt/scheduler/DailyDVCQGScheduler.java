@@ -6,42 +6,50 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.scheduler.*;
-import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
-import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
-import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.osgi.service.component.annotations.*;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.StorageTypeAware;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.Trigger;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
 
 import java.util.Date;
 import java.util.Map;
 
-@Component(immediate = true, service = DailyDVCQGScheduler.class)
+import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+
+//@Component(immediate = true, service = DailyDVCQGScheduler.class)
 public class DailyDVCQGScheduler extends BaseMessageListener {
-    private volatile boolean isRunning = false;
+//    private volatile boolean isRunning = false;
 
     @Override
     protected void doReceive(Message message) throws Exception {
         //turn off Daily sync voting to DVCQG on branch 3.0
-        if (true) {
-            return;
-        }
+//        if (true) {
+//            return;
+//        }
 
-        if (!isRunning) {
-            isRunning = true;
-        }
-        else {
-            return;
-        }
+//        if (!isRunning) {
+//            isRunning = true;
+//        }
+//        else {
+//            return;
+//        }
 
-        try {
-            _log.info("Daily sync data to DVCQG  : " + APIDateTimeUtils.convertDateToString(new Date()));
-            DVCQGIntegrationAction action = new DVCQGIntegrationActionImpl();
-            action.syncSummaryVote();
-        } catch (Exception e){
-            _log.error(e.getMessage());
-        }
-        isRunning = false;
+//        try {
+//            _log.info("Daily sync data to DVCQG  : " + APIDateTimeUtils.convertDateToString(new Date()));
+//            DVCQGIntegrationAction action = new DVCQGIntegrationActionImpl();
+//            action.syncSummaryVote();
+//        } catch (Exception e){
+//            _log.error(e.getMessage());
+//        }
+//        isRunning = false;
     }
 
     @Activate
@@ -77,7 +85,7 @@ public class DailyDVCQGScheduler extends BaseMessageListener {
             _schedulerEngineHelper.unregister(this);
         }
         _initialized = false;
-        isRunning = false;
+//        isRunning = false;
     }
 
     protected StorageType getStorageType() {

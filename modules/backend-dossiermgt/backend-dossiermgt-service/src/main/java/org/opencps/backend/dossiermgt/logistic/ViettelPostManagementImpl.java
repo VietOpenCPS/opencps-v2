@@ -1,5 +1,6 @@
 package org.opencps.backend.dossiermgt.logistic;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -52,7 +53,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
         try {
             String apiGetToken = this.configJson.getString(ViettelPostTerm.API_GET_TOKEN);
             String userName    = this.configJson.getString(ViettelPostTerm.USER);
-            String password    = this.configJson.getString(ViettelPostTerm.PASS);
+            String password    = this.configJson.getString(ViettelPostTerm.VT_SECRECT_KEY);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -60,7 +61,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
 
             Map<String, Object> body = new HashMap<>();
             body.put(ViettelPostTerm.USER_NAME, userName);
-            body.put(ViettelPostTerm.PASSWORD, password);
+            body.put(ViettelPostTerm.SECRET_KEY, password);
 
             JSONObject response = apiService.callApi(apiGetToken, headers, body);
             if(Validator.isNull(response)) {
@@ -78,7 +79,8 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
             return token;
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.debug(e);
+            return StringPool.BLANK;
         }
     }
 
@@ -130,7 +132,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
 
             } catch (Exception e) {
-                _log.error("Parse string to int fail");
+                _log.debug(e);
             }
 
             HttpHeaders headers = new HttpHeaders();
@@ -211,7 +213,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                     PublishQueueTerm.STATE_NOT_SYNC, 0
             );
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.debug(e);
         }
     }
 
@@ -226,7 +228,8 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             }
             return true;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+        	_log.debug(e);
+        	return false;
         }
     }
 }

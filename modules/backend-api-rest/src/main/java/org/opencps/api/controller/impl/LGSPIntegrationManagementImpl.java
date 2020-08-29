@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -32,14 +33,15 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("call sync Id Lgsp with gr " + groupId + " " + regionId);
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+//		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONObject result = null;
 		if (LGSPTerm.DICTCOLLECTION_REGION.equals(code)) {
 			result = LGSPTerm.syncAllRegion();
 		} else {
 			result = LGSPTerm.getRegion(regionId);
 		}
 
-		return Response.status(HttpStatus.SC_OK).entity(result.toJSONString()).build();
+		return Response.status(HttpStatus.SC_OK).entity(result != null ? result.toJSONString() : StringPool.BLANK).build();
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class LGSPIntegrationManagementImpl implements LGSPIntegrationManagement 
 			jsonResult.put("secrectKey", encryptSecrect);
 			return Response.status(HttpURLConnection.HTTP_OK).entity(jsonResult.toString()).build();
 		} catch (Exception e) {
-			_log.error("err");
+			_log.debug(e);
 			return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}
 	}

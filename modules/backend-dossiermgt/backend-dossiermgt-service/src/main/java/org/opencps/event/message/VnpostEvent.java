@@ -88,7 +88,7 @@ public class VnpostEvent implements MessageListener {
 
 			return Integer.valueOf(typeLogisticString);
 		} catch(Exception e) {
-			_log.error(e.getMessage());
+			_log.debug(e);
 			return LogisticConstants.DEFAULT;
 		}
 	}
@@ -101,7 +101,7 @@ public class VnpostEvent implements MessageListener {
 			viettelPostManagement.postBill(token, dossierObj);
 			_log.info("-----Done create bill viettel");
 		} catch (Exception e) {
-			_log.error("-----ERROR Create bill viettel post" + e.getMessage());
+			_log.error(e);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class VnpostEvent implements MessageListener {
 			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 			HashMap<String, String> properties = new HashMap<String, String>();
 			Map<String, Object> params = new HashMap<>();
-			String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
+//			String senderDesc = "Chuyển phát hồ sơ khách hàng: ";
 			_log.info("SONDT VNPOST EVENT dossierObj ========= "+ dossierObj);
 			params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
 			params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
@@ -168,8 +168,8 @@ public class VnpostEvent implements MessageListener {
 		try {
 			List<DossierPart> dossierParts = DossierPartLocalServiceUtil.getByTemplateNo(dossier.getGroupId(),
 					dossier.getDossierTemplateNo());
+			int i = 1;
 			for (DossierPart dp : dossierParts) {
-				int i = 1;
 				if ((!isInput && dp.getPartType() == 2) || (isInput && dp.getPartType() != 2)) {
 					List<DossierFile> df = DossierFileLocalServiceUtil.getDossierFileByDID_DPNO(dossier.getDossierId(), dp.getPartNo(), false);
 					if (df.size() > 0) {
@@ -179,8 +179,7 @@ public class VnpostEvent implements MessageListener {
 				}
 			}
 		} catch (PortalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 		senderName  += "||Tên dịch vụ: " + serviceType + "||CMND: " + dossier.getApplicantIdNo();
 		return senderName;

@@ -1166,7 +1166,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 
 	}
 
-	private static HashMap<String, String> _serviceInfoDVCQGMap = null;
+	private HashMap<String, String> _serviceInfoDVCQGMap = null;
 
 	@Override
 	public Response doSyncServiceInfoFromDVC(HttpServletRequest request, HttpHeaders header, Company company,

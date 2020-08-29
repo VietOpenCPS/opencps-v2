@@ -148,10 +148,13 @@ public class LGSPTerm {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
 		} catch (IOException e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
 		} catch (Exception e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
 		} finally {
 			if (conn != null) {
@@ -212,8 +215,7 @@ public class LGSPTerm {
 
 			region = callPostAPI(javax.ws.rs.HttpMethod.GET, urlRegion, properties, params);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return region;
@@ -261,8 +263,7 @@ public class LGSPTerm {
 			System.out.println("Synced regions total: " + total);
 			regions.put(ConstantUtils.TOTAL, total);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 		return regions;

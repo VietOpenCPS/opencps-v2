@@ -5,6 +5,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -20,7 +22,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -28,14 +34,19 @@ import javax.ws.rs.core.Response;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.DossierLogManagement;
-import org.opencps.api.controller.DossierManagement;
 import org.opencps.api.controller.util.DossierLogUtils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
-import org.opencps.api.dossier.model.DossierResultsModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.dossieraction.model.DossierActionModel;
 import org.opencps.api.dossieraction.model.DossierActionResultsModel;
@@ -52,17 +63,13 @@ import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierLogTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierLog;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-import org.opencps.dossiermgt.model.ServiceProcess;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
 
 public class DossierLogManagementImpl implements DossierLogManagement {
+
+	private static Log _log = LogFactoryUtil.getLog(DossierLogManagementImpl.class);
 
 	@Override
 	public Response addDossierLogByDossierId(HttpServletRequest request, HttpHeaders header, Company company,
@@ -257,6 +264,7 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 			results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 			if(isExport){
 				HSSFWorkbook workbook = null;
+				FileOutputStream out = null;
 				try {
 					workbook = new HSSFWorkbook();
 					// Create sheet
@@ -315,14 +323,14 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 					workbook.write(bos);
 					byte[] input = bos.toByteArray();
 					try {
-						FileOutputStream out = new FileOutputStream(file);
+						out = new FileOutputStream(file);
 						out.write(input);
 						out.flush();
 						out.close();
 						workbook.close();
 					}
 					catch (Exception e) {
-						System.out.println(e.getMessage());
+						_log.debug(e);
 					}
 					Response.ResponseBuilder responseBuilder = Response.ok((Object) file);
 					String attachmentFilename = String.format(MessageUtil.getMessage(org.opencps.api.constants.ConstantUtils.ATTACHMENT_FILENAME), file.getName());
@@ -337,7 +345,14 @@ public class DossierLogManagementImpl implements DossierLogManagement {
 						try {
 							workbook.close();
 						} catch (IOException e) {
-							System.out.println(e);
+							_log.debug(e);
+						}
+					}
+					if (out != null) {
+						try {
+							out.close();
+						} catch (IOException e) {
+							_log.debug(e);
 						}
 					}
 				}

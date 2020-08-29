@@ -187,7 +187,7 @@ public class DeliverableNumberGenerator {
 	
 	public static String generateDeliverableNumber(long groupId, String serialNumberPattern, String ngayQD) {
 		
-		String deliverableNumber = StringPool.BLANK;
+		//String deliverableNumber = StringPool.BLANK;
 		String codePattern = CODE_PATTERN;
 		String dayPattern = DAY_PATTERN;
 		String monthPattern = MONTH_PATTERN;
@@ -265,7 +265,7 @@ public class DeliverableNumberGenerator {
 
 			}
 		}
-		deliverableNumber = serialNumberPattern;
+		String deliverableNumber = serialNumberPattern;
 		
 		return deliverableNumber;
 

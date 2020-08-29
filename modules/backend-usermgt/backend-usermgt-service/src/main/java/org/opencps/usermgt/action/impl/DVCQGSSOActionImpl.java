@@ -151,7 +151,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 			String authToken, String state) {
 		List<ServerConfig> serverConfigs = ServerConfigLocalServiceUtil.getByProtocol("DVCQG-OPENID");
 
-		JSONObject result = JSONFactoryUtil.createJSONObject();
+		JSONObject result = null;
 		String id_token = StringPool.BLANK;
 		String accessToken = StringPool.BLANK;
 		if (serverConfigs != null && !serverConfigs.isEmpty()) {
@@ -246,6 +246,9 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 		if (result != null)
 			result.put("encryptData", encryptData);
 
+		if (result == null) {
+			result = JSONFactoryUtil.createJSONObject();
+		}
 		result.put("id_token", id_token);
 		result.put("access_token", accessToken);
 
@@ -591,7 +594,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 							Validator.isNotNull(SoCMND) ? SoCMND : SoDinhDanh);
 
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				}
 				// doanh nghiep
@@ -602,7 +605,7 @@ public class DVCQGSSOActionImpl implements DVCQGSSOInterface {
 					applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId,
 							Validator.isNotNull(MaSoThue) ? MaSoThue : MaSoDoanhNghiep);
 					if (applicant == null) {
-						applicant = ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
+						ApplicantLocalServiceUtil.fetchByEmail(ThuDienTu);
 					}
 				} else {
 					return createErrorMessage("Unknown LoaiTaiKhoan", 404);

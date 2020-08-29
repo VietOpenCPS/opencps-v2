@@ -873,8 +873,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						}
 					}
 				} catch (JSONException e) {
-					_log.debug(e.getMessage());
-					e.printStackTrace();
+					_log.debug(e);
 				}
 			}
 

@@ -20,14 +20,8 @@ import com.liferay.portal.kernel.scheduler.StorageTypeAware;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -38,11 +32,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictGroup;
@@ -51,37 +43,20 @@ import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
-import org.opencps.dossiermgt.action.DossierActions;
-import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
-import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetDossierRequest;
-import org.opencps.statistic.rest.dto.GetDossierResponse;
-import org.opencps.statistic.rest.dto.ServiceDomainData;
 import org.opencps.statistic.rest.dto.ServiceDomainRequest;
-import org.opencps.statistic.rest.dto.ServiceDomainResponse;
-import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
 import org.opencps.statistic.rest.engine.service.StatisticEngineUpdateAction;
-import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
-import org.opencps.statistic.rest.engine.service.StatisticUtils;
-import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
-import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 //import org.opencps.systemmgt.constants.SchedulerRecordTerm;
 //import org.opencps.systemmgt.model.SchedulerRecord;
 //import org.opencps.systemmgt.service.SchedulerRecordLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -95,12 +70,12 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 	
 	public static final int GROUP_TYPE_SITE = 1;
 	
-	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
-	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
+//	private OpencpsCallRestFacade<GetDossierRequest, GetDossierResponse> callDossierRestService = new OpencpsCallDossierRestFacadeImpl();
+//	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	private static final String GROUP_SBN = "SBN";
 	private static final String GROUP_QUAN_HUYEN = "QUAN_HUYEN";
-	private static final String GROUP_XA_PHUONG = "XA_PHUONG";
+//	private static final String GROUP_XA_PHUONG = "XA_PHUONG";
 	private static final String CALCULATE_GROUP_STATISTIC_ENABLE = "org.opencps.statistic.group.enable";
 	
 	private boolean isCalculateGroupStatistic() {
@@ -211,31 +186,31 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 						lstGroupGovs.add(groupGovAgencyQH.toString());					
 					}
 					
-					DictGroup dgqh = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
-					List<DictItemGroup> lstDgqhs = (dgqh != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dgqh.getDictGroupId()) : new ArrayList<DictItemGroup>();
-					lstGovs = new ArrayList<DictItem>();
+//					DictGroup dgqh = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_QUAN_HUYEN, site.getGroupId());
+//					List<DictItemGroup> lstDgqhs = (dgqh != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dgqh.getDictGroupId()) : new ArrayList<DictItemGroup>();
+//					lstGovs = new ArrayList<DictItem>();
 					
-					if(lstDgqhs.size() > 0) {
-						for (DictItemGroup dig : lstDgqhs) {
-							lstGovs = DictItemLocalServiceUtil.findByF_parentItemId(dig.getDictItemId());
-							lstSortItems = new ArrayList<DictItem>();
-							lstSortItems.addAll(lstGovs);
-							
-							Collections.sort(lstSortItems, compareByItemCode);
-							lstGovs = lstSortItems;
-							
-							StringBuilder groupGovAgencyXPByQH = new StringBuilder();
-							for (DictItem di : lstGovs) {
-								if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
-									groupGovAgencyXPByQH.append(StringPool.COMMA);
-								}
-								groupGovAgencyXPByQH.append(di.getItemCode());
-							}
-							if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
-								lstGroupGovs.add(groupGovAgencyXPByQH.toString());					
-							}							
-						}
-					}
+//					if(lstDgqhs.size() > 0) {
+//						for (DictItemGroup dig : lstDgqhs) {
+//							lstGovs = DictItemLocalServiceUtil.findByF_parentItemId(dig.getDictItemId());
+//							lstSortItems = new ArrayList<DictItem>();
+//							lstSortItems.addAll(lstGovs);
+//							
+//							Collections.sort(lstSortItems, compareByItemCode);
+//							lstGovs = lstSortItems;
+//							
+//							StringBuilder groupGovAgencyXPByQH = new StringBuilder();
+//							for (DictItem di : lstGovs) {
+//								if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
+//									groupGovAgencyXPByQH.append(StringPool.COMMA);
+//								}
+//								groupGovAgencyXPByQH.append(di.getItemCode());
+//							}
+//							if (!StringPool.BLANK.contentEquals(groupGovAgencyXPByQH.toString())) {
+//								lstGroupGovs.add(groupGovAgencyXPByQH.toString());					
+//							}							
+//						}
+//					}
 					/*dg = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(GROUP_XA_PHUONG, site.getGroupId());
 					lstDigs = (dg != null) ? DictItemGroupLocalServiceUtil.findByDictGroupId(site.getGroupId(), dg.getDictGroupId()) : new ArrayList<DictItemGroup>();
 					lstGovs = new ArrayList<DictItem>();
@@ -299,13 +274,13 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 					}
 				}
 //				_log.debug("STATISTICS CALL SERVICE DOMAIN: " + (System.currentTimeMillis() - startTime) + " ms");;
-				ServiceDomainResponse serviceDomainResponse = null;
-				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
-					serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
-				}
-				else {
-					serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
-				}
+//				ServiceDomainResponse serviceDomainResponse = null;
+//				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+//					serviceDomainResponse = callServiceDomainService.callRestService(sdPayload);
+//				}
+//				else {
+//					serviceDomainResponse = StatisticDataUtil.getLocalServiceDomain(sdPayload);
+//				}
 //				_log.debug("STATISTICS CALL SERVICE DOMAIN END TIME: " + (System.currentTimeMillis() - startTime) + " ms");;
 				
 //				_log.info("CALCULATE AFTER GET SERVICE DOMAIN: " + serviceDomainResponse.getTotal() + ", " + (System.currentTimeMillis() - startTime) + " ms");
@@ -383,9 +358,9 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 				//Recalculate data				
 				//TODO: Calculator again year ago
 				int lastYear = LocalDate.now().getYear() - 1;
-				boolean flagLastYear = true;
+//				boolean flagLastYear = true;
 				Map<Integer, Boolean> mapFlagPrev = new HashMap<>();
-				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
+//				Map<Integer, Map<String, DossierStatisticData>> calculateLastData = new HashMap<>();
 				/**
 				for (int lastMonth = 1; lastMonth <= 12; lastMonth++) {
 					List<OpencpsDossierStatistic> dossierStatisticList = engineUpdateAction
@@ -529,7 +504,7 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 //					_log.debug(e);
 //				}
 				// Caculate statistic each year
-				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
+//				StatisticSumYearService statisticSumYearService = new StatisticSumYearService();
 //				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.fetchDossierStatistic(site.getGroupId(), -1, LocalDate.now().getYear(), "total", "total", "total", QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 				List<OpencpsDossierStatistic> lstCurrents = OpencpsDossierStatisticLocalServiceUtil.findByG_NM_Y(site.getGroupId(), 0, LocalDate.now().getYear());
 				Comparator<OpencpsDossierStatistic> compareByYearMonth = new Comparator<OpencpsDossierStatistic>() {
@@ -600,369 +575,368 @@ public class DossierStatisticEngine_bk extends BaseMessageListener {
 		isRunningDossier = false;
 	}
 
-	@SuppressWarnings("unchecked")
-	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
-			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
-			Map<Integer, Map<String, DossierStatisticData>> calculateData, List<String> lstGroupGovs)
-			throws Exception {
-//		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-		
-		payload.setMonth(Integer.toString(month));
-		payload.setYear(Integer.toString(year));
-		payload.setCalculate(true);
-		payload.setStart(QueryUtil.ALL_POS);
-		payload.setEnd(QueryUtil.ALL_POS);
-		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {			
-			GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
-			if (dossierResponse != null) {
-				List<GetDossierData> dossierData = dossierResponse.getData();
-				
-				if (dossierData != null) {
-					//LOG.info("***** " + site.getGroupId() + source.size());
-					
-					if(dossierData.size() > 0) {
-						if (serviceDomainResponse != null) {
-							List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-							if (serviceDomainData != null) {
-								for (ServiceDomainData sdd : serviceDomainData) {
-									boolean existsDomain = false;
-									for (GetDossierData dd : dossierData) {
-										if (dd.getDomainCode().equals(sdd.getItemCode())) {
-											existsDomain = true;
-											break;
-										}
-									}
-									if (existsDomain) {
-										
-									}
-									else {
-//										try {
-//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//										} catch (NoSuchOpencpsDossierStatisticException e) {
-//											_log.debug(e);
+//	private void processUpdateStatistic(long groupId, int month, int year, GetDossierRequest payload,
+//			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse,
+//			Map<Integer, Map<String, DossierStatisticData>> calculateData, List<String> lstGroupGovs)
+//			throws Exception {
+////		engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//		
+//		payload.setMonth(Integer.toString(month));
+//		payload.setYear(Integer.toString(year));
+//		payload.setCalculate(true);
+//		payload.setStart(QueryUtil.ALL_POS);
+//		payload.setEnd(QueryUtil.ALL_POS);
+//		if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {			
+//			GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+//			if (dossierResponse != null) {
+//				List<GetDossierData> dossierData = dossierResponse.getData();
+//				
+//				if (dossierData != null) {
+//					//LOG.info("***** " + site.getGroupId() + source.size());
+//					
+//					if(dossierData.size() > 0) {
+//						if (serviceDomainResponse != null) {
+//							List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+//							if (serviceDomainData != null) {
+//								for (ServiceDomainData sdd : serviceDomainData) {
+//									boolean existsDomain = false;
+//									for (GetDossierData dd : dossierData) {
+//										if (dd.getDomainCode().equals(sdd.getItemCode())) {
+//											existsDomain = true;
+//											break;
 //										}
-									}
-								}
-								for (GetDossierData dd : dossierData) {
-									boolean existsDomain = false;
-									for (ServiceDomainData sdd : serviceDomainData) {
-										if (dd.getDomainCode().equals(sdd.getItemCode())) {
-											existsDomain = true;
-											break;
-										}
-									}
-									if (existsDomain) {
-										
-									}
-									else {
-//										try {
-//											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
-//										} catch (NoSuchOpencpsDossierStatisticException e) {
-//											_log.debug(e);
-//										}
-									}
-								}
-							}
-						}
-						else {
-//							try {
-//								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-//							}
-//							catch (NoSuchOpencpsDossierStatisticException e) {
-//								_log.debug(e);
-//							}
-						}
-						
-						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-
-						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-
-						Date firstDay = StatisticUtils.getFirstDay(month, year);
-						Date lastDay = StatisticUtils.getLastDay(month, year);
-						/**engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs); **/
-//						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-//						
-//						statisticEngineUpdate.updateStatisticData(statisticData);	
-						calculateData.put(month, statisticData);
-					}
-					else {
-						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-						if (serviceDomainData != null) {
-							for (ServiceDomainData sdd : serviceDomainData) {
-//								try {
-//									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//								} catch (NoSuchOpencpsDossierStatisticException e) {
-//									_log.debug(e);
+//									}
+//									if (existsDomain) {
+//										
+//									}
+//									else {
+////										try {
+////											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+////										} catch (NoSuchOpencpsDossierStatisticException e) {
+////											_log.debug(e);
+////										}
+//									}
 //								}
-							}
-						}	
-//						try {
-//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-//						}
-//						catch (NoSuchOpencpsDossierStatisticException e) {
-//							_log.debug(e);
-//						}
-					}
-				}
-				else {
-					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-					if (serviceDomainData != null) {
-						for (ServiceDomainData sdd : serviceDomainData) {
-//							try {
-//								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//							} catch (NoSuchOpencpsDossierStatisticException e) {
-//								_log.debug(e);	
+//								for (GetDossierData dd : dossierData) {
+//									boolean existsDomain = false;
+//									for (ServiceDomainData sdd : serviceDomainData) {
+//										if (dd.getDomainCode().equals(sdd.getItemCode())) {
+//											existsDomain = true;
+//											break;
+//										}
+//									}
+//									if (existsDomain) {
+//										
+//									}
+//									else {
+////										try {
+////											engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
+////										} catch (NoSuchOpencpsDossierStatisticException e) {
+////											_log.debug(e);
+////										}
+//									}
+//								}
 //							}
-						}
-					}
+//						}
+//						else {
+////							try {
+////								engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////							}
+////							catch (NoSuchOpencpsDossierStatisticException e) {
+////								_log.debug(e);
+////							}
+//						}
+//						
+////						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+//
+//						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+//
+////						Date firstDay = StatisticUtils.getFirstDay(month, year);
+////						Date lastDay = StatisticUtils.getLastDay(month, year);
+//						/**engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs); **/
+////						StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+////						
+////						statisticEngineUpdate.updateStatisticData(statisticData);	
+//						calculateData.put(month, statisticData);
+//					}
+//					else {
+//						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+//						if (serviceDomainData != null) {
+////							for (ServiceDomainData sdd : serviceDomainData) {
+//////								try {
+//////									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//////								} catch (NoSuchOpencpsDossierStatisticException e) {
+//////									_log.debug(e);
+//////								}
+////							}
+//						}	
+////						try {
+////							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////						}
+////						catch (NoSuchOpencpsDossierStatisticException e) {
+////							_log.debug(e);
+////						}
+//					}
+//				}
+//				else {
+//					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+//					if (serviceDomainData != null) {
+////						for (ServiceDomainData sdd : serviceDomainData) {
+//////							try {
+//////								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+//////							} catch (NoSuchOpencpsDossierStatisticException e) {
+//////								_log.debug(e);	
+//////							}
+////						}
+//					}
+////					try {
+////						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////					}
+////					catch (Exception e) {
+////						_log.debug(e);
+////					}
+//				}
+//			}
+//			else {
+////				try {
+////					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////				}
+////				catch (Exception e) {
+////					_log.debug(e);
+////				}
+//			}
+//			
+//		}
+//		else {
+//			DossierActions actions = new DossierActionsImpl();
+//			Sort[] sorts = null;
+//			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+//					true) };
+//			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//			params.put(Field.GROUP_ID, String.valueOf(groupId));
+//			if (payload.isCalculate()) {
+//				if (payload.getMonth() != null) {
+//					params.put(DossierTerm.MONTH, payload.getMonth());
+//				}
+//				else {
+//					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
+//				}
+//				if (payload.getYear() != null) {
+//					params.put(DossierTerm.YEAR, payload.getYear());
+//				}
+//				else {
+//					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
+//				}
+//			}
+//			else {
+//				if (Validator.isNotNull(payload.getGovAgencyCode())) {
+//					params.put(DossierTerm.AGENCYS, payload.getGovAgencyCode());
+//				}
+//				if (Validator.isNotNull(payload.getFromStatisticDate())) {
+//					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());
+//				}
+//				if (Validator.isNotNull(payload.getToStatisticDate())) {
+//					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
+//				}				
+//			}
+//			//Add common params
+//			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+//			params.put(DossierTerm.SYSTEM_ID, strSystemId);
+//			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+//			
+//			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+//			long companyId = company.getCompanyId(); 
+//			int start = QueryUtil.ALL_POS;
+//			int end = QueryUtil.ALL_POS;
+//			
+//			if (payload.getStart() != 0) {
+//				start = payload.getStart();			
+//			}
+//			else {
+//			}
+//			if (payload.getEnd() != 0) {
+//				end = payload.getEnd();
+//			}
+//			else {
+//			}
+//			
+//			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
+//			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+//			List<GetDossierData> dossierData = new ArrayList<>();
+//			int total = jsonData.getInt(ConstantUtils.TOTAL);
+//
+//			_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
+//			_log.info("GET DOSSIER total: " + total);
+//
+//			if (total > datas.size()) {
+//				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
+//				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
+////				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
+//			}
+//
+//			for (Document doc : datas) {
+//				GetDossierData model = new GetDossierData();
+//				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+//				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+//				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+//				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+//				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+//					Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+//					model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+//				} else {
+//					model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+//				}
+//				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+//				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+//				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+//				model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+//				model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+//				model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+//				model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+//				model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+//				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
+//				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+//				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
+////				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
+////					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
+////				}
+//				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
+//				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
 //					try {
-//						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+//						model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
 //					}
 //					catch (Exception e) {
 //						_log.debug(e);
 //					}
-				}
-			}
-			else {
+//				}
+//				model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+//				
+//				dossierData.add(model);
+//			}
+//			
+//			//GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
+//			//if (dossierResponse != null) {
+//				//List<GetDossierData> dossierData = dossierResponse.getData();
+//	//			List<GetDossierData> dossierData = new ArrayList<>();
+//				
+//				if (dossierData != null && dossierData.size() > 0) {
+//					//LOG.info("***** " + site.getGroupId() + source.size());
+////					if(dossierData.size() > 0) {
+//					if (serviceDomainResponse != null) {
+//						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+//						if (serviceDomainData != null) {
+//							for (ServiceDomainData sdd : serviceDomainData) {
+//								boolean existsDomain = false;
+//								for (GetDossierData dd : dossierData) {
+//									if (dd.getDomainCode().equals(sdd.getItemCode())) {
+//										existsDomain = true;
+//										break;
+//									}
+//								}
+//								if (existsDomain) {
+//									
+//								}
+//								else {
+////									try {
+////										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+////									} catch (NoSuchOpencpsDossierStatisticException e) {
+////										_log.debug(e);
+////									}
+//								}
+//							}
+//							for (GetDossierData dd : dossierData) {
+//								boolean existsDomain = false;
+//								for (ServiceDomainData sdd : serviceDomainData) {
+//									if (dd.getDomainCode().equals(sdd.getItemCode())) {
+//										existsDomain = true;
+//										break;
+//									}
+//								}
+//								if (existsDomain) {
+//									
+//								}
+//								else {
+////									try {
+////										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
+////									} catch (NoSuchOpencpsDossierStatisticException e) {
+////										_log.debug(e);
+////									}
+//								}
+//							}
+//						}
+//					}
+//					else {
+////						try {
+////							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////						}
+////						catch (NoSuchOpencpsDossierStatisticException e) {
+////							_log.debug(e);
+////						}
+//					}
+//						
+//					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+//
+//					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+//
+//					Date firstDay = StatisticUtils.getFirstDay(month, year);
+//					Date lastDay = StatisticUtils.getLastDay(month, year);
+//					/** engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs); **/
+//	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
+//	//					
+//	//					statisticEngineUpdate.updateStatisticData(statisticData);	
+////					_log.debug("PUT MONTH: " + month + ", " + groupId);
+//					calculateData.put(month, statisticData);
+////					}
+////					else {
+////						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+////						if (serviceDomainData != null) {
+////							for (ServiceDomainData sdd : serviceDomainData) {
+////								try {
+////									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+////								} catch (NoSuchOpencpsDossierStatisticException e) {
+////									_log.debug(e);	
+////								}
+////							}
+////						}	
+////						try {
+////							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////						}
+////						catch (NoSuchOpencpsDossierStatisticException e) {
+////							_log.debug(e);
+////						}
+////					}
+//				}
+//				else {
+//					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
+//					if (serviceDomainData != null) {
+//						for (ServiceDomainData sdd : serviceDomainData) {
+////							try {
+////								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
+////							} catch (NoSuchOpencpsDossierStatisticException e) {
+////								_log.debug(e);	
+////							}
+//						}
+//					}
+////					try {
+////						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
+////					}
+////					catch (Exception e) {
+////						_log.debug(e);
+////					}
+//				}
+//			}
+//			/*
+//			else {
 //				try {
 //					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
 //				}
 //				catch (Exception e) {
 //					_log.debug(e);
 //				}
-			}
-			
-		}
-		else {
-			DossierActions actions = new DossierActionsImpl();
-			Sort[] sorts = null;
-			sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
-					true) };
-			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-			params.put(Field.GROUP_ID, String.valueOf(groupId));
-			if (payload.isCalculate()) {
-				if (payload.getMonth() != null) {
-					params.put(DossierTerm.MONTH, payload.getMonth());
-				}
-				else {
-					params.put(DossierTerm.MONTH, Integer.toString(LocalDate.now().getMonthValue()));
-				}
-				if (payload.getYear() != null) {
-					params.put(DossierTerm.YEAR, payload.getYear());
-				}
-				else {
-					params.put(DossierTerm.YEAR, Integer.toString(LocalDate.now().getYear()));
-				}
-			}
-			else {
-				if (Validator.isNotNull(payload.getGovAgencyCode())) {
-					params.put(DossierTerm.AGENCYS, payload.getGovAgencyCode());
-				}
-				if (Validator.isNotNull(payload.getFromStatisticDate())) {
-					params.put(DossierTerm.FROM_STATISTIC_DATE, payload.getFromStatisticDate());
-				}
-				if (Validator.isNotNull(payload.getToStatisticDate())) {
-					params.put(DossierTerm.TO_STATISTIC_DATE, payload.getToStatisticDate());
-				}				
-			}
-			//Add common params
-			String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
-			params.put(DossierTerm.SYSTEM_ID, strSystemId);
-			params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
-			
-			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-			long companyId = company.getCompanyId(); 
-			int start = QueryUtil.ALL_POS;
-			int end = QueryUtil.ALL_POS;
-			
-			if (payload.getStart() != 0) {
-				start = payload.getStart();			
-			}
-			else {
-			}
-			if (payload.getEnd() != 0) {
-				end = payload.getEnd();
-			}
-			else {
-			}
-			
-			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, start, end, new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
-
-			_log.info("GET DOSSIER SIZE: " + datas != null ? datas.size() : 0);
-			_log.info("GET DOSSIER total: " + total);
-
-			if (total > datas.size()) {
-				JSONObject jsonData2 = actions.getDossiers(-1, companyId, groupId, params, sorts, 0, total, new ServiceContext());
-				datas = (List<Document>) jsonData2.get(ConstantUtils.DATA);
-//				_log.debug("_GET ALL DOSSIER SIZE_: " + datas.size());
-			}
-
-			for (Document doc : datas) {
-				GetDossierData model = new GetDossierData();
-				model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
-				model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
-				model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
-				model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
-				if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
-					Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
-					model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
-				} else {
-					model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
-				}
-				model.setDueDate(doc.get(DossierTerm.DUE_DATE));
-				model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
-				model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
-				model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
-				model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
-				model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
-				model.setLockState(doc.get(DossierTerm.LOCK_STATE));
-				model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
-				model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
-				model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
-				model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
-//				if (!"0".contentEquals(doc.get(DossierTerm.VIA_POSTAL))) {
-//					_log.debug("FIND DOSSIER: " + doc.get(DossierTerm.VIA_POSTAL));
-//				}
-				model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
-				if (Validator.isNotNull(doc.get(DossierTerm.SERVICE_LEVEL))) {
-					try {
-						model.setServiceLevel(Integer.parseInt(doc.get(DossierTerm.SERVICE_LEVEL)));
-					}
-					catch (Exception e) {
-						_log.debug(e);
-					}
-				}
-				model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
-				
-				dossierData.add(model);
-			}
-			
-			//GetDossierResponse dossierResponse = callDossierRestService.callRestService(payload);
-			//if (dossierResponse != null) {
-				//List<GetDossierData> dossierData = dossierResponse.getData();
-	//			List<GetDossierData> dossierData = new ArrayList<>();
-				
-				if (dossierData != null && dossierData.size() > 0) {
-					//LOG.info("***** " + site.getGroupId() + source.size());
-//					if(dossierData.size() > 0) {
-					if (serviceDomainResponse != null) {
-						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-						if (serviceDomainData != null) {
-							for (ServiceDomainData sdd : serviceDomainData) {
-								boolean existsDomain = false;
-								for (GetDossierData dd : dossierData) {
-									if (dd.getDomainCode().equals(sdd.getItemCode())) {
-										existsDomain = true;
-										break;
-									}
-								}
-								if (existsDomain) {
-									
-								}
-								else {
-//									try {
-//										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//									} catch (NoSuchOpencpsDossierStatisticException e) {
-//										_log.debug(e);
-//									}
-								}
-							}
-							for (GetDossierData dd : dossierData) {
-								boolean existsDomain = false;
-								for (ServiceDomainData sdd : serviceDomainData) {
-									if (dd.getDomainCode().equals(sdd.getItemCode())) {
-										existsDomain = true;
-										break;
-									}
-								}
-								if (existsDomain) {
-									
-								}
-								else {
-//									try {
-//										engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, dd.getDomainCode(), month, year);
-//									} catch (NoSuchOpencpsDossierStatisticException e) {
-//										_log.debug(e);
-//									}
-								}
-							}
-						}
-					}
-					else {
-//						try {
-//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-//						}
-//						catch (NoSuchOpencpsDossierStatisticException e) {
-//							_log.debug(e);
-//						}
-					}
-						
-					StatisticEngineFetch engineFetch = new StatisticEngineFetch();
-
-					Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
-
-					Date firstDay = StatisticUtils.getFirstDay(month, year);
-					Date lastDay = StatisticUtils.getLastDay(month, year);
-					/** engineFetch.fecthStatisticData(groupId, statisticData, dossierData, firstDay, lastDay, false, lstGroupGovs); **/
-	//					StatisticEngineUpdate statisticEngineUpdate = new StatisticEngineUpdate();
-	//					
-	//					statisticEngineUpdate.updateStatisticData(statisticData);	
-//					_log.debug("PUT MONTH: " + month + ", " + groupId);
-					calculateData.put(month, statisticData);
-//					}
-//					else {
-//						List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-//						if (serviceDomainData != null) {
-//							for (ServiceDomainData sdd : serviceDomainData) {
-//								try {
-//									engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//								} catch (NoSuchOpencpsDossierStatisticException e) {
-//									_log.debug(e);	
-//								}
-//							}
-//						}	
-//						try {
-//							engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-//						}
-//						catch (NoSuchOpencpsDossierStatisticException e) {
-//							_log.debug(e);
-//						}
-//					}
-				}
-				else {
-					List<ServiceDomainData> serviceDomainData = serviceDomainResponse.getData();
-					if (serviceDomainData != null) {
-						for (ServiceDomainData sdd : serviceDomainData) {
-//							try {
-//								engineUpdateAction.removeDossierStatisticByD_M_Y(groupId, sdd.getItemCode(), month, year);
-//							} catch (NoSuchOpencpsDossierStatisticException e) {
-//								_log.debug(e);	
-//							}
-						}
-					}
-//					try {
-//						engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-//					}
-//					catch (Exception e) {
-//						_log.debug(e);
-//					}
-				}
-			}
-			/*
-			else {
-				try {
-					engineUpdateAction.removeDossierStatisticByMonthYear(groupId, month, year);
-				}
-				catch (Exception e) {
-					_log.debug(e);
-				}
-			}
-			*/
-//		}
-	}
+//			}
+//			*/
+////		}
+//	}
 
 	//Time engine dossier
 	private static int timeStatistic = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))

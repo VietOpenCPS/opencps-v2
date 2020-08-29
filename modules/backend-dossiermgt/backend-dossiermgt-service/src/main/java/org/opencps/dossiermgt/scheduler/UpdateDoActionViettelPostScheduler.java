@@ -150,7 +150,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
             }
             _log.info("End Viettel post schedule!!!");
         } catch (Exception e){
-            _log.error("Error Viettel post schedule: " + e.getMessage());
+            _log.error(e);
         }
         isRunning = false;
     }
@@ -271,7 +271,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
             _log.info("----VIETTEL POST: End do action for dossier " + dossier.getDossierId());
             return Validator.isNotNull(dossierResult);
         } catch (Exception e) {
-            _log.error("Error doAction Viettel post schedule: " + e.getMessage());
+            _log.error(e);
             return false;
         }
     }
@@ -339,7 +339,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
 
             return action;
         } catch (Exception e) {
-            _log.error("Error doAction Viettel post schedule: " + e.getMessage());
+            _log.error(e);
             return null;
         }
     }

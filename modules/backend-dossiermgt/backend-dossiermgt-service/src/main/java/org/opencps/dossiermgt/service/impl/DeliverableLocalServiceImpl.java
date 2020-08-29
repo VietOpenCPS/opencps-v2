@@ -1704,7 +1704,7 @@ public class DeliverableLocalServiceImpl
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
 									String[] keywordArr = listScope.split(StringPool.COMMA);
-									BooleanQuery subQuery = new BooleanQueryImpl();
+//									BooleanQuery subQuery = new BooleanQueryImpl();
 										for (String keyValue : keywordArr) {
 											MultiMatchQuery query = new MultiMatchQuery(keyValue);
 											query.addFields(key.split("@")[0]);

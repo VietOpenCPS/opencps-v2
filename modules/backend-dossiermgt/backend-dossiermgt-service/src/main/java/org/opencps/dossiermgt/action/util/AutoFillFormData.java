@@ -300,8 +300,7 @@ public class AutoFillFormData {
 									jsonMap.put(entry.getKey(),  StringPool.BLANK);
 								}
 							} catch (JSONException e) {
-								_log.debug(e.getMessage());
-								e.printStackTrace();
+								_log.debug(e);
 							}
 						}
 					}
@@ -1114,8 +1113,7 @@ public class AutoFillFormData {
 									jsonMap.put(entry.getKey(),  StringPool.BLANK);
 								}
 							} catch (JSONException e) {
-								_log.debug(e.getMessage());
-								e.printStackTrace();
+								_log.debug(e);
 							}
 						}
 					}

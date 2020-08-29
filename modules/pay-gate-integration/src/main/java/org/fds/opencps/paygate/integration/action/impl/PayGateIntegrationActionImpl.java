@@ -215,12 +215,14 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			conn.disconnect();
 
 		} catch (MalformedURLException e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
 		} catch (IOException e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
 		} catch (JSONException e) {
+			_log.debug(e);
 			_log.error("Can't invoke api " + urlPath);
-			e.printStackTrace();
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
@@ -430,7 +432,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return confirmResponseData(billcode, order_id, merchant_code, check_sum, paymentFile.getPaymentAmount(),
 					PayGateTerm.ERROR_CODE_00);
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			return confirmResponseData(billcode, order_id, merchant_code, check_sum, 0, PayGateTerm.ERROR_CODE_03);
 		}
 	}
@@ -472,8 +474,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			if (payment_status == 1 && PayGateTerm.ERROR_CODE_00.equals(error_code)
 					&& !PaymentFileTerm.PAYMENT_METHOD_VIETTEL_PAY.equals(paymentFile.getPaymentMethod())) {
 
-				JSONObject action = JSONFactoryUtil.createJSONObject();
-
+				//JSONObject action = JSONFactoryUtil.createJSONObject();
+				JSONObject action = null;
 				if (dossier.isOnline()) {
 					// TODO: call api doaction to DVC
 					action = config.getJSONObject(PayGateTerm.ACTION_IS_ONLINE);
@@ -536,8 +538,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			return receiverResponseData(order_id, merchant_code, check_sum_encoded, PayGateTerm.ERROR_CODE_00);
 		} catch (Exception e) {
-
-			e.printStackTrace();
+			_log.debug(e);
 			return receiverResponseData(order_id, merchant_code, check_sum, PayGateTerm.ERROR_CODE_03);
 		}
 
@@ -599,7 +600,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return searchResult;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			return JSONFactoryUtil.createJSONObject();
 		}
 	}
@@ -681,7 +682,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 			return resPostDossier;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 			return JSONFactoryUtil.createJSONObject();
 		}
 	}
@@ -1054,7 +1055,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 						if (paymentFile == null) {
 							return PayGateUtil.createResponseMessage(-1, "error: paymentfile_null");
 						}
-						paymentFileId = paymentFile.getPaymentFileId();
+						//paymentFileId = paymentFile.getPaymentFileId();
 					}
 				} else {
 					paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
@@ -1143,11 +1144,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_ERR);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
-			} else  if (Validator.isNotNull(dossier)) {
+			} else  if (dossier != null) {
 				paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 			}
 
-			if (Validator.isNull(paymentFile) || paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3) {
+			if (paymentFile == null || (paymentFile != null &&(paymentFile.getPaymentStatus() == 5 || paymentFile.getPaymentStatus() == 3))) {
 				response.put(KeypayDVCQGTerm.ERROR_CODE_KEY, KeypayDVCQGTerm.ERROR_CODE_NONE);
 				response.put(KeypayDVCQGTerm.MESSAGE_KEY, JSONFactoryUtil.createJSONArray());
 				return response;
@@ -1186,7 +1187,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+//			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action = null;
 
 			if (dossier.isOnline()) {
 				// TODO: call api doaction to DVC
@@ -1521,11 +1523,15 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 		// moi dich vu cong co 1 thong tin ngan hang thu huong khac nhau
 		JSONObject banksInfo = schema.getJSONObject(PayGateTerm.BANKINFO);
-		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+//		JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+		JSONObject bankInfo = null;
 		if (banksInfo.has(dossier.getServiceCode())) {
 			bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 		} else {
 			bankInfo = banksInfo.getJSONObject(PayGateTerm.DEFAULT);
+		}
+		if (bankInfo == null) {
+			bankInfo = JSONFactoryUtil.createJSONObject();
 		}
 		receipt_info.put(PayGateTerm.TKTHUHUONG,
 				(maDV == 2) ? bankInfo.getString(PayGateTerm.TKTHUHUONG) : StringPool.BLANK);
@@ -1604,7 +1610,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String loaiBantin = data.getString(PayGateTerm.LOAIBANTIN);
 				String maLoi = data.getString(PayGateTerm.MALOI_KEY);
-				String maDoitac = StringPool.BLANK;
+				//String maDoitac = StringPool.BLANK;
 				String maThamchieu = data.getString(PayGateTerm.MATHAMCHIEU);
 				int sotien = data.getInt(PayGateTerm.SOTIEN);
 				String maTiente = data.getString(PayGateTerm.MATIENTE);
@@ -1632,7 +1638,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 					if (Validator.isNull(dossierNo) || Validator.isNull(dossier)) {
 						return PayGateUtil.createResponseMessage(-1, "error: dossier paymentfile_id = 0");
-					} else  if (Validator.isNotNull(dossier)) {
+					} else  if (dossier != null) {
 						paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
 					}
 				} else {
@@ -1655,7 +1661,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					return PayGateUtil.createResponseMessage(-1, "error: paymentfile_config null");
 				}
 
-				maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
+				String maDoitac = Validator.isNotNull(paymentFile.getGovAgencyCode()) ?
 						paymentFile.getGovAgencyCode() : schema.getString(PayGateTerm.MADOITAC);
 				String hash_key = schema.getString(PayGateTerm.HASH_KEY);
 				String maXacthuc_tmp = PayGateUtil.generateChecksum(loaiBantin, maLoi, maDoitac, maThamchieu, sotien,
@@ -1710,7 +1716,8 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 			PaymentFileActions actions = new PaymentFileActionsImpl();
 
-			JSONObject action = JSONFactoryUtil.createJSONObject();
+//			JSONObject action = JSONFactoryUtil.createJSONObject();
+			JSONObject action = null;
 
 			if (dossier.isOnline()) {
 				// TODO: call api doaction to DVC

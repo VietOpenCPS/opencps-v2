@@ -4,6 +4,8 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.opencps.event.message.VnpostEvent;
 import org.opencps.gogoshell.tool.command.model.FiredTrigger;
 import org.opencps.gogoshell.tool.command.util.Console;
 import org.opencps.gogoshell.tool.command.util.QuartzUtils;
@@ -52,6 +55,9 @@ public class OpenCPSSchedulerManagerCommand {
 	 *                     COMPLETE,NORMAL,EXPIRED,PAUSED,UNSCHEDULED
 	 * @throws PortalException nếu có lỗi.
 	 */
+
+	private static Log _log = LogFactoryUtil.getLog(OpenCPSSchedulerManagerCommand.class);
+
 	@Descriptor("Liệt kê danh sách các tác vụ chạy ngầm của OpenCPS theo trạng thái (mặc định ALL)")
 	public void list(
 		@Descriptor("Lọc theo trạng thái tác vụ {trạng thái: COMPLETE,NORMAL,EXPIRED,PAUSED,UNSCHEDULED}")
@@ -219,7 +225,7 @@ public class OpenCPSSchedulerManagerCommand {
 				SchedulerEngineHelperUtil.pause(
 						schedulerResponse.getJobName(), schedulerResponse.getGroupName(), schedulerResponse.getStorageType());
 			} catch (SchedulerException e) {
-				
+				_log.debug(e);
 			}
 		});		
 	}
@@ -246,7 +252,7 @@ public class OpenCPSSchedulerManagerCommand {
 				SchedulerEngineHelperUtil.resume(
 						schedulerResponse.getJobName(), schedulerResponse.getGroupName(), schedulerResponse.getStorageType());
 			} catch (SchedulerException e) {
-				
+				_log.debug(e);
 			}
 		});		
 	}

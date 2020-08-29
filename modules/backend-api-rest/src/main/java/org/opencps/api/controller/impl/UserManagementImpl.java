@@ -823,7 +823,7 @@ public class UserManagementImpl implements UserManagement {
 				if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
 						&& jsonToken.has("expiryDate")) {
 
-					String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_PASS;
+					String strUrlChange = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_CHANGE_SECRECT;
 					_log.info("strUrlChange: " + strUrlChange);
 					String authStrEnc = "Bearer" + StringPool.SPACE + jsonToken.getString("token");
 					_log.info("authStrEnc: " + authStrEnc);
@@ -864,7 +864,7 @@ public class UserManagementImpl implements UserManagement {
 						}
 						_log.info("RESULT PROXY: " + sbChange.toString());
 					} catch (Exception e) {
-						// TODO: handle exception
+						_log.debug(e);
 					}
 				}
 			}
@@ -1056,6 +1056,7 @@ public class UserManagementImpl implements UserManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.debug(e);
 			}
 			
 			//

@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -489,7 +486,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			ServiceContext serviceContext, String registerBookCode,
 			String govAgencyCode) {
 
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 //			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
@@ -521,7 +518,7 @@ public class CertNumberManagementImpl implements CertNumberManagement{
 			ServiceContext serviceContext,
 			String registerBookCode, String govAgencyCode,
 			 int countNum) {
-		BackendAuth auth = new BackendAuthImpl();
+//		BackendAuth auth = new BackendAuthImpl();
 
 		try {
 //			if (!auth.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {

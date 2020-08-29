@@ -892,7 +892,7 @@ public class ApplicantActionsImpl implements ApplicantActions {
 				for(Applicant applicant2 : applicants) {
 					if(applicant2.getGroupId() == 0) {
 						applicant2.setContactEmail(newEmail);
-						applicant2 = ApplicantLocalServiceUtil.updateApplicant(applicant2);
+						ApplicantLocalServiceUtil.updateApplicant(applicant2);
 						break;
 					}
 				}

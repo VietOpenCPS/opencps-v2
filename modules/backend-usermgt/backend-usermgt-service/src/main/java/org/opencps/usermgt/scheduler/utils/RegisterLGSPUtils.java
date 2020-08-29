@@ -515,7 +515,7 @@ public class RegisterLGSPUtils {
 
 		_log.info("accessToken: " + accessToken);
 		// Dang ky tk cong dan
-		String urlReset = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_RESET_PASS;
+		String urlReset = UserRegisterTerm.NEW_BASE_URL + UserRegisterTerm.NEW_ENDPOINT_RESET_SECRECT;
 		
 		_log.info("urlReset: "+urlReset);
 		String authStrEnc = tokenType + StringPool.SPACE + accessToken;

@@ -99,7 +99,7 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 				 inputObject.put("userName", employee.getFullName());
 			}
 			if(!inputObject.has("govAgencyCode")){
-				if(Validator.isNotNull(employee)){
+				if(employee != null){
 					String govAgencyCode [] = employee.getScope().split(StringPool.COMMA);
 					inputObject.put("govAgencyCode", govAgencyCode[0]);
 				}
