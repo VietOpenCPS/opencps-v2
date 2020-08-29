@@ -53,6 +53,7 @@ public class StatisticUtils {
 			String strDateTime = outputFormatter.format(da);
 			return strDateTime;
 		} catch (Exception e) {
+			_log.debug(e);
 			return null;
 		}
 	}

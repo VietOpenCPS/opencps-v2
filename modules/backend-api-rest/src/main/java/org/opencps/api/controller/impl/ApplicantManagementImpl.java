@@ -216,7 +216,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new Exception("Notification template not found");
 			}
 
-			ApplicantActions actions = new ApplicantActionsImpl();
+			//ApplicantActions actions = new ApplicantActionsImpl();
 			Applicant applicant = null;
 			String payloadString;
 			String contactEmail;
@@ -1260,7 +1260,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (syncUserLGSP) {
 
-				String strProfile = StringPool.BLANK;
+				//String strProfile = null;
 				//String strToken = ApplicantUtils.getTokenNewLGSP();
 				//if (Validator.isNotNull(strToken)) {
 					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
@@ -1275,7 +1275,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						_log.info("refreshToken: " + refreshToken);
 
 						// Dang ky tk cong dan
-						strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail, applicantIdNo,
+						String strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail, applicantIdNo,
 								applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
 						_log.info("strProfile: " + strProfile);
 						if (Validator.isNull(strProfile) || "ERROR".equals(strProfile)) {
@@ -1291,12 +1291,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 								if ("DUPLICATE".equals(strResult)) {
 									_log.info("CO VAO 222222 ???");
-									Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+									actions.registerApproved(serviceContext, groupId, applicantName,
 											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
 											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 											contactTelNo, StringPool.BLANK, input.getPassword());
 
-									result = ApplicantUtils.mappingToApplicantModel(applicant);
+									//result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 									return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
 								} else if ("SUCCESSFUL".equals(strResult)) {
@@ -1821,7 +1821,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			String applicantIdDate = input.getApplicantIdDate();
+//			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1850,6 +1850,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.debug(e);
 			}
 
 			//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
@@ -1967,6 +1968,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.debug(e);
 			}
 	
 			try {
@@ -2025,11 +2027,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String sqlQuery,
 			String fields, boolean isAllowedUpdate, long replaceGroupId) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("sqlQuery:" +sqlQuery);
 		int result = 0;
-		Statement stmt = null;
-		ResultSet rs = null;
+		//Statement stmt = null;
+		//ResultSet rs = null;
 //		try {
 //			Class.forName(driveClassName);
 //			try (Connection con = DriverManager.getConnection(
@@ -2108,11 +2110,11 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String driveClassName, String connectionUrl, String dbUser,
 			String dbSecret, String sqlQuery) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("sqlQuery:" +sqlQuery);
 		int result = 0;
-		Statement stmt = null;
-		ResultSet rs = null;
+		//Statement stmt = null;
+		//ResultSet rs = null;
 //		try {
 //			Class.forName(driveClassName);
 //			try (Connection con = DriverManager.getConnection(

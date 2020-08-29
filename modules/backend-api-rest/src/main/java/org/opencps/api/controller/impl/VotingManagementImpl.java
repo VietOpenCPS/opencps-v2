@@ -19,14 +19,11 @@ import javax.ws.rs.core.Response;
 
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.VotingManagement;
-import org.opencps.dossiermgt.action.DVCQGIntegrationAction;
 import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.statistic.model.OpencpsVotingStatistic;
-import org.opencps.statistic.model.OpencpsVotingStatisticModel;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
-import org.opencps.statistic.service.persistence.OpencpsVotingStatisticUtil;
 
 public class VotingManagementImpl implements VotingManagement {
 	private Log _log = LogFactoryUtil.getLog(VotingManagementImpl.class);
@@ -55,7 +52,7 @@ public class VotingManagementImpl implements VotingManagement {
 			integrationAction.syncSummaryVote();
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 		}
 
 		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
@@ -94,7 +91,7 @@ public class VotingManagementImpl implements VotingManagement {
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
 		}catch (Exception e) {
-			_log.error(e.getMessage());
+			_log.error(e);
 		}
 		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
 	}

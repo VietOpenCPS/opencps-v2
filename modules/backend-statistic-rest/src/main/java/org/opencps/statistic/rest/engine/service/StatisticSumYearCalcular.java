@@ -153,10 +153,10 @@ public class StatisticSumYearCalcular {
 					dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
-					long startTime = System.currentTimeMillis();
+//					long startTime = System.currentTimeMillis();
 					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 							.finderDossierStatistics(dossierStatisticRequest);
-					long endTime = System.currentTimeMillis();
+//					long endTime = System.currentTimeMillis();
 					
 					if (dossierStatisticResponse != null) {
 						Optional<List<DossierStatisticData>> dossierStatisticData = Optional
@@ -623,11 +623,11 @@ public class StatisticSumYearCalcular {
 					dossierStatisticRequest.setSystem(DossierStatisticConstants.TOTAL);
 					
 					//DossierStatisticUtils.logAsFormattedJson(LOG, dossierStatisticRequest);
-					long startTime = System.currentTimeMillis();
+//					long startTime = System.currentTimeMillis();
 //					DossierStatisticResponse dossierStatisticResponse = dossierStatisticFinderService
 //							.finderDossierStatistics(dossierStatisticRequest);
 					DossierStatisticResponse dossierStatisticResponse = DossierStatisticConverter.getDossierStatisticResponse().convert(filter(lstCurrents, "total", "total", "total", "total"));
-					long endTime = System.currentTimeMillis();
+//					long endTime = System.currentTimeMillis();
 //					_log.debug("FINDER ALL DOMAIN, GOV, SYSTEM: " + (endTime - startTime) / 1000.0);
 //					if (dossierStatisticResponse != null && dossierStatisticResponse.getDossierStatisticData().size() > 0) {
 //						for (DossierStatisticData data : dossierStatisticResponse.getDossierStatisticData()) {
@@ -1231,7 +1231,7 @@ public class StatisticSumYearCalcular {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 //			engineUpdateAction.updateStatistic(payload);
 		}
@@ -2469,7 +2469,7 @@ public class StatisticSumYearCalcular {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 //			engineUpdateAction.updateStatistic(payload);
 		}

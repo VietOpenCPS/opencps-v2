@@ -52,7 +52,8 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
             _log.info("Sync data to TTTT successfully");
             return true;
         } catch (Exception e) {
-            throw new Exception(e);
+            _log.debug(e);
+            return false;
         }
     }
 
@@ -73,13 +74,13 @@ public class TTTTIntegrationImpl implements TTTTIntegrationAction {
 
         String statusDossier = dossier.getDossierStatus() != null ? dossier.getDossierStatus() : "";
 
-        if (statusDossier.equals("processing")) {
+        if ("processing".equals(statusDossier)) {
             status = IntegrateTTTTConstants.STATUS_RECEIVED;
-        } else if (statusDossier.equals("interoperating") ||
-                statusDossier.equals("releasing") ||
-                statusDossier.equals("posting")) {
+        } else if ("interoperating".equals(statusDossier) ||
+                "releasing".equals(statusDossier) ||
+                "posting".equals(statusDossier)) {
             status = IntegrateTTTTConstants.STATUS_PROCESSING;
-        } else if (statusDossier.equals("done")) {
+        } else if ("done".equals(statusDossier)) {
             status = IntegrateTTTTConstants.STATUS_DONE;
         } else {
             status = IntegrateTTTTConstants.STATUS_ANOTHER;

@@ -1266,7 +1266,7 @@ public class OpencpsDossierStatisticLocalServiceImpl extends OpencpsDossierStati
 			}
 
 			dossierStatistic.setOntimePercentage(ontimePercent);
-			dossierStatistic = opencpsDossierStatisticPersistence.update(dossierStatistic);
+			opencpsDossierStatisticPersistence.update(dossierStatistic);
 			
 		}
 		long endTime = System.currentTimeMillis();

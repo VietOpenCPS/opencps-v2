@@ -1289,7 +1289,7 @@ public class UserActions implements UserInterface {
 				Applicant applicant = userId > 0 ? 
 					ApplicantLocalServiceUtil.fetchByMappingID(userId) : null;
 
-				if (Validator.isNotNull(applicant)) {
+				if (applicant != null) {
 
 					result.put(UserTerm.CLASS_NAME, Applicant.class.getName());
 					result.put(UserTerm.CLASS_PK, applicant.getApplicantId());

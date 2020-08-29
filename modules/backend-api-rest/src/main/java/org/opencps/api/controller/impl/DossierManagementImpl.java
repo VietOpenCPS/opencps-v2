@@ -1,8 +1,5 @@
 package org.opencps.api.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,7 +27,6 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -49,6 +45,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,13 +64,11 @@ import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import io.swagger.util.Json;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -102,26 +108,101 @@ import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.BetimeUtils;
 import org.opencps.datamgt.util.DueDateUtils;
 import org.opencps.datamgt.util.HolidayUtils;
-import org.opencps.dossiermgt.action.*;
-
-import org.opencps.dossiermgt.action.impl.*;
+import org.opencps.dossiermgt.action.BookingActions;
+import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.DossierMarkActions;
+import org.opencps.dossiermgt.action.DossierSyncActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
+import org.opencps.dossiermgt.action.impl.BookingActionsImpl;
+import org.opencps.dossiermgt.action.impl.DVCQGIntegrationActionImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionUserImpl;
+import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierMarkActionsImpl;
+import org.opencps.dossiermgt.action.impl.DossierPermission;
+import org.opencps.dossiermgt.action.impl.DossierSyncActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DossierActionUtils;
 import org.opencps.dossiermgt.action.util.DossierMgtUtils;
 import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
+import org.opencps.dossiermgt.constants.ActionConfigTerm;
+import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierActionUserTerm;
+import org.opencps.dossiermgt.constants.DossierDocumentTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
+import org.opencps.dossiermgt.constants.DossierLogTerm;
+import org.opencps.dossiermgt.constants.DossierSyncTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
+import org.opencps.dossiermgt.constants.ProcessActionTerm;
+import org.opencps.dossiermgt.constants.ProcessOptionTerm;
+import org.opencps.dossiermgt.constants.ProcessSequenceTerm;
+import org.opencps.dossiermgt.constants.ProcessStepRoleTerm;
+import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.constants.ServerConfigTerm;
+import org.opencps.dossiermgt.constants.ServiceProcessTerm;
+import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
+import org.opencps.dossiermgt.model.ActionConfig;
+import org.opencps.dossiermgt.model.Booking;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierDocument;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierLog;
+import org.opencps.dossiermgt.model.DossierMark;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.DossierSync;
+import org.opencps.dossiermgt.model.DossierTemplate;
+import org.opencps.dossiermgt.model.DossierUser;
+import org.opencps.dossiermgt.model.ProcessAction;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ProcessSequence;
+import org.opencps.dossiermgt.model.ProcessStep;
+import org.opencps.dossiermgt.model.ProcessStepRole;
+import org.opencps.dossiermgt.model.PublishQueue;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.model.ServiceProcess;
+import org.opencps.dossiermgt.model.StepConfig;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.impl.DossierLocalServiceImpl;
+import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.BookingLocalServiceUtil;
+import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
+import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierDocumentLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierRequestUDLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierTemplateLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessSequenceLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessStepRoleLocalServiceUtil;
+import org.opencps.dossiermgt.service.PublishQueueLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceProcessLocalServiceUtil;
+import org.opencps.dossiermgt.service.StepConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.persistence.DossierActionUserPK;
-import org.opencps.dossiermgt.service.persistence.DossierFileUtil;
-import org.opencps.dossiermgt.service.persistence.ProcessActionUtil;
-import org.opencps.dossiermgt.service.persistence.ServiceProcessUtil;
 import org.opencps.usermgt.action.ApplicantActions;
 import org.opencps.usermgt.action.impl.ApplicantActionsImpl;
 import org.opencps.usermgt.constants.ApplicantTerm;
@@ -133,9 +214,6 @@ import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
-import org.springframework.http.HttpEntity;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
 import uk.org.okapibarcode.backend.QrCode;
@@ -346,7 +424,7 @@ public class DossierManagementImpl implements DossierManagement {
 				if (ALL_AGENCY.equals(agencys) ) {
 					agencys = StringPool.BLANK;
 				}
-				if (Validator.isNull(agencys) & !notAgencysScope) {
+				if (Validator.isNull(agencys) && !notAgencysScope) {
 					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 					if (employee != null && Validator.isNotNull(employee.getScope())) {
 						agencys = employee.getScope();
@@ -664,11 +742,13 @@ public class DossierManagementImpl implements DossierManagement {
 				if (Validator.isNotNull(query.getDelegateType())) {
 					params.put(DossierTerm.DELEGATE_TYPE, query.getDelegateType());
 				}
-				String documentNoSearch = StringPool.BLANK;
+				//String documentNoSearch = StringPool.BLANK;
 
 				if (Validator.isNotNull(query.getDocumentNo())) {
-					documentNoSearch = SpecialCharacterUtils.splitSpecial(query.getDocumentNo());
+					String documentNoSearch = SpecialCharacterUtils.splitSpecial(query.getDocumentNo());
 					params.put(DossierTerm.DOCUMENT_NO, documentNoSearch);
+				} else {
+					params.put(DossierTerm.DOCUMENT_NO, StringPool.BLANK);
 				}
 				if (Validator.isNotNull(query.getDocumentDate())) {
 					params.put(DossierTerm.DOCUMENT_DATE, query.getDocumentDate());
@@ -6670,8 +6750,7 @@ public class DossierManagementImpl implements DossierManagement {
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
 			}
 		}catch (Exception e){
-			e.printStackTrace();
-			_log.error(e.getMessage());
+			_log.error(e);
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(ConstantUtils.API_JSON_EMPTY_ERROR).build();
 		}
 		return null;
@@ -7920,7 +7999,7 @@ public class DossierManagementImpl implements DossierManagement {
 			else
 				return Response.status(HttpURLConnection.HTTP_NO_CONTENT).build();
 		}catch (Exception e){
-			e.printStackTrace();
+			_log.debug(e);
 			_log.info("------ Log Exception ------ " + " " + e.getMessage());
 		}
 		return Response.status(HttpURLConnection.HTTP_OK).build();
@@ -8019,7 +8098,8 @@ public class DossierManagementImpl implements DossierManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 		JSONArray data = JSONFactoryUtil.createJSONArray();
 		JSONObject elmData = JSONFactoryUtil.createJSONObject();
-		JSONArray options = JSONFactoryUtil.createJSONArray();
+//		JSONArray options = JSONFactoryUtil.createJSONArray();
+		JSONArray options = null;
 		JSONObject element = JSONFactoryUtil.createJSONObject();
 
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
@@ -8175,7 +8255,7 @@ public class DossierManagementImpl implements DossierManagement {
 												0, serviceContext, errorModel);
 										boolean checkCreateFile = false;
 										options = cloneDossierFile(dossier,listDossierFile,proAction,groupId,checkCreateFile,user,company,serviceContext,request,header,locale);
-										if(options.length() >0){
+										if(options != null && options.length() >0){
 											elmData.put(ProcessOptionTerm.OPTIONS, options);
 										}
 									}
@@ -8280,7 +8360,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			_log.debug(e);
 		}
 
 	}
@@ -8457,7 +8537,7 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 			}
 		}catch (Exception e){
-			e.getMessage();
+			_log.debug(e);
 		}
 
 		return options;
@@ -8788,6 +8868,7 @@ public class DossierManagementImpl implements DossierManagement {
 			String[] employeeArr = employee.getScope().split(StringPool.COMMA);
 			return employeeArr[0];
 		}catch (Exception e){
+			_log.debug(e);
 			return null;
 		}
 	}

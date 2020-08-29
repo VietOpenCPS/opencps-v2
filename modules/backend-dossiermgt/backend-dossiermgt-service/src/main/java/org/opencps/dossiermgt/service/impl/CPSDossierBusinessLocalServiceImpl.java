@@ -4383,6 +4383,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			try {
 				jsonData.put(DossierTerm.META_DATA, JSONFactoryUtil.createJSONObject(dossier.getMetaData()));
 			} catch (JSONException e) {
+				_log.debug(e);
 				jsonData.put(DossierTerm.META_DATA, StringPool.BLANK);
 			}
 		} else {
@@ -5677,7 +5678,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							  DossierInputModel input) throws UnauthenticationException, PortalException, Exception {
 
 		BackendAuth auth = new BackendAuthImpl();
-		DossierPermission dossierPermission = new DossierPermission();
+//		DossierPermission dossierPermission = new DossierPermission();
 
 		long start = System.currentTimeMillis();
 

@@ -439,8 +439,7 @@ public class DeliverableUtils {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			// _log.error(e);
+			_log.debug(e);
 		}
 		return deliverablesArr;
 	}

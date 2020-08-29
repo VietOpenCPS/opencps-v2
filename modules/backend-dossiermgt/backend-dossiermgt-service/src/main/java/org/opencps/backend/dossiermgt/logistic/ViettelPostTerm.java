@@ -6,7 +6,7 @@ public class ViettelPostTerm {
 
     public static final String TOKEN = "token";
     public static final String USER_NAME = "USERNAME";
-    public static final String PASSWORD  = "PASSWORD";
+    public static final String SECRET_KEY  = "PASSWORD";
     public static final String ORDER_NUMBER = "ORDER_NUMBER";
     public static final String GROUPADDRESS_ID = "GROUPADDRESS_ID";
     public static final String CUS_ID = "CUS_ID";
@@ -64,7 +64,7 @@ public class ViettelPostTerm {
     public static final String API_GET_PRICE = "viettelApiUpdateOrder";
     public static final String API_GET_TOKEN = "viettelApiGetToken";
     public static final String USER = "viettelCustomerKey";
-    public static final String PASS = "viettelSecretKey";
+    public static final String VT_SECRECT_KEY = "viettelSecretKey";
     public static final String SENDER_PROVINCE_CONFIG = "viettelSenderProvince";
     public static final String SENDER_DISTRICT_CONFIG = "viettelSenderDistrict";
     public static final String SENDER_NAME_CONFIG = "viettelSenderName";

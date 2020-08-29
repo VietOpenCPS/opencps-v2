@@ -127,10 +127,10 @@ public class DossierActionsImpl implements DossierActions {
 	public static final String AUTO_EVENT_SPECIAL = "special";
 	public static final String DOSSIER_SATUS_DC_CODE = "DOSSIER_STATUS";
 	public static final String DOSSIER_SUB_SATUS_DC_CODE = "DOSSIER_SUB_STATUS";
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
-	private static final String EXTEND_ONE_VALUE = ".0";
-	private static final String EXTEND_TWO_VALUE = ".00";
+//	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
+//	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+//	private static final String EXTEND_ONE_VALUE = ".0";
+//	private static final String EXTEND_TWO_VALUE = ".00";
 	public static final String SPECIAL_STATUS_KEY = "specialStatus";
 
 	CacheActions cache = new CacheActionsImpl();
@@ -4374,14 +4374,14 @@ public class DossierActionsImpl implements DossierActions {
 	{
 		String[] receiptCodeSplit = ma_bien_nhan.split(StringPool.DASH);
 		String checkKey = receiptCodeSplit[0];
-		String securityCode = StringPool.BLANK;
+//		String securityCode = StringPool.BLANK;
 		long dossierId ;
-		String dossierCounter = StringPool.BLANK;
-		if (Validator.isNotNull(ma_bien_nhan) && receiptCodeSplit.length == 4 && checkKey.equals("D"))
+//		String dossierCounter = StringPool.BLANK;
+		if (Validator.isNotNull(ma_bien_nhan) && receiptCodeSplit.length == 4 && "D".equalsIgnoreCase(checkKey))
 		{
-			securityCode = receiptCodeSplit[1];
+			String securityCode = receiptCodeSplit[1];
 			dossierId = Long.parseLong(receiptCodeSplit[2]);
-			dossierCounter = receiptCodeSplit[3];
+			String dossierCounter = receiptCodeSplit[3];
 			if (Validator.isNotNull(securityCode) && Validator.isNotNull(dossierId) && Validator.isNotNull(dossierCounter))
 			{
 				Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
@@ -4457,9 +4457,8 @@ public class DossierActionsImpl implements DossierActions {
 				jsonMetaData.put("tongSoTien",paymentAmount);
 				dossier.setMetaData(jsonMetaData.toString());
 			}
-			catch (JSONException e)
-			{
-				e.printStackTrace();
+			catch (JSONException e) {
+				_log.debug(e);
 			}
 		}
 		return DossierLocalServiceUtil.updateDossier(dossier);

@@ -587,8 +587,8 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 							//
 							long groupIdUpdate = 0;
 							String authStrEnc = StringPool.BLANK;
-							String classNameUpdate = StringPool.BLANK;
-							String classPKUpdate = StringPool.BLANK;
+							//String classNameUpdate = StringPool.BLANK;
+							//String classPKUpdate = StringPool.BLANK;
 							//
 							String params = jsonConfig.getString("params");
 							System.out.println("params: "+params);
@@ -609,11 +609,11 @@ public class ServerConfigManagementImpl implements ServerConfigManagement {
 								if (Validator.isNotNull(strBody)) {
 									JSONObject jsonBody = JSONFactoryUtil.createJSONObject(strBody);
 									//
-									classNameUpdate = jsonBody.getString("className");
+									String classNameUpdate = jsonBody.getString("className");
 									if (classNameUpdate.contains("{className}")) {
 										classNameUpdate = classNameUpdate.replace("{className}", Validator.isNotNull(classNameInput) ? URLEncoder.encode(String.valueOf(classNameInput), "UTF-8") : StringPool.BLANK);
 									}
-									classPKUpdate = jsonBody.getString("classPK");
+									String classPKUpdate = jsonBody.getString("classPK");
 									if (classPKUpdate.contains("{classPK}")) {
 										classPKUpdate = classPKUpdate.replace("{classPK}", Validator.isNotNull(classPKInput) ? URLEncoder.encode(String.valueOf(classPKInput), "UTF-8") : StringPool.BLANK);
 									}

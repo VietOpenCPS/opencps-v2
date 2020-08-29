@@ -593,15 +593,15 @@ public class DossierUtils {
 
 		return ouputs;
 	}
-	private static Employee getEmployeeByG_User(Integer groupId, Integer userId){
-		try {
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-			return employee;
-		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
-			return null;
-		}
-	}
+//	private static Employee getEmployeeByG_User(Integer groupId, Integer userId){
+//		try {
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//			return employee;
+//		}catch (Exception e){
+//			_log.debug(e);
+//			return null;
+//		}
+//	}
 
 	public static String calculatorStepOverDue(double durationCount, int durationUnit, double overdue, long groupId) {
 		String strOverDue;
@@ -1286,6 +1286,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.debug(e);
 				return null;
 			}
 		} else {

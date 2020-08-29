@@ -32,14 +32,18 @@ public class DossierFileUtils {
 
 			inputStream = new FileInputStream(file);
 
+			return inputStream;
 		} catch (Exception e) {
 			_log.error(e);
 		} finally {
 			if (fos != null) {
 				fos.close();
 			}
+			if (inputStream != null) {
+				inputStream.close();
+			}
 		}
-		return inputStream;
+		return null;
 	}
 
 	public static File base64ToFile(String fileName, String base64) throws IOException {

@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.action.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -10,13 +9,25 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.*;
-import org.opencps.dossiermgt.service.*;
+import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
+import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 
 public class DossierContentGenerator {
@@ -195,6 +206,7 @@ public class DossierContentGenerator {
 			try {
 				 jsonObject = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
 			}catch (Exception e){
+				_log.debug(e);
 				return e.getMessage();
 			}
 			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {
@@ -220,7 +232,7 @@ public class DossierContentGenerator {
 											fileName += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + dossierPart.getPartName() +": " + item.getDisplayName() + " " + ConstantUtils.HTML_CLOSE_SPAN;
 										}
 									} catch (Exception e) {
-										e.getMessage();
+										_log.debug(e);
 									}
 								}
 								submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);

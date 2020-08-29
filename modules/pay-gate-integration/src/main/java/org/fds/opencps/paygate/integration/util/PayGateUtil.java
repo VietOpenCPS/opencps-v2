@@ -36,7 +36,7 @@ public class PayGateUtil {
 			result = formatter.toString();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			_log.debug(e);
 		} finally {
 			formatter.close();
 		}
@@ -80,15 +80,16 @@ public class PayGateUtil {
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			_log.debug(e);
 		}
-		final byte[] hashbytes = digest.digest(
-		  originalString.getBytes(StandardCharsets.UTF_8));
-		String sha3_256hex = bytesToHex(hashbytes);
-		System.out.println("======originalString=====" + originalString);
-		System.out.println("======originalString=====" + sha3_256hex);
-		return sha3_256hex;
+		if (digest != null) {
+			final byte[] hashbytes = digest.digest(originalString.getBytes(StandardCharsets.UTF_8));
+			String sha3_256hex = bytesToHex(hashbytes);
+			System.out.println("======originalString=====" + originalString);
+			System.out.println("======originalString=====" + sha3_256hex);
+			return sha3_256hex;
+		}
+		return StringPool.BLANK;
 	}
 	public static String hmacSHA256Hex(String key, String value) {
 		String encryptValue = StringPool.BLANK;
@@ -189,8 +190,8 @@ public class PayGateUtil {
 		try {
 			 convertDate = f.format(date);
 		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+			_log.debug(e);
+		}
 		return convertDate;
 	}
 	
