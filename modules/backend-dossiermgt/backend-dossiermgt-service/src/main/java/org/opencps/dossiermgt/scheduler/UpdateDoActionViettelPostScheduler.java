@@ -98,6 +98,9 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
                 params = new LinkedHashMap<>();
                 params.put(Field.GROUP_ID, String.valueOf(groupId));
                 params.put(DossierTerm.DOSSIER_ID, String.valueOf(dossierId));
+                _log.info("Data for get next action GROUP_ID: " + params.get(Field.GROUP_ID)
+                        + ", DOSSIER_ID: " + params.get(DossierTerm.DOSSIER_ID) +  ", UserId: " + userId
+                        + ",companyId: " + companyId);
                 jsonData = actions.getNextActionList(
                         userId, companyId, groupId, params,
                         null, 0, 10, serviceContext);
@@ -108,15 +111,22 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
                     PostConnectLocalServiceUtil.updatePostConnect(postConnect);
                     continue;
                 }
-
+                _log.info("List next action: " + jsonData);
                 for (int i = 0; i < jsonData.length(); i++) {
                     preCondition = jsonData.getJSONObject(i).getString(ProcessActionTerm.PRE_CONDITION);
+                    _log.info("Precondition before parse: " + preCondition);
                     if (preCondition.contains(DossierTerm.CONTAIN_POST_STATUS)) {
                         String[] splitCodes = preCondition.split(StringPool.COMMA);
+                        _log.info("Precondition after parse: " + splitCodes);
                         for(String oneSplitComma : splitCodes) {
+                            _log.info("Precondition in loop: " + oneSplitComma);
+                            _log.info("splitCodes.length: " + splitCodes.length);
+
                             if(oneSplitComma.contains(DossierTerm.CONTAIN_POST_STATUS)) {
+                                _log.info("oneSplitComma before parse equal: " + oneSplitComma);
                                 String[] keyValuePostStatus = oneSplitComma.split(StringPool.EQUAL);
-                                if (splitCodes.length == 2) {
+                                _log.info("oneSplitComma after parse equal: " + keyValuePostStatus);
+                                if (keyValuePostStatus.length == 2) {
                                     postStatusInPre = Validator.isNotNull(keyValuePostStatus[1]) ? Integer.valueOf(keyValuePostStatus[1]) : null;
                                 }
                             }
@@ -348,7 +358,7 @@ public class UpdateDoActionViettelPostScheduler extends BaseMessageListener {
     @Modified
     protected void activate(Map<String,Object> properties) throws SchedulerException {
         String listenerClass = getClass().getName();
-        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 5, TimeUnit.MINUTE);
+        Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null, 1, TimeUnit.MINUTE);
 
         _schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
         _schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
