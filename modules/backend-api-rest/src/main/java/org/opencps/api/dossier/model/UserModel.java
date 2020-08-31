@@ -38,13 +38,33 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "UserModel", propOrder = {
     "userId",
     "userName",
-    "moderator"
+    "moderator",
+    "status",
+    "jobPosTitle"
 })
 public class UserModel {
 
     protected Integer userId;
     protected String userName;
     protected String moderator;
+    protected Integer status;
+    protected String jobPosTitle;
+
+    public String getJobPosTitle() {
+        return jobPosTitle;
+    }
+
+    public void setJobPosTitle(String jobPosTitle) {
+        this.jobPosTitle = jobPosTitle;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     /**
      * Gets the value of the userId property.

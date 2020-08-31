@@ -69,6 +69,7 @@ public class WorkTimeWrapper implements WorkTime, ModelWrapper<WorkTime> {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("day", getDay());
 		attributes.put("hours", getHours());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -133,6 +134,12 @@ public class WorkTimeWrapper implements WorkTime, ModelWrapper<WorkTime> {
 
 		if (hours != null) {
 			setHours(hours);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -224,6 +231,16 @@ public class WorkTimeWrapper implements WorkTime, ModelWrapper<WorkTime> {
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _workTime.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the status of this work time.
+	*
+	* @return the status of this work time
+	*/
+	@Override
+	public int getStatus() {
+		return _workTime.getStatus();
 	}
 
 	/**
@@ -400,6 +417,16 @@ public class WorkTimeWrapper implements WorkTime, ModelWrapper<WorkTime> {
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_workTime.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the status of this work time.
+	*
+	* @param status the status of this work time
+	*/
+	@Override
+	public void setStatus(int status) {
+		_workTime.setStatus(status);
 	}
 
 	/**

@@ -64,6 +64,7 @@ public class DossierLogSearchModel {
     @FormParam(value = "order")
     protected String order;
 
+
     /**
      * Gets the value of the notificationType property.
      * 

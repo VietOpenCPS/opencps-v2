@@ -112,11 +112,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	@Override
 	public long countLucene(String keywords, String groupId, String type,
 		java.util.Map<String, String> mapFilter,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.countLucene(keywords, groupId, type,
-			mapFilter, searchContext);
+			mapFilter, searchContext, userId);
 	}
 
 	/**
@@ -250,6 +251,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return _deliverableLocalService.dynamicQueryCount(dynamicQuery,
 			projection);
+	}
+
+	@Override
+	public org.opencps.dossiermgt.model.Deliverable fetchByGID_AID(
+		long groupId, String applicantIdNo) {
+		return _deliverableLocalService.fetchByGID_AID(groupId, applicantIdNo);
 	}
 
 	@Override
@@ -521,11 +528,12 @@ public class DeliverableLocalServiceWrapper implements DeliverableLocalService,
 	public com.liferay.portal.kernel.search.Hits searchLucene(String keywords,
 		String groupId, String type, java.util.Map<String, String> mapFilter,
 		com.liferay.portal.kernel.search.Sort[] sorts, int start, int end,
-		com.liferay.portal.kernel.search.SearchContext searchContext)
+		com.liferay.portal.kernel.search.SearchContext searchContext,
+		long userId)
 		throws com.liferay.portal.kernel.search.ParseException,
 			com.liferay.portal.kernel.search.SearchException {
 		return _deliverableLocalService.searchLucene(keywords, groupId, type,
-			mapFilter, sorts, start, end, searchContext);
+			mapFilter, sorts, start, end, searchContext, userId);
 	}
 
 	@Override

@@ -138,7 +138,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		String[] employeeArr = Validator.isNotNull(scope) ? scope.split(StringPool.COMMA) : null;
 		try {
 			if(Validator.isNotNull(searchGovAgencyCode)) {
-				if (searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)) {
+				if (searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE) && employeeArr != null && employeeArr.length > 0) {
 					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + employeeArr[0]);
 				}else{
 					lstServiceConfigs = cache.getFromCache(SERVICE_CONFIG_CACHE_NAME, groupId + searchGovAgencyCode);
@@ -156,7 +156,7 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 			List<ServiceConfig> tempServiceConfigs = new ArrayList<>();
 //			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			if(Validator.isNotNull(searchGovAgencyCode)){
-				if(searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE)){
+				if(searchGovAgencyCode.equals(DossierTerm._FIRSTSCOPE) && employeeArr != null && employeeArr.length > 0){
 					if(Validator.isNotNull(employee)){
 //						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
 						tempServiceConfigs = serviceConfigPersistence.findByG_SERVICE_CODE(groupId,employeeArr[0]);

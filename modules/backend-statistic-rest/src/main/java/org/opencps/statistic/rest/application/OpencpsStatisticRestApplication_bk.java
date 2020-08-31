@@ -2,76 +2,44 @@ package org.opencps.statistic.rest.application;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.text.DateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CellValue;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.opencps.auth.utils.APIDateTimeUtils;
-import org.opencps.communication.model.ServerConfig;
-import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
@@ -83,78 +51,25 @@ import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.PaymentFile;
-import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.statistic.model.OpencpsDossierStatistic;
-import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
-import org.opencps.statistic.rest.dto.DossierStatisticModel;
 import org.opencps.statistic.rest.dto.DossierStatisticRequest;
 import org.opencps.statistic.rest.dto.DossierStatisticResponse;
 import org.opencps.statistic.rest.dto.GetDossierData;
 import org.opencps.statistic.rest.dto.GetDossierRequest;
 import org.opencps.statistic.rest.dto.GetDossierResponse;
-import org.opencps.statistic.rest.dto.GetPersonData;
-import org.opencps.statistic.rest.dto.GetPersonRequest;
-import org.opencps.statistic.rest.dto.GetPersonResponse;
-import org.opencps.statistic.rest.dto.GetVotingResultData;
-import org.opencps.statistic.rest.dto.GetVotingResultRequest;
-import org.opencps.statistic.rest.dto.GetVotingResultResponse;
-import org.opencps.statistic.rest.dto.PersonRequest;
-import org.opencps.statistic.rest.dto.PersonResponse;
-import org.opencps.statistic.rest.dto.PersonStatisticData;
-import org.opencps.statistic.rest.dto.RealtimeData;
-import org.opencps.statistic.rest.dto.ServiceDomainData;
-import org.opencps.statistic.rest.dto.ServiceDomainRequest;
-import org.opencps.statistic.rest.dto.ServiceDomainResponse;
-import org.opencps.statistic.rest.dto.StatisticFixedModel;
-import org.opencps.statistic.rest.dto.StatisticFixedResult;
-import org.opencps.statistic.rest.dto.VotingResultRequest;
-import org.opencps.statistic.rest.dto.VotingResultResponse;
-import org.opencps.statistic.rest.dto.VotingResultStatisticData;
-import org.opencps.statistic.rest.dto.VotingSearchModel;
 import org.opencps.statistic.rest.engine.service.StatisticEngineFetch;
-import org.opencps.statistic.rest.engine.service.StatisticEngineUpdate;
-import org.opencps.statistic.rest.engine.service.StatisticSumYearService;
 import org.opencps.statistic.rest.engine.service.StatisticUtils;
-import org.opencps.statistic.rest.facade.OpencpsCallDossierRestFacadeImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallPersonRestFacadeImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallRestFacade;
-import org.opencps.statistic.rest.facade.OpencpsCallServiceDomainRestFacadeImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallStatisticRestFacadeImpl;
-import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
-import org.opencps.statistic.rest.fee.model.FeeSearchModel;
 import org.opencps.statistic.rest.service.DossierStatisticFinderService;
 import org.opencps.statistic.rest.service.DossierStatisticFinderServiceImpl;
-import org.opencps.statistic.rest.service.DossierStatisticManualFinderService;
-import org.opencps.statistic.rest.service.DossierStatisticManualFinderServiceImpl;
-import org.opencps.statistic.rest.service.PersonStatisticFinderService;
-import org.opencps.statistic.rest.service.PersonStatisticFinderServiceImpl;
-import org.opencps.statistic.rest.service.VotingStatisticFinderService;
-import org.opencps.statistic.rest.service.VotingStatisticFinderServiceImpl;
 import org.opencps.statistic.rest.util.DossierConstants;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
-import org.opencps.statistic.rest.util.DossierStatisticUtils;
-import org.opencps.statistic.rest.util.StatisticDataUtil;
-import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
-import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
-import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
-import opencps.statistic.common.webservice.exception.ServiceException;
-import opencps.statistic.common.webservice.exception.UpstreamServiceFailedException;
-import opencps.statistic.common.webservice.exception.UpstreamServiceTimedOutException;
 
 /**
  * @author khoavu
@@ -172,7 +87,7 @@ public class OpencpsStatisticRestApplication_bk extends Application {
 	private final static Logger LOG = LoggerFactory.getLogger(OpencpsStatisticRestApplication_bk.class);
 
 	private DossierStatisticFinderService dossierStatisticFinderService = new DossierStatisticFinderServiceImpl();
-	private DossierStatisticManualFinderService dossierStatisticManualFinderService = new DossierStatisticManualFinderServiceImpl();
+//	private DossierStatisticManualFinderService dossierStatisticManualFinderService = new DossierStatisticManualFinderServiceImpl();
 
 	public static final String ALL_MONTH = "-1";
 
@@ -206,10 +121,10 @@ public class OpencpsStatisticRestApplication_bk extends Application {
 		String fromStatisticDate = query.getFromStatisticDate();
 		String toStatisticDate = query.getToStatisticDate();
 		//boolean reporting = query.getReporting();
-		Integer reCalculate = query.getReCalculate();
-		if (reCalculate == null) {
-			reCalculate = 0;
-		}
+//		Integer reCalculate = query.getReCalculate();
+//		if (reCalculate == null) {
+//			reCalculate = 0;
+//		}
 
 		if (start == 0)
 			start = QueryUtil.ALL_POS;
@@ -593,9 +508,9 @@ public class OpencpsStatisticRestApplication_bk extends Application {
 		return null;
 	}
 
-	private static final int LEVEL_3 = 3;
-	private static final int LEVEL_4 = 4;
-	private static final int USED_POSTAL = 2;
+//	private static final int LEVEL_3 = 3;
+//	private static final int LEVEL_4 = 4;
+//	private static final int USED_POSTAL = 2;
 	public static final String DENIED = "denied";
 	public static final String WAITING = "waiting";
 	public static final String RECEIVING = "receiving";

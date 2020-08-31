@@ -7,6 +7,7 @@ public class DossierTerm {
 	public static final String DOSSIER_ID = "dossierId";
 	public static final String GROUP_ID = "groupId";
 	public static final String USER_ID = "userId";
+	public static final String USER_NAME = "userName";
 	public static final String CREATE_DATE = "createDate";
 	public static final String MODIFIED_DATE = "modifiedDate";
 	public static final String REFERENCE_UID = "referenceUid";
@@ -201,6 +202,7 @@ public class DossierTerm {
 
 	public static final String DOMAIN_ID = "domainId";
 	public static final String DOMAIN_CODE = "domainCode";
+	public static final String DOMAIN_CODE_SEARCH = "domainCodeSearch";
 	public static final String DOMAIN_NAME = "domainName";
 	public static final String ORIGIN_DOSSIER_ID = "originDossierId";
 
@@ -296,6 +298,7 @@ public class DossierTerm {
 	public static final String META_DATA = "metaData";
 	public static final String DELEGATE_TYPE = "delegateType";
 	public static final String DOCUMENT_NO = "documentNo";
+	public static final String DOCUMENT_NO_SEARCH = "documentNoSearch";
 	public static final String DOCUMENT_DATE = "documentDate";
 	
 	public static final String PAUSE_LOCK_STATE = "PAUSE";
@@ -412,8 +415,14 @@ public class DossierTerm {
 	public static final String DELIVERABLE_CODE = "deliverableCode";
 	public static final String SEARCH_CV_T_DV = "searchCongVanTheoDonViNhan";
 	public static final String DOSSIER_FILE = "dossierFile";
-	public static final String HTML = "dossierFile";
-	public static final String KQGP = "@KQGP";
+	public static final String KQGP = "KQGP";
 	public static final String DELIVERABLE_STATE = "deliverableState";
 	public static final String DELIVERABLE_NAME = "deliverableName";
+	public static final String CREATE_DATE_START = "createDateStart";
+	public static final String CREATE_DATE_END = "createDateEnd";
+	public static final String CREATE_DATE_LUCENE = "createDateLucene";
+	public static final String PROCESS_AGENCY = "PROCESS_AGENCY";
+	public static final String PROCESS_AGENCY_METADATA = "processAgency";
+	public static final String ACTION_USER_SEARCH = "actionUserSearch";
+	public static final String DATA = "data";
 }

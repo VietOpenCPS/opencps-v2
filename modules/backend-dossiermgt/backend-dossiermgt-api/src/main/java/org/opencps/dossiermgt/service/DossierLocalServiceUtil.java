@@ -369,6 +369,11 @@ public class DossierLocalServiceUtil {
 				   .fetchByDO_POST_SEND_GROUP(postpostalCodeSend, groupId);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.Dossier> fetchByDOC_OR_NO(
+		String[] documentNo) {
+		return getService().fetchByDOC_OR_NO(documentNo);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier fetchDossier(
 		long dossierId) {
 		return getService().fetchDossier(dossierId);

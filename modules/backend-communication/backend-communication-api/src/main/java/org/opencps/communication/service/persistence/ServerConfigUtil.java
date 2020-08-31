@@ -1160,6 +1160,10 @@ public class ServerConfigUtil {
 		return getPersistence().countAll();
 	}
 
+	public static java.util.Set<String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
+	}
+
 	public static ServerConfigPersistence getPersistence() {
 		return _serviceTracker.getService();
 	}

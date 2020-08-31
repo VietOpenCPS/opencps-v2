@@ -301,28 +301,29 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	public static final long APPLICANTIDNO_COLUMN_BITMASK = 1L;
 	public static final long APPLICANTIDTYPE_COLUMN_BITMASK = 2L;
 	public static final long COMPANYID_COLUMN_BITMASK = 4L;
-	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 8L;
-	public static final long DOSSIERCOUNTER_COLUMN_BITMASK = 16L;
-	public static final long DOSSIERID_COLUMN_BITMASK = 32L;
-	public static final long DOSSIERNO_COLUMN_BITMASK = 64L;
-	public static final long DOSSIERSTATUS_COLUMN_BITMASK = 128L;
-	public static final long DOSSIERTEMPLATENO_COLUMN_BITMASK = 256L;
-	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 512L;
-	public static final long GROUPDOSSIERID_COLUMN_BITMASK = 1024L;
-	public static final long GROUPID_COLUMN_BITMASK = 2048L;
-	public static final long MODIFIEDDATE_COLUMN_BITMASK = 4096L;
-	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 8192L;
-	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 16384L;
-	public static final long ORIGINALITY_COLUMN_BITMASK = 32768L;
-	public static final long POSTALCODERECEIVED_COLUMN_BITMASK = 65536L;
-	public static final long POSTALCODESEND_COLUMN_BITMASK = 131072L;
-	public static final long PROCESSNO_COLUMN_BITMASK = 262144L;
-	public static final long REFERENCEUID_COLUMN_BITMASK = 524288L;
-	public static final long SERVICECODE_COLUMN_BITMASK = 1048576L;
-	public static final long USERID_COLUMN_BITMASK = 2097152L;
-	public static final long UUID_COLUMN_BITMASK = 4194304L;
-	public static final long VIAPOSTAL_COLUMN_BITMASK = 8388608L;
-	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 16777216L;
+	public static final long DOCUMENTNO_COLUMN_BITMASK = 8L;
+	public static final long DOSSIERACTIONID_COLUMN_BITMASK = 16L;
+	public static final long DOSSIERCOUNTER_COLUMN_BITMASK = 32L;
+	public static final long DOSSIERID_COLUMN_BITMASK = 64L;
+	public static final long DOSSIERNO_COLUMN_BITMASK = 128L;
+	public static final long DOSSIERSTATUS_COLUMN_BITMASK = 256L;
+	public static final long DOSSIERTEMPLATENO_COLUMN_BITMASK = 512L;
+	public static final long GOVAGENCYCODE_COLUMN_BITMASK = 1024L;
+	public static final long GROUPDOSSIERID_COLUMN_BITMASK = 2048L;
+	public static final long GROUPID_COLUMN_BITMASK = 4096L;
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8192L;
+	public static final long ORIGINDOSSIERID_COLUMN_BITMASK = 16384L;
+	public static final long ORIGINDOSSIERNO_COLUMN_BITMASK = 32768L;
+	public static final long ORIGINALITY_COLUMN_BITMASK = 65536L;
+	public static final long POSTALCODERECEIVED_COLUMN_BITMASK = 131072L;
+	public static final long POSTALCODESEND_COLUMN_BITMASK = 262144L;
+	public static final long PROCESSNO_COLUMN_BITMASK = 524288L;
+	public static final long REFERENCEUID_COLUMN_BITMASK = 1048576L;
+	public static final long SERVICECODE_COLUMN_BITMASK = 2097152L;
+	public static final long USERID_COLUMN_BITMASK = 4194304L;
+	public static final long UUID_COLUMN_BITMASK = 8388608L;
+	public static final long VIAPOSTAL_COLUMN_BITMASK = 16777216L;
+	public static final long VNPOSTALSTATUS_COLUMN_BITMASK = 33554432L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.opencps.backend.dossiermgt.service.util.ServiceProps.get(
 				"lock.expiration.time.org.opencps.dossiermgt.model.Dossier"));
 
@@ -1880,7 +1881,17 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 
 	@Override
 	public void setDocumentNo(String documentNo) {
+		_columnBitmask |= DOCUMENTNO_COLUMN_BITMASK;
+
+		if (_originalDocumentNo == null) {
+			_originalDocumentNo = _documentNo;
+		}
+
 		_documentNo = documentNo;
+	}
+
+	public String getOriginalDocumentNo() {
+		return GetterUtil.getString(_originalDocumentNo);
 	}
 
 	@Override
@@ -3034,6 +3045,8 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 		dossierModelImpl._originalApplicantIdType = dossierModelImpl._applicantIdType;
 
 		dossierModelImpl._originalApplicantIdNo = dossierModelImpl._applicantIdNo;
+
+		dossierModelImpl._originalDocumentNo = dossierModelImpl._documentNo;
 
 		dossierModelImpl._originalDossierTemplateNo = dossierModelImpl._dossierTemplateNo;
 
@@ -4518,6 +4531,7 @@ public class DossierModelImpl extends BaseModelImpl<Dossier>
 	private String _delegateWardCode;
 	private String _delegateWardName;
 	private String _documentNo;
+	private String _originalDocumentNo;
 	private Date _documentDate;
 	private String _dossierTemplateNo;
 	private String _originalDossierTemplateNo;

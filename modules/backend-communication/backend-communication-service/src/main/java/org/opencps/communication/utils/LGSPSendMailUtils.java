@@ -114,14 +114,16 @@ public class LGSPSendMailUtils {
 							try {
 								Thread.sleep(500);
 							} catch (InterruptedException e1) {
-								System.out.println("Time not delay");
+								_log.debug("Time not delay");
+								Thread.currentThread().interrupt();
 							}
 							//
 						} catch (Exception e) {
 							try {
 								Thread.sleep(500);
 							} catch (InterruptedException e1) {
-								System.out.println("Time not delay");
+								_log.debug("Time not delay");
+								Thread.currentThread().interrupt();
 							}
 							_log.debug(e);
 						}

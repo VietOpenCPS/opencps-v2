@@ -3,40 +3,56 @@ package org.opencps.api.controller.impl;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.net.HttpURLConnection;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.liferay.portal.kernel.util.Validator;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.DeliverableTypesManagement;
 import org.opencps.api.controller.util.DeliverableTypesUtils;
+import org.opencps.api.controller.util.DossierFileUtils;
 import org.opencps.api.deliverabletype.model.DeliverableTypeDetailModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypeInputModel;
 import org.opencps.api.deliverabletype.model.DeliverableTypesResultsModel;
+import org.opencps.api.dossierfile.model.DossierFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DeliverableTypesActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DeliverableTypesActionsImpl;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierFileTerm;
 import org.opencps.dossiermgt.model.DeliverableType;
+import org.opencps.dossiermgt.model.DeliverableTypeModel;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 
 public class DeliverableTypesManagementImpl implements DeliverableTypesManagement {
 //	private Log _log = LogFactoryUtil.getLog(DeliverableTypesManagementImpl.class);
+	Log _log = LogFactoryUtil.getLog(DeliverableTypesManagementImpl.class);
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -351,6 +367,52 @@ public class DeliverableTypesManagementImpl implements DeliverableTypesManagemen
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response updatefileTemplateById(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, Attachment file, String id) {
+		BackendAuth auth = new BackendAuthImpl();
+		DeliverableTypeDetailModel result = new DeliverableTypeDetailModel();
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			DeliverableType deliverableType = null;
+			long deliverableTypeId = GetterUtil.getLong(id);
+			if (deliverableTypeId != 0) {
+				deliverableType = DeliverableTypeLocalServiceUtil.fetchDeliverableType(deliverableTypeId);
+			}
+			_log.info("__file:" + file);
+			DataHandler dataHandler =
+					(file != null) ? file.getDataHandler() : null;
+			if (dataHandler != null && dataHandler.getInputStream() != null) {
+				_log.info("__Start add file at:" + new Date());
+					try {
+						FileEntry fileEntry = FileUploadUtils.uploadDossierFile(
+								user.getUserId(), groupId,
+								dataHandler.getInputStream(),
+								dataHandler.getName(), StringPool.BLANK, 0,
+								serviceContext);
+
+						if (fileEntry != null && deliverableType != null) {
+							deliverableType.setFileTemplateId(
+									fileEntry.getFileEntryId());
+						}
+					} catch (Exception e) {
+						_log.debug(e);
+					}
+				if (Validator.isNotNull(deliverableType)) {
+					DeliverableTypeLocalServiceUtil.updateDeliverableType(deliverableType);
+					result = DeliverableTypesUtils.mappingToDeliverableTypesModel(deliverableType);
+				}
+			}
+			_log.info("__End add file at:" + new Date());
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+		}catch (Exception e){
+			_log.info("EXCEPTION : " + e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

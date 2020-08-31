@@ -453,6 +453,7 @@
 		<column name="submissionNote" type="String" />
 		<column name="sampleCount" type="long" />
 		<column name="registerBookCode" type="String"></column>
+		<column name="status" type="int" />
 
 		<finder return-type="Collection" name="SC_ID">
 			<finder-column name="serviceConfigId" />
@@ -805,6 +806,9 @@
 		</finder>
 		<finder return-type="Collection" name="D_OR_D">
 			<finder-column name="dossierId" comparator="=" arrayable-operator="OR"/>
+		</finder>
+		<finder return-type="Collection" name="DOC_OR_NO">
+			<finder-column name="documentNo" comparator="=" arrayable-operator="OR"/>
 		</finder>
 	</entity>
 
@@ -2146,6 +2150,7 @@
 		<column name="mappingData" type="String" />
 		<column name="docSync" type="int" />
 		<column name="govAgencies" type="String" />
+		<column name="fileTemplateId" type="long" />
 
 		<finder return-type="DeliverableType" name="G_DLT">
 			<finder-column name="groupId" />
@@ -2224,6 +2229,10 @@
 		<finder return-type="Deliverable" name="F_GID_DID">
 			<finder-column name="groupId"/>
 			<finder-column name="dossierId"/>
+		</finder>
+		<finder return-type="Deliverable" name="F_GID_AID">
+			<finder-column name="groupId"/>
+			<finder-column name="applicantIdNo"/>
 		</finder>
 <!-- 		<order> -->
 <!-- 			<order-column name="modifiedDate" order-by="asc" /> -->

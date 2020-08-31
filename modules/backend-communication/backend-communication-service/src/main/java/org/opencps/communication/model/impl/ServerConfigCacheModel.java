@@ -65,7 +65,7 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{serverConfigId=");
 		sb.append(serverConfigId);
@@ -93,6 +93,8 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 		sb.append(configs);
 		sb.append(", lastSync=");
 		sb.append(lastSync);
+		sb.append(", active=");
+		sb.append(active);
 		sb.append("}");
 
 		return sb.toString();
@@ -170,6 +172,8 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 			serverConfigImpl.setLastSync(new Date(lastSync));
 		}
 
+		serverConfigImpl.setActive(active);
+
 		serverConfigImpl.resetOriginalValues();
 
 		return serverConfigImpl;
@@ -193,6 +197,8 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 		protocol = objectInput.readUTF();
 		configs = objectInput.readUTF();
 		lastSync = objectInput.readLong();
+
+		active = objectInput.readBoolean();
 	}
 
 	@Override
@@ -252,6 +258,8 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 		}
 
 		objectOutput.writeLong(lastSync);
+
+		objectOutput.writeBoolean(active);
 	}
 
 	public long serverConfigId;
@@ -267,4 +275,5 @@ public class ServerConfigCacheModel implements CacheModel<ServerConfig>,
 	public String protocol;
 	public String configs;
 	public long lastSync;
+	public boolean active;
 }

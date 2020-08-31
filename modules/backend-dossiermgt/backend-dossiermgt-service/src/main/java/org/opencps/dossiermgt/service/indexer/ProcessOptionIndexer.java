@@ -90,6 +90,7 @@ public class ProcessOptionIndexer extends BaseIndexer<ProcessOption> {
 		document.addTextSortable(ActionKeys.APPLICANT_CTZ, extContent.getString(ActionKeys.APPLICANT_CTZ));
 
 		document.addTextSortable(ActionKeys.APPLICANT_BUSINESS, extContent.getString(ActionKeys.APPLICANT_BUSINESS));
+		document.addNumberSortable(ProcessOptionTerm.STATUS,object.getStatus());
 		return document;
 	}
 

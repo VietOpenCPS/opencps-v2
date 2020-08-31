@@ -2,9 +2,16 @@ package org.opencps.api.controller.util;
 
 import org.apache.poi.ss.usermodel.*;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.io.InputStream;
 
 public class ExcelUtils {
+	
+	private static Log _log = LogFactoryUtil.getLog(DossierUtils.class);
+
     public static String formatCell(Cell cell)
     {
         if (cell == null) {
@@ -39,9 +46,10 @@ public class ExcelUtils {
     }
 
     public static String createXmlStringFromExcelFile(InputStream fileInputStream) throws Exception{
-        try {
+    	Workbook wb = null;
+    	try {
             boolean firstRow = true;
-            Workbook wb = WorkbookFactory.create(fileInputStream);
+            wb = WorkbookFactory.create(fileInputStream);
             Sheet sheet = wb.getSheet("Sheet1");
 
             if(sheet == null) {
@@ -86,8 +94,14 @@ public class ExcelUtils {
             return resultXml.toString();
 
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.debug(e);
+            return StringPool.BLANK;
         }
+        finally {
+			if (wb != null) {
+				wb.close();
+			}
+		}
     }
 
 }

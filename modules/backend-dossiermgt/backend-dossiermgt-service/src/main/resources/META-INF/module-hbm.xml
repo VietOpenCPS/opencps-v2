@@ -232,6 +232,7 @@
 		<property name="mappingData" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="docSync" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="govAgencies" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="fileTemplateId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DeliverableTypeRoleImpl" table="opencps_deliverabletyperole">
 		<id name="deliverableTypeRoleId" type="long">
@@ -917,6 +918,7 @@
 		<property name="submissionNote" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="sampleCount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="registerBookCode" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.ProcessPluginImpl" table="opencps_process_plugin">
 		<id name="processPluginId" type="long">

@@ -9,6 +9,7 @@
 package org.opencps.api.dossier.model;
 
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -305,6 +306,76 @@ public class DossierSearchModel {
 	@DefaultValue("false")
 	@QueryParam(value = "notAgencysScope")
 	protected boolean notAgencysScope;
+	@QueryParam(value = "groupCongVan")
+	protected String groupCongVan;
+	@FormParam(value = "createDateStart")
+	protected String createDateStart;
+	@FormParam(value = "createDateEnd")
+	protected String createDateEnd;
+	@QueryParam(value = "processAgency")
+	protected String processAgency;
+	@QueryParam(value = "actionUser")
+	protected String actionUser;
+	@QueryParam(value = "userName")
+	protected String userName;
+	@QueryParam(value = "export")
+	protected boolean export;
+
+	public boolean isExport() {
+		return export;
+	}
+
+	public void setExport(boolean export) {
+		this.export = export;
+	}
+
+	public String getActionUser() {
+		return actionUser;
+	}
+
+	public void setActionUser(String actionUser) {
+		this.actionUser = actionUser;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getProcessAgency() {
+		return processAgency;
+	}
+
+	public void setProcessAgency(String processAgency) {
+		this.processAgency = processAgency;
+	}
+
+	public String getCreateDateStart() {
+		return createDateStart;
+	}
+
+	public void setCreateDateStart(String createDateStart) {
+		this.createDateStart = createDateStart;
+	}
+
+	public String getCreateDateEnd() {
+		return createDateEnd;
+	}
+
+	public void setCreateDateEnd(String createDateEnd) {
+		this.createDateEnd = createDateEnd;
+	}
+
+	public String getGroupCongVan() {
+		return groupCongVan;
+	}
+
+	public void setGroupCongVan(String groupCongVan) {
+		this.groupCongVan = groupCongVan;
+	}
 
 	public boolean isNotAgencysScope() {
 		return notAgencysScope;

@@ -29,6 +29,7 @@ import java.util.Map;
 import io.swagger.models.auth.In;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.*;
+import org.opencps.api.dossieraction.model.DossierActionModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
@@ -49,6 +50,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierActionUser;
+import org.opencps.dossiermgt.model.DossierSync;
 import org.opencps.dossiermgt.model.DossierUser;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -59,6 +61,7 @@ import org.opencps.dossiermgt.model.ServiceProcessRole;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierActionUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierSyncLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierUserLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessActionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
@@ -73,9 +76,9 @@ import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 
 public class DossierUtils {
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
-	private static final long VALUE_HOUR_TO_DAY = 8;
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000L * 60L * 60L * 24L;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000L * 60L * 60L;
+	private static final long VALUE_HOUR_TO_DAY = 8L;
 	private static final String EXTEND_ONE_VALUE = ".0";
 	private static final String EXTEND_TWO_VALUE = ".00";
 
@@ -275,7 +278,6 @@ public class DossierUtils {
 	//					_log.info("subTimeStamp: "+subTimeStamp);
 						String strOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 								dueDateTimeStamp, groupId, false);
-						
 //						DueDateUtils overdue = new DueDateUtils(now, dueDateCalc, durationUnit, groupId);
 //						_log.debug("NOW: " + now + ", DUE DATE: " + dueDateCalc + ", UNIT: " + durationUnit);
 //						double overdueDate = overdue.getOverDueCalcToHours();
@@ -337,8 +339,16 @@ public class DossierUtils {
 								long dueDateActionTimeStamp = dueDate.getTime();
 								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
 //								_log.info("START STEP OVERDUE");
-								String stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
+								String stepOverDue = "";
+								DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+								ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
+										dossierAction.getGroupId(), dossierAction.getServiceProcessId());
+								if(Validator.isNotNull(step.getDurationCount()) && step.getDurationCount() > 0) {
+								 stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
 										dueDateActionTimeStamp, groupId, true);
+								}else{
+									stepOverDue = StringPool.BLANK;
+								}
 //								DueDateUtils overdue = new DueDateUtils(now, dueDate, durationUnit, groupId);
 //								
 //								double overdueDate = overdue.getOverDueCalcToHours();
@@ -509,7 +519,17 @@ public class DossierUtils {
 			model.setDelegateWardCode(doc.get(DossierTerm.DELEGATE_WARDCODE));
 			model.setDelegateWardName(doc.get(DossierTerm.DELEGATE_WARDNAME));
 			model.setMetaData(doc.get(DossierTerm.META_DATA));
-			model.setGroupDossierId(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID)));
+			String arrayGroupDossierId [] = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
+			String groupDossierIds = "";
+			if(Validator.isNotNull(arrayGroupDossierId)){
+				for(String id : arrayGroupDossierId){
+					groupDossierIds += "," + id;
+				}
+				if(Validator.isNotNull(groupDossierIds)){
+					groupDossierIds = groupDossierIds.substring(1);
+				}
+				model.setGroupDossierIds(groupDossierIds);
+			}
 			if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS))) {
 				model.setGroupDossierIdHs(GetterUtil.getLong(doc.get(DossierTerm.GROUP_DOSSIER_ID_HS)));
 			}
@@ -573,15 +593,15 @@ public class DossierUtils {
 
 		return ouputs;
 	}
-	private static Employee getEmployeeByG_User(Integer groupId, Integer userId){
-		try {
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-			return employee;
-		}catch (Exception e){
-			_log.info("EXCEPTION" + e.getMessage());
-			return null;
-		}
-	}
+//	private static Employee getEmployeeByG_User(Integer groupId, Integer userId){
+//		try {
+//			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+//			return employee;
+//		}catch (Exception e){
+//			_log.debug(e);
+//			return null;
+//		}
+//	}
 
 	public static String calculatorStepOverDue(double durationCount, int durationUnit, double overdue, long groupId) {
 		String strOverDue;
@@ -680,7 +700,8 @@ public class DossierUtils {
 		if (retval < 0) {
 			strOverDue = " ngày";
 			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP);
+				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
+				dueCount = (int) dueCount;
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_DATE_TIMESTAMP;
 			}
@@ -718,7 +739,8 @@ public class DossierUtils {
 		} else {
 			strOverDue = " giờ";
 			if (flagStepDue) {
-				dueCount = (int) (subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP);
+				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
+				dueCount = (int) dueCount;
 			} else {
 				dueCount = (double) subTimeStamp / VALUE_CONVERT_HOUR_TIMESTAMP;
 			}
@@ -1040,11 +1062,13 @@ public class DossierUtils {
 
 				Date stepDuedate = DossierOverDueUtils.getStepOverDue(dossierAction.getGroupId(), dossierAction.getActionOverdue(), new Date());
 
-				if (dossierAction.getActionOverdue() != 0) {
-					model.setStepOverdue(StringPool.TRUE);
-				} else {
-					model.setStepOverdue(StringPool.TRUE);
-				}
+				// TODO: check this line
+//				if (dossierAction.getActionOverdue() != 0) {
+//					model.setStepOverdue(StringPool.TRUE);
+//				} else {
+//					model.setStepOverdue(StringPool.TRUE);
+//				}
+				model.setStepOverdue(StringPool.TRUE);
 
 				model.setStepDuedate(APIDateTimeUtils.convertDateToString(stepDuedate, APIDateTimeUtils._NORMAL_PARTTERN));
 
@@ -1136,6 +1160,17 @@ public class DossierUtils {
 		model.setFromViaPostal(input.getFromViaPostal());
 		model.setPostalCodeSend(input.getPostalCodeSend());
 		model.setProcessNo(input.getProcessNo());
+		
+		// add key dossierSyncState in table dossierSync flowing lastActionCode
+		if (input.getDossierActionId() != 0 && model.getLastActionCode() != null) {
+			DossierSync dossierSync = DossierSyncLocalServiceUtil.getByDID_DAD_AC(
+					input.getGroupId(), input.getDossierId(), input.getDossierActionId(), model.getLastActionCode());
+			if (dossierSync != null) {
+				model.setDossierSyncState(dossierSync.getState());
+			}else {
+				model.setDossierSyncState(0);
+			} 
+		}
 
 		return model;
 	}
@@ -1251,6 +1286,7 @@ public class DossierUtils {
 			try {
 				return DossierLocalServiceUtil.getDossier(dossierId);
 			} catch (PortalException e) {
+				_log.debug(e);
 				return null;
 			}
 		} else {
@@ -1692,7 +1728,7 @@ public class DossierUtils {
 	private static boolean checkReceiving(String dossierStatus) {
 		return (DossierTerm.DOSSIER_STATUS_RECEIVING.equals(dossierStatus));
 	}
-	public static List<Long> mappingForListCongVan(List<Document> docs) {
+	public static List<DossierDataModel> mappingForListCongVan(List<Document> docs, String groupCongVan) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
 		if(Validator.isNotNull(docs)) {
 			for (Document doc : docs) {
@@ -1717,12 +1753,14 @@ public class DossierUtils {
 				model.setStepDuedate(doc.get(DossierTerm.STEP_DUE_DATE));
 				model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 				model.setServerNo(doc.get(DossierTerm.SERVER_NO));
+				model.setDocumentNo(doc.get(DossierTerm.DOCUMENT_NO));
 				String groupDossierId = "";
 				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
 					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
 					for (String key : idGroup) {
-						groupDossierId += key + ",";
+						groupDossierId += ","  + key ;
 					}
+					groupDossierId.substring(1);
 					model.setGroupDossierIds(groupDossierId);
 				}
 				model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
@@ -1730,23 +1768,44 @@ public class DossierUtils {
 				ouputs.add(model);
 			}
 		}
-		List<Long> lstId = new ArrayList<>();
-		if(ouputs !=null){
-			for(DossierDataModel item : ouputs) {
-				//GroupDossierId : id,id,id
-				if (Validator.isNotNull(item.getGroupDossierIds())) {
-					String groupDossierIds = String.valueOf(item.getGroupDossierIds());
-					String[] id = groupDossierIds.split(StringPool.COMMA);
-					for (String key : id) {
-						if(!key.contains(lstId.toString())){
-							lstId.add(Long.valueOf(key));
-						}
-					}
-				}
-			}
-		}
+//		List<Long> lstId = new ArrayList<>();
+//		List<String> lstDocumentNo = new ArrayList<>();
+//		//Danh sach ho so
+//		if(ouputs !=null) {
+//			if(Validator.isNull(groupCongVan)) {
+//				for (DossierDataModel item : ouputs) {
+					//GroupDossierId : id,id,id
+//					if (Validator.isNotNull(item.getGroupDossierIds())) {
+						// 26/08/2020 DuongNT
+						// Lấy danh sách công văn theo hồ sơ điều kiện là groupDossierId cuối cùng
+//						String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
+//						.lastIndexOf(",") + 1));
+//						String[] id = item.getGroupDossierIds().split(StringPool.COMMA);
+//						for(int i = item.getGroupDossierIds().length() - 1; i >=0; i--) {
+//							Dossier dossier = DossierLocalServiceUtil.fetchDossier(i);
+//							if(Validator.isNotNull(dossier)){
+//								if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+//									lstId.add(Long.valueOf(dossier.getDossierId()));
+//									break;
+//								}
+//							}
+//						}
+//					}
+					//Lay danh sach cong van theo ho danh sach ho (documentNo)
+//					if(Validator.isNotNull(item.getDocumentNo())) {
+//						String documentNo = "";
+//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
+//							documentNo += item.getDocumentNo();
+//							if (Validator.isNotNull(documentNo)) {
+//								lstDocumentNo.add(documentNo);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 
-		return lstId;
+		return ouputs;
 	}
 	public static List<DossierDataModel> mappingForListDossier(List<Dossier> docs) {
 		List<DossierDataModel> ouputs = new ArrayList<DossierDataModel>();
@@ -1763,7 +1822,9 @@ public class DossierUtils {
 			model.setApplicantName(doc.getApplicantName() != null ? doc.getApplicantName().toUpperCase().replace(";", "; ") : StringPool.BLANK);
 			model.setDossierNo(doc.getDossierNo());
 			model.setOriginality(originality);
-			model.setDueDate(doc.getDueDate().toGMTString());
+			if(Validator.isNotNull(doc.getDueDate())) {
+				model.setDueDate(doc.getDueDate().toGMTString());
+			}
 			if(Validator.isNotNull(doc.getExtendDate())) {
 				model.setExtendDate(doc.getExtendDate().toGMTString());
 			}
@@ -1780,6 +1841,51 @@ public class DossierUtils {
 			if(Validator.isNotNull(doc.getMetaData())) {
 				model.setMetaData(GetterUtil.getString(doc.getMetaData()));
 			}
+			ouputs.add(model);
+		}
+
+		return ouputs;
+	}
+
+	public static List<DossierActionModel> mappingForListDossierActions(List<Document> docs) {
+		List<DossierActionModel> ouputs = new ArrayList<DossierActionModel>();
+		for (Document doc : docs) {
+
+			DossierActionModel model = new DossierActionModel();
+			model.setDossierActionId(GetterUtil.getLong(doc.get(DossierActionTerm.DOSSIERACTION_ID)));
+			model.setDossierId(GetterUtil.getLong(doc.get(DossierActionTerm.DOSSIER_ID)));
+			model.setGroupId(GetterUtil.getLong(doc.get(DossierActionTerm.GROUP_ID)));
+			if (Validator.isNotNull(doc.get(DossierTerm.CREATE_DATE))) {
+				Date createdDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.CREATE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setCreateDate(APIDateTimeUtils.convertDateToString(createdDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setCreateDate(doc.get(DossierTerm.CREATE_DATE));
+			}
+			if (Validator.isNotNull(doc.get(Field.MODIFIED_DATE))) {
+				Date modifiedDate = APIDateTimeUtils.convertStringToDate(doc.get(Field.MODIFIED_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+				model.setModifiedDate(APIDateTimeUtils.convertDateToString(modifiedDate, APIDateTimeUtils._NORMAL_PARTTERN));
+			} else {
+				model.setModifiedDate(doc.get(Field.MODIFIED_DATE));
+			}
+			model.setUserId(GetterUtil.getLong(doc.get(DossierActionTerm.USER_ID)));
+			model.setUserName(doc.get(Field.USER_NAME));
+			model.setDueDate(doc.get(DossierActionTerm.DUE_DATE));
+			model.setServiceProcessId(GetterUtil.getLong(doc.get(DossierActionTerm.SERVICE_PROCESS_ID)));
+			model.setPreviousActionId(GetterUtil.getLong(doc.get(DossierActionTerm.SERVICE_PROCESS_ID)));
+			model.setNextActionId(GetterUtil.getLong(doc.get(DossierActionTerm.PREVIOUS_ACTION_ID)));
+			model.setServiceProcessId(GetterUtil.getLong(doc.get(DossierActionTerm.NEXT_ACTION_ID)));
+			model.setRollbackable(doc.get(DossierActionTerm.ROLLBACK_ABLE));
+			model.setStepCode(doc.get(DossierActionTerm.STEP_CODE));
+			model.setStepName(doc.get(DossierActionTerm.STEP_NAME));
+			model.setStepInstruction(doc.get(DossierActionTerm.STEP_INSTRUCTION));
+			model.setActionCode(doc.get(DossierActionTerm.ACTION_CODE));
+			model.setActionName(doc.get(DossierActionTerm.ACTION_NAME));
+			model.setActionUser(doc.get(DossierActionTerm.ACTION_USER));
+			model.setActionNote(GetterUtil.getLong(doc.get(DossierActionTerm.ACTION_NOTE)));
+			model.setSyncActionCode(doc.get(DossierActionTerm.SYNC_ACTION_CODE));
+			model.setPayload(doc.get(DossierActionTerm.PAYLOAD));
+			model.setDossierNo(doc.get(DossierActionTerm.DOSSIER_NO));
+
 			ouputs.add(model);
 		}
 

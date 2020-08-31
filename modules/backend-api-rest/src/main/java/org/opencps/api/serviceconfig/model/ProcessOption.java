@@ -58,7 +58,8 @@ import javax.xml.bind.annotation.XmlType;
     "processNo",
     "processName",
     "optionName",
-    "serviceConfigId"
+    "serviceConfigId",
+    "status"
 })
 @XmlRootElement(name = "ProcessOption")
 public class ProcessOption {
@@ -76,6 +77,15 @@ public class ProcessOption {
     protected String processNo;
     protected String processName;
     protected Long serviceConfigId;
+    protected Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Long getServiceConfigId() {
 		return serviceConfigId;

@@ -1291,6 +1291,7 @@ public class EmployeeLocalServiceImpl extends EmployeeLocalServiceBaseImpl {
 				}
 			}
 		}
+		object.setWorkingUnitId(objectData.getLong(EmployeeTerm.WORKING_UNIT_ID));
 		_log.debug("object" + object);
 		_log.debug("objectData" + objectData.toJSONString());
 		return employeePersistence.update(object);

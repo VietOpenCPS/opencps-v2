@@ -197,6 +197,7 @@ public class OneGateControllerImpl implements OneGateController {
 							if (Validator.isNull(domain) || serviceInfo.getDomainCode().equals(domain)) {
 								serviceInfoMapping = ServiceInfoMappingLocalServiceUtil.fetchDVCQGServiceCode(groupId,
 										serviceInfo.getServiceCode());
+								elmData.put(ServiceInfoTerm.DOMAIN_CODE, serviceInfo.getDomainCode());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE, serviceInfo.getServiceCode());
 								elmData.put(ServiceInfoTerm.SERVICE_NAME, serviceInfo.getServiceName());
 								elmData.put(ServiceInfoTerm.SERVICE_CODE_DVCQG,
@@ -227,18 +228,19 @@ public class OneGateControllerImpl implements OneGateController {
 
 									if (hasPermission) {
 										JSONObject elmOption = JSONFactoryUtil.createJSONObject();
+										if(Validator.isNotNull(processOption.getStatus()) && processOption.getStatus() == 1) {
+											elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID,
+													processOption.getProcessOptionId());
+											elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
+											elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE,
+													processOption.getInstructionNote());
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NO,
+													processOption.getTemplateNo_0020());
+											elmOption.put(DossierTemplateTerm.TEMPLATE_NAME,
+													processOption.getTemplateName());
 
-										elmOption.put(ProcessOptionTerm.PROCESSOPTION_ID,
-												processOption.getProcessOptionId());
-										elmOption.put(ProcessOptionTerm.OPTION_NAME, processOption.getOptionName());
-										elmOption.put(ProcessOptionTerm.INSTRUCTION_NOTE,
-												processOption.getInstructionNote());
-										elmOption.put(DossierTemplateTerm.TEMPLATE_NO,
-												processOption.getTemplateNo_0020());
-										elmOption.put(DossierTemplateTerm.TEMPLATE_NAME,
-												processOption.getTemplateName());
-
-										options.put(elmOption);
+											options.put(elmOption);
+										}
 									}
 
 									if (options.length() > 0) {

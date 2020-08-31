@@ -1029,11 +1029,11 @@ public class DataManagementImpl implements DataManagement {
 		int end = QueryUtil.ALL_POS;
 
 		if (Validator.isNotNull(query.getStart())) {
-			start = Integer.valueOf(query.getStart());
+			start = query.getStart();
 		}
 
 		if (Validator.isNotNull(query.getEnd())) {
-			end = Integer.valueOf(query.getEnd());
+			end = query.getEnd();
 		}
 		try {
 			Date date = new Date(query.getLastSync());
@@ -1067,11 +1067,11 @@ public class DataManagementImpl implements DataManagement {
 		int end = QueryUtil.ALL_POS;
 
 		if (Validator.isNotNull(query.getStart())) {
-			start = Integer.valueOf(query.getStart());
+			start = query.getStart();
 		}
 
 		if (Validator.isNotNull(query.getEnd())) {
-			end = Integer.valueOf(query.getEnd());
+			end = query.getEnd();
 		}
 		try {
 			Date date = new Date(query.getLastSync());
@@ -1106,11 +1106,11 @@ public class DataManagementImpl implements DataManagement {
 		int end = QueryUtil.ALL_POS;
 
 		if (Validator.isNotNull(query.getStart())) {
-			start = Integer.valueOf(query.getStart());
+			start = query.getStart();
 		}
 
 		if (Validator.isNotNull(query.getEnd())) {
-			end = Integer.valueOf(query.getEnd());
+			end = query.getEnd();
 		}
 		try {
 			Date date = new Date(query.getLastSync());
@@ -1189,11 +1189,11 @@ public class DataManagementImpl implements DataManagement {
 		int end = QueryUtil.ALL_POS;
 
 		if (Validator.isNotNull(query.getStart())) {
-			start = Integer.valueOf(query.getStart());
+			start = query.getStart();
 		}
 
 		if (Validator.isNotNull(query.getEnd())) {
-			end = Integer.valueOf(query.getEnd());
+			end = query.getEnd();
 		}
 		try {
 			Date date = new Date(query.getLastSync());
@@ -1567,8 +1567,7 @@ public class DataManagementImpl implements DataManagement {
 
 			if (collection == null) {
 				result = false;
-			}
-
+			} else {
 				DictItemMapping dictItemMapping = DictItemMappingLocalServiceUtil.fetchByF_GID_IC_CID(groupId, itemCode,
 						collection.getDictCollectionId());
 
@@ -1585,8 +1584,8 @@ public class DataManagementImpl implements DataManagement {
 
 				DictItemMappingLocalServiceUtil.createDictItemMapping(serviceContext.getCompanyId(), groupId,
 					user.getUserId(), itemCode, itemCodeDVCQG, collection.getDictCollectionId());
-
-			result = true;
+				result = true;
+			}
 
 			return Response.status(200).entity(String.valueOf(result)).build();
 		} catch (Exception e) {

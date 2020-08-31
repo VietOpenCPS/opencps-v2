@@ -1,6 +1,9 @@
 package org.opencps.api.controller.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -8,15 +11,26 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.opencps.api.workingunit.model.WorkingUnitModel;
 import org.opencps.datamgt.constants.WorkspaceTerm;
 import org.opencps.usermgt.constants.WorkingUnitTerm;
 import org.opencps.usermgt.model.WorkingUnit;
 
-import backend.utils.APIDateTimeUtils;
+import org.opencps.auth.utils.APIDateTimeUtils;
 
 public class WorkingUnitUtils {
 
@@ -95,5 +109,104 @@ public class WorkingUnitUtils {
 		return ett;
 	}
 
+	
+	public static JSONArray readExcel(InputStream excelInputStream) {
+
+		Workbook workbook = null;
+		JSONArray results = JSONFactoryUtil.createJSONArray();
+
+		try {
+
+			workbook = new XSSFWorkbook(excelInputStream);
+			//
+			Sheet datatypeSheet = workbook.getSheetAt(0);
+			Sheet sheetConfig = workbook.getSheetAt(1);
+			int nOfRows = datatypeSheet.getPhysicalNumberOfRows();
+			int nOfColumns = 1000;
+			_log.debug("nOfRows: " + nOfRows);
+
+			if (nOfRows > 1 && nOfRows < 10000) {
+
+				JSONObject formDataFormat = JSONFactoryUtil.createJSONObject();
+				for (int i = 0; i < nOfColumns; i++) {
+					Cell celli = datatypeSheet.getRow(0).getCell(i);
+					if (Validator.isNotNull(celli) && Validator.isNotNull(celli.getStringCellValue())) {
+						formDataFormat.put(String.valueOf(i),
+								sheetConfig.getRow(0).getCell(i).getStringCellValue());
+					} else {
+						nOfColumns = i - 1;
+						break;
+					}
+				}
+				_log.debug("====dataForm__" + formDataFormat);
+				_log.debug("====nOfColumns===" + nOfColumns);
+				for (int i = 1; i < nOfRows; i++) {
+					Row currentRow = datatypeSheet.getRow(i);
+					
+					if (currentRow != null) {
+
+						// todo convert
+						JSONObject workingUnitObj = convertRowToWorkingUnit(currentRow, nOfColumns, formDataFormat);
+						if (Validator.isNotNull(workingUnitObj)) {
+							results.put(workingUnitObj);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		} finally {
+			if (workbook != null) {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+//					e.printStackTrace();
+					_log.debug(e);
+				}
+			}
+		}
+		return results;
+	}
+	
+	public static JSONObject convertRowToWorkingUnit(Row currentRow, int nOfColumns, JSONObject formDataFormat) {
+
+		JSONObject workingUnitObj = JSONFactoryUtil.createJSONObject();
+		try {
+			for (int i = 0; i <= nOfColumns; i++) {
+				workingUnitObj.put(formDataFormat.getString(String.valueOf(i)), getCellValue(currentRow.getCell(i)));
+			}
+		} catch (Exception e) {
+			_log.debug(e);
+		}
+
+		return workingUnitObj;
+	}
+	
+	private static Object getCellValue(Cell cell) {
+		
+		if (cell == null) {
+
+			return null;
+		} else if (CellType.STRING == cell.getCellType()) {
+
+			return cell.getStringCellValue();
+		} else if (CellType.BOOLEAN == cell.getCellType()) {
+
+			return cell.getBooleanCellValue();
+		} else if (CellType.ERROR == cell.getCellType()) {
+
+			return cell.getErrorCellValue();
+		} else if (CellType.NUMERIC == cell.getCellType()) {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(cell.getDateCellValue());
+			} else {
+				return BigDecimal.valueOf(cell.getNumericCellValue());
+			}			
+		} else {
+
+			return null;
+		}
+	}
+	
 	static Log _log = LogFactoryUtil.getLog(WorkingUnitUtils.class);
 }

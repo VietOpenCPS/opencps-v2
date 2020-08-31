@@ -22,6 +22,7 @@ import org.opencps.dossiermgt.service.DeliverableTypeLocalServiceUtil;
 
 public class DeliverableNumberGenerator {
 
+	private static final String CONSTANT_ICREMENT = "opencps.deliverable#";
 	public static String generateReferenceUID(long groupId) {
 
 		return UUID.randomUUID().toString();
@@ -33,6 +34,12 @@ public class DeliverableNumberGenerator {
 	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
 	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
 	private static final String DATETIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
+	
+	private static final String PERCENT_ZERO = "%0";
+	private static final String NUMBER_FORMAT = "d";
+	private static final String FORWARD_SLASH = "/";
+	private static final String DOT = "\\.";
+	private static final String OK = "OK";
 	
 	public static String generateDeliverableNumber(long groupId, long companyId, long deliverableTypeId)
 			throws ParseException {
@@ -177,6 +184,135 @@ public class DeliverableNumberGenerator {
 		return certNumber;
 
 	}	
+	
+	public static String generateDeliverableNumber(long groupId, String serialNumberPattern, String ngayQD) {
+		
+		//String deliverableNumber = StringPool.BLANK;
+		String codePattern = CODE_PATTERN;
+		String dayPattern = DAY_PATTERN;
+		String monthPattern = MONTH_PATTERN;
+		String yearPattern = YEAR_PATTERN;
+		String datetimePattern = DATETIME_PATTERN;
+		String[] patterns = new String[] {codePattern, dayPattern, monthPattern, yearPattern, datetimePattern };
+
+		String[] ngayquyetdinh = null;
+		if (ngayQD.split(FORWARD_SLASH).length > 1) {
+			ngayquyetdinh = ngayQD.split(FORWARD_SLASH);
+		} else if (ngayQD.split(DOT).length > 1) {
+			ngayquyetdinh = ngayQD.split(DOT);
+		}
+		String day = ngayquyetdinh[0];
+		String month = ngayquyetdinh[1];
+		String year = ngayquyetdinh[2];		
+		
+		for (String pattern : patterns) {
+			Pattern r = Pattern.compile(pattern);
+
+			Matcher m = r.matcher(serialNumberPattern);
+
+			while (m.find()) {
+				String tmp = m.group(1);
+//					_log.info("tmp11: "+tmp);
+
+				// Pattern follow serviceProcess
+				if (r.toString().equals(codePattern)) {
+					// String key = "opencps.deliverable#" + groupId + "#" + day + month + year;
+					String key = CONSTANT_ICREMENT + groupId + StringPool.POUND + day + month + year;
+					String number = counterByNumber(key, tmp);
+					_log.debug(
+							"//////////////////////////////////////////////////////////// " + "|certNumber= " + number);
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					if (number.length() < tmp.length()) {
+						number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+					}
+					
+					serialNumberPattern = serialNumberPattern.replace(m.group(0), number);
+					
+				} else if (r.toString().equals(datetimePattern)) {				
+					serialNumberPattern = serialNumberPattern.replace(m.group(0), OK);
+					
+				} else if (r.toString().equals(dayPattern)) {
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					if (day.length() < tmp.length()) {
+						day = tmp.substring(0, tmp.length() - day.length()).concat(day);
+					} else if (day.length() > tmp.length()) {
+						day = day.substring(day.length() - tmp.length(), day.length());
+					}
+
+					serialNumberPattern = serialNumberPattern.replace(m.group(0), day);
+
+				} else if (r.toString().equals(monthPattern)) {
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					if (month.length() < tmp.length()) {
+						month = tmp.substring(0, tmp.length() - month.length()).concat(month);
+					} else if (month.length() > tmp.length()) {
+						month = month.substring(month.length() - tmp.length(), month.length());
+					}
+
+					serialNumberPattern = serialNumberPattern.replace(m.group(0), month);
+
+				} else if (r.toString().equals(yearPattern)) {
+					tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+					if (year.length() < tmp.length()) {
+						year = tmp.substring(0, tmp.length() - year.length()).concat(year);
+					} else if (year.length() > tmp.length()) {
+						year = year.substring(year.length() - tmp.length(), year.length());
+					}
+
+					serialNumberPattern = serialNumberPattern.replace(m.group(0), year);
+				} 
+				m = r.matcher(serialNumberPattern);
+
+			}
+		}
+		String deliverableNumber = serialNumberPattern;
+		
+		return deliverableNumber;
+
+	}
+		
+	private static String counterByNumber(String pattern, String tmp) {
+
+		//long counter = CounterLocalServiceUtil.increment(pattern);
+		int lengthPatern = Validator.isNotNull(tmp) ? tmp.length() : 0;
+		String format = PERCENT_ZERO + lengthPatern + NUMBER_FORMAT;
+
+		long _counterNumber = 0;
+		Counter counter = null;
+		_log.info("pattern" + pattern);
+		Counter counterDetail = CounterLocalServiceUtil.fetchCounter(pattern);
+		if (Validator.isNotNull(counterDetail)) {
+			// create counter config
+			_counterNumber = counterDetail.getCurrentId() + 1;
+			do {
+				counterDetail.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			} while (counter == null);
+
+		} else {
+			_log.info("COUTER_CURR_CONFIG_IS_NOT_NULL");
+			counterDetail = CounterLocalServiceUtil.createCounter(pattern);
+			// increment CurrentCounter
+			_counterNumber = counterDetail.getCurrentId() + 1;
+			do {
+				counterDetail.setCurrentId(_counterNumber);
+				try {
+					counter = CounterLocalServiceUtil.updateCounter(counterDetail);
+				} catch (Exception e) {
+					_counterNumber += 1;
+					_log.debug(e);
+				}
+			} while (counter == null);
+		}
+
+		return String.format(format, _counterNumber); 
+	}
+	
 	
 	public static final String PRE_FIX_CERT = "OPENCPS_CERT@";
 	private static final Log _log = LogFactoryUtil.getLog(DeliverableNumberGenerator.class);

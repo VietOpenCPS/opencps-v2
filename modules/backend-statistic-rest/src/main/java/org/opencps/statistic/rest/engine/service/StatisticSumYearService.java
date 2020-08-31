@@ -331,7 +331,7 @@ public class StatisticSumYearService {
 
 	public void caculateSumAllYear(long companyId, long groupId, int month, List<String> lstGroupGovs, List<ServerConfig> lstScs) {
 		//int year = LocalDate.now().getYear();
-		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
+//		List<JSONObject> lstDossierDataObjs = new ArrayList<JSONObject>();
 		
 		StatisticSumYearCalcular calcular1 = new StatisticSumYearCalcular();
 		StatisticSumYearCalcular calcular2 = new StatisticSumYearCalcular();

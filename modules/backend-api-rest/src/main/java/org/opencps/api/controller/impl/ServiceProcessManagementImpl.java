@@ -1364,20 +1364,26 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					else {
 						result.append(pa.getPreStepCode());
 					}
-					if (DossierTerm.PRECONDITION_LISTENER.equals(pa.getAutoEvent()) || DossierTerm.KEY_TIMMER.equals(pa.getAutoEvent())) {
-						result.append(ConstantUtils.START_ARROW);
-						result.append(pa.getActionCode());
-						result.append(ConstantUtils.END_NOTE_TITLE);
-						result.append(pa.getActionName());
-						result.append(ConstantUtils.END_ARROW);
-					}
-					else {
-						result.append(ConstantUtils.START_ARROW);
-						result.append(pa.getActionCode());
-						result.append(ConstantUtils.END_NOTE_TITLE);
-						result.append(pa.getActionName());
-						result.append(ConstantUtils.END_ARROW);						
-					}
+//					if (DossierTerm.PRECONDITION_LISTENER.equals(pa.getAutoEvent()) || DossierTerm.KEY_TIMMER.equals(pa.getAutoEvent())) {
+//						result.append(ConstantUtils.START_ARROW);
+//						result.append(pa.getActionCode());
+//						result.append(ConstantUtils.END_NOTE_TITLE);
+//						result.append(pa.getActionName());
+//						result.append(ConstantUtils.END_ARROW);
+//					}
+//					else {
+//						result.append(ConstantUtils.START_ARROW);
+//						result.append(pa.getActionCode());
+//						result.append(ConstantUtils.END_NOTE_TITLE);
+//						result.append(pa.getActionName());
+//						result.append(ConstantUtils.END_ARROW);						
+//					}
+					// TODO: recheck above
+					result.append(ConstantUtils.START_ARROW);
+					result.append(pa.getActionCode());
+					result.append(ConstantUtils.END_NOTE_TITLE);
+					result.append(pa.getActionName());
+					result.append(ConstantUtils.END_ARROW);
 					if (StringPool.BLANK.equals(pa.getPostStepCode())) {
 						result.append(ConstantUtils.RETURN_GRAPH);
 					}

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +16,13 @@ import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.rest.dto.DossierStatisticData;
 import org.opencps.statistic.rest.dto.PersonStatisticData;
 import org.opencps.statistic.rest.dto.VotingResultStatisticData;
+import org.opencps.statistic.rest.engine.DossierStatisticEngine_bk;
 import org.opencps.statistic.rest.util.DossierStatisticUtils;
 
 public class StatisticEngineUpdate {
+
+	protected Log _log = LogFactoryUtil.getLog(StatisticEngineUpdate.class);
+
 	public void updateStatisticData(Map<String, DossierStatisticData> statisticData, List<OpencpsDossierStatistic> datas) {
 
 		StatisticEngineUpdateAction engineUpdateAction = new StatisticEngineUpdateAction();
@@ -51,7 +57,7 @@ public class StatisticEngineUpdate {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}
 		return lstDossierDataObjs;
@@ -66,7 +72,7 @@ public class StatisticEngineUpdate {
 				jsonArr.put(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}
 		return jsonArr;
@@ -83,7 +89,7 @@ public class StatisticEngineUpdate {
 				jsonArr.put(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 		}
 		return jsonArr;
@@ -102,7 +108,7 @@ public class StatisticEngineUpdate {
 				lstDossierDataObjs.add(dossierDataObj);
 			}
 			catch (Exception e) {
-				
+				_log.debug(e);
 			}
 //			engineUpdateAction.updateStatistic(payload);
 		}
@@ -115,58 +121,58 @@ public class StatisticEngineUpdate {
 //		}
 	}
 
-	private Map<String, org.opencps.statistic.dto.DossierStatisticData> mappingDossierStatisticData(Map<String, DossierStatisticData> statisticData) {
-		Map<String, org.opencps.statistic.dto.DossierStatisticData> statisticDataResult = new HashMap<String, org.opencps.statistic.dto.DossierStatisticData>();
-		for (Map.Entry<String, DossierStatisticData> entry : statisticData.entrySet()) {
-			String key = entry.getKey();
-			org.opencps.statistic.dto.DossierStatisticData data = new org.opencps.statistic.dto.DossierStatisticData();
-			DossierStatisticData tempData = entry.getValue();
-			data.setMonth(tempData.getMonth());
-			data.setYear(tempData.getYear());
-			data.setTotalCount(tempData.getTotalCount());
-			data.setDeniedCount(tempData.getDeniedCount());
-			data.setCancelledCount(tempData.getCancelledCount());
-			data.setProcessCount(tempData.getProcessCount());
-			data.setRemainingCount(tempData.getRemainingCount());
-			data.setReceivedCount(tempData.getReceivedCount());
-			data.setOnlineCount(tempData.getOnlineCount());
-			data.setOnegateCount(tempData.getOnegateCount());
-			data.setOutsideCount(tempData.getOutsideCount());
-			data.setInsideCount(tempData.getInsideCount());
-			data.setReleaseCount(tempData.getReleaseCount());
-			data.setBetimesCount(tempData.getBetimesCount());
-			data.setOntimeCount(tempData.getOntimeCount());
-			data.setOvertimeCount(tempData.getOvertimeCount());
-			data.setOvertimeInside(tempData.getOvertimeInside());
-			data.setOvertimeOutside(tempData.getOvertimeOutside());
-			data.setDoneCount(tempData.getDoneCount());
-			data.setReleasingCount(tempData.getReleasingCount());
-			data.setUnresolvedCount(tempData.getUnresolvedCount());
-			data.setProcessingCount(tempData.getProcessingCount());
-			data.setUndueCount(tempData.getUndueCount());
-			data.setOverdueCount(tempData.getOverdueCount());
-			data.setInteroperatingCount(tempData.getInteroperatingCount());
-			data.setWaitingCount(tempData.getWaitingCount());
-			data.setOntimePercentage(tempData.getOntimePercentage());
-			data.setGovAgencyCode(tempData.getGovAgencyCode());
-			data.setGovAgencyName(tempData.getGovAgencyName());
-			data.setDomainCode(tempData.getDomainCode());
-			data.setDomainName(tempData.getDomainName());
-			data.setReporting(tempData.getReporting());
-			data.setCompanyId(tempData.getCompanyId());
-			data.setGroupId(tempData.getGroupId());
-			data.setViaPostalCount(tempData.getViaPostalCount());
-			data.setSaturdayCount(tempData.getSaturdayCount());
-			data.setDossierOnline3Count(tempData.getDossierOnline3Count());
-			data.setDossierOnline4Count(tempData.getDossierOnline4Count());
-			data.setReceiveDossierSatCount(tempData.getReceiveDossierSatCount());
-			data.setReleaseDossierSatCount(tempData.getReleaseDossierSatCount());
-			data.setFromViaPostalCount(tempData.getFromViaPostalCount());
-			
-			statisticDataResult.put(key, data);
-		}
-		return statisticDataResult;
-	}
+//	private Map<String, org.opencps.statistic.dto.DossierStatisticData> mappingDossierStatisticData(Map<String, DossierStatisticData> statisticData) {
+//		Map<String, org.opencps.statistic.dto.DossierStatisticData> statisticDataResult = new HashMap<String, org.opencps.statistic.dto.DossierStatisticData>();
+//		for (Map.Entry<String, DossierStatisticData> entry : statisticData.entrySet()) {
+//			String key = entry.getKey();
+//			org.opencps.statistic.dto.DossierStatisticData data = new org.opencps.statistic.dto.DossierStatisticData();
+//			DossierStatisticData tempData = entry.getValue();
+//			data.setMonth(tempData.getMonth());
+//			data.setYear(tempData.getYear());
+//			data.setTotalCount(tempData.getTotalCount());
+//			data.setDeniedCount(tempData.getDeniedCount());
+//			data.setCancelledCount(tempData.getCancelledCount());
+//			data.setProcessCount(tempData.getProcessCount());
+//			data.setRemainingCount(tempData.getRemainingCount());
+//			data.setReceivedCount(tempData.getReceivedCount());
+//			data.setOnlineCount(tempData.getOnlineCount());
+//			data.setOnegateCount(tempData.getOnegateCount());
+//			data.setOutsideCount(tempData.getOutsideCount());
+//			data.setInsideCount(tempData.getInsideCount());
+//			data.setReleaseCount(tempData.getReleaseCount());
+//			data.setBetimesCount(tempData.getBetimesCount());
+//			data.setOntimeCount(tempData.getOntimeCount());
+//			data.setOvertimeCount(tempData.getOvertimeCount());
+//			data.setOvertimeInside(tempData.getOvertimeInside());
+//			data.setOvertimeOutside(tempData.getOvertimeOutside());
+//			data.setDoneCount(tempData.getDoneCount());
+//			data.setReleasingCount(tempData.getReleasingCount());
+//			data.setUnresolvedCount(tempData.getUnresolvedCount());
+//			data.setProcessingCount(tempData.getProcessingCount());
+//			data.setUndueCount(tempData.getUndueCount());
+//			data.setOverdueCount(tempData.getOverdueCount());
+//			data.setInteroperatingCount(tempData.getInteroperatingCount());
+//			data.setWaitingCount(tempData.getWaitingCount());
+//			data.setOntimePercentage(tempData.getOntimePercentage());
+//			data.setGovAgencyCode(tempData.getGovAgencyCode());
+//			data.setGovAgencyName(tempData.getGovAgencyName());
+//			data.setDomainCode(tempData.getDomainCode());
+//			data.setDomainName(tempData.getDomainName());
+//			data.setReporting(tempData.getReporting());
+//			data.setCompanyId(tempData.getCompanyId());
+//			data.setGroupId(tempData.getGroupId());
+//			data.setViaPostalCount(tempData.getViaPostalCount());
+//			data.setSaturdayCount(tempData.getSaturdayCount());
+//			data.setDossierOnline3Count(tempData.getDossierOnline3Count());
+//			data.setDossierOnline4Count(tempData.getDossierOnline4Count());
+//			data.setReceiveDossierSatCount(tempData.getReceiveDossierSatCount());
+//			data.setReleaseDossierSatCount(tempData.getReleaseDossierSatCount());
+//			data.setFromViaPostalCount(tempData.getFromViaPostalCount());
+//			
+//			statisticDataResult.put(key, data);
+//		}
+//		return statisticDataResult;
+//	}
 //	public void updateStatisticData(Map<String, DossierStatisticData> statisticData,
 //			List<OpencpsDossierStatistic> statisticList) throws NoSuchOpencpsDossierStatisticException {
 //

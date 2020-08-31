@@ -62,13 +62,13 @@ public class NotificationUtil {
 		private String code;
 
 		NotificationType(String code) {
-			this.setCode(code);
+			this.code =code;
 		}
 
-		public void setCode(String code) {
-
-			this.code = code;
-		}
+//		public void setCode(String code) {
+//
+//			this.code = code;
+//		}
 
 		public String getCode() {
 

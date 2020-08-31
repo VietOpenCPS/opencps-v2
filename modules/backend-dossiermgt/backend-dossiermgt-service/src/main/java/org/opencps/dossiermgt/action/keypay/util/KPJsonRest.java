@@ -1,5 +1,8 @@
 package org.opencps.dossiermgt.action.keypay.util;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.io.InputStream;
 import java.net.URL;
 
@@ -7,11 +10,15 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
+import org.opencps.dossiermgt.action.impl.TTTTIntegrationImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
 
 public class KPJsonRest {
+
+	private static Log _log = LogFactoryUtil.getLog(KPJsonRest.class);
+
 	private WebTarget webTarget;
 	private Client client;
 
@@ -151,8 +158,7 @@ public class KPJsonRest {
 
 		}
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
+			_log.debug(e);
 		}
 		finally {
 //			if (br != null) {

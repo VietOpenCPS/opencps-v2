@@ -5,9 +5,15 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.Validator;
+import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -65,6 +71,9 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 		document.addTextSortable(DossierActionTerm.ACTION_CODE, object.getActionCode());
 		document.addTextSortable(DossierActionTerm.ACTION_NAME, object.getActionName());
 		document.addTextSortable(DossierActionTerm.ACTION_USER, object.getActionUser());
+		if(Validator.isNotNull(object.getActionUser())){
+			document.addTextSortable(DossierTerm.ACTION_USER_SEARCH, object.getActionUser().toLowerCase());
+		}
 		document.addTextSortable(DossierActionTerm.ACTION_NOTE, object.getActionNote());
 		document.addTextSortable(DossierActionTerm.SYNC_ACTION_CODE, object.getSyncActionCode());
 		document.addTextSortable(DossierActionTerm.PENDING, Boolean.toString(object.getPending()));
@@ -73,6 +82,14 @@ public class DossierActionIndexer extends BaseIndexer<DossierAction> {
 		document.addTextSortable(DossierActionTerm.STEP_NAME, object.getStepName());
 		document.addTextSortable(DossierActionTerm.STEP_INSTRUCTION, object.getStepInstruction());
 		document.addTextSortable(DossierActionTerm.PAYLOAD, object.getPayload());
+		document.addNumberSortable(DossierActionTerm.DOSSIERACTION_ID, object.getDossierActionId());
+		if(Validator.isNotNull(object.getDossierId())){
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(object.getDossierId());
+			if(Validator.isNotNull(dossier)){
+				document.addTextSortable(DossierActionTerm.DOSSIER_NO, dossier.getDossierNo());
+			}
+		}
+		document.addTextSortable(DossierTerm.USER_NAME, object.getUserName());
 
 		return document;
 	}

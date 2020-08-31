@@ -98,7 +98,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 					try {
 						jsonToken = JSONFactoryUtil.createJSONObject(sbToken.toString());
 					} catch (JSONException e1) {
-						e1.printStackTrace();
+						_log.debug(e1);
 					}
 					if (jsonToken != null && jsonToken.has("token") && jsonToken.has("refreshToken")
 							&& jsonToken.has("expiryDate")) {
@@ -165,6 +165,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 								try {
 									Thread.sleep(500);
 								} catch (InterruptedException e1) {
+									Thread.currentThread().interrupt();
 									System.out.println("Time not delay");
 								}
 								//
@@ -172,6 +173,7 @@ public class MBEmailSenderImpl implements MBEmailSender {
 								try {
 									Thread.sleep(500);
 								} catch (InterruptedException e1) {
+									Thread.currentThread().interrupt();
 									System.out.println("Time not delay");
 								}
 								_log.debug(e);

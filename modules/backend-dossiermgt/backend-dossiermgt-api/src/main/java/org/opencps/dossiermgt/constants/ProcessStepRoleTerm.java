@@ -6,5 +6,6 @@ public class ProcessStepRoleTerm {
 	public static final String MODERATOR = "moderator";
 	public static final String CONDITION = "condition";
 	public static final String ASSIGNED = "assigned";
+	public static final String ROLE_CODE = "roleCode";
 
 }

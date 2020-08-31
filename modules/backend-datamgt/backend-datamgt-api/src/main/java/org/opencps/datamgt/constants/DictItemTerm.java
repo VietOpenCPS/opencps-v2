@@ -118,6 +118,12 @@ public class DictItemTerm {
 
 	public static final String ID_LGSP_SORTABLE = "idLGSP_sortable";
 
+	public static final String SCOPE = "#scope";
+
+	public static final String isParrentCode = "isParrentCode";
+
+	public static final String DON_VI_CONG_VAN = "DON_VI_CONG_VAN";
+
 	public static final String KEYWORDS = "keywords";
 	public static final String PARAMS = "params";
 	public static final String ITEM_LV = "itemLv";

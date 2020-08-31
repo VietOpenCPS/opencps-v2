@@ -167,6 +167,7 @@
 		<column name="protocol" type="String" />
 		<column name="configs" type="String" />
 		<column name="lastSync" type="Date" />
+		<column name="active" type="boolean" />
 
 		<!-- Order -->
 

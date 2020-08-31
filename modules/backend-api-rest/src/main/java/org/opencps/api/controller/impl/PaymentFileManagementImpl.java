@@ -1,12 +1,9 @@
 package org.opencps.api.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -21,17 +18,21 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -56,8 +57,6 @@ import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
-import org.opencps.auth.api.exception.UnauthorizationException;
-import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
@@ -75,33 +74,10 @@ import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
-import org.opencps.dossiermgt.service.persistence.DossierUtil;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
-import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusException;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 public class PaymentFileManagementImpl implements PaymentFileManagement {
 
@@ -954,14 +930,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 		     // TODO: PP continue
 				if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-						|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+						|| PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())) {
 					JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					JSONObject banksInfo = schema.getJSONObject("BankInfo");
-					JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+					JSONObject bankInfo = null;
 					if (banksInfo.has(dossier.getServiceCode())) {
 						bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 					} else {
 						bankInfo = banksInfo.getJSONObject("default");
+					}
+					if (bankInfo == null) {
+						bankInfo = JSONFactoryUtil.createJSONObject();
 					}
 					jsonData.put("TKThuHuong", bankInfo.get("TKThuHuong"));
 					jsonData.put("MaNHThuHuong", bankInfo.get("MaNHThuHuong"));
@@ -1143,14 +1122,17 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 			// TODO: PP continue
 			if (PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())
-					|| PaymentFileTerm.PAYMENT_METHOD_KEYPAY_DVCQG.equals(paymentFile.getPaymentMethod())) {
+					|| PaymentFileTerm.PAYMENT_METHOD_PAY_PLAT_DVCQG.equals(paymentFile.getPaymentMethod())) {
 				JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile()).getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 				JSONObject banksInfo = schema.getJSONObject("BankInfo");
-				JSONObject bankInfo = JSONFactoryUtil.createJSONObject();
+				JSONObject bankInfo = null;
 				if (banksInfo.has(dossier.getServiceCode())) {
 					bankInfo = banksInfo.getJSONObject(dossier.getServiceCode());
 				} else {
 					bankInfo = banksInfo.getJSONObject("default");
+				}
+				if (bankInfo == null) {
+					bankInfo = JSONFactoryUtil.createJSONObject();
 				}
 				jsonData.put("TKThuHuong", bankInfo.get("TKThuHuong"));
 				jsonData.put("MaNHThuHuong", bankInfo.get("MaNHThuHuong"));
@@ -1206,7 +1188,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				{
 					String epay = paymentConfig.getEpaymentConfig();
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
-					String paymentReturnUrl = StringPool.BLANK;
+					//String paymentReturnUrl = StringPool.BLANK;
 					if (jsonObject.has("paymentMerchantSecureKey"))
 						paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
 				}

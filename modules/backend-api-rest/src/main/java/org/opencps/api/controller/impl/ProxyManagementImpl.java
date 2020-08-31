@@ -61,11 +61,11 @@ public class ProxyManagementImpl implements ProxyManagement {
 	        exception = e;
 	        throw e;
 	    } finally {
-	        if (exception == null) inputStream.close();
-	        else try {
+	        try {
 	            inputStream.close();
 	        } catch (IOException e) {
-	            exception.addSuppressed(e);
+	        	exception = e;
+	        	exception.addSuppressed(e);
 	        }
 	    }
 	}

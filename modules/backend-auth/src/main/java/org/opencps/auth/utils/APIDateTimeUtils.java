@@ -33,6 +33,8 @@ public class APIDateTimeUtils {
 	
 	public static final String _SYS_TIME_ZONE = "Asia/Ho_Chi_Minh";
 	
+	public static final String _SPECIAL_DATE = "dd.mm.yyyy";
+	
 	public static String convertNormalDateToLuceneDate(String normal) {
 		if (Validator.isNull(normal)) {
 			return StringPool.BLANK;
@@ -128,6 +130,23 @@ public class APIDateTimeUtils {
 		
 	}
 
+	public static Date convertSpecialVNStrToDate(String normal) {
+		if (Validator.isNull(normal)) {
+			return null;
+		}
+		String[] splitD = normal.split("\\.");
+		if (splitD.length != 3 ||
+				splitD[1].length() > 2 ||
+				splitD[0].length() > 2) {
+			return null;
+		}
+		String year = splitD[2];
+		String month = (splitD[1].length() == 1) ? _ZERO_STR + splitD[1] : splitD[1];
+		String day = (splitD[0].length() == 1) ? _ZERO_STR + splitD[0] : splitD[0];
+		
+		return convertStringToDate(day + StringPool.FORWARD_SLASH + month + StringPool.FORWARD_SLASH + year, _NORMAL_DATE);
+	}
+	
 	private static Log _log = LogFactoryUtil.getLog(APIDateTimeUtils.class);
 
 }

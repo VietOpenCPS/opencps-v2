@@ -299,16 +299,16 @@ public class DateTimeUtils {
 					String.valueOf(Math.abs(diffMinutes)));
 		}
 
-		if (time > 0) {
+//		if (time > 0) {
 //			format = LanguageUtil.get(locale, EARLY) + StringPool.SPACE
 //					+ format.trim();
-		} else if (time < 0) {
+//		} else if (time < 0) {
 //			format = LanguageUtil.get(locale, LATE) + StringPool.SPACE
 //					
 //					+ format.trim();
-		} else {
+//		} else {
 //			format = LanguageUtil.get(locale, ONTIME) + format.trim();
-		}
+//		}
 
 		return format;
 	}

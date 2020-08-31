@@ -120,11 +120,11 @@ public class DossierDocumentManagementImpl implements DossierDocumentManagement 
 							String epay = paymentConfig.getEpaymentConfig();
 							JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
 							String paymentReturnUrl = StringPool.BLANK;
-							String paymentMerchantSecureKey = StringPool.BLANK;
+//							String paymentMerchantSecureKey = StringPool.BLANK;
 							if (jsonObject.has("paymentReturnUrl"))
 								paymentReturnUrl = jsonObject.getString("paymentReturnUrl");
 							if (jsonObject.has("paymentMerchantSecureKey"));
-							paymentMerchantSecureKey =	jsonObject.getString("paymentMerchantSecureKey");
+							String paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
 							jsonData.put("paymentReturnUrl",paymentReturnUrl);
 							jsonData.put("paymentMerchantSecureKey",paymentMerchantSecureKey);
 						}

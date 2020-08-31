@@ -267,6 +267,7 @@
 		<field name="govAgencies" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="fileTemplateId" type="long" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DeliverableTypeRole">
 		<field name="uuid" type="String" />
@@ -1324,6 +1325,7 @@
 		<field name="registerBookCode" type="String">
 			<hint name="max-length">100</hint>
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessPlugin">
 		<field name="uuid" type="String" />

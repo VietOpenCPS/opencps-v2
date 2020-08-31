@@ -206,13 +206,13 @@ public class DigitalSignatureActionsImpl implements DigitalSignatureActions{
 						.getHeight() > 0) ? bufferedImage
 						.getHeight() : 80;
 				float llx = textLocation.getAnchorX();
-				float urx = llx + signatureImageWidth / 3;
+				float urx = llx + (float) signatureImageWidth / 3;
 
 				float lly = textLocation.getPageURY()
 						- textLocation.getAnchorY()
-						- signatureImageHeight / 3;
+						- (float) signatureImageHeight / 3;
 
-				float ury = lly + signatureImageHeight / 3;
+				float ury = lly + (float) signatureImageHeight / 3;
 
 //				inHash = signer.computeHash(new Rectangle(llx, lly , urx, ury), 1);
 //				inHash = signer.computeHash(

@@ -62,7 +62,19 @@ import javax.xml.bind.annotation.XmlType;
     "stepName",
     "stepInstruction",
     "payload",
-    "dueDate"
+    "dueDate",
+    "syncActionCode",
+    "dossierId",
+    "groupId",
+    "userName",
+    "modifiedDate",
+    "serviceProcessId",
+    "previousActionId",
+    "fromStepCode",
+    "sequenceNo",
+    "nextActionId",
+    "dossierDocumentId",
+    "dossierNo"
 })
 public class DossierActionModel {
 
@@ -81,6 +93,114 @@ public class DossierActionModel {
     protected String stepInstruction;
     protected String payload;
     protected String dueDate;
+    protected String syncActionCode;
+    protected Long dossierId;
+    protected Long groupId;
+    protected String userName;
+    protected String modifiedDate;
+    protected Long serviceProcessId;
+    protected Long previousActionId;
+    protected String fromStepCode;
+    protected String sequenceNo;
+    protected Long nextActionId;
+    protected Long dossierDocumentId;
+    protected String dossierNo;
+
+    public String getDossierNo() {
+        return dossierNo;
+    }
+
+    public void setDossierNo(String dossierNo) {
+        this.dossierNo = dossierNo;
+    }
+
+    public String getSyncActionCode() {
+        return syncActionCode;
+    }
+
+    public void setSyncActionCode(String syncActionCode) {
+        this.syncActionCode = syncActionCode;
+    }
+
+    public Long getDossierId() {
+        return dossierId;
+    }
+
+    public void setDossierId(Long dossierId) {
+        this.dossierId = dossierId;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(String modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public Long getServiceProcessId() {
+        return serviceProcessId;
+    }
+
+    public void setServiceProcessId(Long serviceProcessId) {
+        this.serviceProcessId = serviceProcessId;
+    }
+
+    public Long getPreviousActionId() {
+        return previousActionId;
+    }
+
+    public void setPreviousActionId(Long previousActionId) {
+        this.previousActionId = previousActionId;
+    }
+
+    public String getFromStepCode() {
+        return fromStepCode;
+    }
+
+    public void setFromStepCode(String fromStepCode) {
+        this.fromStepCode = fromStepCode;
+    }
+
+    public String getSequenceNo() {
+        return sequenceNo;
+    }
+
+    public void setSequenceNo(String sequenceNo) {
+        this.sequenceNo = sequenceNo;
+    }
+
+    public Long getNextActionId() {
+        return nextActionId;
+    }
+
+    public void setNextActionId(Long nextActionId) {
+        this.nextActionId = nextActionId;
+    }
+
+    public Long getDossierDocumentId() {
+        return dossierDocumentId;
+    }
+
+    public void setDossierDocumentId(Long dossierDocumentId) {
+        this.dossierDocumentId = dossierDocumentId;
+    }
 
     /**
      * Gets the value of the dossierActionId property.

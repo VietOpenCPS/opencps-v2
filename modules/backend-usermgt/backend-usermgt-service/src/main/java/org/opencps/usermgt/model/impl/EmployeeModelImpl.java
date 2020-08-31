@@ -95,7 +95,8 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			{ "fileCertPath", Types.VARCHAR },
 			{ "fileSignPath", Types.VARCHAR },
 			{ "jobPosTitle", Types.VARCHAR },
-			{ "scope", Types.VARCHAR }
+			{ "scope", Types.VARCHAR },
+			{ "workingUnitId", Types.BIGINT }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -128,9 +129,10 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		TABLE_COLUMNS_MAP.put("fileSignPath", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("jobPosTitle", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("workingUnitId", Types.BIGINT);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(255) null,fullName VARCHAR(1024) null,title VARCHAR(1024) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(255) null,mobile VARCHAR(255) null,email VARCHAR(512) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(512) null,fileSignPath VARCHAR(512) null,jobPosTitle VARCHAR(75) null,scope VARCHAR(128) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_employee (uuid_ VARCHAR(75) null,employeeId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,employeeNo VARCHAR(255) null,fullName VARCHAR(1024) null,title VARCHAR(1024) null,gender INTEGER,birthdate DATE null,telNo VARCHAR(255) null,mobile VARCHAR(255) null,email VARCHAR(512) null,workingStatus INTEGER,mappingUserId LONG,mainJobPostId LONG,photoFileEntryId LONG,recruitDate DATE null,leaveDate DATE null,fileCertId LONG,fileSignId LONG,fileCertPath VARCHAR(512) null,fileSignPath VARCHAR(512) null,jobPosTitle VARCHAR(75) null,scope VARCHAR(128) null,workingUnitId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_employee";
 	public static final String ORDER_BY_JPQL = " ORDER BY employee.employeeNo ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_employee.employeeNo ASC";
@@ -223,6 +225,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		attributes.put("fileSignPath", getFileSignPath());
 		attributes.put("jobPosTitle", getJobPosTitle());
 		attributes.put("scope", getScope());
+		attributes.put("workingUnitId", getWorkingUnitId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -398,6 +401,12 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 		if (scope != null) {
 			setScope(scope);
+		}
+
+		Long workingUnitId = (Long)attributes.get("workingUnitId");
+
+		if (workingUnitId != null) {
+			setWorkingUnitId(workingUnitId);
 		}
 	}
 
@@ -880,6 +889,16 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	}
 
 	@Override
+	public long getWorkingUnitId() {
+		return _workingUnitId;
+	}
+
+	@Override
+	public void setWorkingUnitId(long workingUnitId) {
+		_workingUnitId = workingUnitId;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				Employee.class.getName()));
@@ -944,6 +963,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		employeeImpl.setFileSignPath(getFileSignPath());
 		employeeImpl.setJobPosTitle(getJobPosTitle());
 		employeeImpl.setScope(getScope());
+		employeeImpl.setWorkingUnitId(getWorkingUnitId());
 
 		employeeImpl.resetOriginalValues();
 
@@ -1206,12 +1226,14 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			employeeCacheModel.scope = null;
 		}
 
+		employeeCacheModel.workingUnitId = getWorkingUnitId();
+
 		return employeeCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(57);
+		StringBundler sb = new StringBundler(59);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1269,6 +1291,8 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 		sb.append(getJobPosTitle());
 		sb.append(", scope=");
 		sb.append(getScope());
+		sb.append(", workingUnitId=");
+		sb.append(getWorkingUnitId());
 		sb.append("}");
 
 		return sb.toString();
@@ -1276,7 +1300,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(88);
+		StringBundler sb = new StringBundler(91);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.usermgt.model.Employee");
@@ -1394,6 +1418,10 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 			"<column><column-name>scope</column-name><column-value><![CDATA[");
 		sb.append(getScope());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>workingUnitId</column-name><column-value><![CDATA[");
+		sb.append(getWorkingUnitId());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1448,6 +1476,7 @@ public class EmployeeModelImpl extends BaseModelImpl<Employee>
 	private String _fileSignPath;
 	private String _jobPosTitle;
 	private String _scope;
+	private long _workingUnitId;
 	private long _columnBitmask;
 	private Employee _escapedModel;
 }

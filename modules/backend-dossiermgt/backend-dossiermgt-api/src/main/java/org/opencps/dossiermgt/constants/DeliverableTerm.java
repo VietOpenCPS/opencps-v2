@@ -21,6 +21,8 @@ public class DeliverableTerm {
 	public static final String FILE_ATTACHS = "fileAttachs";
 	public static final String FILE_ATTACH = "fileAttach";
 	public static final String FILE_ENTRY_ID = "fileEntryId";
+	public static final String FORM_SCRIPT_FILE_ID = "formScriptFileId";
+	public static final String FORM_REPORT_FILE_ID = "formReportFileId";
 	
 	public static final String DELIVERABLE_STATE_VALID = "1";
 	public static final String DELIVERABLE_STATE_INVALID = "2";
@@ -39,4 +41,22 @@ public class DeliverableTerm {
 	public static final int DELIVERABLE_STATE_INVALID_INT = 2;
 	public static final String SO_CHUNG_CHI = "so_chung_chi";
 	public static final String NGAY_KY_CC = "ngay_ky_cc";
+	
+	// add by phuchn
+	public static final String HO_TEN = "hoten";
+	public static final String NAM_SINH = "ngay.thang.nam";
+	public static final String SO_QD = "soquyetdinh"; 
+	public static final String NGAY_QD = "ngayquyetdinh";
+	public static final String CHE_DO_TC = "chedo_text";
+	public static final String DON_VI_HCD = "donvi";
+	public static final String DON_VI_QD = "Đơn vị ra quyết định";
+	public static final String CMND = "applicantIdNo";
+	public static final String NGAY = "ngay";
+	public static final String THANG = "thang";
+	public static final String NAM = "nam";
+	public static final String NGAYSINH_SEARCH = "ngaysinhSearch";
+	public static final String NGAY_SINH = "ngaysinh";
+	public static final String NGAY_QD_SEARCH = "ngayquyetdinhSearch";
+	public static final String ISSUE_DATE_SEARCH = "issueDateSearch";
+	
 }

@@ -11,12 +11,12 @@ import java.util.Date;
 
 public class DueDatePhaseUtil {
 
-	public static String ALL_DAY = "allDay";
-	public static String WORK_DAY = "workDay";
-	public static String DAY_OF_WEEK = "dayOfWeek";
-	public static String DAY_OF_MONTH = "dayOfMonth";
-	public static String MONTH = "month";
-	public static String DUEDATE_PHASE = "dueDatePhase";
+	public static final String ALL_DAY = "allDay";
+	public static final String WORK_DAY = "workDay";
+	public static final String DAY_OF_WEEK = "dayOfWeek";
+	public static final String DAY_OF_MONTH = "dayOfMonth";
+	public static final String MONTH = "month";
+	public static final String DUEDATE_PHASE = "dueDatePhase";
 
 	int dateOption;
 	long groupId;

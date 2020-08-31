@@ -157,4 +157,31 @@ public class DossierLogActionsImpl implements DossierLogActions {
 		return result;
 
 	}
+
+	@Override
+	public JSONObject getRevisionLogByGroupId(long groupId, long companyId ,Sort[] sorts, int start, int end, LinkedHashMap<String, Object> params, ServiceContext serviceContext) {
+
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		Hits hits = null;
+
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(companyId);
+
+		try {
+
+			hits = DossierLocalServiceUtil.searchLucene(params, sorts, start, end, searchContext);
+
+			result.put(ConstantUtils.DATA, hits.toList());
+
+			long total = DossierLocalServiceUtil.countLucene(params, searchContext);
+
+			result.put(ConstantUtils.TOTAL, total);
+
+		} catch (Exception e) {
+			_log.error(e);
+		}
+
+		return result;
+	}
 }

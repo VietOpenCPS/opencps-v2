@@ -51,6 +51,7 @@ public class ProcessOptionSoap implements Serializable {
 		soapModel.setSubmissionNote(model.getSubmissionNote());
 		soapModel.setSampleCount(model.getSampleCount());
 		soapModel.setRegisterBookCode(model.getRegisterBookCode());
+		soapModel.setStatus(model.getStatus());
 
 		return soapModel;
 	}
@@ -247,6 +248,14 @@ public class ProcessOptionSoap implements Serializable {
 		_registerBookCode = registerBookCode;
 	}
 
+	public int getStatus() {
+		return _status;
+	}
+
+	public void setStatus(int status) {
+		_status = status;
+	}
+
 	private String _uuid;
 	private long _processOptionId;
 	private long _groupId;
@@ -265,4 +274,5 @@ public class ProcessOptionSoap implements Serializable {
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
+	private int _status;
 }

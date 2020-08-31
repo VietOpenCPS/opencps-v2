@@ -273,6 +273,11 @@ public class ServerConfigLocalServiceImpl extends ServerConfigLocalServiceBaseIm
 		object.setProtocol(objectData.getString(ServerConfigTerm.PROTOCOL));
 		object.setConfigs(objectData.getString(ServerConfigTerm.CONFIGS));
 		object.setLastSync(new Date(objectData.getLong(ServerConfigTerm.LAST_SYNC)));
+		object.setActive(objectData.getBoolean(ServerConfigTerm.ACTIVE));
+
+		if (ServerConfigTerm.EMAIL_CONFIG_PT.equals(objectData.getString(ServerConfigTerm.PROTOCOL))) {
+			object.setGroupId(0l);
+		}
 
 		serverConfigPersistence.update(object);
 

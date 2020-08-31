@@ -72,6 +72,7 @@ public class EmployeeTerm {
 	public static final String SCOPES_SEARCH = "scopesSearch";
 
 	public static final String SCOPE = "scope";
+	public static final String _FIRSTSCOPE = "_firstscope";
 
 	// sortable
 	public static final String EMPLOYEE_ID_SORTABLE = "employeeId_sortable";

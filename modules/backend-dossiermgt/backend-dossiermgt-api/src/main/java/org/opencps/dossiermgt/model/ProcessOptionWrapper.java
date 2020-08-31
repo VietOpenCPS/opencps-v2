@@ -78,6 +78,7 @@ public class ProcessOptionWrapper implements ProcessOption,
 		attributes.put("submissionNote", getSubmissionNote());
 		attributes.put("sampleCount", getSampleCount());
 		attributes.put("registerBookCode", getRegisterBookCode());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -190,6 +191,12 @@ public class ProcessOptionWrapper implements ProcessOption,
 
 		if (registerBookCode != null) {
 			setRegisterBookCode(registerBookCode);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -361,6 +368,16 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public long getServiceProcessId() {
 		return _processOption.getServiceProcessId();
+	}
+
+	/**
+	* Returns the status of this process option.
+	*
+	* @return the status of this process option
+	*/
+	@Override
+	public int getStatus() {
+		return _processOption.getStatus();
 	}
 
 	/**
@@ -617,6 +634,16 @@ public class ProcessOptionWrapper implements ProcessOption,
 	@Override
 	public void setServiceProcessId(long serviceProcessId) {
 		_processOption.setServiceProcessId(serviceProcessId);
+	}
+
+	/**
+	* Sets the status of this process option.
+	*
+	* @param status the status of this process option
+	*/
+	@Override
+	public void setStatus(int status) {
+		_processOption.setStatus(status);
 	}
 
 	/**

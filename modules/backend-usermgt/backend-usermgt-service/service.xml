@@ -138,7 +138,8 @@
 		<column name="fileSignPath" type="String" />
 		<column name="jobPosTitle" type="String" />
 		<column name="scope" type="String" />
-		
+		<column name="workingUnitId" type="long" />
+
 		<!-- Order -->
 		<order by="asc">
 			<order-column name="employeeNo" />

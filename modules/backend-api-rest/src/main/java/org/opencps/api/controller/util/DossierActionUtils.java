@@ -9,6 +9,7 @@ import java.util.Map;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.dossier.model.ActionExecutedModel;
 import org.opencps.api.dossier.model.ListContacts;
+import org.opencps.api.dossier.model.UserModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionModel;
 import org.opencps.api.dossieraction.model.DossierActionNextActionReturnFiles;
 import org.opencps.api.dossieraction.model.DossierActionNextActioncreateFiles;
@@ -19,6 +20,9 @@ import org.opencps.api.dossieraction.model.DossierNextActionModel;
 import org.opencps.api.dossieraction.model.DossierPayLoadModel;
 import org.opencps.api.dossieraction.model.ReceivingModel;
 import org.opencps.api.dossiertemplate.model.DossierTemplatePartDataModel;
+import org.opencps.api.serviceprocess.model.ProcessStepDataModel;
+import org.opencps.api.serviceprocess.model.RoleDataModel;
+import org.opencps.api.user.model.UserResults;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
@@ -434,6 +438,7 @@ public class DossierActionUtils {
 				JSONArray createFiles = jsonData.getJSONArray(DossierActionTerm.CREATE_FILES);
 				List<DossierFile> returnFiles =
 					(List<DossierFile>) jsonData.get(DossierActionTerm.RETURN_FILES);
+				List<ProcessStepRole> lstProcesStepRole = (List<ProcessStepRole>) jsonData.get(ProcessActionTerm.PROCESS_STEP_ROLE);
 
 				DossierActionPaymentModel payment =
 					new DossierActionPaymentModel();
@@ -555,6 +560,7 @@ public class DossierActionUtils {
 				if (lstUser != null && lstUser.size() > 0) {
 					boolean moderator = false;
 					int assigned = 0;
+					String roleCode = "";
 					long[] jobPosIds = new long[lstUser.size()];
 					int count = 0;
 					long[] mUserIds = new long[lstUser.size()];
@@ -611,6 +617,11 @@ public class DossierActionUtils {
 									assigned = GetterUtil.getInteger(
 										attr.get(ProcessStepRoleTerm.ASSIGNED));
 								}
+								if (attr.containsKey(
+										ProcessStepRoleTerm.ROLE_CODE)) {
+									 roleCode = GetterUtil.getString(
+											attr.get(ProcessStepRoleTerm.ROLE_CODE));
+								}
 							}
 
 							modelUser.setUserId(userId);
@@ -621,9 +632,9 @@ public class DossierActionUtils {
 							// else {
 							// modelUser.setUserName(user.getFullName());
 							// }
-
 							modelUser.setModerator(moderator);
 							modelUser.setAssigned(assigned);
+							modelUser.setRoleCode(roleCode);
 							// Check JobPostTitle
 							if (Validator.isNotNull(employee.getJobPosTitle())) {
 								modelUser.setJobPosTitle(employee.getJobPosTitle());
@@ -654,6 +665,60 @@ public class DossierActionUtils {
 								outputUsers.add(modelUser);
 							}
 						}
+					}
+					List<RoleDataModel> outputProcess = new ArrayList<>();
+					if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
+						for (ProcessStepRole item : lstProcesStepRole) {
+							List<org.opencps.api.user.model.UserModel> lstOutputUser = new ArrayList();
+							if(item.getModerator()) {
+								RoleDataModel roleDataModel = new RoleDataModel();
+								roleDataModel.setProcessStepId(String.valueOf(item.getProcessStepId()));
+								roleDataModel.setRoleId((int) item.getRoleId());
+								roleDataModel.setModerator(String.valueOf(item.getModerator()));
+								roleDataModel.setRoleCode(item.getRoleCode());
+								if(Validator.isNotNull(item.getRoleCode())){
+									JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId,roleDataModel.getRoleCode());
+									roleDataModel.setRoleName(jobPos.getTitle());
+								}
+								if(lstUser !=null && lstUser.size() >0){
+									for (User user : lstUser) {
+										Employee employee =
+												mapEmps.get(user.getUserId());
+										if (employee.getFullName().toLowerCase().contains(roleDataModel.getRoleName().toLowerCase())) {
+											org.opencps.api.user.model.UserModel userModel = new org.opencps.api.user.model.UserModel();
+											userModel.setUserId(user.getUserId());
+
+											if (Validator.isNotNull(employee)) {
+												userModel.setUserName(employee.getFullName());
+											}
+											if (Validator.isNotNull(employee.getJobPosTitle())) {
+												userModel.setJobPosTitle(employee.getJobPosTitle());
+											} else {
+												if (Validator.isNotNull(user.getJobTitle())) {
+													userModel.setJobPosTitle(user.getJobTitle());
+												} else {
+													if (mapJps.containsKey(employee.getMainJobPostId())) {
+														String jobPosTitle = mapJps.get(employee.getMainJobPostId());
+														userModel.setJobPosTitle(jobPosTitle);
+													}
+												}
+											}
+											userModel.setModerator(false);
+											userModel.setAssigned(0);
+											lstOutputUser.add(userModel);
+											if(lstOutputUser !=null && lstOutputUser.size() >0){
+												roleDataModel.setLstUser(lstOutputUser);
+											}
+											outputProcess.add(roleDataModel);
+										}
+									}
+								}
+
+							}
+						}
+					}
+					if (lstProcesStepRole != null && lstProcesStepRole.size() > 0) {
+						model.setPostProcessStepRole(outputProcess);
 					}
 										
 //					for (User user : lstUser) {

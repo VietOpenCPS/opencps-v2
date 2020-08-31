@@ -93,13 +93,13 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 				if (aplc != null) {
 					String profile = aplc.getProfile();
 					_log.info("profile: "+profile);
-					String oldSecrect = StringPool.BLANK;
+					//String oldSecrect = StringPool.BLANK;
 					if (Validator.isNotNull(profile)) {
 						JSONObject jsonProfile = JSONFactoryUtil.createJSONObject(profile);
 						//
 						if (jsonProfile.has(UserRegisterTerm.MAT_KHAU)
 								&& Validator.isNotNull(jsonProfile.getString(UserRegisterTerm.MAT_KHAU))) {
-							oldSecrect = jsonProfile.getString(UserRegisterTerm.MAT_KHAU);
+							String oldSecrect = jsonProfile.getString(UserRegisterTerm.MAT_KHAU);
 							_log.info("oldSecrect: "+oldSecrect);
 						}
 					}
@@ -118,7 +118,7 @@ public class ActiveUserLGSPScheduler extends BaseMessageListener {
 							
 							_log.info("accessToken: " + accessToken);
 							_log.info("tokenType: " + tokenType);
-							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
+//							String authStrEnc = tokenType + StringPool.SPACE + accessToken;
 
 							//boolean flagChange = RegisterLGSPUtils.changePassLGSP(oldSecrect, aplc.getTmpPass(), contactEmail, authStrEnc);
 							boolean flagChange = false;

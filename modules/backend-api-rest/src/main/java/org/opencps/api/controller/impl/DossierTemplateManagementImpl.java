@@ -158,19 +158,20 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 			}
 
 			result = DossierTemplateUtils.mappingForTemplateGetDetail(dossierTemplate);
-			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-			cc.setPrivate(true);	
+//			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//			CacheControl cc = new CacheControl();
+//			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//			cc.setPrivate(true);
 	
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.ok(result);
-				builder.tag(etag);
-			}
+//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.ok(result);
+//				builder.tag(etag);
+//			}
 		    
-		    builder.cacheControl(cc);
-		    return builder.build();
+//		    builder.cacheControl(cc);
+//		    return builder.build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -502,21 +503,21 @@ public class DossierTemplateManagementImpl implements DossierTemplateManagement 
 
 //			result.setValue(content);
 
-			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id + StringPool.UNDERLINE + partNo).hashCode()));
-		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-			cc.setPrivate(true);	
+//			EntityTag etag = new EntityTag(String.valueOf((groupId + StringPool.UNDERLINE + id + StringPool.UNDERLINE + partNo).hashCode()));
+//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
+//			CacheControl cc = new CacheControl();
+//			cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
+//			cc.setPrivate(true);
 	
-		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-				builder = Response.ok(content);
-				builder.tag(etag);
-			}
+//		    if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
+//				builder = Response.ok(content);
+//				builder.tag(etag);
+//			}
 		    
-		    builder.cacheControl(cc);
-		    return builder.build();
+//		    builder.cacheControl(cc);
+//		    return builder.build();
 		    
-//			return Response.status(HttpURLConnection.HTTP_OK).entity(content).build();
+			return Response.status(HttpURLConnection.HTTP_OK).entity(content).build();
 //			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerializeDeep(result)).build();
 
 		} catch (Exception e) {

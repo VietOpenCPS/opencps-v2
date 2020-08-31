@@ -119,7 +119,7 @@ public interface DeliverableLocalService extends BaseLocalService,
 		SearchContext searchContext) throws ParseException, SearchException;
 
 	public long countLucene(String keywords, String groupId, String type,
-		Map<String, String> mapFilter, SearchContext searchContext)
+		Map<String, String> mapFilter, SearchContext searchContext, long userId)
 		throws ParseException, SearchException;
 
 	/**
@@ -216,6 +216,9 @@ public interface DeliverableLocalService extends BaseLocalService,
 	*/
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
 		Projection projection);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Deliverable fetchByGID_AID(long groupId, String applicantIdNo);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Deliverable fetchByGID_DID(long groupId, long dossierId);
@@ -392,7 +395,8 @@ public interface DeliverableLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Hits searchLucene(String keywords, String groupId, String type,
 		Map<String, String> mapFilter, Sort[] sorts, int start, int end,
-		SearchContext searchContext) throws ParseException, SearchException;
+		SearchContext searchContext, long userId)
+		throws ParseException, SearchException;
 
 	public void setOccurs(List<BooleanClauseOccur> occurs);
 

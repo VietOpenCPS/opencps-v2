@@ -85,7 +85,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			{ "instructionNote", Types.VARCHAR },
 			{ "submissionNote", Types.VARCHAR },
 			{ "sampleCount", Types.BIGINT },
-			{ "registerBookCode", Types.VARCHAR }
+			{ "registerBookCode", Types.VARCHAR },
+			{ "status", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -108,9 +109,10 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		TABLE_COLUMNS_MAP.put("submissionNote", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sampleCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("registerBookCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null)";
+	public static final String TABLE_SQL_CREATE = "create table opencps_processoption (uuid_ VARCHAR(75) null,processOptionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(255) null,createDate DATE null,modifiedDate DATE null,serviceConfigId LONG,optionOrder INTEGER,optionName VARCHAR(500) null,autoSelect VARCHAR(500) null,dossierTemplateId LONG,serviceProcessId LONG,instructionNote TEXT null,submissionNote TEXT null,sampleCount LONG,registerBookCode VARCHAR(100) null,status INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table opencps_processoption";
 	public static final String ORDER_BY_JPQL = " ORDER BY processOption.processOptionId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY opencps_processoption.processOptionId ASC";
@@ -192,6 +194,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		attributes.put("submissionNote", getSubmissionNote());
 		attributes.put("sampleCount", getSampleCount());
 		attributes.put("registerBookCode", getRegisterBookCode());
+		attributes.put("status", getStatus());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -307,6 +310,12 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 		if (registerBookCode != null) {
 			setRegisterBookCode(registerBookCode);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -628,6 +637,16 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	}
 
 	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		_status = status;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				ProcessOption.class.getName()));
@@ -682,6 +701,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		processOptionImpl.setSubmissionNote(getSubmissionNote());
 		processOptionImpl.setSampleCount(getSampleCount());
 		processOptionImpl.setRegisterBookCode(getRegisterBookCode());
+		processOptionImpl.setStatus(getStatus());
 
 		processOptionImpl.resetOriginalValues();
 
@@ -871,12 +891,14 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			processOptionCacheModel.registerBookCode = null;
 		}
 
+		processOptionCacheModel.status = getStatus();
+
 		return processOptionCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -914,6 +936,8 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 		sb.append(getSampleCount());
 		sb.append(", registerBookCode=");
 		sb.append(getRegisterBookCode());
+		sb.append(", status=");
+		sb.append(getStatus());
 		sb.append("}");
 
 		return sb.toString();
@@ -921,7 +945,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(58);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("<model><model-name>");
 		sb.append("org.opencps.dossiermgt.model.ProcessOption");
@@ -999,6 +1023,10 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 			"<column><column-name>registerBookCode</column-name><column-value><![CDATA[");
 		sb.append(getRegisterBookCode());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>status</column-name><column-value><![CDATA[");
+		sb.append(getStatus());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -1041,6 +1069,7 @@ public class ProcessOptionModelImpl extends BaseModelImpl<ProcessOption>
 	private String _submissionNote;
 	private long _sampleCount;
 	private String _registerBookCode;
+	private int _status;
 	private long _columnBitmask;
 	private ProcessOption _escapedModel;
 }

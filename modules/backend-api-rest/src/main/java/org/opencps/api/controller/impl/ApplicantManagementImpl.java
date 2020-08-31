@@ -216,7 +216,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				throw new Exception("Notification template not found");
 			}
 
-			ApplicantActions actions = new ApplicantActionsImpl();
+			//ApplicantActions actions = new ApplicantActionsImpl();
 			Applicant applicant = null;
 			String payloadString;
 			String contactEmail;
@@ -1260,7 +1260,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 			if (syncUserLGSP) {
 
-				String strProfile = StringPool.BLANK;
+				//String strProfile = null;
 				//String strToken = ApplicantUtils.getTokenNewLGSP();
 				//if (Validator.isNotNull(strToken)) {
 					JSONObject jsonToken = LGSPRestfulUtils.createTokenLGSP("Bearer");
@@ -1275,7 +1275,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 						_log.info("refreshToken: " + refreshToken);
 
 						// Dang ky tk cong dan
-						strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail, applicantIdNo,
+						String strProfile = ApplicantUtils.registerNewLGSP("Bearer", accessToken, contactEmail, applicantIdNo,
 								applicantName, contactTelNo, StringPool.BLANK, input.getPassword());
 						_log.info("strProfile: " + strProfile);
 						if (Validator.isNull(strProfile) || "ERROR".equals(strProfile)) {
@@ -1291,12 +1291,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 
 								if ("DUPLICATE".equals(strResult)) {
 									_log.info("CO VAO 222222 ???");
-									Applicant applicant = actions.registerApproved(serviceContext, groupId, applicantName,
+									actions.registerApproved(serviceContext, groupId, applicantName,
 											applicantIdType, applicantIdNo, applicantIdDate, contactEmail, address,
 											cityCode, cityName, districtCode, districtName, wardCode, wardName, contactName,
 											contactTelNo, StringPool.BLANK, input.getPassword());
 
-									result = ApplicantUtils.mappingToApplicantModel(applicant);
+									//result = ApplicantUtils.mappingToApplicantModel(applicant);
 
 									return Response.status(HttpURLConnection.HTTP_CONFLICT).entity("{User exit!}").build();
 								} else if ("SUCCESSFUL".equals(strResult)) {
@@ -1821,7 +1821,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String contactName = HtmlUtil.escape(input.getContactName());
 			String contactTelNo = HtmlUtil.escape(input.getContactTelNo());
 			String contactEmail = HtmlUtil.escape(input.getContactEmail());
-			String applicantIdDate = input.getApplicantIdDate();
+//			String applicantIdDate = input.getApplicantIdDate();
 
 			if (Validator.isNotNull(input.getCityCode())) {
 				cityName = getDictItemName(groupId, ADMINISTRATIVE_REGION, input.getCityCode());
@@ -1850,6 +1850,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.debug(e);
 			}
 
 			//String endPoitBaseUrl = "https://lgsp.dongthap.gov.vn/taikhoan/1.0.0";
@@ -1967,6 +1968,7 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				sc.init(null, trustAllCerts, new SecureRandom());
 				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 			} catch (Exception e) {
+				_log.debug(e);
 			}
 	
 			try {
@@ -2025,78 +2027,81 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String sqlQuery,
 			String fields, boolean isAllowedUpdate, long replaceGroupId) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("sqlQuery:" +sqlQuery);
-		_log.info("fields:" +fields);
-		try {
-			Class.forName(driveClassName);
-			Statement stmt = null;
-			ResultSet rs = null;
-			Connection con = null;
-			int resultt = 0;
-			try {
-				con = DriverManager.getConnection(connectionUrl, dbUser, dbSecret);
-				stmt = con.createStatement();
-				rs = stmt.executeQuery(sqlQuery);
-				JSONArray fieldsImport = JSONFactoryUtil.createJSONArray(fields);
-				while (rs.next()) {
-					try {
-						resultt++;
-						JSONObject objectData =JSONFactoryUtil.createJSONObject();
-						for(int i=0; i < fieldsImport.length(); i++) {
-							JSONObject j = fieldsImport.getJSONObject(i);
-							if (ConvertDossierFromV1Dot9Utils.TEMP_TYPE_DATE.equals(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_TYPE))) {
-								Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
-								if (date == null) {
-									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), 0l); 
-								} else {
-									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), date); 
-								}
-							} else {
-								objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
-							}
-						}
-						objectData.put(Field.GROUP_ID, groupId);
-						objectData.put(Field.USER_ID, user.getUserId());
-						objectData.put(Field.COMPANY_ID, company.getCompanyId());
-						objectData.put(ApplicantTerm.MAPPINGUSERID, 0l);
-						objectData.put(ApplicantTerm.LOCK_, false);
-						objectData.put(ApplicantTerm.LOCK_, false);
-						objectData.put(ApplicantTerm.ACTIVATION_CODE, ApplicantTerm.NOT_CHECK_DUPLICATE);
-						objectData.put(ApplicantTerm.NOT_CHECK_DUPLICATE, true);
-						_log.debug(objectData);
-						if (isAllowedUpdate) {
-							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, ApplicantTerm.APPLICANTIDNO);
-							if (Validator.isNotNull(applicant)) {
-								objectData.put(ApplicantTerm.APPLICANT_ID, applicant.getApplicantId());
-							}
-						}
-						ApplicantLocalServiceUtil.adminProcessData(objectData);
-					} catch (Exception e) {
-						e.printStackTrace();
-						resultt--;
-					}
-					
-				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + resultt).build();
-			}
-			catch (Exception e) {
-				_log.debug(e);
-			}
-			finally {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (rs != null) {
-					rs.close();
-				}
-			}
-		}
-		catch (Exception ex) {
-			_log.debug(ex);
-		}
-
-		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity(ConstantUtils.API_JSON_ERROR).build();
+		int result = 0;
+		//Statement stmt = null;
+		//ResultSet rs = null;
+//		try {
+//			Class.forName(driveClassName);
+//			try (Connection con = DriverManager.getConnection(
+//				connectionUrl, dbUser,
+//				dbSecret)) {
+//				stmt = con.createStatement();
+//				rs = stmt.executeQuery(sqlQuery);
+//
+//				JSONArray fieldsImport = JSONFactoryUtil.createJSONArray(fields);
+//				while (rs.next()) {
+//					try {
+//						result++;
+//						JSONObject objectData =JSONFactoryUtil.createJSONObject();
+//						for(int i=0; i < fieldsImport.length(); i++) {
+//							JSONObject j = fieldsImport.getJSONObject(i);
+//							if (ConvertDossierFromV1Dot9Utils.TEMP_TYPE_DATE.equals(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_TYPE))) {
+//								Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
+//								if (date == null) {
+//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), 0l); 
+//								} else {
+//									objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), date); 
+//								}
+//							} else {
+//								objectData.put(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME), rs.getString(j.getString(ConvertDossierFromV1Dot9Utils.TEMP_NAME)));
+//							}
+//						}
+//						objectData.put(Field.GROUP_ID, groupId);
+//						objectData.put(Field.USER_ID, user.getUserId());
+//						objectData.put(Field.COMPANY_ID, company.getCompanyId());
+//						objectData.put(ApplicantTerm.MAPPINGUSERID, 0l);
+//						objectData.put(ApplicantTerm.LOCK_, false);
+//						objectData.put(ApplicantTerm.LOCK_, false);
+//						objectData.put(ApplicantTerm.ACTIVATION_CODE, ApplicantTerm.NOT_CHECK_DUPLICATE);
+//						objectData.put(ApplicantTerm.NOT_CHECK_DUPLICATE, true);
+//						_log.debug(objectData);
+//						if (isAllowedUpdate) {
+//							Applicant applicant = ApplicantLocalServiceUtil.fetchByF_APLC_GID(groupId, ApplicantTerm.APPLICANTIDNO);
+//							if (Validator.isNotNull(applicant)) {
+//								objectData.put(ApplicantTerm.APPLICANT_ID, applicant.getApplicantId());
+//							}
+//						}
+//						ApplicantLocalServiceUtil.adminProcessData(objectData);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						result--;
+//					}
+//					
+//				}
+//			}
+//			catch (Exception e) {
+//				_log.debug(e);
+//			}
+//		}
+//		catch (Exception ex) {
+//			_log.info(ex);
+//		}
+//		finally {
+//			try {
+//				if (stmt != null) {
+//					stmt.close();
+//				}
+//				if (rs != null) {
+//					rs.close();
+//				}
+//			}
+//			catch (Exception ex) {
+//				_log.info(ex);
+//			}
+//		}
+		return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + result).build();
 	}
 	
 	@Override
@@ -2105,54 +2110,59 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			String driveClassName, String connectionUrl, String dbUser,
 			String dbSecret, String sqlQuery) {
 
-		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		//long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.info("sqlQuery:" +sqlQuery);
-		try {
-			Class.forName(driveClassName);
-			Statement stmt = null;
-			ResultSet rs = null;
-			Connection con = null;
-			int resultt = 0;
-			try {
-				con = DriverManager.getConnection(connectionUrl, dbUser, dbSecret);
-				stmt = con.createStatement();
-				rs = stmt.executeQuery(sqlQuery);
-				while (rs.next()) {
-					try {
-						resultt++;
-						ApplicantActions actions = new ApplicantActionsImpl();
-						Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(ApplicantTerm.APPLICANTIDDATE));
-						String applicantIdDate = date != null ? new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
-								new Date(date)) : null;
-						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), 
-								rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE), applicantIdDate,
-								rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO),
-								rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),rs.getString(ApplicantTerm.DISTRICTCODE),
-								rs.getString(ApplicantTerm.WARDCODE), rs.getString(ApplicantTerm.CONTACTNAME), rs.getString(ApplicantTerm.PROFILE), true, serviceContext);
-					} catch (Exception e) {
-						_log.debug(e);
-						resultt--;
-					}
-					
-				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + resultt).build();
-			}
-			catch (Exception e) {
-				_log.debug(e);
-			}
-			finally {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (rs != null) {
-					rs.close();
-				}
-			}
-		}
-		catch (Exception ex) {
-			_log.debug(ex);
-		}
+		int result = 0;
+		//Statement stmt = null;
+		//ResultSet rs = null;
+//		try {
+//			Class.forName(driveClassName);
+//			try (Connection con = DriverManager.getConnection(
+//				connectionUrl, dbUser,
+//				dbSecret)) {
+//				stmt = con.createStatement();
+//				rs = stmt.executeQuery(sqlQuery);
+//	
+//				while (rs.next()) {
+//					try {
+//						result++;
+//						ApplicantActions actions = new ApplicantActionsImpl();
+//						Long date = ConvertDossierFromV1Dot9Utils.convertStringToDate(rs.getString(ApplicantTerm.APPLICANTIDDATE));
+//						String applicantIdDate = date != null ? new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE).format(
+//								new Date(date)) : null;
+//						actions.importApplicantDB(user.getUserId(), groupId, rs.getString(ApplicantTerm.APPLICANTIDNO), 
+//								rs.getString(ApplicantTerm.APPLICANTNAME), rs.getString(ApplicantTerm.APPLICANTIDTYPE), applicantIdDate,
+//								rs.getString(ApplicantTerm.CONTACTEMAIL), rs.getString(ApplicantTerm.CONTACTTELNO),
+//								rs.getString(ApplicantTerm.ADDRESS), rs.getString(ApplicantTerm.CITYCODE),rs.getString(ApplicantTerm.DISTRICTCODE),
+//								rs.getString(ApplicantTerm.WARDCODE), rs.getString(ApplicantTerm.CONTACTNAME), rs.getString(ApplicantTerm.PROFILE), true, serviceContext);
+//					} catch (Exception e) {
+//						_log.debug(e);
+//						result--;
+//					}
+//					
+//				}
+//			}
+//			catch (Exception e) {
+//				_log.debug(e);
+//			}
+//		}
+//		catch (Exception ex) {
+//			_log.info(ex);
+//		}
+//		finally {
+//			try {
+//				if (stmt != null) {
+//					stmt.close();
+//				}
+//				if (rs != null) {
+//					rs.close();
+//				}
+//			}
+//			catch (Exception ex) {
+//				_log.info(ex);
+//			}
+//		}
 
-		return Response.status(HttpURLConnection.HTTP_MULT_CHOICE).entity(ConstantUtils.API_JSON_ERROR).build();
+		return Response.status(HttpURLConnection.HTTP_OK).entity(ConstantUtils.API_JSON_TRUE_EMPTY + result).build();
 	}
 }

@@ -68,10 +68,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
 import org.opencps.datamgt.utils.DictCollectionUtils;
-import org.opencps.dossiermgt.action.util.ConstantUtils;
-import org.opencps.dossiermgt.action.util.DossierMgtUtils;
-import org.opencps.dossiermgt.action.util.DossierNumberGenerator;
-import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
+import org.opencps.dossiermgt.action.util.*;
 import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierStatusConstants;
@@ -1483,8 +1480,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		// set receivedDate
 		dossier.setReceiveDate(now);
 
-		dossier.setDossierNote(option.getInstructionNote());
-		dossier.setSubmissionNote(option.getSubmissionNote());
+		dossier.setDossierNote(option != null ? option.getInstructionNote() : StringPool.BLANK);
+		dossier.setSubmissionNote(option != null ? option.getSubmissionNote() : StringPool.BLANK);
 		dossier.setApplicantNote(applicantNote);
 		dossier.setBriefNote(briefNote);
 		// dossier.setDossierNo(dossierNo);
@@ -1548,7 +1545,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		String dossierRef = DossierNumberGenerator.generateDossierNumber(
 				groupId, dossier.getCompanyId(), dossierId,
-				option.getProcessOptionId(),
+				option != null ? option.getProcessOptionId() : 0,
 				serviceProcess != null
 						? serviceProcess.getDossierNoPattern() : StringPool.BLANK,
 				params);
@@ -2588,11 +2585,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier getByRef(long groupId, String refId) {
 
-		try {
-			return dossierPersistence.findByG_REF(groupId, refId);
-		} catch (NoSuchDossierException e) {
-			return null;
-		}
+		return dossierPersistence.fetchByG_REF(groupId, refId);
+
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -2952,6 +2946,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String groupDossierIdHs =
 				GetterUtil.getString(params.get(DossierTerm.GROUP_DOSSIER_ID_HS));
 		String matokhai = GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI));
+		String processAgency = params.get(DossierTerm.PROCESS_AGENCY_METADATA) !=null
+				? GetterUtil.getString(params.get(DossierTerm.PROCESS_AGENCY_METADATA)) : null;
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
@@ -2994,7 +2990,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3162,6 +3158,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		String matokhai =  params.get(DossierTerm.MA_TO_KHAI) != null
 				? GetterUtil.getString(params.get(DossierTerm.MA_TO_KHAI))
 				: null;
+		String processAgency = params.get(DossierTerm.PROCESS_AGENCY_METADATA) != null
+				? GetterUtil.getString(params.get(DossierTerm.PROCESS_AGENCY_METADATA))
+				: null;
 
 		Indexer<Dossier> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
@@ -3202,7 +3201,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				groupDossierId, assignedUserId, assignedUserIdSearch, delegateType, documentNo,
 				documentDate, strSystemId, viaPostal, backlogDate, backlog, dossierCounterSearch,
 				delegate, vnpostalStatus, fromViaPostal,
-				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai);
+				booleanCommon,donvigui,donvinhan,groupDossierIdHs,matokhai,processAgency);
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
@@ -3332,7 +3331,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String documentNo, String documentDate, String strSystemId,
 			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
 			String delegate, String vnpostalStatus, Integer fromViaPostal,
-			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai)
+			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai,
+			String processAgency)
 			throws ParseException {
 
 		//Dossier Counter
@@ -3382,13 +3382,19 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.FROM_VIA_POSTAL);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		if (Validator.isNotNull(processAgency)) {
+			MultiMatchQuery query =
+					new MultiMatchQuery(processAgency);
+			query.addField(DossierTerm.PROCESS_AGENCY_METADATA);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
 		if (Validator.isNotNull(donvigui)) {
 			String[] keywordArr = donvigui.split(StringPool.COMMA);
 			BooleanQuery subQuery = new BooleanQueryImpl();
 			for (String key : keywordArr) {
 				MultiMatchQuery query = new MultiMatchQuery(key);
 				query.addField(DossierTerm.DON_VI_GUI);
-				subQuery.add(query, BooleanClauseOccur.SHOULD);
+				subQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
@@ -3516,9 +3522,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-		System.out.println("====online 3511==" + online);
-		_log.info("====online 3511==" + online);
-		_log.debug("====online 3511==" + online);
+//		System.out.println("====online 3511==" + online);
+//		_log.info("====online 3511==" + online);
+//		_log.debug("====online 3511==" + online);
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 			query.addField(DossierTerm.ONLINE);
@@ -4398,21 +4404,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 
 		if (Validator.isNotNull(domain)) {
-			String[] lstDomain = StringUtil.split(domain);
-			if (lstDomain != null && lstDomain.length > 0) {
+			String[] arrayDomain = StringUtil.split(domain);
+			if (arrayDomain != null && arrayDomain.length > 0) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
-				for (int i = 0; i < lstDomain.length; i++) {
-					MultiMatchQuery query = new MultiMatchQuery(lstDomain[i]);
-					query.addField(DossierTerm.DOMAIN_CODE);
+				for(String id : arrayDomain){
+					String domainCodeSearch = SpecialCharacterUtils.splitSpecial(id);
+					MultiMatchQuery query = new MultiMatchQuery(domainCodeSearch);
+					query.addField(DossierTerm.DOMAIN_CODE_SEARCH);
 					subQuery.add(query, BooleanClauseOccur.SHOULD);
 				}
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 			}
-			else {
-				MultiMatchQuery query = new MultiMatchQuery(domain);
-				query.addFields(DossierTerm.DOMAIN_CODE);
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-			}
+//			else {
+//				MultiMatchQuery query = new MultiMatchQuery(domain);
+//				query.addFields(DossierTerm.DOMAIN_CODE);
+//				booleanQuery.add(query, BooleanClauseOccur.MUST);
+//			}
 		}   		
 
 		// LamTV: Process search LIKE
@@ -4721,11 +4728,22 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			query.addField(DossierTerm.DELEGATE_TYPE);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+
+		//query like
 		if (Validator.isNotNull(documentNo)) {
-			MultiMatchQuery query =
-					new MultiMatchQuery(String.valueOf(documentNo));
-			query.addField(DossierTerm.DOCUMENT_NO);
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			BooleanQuery queryBool = new BooleanQueryImpl();
+			String[] subQuerieArr = new String[] { DossierTerm.DOCUMENT_NO_SEARCH };
+
+			String[] keyDocument = documentNo.split(StringPool.SPACE);
+			for (String fieldSearch : subQuerieArr) {
+				BooleanQuery query = new BooleanQueryImpl();
+				for (String key : keyDocument) {
+					WildcardQuery wildQuery = new WildcardQueryImpl(fieldSearch, key.toLowerCase() + StringPool.STAR);
+					query.add(wildQuery, BooleanClauseOccur.MUST);
+				}
+				queryBool.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(documentDate)) {
 			Date filterDocumentDate = APIDateTimeUtils.convertStringToDate(
@@ -6311,11 +6329,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier getByDossierNo(long groupId, String dossierNo) {
 
-		try {
-			return dossierPersistence.findByG_DN(groupId, dossierNo);
-		} catch (NoSuchDossierException e) {
-			return null;
-		}
+		return dossierPersistence.fetchByG_DN(groupId, dossierNo);
 	}
 
 	// super_admin Generators
@@ -7733,6 +7747,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	@Override
 	public List<Dossier> fetchByD_OR_D(long[] dossierId) {
 		return dossierPersistence.findByD_OR_D(dossierId);
+	}
+
+	@Override
+	public List<Dossier> fetchByDOC_OR_NO(String[] documentNo) {
+		return dossierPersistence.findByDOC_OR_NO(documentNo);
 	}
 
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {

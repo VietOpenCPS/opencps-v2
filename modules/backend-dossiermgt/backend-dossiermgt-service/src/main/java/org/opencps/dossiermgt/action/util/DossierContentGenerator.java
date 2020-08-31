@@ -1,6 +1,5 @@
 package org.opencps.dossiermgt.action.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -10,17 +9,23 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
+import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ProcessOption;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.dossiermgt.service.ProcessOptionLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
@@ -201,6 +206,7 @@ public class DossierContentGenerator {
 			try {
 				 jsonObject = JSONFactoryUtil.createJSONObject(JSONFactoryUtil.looseSerialize(dossier));
 			}catch (Exception e){
+				_log.debug(e);
 				return e.getMessage();
 			}
 			for (Map.Entry<String, String> entry : patternContentMaps.entrySet()) {
@@ -209,30 +215,45 @@ public class DossierContentGenerator {
 				String[] textSplit = StringUtil.split(patternContent, StringPool.AT);
 				if (textSplit == null || textSplit.length < 2) {
 					Iterator<String> keys = jsonObject.keys();
-					while (keys.hasNext()) {
-						String key = keys.next();
-						String value = jsonObject.getString(key);
-						if(key.equals(patternContent)){
-							if(key.equals(DossierTerm.DOSSIER_FILE)){
-								List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
-								if(lstFile != null && !lstFile.isEmpty()){
-									String fileName = "";
-									int countFile = 0;
-									if(lstFile.size() > 1) {
-										for (DossierFile item : lstFile) {
+					if(patternContent.equals(DossierTerm.DOSSIER_FILE)){
+						List<DossierFile> lstFile = DossierFileLocalServiceUtil.findByDID_GROUP(dossier.getGroupId(), dossierId);
+						if(lstFile != null && !lstFile.isEmpty()){
+							String fileName = "";
+							int countFile = 0;
+							if(lstFile.size() > 1) {
+								for (DossierFile item : lstFile) {
+									try {
+										DossierPart dossierPart = DossierPartLocalServiceUtil.fetchByTemplatePartNo(item.getGroupId(), item.getDossierTemplateNo(), item.getDossierPartNo());
+										if (item.getDossierPartType() == 1) {
 											countFile++;
-											fileName  += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + "." + item.getDisplayName() + ConstantUtils.HTML_CLOSE_SPAN;
+											if (countFile > 1) {
+												fileName += " " + ConstantUtils.HTML_NEW_LINE;
+											}
+											fileName += ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + dossierPart.getPartName() +": " + item.getDisplayName() + " " + ConstantUtils.HTML_CLOSE_SPAN;
 										}
-										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
-									}else{
-										fileName = lstFile.get(0).getDisplayName();
-										submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+									} catch (Exception e) {
+										_log.debug(e);
 									}
 								}
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
+								break;
 							}else {
-								submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+								if ("1".equals(lstFile.get(0).getDossierPartType())) {
+									fileName = lstFile.get(0).getDisplayName();
+									submissionNotePattern = submissionNotePattern.replace(tmpKey, ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + fileName + "" + ConstantUtils.HTML_CLOSE_SPAN);
+									break;
+								}
+
 							}
-							break;
+						}
+					}else {
+						while (keys.hasNext()) {
+							String key = keys.next();
+							String value = jsonObject.getString(key);
+							if (key.equals(patternContent)) {
+								submissionNotePattern = submissionNotePattern.replace(tmpKey, value);
+								break;
+							}
 						}
 					}
 				} else {

@@ -18,26 +18,18 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.*;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -47,6 +39,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.opencps.dossiermgt.action.util.ConstantUtils;
+import org.opencps.dossiermgt.constants.ConstantsTerm;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierActionTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
@@ -322,6 +316,15 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+//		String dossierIds = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
+		String dossierNo = (String) params.get(DossierTerm.DOSSIER_NO);
+		String userName = (String) params.get(DossierTerm.USER_NAME);
+		String actionUser = (String) params.get(DossierTerm.ACTION_USER);
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
+
 
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
@@ -364,15 +367,56 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
-
-		String dossierId = String.valueOf((params.get(DossierActionTerm.DOSSIER_ID)));
-
-		if (Validator.isNotNull(dossierId)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierId);
-
-			query.addFields(DossierActionTerm.DOSSIER_ID);
-
+		if (Validator.isNotNull(dossierNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
+			query.addFields(DossierTerm.DOSSIER_NO);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(userName)) {
+			MultiMatchQuery query = new MultiMatchQuery(userName);
+			query.addFields(DossierTerm.USER_NAME);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(actionUser)) {
+			String actionUserArr[] = actionUser.split(StringPool.SPACE);
+			BooleanQuery query = new BooleanQueryImpl();
+			for(String arr :actionUserArr){
+				WildcardQuery wildQuery = new WildcardQueryImpl(
+						DossierTerm.ACTION_USER_SEARCH,
+						StringPool.STAR + arr.toLowerCase() + StringPool.STAR);
+				query.add(wildQuery,BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+
+		}
+
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -385,6 +429,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 		String keywords = (String) params.get(Field.KEYWORD_SEARCH);
 		String groupId = (String) params.get(Field.GROUP_ID);
+		String dossierNo = String.valueOf((params.get(DossierActionTerm.DOSSIER_NO)));
+		String createDateStart =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_START));
+		String createDateEnd =
+				GetterUtil.getString(params.get(DossierTerm.CREATE_DATE_END));
+
 		Indexer<DossierAction> indexer = IndexerRegistryUtil.nullSafeGetIndexer(DossierAction.class);
 
 		searchContext.addFullQueryEntryClassName(CLASS_NAME);
@@ -423,15 +473,39 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
-
-		String dossierId = String.valueOf(params.get(DossierActionTerm.DOSSIER_ID));
-
-		if (Validator.isNotNull(dossierId)) {
-			MultiMatchQuery query = new MultiMatchQuery(dossierId);
-
-			query.addFields(DossierActionTerm.DOSSIER_ID);
-
+		if (Validator.isNotNull(dossierNo)) {
+			MultiMatchQuery query = new MultiMatchQuery(dossierNo);
+			query.addFields(DossierTerm.DOSSIER_NO);
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		String createDateStartFilter =
+				createDateStart + ConstantsTerm.HOUR_START;
+		String createDateEndFilter = createDateEnd + ConstantsTerm.HOUR_END;
+		if (Validator.isNotNull(createDateStart)) {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						createDateEndFilter, true, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, createDateStartFilter,
+						null, true, false);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
+		}
+		else {
+			if (Validator.isNotNull(createDateEnd)) {
+				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+						DossierTerm.CREATE_DATE, null, createDateEndFilter,
+						false, true);
+
+				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -627,11 +701,12 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 			User userAction = userLocalService.getUser(context.getUserId());
 			userId = userAction.getUserId();
 			fullName = userAction.getFullName();
+			_log.info("Log info updateDossierAction : " + userId + " --- fullName :" + fullName);
 		}
 
 		if (dossierActionId == 0) {
 			dossierActionId = counterLocalService.increment(DossierAction.class.getName());
-
+			_log.info("Log info updateDossierAction : " + dossierActionId);
 			object = dossierActionPersistence.create(dossierActionId);
 
 			// Add audit fields
@@ -671,6 +746,7 @@ public class DossierActionLocalServiceImpl extends DossierActionLocalServiceBase
 
 			Dossier dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 			dossier.setDossierActionId(dossierActionId);
+			_log.info("Log info updateDossierAction : " + userId + " --- fullName :" + fullName);
 			dossierPersistence.update(dossier);
 
 //			Indexer<Dossier> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);

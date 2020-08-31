@@ -1,7 +1,6 @@
 package org.opencps.statistic.rest.engine;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -35,7 +34,6 @@ import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.kernel.scheduler.StorageTypeAwareSchedulerEntryImpl;
-import org.opencps.statistic.model.OpencpsVotingStatistic;
 import org.opencps.statistic.rest.dto.GetVotingResultData;
 import org.opencps.statistic.rest.dto.GetVotingResultRequest;
 import org.opencps.statistic.rest.dto.GetVotingResultResponse;
@@ -54,17 +52,11 @@ import org.opencps.statistic.rest.facade.OpencpsCallVotingRestFacadeImpl;
 import org.opencps.statistic.rest.util.DossierStatisticConfig;
 import org.opencps.statistic.rest.util.DossierStatisticConstants;
 import org.opencps.statistic.rest.util.StatisticDataUtil;
-import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 @Component(immediate = true, service = VotingStatisticScheduler.class)
 public class VotingStatisticScheduler extends BaseMessageListener {
@@ -73,8 +65,8 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 	protected Log _log = LogFactoryUtil.getLog(VotingStatisticScheduler.class);
 	
 	public static final int GROUP_TYPE_SITE = 1;
-	private static final String SERVER_NO_DVC = "SERVER_DVC_VOTING_STATISTIC";
-	private static final String PROTOCOL_DVC = "API_SYNC_VOTING_STATISTIC";
+//	private static final String SERVER_NO_DVC = "SERVER_DVC_VOTING_STATISTIC";
+//	private static final String PROTOCOL_DVC = "API_SYNC_VOTING_STATISTIC";
 
 	OpencpsCallRestFacade<GetVotingResultRequest, GetVotingResultResponse> callVotingResultService = new OpencpsCallVotingRestFacadeImpl();
 
@@ -209,62 +201,62 @@ public class VotingStatisticScheduler extends BaseMessageListener {
 		isRunning = false;
 	}
 
-	private void syncDataToDVC() throws Exception{
-		try {
-			System.out.println("Sync voting statistic from MCDT to DVC...");
-			//Sync voting statistic from MCDT to DVC
-			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(SERVER_NO_DVC);
-			if (serverConfig == null) {
-				return;
-			}
-			JSONObject serverConfigJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
-
-			//Create payload
-			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100);
-			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
-			JSONObject vote;
-			for(OpencpsVotingStatistic oneStatistic: lists){
-				if (oneStatistic.getVotingCode() == null
-						|| oneStatistic.getVotingCode().isEmpty()
-						|| oneStatistic.getMonth() == 0) {
-					continue;
-				}
-				vote = JSONFactoryUtil.createJSONObject();
-				vote.put("companyId", oneStatistic.getCompanyId());
-				vote.put("groupId", oneStatistic.getGroupId());
-				vote.put("userId", oneStatistic.getUserId());
-				vote.put("userName", oneStatistic.getUserName());
-				vote.put("month", oneStatistic.getMonth());
-				vote.put("year", oneStatistic.getYear());
-				vote.put("votingSubject", oneStatistic.getVotingSubject());
-				vote.put("totalVoted", oneStatistic.getTotalVoted());
-				vote.put("veryGoodCount", oneStatistic.getVeryGoodCount());
-				vote.put("goodCount", oneStatistic.getGoodCount());
-				vote.put("badCount", oneStatistic.getBadCount());
-				vote.put("percentVeryGood", oneStatistic.getPercentVeryGood());
-				vote.put("percentGood", oneStatistic.getPercentGood());
-				vote.put("percentBad", oneStatistic.getPercentBad());
-				vote.put("govAgencyCode", oneStatistic.getGovAgencyCode());
-				vote.put("govAgencyName", oneStatistic.getGovAgencyName());
-				vote.put("domainCode", oneStatistic.getDomainCode());
-				vote.put("domainName", oneStatistic.getDomainName());
-				vote.put("votingCode", oneStatistic.getVotingCode());
-				vote.put("totalCount", oneStatistic.getTotalCount());
-				voteDatas.put(vote);
-			}
-
-			//Call to DVC
-			RestTemplate restTemplate = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<String> request = new HttpEntity<>(voteDatas.toString(), headers);
-			String urlSync = serverConfigJson.getString("url") + "/votings/syncStatisticVoteToDVC";
-			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
-			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
+//	private void syncDataToDVC(){
+//		try {
+//			System.out.println("Sync voting statistic from MCDT to DVC...");
+//			//Sync voting statistic from MCDT to DVC
+//			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByCode(SERVER_NO_DVC);
+//			if (serverConfig == null) {
+//				return;
+//			}
+//			JSONObject serverConfigJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());
+//
+//			//Create payload
+//			List<OpencpsVotingStatistic> lists = OpencpsVotingStatisticLocalServiceUtil.getOpencpsVotingStatistics(0, 100);
+//			JSONArray voteDatas = JSONFactoryUtil.createJSONArray();
+//			JSONObject vote;
+//			for(OpencpsVotingStatistic oneStatistic: lists){
+//				if (oneStatistic.getVotingCode() == null
+//						|| oneStatistic.getVotingCode().isEmpty()
+//						|| oneStatistic.getMonth() == 0) {
+//					continue;
+//				}
+//				vote = JSONFactoryUtil.createJSONObject();
+//				vote.put("companyId", oneStatistic.getCompanyId());
+//				vote.put("groupId", oneStatistic.getGroupId());
+//				vote.put("userId", oneStatistic.getUserId());
+//				vote.put("userName", oneStatistic.getUserName());
+//				vote.put("month", oneStatistic.getMonth());
+//				vote.put("year", oneStatistic.getYear());
+//				vote.put("votingSubject", oneStatistic.getVotingSubject());
+//				vote.put("totalVoted", oneStatistic.getTotalVoted());
+//				vote.put("veryGoodCount", oneStatistic.getVeryGoodCount());
+//				vote.put("goodCount", oneStatistic.getGoodCount());
+//				vote.put("badCount", oneStatistic.getBadCount());
+//				vote.put("percentVeryGood", oneStatistic.getPercentVeryGood());
+//				vote.put("percentGood", oneStatistic.getPercentGood());
+//				vote.put("percentBad", oneStatistic.getPercentBad());
+//				vote.put("govAgencyCode", oneStatistic.getGovAgencyCode());
+//				vote.put("govAgencyName", oneStatistic.getGovAgencyName());
+//				vote.put("domainCode", oneStatistic.getDomainCode());
+//				vote.put("domainName", oneStatistic.getDomainName());
+//				vote.put("votingCode", oneStatistic.getVotingCode());
+//				vote.put("totalCount", oneStatistic.getTotalCount());
+//				voteDatas.put(vote);
+//			}
+//
+//			//Call to DVC
+//			RestTemplate restTemplate = new RestTemplate();
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_JSON);
+//			HttpEntity<String> request = new HttpEntity<>(voteDatas.toString(), headers);
+//			String urlSync = serverConfigJson.getString("url") + "/votings/syncStatisticVoteToDVC";
+//			ResponseEntity<String> response = restTemplate.postForEntity(urlSync, request , String.class );
+//			System.out.print("Status sync data vote to DVC: " + response.getStatusCodeValue());
+//		} catch (Exception e) {
+//			_log.debug(e);
+//		}
+//	}
 
 	private void processUpdateStatistic(long groupId, int month, int year, GetVotingResultRequest payload,
 			StatisticEngineUpdateAction engineUpdateAction, ServiceDomainResponse serviceDomainResponse)

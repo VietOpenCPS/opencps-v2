@@ -906,7 +906,7 @@ public class DictCollectionActions implements DictcollectionInterface {
 		return dictItem;
 	}
 
-	public Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);
+	private final Log _log = LogFactoryUtil.getLog(DictCollectionActions.class);
 
 	@Override
 	public DictItem getDictItemByItemCode(

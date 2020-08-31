@@ -896,7 +896,7 @@ public class BookingManagementImpl implements BookingManagement{
 				_log.info("GetterUtil.getInteger(splitBookingDate[0]): "+cal.get(Calendar.DATE));
 				_log.info("GetterUtil.getInteger(splitBookingDate[1]): "+cal.get(Calendar.MONTH));
 				_log.info("GetterUtil.getInteger(splitBookingDate[2]): "+cal.get(Calendar.YEAR));
-				_log.info("splitBookingDate.length: "+ splitBookingDate.length);
+				_log.info("splitBookingDate.length: "+ (splitBookingDate != null ? splitBookingDate.length : null));
 				
 				if (splitBookingDate != null && splitBookingDate.length == 3 && GetterUtil.getInteger(splitBookingDate[0]) == cal.get(Calendar.DATE)
 						&& GetterUtil.getInteger(splitBookingDate[1]) == (cal.get(Calendar.MONTH) + 1)
