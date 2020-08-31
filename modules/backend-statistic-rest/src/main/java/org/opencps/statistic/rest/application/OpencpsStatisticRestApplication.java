@@ -2361,7 +2361,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		cc.setMaxAge(60);
 		cc.setPrivate(true);
 		
-		String govAgencyCode = null;
+		String govAgencyCode = query.getAgency();
 		int start = query.getStart();
 		int end = query.getEnd();
 		int month = query.getMonth();
@@ -2390,20 +2390,22 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 		
 		String collectionCode = query.getCollectionCode();
-		String parentCode = query.getParentAgency();
-		
-		String remoteUser = request.getRemoteUser(); 
-		if (remoteUser != null) {
-			long userId = GetterUtil.getLong(remoteUser);
-			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-			if (employee != null) {
-				String scope = employee.getScope();
-				if (scope!= null && scope.split(",").length > 1) {
-					String[] govAgency = scope.split(",");
-					scope = govAgency[0];
-				}
-				govAgencyCode = scope;
-			}			
+		String parentCode = query.getParentCode();
+		String govAgencyCodeV2 = null;				
+		String remoteUser = request.getRemoteUser(); 				
+		if (parentCode.contentEquals("scope")) {
+			if (remoteUser != null) {
+				long userId = GetterUtil.getLong(remoteUser);
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null) {
+					String scope = employee.getScope();
+					if (scope!= null && scope.split(",").length > 1) {
+						String[] govAgency = scope.split(",");
+						scope = govAgency[0];
+					}
+					govAgencyCodeV2 = scope;
+				}			
+			}
 		}
 
 
@@ -2573,10 +2575,10 @@ public class OpencpsStatisticRestApplication extends Application {
 				validInput(month, year, start, end);
 				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
 				dossierStatisticRequest.setDomain(domain);
-				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCodeV2)) {
 					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
 				} else {
-					dossierStatisticRequest.setGovAgencyCode(govAgencyCode);
+					dossierStatisticRequest.setGovAgencyCode(govAgencyCodeV2);
 				}
 				dossierStatisticRequest.setSystem(system);
 				dossierStatisticRequest.setGroupId(groupId);
@@ -2592,19 +2594,19 @@ public class OpencpsStatisticRestApplication extends Application {
 							groupId);
 					// check govAgencycode is parentCode or not
 					if (dc != null && !StringUtils.isEmpty(dossierStatisticRequest.getGovAgencyCode())) {
-						DictItem dt = DictItemLocalServiceUtil.fetchByF_dictItemCode(govAgencyCode,
+						DictItem dt = DictItemLocalServiceUtil.fetchByF_dictItemCode(govAgencyCodeV2,
 								dc.getDictCollectionId(), groupId);
 						if (dt != null) {
 							List<DictItem> lstChildDI = DictItemLocalServiceUtil
 									.findByF_dictCollectionId_parentItemId(dc.getDictCollectionId(),
 											dt.getDictItemId());
 							if (lstChildDI.size() > 0) {
-								parentCode = govAgencyCode;
+								parentCode = govAgencyCodeV2;
 							}
 						}
 					}
 					// parentCode
-					if (Validator.isNotNull(parentCode)) {
+					if (Validator.isNotNull(parentCode) && !parentCode.contentEquals("scope")) {
 						if (dc != null) {
 							DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(parentCode,
 									dc.getDictCollectionId(), groupId);
@@ -2653,12 +2655,12 @@ public class OpencpsStatisticRestApplication extends Application {
 					}else if (!StringUtils.isEmpty(dossierStatisticRequest.getGovAgencyCode())){
 						statisticResponse = dossierStatisticFinderService
 								.finderDossierStatisticSystem(dossierStatisticRequest);
-						data = createRecordTotal(statisticResponse, groupId, month, year, govAgencyCode, domain, system);
+						data = createRecordTotal(statisticResponse, groupId, month, year, dossierStatisticRequest.getGovAgencyCode(), domain, system);
 						if (data != null) {
 							statisticResponse.getDossierStatisticData().add(0, data);
 						}
 						statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
-						statisticResponse.setAgency(govAgencyCode);
+						statisticResponse.setAgency(dossierStatisticRequest.getGovAgencyCode());
 					}
 				}
 				
