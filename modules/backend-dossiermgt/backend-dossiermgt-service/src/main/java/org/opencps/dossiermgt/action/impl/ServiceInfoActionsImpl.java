@@ -314,45 +314,69 @@ public class ServiceInfoActionsImpl implements ServiceInfoActions {
 		}catch (Exception e){
 			_log.info("EXCEPTION :" + e.getMessage());
 		}
+		if(jsonObject.length() > 0) {
+			for (Document doc : documents) {
+				String itemCode = "";
+				if (Validator.isNotNull(doc.get(DictItemTerm.ITEM_CODE))) {
+					itemCode = doc.get(DictItemTerm.ITEM_CODE);
+				}
+				long admCount = 0;
 
-		for (Document doc : documents) {
-			String itemCode = "";
-			if(Validator.isNotNull(doc.get(DictItemTerm.ITEM_CODE))){
-				itemCode = doc.get(DictItemTerm.ITEM_CODE);
-			}
-			long admCount = 0;
+				//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+				//Administration Code
+				String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+				String domainCodeSearch = StringPool.BLANK;
+				if (Validator.isNotNull(domainCode)) {
+					domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+				}
+				params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+				params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
 
-			//params.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-			//Administration Code
-			String domainCode = doc.get(DictItemTerm.ITEM_CODE);
-			String domainCodeSearch = StringPool.BLANK;
-			if (Validator.isNotNull(domainCode)) {
-				domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
-			}
-			params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
-			params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
-
-			admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
-			if (admCount != 0) {
-				JSONObject elm = JSONFactoryUtil.createJSONObject();
-				if(Validator.isNotNull(domainCodes)){
-					String domainCodeArr[] = domainCodes.split(StringPool.COMMA);
-					for(String code : domainCodeArr){
-						if(code.equals(itemCode)){
-							count = admCount + count;
-							elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
-							elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
-							elm.put(ConstantUtils.VALUE_COUNT, admCount);
-							data.put(elm);
-							break;
+//				admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+//				if (admCount != 0) {
+					JSONObject elm = JSONFactoryUtil.createJSONObject();
+					if (Validator.isNotNull(domainCodes)) {
+						String domainCodeArr[] = domainCodes.split(StringPool.COMMA);
+						for (String code : domainCodeArr) {
+							if (code.equals(itemCode)) {
+								count = admCount + count;
+								elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+								elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+								elm.put(ConstantUtils.VALUE_COUNT, admCount);
+								data.put(elm);
+								break;
+							}
 						}
 					}
+//				}
+
+//				result.put(ConstantUtils.TOTAL, count);
+				result.put(ConstantUtils.DATA, data);
+			}
+		}else {
+			for (Document doc : documents) {
+				long admCount = 0;
+
+				String domainCode = doc.get(DictItemTerm.ITEM_CODE);
+				String domainCodeSearch = StringPool.BLANK;
+				if (Validator.isNotNull(domainCode)) {
+					domainCodeSearch = SpecialCharacterUtils.splitSpecial(domainCode);
+				}
+				params.put(ServiceInfoTerm.DOMAIN_CODE_SEARCH, domainCodeSearch);
+				params.put(ServiceInfoTerm.PUBLIC_, Boolean.toString(true));
+
+				admCount = ServiceInfoLocalServiceUtil.countLucene(params, searchContext);
+				if (admCount != 0) {
+					count = admCount + count;
+					JSONObject elm = JSONFactoryUtil.createJSONObject();
+					elm.put(ServiceInfoTerm.DOMAIN_CODE, doc.get(DictItemTerm.ITEM_CODE));
+					elm.put(ServiceInfoTerm.DOMAIN_NAME, doc.get(DictItemTerm.ITEM_NAME));
+					elm.put(ConstantUtils.VALUE_COUNT, admCount);
+					data.put(elm);
 				}
 			}
-
 			result.put(ConstantUtils.TOTAL, count);
 			result.put(ConstantUtils.DATA, data);
-
 		}
 
 		return result;

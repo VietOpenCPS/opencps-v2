@@ -35,6 +35,7 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 	private static final String CONDITION_PUBLISH = "(q.publish = ?) AND";
 	private static final String CONDITION_QUESTION_TYPE = "(q.questionType = ?) AND";
 	private static final String CONDITION_SUB_DOMAIN_CODE = "(q.subDomainCode = ?) AND";
+	private static final String CONDITION_CONTENT = "(q.content like ?) AND";
 	private static final String CONDITION_ANSWER = "HAVING count(a.answerId) = ? ";
 	private static final String CONDITION_HAVE_ANSWER = "having count(a.answerId) > 0 ";
 	private static final String CONDITION_NOT_HAVE_ANSWER = "having count(a.answerId) = 0 ";
@@ -70,6 +71,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 		}
 			if (Validator.isNull(subDomainCode)) {
 				sql = StringUtil.replace(sql, CONDITION_SUB_DOMAIN_CODE, StringPool.BLANK);
+		}
+			if (Validator.isNull(keyword)) {
+				sql = StringUtil.replace(sql, CONDITION_CONTENT, StringPool.BLANK);
 		}
 
 		if (answer != null) {
@@ -116,6 +120,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNotNull(subDomainCode)) {
 				qPos.add(subDomainCode);
 		}
+			if (Validator.isNotNull(keyword)) {
+				qPos.add("%"+keyword+"%");
+			}
 			//
 			/* add publish parameter */
 			qPos.add(limit - start);
@@ -167,6 +174,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			if (Validator.isNull(subDomainCode)) {
 				sql = StringUtil.replace(sql, CONDITION_SUB_DOMAIN_CODE, StringPool.BLANK);
 			}
+			if (Validator.isNull(keyword)) {
+				sql = StringUtil.replace(sql, CONDITION_CONTENT, StringPool.BLANK);
+			}
 
 			if (answer != null) {
 				if (answer) {
@@ -215,6 +225,9 @@ public class QuestionFinderImpl extends QuestionFinderBaseImpl
 			/* add publish parameter */
 		if (Validator.isNotNull(subDomainCode)) {
 				qPos.add(subDomainCode);
+		}
+		if (Validator.isNotNull(keyword)) {
+				qPos.add("%"+keyword+"%");
 		}
 
 			List<Question> ls = (List<Question>) QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
