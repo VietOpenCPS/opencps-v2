@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 		"toSubmitDate", "online", "domain", "domainName", "applicantName", "applicantIdNo", "serviceName",
 		"fromReleaseDate", "toReleaseDate", "originality", "fromFinishDate", "toFinishDate", "fromReceiveNotDoneDate",
 		"toReceiveNotDoneDate", "fromStatisticDate", "toStatisticDate", "origin", "originDossierId", "time",
-		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency"})
+		"groupAgencyCode", "reporting", "reCalculate", "system", "groupCode", "parentAgency", "collectionCode"})
 @XmlRootElement(name = "DossierSearchModel")
 public class DossierSearchModel {
 
@@ -123,6 +123,8 @@ public class DossierSearchModel {
 	protected String groupCode;
 	@QueryParam(value = "parentAgency")
 	protected String parentAgency;
+	@QueryParam(value = "collectionCode")
+	protected String collectionCode;
 	
 	public String getGroupCode() {
 		return groupCode;
@@ -399,6 +401,12 @@ public class DossierSearchModel {
 	}
 	public void setSystem(String system) {
 		this.system = system;
+	}
+	public String getCollectionCode() {
+		return collectionCode;
+	}
+	public void setCollectionCode(String collectionCode) {
+		this.collectionCode = collectionCode;
 	}
 
 }
