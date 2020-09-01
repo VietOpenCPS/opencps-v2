@@ -169,7 +169,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String NOTIFICATION_TYPE = "notificationType";
 	private static final String ITEM_CODE = "itemCode";
 	private static final String DICT_COLLECTION_ID = "dictCollectionId";
-	private static final String DICT_COLLECTION_CODE = "dictCollectionCode";
+	private static final String DICT_COLLECTION_CODE = "collectionCode";
 	private static final String NOK = "NOK";
 
 	@Override
@@ -438,7 +438,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId, valueColumn);
 										if (Validator.isNotNull(jobPos)) {
 											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 										}
 										break;
 									}
@@ -447,17 +447,17 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(valueColumn, groupId);
 										if (Validator.isNotNull(dictGroup)) {
 											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 										}
 										break;
 									}
 								}else if (code.equals(CLASSNAME_DELIVERABLE)) {
 									if (keyColumn.equals(DELIVERABLE_CODE)) {
-//										Deliverable deliverable = DeliverableLocalServiceUtil.fetchDeliverableByUuidAndGroupId(valueColumn, groupId);
-//										if (Validator.isNotNull(dictGroup)) {
-//											messageError.put(STATUS, NOK);
-//											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
-//										}
+										Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DCODE(groupId,valueColumn);
+										if (Validator.isNotNull(deliverable)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
 										break;
 									}
 								}else if (code.equals(CLASSNAME_NOTIFICATIONTEMPLATE)) {
@@ -465,7 +465,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,valueColumn);
 										if (Validator.isNotNull(notificationtemplate)) {
 											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 										}
 										break;
 									}
@@ -474,7 +474,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(valueColumn,Long.valueOf(dictCollectionId),groupId);
 										if (Validator.isNotNull(dictItem)) {
 											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 										}
 										break;
 									}
@@ -484,7 +484,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 										DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(valueColumn,groupId);
 										if (Validator.isNotNull(dictCollection)) {
 											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(messageError.toJSONString()).build();
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
 										}
 										break;
 									}
