@@ -2393,7 +2393,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		String parentCode = query.getParentCode();
 		String govAgencyCodeV2 = null;				
 		String remoteUser = request.getRemoteUser(); 				
-		if (parentCode.contentEquals("scope")) {
+		if (parentCode != null && parentCode.contentEquals("scope")) {
 			if (remoteUser != null) {
 				long userId = GetterUtil.getLong(remoteUser);
 				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
