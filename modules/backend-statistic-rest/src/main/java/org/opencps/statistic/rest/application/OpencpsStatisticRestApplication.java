@@ -27,16 +27,11 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.BeanParam;
@@ -945,9 +940,13 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 					//
 					PersonResponse statisticResponse = new PersonResponse();
-					statisticResponse.setTotal(statisticDataList.size());
+					List<PersonStatisticData> statisticDataDistinct = statisticDataList.stream()
+							.filter( distinctByKey(p -> p.getEmployeeId()) )
+							.sorted(Comparator.comparing(p -> p.getEmployeeId()))
+							.collect(Collectors.toList());
+					statisticResponse.setTotal(statisticDataDistinct.size());
 					//statisticResponse.setDossierStatisticData(statisticDataList);
-					statisticResponse.setData(statisticDataList);
+					statisticResponse.setData(statisticDataDistinct);
 					if (statisticResponse != null) {
 						statisticResponse.setAgency(govAgencyCode);
 					}
@@ -2334,6 +2333,11 @@ public class OpencpsStatisticRestApplication extends Application {
 			jsonResult.put("value", "FAIL");
 			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
 		}
+	}
+	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+	{
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
 
 	private static final int LEVEL_3 = 3;
