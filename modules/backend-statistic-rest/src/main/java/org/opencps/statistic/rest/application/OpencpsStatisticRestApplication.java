@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataHandler;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -71,9 +72,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictGroup;
 import org.opencps.datamgt.model.DictItem;
 import org.opencps.datamgt.model.DictItemGroup;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
@@ -143,11 +146,14 @@ import org.opencps.statistic.rest.util.StatisticDataUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsDossierStatisticManualLocalServiceUtil;
 import org.opencps.statistic.service.OpencpsVotingStatisticLocalServiceUtil;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import opencps.statistic.common.webservice.exception.OpencpsServiceException;
 import opencps.statistic.common.webservice.exception.OpencpsServiceExceptionDetails;
@@ -2345,5 +2351,454 @@ public class OpencpsStatisticRestApplication extends Application {
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
 	public static final String UNRESOLVED = "unresolved";
+	
+	@GET
+	@Path("/bqp")
+	public Response searchDossierStatisticForBQP(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierSearchModel query, @Context Request requestCC, @Context HttpServletRequest request) {
+
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(60);
+		cc.setPrivate(true);
+		
+		String govAgencyCode = query.getAgency();
+		int start = query.getStart();
+		int end = query.getEnd();
+		int month = query.getMonth();
+		int year = query.getYear();
+		String domain = query.getDomain();
+		String system = query.getSystem();
+		if (Validator.isNull(system)) {
+			system = String.valueOf(0);
+		}
+		String fromStatisticDate = query.getFromStatisticDate();
+		String toStatisticDate = query.getToStatisticDate();
+		Integer reCalculate = query.getReCalculate();
+		if (reCalculate == null) {
+			reCalculate = 0;
+		}
+
+		if (start == 0)
+			start = QueryUtil.ALL_POS;
+
+		if (end == 0)
+			end = QueryUtil.ALL_POS;
+		
+		boolean calculate = true;
+		if (Validator.isNotNull(fromStatisticDate) ||Validator.isNotNull(toStatisticDate)) {
+			calculate = false;
+		}
+		
+		String collectionCode = query.getCollectionCode();
+		String parentCode = query.getParentCode();
+		String govAgencyCodeV2 = null;				
+		String remoteUser = request.getRemoteUser(); 				
+		if (parentCode != null && parentCode.contentEquals("scope")) {
+			if (remoteUser != null) {
+				long userId = GetterUtil.getLong(remoteUser);
+				Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+				if (employee != null) {
+					String scope = employee.getScope();
+					if (scope!= null && scope.split(",").length > 1) {
+						String[] govAgency = scope.split(",");
+						scope = govAgency[0];
+					}
+					govAgencyCodeV2 = scope;
+				}			
+			}
+		}
+
+
+		if (!calculate) {
+			String status = query.getStatus();
+			String substatus = query.getSubstatus();
+			String service = query.getService();
+			String template = query.getTemplate();
+			String originality = query.getOriginality();
+			String owner = query.getOwner();
+			String step = query.getStep();
+			String dossierIdNo = query.getDossierNo();
+
+			Date fromCalDate = null;
+			Date toCalDate = null;
+			if (Validator.isNotNull(fromStatisticDate)) {
+				Date fromDate = StatisticUtils.convertStringToDate(fromStatisticDate, StatisticUtils.DATE_FORMAT);
+				fromCalDate = StatisticUtils.getStartDay(fromDate);
+			}
+			if (Validator.isNotNull(toStatisticDate)) {
+				Date toDate = StatisticUtils.convertStringToDate(toStatisticDate, StatisticUtils.DATE_FORMAT);
+				toCalDate = StatisticUtils.getEndDay(toDate);
+			}
+
+			try {
+				GetDossierRequest payload = new GetDossierRequest();
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)) {
+					payload.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					payload.setGovAgencyCode(govAgencyCode);
+				}
+				payload.setGroupId(groupId);
+				payload.setStart(start);
+				payload.setEnd(end);
+				payload.setFromStatisticDate(fromStatisticDate);
+				payload.setToStatisticDate(toStatisticDate);
+				payload.setCalculate(calculate);
+				payload.setStatus(status);
+				payload.setSubstatus(substatus);
+				payload.setServiceCode(service);
+				payload.setTemplate(template);
+				payload.setOriginality(originality);
+				payload.setOwner(owner);
+				payload.setStep(step);
+				payload.setDossierNo(dossierIdNo);
+				payload.setOnlineStatistic(query.getOnline());
+				payload.setSystem(system);
+				
+				GetDossierResponse dossierResponse = new GetDossierResponse();
+						
+				if (OpenCPSConfigUtil.isStatisticMultipleServerEnable()) {
+					dossierResponse = callDossierRestService.callRestService(payload);
+				}
+				else {
+					DossierActions actions = new DossierActionsImpl();
+					Sort[] sorts = null;
+					sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+							Boolean.TRUE) };
+					LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+					params.put(Field.GROUP_ID, String.valueOf(groupId));
+					if (payload.isCalculate()) {
+						params.put(DossierTerm.YEAR, year);
+						params.put(DossierTerm.MONTH, month);				
+					}
+					else {
+						if (Validator.isNotNull(payload.getGovAgencyCode())) {
+							params.put(DossierTerm.AGENCYS, payload.getGovAgencyCode());
+						}
+						if (Validator.isNotNull(payload.getFromStatisticDate())) {
+							params.put(DossierTerm.FROM_STATISTIC_DATE, APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getFromStatisticDate()));
+						}
+						if (Validator.isNotNull(payload.getToStatisticDate())) {
+							params.put(DossierTerm.TO_STATISTIC_DATE, APIDateTimeUtils.convertNormalDateToLuceneDate(payload.getToStatisticDate()));
+						}				
+					}
+					params.put(DossierConstants.DOSSIER_STATUS, payload.getStatus());
+					params.put(DossierConstants.DOSSIER_SUB_STATUS, payload.getSubstatus());
+					params.put(DossierConstants.SERVICECODE, payload.getServiceCode());
+					params.put(DossierConstants.ONLINE, payload.getOnlineStatistic());
+					params.put(DossierConstants.ORIGINALITY, payload.getOriginality());
+					params.put(DossierConstants.TEMPLATE, payload.getTemplate());
+					params.put(DossierConstants.STEP, payload.getStep());
+					params.put(DossierConstants.DOSSIER_NO, payload.getDossierNo());
+					params.put(DossierConstants.SYSTEM, payload.getSystem());
+
+					params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+					params.put(DossierTerm.DOMAIN_CODE, domain);
+					
+					Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+					long companyId = company.getCompanyId(); 
+					
+					JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, QueryUtil.ALL_POS, QueryUtil.ALL_POS, new ServiceContext());
+					List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+					List<GetDossierData> dossierData = new ArrayList<>();
+					_log.debug("GET DOSSIER SIZE: " + datas.size());
+					for (Document doc : datas) {
+						GetDossierData model = new GetDossierData();
+						model.setGroupId(GetterUtil.getInteger(doc.get(Field.GROUP_ID)));
+						model.setServiceCode(doc.get(DossierTerm.SERVICE_CODE));
+						model.setGovAgencyCode(doc.get(DossierTerm.GOV_AGENCY_CODE));
+						model.setGovAgencyName(doc.get(DossierTerm.GOV_AGENCY_NAME));
+						if (Validator.isNotNull(doc.get(DossierTerm.RECEIVE_DATE))) {
+							Date receiveDate = APIDateTimeUtils.convertStringToDate(doc.get(DossierTerm.RECEIVE_DATE), APIDateTimeUtils._LUCENE_PATTERN);
+							model.setReceiveDate(APIDateTimeUtils.convertDateToString(receiveDate, APIDateTimeUtils._NORMAL_PARTTERN));
+						} else {
+							model.setReceiveDate(doc.get(DossierTerm.RECEIVE_DATE));
+						}
+						model.setDueDate(doc.get(DossierTerm.DUE_DATE));
+						model.setExtendDate(doc.get(DossierTerm.EXTEND_DATE));
+						model.setFinishDate(doc.get(DossierTerm.FINISH_DATE));
+						model.setReleaseDate(doc.get(DossierTerm.RELEASE_DATE));
+						model.setDossierStatus(doc.get(DossierTerm.DOSSIER_STATUS));
+						model.setDossierSubStatus(doc.get(DossierTerm.DOSSIER_SUB_STATUS));
+						model.setLockState(doc.get(DossierTerm.LOCK_STATE));
+						model.setDomainCode(doc.get(DossierTerm.DOMAIN_CODE));
+						model.setDomainName(doc.get(DossierTerm.DOMAIN_NAME));
+						model.setOnline(Boolean.parseBoolean(doc.get(DossierTerm.ONLINE)));
+						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
+						model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
+						model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+						
+						dossierData.add(model);
+					}
+					
+					dossierResponse.setTotal(datas.size());
+					dossierResponse.setData(dossierData);
+				}
+				if (dossierResponse != null && fromCalDate != null && toCalDate != null) {
+					List<GetDossierData> dossierDataList = dossierResponse.getData();
+					List<DossierStatisticData> statisticDataList = new ArrayList<>();
+					if (dossierDataList != null && dossierDataList.size() > 0) {
+						StatisticEngineFetch engineFetch = new StatisticEngineFetch();
+						Map<String, DossierStatisticData> statisticData = new HashMap<String, DossierStatisticData>();
+						engineFetch.fetchSumStatisticData(groupId, statisticData, dossierDataList, fromCalDate, toCalDate,0);
+						statisticData.forEach((k, v) -> 
+						statisticDataList.add(v));
+					}
+					DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+					statisticResponse.setTotal(statisticDataList.size());
+					statisticResponse.setDossierStatisticData(statisticDataList);
+					if (statisticResponse != null) {
+						statisticResponse.setAgency(govAgencyCode);
+					}
+
+					ResponseBuilder builder = Response.ok(statisticResponse);
+				    builder.cacheControl(cc);
+				    return builder.build();
+				}
+
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode(HttpStatus.INTERNAL_SERVER_ERROR.name());
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		} else {
+			try {
+				if (reCalculate == 1) {
+					Date firstDay = StatisticUtils.getFirstDay(month, year);
+					Date lastDay = StatisticUtils.getLastDay(month, year);
+					processUpdateDB(groupId, firstDay, lastDay, month, year, 1, new ArrayList<String>());
+				}
+
+				validInput(month, year, start, end);
+				DossierStatisticRequest dossierStatisticRequest = new DossierStatisticRequest();
+				dossierStatisticRequest.setDomain(domain);
+				if (ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCodeV2)) {
+					dossierStatisticRequest.setGovAgencyCode(StringPool.BLANK);
+				} else {
+					dossierStatisticRequest.setGovAgencyCode(govAgencyCodeV2);
+				}
+				dossierStatisticRequest.setSystem(system);
+				dossierStatisticRequest.setGroupId(groupId);
+				dossierStatisticRequest.setStart(start);
+				dossierStatisticRequest.setEnd(end);
+				dossierStatisticRequest.setMonth(month);
+				dossierStatisticRequest.setYear(year);
+				DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+				DossierStatisticData data = new DossierStatisticData();
+				// collectionCode
+				if (Validator.isNotNull(collectionCode)) {
+					DictCollection dc = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(collectionCode,
+							groupId);
+					// check govAgencycode is parentCode or not
+					if (dc != null && !StringUtils.isEmpty(dossierStatisticRequest.getGovAgencyCode())) {
+						DictItem dt = DictItemLocalServiceUtil.fetchByF_dictItemCode(govAgencyCodeV2,
+								dc.getDictCollectionId(), groupId);
+						if (dt != null) {
+							List<DictItem> lstChildDI = DictItemLocalServiceUtil
+									.findByF_dictCollectionId_parentItemId(dc.getDictCollectionId(),
+											dt.getDictItemId());
+							if (lstChildDI.size() > 0) {
+								parentCode = govAgencyCodeV2;
+							}
+						}
+					}
+					// parentCode
+					if (Validator.isNotNull(parentCode) && !parentCode.contentEquals("scope")) {
+						if (dc != null) {
+							DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(parentCode,
+									dc.getDictCollectionId(), groupId);
+							if (dictItem != null) {
+								// get list child dict item of this dictItem above
+								List<DictItem> lstChildDictItem = DictItemLocalServiceUtil
+										.findByF_dictCollectionId_parentItemId(dc.getDictCollectionId(),
+												dictItem.getDictItemId());
+								if (lstChildDictItem.size() > 0) {
+									switch (dictItem.getLevel()) {
+									// case 0 when dictItem is Cuc that has parentItemId = 0 and level = 0
+									case 0:
+										statisticResponse = createDataForDepartment(lstChildDictItem, dossierStatisticRequest, 
+												groupId, month, year, dictItem.getItemCode(), domain, system);
+										statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
+										statisticResponse.setAgency(dictItem.getItemCode());
+										break;
+									// case 1 when dictitem is QK or Province that have parentItemId != 0 and level = 1	
+									case 1:
+										// get parent dictitem of dictItem above
+										DictItem parentDi1 = DictItemLocalServiceUtil
+												.fetchDictItem(dictItem.getParentItemId());
+										if (parentDi1 != null) {
+											// get parent dictitem of parentDi1 above
+											DictItem parentDi2 = DictItemLocalServiceUtil
+													.fetchDictItem(parentDi1.getParentItemId());
+											// Province and BTLHN call to createDataForProvince; Other QK call to createDataForQK
+											if (parentDi2 != null || dictItem.getItemCode().contentEquals("BTLHN")) {
+												statisticResponse = createDataForMilitaryHeadquarterProvince(lstChildDictItem, dossierStatisticRequest,
+														groupId, month, year, dictItem.getItemCode(), domain, system);
+											} else {
+												statisticResponse = createDataForMilitaryRegion(lstChildDictItem, dossierStatisticRequest,
+														 groupId, month, year, dictItem.getItemCode(), domain, system);
+											}
+											statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
+											statisticResponse.setAgency(dictItem.getItemCode());
+											break;
+										}
+									default:
+										break;
+									}
+								}
+							}
+						}
+
+					}else if (!StringUtils.isEmpty(dossierStatisticRequest.getGovAgencyCode())){
+						statisticResponse = dossierStatisticFinderService
+								.finderDossierStatisticSystem(dossierStatisticRequest);
+						data = createRecordTotal(statisticResponse, groupId, month, year, dossierStatisticRequest.getGovAgencyCode(), domain, system);
+						if (data != null) {
+							statisticResponse.getDossierStatisticData().add(0, data);
+						}
+						statisticResponse.setTotal(statisticResponse.getDossierStatisticData().size());
+						statisticResponse.setAgency(dossierStatisticRequest.getGovAgencyCode());
+					}
+				}
+				
+				ResponseBuilder builder = Response.ok(statisticResponse);
+				builder.cacheControl(cc);
+				return builder.build();
+			} catch (Exception e) {
+				LOG.error("error", e);
+				OpencpsServiceExceptionDetails serviceExceptionDetails = new OpencpsServiceExceptionDetails();
+
+				serviceExceptionDetails.setFaultCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+				serviceExceptionDetails.setFaultMessage(e.getMessage());
+
+				throwException(new OpencpsServiceException(serviceExceptionDetails));
+			}
+		}
+
+		return null;
+	}
+	
+	private DossierStatisticResponse createDossierStatisticResponse(DossierStatisticRequest dossierStatisticRequest,
+			DictItem di, long groupId, int month, int year, String govAgencyCode, String domain, String system) {
+		dossierStatisticRequest.setGovAgencyCode(di.getItemCode());
+		DossierStatisticResponse statisticResponseTemp;
+		DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+		try {
+			statisticResponseTemp = dossierStatisticFinderService
+					.finderDossierStatisticSystem(dossierStatisticRequest);
+			if (statisticResponseTemp.getDossierStatisticData().size() > 0) {
+				statisticResponse.getDossierStatisticData().addAll(statisticResponseTemp.getDossierStatisticData());
+			} else {
+				DossierStatisticData data = new DossierStatisticData();
+				data.setGovAgencyCode(di.getItemCode());
+				data.setGovAgencyName(di.getItemName());
+				statisticResponse.getDossierStatisticData().add(data);
+			}
+		} catch (PortalException e) {
+			_log.error(e);
+		}
+		DossierStatisticData data = createRecordTotal(statisticResponse, groupId, month, year, govAgencyCode, domain, system);
+		if (data != null) {
+			statisticResponse.getDossierStatisticData().add(0, data);
+		}
+		return statisticResponse;
+	}
+
+	// Create data for BCHQS Tinh
+	private DossierStatisticResponse createDataForMilitaryHeadquarterProvince(List<DictItem> lstItems,
+			DossierStatisticRequest dossierStatisticRequest, long groupId, int month,
+			int year, String govAgencyCode, String domain, String system) {
+		List<DossierStatisticData> lstData = new ArrayList<DossierStatisticData>();		
+		DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+		for (DictItem di : lstItems) {
+			DossierStatisticData data = createDossierStatisticResponse(dossierStatisticRequest,
+					di, groupId, month, year, di.getItemCode(), domain, system)
+					.getDossierStatisticData().get(0);
+			lstData.add(data);
+		}
+		statisticResponse.getDossierStatisticData().addAll(lstData);
+		DossierStatisticData data = createRecordTotal(statisticResponse, groupId, month, year, govAgencyCode, domain, system);
+		if (data != null) {
+			statisticResponse.getDossierStatisticData().add(0, data);
+		}
+		return statisticResponse;
+	}
+
+	// Create Data for QK
+	private DossierStatisticResponse createDataForMilitaryRegion(List<DictItem> lstItems,
+			DossierStatisticRequest dossierStatisticRequest,long groupId, int month,
+			int year, String govAgencyCode, String domain, String system) {
+		List<DossierStatisticData> lstData = new ArrayList<DossierStatisticData>();
+		DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+		for (DictItem di : lstItems) {
+			List<DictItem> diLst = DictItemLocalServiceUtil.findByF_dictCollectionId_parentItemId(
+					di.getDictCollectionId(), di.getDictItemId());
+			DossierStatisticData data = createDataForMilitaryHeadquarterProvince(diLst, dossierStatisticRequest,
+					 groupId, month, year, di.getItemCode(), domain, system)
+					.getDossierStatisticData().get(0);
+			lstData.add(data);
+		}
+		statisticResponse.getDossierStatisticData().addAll(lstData);
+		DossierStatisticData data = createRecordTotal(statisticResponse, groupId, month, year, govAgencyCode, domain, system);
+		if (data != null) {
+			statisticResponse.getDossierStatisticData().add(0, data);
+		}
+		return statisticResponse;
+	}
+
+	// Create data for Cuc
+	private DossierStatisticResponse createDataForDepartment(List<DictItem> lstItems, 
+			DossierStatisticRequest dossierStatisticRequest, long groupId, int month,
+			int year, String govAgencyCode, String domain, String system) {
+		List<DossierStatisticData> lstData = new ArrayList<DossierStatisticData>();
+		DossierStatisticResponse statisticResponse = new DossierStatisticResponse();
+		for (DictItem di : lstItems) {
+			List<DictItem> diLst = DictItemLocalServiceUtil.findByF_dictCollectionId_parentItemId(
+					di.getDictCollectionId(), di.getDictItemId());
+			DossierStatisticData data = new DossierStatisticData();
+			if (di.getItemCode().contentEquals("BTLHN")) {
+				 data = createDataForMilitaryHeadquarterProvince(diLst, dossierStatisticRequest,
+						 groupId, month, year, di.getItemCode(), domain, system)
+						.getDossierStatisticData().get(0);
+			}else {
+				data = createDataForMilitaryRegion(diLst, dossierStatisticRequest,
+					 groupId, month, year, di.getItemCode(), domain, system)
+					.getDossierStatisticData().get(0);
+			}
+			lstData.add(data);
+		}
+		statisticResponse.getDossierStatisticData().addAll(lstData);
+		DossierStatisticData data = createRecordTotal(statisticResponse, groupId, month, year, govAgencyCode, domain, system);
+		if (data != null) {
+			statisticResponse.getDossierStatisticData().add(0, data);
+		}
+		return statisticResponse;
+	}
+	
+	private DossierStatisticData createRecordTotal(DossierStatisticResponse statisticResponse,
+			long groupId, int month, int year, String govAgencyCode, String domain, String system) {
+		DossierStatisticData data = null;
+		if (statisticResponse.getDossierStatisticData() != null && statisticResponse.getDossierStatisticData().size() > 0) {
+			String agencyTotal = govAgencyCode;
+			String domainTotal = domain;
+			if (Validator.isNull(govAgencyCode)
+					|| ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(govAgencyCode)
+					|| ConstantUtils.TOTAL.equals(govAgencyCode)) {
+				agencyTotal = StringPool.BLANK;
+			}
+			if (Validator.isNull(domain)
+					|| ReadFilePropertiesUtils.get(ConstantUtils.VALUE_ALL).equals(domain)
+					|| ConstantUtils.TOTAL.equals(domain)) {
+				domainTotal = StringPool.BLANK;
+			}
+
+			data = DossierStatisticUtils.processCalAllStatistic(groupId, 0, year, agencyTotal, domainTotal,
+					system, statisticResponse.getDossierStatisticData());
+		}
+		return data;
+	}
 
 }
