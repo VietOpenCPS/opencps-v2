@@ -168,7 +168,7 @@ public class DossierRequestListener extends BaseModelListener<DossierRequestUD>{
 		
 		employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 		
-		if (Validator.isNotNull(employee)) {
+		if (employee != null) {
 			return employee.getFullName();
 			
 		}

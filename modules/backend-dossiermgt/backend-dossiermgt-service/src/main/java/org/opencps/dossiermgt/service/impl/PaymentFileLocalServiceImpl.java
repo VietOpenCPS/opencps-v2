@@ -629,7 +629,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			// Parse String to Date
 			Date dateApproved = null;
 			if (Validator.isNotNull(approveDatetime)) {
-				SimpleDateFormat format = new SimpleDateFormat("DD-MM-YYYY HH:MM:SS");
+				SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				dateApproved = format.parse(approveDatetime);
 			}
 			paymentFile.setApproveDatetime(dateApproved);

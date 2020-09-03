@@ -343,6 +343,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 					try {
 						Thread.sleep(20);
 					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
 						_log.debug(e);
 					}
 				}

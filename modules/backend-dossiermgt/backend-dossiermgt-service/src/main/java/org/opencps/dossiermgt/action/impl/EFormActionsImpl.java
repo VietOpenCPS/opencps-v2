@@ -55,9 +55,9 @@ public class EFormActionsImpl implements EFormActions{
 	}
 
 	@Override
-	public EForm updateEForm(long userId, long groupId, long eFormId, String eFormNo, long serviceInfoId,
+	public EForm updateEForm(long userId, long groupId, long eFormIdUnUse, String eFormNo, long serviceInfoId,
 			String fileTemplateNo, String eFormName, Long formScriptFileId, Long formReportFileId, String eFormData,
-			String email, String secret, ServiceContext serviceContext) {
+			String email, String secretUnUse, ServiceContext serviceContext) {
 		
 		try {
 			String eFormNoPattern = StringPool.BLANK;
@@ -65,8 +65,8 @@ public class EFormActionsImpl implements EFormActions{
 			if (Validator.isNotNull(eFormNo)) {
 				eform = EFormLocalServiceUtil.getByEFormNo(groupId, eFormNo);
 			}
-			eFormId = eform != null ? eform.getEFormId() : 0;
-			secret = eform != null ? eform.getSecret() : StringPool.BLANK;
+			long eFormId = eform != null ? eform.getEFormId() : 0L;
+			String secret = eform != null ? eform.getSecret() : StringPool.BLANK;
 
 			ServiceInfo service = ServiceInfoLocalServiceUtil.fetchServiceInfo(serviceInfoId);
 			if (service != null) {

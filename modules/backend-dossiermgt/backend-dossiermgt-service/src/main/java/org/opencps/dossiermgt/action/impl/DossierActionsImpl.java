@@ -1423,8 +1423,8 @@ public class DossierActionsImpl implements DossierActions {
 			docFileReferenceUid = dossierFile.getReferenceUid();
 			dossierFileId = dossierFile.getDossierFileId();
 			//
-			formDataObj = JSONFactoryUtil.createJSONObject(formData);
-			formDataObj.put(DeliverableTerm.LICENCE_NO, dossierFile.getDeliverableCode());
+			// formDataObj = JSONFactoryUtil.createJSONObject(formData);
+			// formDataObj.put(DeliverableTerm.LICENCE_NO, dossierFile.getDeliverableCode());
 
 			//			_log.info("UPDATE FORM DATA GENERATE RESULT FILE");
 			actions.updateDossierFileFormData(groupId, dossierId, docFileReferenceUid, formData, serviceContext);

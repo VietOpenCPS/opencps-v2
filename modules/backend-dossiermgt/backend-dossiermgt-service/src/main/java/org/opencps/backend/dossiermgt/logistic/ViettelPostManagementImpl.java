@@ -269,7 +269,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 throw new Exception("Response get(0) price all null");
             }
 
-            if(Validator.isNull(orderService.getString(ViettelPostTerm.MA_DV_CHINH))
+            if(orderService != null && Validator.isNull(orderService.getString(ViettelPostTerm.MA_DV_CHINH))
                 || orderService.getString(ViettelPostTerm.MA_DV_CHINH).isEmpty()) {
                throw new Exception("Ma DV CHINH is null");
             }

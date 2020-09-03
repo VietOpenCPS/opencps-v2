@@ -58,6 +58,7 @@ import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.cache.actions.CacheActions;
 import org.opencps.cache.actions.impl.CacheActionsImpl;
 import org.opencps.dossiermgt.action.DossierFileActions;
+import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.impl.DossierFileActionsImpl;
 import org.opencps.dossiermgt.action.util.CheckFileUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
@@ -188,8 +189,19 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		String displayName, String fileType, String isSync, String formData,
 		String removed, String eForm, Long modifiedDate) {
 
+		return addDossierFileByDossierIdImpl(request, header, company, locale, user, serviceContext, file, id, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, fileType, isSync, formData, removed, eForm, modifiedDate);
+	}
+
+	private Response addDossierFileByDossierIdImpl(
+			HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext,
+			Attachment file, String id, String referenceUid,
+			String dossierTemplateNo, String dossierPartNo, String fileTemplateNo,
+			String displayName, String fileType, String isSync, String formData,
+			String removed, String eForm, Long modifiedDate) {
+
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
-		_log.debug("In dossier file create");
+		_log.debug("==dossierfile dossierId===" + id + "In dossier file create");
 		try {
 //			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
 //			
@@ -210,16 +222,23 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			DossierFileModel result =
 				DossierFileUtils.mappingToDossierFileModel(dossierFile);
 
-			_log.debug("__End bind to dossierFile" + new Date());
+			_log.debug("==dossierfile dossierId===" + id + "__End bind to dossierFile" + new Date());
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 		}
 		catch (Exception e) {
-			_log.debug(e);
-			return BusinessExceptionImpl.processException(e);
+			_log.debug("==dossierfile dossierId===" + id + e);
+			e.printStackTrace();
+			String counterNameGen = FileUploadUtils.FOLDER_NAME_DOSSIER_FILE + id + FileUploadUtils.FOLDER_NAME_DOSSIER_FILE + dossierTemplateNo + FileUploadUtils.FOLDER_NAME_DOSSIER_FILE + dossierPartNo;
+			long counterNum = FileUploadUtils.countByCertConfigName(counterNameGen);
+			_log.debug("==dossierfile dossierId===zzzz" + counterNameGen + e);
+			if (counterNum < 9) {
+				return addDossierFileByDossierIdImpl(request, header, company, locale, user, serviceContext, file, id, referenceUid, dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, fileType, isSync, formData, removed, eForm, modifiedDate);
+			} else {
+				return BusinessExceptionImpl.processException(e);
+			}
 		}
 	}
-
 	@Override
 	public Response cloneDossierFile(
 		HttpServletRequest request, HttpHeaders header, Company company,
@@ -1195,13 +1214,13 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 					}
 
 					String[] ftns = StringUtil.split(fileTemplateNo);
-					_log.debug("DOSSIER TEMPLATE NO: " + dossierIds.length);
+					//_log.debug("DOSSIER TEMPLATE NO: " + dossierIds.length);
 					for (String ftn : ftns) {
 						startTime = System.currentTimeMillis();
 						List<DossierFile> dossierFiles =
 							DossierFileLocalServiceUtil.getByG_DID_FTN_R_O(
 								groupId, dossierIds, ftn, false, true);
-						_log.debug("END TIME: " + (System.currentTimeMillis() - startTime) + " ms");
+						//_log.debug("END TIME: " + (System.currentTimeMillis() - startTime) + " ms");
 						resultFiles.addAll(dossierFiles);
 					}
 				}
@@ -1486,9 +1505,9 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				dossierTemplateNo, dossierPartNo, fileTemplateNo,
 				displayName, sourceFileName, 0l, inputStream, StringPool.BLANK, String.valueOf(false),
 				serviceContext);
-			 _log.debug("__End add file at:" + new Date());
+			// _log.debug("__End add file at:" + new Date());
 			dossierFile.setRemoved(false);
-			 _log.debug("__Start update dossier file at:" + new Date());
+			// _log.debug("__Start update dossier file at:" + new Date());
 			 dossierFile = DossierFileLocalServiceUtil.updateDossierFile(dossierFile);
 			DossierFileModel result =
 					DossierFileUtils.mappingToDossierFileModel(dossierFile);

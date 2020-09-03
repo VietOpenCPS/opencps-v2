@@ -237,8 +237,8 @@ public class DossierContentGenerator {
 								}
 								submissionNotePattern = submissionNotePattern.replace(tmpKey, fileName);
 								break;
-							}else {
-								if ("1".equals(lstFile.get(0).getDossierPartType())) {
+							}else if(lstFile.size() > 0){
+								if (1 == lstFile.get(0).getDossierPartType()) {
 									fileName = lstFile.get(0).getDisplayName();
 									submissionNotePattern = submissionNotePattern.replace(tmpKey, ConstantUtils.HTML_OPEN_SPAN + " " + countFile + ". " + fileName + "" + ConstantUtils.HTML_CLOSE_SPAN);
 									break;
