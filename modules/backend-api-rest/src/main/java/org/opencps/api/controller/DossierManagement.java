@@ -53,25 +53,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Api(value = "/dossiers", tags = "dossiers")
 public interface DossierManagement {
 
-	@POST
-	@Path("/direct")
-	@Consumes({
-			MediaType.APPLICATION_JSON
-	})
-	@Produces({
-			MediaType.APPLICATION_JSON
-	})
-	@ApiOperation(value = "Get direct Dossiers")
-	@ApiResponses(value = {
-			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
-			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
-	})
-	public Response getDirectDossiers(
-			@Context HttpServletRequest request, @Context HttpHeaders header,
-			@Context Company company, @Context Locale locale, @Context User user,
-			@Context ServiceContext serviceContext, DossierRequestDVCQGModel dossierRequestDVCQGModel);
+//	@POST
+//	@Path("/direct")
+//	@Consumes({
+//			MediaType.APPLICATION_JSON
+//	})
+//	@Produces({
+//			MediaType.APPLICATION_JSON
+//	})
+//	@ApiOperation(value = "Get direct Dossiers")
+//	@ApiResponses(value = {
+//			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of Dossiers have been filtered", response = DossierResultsModel.class),
+//			@ApiResponse(code = HttpURLConnection.HTTP_UNAUTHORIZED, message = "Unauthorized", response = ExceptionModel.class),
+//			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+//			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+//	})
+//	public Response getDirectDossiers(
+//			@Context HttpServletRequest request, @Context HttpHeaders header,
+//			@Context Company company, @Context Locale locale, @Context User user,
+//			@Context ServiceContext serviceContext, DossierRequestDVCQGModel dossierRequestDVCQGModel);
 
 
 	@GET

@@ -55,12 +55,12 @@ public class AutoFillFormData {
 			String _subjectName = StringPool.BLANK;
 			String _subjectId = StringPool.BLANK;
 			String _address = StringPool.BLANK;
-			String _cityCode = StringPool.BLANK;
-			String _cityName = StringPool.BLANK;
-			String _districtCode = StringPool.BLANK;
-			String _districtName = StringPool.BLANK;
-			String _wardCode = StringPool.BLANK;
-			String _wardName = StringPool.BLANK;
+//			String _cityCode = StringPool.BLANK;
+//			String _cityName = StringPool.BLANK;
+//			String _districtCode = StringPool.BLANK;
+//			String _districtName = StringPool.BLANK;
+//			String _wardCode = StringPool.BLANK;
+//			String _wardName = StringPool.BLANK;
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
@@ -74,7 +74,7 @@ public class AutoFillFormData {
 			String _employee_employeeNo = StringPool.BLANK;
 			String _employee_fullName = StringPool.BLANK;
 			String _employee_title = StringPool.BLANK;
-			String _applicantName = StringPool.BLANK;
+//			String _applicantName = StringPool.BLANK;
 			String _applicantIdType = StringPool.BLANK;
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
@@ -114,16 +114,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+//						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+//						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+//						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+//						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+//						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+//						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+//						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 //						_applicantIdDate = applicantJSON.getString("applicantIdDate");
@@ -137,16 +137,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+//						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+//						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+//						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+//						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+//						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+//						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+//						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
@@ -187,14 +187,14 @@ public class AutoFillFormData {
 				
 				_govAgencyName = dossier.getGovAgencyName();
 				_serviceName = dossier.getServiceName();
-				_applicantName = dossier.getApplicantName();
+//				_applicantName = dossier.getApplicantName();
 				_sampleCount = String.valueOf(dossier.getSampleCount());
-				_wardCode = dossier.getWardCode();
-				_wardName = dossier.getWardName();
-				_districtCode = dossier.getDistrictCode();
-				_districtName = dossier.getDistrictName();
-				_cityCode = dossier.getCityCode();
-				_cityName = dossier.getCityName();
+//				_wardCode = dossier.getWardCode();
+//				_wardName = dossier.getWardName();
+//				_districtCode = dossier.getDistrictCode();
+//				_districtName = dossier.getDistrictName();
+//				_cityCode = dossier.getCityCode();
+//				_cityName = dossier.getCityName();
 
 				if(Validator.isNotNull(dossier.getDocumentDate())) {
 					_documentDate = APIDateTimeUtils.convertDateToString(dossier.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN);
@@ -220,19 +220,26 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _subjectId);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _cityCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _cityName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _districtCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _districtName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _wardCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _wardName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
+					} 
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _cityCode);
+//					} 
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _cityName);
+//					} 
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _districtCode);
+//					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _districtName);
+//					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _wardCode);
+//					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _wardName);
+//					}
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
@@ -248,9 +255,11 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _employee_fullName);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_title);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _applicantName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _applicantName);
+//					}
+					else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdType);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
@@ -315,19 +324,21 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _subjectId;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _address;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
+						}
+//						else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
+//						}
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _contactName;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _contactTelNo;
@@ -343,9 +354,11 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_fullName;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_title;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+						}
+//						else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
+//						}
+						else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdType;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdNo;
@@ -883,12 +896,12 @@ public class AutoFillFormData {
 			String _subjectName = StringPool.BLANK;
 			String _subjectId = StringPool.BLANK;
 			String _address = StringPool.BLANK;
-			String _cityCode = StringPool.BLANK;
-			String _cityName = StringPool.BLANK;
-			String _districtCode = StringPool.BLANK;
-			String _districtName = StringPool.BLANK;
-			String _wardCode = StringPool.BLANK;
-			String _wardName = StringPool.BLANK;
+//			String _cityCode = StringPool.BLANK;
+//			String _cityName = StringPool.BLANK;
+//			String _districtCode = StringPool.BLANK;
+//			String _districtName = StringPool.BLANK;
+//			String _wardCode = StringPool.BLANK;
+//			String _wardName = StringPool.BLANK;
 			String _contactName = StringPool.BLANK;
 			String _contactTelNo = StringPool.BLANK;
 			String _contactEmail = StringPool.BLANK;
@@ -900,7 +913,7 @@ public class AutoFillFormData {
 			String _employee_employeeNo = StringPool.BLANK;
 			String _employee_fullName = StringPool.BLANK;
 			String _employee_title = StringPool.BLANK;
-			String _applicantName = StringPool.BLANK;
+//			String _applicantName = StringPool.BLANK;
 			String _applicantIdType = StringPool.BLANK;
 			String _applicantIdNo = StringPool.BLANK;
 			String _applicantIdDate = StringPool.BLANK;
@@ -937,16 +950,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+//						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+//						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+//						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+//						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+//						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+//						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+//						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 //						_applicantIdDate = applicantJSON.getString("applicantIdDate");
@@ -960,16 +973,16 @@ public class AutoFillFormData {
 						_subjectName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_subjectId = applicantJSON.getString(ApplicantTerm.APPLICANT_ID);
 						_address = applicantJSON.getString(ApplicantTerm.ADDRESS);
-						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
-						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
-						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
-						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
-						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
-						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
+//						_cityCode = applicantJSON.getString(ApplicantTerm.CITYCODE);
+//						_cityName = applicantJSON.getString(ApplicantTerm.CITYNAME);
+//						_districtCode = applicantJSON.getString(ApplicantTerm.DISTRICTCODE);
+//						_districtName = applicantJSON.getString(ApplicantTerm.DISTRICTNAME);
+//						_wardCode = applicantJSON.getString(ApplicantTerm.WARDCODE);
+//						_wardName = applicantJSON.getString(ApplicantTerm.WARDNAME);
 						_contactName = applicantJSON.getString(ApplicantTerm.CONTACTNAME);
 						_contactTelNo = applicantJSON.getString(ApplicantTerm.CONTACTTELNO);
 						_contactEmail = applicantJSON.getString(ApplicantTerm.CONTACTEMAIL);
-						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
+//						_applicantName = applicantJSON.getString(ApplicantTerm.APPLICANTNAME);
 						_applicantIdType = applicantJSON.getString(ApplicantTerm.APPLICANTIDTYPE);
 						_applicantIdNo = applicantJSON.getString(ApplicantTerm.APPLICANTIDNO);
 						_applicantIdDate = applicantJSON.getString(ApplicantTerm.APPLICANTIDDATE);
@@ -1009,14 +1022,14 @@ public class AutoFillFormData {
 
 				_govAgencyName = dossier.getGovAgencyName();
 				_serviceName = dossier.getServiceName();
-				_applicantName = dossier.getApplicantName();
+//				_applicantName = dossier.getApplicantName();
 				_sampleCount = String.valueOf(dossier.getSampleCount());
-				_wardCode = dossier.getWardCode();
-				_wardName = dossier.getWardName();
-				_districtCode = dossier.getDistrictCode();
-				_districtName = dossier.getDistrictName();
-				_cityCode = dossier.getCityCode();
-				_cityName = dossier.getCityName();
+//				_wardCode = dossier.getWardCode();
+//				_wardName = dossier.getWardName();
+//				_districtCode = dossier.getDistrictCode();
+//				_districtName = dossier.getDistrictName();
+//				_cityCode = dossier.getCityCode();
+//				_cityName = dossier.getCityName();
 
 				if(Validator.isNotNull(dossier.getDocumentDate())) {
 					_documentDate = APIDateTimeUtils.convertDateToString(dossier.getDocumentDate(), APIDateTimeUtils._NORMAL_PARTTERN);
@@ -1042,19 +1055,21 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _subjectId);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(value)) {
 						jsonMap.put(entry.getKey(), _address);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _cityCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _cityName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _districtCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _districtName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
-						jsonMap.put(entry.getKey(), _wardCode);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _wardName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
+					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _cityCode);
+//					} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _cityName);
+//					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _districtCode);
+//					} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _districtName);
+//					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(value)) {
+//						jsonMap.put(entry.getKey(), _wardCode);
+//					} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _wardName);
+//					}
+					else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactName);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _contactTelNo);
@@ -1070,9 +1085,11 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _employee_fullName);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 						jsonMap.put(entry.getKey(), _employee_title);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
-						jsonMap.put(entry.getKey(), _applicantName);
-					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+					}
+//					else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+//						jsonMap.put(entry.getKey(), _applicantName);
+//					}
+					else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdType);
 					} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 						jsonMap.put(entry.getKey(), _applicantIdNo);
@@ -1128,19 +1145,21 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _subjectId;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.ADDRESS).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _address;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
+						}
+//						else if ((StringPool.UNDERLINE + ApplicantTerm.WARDCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _wardCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.WARDNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _wardName;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _districtCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.DISTRICTNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _districtName;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYCODE).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _cityCode;
+//						} else if ((StringPool.UNDERLINE + ApplicantTerm.CITYNAME).equals(string)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _cityName;
+//						}
+						else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTNAME).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _contactName;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.CONTACTTELNO).equals(string)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _contactTelNo;
@@ -1156,9 +1175,11 @@ public class AutoFillFormData {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_fullName;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.EMPLOYEE_TITLE).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _employee_title;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
-							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
-						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
+						}
+//						else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTNAME).equals(value)) {
+//							resultBinding += StringPool.COMMA_AND_SPACE + _applicantName;
+//						}
+						else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDTYPE).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdType;
 						} else if ((StringPool.UNDERLINE + ApplicantTerm.APPLICANTIDNO).equals(value)) {
 							resultBinding += StringPool.COMMA_AND_SPACE + _applicantIdNo;

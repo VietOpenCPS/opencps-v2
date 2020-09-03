@@ -191,12 +191,16 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		_log.debug("In dossier file create");
 		try {
-//			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+			String extFile = StringPool.BLANK;
+			if (Validator.isNotNull(displayName)) {
+				extFile = ImportZipFileUtils.getExtendFileName(displayName);
+			}
+			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
 //			
-//			if (!flagCheck) {
-//				return Response.status(HttpStatus.SC_FORBIDDEN)
-//						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
-//			}
+			if (!flagCheck) {
+				return Response.status(HttpStatus.SC_FORBIDDEN)
+						.entity(ReadFilePropertiesUtils.get(org.opencps.dossiermgt.action.util.ConstantUtils.ATTACHMENT_ERROR)).build();
+			}
 			if (modifiedDate == null) {
 				modifiedDate = (new Date()).getTime();
 			}
@@ -292,7 +296,7 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 
 			return responseBuilder.build();
 		}catch (Exception e){
-			_log.error(e.getMessage());
+			_log.error(e);
 
 			return Response.status(
 					HttpURLConnection.HTTP_NO_CONTENT).build();
@@ -380,7 +384,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
-			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+			String extFile = StringPool.BLANK;
+			if (file != null) {
+				extFile = ImportZipFileUtils.getExtendFileName(file.getDataHandler().getName());
+			}
+			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
 			
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
@@ -978,7 +986,11 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 				throw new Exception("File not found");
 			}
 
-			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+			String extFile = StringPool.BLANK;
+			if (file != null) {
+				extFile = ImportZipFileUtils.getExtendFileName(file.getDataHandler().getName());
+			}
+			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
 						.entity(MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FILEFORMATERROR)).build();
@@ -1058,16 +1070,17 @@ public class DossierFileManagementImpl implements DossierFileManagement {
 			}
 
 			// Process FILE
-			boolean flagCheck = CheckFileUtils.checkFileUpload(file);
+
+			fileInputStream = dataHandle.getInputStream();
+			String fileName = dataHandle.getName();
+			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
+			boolean flagCheck = CheckFileUtils.checkFileUpload(file, extFile);
 //			_log.info("UPLOAD ZIP FILE: check extension: " + flagCheck + ", " + file);
 			if (!flagCheck) {
 				return Response.status(HttpStatus.SC_FORBIDDEN)
 						.entity(MessageUtil.getMessage(ConstantUtils.DOSSIERFILE_MESSAGE_FILEFORMATERROR)).build();
 			}
 
-			fileInputStream = dataHandle.getInputStream();
-			String fileName = dataHandle.getName();
-			String extFile = ImportZipFileUtils.getExtendFileName(fileName);
 			_log.info("extFile: " + extFile);
 			if (Validator.isNotNull(extFile)) {
 				if (ConstantUtils.ZIP.equals(extFile.toLowerCase())) {

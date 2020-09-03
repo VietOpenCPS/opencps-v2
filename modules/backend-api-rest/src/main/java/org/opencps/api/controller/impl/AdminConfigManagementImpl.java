@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -49,6 +50,7 @@ import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.kernel.util.DateTimeUtil;
 import org.springframework.http.HttpStatus;
 
@@ -158,6 +160,18 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 			try {
 				
 				if (message.getString(TYPE).equals(ADMIN)) {
+					List<Role> userRoles = u.getRoles();
+					boolean isAdmin = false;
+					for (Role r : userRoles) {
+						if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
+							isAdmin = true;
+							break;
+						}
+					}
+
+					if (!isAdmin) {
+						return Response.status(500).entity("{error}").build();
+					}
 
 					String code = message.getString(CODE);
 	
@@ -411,6 +425,18 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 					}
 				} else if (message.getString(TYPE).equals(API)) {
+					List<Role> userRoles = u.getRoles();
+					boolean isAdmin = false;
+					for (Role r : userRoles) {
+						if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
+							isAdmin = true;
+							break;
+						}
+					}
+
+					if (!isAdmin) {
+						return Response.status(500).entity("{error}").build();
+					}
 
 //					RestTemplate restTemplate = new RestTemplate();
 //

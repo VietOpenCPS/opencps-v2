@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -77,11 +78,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
@@ -330,6 +331,10 @@ public class RestfulController {
 						break;
 					}
 				}
+			}
+			String authorization = request.getParameter("Authorization");
+			if (Validator.isNotNull(authorization)) {
+				strBasic = authorization;
 			}
 
 			_log.info("syncUserLGSP: "+ syncUserLGSP);

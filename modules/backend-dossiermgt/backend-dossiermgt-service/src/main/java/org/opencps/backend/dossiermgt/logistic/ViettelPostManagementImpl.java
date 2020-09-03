@@ -240,7 +240,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
 
             } catch (Exception e) {
-                _log.error("GET ORDER SERVICE|Parse string to int fail");
+                _log.error(e);
             }
 
             String apiGetOrderService = this.configJson.getString(ViettelPostTerm.API_GET_PRICE);
@@ -276,7 +276,8 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
 
             return orderService.getString(ViettelPostTerm.MA_DV_CHINH);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+           _log.debug(e);
+           return StringPool.BLANK;
         }
     }
 

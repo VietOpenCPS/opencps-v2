@@ -1232,7 +1232,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		String hashCodeUppercase = null;
 		try
 		{
-			MessageDigest crypt = MessageDigest.getInstance("MD5");
+			MessageDigest crypt = MessageDigest.getInstance("SHA-256");
 			crypt.reset();
 			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();

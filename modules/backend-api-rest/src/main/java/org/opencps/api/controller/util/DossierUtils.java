@@ -1754,14 +1754,14 @@ public class DossierUtils {
 				model.setDossierTemplateNo(doc.get(DossierTerm.DOSSIER_TEMPLATE_NO));
 				model.setServerNo(doc.get(DossierTerm.SERVER_NO));
 				model.setDocumentNo(doc.get(DossierTerm.DOCUMENT_NO));
-				String groupDossierId = "";
+				String groupDossierId = null;
 				if (Validator.isNotNull(doc.get(DossierTerm.GROUP_DOSSIER_ID))) {
 					String[] idGroup = doc.get(DossierTerm.GROUP_DOSSIER_ID).split(StringPool.SPACE);
 					for (String key : idGroup) {
 						groupDossierId += ","  + key ;
 					}
-					groupDossierId.substring(1);
-					model.setGroupDossierIds(groupDossierId);
+					//groupDossierId.substring(1);
+					model.setGroupDossierIds(Validator.isNotNull(groupDossierId) ? groupDossierId : StringPool.BLANK);
 				}
 				model.setDocumentNo(GetterUtil.getString(doc.get(DossierTerm.DOCUMENT_NO)));
 

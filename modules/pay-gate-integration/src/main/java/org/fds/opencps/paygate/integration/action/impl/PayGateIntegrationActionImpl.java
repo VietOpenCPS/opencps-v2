@@ -490,11 +490,11 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					params.put(Field.GROUP_ID, action.getString(Field.GROUP_ID));
 					params.put(PayGateTerm.ORDER_ID, PayGateUtil.createOrderIdFull(dossier.getDossierId(), dossier.getDossierNo()));
 					params.put(PayGateTerm.USERNAME, action.getString(PayGateTerm.USERNAME));
-					params.put(PayGateTerm.PWD, action.getString(PayGateTerm.PWD));
+					params.put(PayGateTerm.SECRECT_PD, action.getString(PayGateTerm.SECRECT_PD));
 					_log.info("========ORDER_ID======" + params.get(PayGateTerm.ORDER_ID));
 					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 							properties, params, action.getString(PayGateTerm.USERNAME),
-							action.getString(PayGateTerm.PWD));
+							action.getString(PayGateTerm.SECRECT_PD));
 					_log.info("=====resPostDossier=========" + resPostDossier);
 
 				} else {
@@ -518,7 +518,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 					params.put(PayGateTerm.ACTION_CODE, action.get(PayGateTerm.ACTION_CODE));
 					JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
 							properties, params, action.getString(PayGateTerm.USERNAME),
-							action.getString(PayGateTerm.PWD));
+							action.getString(PayGateTerm.SECRECT_PD));
 
 					_log.info("=====resPostDossier=========" + resPostDossier);
 				}
@@ -1200,7 +1200,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String username = action.getString(PayGateTerm.USERNAME);
 
-				String pwd = action.getString(PayGateTerm.PWD);
+				String pwd = action.getString(PayGateTerm.SECRECT_PD);
 
 				// Change payment Status = 5
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
@@ -1296,7 +1296,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 				params.put(PayGateTerm.PAYMENT, payment.toString());
 
 				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
-						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
+						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.SECRECT_PD));
 
 				_log.info("=====resPostDossier=========" + resPostDossier);
 
@@ -1729,7 +1729,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				String username = action.getString(PayGateTerm.USERNAME);
 
-				String pwd = action.getString(PayGateTerm.PWD);
+				String pwd = action.getString(PayGateTerm.SECRECT_PD);
 
 				// Change payment Status = 5
 				paymentFile = actions.updateFileConfirm(groupId, dossier.getDossierId(), paymentFile.getReferenceUid(),
@@ -1826,7 +1826,7 @@ public class PayGateIntegrationActionImpl implements PayGateIntegrationAction {
 
 				_log.info(endPoint);
 				JSONObject resPostDossier = callPostAPI(HttpMethod.POST, MediaType.APPLICATION_JSON, endPoint,
-						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.PWD));
+						properties, params, action.getString(PayGateTerm.USERNAME), action.getString(PayGateTerm.SECRECT_PD));
 
 				_log.info("=====resPostDossier=========" + resPostDossier);
 
