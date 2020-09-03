@@ -1494,24 +1494,21 @@ public class DeliverableLocalServiceImpl
 
 				try {
 					DLFileEntry dlFileEntry =
-						DLFileEntryLocalServiceUtil.getFileEntry(
-								object.getFormReportFileId());
+							DLFileEntryLocalServiceUtil.getFileEntry(
+									object.getFormReportFileId());
 
 					is = dlFileEntry.getContentStream();
 
 					result = IOUtils.toString(is, StandardCharsets.UTF_8);
 
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					_log.debug(e);
 					result = StringPool.BLANK;
-				}
-				finally {
+				} finally {
 					if (is != null) {
 						try {
 							is.close();
-						}
-						catch (IOException e) {
+						} catch (IOException e) {
 							_log.debug(e);
 						}
 					}
@@ -1520,15 +1517,17 @@ public class DeliverableLocalServiceImpl
 			// Process update deliverable file Id
 			Message message = new Message();
 			// _log.info("Document script: " + dt.getDocumentScript());
-			JSONObject msgData = JSONFactoryUtil.createJSONObject();
-			msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
-			msgData.put(Field.CLASS_PK, object.getDeliverableId());
-			msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
-			msgData.put( ConstantUtils.FORM_DATA, objectData);
-			msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
-			message.put(ConstantUtils.MSG_ENG, msgData);
-			MessageBusUtil.sendMessage(
-					ConstantUtils.JASPER_DESTINATION, message);
+			if (Validator.isNotNull(result)) {
+				JSONObject msgData = JSONFactoryUtil.createJSONObject();
+				msgData.put(ConstantUtils.CLASS_NAME, Deliverable.class.getName());
+				msgData.put(Field.CLASS_PK, object.getDeliverableId());
+				msgData.put(ConstantUtils.JRXML_TEMPLATE, result);
+				msgData.put(ConstantUtils.FORM_DATA, objectData);
+				msgData.put(Field.USER_ID, objectData.getLong(Field.USER_ID));
+				message.put(ConstantUtils.MSG_ENG, msgData);
+				MessageBusUtil.sendMessage(
+						ConstantUtils.JASPER_DESTINATION, message);
+			}
 		}
 
 		return object;
@@ -1714,9 +1713,13 @@ public class DeliverableLocalServiceImpl
 							if(Validator.isNotNull(employee)){
 								String listScope = employee.getScope();
 								if (listScope.contains(StringPool.COMMA)) {
-									String[] keywordArr = listScope.split(StringPool.COMMA);
-									MultiMatchQuery query = new MultiMatchQuery(keywordArr[0]);
-									query.addFields(key.split("@")[0]);
+									String[] keyScope = listScope.split(StringPool.COMMA);
+									BooleanQuery query = new BooleanQueryImpl();
+									for(String value: keyScope){
+										MultiMatchQuery multiMatchQuery = new MultiMatchQuery(value);
+										multiMatchQuery.addFields(key.split("@")[0]);
+										query.add(multiMatchQuery, BooleanClauseOccur.SHOULD);
+									}
 									booleanQuery.add(query, BooleanClauseOccur.MUST);
 								}
 							} else {

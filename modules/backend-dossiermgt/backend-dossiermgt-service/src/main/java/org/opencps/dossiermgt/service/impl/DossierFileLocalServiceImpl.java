@@ -1085,9 +1085,10 @@ public class DossierFileLocalServiceImpl
 					groupId, dossierPart.getDeliverableType());
 				if (dt != null && Validator.isNotNull(dt.getFormReport())) {
 					jrxmlTemplate = dt.getFormReport();
-				}else{
-					jrxmlTemplate = dossierPart.getFormReport();
 				}
+//				else{
+//					jrxmlTemplate = dossierPart.getFormReport();
+//				}
 			}
 			else {
 				jrxmlTemplate = dossierPart.getFormReport();
@@ -1095,23 +1096,23 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
-			dossierFile.setFormData(formData);
+		dossierFile.setFormData(formData);
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
 		_log.debug("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
+		if(Validator.isNotNull(jrxmlTemplate)) {
+			JSONObject msgData = JSONFactoryUtil.createJSONObject();
+			msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
+			msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
+			msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
+			msgData.put(ConstantUtils.FORM_DATA, formData);
+			msgData.put(Field.USER_ID, serviceContext.getUserId());
 
-		JSONObject msgData = JSONFactoryUtil.createJSONObject();
-		msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
-		msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
-		msgData.put(ConstantUtils.JRXML_TEMPLATE, jrxmlTemplate);
-		msgData.put(ConstantUtils.FORM_DATA, formData);
-		msgData.put(Field.USER_ID, serviceContext.getUserId());
-
-		message.put(ConstantUtils.MSG_ENG, msgData);
-		MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
-
+			message.put(ConstantUtils.MSG_ENG, msgData);
+			MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
+		}
 		_log.debug("SEND TO CREATED FILE MODEL");
 
 		return dossierFilePersistence.update(dossierFile);

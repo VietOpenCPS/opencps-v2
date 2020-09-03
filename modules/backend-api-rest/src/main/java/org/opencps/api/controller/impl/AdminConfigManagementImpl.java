@@ -1,5 +1,6 @@
 package org.opencps.api.controller.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -28,11 +29,9 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
+import javax.management.Notification;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -48,8 +47,21 @@ import org.opencps.api.constants.StatisticManagementConstants;
 import org.opencps.api.controller.AdminConfigManagement;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.communication.model.Notificationtemplate;
+import org.opencps.communication.service.NotificationtemplateLocalServiceUtil;
+import org.opencps.datamgt.model.DictCollection;
+import org.opencps.datamgt.model.DictGroup;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
+import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
+import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
+import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.model.Deliverable;
+import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
 import org.opencps.kernel.util.DateTimeUtil;
+import org.opencps.usermgt.model.JobPos;
+import org.opencps.usermgt.service.JobPosLocalServiceUtil;
 import org.springframework.http.HttpStatus;
 
 import backend.admin.config.whiteboard.BundleLoader;
@@ -125,6 +137,7 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String COMPARE_LE = "le";
 	private static final String COMPARE_GT = "gt";
 	private static final String COMPARE_GE = "ge";
+	private static final String COMPARE_EQ = "equals";
 	private static final String LOCAL_ACCESSS = "localaccess";
 	private static final String P_AUTH = "Token";
 	private static final String USER_REQUEST_ID = "userid";
@@ -144,6 +157,20 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	private static final String ACCEPT = "Accept";
 	private static final String SORT = "sort";
 	private static final String SORT_ASC = "asc";
+	private static final String CLASSNAME_JOBPOS = "opencps_jobpos";
+	private static final String CLASSNAME_DICTGROUP = "opencps_dictgroup";
+	private static final String CLASSNAME_DELIVERABLE = "opencps_deliverable";
+	private static final String CLASSNAME_NOTIFICATIONTEMPLATE = "opencps_notificationtemplate";
+	private static final String CLASSNAME_DICTITEM = "opencps_dictitem";
+	private static final String CLASSNAME_DICTCOLLECTION = "opencps_dictcollection";
+	private static final String JOBPOS_CODE = "jobPosCode";
+	private static final String GROUP_CODE = "groupCode";
+	private static final String DELIVERABLE_CODE = "deliverableCode";
+	private static final String NOTIFICATION_TYPE = "notificationType";
+	private static final String ITEM_CODE = "itemCode";
+	private static final String DICT_COLLECTION_ID = "dictCollectionId";
+	private static final String DICT_COLLECTION_CODE = "collectionCode";
+	private static final String NOK = "NOK";
 
 	@Override
 	public Response onMessage(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User u,
@@ -259,19 +286,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 													.eq(filter.getString(VALUE_FILTER)));
 										}
 									} else if (QUERY_LIKE.equals(filter.getString(COMPARE))) {
-										String value = (String) filter.get(VALUE_FILTER);
-										if(value.contains(StringPool.MINUS)){
-											Date valueDate = APIDateTimeUtils.convertStringToDate(value,APIDateTimeUtils._NSW_PATTERN);
-//											dynamicQuery.add(
-//													PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
-//															+ APIDateTimeUtils.convertDateToString(valueDate, APIDateTimeUtils._NORMAL_PARTTERN) + StringPool.PERCENT));
-											dynamicQuery.add(
-													PropertyFactoryUtil.forName(filter.getString(KEY)).eq(valueDate));
-										}else {
-											dynamicQuery.add(
-													PropertyFactoryUtil.forName(filter.getString(KEY)).like(StringPool.PERCENT
-															+ filter.getString(VALUE_FILTER) + StringPool.PERCENT));
-										}
+										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY)).
+												like(StringPool.PERCENT + filter.getString(VALUE_FILTER) + StringPool.PERCENT));
 									} else if (COMPARE_LT.equals(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
 												.lt(filter.getLong(VALUE_FILTER)));
@@ -284,6 +300,19 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 									} else if (COMPARE_GE.equals(filter.getString(COMPARE))) {
 										dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
 												.ge(filter.getLong(VALUE_FILTER)));
+									}else if (COMPARE_EQ.equals(filter.getString(COMPARE))) {
+										String value = String.valueOf(filter.get(VALUE_FILTER));
+										if(value.contains(StringPool.MINUS)) {
+											Date valueDate = APIDateTimeUtils.convertStringToDate(value, APIDateTimeUtils._NSW_PATTERN);
+											dynamicQuery.add(
+													PropertyFactoryUtil.forName(filter.getString(KEY)).eq(valueDate));
+										}else if(NUMBER.equals(filter.getString(TYPE))){
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(Integer.valueOf(value)));
+										}else{
+											dynamicQuery.add(PropertyFactoryUtil.forName(filter.getString(KEY))
+													.eq(value));
+										}
 									}
 	
 								}
@@ -393,11 +422,74 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 	
 						} else {
 //							_log.debug("SERVICE CLASS: " + serviceUtilStr);
-							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA,
-									JSONObject.class);
-	
+							method = bundleLoader.getClassLoader().loadClass(serviceUtilStr).getMethod(PROCESS_DATA, JSONObject.class);
 							JSONObject postData = message.getJSONObject(DATA);
-							
+							JSONObject messageError = JSONFactoryUtil.createJSONObject();
+							String dictCollectionId = "";
+							Iterator<String> keys = postData.keys();
+							while (keys.hasNext()) {
+								String keyColumn = keys.next();
+								String valueColumn = postData.getString(keyColumn);
+								if(keyColumn.equals(DICT_COLLECTION_ID)){
+									dictCollectionId = valueColumn;
+								}
+								if (code.equals(CLASSNAME_JOBPOS)) {
+									if(keyColumn.equals(JOBPOS_CODE)) {
+										JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId, valueColumn);
+										if (Validator.isNotNull(jobPos)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								} else if (code.equals(CLASSNAME_DICTGROUP)) {
+									if (keyColumn.equals(GROUP_CODE)) {
+										DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(valueColumn, groupId);
+										if (Validator.isNotNull(dictGroup)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								}else if (code.equals(CLASSNAME_DELIVERABLE)) {
+									if (keyColumn.equals(DELIVERABLE_CODE)) {
+										Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DCODE(groupId,valueColumn);
+										if (Validator.isNotNull(deliverable)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								}else if (code.equals(CLASSNAME_NOTIFICATIONTEMPLATE)) {
+									if (keyColumn.equals(NOTIFICATION_TYPE)) {
+										Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,valueColumn);
+										if (Validator.isNotNull(notificationtemplate)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								}else if (code.equals(CLASSNAME_DICTITEM)) {
+									if (keyColumn.equals(ITEM_CODE)) {
+										DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(valueColumn,Long.valueOf(dictCollectionId),groupId);
+										if (Validator.isNotNull(dictItem)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								}
+								else if (code.equals(CLASSNAME_DICTCOLLECTION)) {
+									if (keyColumn.equals(DICT_COLLECTION_CODE)) {
+										DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(valueColumn,groupId);
+										if (Validator.isNotNull(dictCollection)) {
+											messageError.put(STATUS, NOK);
+											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+										}
+										break;
+									}
+								}
+							}
 							postData.put(Field.GROUP_ID, groupId);
 							postData.put(COMPANY_ID, company.getCompanyId());
 							postData.put(Field.USER_ID, u.getUserId());

@@ -12,7 +12,8 @@
 				(q.govAgencyCode = ?) AND
 				(q.publish = ?) AND
 				(q.questionType = ?) AND 
-				(q.subDomainCode = ?) AND 
+				(q.subDomainCode = ?) AND
+				(q.content like ?) AND
 				1 = 1
 			GROUP BY q.questionId
 			HAVING count(a.answerId) = ? 

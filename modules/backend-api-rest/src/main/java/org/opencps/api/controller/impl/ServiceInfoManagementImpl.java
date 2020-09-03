@@ -692,6 +692,42 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		JSONObject results = JSONFactoryUtil.createJSONObject();
 
 		try {
+			//Sort agency
+			Sort[] sorts = null;
+			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
+			if (Validator.isNull(search.getSort())) {
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[] { SortFactoryUtil.create(dateSort, Sort.STRING_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			} else {
+				String numberSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), search.getSort());
+				sorts = new Sort[] { SortFactoryUtil.create(numberSort, Sort.INT_TYPE,
+						GetterUtil.getBoolean(search.getOrder())) };
+			}
+			if (Validator.isNotNull(agency)) {
+				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
+			}
+			else {
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj);
+			}
+			
+			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response getDomain(HttpServletRequest request, HttpHeaders header, Company company, Locale locale,
+										 User user, ServiceContext serviceContext, String agency, ServiceInfoSearchModel search,
+							  Request requestCC) {
+		ServiceInfoActions actions = new ServiceInfoActionsImpl();
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+
+		JSONObject results = JSONFactoryUtil.createJSONObject();
+
+		try {
 			OneGateController controller = new OneGateControllerImpl();
 			DossierSearchModel dossierSearchModel = new DossierSearchModel();
 			String domain = "";
@@ -716,22 +752,6 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			else {
 				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj);
 			}
-
-//			_log.info(results);
-//			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
-//		    ResponseBuilder builder = requestCC.evaluatePreconditions(etag);
-//			if (OpenCPSConfigUtil.isHttpCacheEnable() && builder == null) {
-//				builder = Response.status(HttpURLConnection.HTTP_OK);
-//				CacheControl cc = new CacheControl();
-//				cc.setMaxAge(OpenCPSConfigUtil.getHttpCacheMaxAge());
-//				cc.setPrivate(true);	
-//				builder.tag(etag);
-//				return builder.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).cacheControl(cc).build();
-//			}
-//			else {
-//				return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
-//			}
-			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
