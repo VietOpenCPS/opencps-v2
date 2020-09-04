@@ -7755,15 +7755,21 @@ public class DossierManagementImpl implements DossierManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		try {
+			_log.info("Updating dossier epar with groupId: "+ groupId );
 			Dossier dossier =
 				CPSDossierBusinessLocalServiceUtil.eparPublish(
 					groupId, company, user, serviceContext, id,
 					DossierUtils.convertFormModelToPublishModel(input));
+			_log.info("Updated dossier epar with dossierId: "+ dossier.getDossierId() );
+			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
+			JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
+			_log.info("Result epar integration DVCQG: "+result);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
 		}
 		catch (Exception e) {
+			_log.error("Update epar dossier error: " + e.getMessage());
 			return BusinessExceptionImpl.processException(e);
 		}
 	}
