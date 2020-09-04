@@ -12,7 +12,7 @@
  * details.
  */
 
-package org.graphql.filter;
+package org.opencps.openidconnect.filter;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,42 +22,47 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectFlowState;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceHandler;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
-//import com.liferay.portal.security.sso.openid.connect.internal.exception.StrangersNotAllowedException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.graphql.security.sso.openid.OpenIdConnectServiceHandler;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Edward C. Han
+ * @author nhanhlt
  */
 @Component(
 	immediate = true,
 	property = {
 		"before-filter=Auto Login Filter", "servlet-context-name=",
-		"servlet-filter-name=OpenCPS SSO OpenId Connect Filter",
-		"url-pattern=/c/opencps/login/openidconnect"
+		"servlet-filter-name=OpenCPS SSO OpenId Connect Test Filter",
+		"url-pattern=/c/portal/login/openidconnect"
 	},
-	service = {Filter.class, OpenIdConnectFilter.class}
+	service = {Filter.class,OpenIdConnectFilter.class}
 )
 public class OpenIdConnectFilter extends BaseFilter {
+	
+	@Override
+	public void init(FilterConfig filterConfig) {
+		
+		super.init(filterConfig);
+	}
 
 	@Override
 	public boolean isFilterEnabled(
 		HttpServletRequest request, HttpServletResponse response) {
 		
-		_log.info("===OpenIdConnectSessionValidationFilter OpenIdConnectFilter===");
 
 		long companyId = _portal.getCompanyId(request);
-
+		
 		return _openIdConnect.isEnabled(companyId);
 	}
 
@@ -70,10 +75,9 @@ public class OpenIdConnectFilter extends BaseFilter {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
-		
-		_log.info("====OpenIdConnectFilter====");
 
 		HttpSession httpSession = httpServletRequest.getSession(false);
+	
 
 		if (httpSession == null) {
 			return;
@@ -83,6 +87,7 @@ public class OpenIdConnectFilter extends BaseFilter {
 			OpenIdConnectSession openIdConnectSession =
 				(OpenIdConnectSession)httpSession.getAttribute(
 					OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION);
+			
 
 			if (openIdConnectSession == null) {
 				return;
@@ -90,6 +95,8 @@ public class OpenIdConnectFilter extends BaseFilter {
 
 			OpenIdConnectFlowState openIdConnectFlowState =
 				openIdConnectSession.getOpenIdConnectFlowState();
+			
+			_log.debug("====openIdConnectFlowState:"+openIdConnectFlowState);
 
 			if (OpenIdConnectFlowState.INITIALIZED.equals(
 					openIdConnectFlowState)) {
@@ -102,32 +109,19 @@ public class OpenIdConnectFilter extends BaseFilter {
 					 OpenIdConnectFlowState.PORTAL_AUTH_COMPLETE.equals(
 						 openIdConnectFlowState)) {
 
-				if (_log.isDebugEnabled()) {
-					_log.debug("User has already been logged in");
-				}
-			}
-			else {
-				_openIdConnectServiceHandler.processAuthenticationResponse(
-					httpServletRequest, httpServletResponse);
-
-				String actionURL = (String)httpSession.getAttribute(
-					OpenIdConnectWebKeys.OPEN_ID_CONNECT_ACTION_URL);
+				String actionURL = "/c";
 
 				if (actionURL != null) {
 					httpServletResponse.sendRedirect(actionURL);
 				}
+
+				
+			}
+			else {
+				
+
 			}
 		}
-//		catch (Exception e) {
-//
-//			Class<?> clazz = e.getClass();
-//
-//			httpSession.removeAttribute(
-//				OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION);
-//
-//			sendError(
-//				clazz.getSimpleName(), httpServletRequest, httpServletResponse);
-//		}
 		catch (Exception e) {
 			_log.error("Unable to process the OpenID login", e);
 
@@ -147,7 +141,7 @@ public class OpenIdConnectFilter extends BaseFilter {
 		processAuthenticationResponse(request, response);
 
 		processFilter(
-			OpenIdConnectFilter.class.getName(), request, response,
+				OpenIdConnectFilter.class.getName(), request, response,
 			filterChain);
 	}
 
@@ -175,7 +169,7 @@ public class OpenIdConnectFilter extends BaseFilter {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		OpenIdConnectFilter.class);
+			OpenIdConnectFilter.class);
 
 	@Reference
 	private Http _http;
