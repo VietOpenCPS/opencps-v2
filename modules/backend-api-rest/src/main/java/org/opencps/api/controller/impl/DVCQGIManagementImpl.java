@@ -86,6 +86,7 @@ public class DVCQGIManagementImpl implements DVCQGIManagement {
 		serviceContext.setCompanyId(company.getCompanyId());
 		try {
 			_log.info("Ton ngo khong da dao choi o day.");
+			_log.info("body input: "+body);
 			JSONObject result = actionImpl.getSharingDictCollection(user, serviceContext,
 					JSONFactoryUtil.createJSONObject(body));
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result.toJSONString()).build();

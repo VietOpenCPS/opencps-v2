@@ -772,7 +772,8 @@ public class DossierLocalServiceUtil {
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service,
+		String dossierName, int durationCount,
+		org.opencps.dossiermgt.model.ServiceInfo service,
 		org.opencps.dossiermgt.model.ServiceProcess process,
 		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
@@ -790,7 +791,7 @@ public class DossierLocalServiceUtil {
 			delegateEmail, delegateAddress, delegateCityCode, delegateCityName,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, registerBookCode, registerBookName, sampleCount,
-			dossierName, service, process, option, context);
+			dossierName, durationCount, service, process, option, context);
 	}
 
 	public static org.opencps.dossiermgt.model.Dossier initUpdateDossier(
