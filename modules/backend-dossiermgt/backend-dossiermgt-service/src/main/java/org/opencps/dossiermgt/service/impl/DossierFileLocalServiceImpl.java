@@ -1088,9 +1088,12 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
-		if(Validator.isNotNull(dossierFile.getFormData())){
+		/*if(Validator.isNotNull(dossierFile.getFormData())){
 			dossierFile.setFormData(dossierFile.getFormData());
 		}else{
+			dossierFile.setFormData(formData);
+		}*/
+		if(Validator.isNotNull(formData)){
 			dossierFile.setFormData(formData);
 		}
 		dossierFile.setIsNew(true);

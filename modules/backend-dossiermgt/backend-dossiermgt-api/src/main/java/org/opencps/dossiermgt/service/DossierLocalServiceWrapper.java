@@ -823,7 +823,8 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String delegateDistrictCode, String delegateDistrictName,
 		String delegateWardCode, String delegateWardName,
 		String registerBookCode, String registerBookName, int sampleCount,
-		String dossierName, org.opencps.dossiermgt.model.ServiceInfo service,
+		String dossierName, int durationCount,
+		org.opencps.dossiermgt.model.ServiceInfo service,
 		org.opencps.dossiermgt.model.ServiceProcess process,
 		org.opencps.dossiermgt.model.ProcessOption option,
 		com.liferay.portal.kernel.service.ServiceContext context)
@@ -840,7 +841,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateEmail, delegateAddress, delegateCityCode, delegateCityName,
 			delegateDistrictCode, delegateDistrictName, delegateWardCode,
 			delegateWardName, registerBookCode, registerBookName, sampleCount,
-			dossierName, service, process, option, context);
+			dossierName, durationCount, service, process, option, context);
 	}
 
 	@Override

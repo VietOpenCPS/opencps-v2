@@ -774,7 +774,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateDistrictCode, String delegateDistrictName,
 			String delegateWardCode, String delegateWardName,
 			String registerBookCode, String registerBookName, int sampleCount,
-			String dossierName, ServiceInfo service, ServiceProcess process,
+			String dossierName, int durationCount, ServiceInfo service, ServiceProcess process,
 			ProcessOption option, ServiceContext context)
 			throws PortalException {
 
@@ -885,7 +885,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServerNo(process.getServerNo());
 			// Update submit date
 			if (process != null) {
-				dossier.setDurationCount(process.getDurationCount());
+				if (durationCount > 0) {
+					dossier.setDurationCount(durationCount);
+				} else {
+					dossier.setDurationCount(process.getDurationCount());
+				}
 				dossier.setDurationUnit(
 						Validator.isNotNull(process.getDurationUnit())
 								? process.getDurationUnit() : 0);
@@ -3817,7 +3821,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 
-			}else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
+			}
+			else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
 				MultiMatchQuery queryAction =
 						new MultiMatchQuery(DossierTerm.DANG_XU_LY  + StringPool.UNDERLINE
 								+ String.valueOf(userId) + StringPool.UNDERLINE + 1);
@@ -3826,11 +3831,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 			else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				MultiMatchQuery queryRelease =
-						new MultiMatchQuery(String.valueOf(0));
-				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
-				subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				if (!top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					MultiMatchQuery queryRelease =
+							new MultiMatchQuery(String.valueOf(0));
+					queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				}
 				// Dossier is delay
 				if (top.toLowerCase().equals(DossierTerm.DELAY)) {
 					/** Check condition dueDate != null **/
@@ -3960,6 +3966,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 									DossierTerm.DUE_DATE_TIMESTAMP,
 									String.valueOf(nowTime), null, true, true);
 					subQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
+				}
+				else if (top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate =
+							new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryReleaseDate =
+							new MultiMatchQuery(String.valueOf(0));
+					queryReleaseDate.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryReleaseDate, BooleanClauseOccur.MUST_NOT);
+
+					MultiMatchQuery query =
+							new MultiMatchQuery(String.valueOf(1));
+					query.addFields(DossierTerm.VALUE_COMPARE_RELEASE);
+					subQuery.add(query, BooleanClauseOccur.MUST);
 				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
