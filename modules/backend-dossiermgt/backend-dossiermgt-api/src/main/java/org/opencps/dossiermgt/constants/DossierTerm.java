@@ -243,6 +243,8 @@ public class DossierTerm {
 	//
 	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
+	public static final String FROM_APPROVED_DATE = "fromApprovedDate";
+	public static final String TO_APPROVED_DATE = "toApprovedDate";
 	public static final String ORIGIN = "origin";
 	//
 	public static final String ACTION_CODE_GOTO = "9999";

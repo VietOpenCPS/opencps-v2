@@ -614,7 +614,7 @@ public class StatisticManagementImpl implements StatisticManagement {
 			String top = StringPool.BLANK;
 			String topName = StringPool.BLANK;
 			params.put(DossierTerm.STATUS, StringPool.BLANK);
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 4; i++) {
 				switch (i) {
 				case 0:
 					top = DossierTerm.DELAY;
@@ -628,10 +628,10 @@ public class StatisticManagementImpl implements StatisticManagement {
 					top = DossierTerm.COMING;
 					topName = MessageUtil.getMessage(StatisticManagementConstants.COMING);
 					break;
-//				case 3:
-//					top = DossierTerm.OVER_TIME;
-//					topName = MessageUtil.getMessage(StatisticManagementConstants.OVER_TIME);
-//					break;
+				case 3:
+					top = DossierTerm.OVER_TIME;
+					topName = MessageUtil.getMessage(StatisticManagementConstants.OVER_TIME);
+					break;
 				default:
 					break;
 				}

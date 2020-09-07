@@ -80,12 +80,15 @@ import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.action.DossierActions;
+import org.opencps.dossiermgt.action.PaymentFileActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.action.util.ConstantUtils;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
@@ -1568,7 +1571,6 @@ public class OpencpsStatisticRestApplication extends Application {
 	public Response feeDetail(@HeaderParam("groupId") long groupId,
 			@BeanParam FeeSearchModel query) {
 		
-		DossierActions actions = new DossierActionsImpl();
 		Sort[] sorts = null;
 		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
 				true) };
@@ -1592,7 +1594,6 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (Validator.isNotNull(query.getGovAgencyCode())) {
 			params.put(DossierTerm.AGENCYS, query.getGovAgencyCode());
 		}
-		
 		
 		String fromDueDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromDueDate());
 		String toDueDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToDueDate());
@@ -1638,6 +1639,15 @@ public class OpencpsStatisticRestApplication extends Application {
 		if (Validator.isNotNull(toStatisticDate)) {
 			params.put(DossierTerm.TO_STATISTIC_DATE, toStatisticDate);
 		}
+
+		String fromApprovedDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getFromApprovedDate());
+		String toApprovedDate = APIDateTimeUtils.convertNormalDateToLuceneDate(query.getToApprovedDate());
+		if (Validator.isNotNull(fromApprovedDate)) {
+			params.put(DossierTerm.FROM_APPROVED_DATE, fromApprovedDate);
+		}
+		if (Validator.isNotNull(toApprovedDate)) {
+			params.put(DossierTerm.TO_APPROVED_DATE, toApprovedDate);
+		}
 		
 		if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
 			query.setStart(QueryUtil.ALL_POS);
@@ -1649,184 +1659,271 @@ public class OpencpsStatisticRestApplication extends Application {
 		params.put(DossierTerm.SYSTEM_ID, strSystemId);
 		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
 		
-		Company company;
 		try {
-			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
-			long companyId = company.getCompanyId(); 
-			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
-			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
-			List<GetDossierData> dossierData = new ArrayList<>();
-			int total = jsonData.getInt(ConstantUtils.TOTAL);
-			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
-			Map<String, String> domains = new HashMap<String, String>();
-			Map<String, String> services = new HashMap<String, String>();
-			
-			for (Document doc : datas) {
-				String domainCode = doc.get(DossierTerm.DOMAIN_CODE);
-				String domainName = doc.get(DossierTerm.DOMAIN_NAME);
-				
-				String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
-				String serviceName = doc.get(DossierTerm.SERVICE_NAME);
-				
-				if (!domains.containsKey(domainCode)) {
-					domains.put(domainCode, domainName);
+			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			long companyId = company.getCompanyId();
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			if (Validator.isNotNull(fromApprovedDate) || Validator.isNotNull(toApprovedDate)) {
+				params.put(PaymentFileTerm.STATUS, String.valueOf(5));
+				params.put(PaymentFileTerm.PAYMENT_METHOD, query.getPaymentMethod());
+				PaymentFileActions actions = new PaymentFileActionsImpl();
+				JSONObject jsonData = actions.getPaymentFiles(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
+				List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+				//List<GetDossierData> dossierData = new ArrayList<>();
+				int total = jsonData.getInt(ConstantUtils.TOTAL);
+				Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+				Map<String, String> domains = new HashMap<String, String>();
+				Map<String, String> services = new HashMap<String, String>();
+
+				for (Document doc : datas) {
+					JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+					dossierObj.put("domainCode", doc.get(DossierTerm.DOMAIN_CODE));
+					dossierObj.put("domainName", doc.get(DossierTerm.DOMAIN_NAME));
+					dossierObj.put("serviceCode", doc.get(DossierTerm.SERVICE_CODE));
+					dossierObj.put("serviceName", doc.get(DossierTerm.SERVICE_NAME));
+
+					String dossierMetaData = doc.get(DossierTerm.META_DATA);
+					JSONObject metaData = JSONFactoryUtil.createJSONObject(dossierMetaData);
+					if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment")) {
+						JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
+						_log.info("err mutiplie dossierFilePayments[] " );
+						//StringBuilder chitietDonGia = new StringBuilder();
+						StringBuilder sbDonGia = new StringBuilder();
+						StringBuilder sbRecordCount = new StringBuilder();
+						JSONObject jsonMoney = JSONFactoryUtil.createJSONObject();
+						for (int i = 0; i < dossierFilePayments.length() ; i++)
+						{
+							JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
+							if (Validator.isNotNull(dossierFilePayment))
+							{
+								String donGia = dossierFilePayment.getString("don_gia");
+								String recordCount = dossierFilePayment.getString("recordCount");
+
+								if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount) && !"empty".equalsIgnoreCase(donGia)
+										&& !"empty".equalsIgnoreCase(recordCount))
+								{
+									if (jsonMoney.has(donGia)) {
+										int recordJson = Integer.valueOf(jsonMoney.getString(donGia));
+										int counter = recordJson + Integer.valueOf(recordCount);
+										//
+										jsonMoney.put(donGia, String.valueOf(counter));
+									} else {
+										jsonMoney.put(donGia, recordCount);
+									}
+								}
+							}
+						}
+						if (Validator.isNotNull(jsonMoney)) {
+							Iterator<String> keys = jsonMoney.keys();
+							while(keys.hasNext()) {
+								String key = keys.next();
+								if (sbDonGia.length() > 0) {
+									sbDonGia.append(StringPool.RETURN_NEW_LINE);
+									sbDonGia.append(key);
+								} else {
+									sbDonGia.append(key);
+								}
+								if (sbRecordCount.length() > 0) {
+									sbRecordCount.append(StringPool.RETURN_NEW_LINE);
+									sbRecordCount.append(jsonMoney.getString(key));
+								} else {
+									sbRecordCount.append(jsonMoney.getString(key));
+								}
+							}
+						}
+						dossierObj.put("don_gia",sbDonGia.toString());
+						dossierObj.put("recordCount",sbRecordCount.toString());
+						dossierObj.put("dossierFilePayments", dossierFilePayments);
+						//dossierObj.put("chitietdongia", chitietDonGia.toString());
+					}
+					//dossierObj.put("no", count++);
+					dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
+					dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
+					String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
+					dossierObj.put("address", address);
+					long approvedDateLong = GetterUtil.getLong(doc.get(PaymentFileTerm.APPROVE_DATE_TIMESTAMP));
+					String paymentDate = null;
+					if (approvedDateLong > 0)
+						paymentDate = APIDateTimeUtils.convertDateToString(new Date(approvedDateLong), APIDateTimeUtils._NORMAL_DATE_TIME);
+
+					dossierObj.put("paymentDate", Validator.isNotNull(paymentDate) ? paymentDate : StringPool.BLANK);
+					dossierObj.put("paymentFee", String.valueOf(doc.get(PaymentFileTerm.PAYMENT_FEE)));
+					dossierObj.put("serviceAmount", String.valueOf(doc.get(PaymentFileTerm.SERVICE_AMOUNT)));
+					dossierObj.put("paymentAmount", String.valueOf(doc.get(PaymentFileTerm.PAYMENT_AMOUNT)));
+					dossierObj.put("totalAmount",  String.valueOf(doc.get(PaymentFileTerm.PAYMENT_AMOUNT)));
+					dossierObj.put("dossierCounter",doc.get(DossierTerm.DOSSIER_COUNTER));
+
+					results.put(dossierObj);
 				}
-				if (!services.containsKey(serviceCode)) {
-					services.put(serviceCode, serviceName);
-				}
-				if (mapResults.get(domainCode) != null) {
-					Map<String, List<Document>> mapDomains = mapResults.get(domainCode);
-					List<Document> lstDossiers = null;
-					if (mapDomains.containsKey(serviceCode)) {
-						lstDossiers = mapDomains.get(serviceCode);
+			} else {
+				DossierActions actions = new DossierActionsImpl();
+				JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, query.getStart(), query.getEnd(), new ServiceContext());
+				List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+				List<GetDossierData> dossierData = new ArrayList<>();
+				int total = jsonData.getInt(ConstantUtils.TOTAL);
+				Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+				Map<String, String> domains = new HashMap<String, String>();
+				Map<String, String> services = new HashMap<String, String>();
+
+				for (Document doc : datas) {
+					String domainCode = doc.get(DossierTerm.DOMAIN_CODE);
+					String domainName = doc.get(DossierTerm.DOMAIN_NAME);
+
+					String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+					String serviceName = doc.get(DossierTerm.SERVICE_NAME);
+
+					if (!domains.containsKey(domainCode)) {
+						domains.put(domainCode, domainName);
+					}
+					if (!services.containsKey(serviceCode)) {
+						services.put(serviceCode, serviceName);
+					}
+					if (mapResults.get(domainCode) != null) {
+						Map<String, List<Document>> mapDomains = mapResults.get(domainCode);
+						List<Document> lstDossiers = null;
+						if (mapDomains.containsKey(serviceCode)) {
+							lstDossiers = mapDomains.get(serviceCode);
+						}
+						else {
+							lstDossiers = new ArrayList<Document>();
+							mapDomains.put(serviceCode, lstDossiers);
+						}
+						lstDossiers.add(doc);
 					}
 					else {
-						lstDossiers = new ArrayList<Document>();
+						Map<String, List<Document>> mapDomains = new HashMap<String, List<Document>>();
+						List<Document> lstDossiers = new ArrayList<Document>();
 						mapDomains.put(serviceCode, lstDossiers);
+						lstDossiers.add(doc);
+						mapResults.put(domainCode, mapDomains);
 					}
-					lstDossiers.add(doc);
+				}
+				List<PaymentFile> lstPfs = null;
+				int paymentStatus = query.getPaymentStatus();
+				String paymentMethod = query.getPaymentMethod();
+				if (groupId > 0) {
+					if (paymentStatus != -1) {
+						//lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
+						lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+					}
+					else {
+						lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
+					}
 				}
 				else {
-					Map<String, List<Document>> mapDomains = new HashMap<String, List<Document>>();
-					List<Document> lstDossiers = new ArrayList<Document>();
-					mapDomains.put(serviceCode, lstDossiers);
-					lstDossiers.add(doc);
-					mapResults.put(domainCode, mapDomains);
+					if (paymentStatus != -1) {
+						//lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
+						lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+					}
+					else {
+						lstPfs = PaymentFileLocalServiceUtil.findAll();
+					}
 				}
-			}
-			List<PaymentFile> lstPfs = null;
-			int paymentStatus = query.getPaymentStatus();
-			String paymentMethod = query.getPaymentMethod();
-			if (groupId > 0) {
-				if (paymentStatus != -1) {
-					//lstPfs = PaymentFileLocalServiceUtil.findByG_PT(groupId, paymentStatus);
-					lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
+				for (PaymentFile pf : lstPfs) {
+					mapPfs.put(String.valueOf(pf.getDossierId()), pf);
 				}
-				else {
-					lstPfs = PaymentFileLocalServiceUtil.findByG(groupId);
-				}				
-			}
-			else {
-				if (paymentStatus != -1) {
-					//lstPfs = PaymentFileLocalServiceUtil.findByPT(paymentStatus);
-					lstPfs = PaymentFileLocalServiceUtil.findByPaymentStatusAndMethod(paymentStatus, paymentMethod, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-				}
-				else {
-					lstPfs = PaymentFileLocalServiceUtil.findAll();
-				}								
-			}
-			Map<String, PaymentFile> mapPfs = new HashMap<String, PaymentFile>();
-			for (PaymentFile pf : lstPfs) {
-				mapPfs.put(String.valueOf(pf.getDossierId()), pf);
-			}
-			
-			JSONArray results = JSONFactoryUtil.createJSONArray();
-			for (String domainCode : mapResults.keySet()) {
+
+				for (String domainCode : mapResults.keySet()) {
 //				JSONObject groupDomainObj = JSONFactoryUtil.createJSONObject();
 //				groupDomainObj.put("domain", domains.get(domainCode));
 //				JSONArray serviceArr = JSONFactoryUtil.createJSONArray();
 //				JSONArray groupDomainArr = JSONFactoryUtil.createJSONArray();
-				
-				for (String serviceCode : mapResults.get(domainCode).keySet()) {
+
+					for (String serviceCode : mapResults.get(domainCode).keySet()) {
 //					JSONObject serviceObj = JSONFactoryUtil.createJSONObject();
 //					serviceObj.put("service", services.get(serviceCode));
 //					JSONArray dossierArr = JSONFactoryUtil.createJSONArray();
-					int count = 1;
-					for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
-						String dossierId = doc.get(DossierTerm.DOSSIER_ID);
-						if (mapPfs.containsKey(dossierId) && mapPfs.get(dossierId).getApproveDatetime() != null) {
-							JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
+						int count = 1;
+						for (Document doc : mapResults.get(domainCode).get(serviceCode)) {
+							String dossierId = doc.get(DossierTerm.DOSSIER_ID);
+							if (mapPfs.containsKey(dossierId) && mapPfs.get(dossierId).getApproveDatetime() != null) {
+								JSONObject dossierObj = JSONFactoryUtil.createJSONObject();
 
-							String dossierMetaData = doc.get(DossierTerm.META_DATA);
-							JSONObject metaData = JSONFactoryUtil.createJSONObject(dossierMetaData);
-							if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment"))
-							{
-								JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
-								_log.info("err mutiplie dossierFilePayments[] " );
-								//StringBuilder chitietDonGia = new StringBuilder();
-								StringBuilder sbDonGia = new StringBuilder();
-								StringBuilder sbRecordCount = new StringBuilder();
-								JSONObject jsonMoney = JSONFactoryUtil.createJSONObject();
-								for (int i = 0; i < dossierFilePayments.length() ; i++)
+								String dossierMetaData = doc.get(DossierTerm.META_DATA);
+								JSONObject metaData = JSONFactoryUtil.createJSONObject(dossierMetaData);
+								if (Validator.isNotNull(metaData) && metaData.has("dossierFilePayment"))
 								{
-									JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
-									if (Validator.isNotNull(dossierFilePayment))
+									JSONArray dossierFilePayments = metaData.getJSONArray("dossierFilePayment");
+									_log.info("err mutiplie dossierFilePayments[] " );
+									//StringBuilder chitietDonGia = new StringBuilder();
+									StringBuilder sbDonGia = new StringBuilder();
+									StringBuilder sbRecordCount = new StringBuilder();
+									JSONObject jsonMoney = JSONFactoryUtil.createJSONObject();
+									for (int i = 0; i < dossierFilePayments.length() ; i++)
 									{
-										String donGia = dossierFilePayment.getString("don_gia");
-										String recordCount = dossierFilePayment.getString("recordCount");
-									
-										if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount) && !"empty".equalsIgnoreCase(donGia)
-												&& !"empty".equalsIgnoreCase(recordCount))
+										JSONObject dossierFilePayment = dossierFilePayments.getJSONObject(i);
+										if (Validator.isNotNull(dossierFilePayment))
 										{
-											if (jsonMoney.has(donGia)) {
-												int recordJson = Integer.valueOf(jsonMoney.getString(donGia));
-												int counter = recordJson + Integer.valueOf(recordCount);
-												//
-												jsonMoney.put(donGia, String.valueOf(counter));
-											} else {
-												jsonMoney.put(donGia, recordCount);
-											}
+											String donGia = dossierFilePayment.getString("don_gia");
+											String recordCount = dossierFilePayment.getString("recordCount");
+
+											if (Validator.isNotNull(donGia) && Validator.isNotNull(recordCount) && !"empty".equalsIgnoreCase(donGia)
+													&& !"empty".equalsIgnoreCase(recordCount))
+											{
+												if (jsonMoney.has(donGia)) {
+													int recordJson = Integer.valueOf(jsonMoney.getString(donGia));
+													int counter = recordJson + Integer.valueOf(recordCount);
+													//
+													jsonMoney.put(donGia, String.valueOf(counter));
+												} else {
+													jsonMoney.put(donGia, recordCount);
+												}
 //											if (!donGia.contentEquals("empty") && !recordCount.contentEquals("empty")) {
 //												chitietDonGia.append(donGia + " x " + recordCount + " ; ");
 //											}
+											}
 										}
 									}
-								}
-								if (Validator.isNotNull(jsonMoney)) {
-									Iterator<String> keys = jsonMoney.keys();
-									while(keys.hasNext()) {
-										String key = keys.next();
-										if (sbDonGia.length() > 0) {
-											sbDonGia.append(StringPool.RETURN_NEW_LINE);
-											sbDonGia.append(key);
-										} else {
-											sbDonGia.append(key);
-										}
-										if (sbRecordCount.length() > 0) {
-											sbRecordCount.append(StringPool.RETURN_NEW_LINE);
-											sbRecordCount.append(jsonMoney.getString(key));
-										} else {
-											sbRecordCount.append(jsonMoney.getString(key));
+									if (Validator.isNotNull(jsonMoney)) {
+										Iterator<String> keys = jsonMoney.keys();
+										while(keys.hasNext()) {
+											String key = keys.next();
+											if (sbDonGia.length() > 0) {
+												sbDonGia.append(StringPool.RETURN_NEW_LINE);
+												sbDonGia.append(key);
+											} else {
+												sbDonGia.append(key);
+											}
+											if (sbRecordCount.length() > 0) {
+												sbRecordCount.append(StringPool.RETURN_NEW_LINE);
+												sbRecordCount.append(jsonMoney.getString(key));
+											} else {
+												sbRecordCount.append(jsonMoney.getString(key));
+											}
 										}
 									}
+									dossierObj.put("don_gia",sbDonGia.toString());
+									dossierObj.put("recordCount",sbRecordCount.toString());
+									dossierObj.put("dossierFilePayments", dossierFilePayments);
+									//dossierObj.put("chitietdongia", chitietDonGia.toString());
 								}
-								dossierObj.put("don_gia",sbDonGia.toString());
-								dossierObj.put("recordCount",sbRecordCount.toString());
-								dossierObj.put("dossierFilePayments", dossierFilePayments);
-								//dossierObj.put("chitietdongia", chitietDonGia.toString());
+								dossierObj.put("no", count++);
+								dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
+								dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
+								String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
+								dossierObj.put("address", address);
+								PaymentFile pf = mapPfs.get(dossierId);
+								String paymentDate = APIDateTimeUtils.convertDateToString(pf.getApproveDatetime(), APIDateTimeUtils._NORMAL_DATE_TIME);
+								dossierObj.put("paymentDate", paymentDate);
+								dossierObj.put("paymentFee", pf.getFeeAmount());
+								dossierObj.put("serviceAmount", pf.getServiceAmount());
+								dossierObj.put("paymentAmount", pf.getPaymentAmount());
+								dossierObj.put("totalAmount",  pf.getPaymentAmount());
+//							dossierArr.put(dossierObj);
+								dossierObj.put("domainCode", domainCode);
+								dossierObj.put("domainName", domains.get(domainCode));
+								dossierObj.put("serviceCode", serviceCode);
+								dossierObj.put("serviceName", services.get(serviceCode));
+								dossierObj.put("dossierCounter",doc.get(DossierTerm.DOSSIER_COUNTER));
+
+								results.put(dossierObj);
 							}
-							dossierObj.put("no", count++);
-							dossierObj.put("dossierNo", doc.get(DossierTerm.DOSSIER_NO));
-							dossierObj.put("applicantName", doc.get(DossierTerm.APPLICANT_NAME));
-							String address = doc.get(DossierTerm.ADDRESS) + " " + doc.get(DossierTerm.WARD_NAME + " " + doc.get(DossierTerm.DISTRICT_NAME + " " + doc.get(DossierTerm.CITY_NAME)));
-							dossierObj.put("address", address);
-							PaymentFile pf = mapPfs.get(dossierId);
-							String paymentDate = APIDateTimeUtils.convertDateToString(pf.getApproveDatetime(), APIDateTimeUtils._NORMAL_DATE_TIME);
-							dossierObj.put("paymentDate", paymentDate);
-							dossierObj.put("paymentFee", pf.getFeeAmount());
-							dossierObj.put("serviceAmount", pf.getServiceAmount());
-							dossierObj.put("paymentAmount", pf.getPaymentAmount());
-							dossierObj.put("totalAmount",  pf.getPaymentAmount());
-//							dossierArr.put(dossierObj);			
-							dossierObj.put("domainCode", domainCode);
-							dossierObj.put("domainName", domains.get(domainCode));
-							dossierObj.put("serviceCode", serviceCode);
-							dossierObj.put("serviceName", services.get(serviceCode));
-							dossierObj.put("dossierCounter",doc.get(DossierTerm.DOSSIER_COUNTER));
-							
-							results.put(dossierObj);
 						}
 					}
-//					if (dossierArr.length() > 0) {
-//						serviceObj.put("data", dossierArr);						
-//						serviceArr.put(serviceObj);
-//					}
 				}
-//				if (serviceArr.length() > 0) {
-//					groupDomainObj.put("data", serviceArr);					
-//					results.put(groupDomainObj);
-//				}
 			}
+
 			ResponseBuilder builder = Response.ok(results.toJSONString());
 			return builder.build();
 		} catch (PortalException e) {

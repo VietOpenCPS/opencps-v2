@@ -131,26 +131,7 @@ import org.opencps.dossiermgt.action.util.NotificationUtil;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
 import org.opencps.dossiermgt.action.util.ReadFilePropertiesUtils;
-import org.opencps.dossiermgt.constants.ActionConfigTerm;
-import org.opencps.dossiermgt.constants.CInvoiceTerm;
-import org.opencps.dossiermgt.constants.CacheTerm;
-import org.opencps.dossiermgt.constants.DossierActionTerm;
-import org.opencps.dossiermgt.constants.DossierActionUserTerm;
-import org.opencps.dossiermgt.constants.DossierDocumentTerm;
-import org.opencps.dossiermgt.constants.DossierFileTerm;
-import org.opencps.dossiermgt.constants.DossierPartTerm;
-import org.opencps.dossiermgt.constants.DossierSyncTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.KeyPayTerm;
-import org.opencps.dossiermgt.constants.NotarizationTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.PublishQueueTerm;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.constants.ServiceInfoTerm;
-import org.opencps.dossiermgt.constants.StepConfigTerm;
-import org.opencps.dossiermgt.constants.VTPayTerm;
-import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.DataConflictException;
 import org.opencps.dossiermgt.exception.NoSuchDossierUserException;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
@@ -272,8 +253,28 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			ServiceContext context) throws PortalException {
 		String createDossiers = null;
 		if (payloadObj != null && payloadObj.has("createDossiers") && Validator.isNotNull(payloadObj.get("createDossiers"))) {
-			createDossiers = String.valueOf(payloadObj.get("createDossiers"));
-		} else if (Validator.isNotNull(proAction.getCreateDossiers())){
+			if (Validator.isNotNull(proAction.getCreateDossiers())) {
+				if (createDossiers.contains(StringPool.POUND)) {
+					String[] splitCDs = createDossiers.split(StringPool.POUND);
+					if (splitCDs.length == 2) {
+						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.POUND + splitCDs[1];
+					} else {
+						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
+					}
+				} else if (createDossiers.contains(StringPool.AT)) {
+					String[] splitCDs = createDossiers.split(StringPool.AT);
+					if (splitCDs.length != 2) {
+						createDossiers = String.valueOf(payloadObj.get("createDossiers"));
+					} else {
+						createDossiers = String.valueOf(payloadObj.get("createDossiers")) + StringPool.AT + splitCDs[1];
+					}
+				} else {
+					createDossiers = String.valueOf(payloadObj.get("createDossiers"));
+				}
+			} else {
+				createDossiers = String.valueOf(payloadObj.get("createDossiers"));
+			}
+		} else if (Validator.isNotNull(proAction.getCreateDossiers())) {
 			createDossiers = proAction.getCreateDossiers();
 		}
 		if (Validator.isNotNull(createDossiers)) {
@@ -281,9 +282,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String GOVERNMENT_AGENCY = ReadFilePropertiesUtils.get(ConstantUtils.GOVERNMENT_AGENCY);
 
 			//String createDossiers = proAction.getCreateDossiers();
-			if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
-
-			}
+			/*if (Validator.isNotNull(createDossiers) && createDossiers.contentEquals("$interoperaGovAgencyCode")) {
+			}*/
 			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, createDossiers);
 			String govAgencyCode = StringPool.BLANK;
 			String serviceCode = dossier.getServiceCode();
@@ -1765,6 +1765,12 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				govAgencyNameUnsigned = AccentUtils.removeAccent(dossier.getGovAgencyName());
 			}
 			dossierObj.put("govAgencyNameUnsigned", govAgencyNameUnsigned);
+			String strDueDate = null;
+			if (dossier.getDueDate() != null) {
+				strDueDate = APIDateTimeUtils.convertDateToString(dossier.getDueDate(),
+						APIDateTimeUtils._NORMAL_PARTTERN);
+			}
+			dossierObj.put("dueDateSMS", strDueDate != null ? strDueDate : StringPool.BLANK);
 			dossierObj = buildNotificationPayload(dossier, dossierObj);
 
 			payloadObj.put(KeyPayTerm.DOSSIER, dossierObj);
@@ -2467,6 +2473,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (Validator.isNotNull(paymentMethod)) {
 						oldPaymentFile.setPaymentMethod(paymentMethod);
 					}
+					oldPaymentFile.setApproveDatetime(new Date());
 					paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 				}
 			}
@@ -3395,7 +3402,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				bResult.put(DossierTerm.DUE_DATE, true);
 			}
 
-			dossier.setDurationCount(durationCount);
+			if (Validator.isNull(dossier.getDurationCount()))
+				dossier.setDurationCount(durationCount);
 			dossier.setDurationUnit(durationUnit);
 
 			if (dossier.getCounter() == 0 && Validator.isNotNull(dossier.getRegisterBookCode())) {
@@ -6509,6 +6517,9 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String delegateTelNo = jsonDossier.getString(DossierTerm.DELEGATE_TELNO);
 			String delegateEmail = jsonDossier.getString(DossierTerm.DELEGATE_EMAIL);
 			String delegateAddress = jsonDossier.getString(DossierTerm.DELEGATE_ADDRESS);
+			int durationCount = 0;
+			if (jsonDossier.has(ServiceProcessTerm.DURATION_COUNT) && jsonDossier.get(ServiceProcessTerm.DURATION_COUNT) != null)
+				durationCount = jsonDossier.getInt(ServiceProcessTerm.DURATION_COUNT);
 			//TODO
 			String delegateCityCode = jsonDossier.getString(DossierTerm.DELEGATE_CITYCODE);
 			String delegateCityName = StringPool.BLANK;
@@ -6554,7 +6565,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					postalWardCode, postalWardName, postalTelNo, online, process.getDirectNotification(), applicantNote,
 					input.getOriginality(), delegateIdNo, delegateName, delegateTelNo, delegateEmail, delegateAddress,
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, service, process,
+					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, durationCount, service, process,
 					option, serviceContext);
 
 			if (receiveDate != null)
@@ -6735,11 +6746,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				JSONObject jsonDate = JSONFactoryUtil.createJSONObject();
 				jsonDate.put(DossierTerm.RECEIVE_DATE, (new Date()).getTime());
 
-				Double durationCount = process.getDurationCount();
-				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+				Double durationCountProcess = durationCount > 1 ? durationCount : process.getDurationCount();
+				if (Validator.isNotNull(String.valueOf(durationCountProcess)) && durationCountProcess > 0d) {
 					//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
 					//							process.getDurationUnit(), groupId);
-					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCountProcess,
 							process.getDurationUnit(), groupId);
 					Date dueDateCal = dueDateUtils.getDueDate();
 					jsonDate.put(DossierTerm.DUE_DATE, dueDateCal != null ? dueDateCal.getTime() : 0);
@@ -6972,6 +6983,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			String delegateTelNo = jsonDossier.getString(DossierTerm.DELEGATE_TELNO);
 			String delegateEmail = jsonDossier.getString(DossierTerm.DELEGATE_EMAIL);
 			String delegateAddress = jsonDossier.getString(DossierTerm.DELEGATE_ADDRESS);
+			int durationCount = 0;
+			if (jsonDossier.has(ServiceProcessTerm.DURATION_COUNT) && jsonDossier.get(ServiceProcessTerm.DURATION_COUNT) != null) {
+				durationCount = GetterUtil.getInteger(jsonDossier.get(ServiceProcessTerm.DURATION_COUNT));
+				if (durationCount == 2 || durationCount == 6) durationCount -= 1;
+				if (durationCount == 4) durationCount += 1;
+			}
+
+			_log.info("durationCount: "+durationCount);
 			//TODO
 			String cityCode = jsonDossier.getString(DossierTerm.CITY_CODE);
 			String cityName = StringPool.BLANK;
@@ -7035,8 +7054,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					postalWardCode, postalWardName, postalTelNo, online, process.getDirectNotification(), applicantNote,
 					input.getOriginality(), delegateIdNo, delegateName, delegateTelNo, delegateEmail, delegateAddress,
 					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
-					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, service, process,
+					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, durationCount, service, process,
 					option, serviceContext);
+
+			_log.info("Dossier Duration COUNT: "+dossier.getDurationCount());
 
 			if (receiveDate != null)
 				dossier.setReceiveDate(receiveDate);
@@ -7104,7 +7125,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 							org.opencps.dossiermgt.input.model.DossierMarkBatchModel model = new org.opencps.dossiermgt.input.model.DossierMarkBatchModel();
 							model.setDossierId(dossier.getDossierId());
-							model.setDossierPartNo(jsonMark.getString("partNo"));
+							model.setDossierPartNo(jsonMark.getString("dossierPartNo"));
 							model.setFileCheck(0);
 							model.setFileMark(jsonMark.getInt("fileMark"));
 							model.setFileComment(StringPool.BLANK);
@@ -7276,11 +7297,14 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				JSONObject jsonDate = JSONFactoryUtil.createJSONObject();
 				jsonDate.put(DossierTerm.RECEIVE_DATE, (new Date()).getTime());
 
-				Double durationCount = process.getDurationCount();
-				if (Validator.isNotNull(String.valueOf(durationCount)) && durationCount > 0d) {
+				if (jsonDossier.has(ServiceProcessTerm.DURATION_COUNT) && jsonDossier.get(ServiceProcessTerm.DURATION_COUNT) != null) {
+					durationCount = GetterUtil.getInteger(jsonDossier.get(ServiceProcessTerm.DURATION_COUNT));
+				}
+				Double durationCountProcess = durationCount > 1 ? durationCount : process.getDurationCount();
+				if (Validator.isNotNull(String.valueOf(durationCountProcess)) && durationCountProcess > 0d) {
 					//					Date dueDateCal = HolidayUtils.getDueDate(new Date(), process.getDurationCount(),
 					//							process.getDurationUnit(), groupId);
-					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), process.getDurationCount(),
+					DueDateUtils dueDateUtils = new DueDateUtils(new Date(), durationCountProcess,
 							process.getDurationUnit(), groupId);
 					Date dueDateCal = dueDateUtils.getDueDate();
 
@@ -7291,6 +7315,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 			//
+			_log.info("dossier 8: " + dossier.getDurationCount());
 			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
 					serviceProcessId);
 			doAction(groupId, userId, dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
@@ -7902,7 +7927,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getPaymentNote())) {
 				paymentFile.setPaymentNote(input.getPaymentNote());
 			}
-			paymentFile.setApproveDatetime(new Date());
+			if (paymentFile.getApproveDatetime() == null)
+				paymentFile.setApproveDatetime(new Date());
 
 			if (Validator.isNotNull(input.getConfirmPayload())) {
 				paymentFile.setConfirmPayload(input.getConfirmPayload());
