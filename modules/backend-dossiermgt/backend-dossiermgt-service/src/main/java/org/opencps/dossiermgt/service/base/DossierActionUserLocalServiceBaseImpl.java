@@ -85,6 +85,7 @@ import org.opencps.dossiermgt.service.persistence.PaymentConfigPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFeeInfoPersistence;
 import org.opencps.dossiermgt.service.persistence.PaymentFileFinder;
 import org.opencps.dossiermgt.service.persistence.PaymentFilePersistence;
+import org.opencps.dossiermgt.service.persistence.PostConnectPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessActionPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessOptionPersistence;
 import org.opencps.dossiermgt.service.persistence.ProcessPluginPersistence;
@@ -1780,6 +1781,44 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the post connect local service.
+	 *
+	 * @return the post connect local service
+	 */
+	public org.opencps.dossiermgt.service.PostConnectLocalService getPostConnectLocalService() {
+		return postConnectLocalService;
+	}
+
+	/**
+	 * Sets the post connect local service.
+	 *
+	 * @param postConnectLocalService the post connect local service
+	 */
+	public void setPostConnectLocalService(
+		org.opencps.dossiermgt.service.PostConnectLocalService postConnectLocalService) {
+		this.postConnectLocalService = postConnectLocalService;
+	}
+
+	/**
+	 * Returns the post connect persistence.
+	 *
+	 * @return the post connect persistence
+	 */
+	public PostConnectPersistence getPostConnectPersistence() {
+		return postConnectPersistence;
+	}
+
+	/**
+	 * Sets the post connect persistence.
+	 *
+	 * @param postConnectPersistence the post connect persistence
+	 */
+	public void setPostConnectPersistence(
+		PostConnectPersistence postConnectPersistence) {
+		this.postConnectPersistence = postConnectPersistence;
+	}
+
+	/**
 	 * Returns the process action local service.
 	 *
 	 * @return the process action local service
@@ -2870,6 +2909,10 @@ public abstract class DossierActionUserLocalServiceBaseImpl
 	protected PaymentFilePersistence paymentFilePersistence;
 	@BeanReference(type = PaymentFileFinder.class)
 	protected PaymentFileFinder paymentFileFinder;
+	@BeanReference(type = org.opencps.dossiermgt.service.PostConnectLocalService.class)
+	protected org.opencps.dossiermgt.service.PostConnectLocalService postConnectLocalService;
+	@BeanReference(type = PostConnectPersistence.class)
+	protected PostConnectPersistence postConnectPersistence;
 	@BeanReference(type = org.opencps.dossiermgt.service.ProcessActionLocalService.class)
 	protected org.opencps.dossiermgt.service.ProcessActionLocalService processActionLocalService;
 	@BeanReference(type = ProcessActionPersistence.class)

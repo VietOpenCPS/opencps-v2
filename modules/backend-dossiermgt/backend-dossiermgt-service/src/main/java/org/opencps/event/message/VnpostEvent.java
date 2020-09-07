@@ -7,17 +7,15 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 
+import org.opencps.backend.dossiermgt.logistic.ViettelPostManagement;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostManagementImpl;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostTerm;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.KeyPayTerm;
-import org.opencps.dossiermgt.constants.ServerConfigTerm;
-import org.opencps.dossiermgt.constants.VnpostCollectionTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.rest.utils.OpenCPSConverter;
-import org.opencps.dossiermgt.rest.utils.OpenCPSRestClient;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
@@ -26,7 +24,6 @@ import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -39,19 +36,77 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
 public class VnpostEvent implements MessageListener {
-	
+
 	private static final String VNPOST_BASE_PATH = "postal/vnpost";
-	
+
 	@Override
 	public void receive(Message message) throws MessageListenerException {
 		try {
-			_doReceiveRequest(message);
+			_log.info("-----RECEIVING MESSAGE LOGISTIC...");
+			JSONObject dossierObj = (JSONObject) message.get("dossier");
+			long groupId = dossierObj.getLong(Field.GROUP_ID);
+
+			ServerConfig serverConfig = ServerConfigLocalServiceUtil.getByServerNoAndProtocol(groupId, ViettelPostTerm.SERVER_NO,
+					ViettelPostTerm.PROTOCOL);
+
+			Integer typePost = getTypeLogistic(serverConfig);
+			_log.info("-----Type post: " + typePost);
+			if(typePost.equals(LogisticConstants.DEFAULT) || typePost.equals(LogisticConstants.VN_POST)) {
+				vnPostHandle(message);
+			}else if(typePost.equals(LogisticConstants.VIETTEL_POST)) {
+				viettelPostHandle(dossierObj, serverConfig);
+			} else {
+				//todo for other logistic unit
+			}
+			_log.info("-----DONE CREATE BILL LOGISTIC...");
+
 		} catch (Exception e) {
 			_log.error("Unable to process message " + message, e);
 		}
 	}
-	
-	private void _doReceiveRequest(Message message) {		
+
+	private Integer getTypeLogistic(ServerConfig serverConfig) {
+		try {
+			if(Validator.isNull(serverConfig)) {
+				throw new Exception("Config null");
+			}
+
+			if(Validator.isNull(serverConfig.getConfigs())
+					|| serverConfig.getConfigs().isEmpty()) {
+				throw new Exception("Config null");
+			}
+
+			JSONObject configJson = JSONFactoryUtil.createJSONObject(serverConfig.getConfigs());;
+			if(Validator.isNull(configJson)) {
+				throw new Exception("Config null");
+			}
+
+			String typeLogisticString = configJson.getString(ViettelPostTerm.TYPE_POST_CONFIG);
+			if(Validator.isNull(typeLogisticString) || typeLogisticString.isEmpty()) {
+				throw new Exception("No type post in config");
+			}
+
+			return Integer.valueOf(typeLogisticString);
+		} catch(Exception e) {
+			_log.error(e.getMessage());
+			return LogisticConstants.DEFAULT;
+		}
+	}
+
+	private void viettelPostHandle(JSONObject dossierObj, ServerConfig serverConfig) {
+		try{
+			_log.info("-----Creating bill viettel post for dossier: " + dossierObj.getString(DossierTerm.DOSSIER_ID));
+			ViettelPostManagement viettelPostManagement = new ViettelPostManagementImpl(serverConfig);
+			String token = viettelPostManagement.getToken();
+			String orderService = viettelPostManagement.getOrderService(token, dossierObj);
+			viettelPostManagement.postBill(token, orderService, dossierObj);
+			_log.info("-----Done create bill viettel");
+		} catch (Exception e) {
+			_log.error("-----ERROR Create bill viettel post" + e.getMessage());
+		}
+	}
+
+	private void vnPostHandle(Message message) {
 
 		try {
 			JSONObject dossierObj = (JSONObject) message.get("dossier");
@@ -68,7 +123,7 @@ public class VnpostEvent implements MessageListener {
 			if (dossier.getVnpostalStatus() != 1) {
 				return;
 			}
-			
+
 			InvokeREST callRest = new InvokeREST();
 			String baseUrl = RESTFulConfiguration.SERVER_PATH_BASE;
 			HashMap<String, String> properties = new HashMap<String, String>();
@@ -78,23 +133,23 @@ public class VnpostEvent implements MessageListener {
 			params.put(VnpostCollectionTerm.GOV_AGENCY_CODE, dossierObj.getString(DossierTerm.GOV_AGENCY_CODE));
 			params.put(VnpostCollectionTerm.GOV_AGENCY_NAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
 			params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO));
-			params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO)); 	    	
-			params.put(KeyPayTerm.SENDERNAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME)); 
-			params.put(KeyPayTerm.RECEIVERNAME, dossierObj.getString(DossierTerm.DELEGATE_NAME)); 
-			params.put(KeyPayTerm.RECEIVERADDRESS, dossierObj.get(DossierTerm.POSTAL_ADDRESS)); 
+			params.put(KeyPayTerm.ORDERNUMBER, dossierObj.getString(DossierTerm.DOSSIER_NO));
+			params.put(KeyPayTerm.SENDERNAME, dossierObj.getString(DossierTerm.GOV_AGENCY_NAME));
+			params.put(KeyPayTerm.RECEIVERNAME, dossierObj.getString(DossierTerm.DELEGATE_NAME));
+			params.put(KeyPayTerm.RECEIVERADDRESS, dossierObj.get(DossierTerm.POSTAL_ADDRESS));
 			params.put(KeyPayTerm.RECEIVERTEL, dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
 			params.put(KeyPayTerm.RECEIVERPROVINCE, dossierObj.getString(DossierTerm.POSTAL_CITY_CODE));
 			params.put(KeyPayTerm.RECEIVERDISTRICT, dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE));
 			params.put(KeyPayTerm.RECEIVEREMAIL, dossierObj.getString(DossierTerm.DELEGATE_EMAIL));
 			params.put(VnpostCollectionTerm.SENDER_DESC, createVnpostSenderDesc(dossier, false));
-			
+
 			ServiceContext context = null;
-			
+
 			JSONObject resultObj = callRest.callPostAPI(groupId, HttpMethod.POST, MediaType.APPLICATION_JSON, baseUrl,
 					KeyPayTerm.VNPOST_BASE_PATH, "", "", properties, params, context);
 			_log.info("===========" + baseUrl + "      " + KeyPayTerm.VNPOST_BASE_PATH);
 			_log.info("Call post API SEND VNPOST result: " + resultObj.toJSONString());
-			
+
 			if(resultObj != null) {
 				DossierLocalServiceUtil.updateViaPostal(groupId, dossierObj.getLong(DossierTerm.DOSSIER_ID),
 						dossierObj.getString(DossierTerm.REFERENCE_UID), 3, context);
@@ -131,6 +186,6 @@ public class VnpostEvent implements MessageListener {
 		senderName  += "||Tên dịch vụ: " + serviceType + "||CMND: " + dossier.getApplicantIdNo();
 		return senderName;
 	}
-	
+
 	private Log _log = LogFactoryUtil.getLog(VnpostEvent.class);
 }

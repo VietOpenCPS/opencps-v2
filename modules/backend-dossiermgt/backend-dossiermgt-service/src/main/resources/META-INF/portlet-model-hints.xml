@@ -1207,6 +1207,24 @@
 		</field>
 		<field name="invoiceFileEntryId" type="long" />
 	</model>
+	<model name="org.opencps.dossiermgt.model.PostConnect">
+		<field name="uuid" type="String" />
+		<field name="postConnectId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="dossierId" type="long" />
+		<field name="postService" type="int" />
+		<field name="postType" type="int" />
+		<field name="orderNumber" type="String" />
+		<field name="postStatus" type="int" />
+		<field name="metadata" type="String" />
+		<field name="syncState" type="int" />
+		<field name="retry" type="int" />
+	</model>
 	<model name="org.opencps.dossiermgt.model.ProcessAction">
 		<field name="uuid" type="String" />
 		<field name="processActionId" type="long" />

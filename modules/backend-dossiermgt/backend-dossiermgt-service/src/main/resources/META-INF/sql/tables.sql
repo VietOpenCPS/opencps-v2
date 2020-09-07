@@ -751,6 +751,25 @@ create table opencps_paymentfile (
 	invoiceFileEntryId LONG
 );
 
+create table opencps_postconnect (
+	uuid_ VARCHAR(75) null,
+	postConnectId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	dossierId LONG,
+	postService INTEGER,
+	postType INTEGER,
+	orderNumber VARCHAR(75) null,
+	postStatus INTEGER,
+	metadata VARCHAR(75) null,
+	syncState INTEGER,
+	retry INTEGER
+);
+
 create table opencps_process_plugin (
 	uuid_ VARCHAR(75) null,
 	processPluginId LONG not null primary key,
