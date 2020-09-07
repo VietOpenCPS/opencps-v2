@@ -8664,6 +8664,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 
+				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
@@ -8676,10 +8677,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH
 									+ fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 							files.put(jsonObject);
+							returnDocument = false;
 						}
 					}
 				}
 
+				if (returnDocument) {
+					jsonObject = JSONFactoryUtil.createJSONObject();
+					jsonObject.put("name", proAction.getActionName());
+					jsonObject.put("url", "o/rest/v2/dossiers/documentpreviews?dossierId=" + dossier.getDossierId() +
+							"&documentTypeCode=" + proAction.getReturnDossierFiles());
+					files.put(jsonObject);
+					returnDocument = true;
+				}
+				/**
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -8698,6 +8709,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
+				*/
 			}
 		} catch (Exception e) {
 			_log.error(e);
