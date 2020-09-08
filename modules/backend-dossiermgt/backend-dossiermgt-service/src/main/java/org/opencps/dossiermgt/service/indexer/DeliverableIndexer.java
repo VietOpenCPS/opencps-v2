@@ -70,15 +70,14 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 
 		// add text fields
 		String deliverableCode = object.getDeliverableCode();
-		if (Validator.isNotNull(deliverableCode)) {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH ,
-//							+ StringPool.UNDERLINE + ConstantUtils.DATA,
-					SpecialCharacterUtils.splitSpecial(deliverableCode.toLowerCase()));
-		} else {
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
-			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
-		}
+//		if (Validator.isNotNull(deliverableCode)) {
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH ,
+//					SpecialCharacterUtils.splitSpecial(deliverableCode.toLowerCase()));
+//		} else {
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+//			document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+//		}
 		if (Validator.isNotNull(object.getIssueDate())) {
 			document.addTextSortable(DeliverableTerm.ISSUE_DATE_SEARCH , SpecialCharacterUtils.splitSpecial(APIDateTimeUtils
 					.convertDateToString(object.getIssueDate(), APIDateTimeUtils._NORMAL_DATE)));
@@ -146,8 +145,30 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 			Iterator<String> keys = jsonObject.keys();
 
 			while (keys.hasNext()) {
+
 				String key = keys.next();
 				String indexKey = key + StringPool.UNDERLINE + ConstantUtils.DATA;
+				if(object.getFormData().contains(DeliverableTerm.DELIVERABLE_CODE)){
+					if(key.equals(DeliverableTerm.DELIVERABLE_CODE)) {
+						if (Validator.isNotNull(jsonObject.getString(key))) {
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, jsonObject.getString(key));
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH,
+									SpecialCharacterUtils.splitSpecial(jsonObject.getString(key).toLowerCase()));
+						} else {
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+							document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+						}
+					}
+				}else{
+					if (Validator.isNotNull(deliverableCode)) {
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, deliverableCode);
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH ,
+								SpecialCharacterUtils.splitSpecial(deliverableCode.toLowerCase()));
+					} else {
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE, StringPool.BLANK);
+						document.addTextSortable(DeliverableTerm.DELIVERABLE_CODE_SEARCH, StringPool.BLANK);
+					}
+				}
 				if(jsonObject.getString(key).contains(StringPool.FORWARD_SLASH)) {
 					if (key.equals(DeliverableTerm.NGAY_SINH)) {
 						document.addTextSortable(DeliverableTerm.NGAYSINH_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));

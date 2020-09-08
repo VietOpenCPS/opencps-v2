@@ -23,14 +23,8 @@ import java.util.Map;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierAction;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.Registration;
-import org.opencps.dossiermgt.service.DossierActionLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.RegistrationLocalServiceUtil;
+import org.opencps.dossiermgt.model.*;
+import org.opencps.dossiermgt.service.*;
 import org.opencps.dossiermgt.service.comparator.DossierActionComparator;
 import org.opencps.dossiermgt.service.comparator.DossierFileComparator;
 import org.opencps.usermgt.action.ApplicantActions;
@@ -879,6 +873,7 @@ public class AutoFillFormData {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 
 			result = JSONFactoryUtil.createJSONObject(sampleData);
+			_log.info("RESULT " + result.toString());
 
 			String _subjectName = StringPool.BLANK;
 			String _subjectId = StringPool.BLANK;
@@ -911,9 +906,11 @@ public class AutoFillFormData {
 			String _sampleCount = StringPool.BLANK;
 			String _documentDate = StringPool.BLANK;
 			String _documentNo = StringPool.BLANK;
+			String _employee_userName = StringPool.BLANK;
 
 			SimpleDateFormat sfd = new SimpleDateFormat(APIDateTimeUtils._NORMAL_DATE_TIME);
-
+			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+					serviceContext.getUserId());
 			_curDate = sfd.format(new Date());
 
 			if (Validator.isNotNull(dossier)) {
@@ -984,22 +981,19 @@ public class AutoFillFormData {
 				}
 
 				try {
-					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
-							serviceContext.getUserId());
+//					Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(dossier.getGroupId(),
+//							serviceContext.getUserId());
 
-					// _log.info("GET EMPLOYEE ID ____" +
-					// serviceContext.getUserId());
 
 					JSONObject employeeJSON = JSONFactoryUtil
 							.createJSONObject(JSONFactoryUtil.looseSerialize(employee));
 
-					// _log.info("GET EMPLOYEE ____");
 
-					// _log.info(employeeJSON);
 
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
+					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -1023,16 +1017,14 @@ public class AutoFillFormData {
 				}
 				_documentNo = dossier.getDocumentNo();
 			}
-			// process sampleData
-//			if (Validator.isNull(sampleData)) {
-//				sampleData = "{}";
-//			}
 
 			Map<String, Object> jsonMap = jsonToMap(result);
+//			_log.info("JsonMap " + jsonMap.toString());
 
 			for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
 
 				String value = String.valueOf(entry.getValue());
+//				_log.info("Value json " + value);
 
 				if (value.startsWith(StringPool.UNDERLINE) && !value.contains(StringPool.COLON)) {
 
@@ -1092,8 +1084,15 @@ public class AutoFillFormData {
 						jsonMap.put(entry.getKey(), _documentDate);
 					}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 						jsonMap.put(entry.getKey(), _documentNo);
+					}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+						jsonMap.put(entry.getKey(), _employee_userName);
+					}else if ((EmployeeTerm._FIRSTSCOPE).equals(value)) {
+						if(Validator.isNotNull(employee)) {
+							String _govAgencyCode[] = employee.getScope().split(StringPool.COMMA);
+							jsonMap.put(entry.getKey(), _govAgencyCode[0]);
+//							_log.info("LOG FirstScope :" + _govAgencyCode[0]);
+						}
 					}
-//					if(value.contains(StringPool.UNDERLINE + DossierTerm.META_DATA)){
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
 						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
 						if(Validator.isNotNull(dossier.getMetaData())) {
@@ -1178,25 +1177,49 @@ public class AutoFillFormData {
 							jsonMap.put(entry.getKey(), _documentDate);
 						}else if((StringPool.UNDERLINE + DossierTerm.DOCUMENT_NO).equals(value)){
 							jsonMap.put(entry.getKey(), _documentNo);
+						}else if ((StringPool.UNDERLINE + EmployeeTerm.USER_NAME).equals(value)) {
+							resultBinding += StringPool.COMMA_AND_SPACE + _employee_userName;
 						}
 					}
 
 					jsonMap.put(entry.getKey(), resultBinding.replaceFirst(StringPool.COMMA_AND_SPACE, StringPool.BLANK));
 
 				} else if (value.startsWith(StringPool.POUND) && value.contains(StringPool.AT)) {
+					_log.info("KGGP Map " + value);
 					String newString = value.substring(1);
 					String[] stringSplit = newString.split(StringPool.AT);
 					String variable = stringSplit[0];
 					String paper = stringSplit[1];
-					try {
-						DossierFile dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-								paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 
+					try {
+						DossierFile dossierFile = null;
+						List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
+
+						if(Validator.isNotNull(listDossierHS)) {
+							DossierFile model = listDossierHS.get(0);
+							if (Validator.isNotNull(model.getDossierPartType())) {
+								if (model.getDossierPartType() == 2) {
+									for (DossierFile item : listDossierHS) {
+										if (Validator.isNotNull(item.getDeliverableCode())) {
+											if (Validator.isNotNull(item.getFormData())) {
+												dossierFile = item;
+//												_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
+											}
+										}
+									}
+								} else {
+									dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+											paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
+//									_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
+								}
+							}
+						}
+//						_log.info("Log FormData" + dossierFile.getFormData());
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
-							// _log.info("JSON other map: " +
+//							 _log.info("JSON other map: " + jsonOtherMap.toString());
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {

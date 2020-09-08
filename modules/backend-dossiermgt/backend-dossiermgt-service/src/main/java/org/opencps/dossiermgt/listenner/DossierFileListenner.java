@@ -716,12 +716,15 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 									revalidate, APIDateTimeUtils._NORMAL_DATE)
 									: deliverable.getRevalidate());
 
-					formDataContent = mergeObject(
-							deliverable.getFormData(), formDataContent.toString());
+//					formDataContent = mergeObject(
+//							deliverable.getFormData(), formDataContent.toString());
+					formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+							dlvType.getMappingData(), dossier.getDossierId(),
+							serviceContext);
 					deliverable.setFormData(formDataContent.toString());
 
 					deliverable.setFileAttachs(fileAttachs);
-					_log.info("UPDATE Deliverable :" + JSONFactoryUtil.looseSerialize(deliverable));
+					_log.info("UPDATE Deliverable :" + deliverable.getFormData());
 
 					DeliverableLocalServiceUtil.updateDeliverable(deliverable);
 				}

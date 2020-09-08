@@ -4307,25 +4307,31 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 		DictCollection govCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(GOVERNMENT_AGENCY,
 				dossier.getGroupId());
+		_log.info("DictCollection " + JSONFactoryUtil.looseSerialize(govCollection));
 		if (govCollection != null) {
 			DictItem govAgenItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(dossier.getGovAgencyCode(),
 					govCollection.getDictCollectionId(), dossier.getGroupId());
-			String metaDataItem = govAgenItem.getMetaData();
-			try {
-				JSONObject metaObj = JSONFactoryUtil.createJSONObject(metaDataItem);
-				if (govAgenItem != null) {
-					if (metaObj.has(BN_TELEPHONE)) {
-						jsonData.put(BN_TELEPHONE, metaObj.getString(BN_TELEPHONE));
+
+//			_log.info("Dossier " + JSONFactoryUtil.looseSerialize(dossier));
+			if(Validator.isNotNull(govAgenItem)){
+				String metaDataItem = govAgenItem.getMetaData();
+				try {
+					JSONObject metaObj = JSONFactoryUtil.createJSONObject(metaDataItem);
+					if (govAgenItem != null) {
+						if (metaObj.has(BN_TELEPHONE)) {
+							jsonData.put(BN_TELEPHONE, metaObj.getString(BN_TELEPHONE));
+						}
+						if (metaObj.has(BN_EMAIL)) {
+							jsonData.put(BN_EMAIL, metaObj.getString(BN_EMAIL));
+						}
+						if (metaObj.has(BN_ADDRESS)) {
+							jsonData.put(BN_ADDRESS, metaObj.getString(BN_ADDRESS));
+						}
 					}
-					if (metaObj.has(BN_EMAIL)) {
-						jsonData.put(BN_EMAIL, metaObj.getString(BN_EMAIL));
-					}
-					if (metaObj.has(BN_ADDRESS)) {
-						jsonData.put(BN_ADDRESS, metaObj.getString(BN_ADDRESS));
-					}
+				} catch (Exception e) {
+					_log.debug(e);
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				_log.debug(e);
 			}
 		}
 

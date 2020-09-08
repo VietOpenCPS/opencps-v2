@@ -8447,6 +8447,7 @@ public class DossierManagementImpl implements DossierManagement {
 											//Lấy file KQGP để update lại deliverableCode
 										}
 										listDossierFileUpdate.add(item);
+										_log.info("Log list :" + listDossierFileUpdate.size());
 									}
 								}
 							}
@@ -8503,7 +8504,7 @@ public class DossierManagementImpl implements DossierManagement {
 													}
 												}
 											}
-											_log.info("Log deliverable State:" + deliverableState);
+//											_log.info("Log deliverable State:" + deliverableState);
 											deliverable = DeliverableLocalServiceUtil.addDeliverableSign(
 													groupId, deliverableTypes, deliverableName,
 													deliverableCode, govAgencyCode, govAgencyName,
@@ -8514,7 +8515,7 @@ public class DossierManagementImpl implements DossierManagement {
 													serviceContext);
 											_log.info("FileAttach deliverable" + fileEntryId);
 											deliverableCodeFile = deliverable.getDeliverableCode();
-											_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
+//											_log.info("TRACE LOG INFO : " + JSONFactoryUtil.looseSerialize(deliverable));
 											break;
 										}
 									}
@@ -8522,6 +8523,7 @@ public class DossierManagementImpl implements DossierManagement {
 							}
 							//Update DeliverableCode cho dossierFile KQGP
 							if (Validator.isNotNull(deliverable)) {
+//								_log.info("Deliverable " + "not null");
 								for (DossierFile item : listDossierFileUpdate) {
 									if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
 										if (Validator.isNotNull(deliverableCodeFile) && !deliverableCodeFile.equals(item.getDeliverableCode())) {

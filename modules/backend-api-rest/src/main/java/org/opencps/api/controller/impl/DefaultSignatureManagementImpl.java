@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -1082,6 +1083,8 @@ public class DefaultSignatureManagementImpl
 		long dossierId = id;
 		long userId = user.getUserId();
 
+
+
 		if (!auth.isAuth(serviceContext)) {
 			throw new UnauthenticationException();
 		}
@@ -1135,7 +1138,7 @@ public class DefaultSignatureManagementImpl
 									deliverable);
 							}
 						} else if (deliverable != null) {
-							
+
 							String deliState = String.valueOf(
 								deliverable.getDeliverableState());
 							if (!DeliverableTerm.DELIVERABLE_STATE_VALID.equals(deliState)) {
@@ -1216,6 +1219,29 @@ public class DefaultSignatureManagementImpl
 
 			// Process success
 			result.put(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG, MessageUtil.getMessage(ConstantUtils.API_JSON_DEFAULTSIGNATURE_MSG_SUCCESS));
+		}
+
+		// Update fileEntryId == file đính kèm cho QĐ hàng tháng
+		List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossierId);
+		if(listDossierHS.size() >0) {
+			long fileEntryId= 0;
+			for (DossierFile item : listDossierHS) {
+				if (item.getEForm() == false) {
+					fileEntryId = item.getFileEntryId();
+					_log.info("LOG Eform = false -- log fileEntryId :" + item.getFileEntryId());
+					if(Validator.isNotNull(item.getDeliverableCode())) {
+						Deliverable deliverable =
+								DeliverableLocalServiceUtil.getByCode(
+										item.getDeliverableCode());
+						if (Validator.isNotNull(fileEntryId)) {
+							_log.info("Deliverable " + JSONFactoryUtil.looseSerialize(deliverable));
+							deliverable.setFileAttachs(String.valueOf(fileEntryId));
+							DeliverableLocalServiceUtil.updateDeliverable(
+									deliverable);
+						}
+					}
+				}
+			}
 		}
 
 		if (!signOk) {
