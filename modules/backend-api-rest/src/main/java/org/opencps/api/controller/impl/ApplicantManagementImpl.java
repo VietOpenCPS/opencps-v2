@@ -349,9 +349,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
-			/*if (!auth.isAuth(serviceContext)) {
+			if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
-			}*/
+			}
 
 //			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
