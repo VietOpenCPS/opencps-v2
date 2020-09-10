@@ -349,9 +349,9 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 		BackendAuth auth = new BackendAuthImpl();
 		try {
 
-			if (!auth.isAuth(serviceContext)) {
+			/*if (!auth.isAuth(serviceContext)) {
 				throw new UnauthenticationException();
-			}
+			}*/
 
 //			if (!auth.hasResource(serviceContext, ServiceInfo.class.getName(), ActionKeys.ADD_ENTRY)) {
 //				throw new UnauthorizationException();
@@ -364,6 +364,13 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				query.setEnd(QueryUtil.ALL_POS);
 
 			}
+			
+			String fromRegistryDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getFromRegistryDate());
+			String toRegistryDate =
+					APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getToRegistryDate());
 
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
@@ -377,6 +384,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.APPLICANTNAME, query.getApplicantName());
 			params.put(ApplicantTerm.VERIFICATION, query.getVerification());
 			params.put(ApplicantTerm.HAVE_ACCOUNT, query.isHaveAccount());
+			params.put(ApplicantTerm.FROM_REGISTRY_DATE, fromRegistryDate);
+			params.put(ApplicantTerm.TO_REGISTRY_DATE, toRegistryDate);
 			
 			String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
 			

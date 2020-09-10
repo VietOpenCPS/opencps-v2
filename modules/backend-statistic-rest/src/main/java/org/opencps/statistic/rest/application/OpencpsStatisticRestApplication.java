@@ -2475,6 +2475,6 @@ public class OpencpsStatisticRestApplication extends Application {
 	public static final String RECEIVING = "receiving";
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
-	public static final String UNRESOLVED = "unresolved";
+	public static final String UNRESOLVED = "unresolved";	
 
 }
