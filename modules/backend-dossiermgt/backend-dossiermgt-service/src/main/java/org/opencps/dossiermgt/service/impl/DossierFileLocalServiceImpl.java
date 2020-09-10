@@ -1067,9 +1067,10 @@ public class DossierFileLocalServiceImpl
 
 		// dossierFileLocalService.getDossierFileByReferenceUid(dossierId,
 		// referenceUid);
+		_log.info(" DOSSIER FILE " + JSONFactoryUtil.looseSerialize(dossierFile));
 
 		String jrxmlTemplate = dossierFile.getFormReport();
-
+		_log.info(" FORM REPORT " + jrxmlTemplate);
 		if (Validator.isNull(jrxmlTemplate)) {
 			DossierPart dossierPart =
 				dossierPartLocalService.fetchByTemplatePartNo(
@@ -1100,9 +1101,10 @@ public class DossierFileLocalServiceImpl
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file
-		_log.debug("IN DOSSIER FILE UPDATE FORM DATA");
+		_log.info("IN DOSSIER FILE UPDATE FORM DATA");
 		Message message = new Message();
 		if(Validator.isNotNull(jrxmlTemplate)) {
+			_log.info("LOG jasper : " +  jrxmlTemplate);
 			JSONObject msgData = JSONFactoryUtil.createJSONObject();
 			msgData.put(ConstantUtils.CLASS_NAME, DossierFile.class.getName());
 			msgData.put(Field.CLASS_PK, dossierFile.getDossierFileId());
@@ -1113,7 +1115,7 @@ public class DossierFileLocalServiceImpl
 			message.put(ConstantUtils.MSG_ENG, msgData);
 			MessageBusUtil.sendMessage(ConstantUtils.JASPER_DESTINATION, message);
 		}
-		_log.debug("SEND TO CREATED FILE MODEL");
+		_log.info("SEND TO CREATED FILE MODEL");
 
 		return dossierFilePersistence.update(dossierFile);
 	}

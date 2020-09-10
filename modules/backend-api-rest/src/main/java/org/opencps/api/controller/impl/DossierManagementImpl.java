@@ -8382,13 +8382,12 @@ public class DossierManagementImpl implements DossierManagement {
 				String[] proCrDossierFile = proAction.getCreateDossierFiles().split(StringPool.COMMA);
 				for (String idDossierFile : proCrDossierFile) {
 					dossierPart = DossierPartLocalServiceUtil.getByTempAndFileTempNo(groupId, dossier.getDossierTemplateNo(), idDossierFile);
-					_log.info("TRACE_LOG_INFO DossierPart: " + JSONFactoryUtil.looseSerialize(dossierPart));
 					if (dossierPart.getPartNo().equals(idDossierFile)) {
-//					_log.info("TRACE_LOG_INFO dossierPartNo : " + dossierPart.getPartNo() + " ---- createDossierFile : " + idDossierFile);
 						checkCreateFile = true;
 					}
 					if (Validator.isNotNull(dossierPart.getPartNo())) {
 						if (checkCreateFile) {
+							_log.debug("TRACE_LOG_INFO DossierPart: " + dossierPart.getPartType());
 							if ("7".equals(String.valueOf(dossierPart.getPartType()))) {
 								if (Validator.isNotNull(listDossierFile)) {
 									for (DossierFile item : listDossierFile) {
@@ -8433,6 +8432,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 
 					//Tạo Deliverable cho hồ sơ
+
 					List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossier.getDossierId());
 					if (listDossierHS != null && !listDossierHS.isEmpty()) {
 						if (Validator.isNotNull(dossierPart.getDeliverableType())) {
@@ -8451,18 +8451,15 @@ public class DossierManagementImpl implements DossierManagement {
 									}
 								}
 							}
+							_log.debug("List HS :" + listDossierFile.size());
 							for (DossierFile item : listDossierHS) {
 								if (Validator.isNotNull(item.getDossierPartNo()) && item.getDossierPartNo().equals(DossierTerm.KQGP)) {
 									//Fix : HS có file đính kèm thì lấy fileEntryId của file đính kèm
-//									deliverable = Validator.isNotNull(item.getDeliverableCode())
-//											? DeliverableLocalServiceUtil.getByF_GID_DCODE(
-//											dossier.getGroupId(), item.getDeliverableCode())
-//											: DeliverableLocalServiceUtil.fetchByGID_DID(
-//											dossier.getGroupId(), dossier.getDossierId());
 									//Check deliverable của dossierFile == TyCode của DeliverableType thì mới cho tạo Deliverable
 									if (dossierPart.getDeliverableAction() == 0 ) {
 
 										boolean eSignature = proAction.getESignature();
+										_log.debug("eSignature  :" + eSignature);
 										if (eSignature == true) {
 //										_log.info("TRACE_LOG_INFO Check: " + eSignature + dossierPart.getDeliverableType());
 //											deliverableCodeFile = item.getDeliverableCode();
