@@ -340,13 +340,33 @@ public class DossierUtils {
 								long subTimeStamp = dateNowTimeStamp - dueDateActionTimeStamp;
 //								_log.info("START STEP OVERDUE");
 								String stepOverDue = "";
-								DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
-								ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
-										dossierAction.getGroupId(), dossierAction.getServiceProcessId());
-								if(Validator.isNotNull(step.getDurationCount()) && step.getDurationCount() > 0) {
-								 stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
-										dueDateActionTimeStamp, groupId, true);
-								}else{
+//								DossierAction dossierAction = DossierActionLocalServiceUtil.fetchDossierAction(dossierActionId);
+//								ProcessStep step = ProcessStepLocalServiceUtil.fetchBySC_GID(dossierAction.getStepCode(),
+//										dossierAction.getGroupId(), dossierAction.getServiceProcessId());
+//								if(Validator.isNotNull(step)){
+//									_log.info("Log Step " + JSONFactoryUtil.looseSerialize(step));
+//								}
+								if(Validator.isNotNull(durationCount)){
+									_log.info("Log duration :" + durationCount);
+									if(durationCount > 0) {
+//										_log.info("Log > 0");
+//										if(Validator.isNotNull(durationUnit)) {
+//											_log.info("Log DurationUnit:" + durationUnit);
+//										} if(Validator.isNotNull(subTimeStamp)){
+//											_log.info("Log subTime :" + subTimeStamp);
+//										} if(Validator.isNotNull(dateNowTimeStamp)){
+//											_log.info("Log dateNowTimeStamp:" + dateNowTimeStamp);
+//										}
+//										if(Validator.isNotNull(dueDateActionTimeStamp)){
+//											_log.info("Log dueDateActionTimeStamp:" + dueDateActionTimeStamp);
+//										}
+
+										stepOverDue = calculatorOverDue(durationCount, durationUnit, subTimeStamp, dateNowTimeStamp,
+												dueDateActionTimeStamp, groupId, true);
+									}
+								}
+								else{
+									_log.info("Log DurationCount :" + StringPool.BLANK + " NULL");
 									stepOverDue = StringPool.BLANK;
 								}
 //								DueDateUtils overdue = new DueDateUtils(now, dueDate, durationUnit, groupId);
