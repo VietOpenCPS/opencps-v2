@@ -536,6 +536,7 @@
 		<field name="multipleCheck" type="String" />
 		<field name="postalCodeSend" type="String" />
 		<field name="postalCodeReceived" type="String" />
+		<field name="lastReceiveDate" type="Date" />
 	</model>
 	<model name="org.opencps.dossiermgt.model.DossierAction">
 		<field name="uuid" type="String" />

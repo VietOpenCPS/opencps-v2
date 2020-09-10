@@ -1649,6 +1649,20 @@ public interface DossierModel extends BaseModel<Dossier>, GroupedModel,
 	 */
 	public void setPostalCodeReceived(String postalCodeReceived);
 
+	/**
+	 * Returns the last receive date of this dossier.
+	 *
+	 * @return the last receive date of this dossier
+	 */
+	public Date getLastReceiveDate();
+
+	/**
+	 * Sets the last receive date of this dossier.
+	 *
+	 * @param lastReceiveDate the last receive date of this dossier
+	 */
+	public void setLastReceiveDate(Date lastReceiveDate);
+
 	@Override
 	public boolean isNew();
 

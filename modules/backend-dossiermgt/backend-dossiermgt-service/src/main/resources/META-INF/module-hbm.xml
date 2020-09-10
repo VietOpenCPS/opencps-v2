@@ -371,6 +371,7 @@
 		<property name="multipleCheck" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="postalCodeSend" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="postalCodeReceived" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="lastReceiveDate" type="org.hibernate.type.TimestampType" />
 	</class>
 	<class name="org.opencps.dossiermgt.model.impl.DossierActionImpl" table="opencps_dossieraction">
 		<id name="dossierActionId" type="long">

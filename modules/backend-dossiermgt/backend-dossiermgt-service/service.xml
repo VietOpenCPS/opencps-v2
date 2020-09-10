@@ -596,6 +596,7 @@
 		<column name="multipleCheck" type="String" />
 		<column name="postalCodeSend" type="String" />
 		<column name="postalCodeReceived" type="String" />
+		<column name="lastReceiveDate" type="Date" />
 		
 		<!-- Order -->
 		

@@ -300,7 +300,8 @@ create table opencps_dossier (
 	fromViaPostal INTEGER,
 	multipleCheck VARCHAR(75) null,
 	postalCodeSend VARCHAR(75) null,
-	postalCodeReceived VARCHAR(75) null
+	postalCodeReceived VARCHAR(75) null,
+	lastReceiveDate DATE null
 );
 
 create table opencps_dossieraction (

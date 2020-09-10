@@ -163,6 +163,7 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		attributes.put("multipleCheck", getMultipleCheck());
 		attributes.put("postalCodeSend", getPostalCodeSend());
 		attributes.put("postalCodeReceived", getPostalCodeReceived());
+		attributes.put("lastReceiveDate", getLastReceiveDate());
 
 		return attributes;
 	}
@@ -796,6 +797,12 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 		if (postalCodeReceived != null) {
 			setPostalCodeReceived(postalCodeReceived);
 		}
+
+		Date lastReceiveDate = (Date)attributes.get("lastReceiveDate");
+
+		if (lastReceiveDate != null) {
+			setLastReceiveDate(lastReceiveDate);
+		}
 	}
 
 	@Override
@@ -1391,6 +1398,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public long getGroupId() {
 		return _dossier.getGroupId();
+	}
+
+	/**
+	* Returns the last receive date of this dossier.
+	*
+	* @return the last receive date of this dossier
+	*/
+	@Override
+	public Date getLastReceiveDate() {
+		return _dossier.getLastReceiveDate();
 	}
 
 	/**
@@ -2542,6 +2559,16 @@ public class DossierWrapper implements Dossier, ModelWrapper<Dossier> {
 	@Override
 	public void setGroupId(long groupId) {
 		_dossier.setGroupId(groupId);
+	}
+
+	/**
+	* Sets the last receive date of this dossier.
+	*
+	* @param lastReceiveDate the last receive date of this dossier
+	*/
+	@Override
+	public void setLastReceiveDate(Date lastReceiveDate) {
+		_dossier.setLastReceiveDate(lastReceiveDate);
 	}
 
 	/**

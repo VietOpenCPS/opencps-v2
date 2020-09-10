@@ -64,7 +64,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(209);
+		StringBundler sb = new StringBundler(211);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -274,6 +274,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		sb.append(postalCodeSend);
 		sb.append(", postalCodeReceived=");
 		sb.append(postalCodeReceived);
+		sb.append(", lastReceiveDate=");
+		sb.append(lastReceiveDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -895,6 +897,13 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 			dossierImpl.setPostalCodeReceived(postalCodeReceived);
 		}
 
+		if (lastReceiveDate == Long.MIN_VALUE) {
+			dossierImpl.setLastReceiveDate(null);
+		}
+		else {
+			dossierImpl.setLastReceiveDate(new Date(lastReceiveDate));
+		}
+
 		dossierImpl.resetOriginalValues();
 
 		return dossierImpl;
@@ -1027,6 +1036,7 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		multipleCheck = objectInput.readUTF();
 		postalCodeSend = objectInput.readUTF();
 		postalCodeReceived = objectInput.readUTF();
+		lastReceiveDate = objectInput.readLong();
 	}
 
 	@Override
@@ -1574,6 +1584,8 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 		else {
 			objectOutput.writeUTF(postalCodeReceived);
 		}
+
+		objectOutput.writeLong(lastReceiveDate);
 	}
 
 	public String uuid;
@@ -1680,4 +1692,5 @@ public class DossierCacheModel implements CacheModel<Dossier>, Externalizable {
 	public String multipleCheck;
 	public String postalCodeSend;
 	public String postalCodeReceived;
+	public long lastReceiveDate;
 }
