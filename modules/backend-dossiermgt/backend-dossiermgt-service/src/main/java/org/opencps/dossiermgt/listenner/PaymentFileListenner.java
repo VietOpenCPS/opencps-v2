@@ -94,10 +94,11 @@ public class PaymentFileListenner extends BaseModelListener<PaymentFile> {
 			DossierLogLocalServiceUtil.addDossierLog(model.getGroupId(), model.getDossierId(), model.getUserName(), content,
 					notificationType, payload, serviceContext);
 			
-			if (modelBeforeUpdate.getPaymentStatus() != model.getPaymentStatus() && model.getPaymentStatus() == 5) {
-		        model.setApproveDatetime(new Date());
-		        PaymentFileLocalServiceUtil.updatePaymentFile(model);
-		      }
+			if (modelBeforeUpdate.getPaymentStatus() != model.getPaymentStatus() && model.getApproveDatetime() == null
+					&& model.getPaymentStatus() == 5) {
+				model.setApproveDatetime(new Date());
+				PaymentFileLocalServiceUtil.updatePaymentFile(model);
+			}
 		} catch (SystemException | PortalException e) {
 //			e.printStackTrace();
 			_log.error(e);

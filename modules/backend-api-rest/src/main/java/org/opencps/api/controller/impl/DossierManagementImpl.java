@@ -234,87 +234,88 @@ public class DossierManagementImpl implements DossierManagement {
 		DossierActions actions = new DossierActionsImpl();
 
 		try {
-			boolean istheViaPostal = query.isIstheViaPostal();
-			if(istheViaPostal){
-			try {
-				DossierDetailModel result = null;
-				String dossierNo = query.getDossierNo();
-				if(Validator.isNotNull(dossierNo)){
-					Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossier)){
-						result = mappingForGetDetail(dossier, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+			boolean isViaPostal = query.isIstheViaPostal();
+            DossierResultsModel results = null;
+            if(isViaPostal){
+				try {
+					DossierDetailModel result = null;
+					String dossierNo = query.getDossierNo();
+					if(Validator.isNotNull(dossierNo)){
+						Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
+						if(Validator.isNotNull(dossier)){
+							result = mappingForGetDetail(dossier, user.getUserId());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+						}
+						Dossier dossierByPostalCodeSend = DossierLocalServiceUtil.fetchByDO_POST_SEND_GROUP(dossierNo, groupId);
+						if(Validator.isNotNull(dossierByPostalCodeSend)){
+							result = mappingForGetDetail(dossierByPostalCodeSend, user.getUserId());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+						}
+						Dossier dossierByPostalCodeReceived = DossierLocalServiceUtil.fetchByDO_POST_RECEIVED_GROUP(dossierNo, groupId);
+						if(Validator.isNotNull(dossierByPostalCodeReceived)){
+							result = mappingForGetDetail(dossierByPostalCodeReceived, user.getUserId());
+							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+						}
 					}
-					Dossier dossierByPostalCodeSend = DossierLocalServiceUtil.fetchByDO_POST_SEND_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossierByPostalCodeSend)){
-						result = mappingForGetDetail(dossierByPostalCodeSend, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-					}
-					Dossier dossierByPostalCodeReceived = DossierLocalServiceUtil.fetchByDO_POST_RECEIVED_GROUP(dossierNo, groupId);
-					if(Validator.isNotNull(dossierByPostalCodeReceived)){
-						result = mappingForGetDetail(dossierByPostalCodeReceived, user.getUserId());
-						return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-					}
-				}
-				if(Validator.isNull(result)) {
-					ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
-					if (Validator.isNotNull(sc)) {
-						JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
+					if(Validator.isNull(result)) {
+						ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
+						if (Validator.isNotNull(sc)) {
+							JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
 
-						HashMap<String, String> properties = new HashMap<String, String>();
-						InvokeREST callRest = new InvokeREST();
+							HashMap<String, String> properties = new HashMap<String, String>();
+							InvokeREST callRest = new InvokeREST();
 
-						if (Validator.isNotNull(dossierNo)) {
-							//URL + token
-							String urlVnPost = config.getString(DossierTerm.URL_VIA_POST);
-							//Path : Token + Code
-							String path = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
+							if (Validator.isNotNull(dossierNo)) {
+								//URL + token
+								String urlVnPost = config.getString(DossierTerm.URL_VIA_POST);
+								//Path : Token + Code
+								String path = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
 
-							JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
-									urlVnPost, path, "",
-									"", properties, serviceContext);
+								JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
+										urlVnPost, path, "",
+										"", properties, serviceContext);
 
-							System.out.println("===========" + urlVnPost + " " + path);
-							if (Validator.isNotNull(resultObj)) {
-								if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
-									throw new RuntimeException(
-											"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
-								} else {
-									JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
+								System.out.println("===========" + urlVnPost + " " + path);
+								if (Validator.isNotNull(resultObj)) {
+									if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
+										throw new RuntimeException(
+												"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
+									} else {
+										JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
 
-									for (int i = 0; i < arrayData.length(); i++) {
-										JSONObject object = arrayData.getJSONObject(i);
-										Dossier dossier = null;
-										String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
-										String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
-										// Trạng thái 1 || 2 || 3 là mã tờ khai
-										// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
-										if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
-											if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-												dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
-												result = mappingForGetDetail(dossier, user.getUserId());
-											} else {
-												dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
-												result = mappingForGetDetail(dossier, user.getUserId());
+										for (int i = 0; i < arrayData.length(); i++) {
+											JSONObject object = arrayData.getJSONObject(i);
+											Dossier dossier = null;
+											String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
+											String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
+											// Trạng thái 1 || 2 || 3 là mã tờ khai
+											// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+											if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
+												if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
+													dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
+													result = mappingForGetDetail(dossier, user.getUserId());
+												} else {
+													dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
+													result = mappingForGetDetail(dossier, user.getUserId());
+												}
 											}
-										}
-										// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
-										if(Validator.isNotNull(result)){
-											dossier.setPostalCodeSend(dossierNo);
-											DossierLocalServiceUtil.updateDossier(dossier);
+											// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
+											if(Validator.isNotNull(result)){
+												dossier.setPostalCodeSend(dossierNo);
+												DossierLocalServiceUtil.updateDossier(dossier);
+											}
 										}
 									}
 								}
 							}
 						}
 					}
+					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+				} catch (Exception e) {
+						e.printStackTrace();
+						_log.info("------ Log Exception ------ " + " " + e.getMessage());
+						return BusinessExceptionImpl.processException(e);
 				}
-				return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-			} catch (Exception e) {
-					e.printStackTrace();
-					_log.info("------ Log Exception ------ " + " " + e.getMessage());
-					return BusinessExceptionImpl.processException(e);
-			}
 			}else {
 				// boolean isCitizen = false;
 				if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
@@ -797,7 +798,7 @@ public class DossierManagementImpl implements DossierManagement {
 					}
 				}
 
-				DossierResultsModel results = new DossierResultsModel();
+				results = new DossierResultsModel();
 
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
@@ -1504,9 +1505,24 @@ public class DossierManagementImpl implements DossierManagement {
 				vnpostalStatus = VnpostCollectionTerm.VNPOSTAL_STAUS_1;
 			}
 			//
-			int systemId =
-				input.getSystemId() != null ? input.getSystemId() : 0;
+			int systemId = input.getSystemId() != null ? input.getSystemId() : 0;
 
+
+			int durationCount = 0;
+			try {
+				String metaData = input.getMetaData();
+				if (Validator.isNotNull(metaData)) {
+					JSONObject metaJSON = JSONFactoryUtil.createJSONObject(metaData);
+					if (metaJSON.has("durationCountMeta") && metaJSON.get("durationCountMeta") != null) {
+						durationCount = metaJSON.getInt("durationCountMeta");
+						if (durationCount == 2 || durationCount == 6) durationCount -= 1;
+						if (durationCount == 4) durationCount += 1;
+					}
+				}
+			}
+			catch (JSONException ex) {
+				_log.debug(ex);
+			}
 			// Dossier dossier = actions.initDossier(groupId, id, referenceUid,
 			// counter, input.getServiceCode(),
 			// StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
@@ -1538,7 +1554,7 @@ public class DossierManagementImpl implements DossierManagement {
 					input.getDelegateDistrictCode(), input.getDelegateWardCode(), input.getSampleCount(),
 					input.getDossierName(), input.getBriefNote(), delegateType, documentNo, documentDate, systemId,
 					vnpostalStatus, vnpostalProfile, input.getFromViaPostal(), input.getFormMeta(), input.getDueDate(),
-					serviceContext);
+					durationCount, serviceContext);
 
 			DossierDetailModel result =
 				DossierUtils.mappingForGetDetail(dossier, user.getUserId());

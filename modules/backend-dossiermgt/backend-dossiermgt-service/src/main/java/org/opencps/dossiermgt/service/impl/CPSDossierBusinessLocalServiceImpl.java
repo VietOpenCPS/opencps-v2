@@ -1434,7 +1434,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 			//Call API postAction
-			processPostAction(proAction.getPostAction(), groupId, dossier);
+			String strPostAction = processPostAction(proAction.getPostAction(), groupId, dossier);
+			_log.info("strPostAction: "+strPostAction);
 		}
 
 		//Thực hiện thao tác lên hồ sơ gốc hoặc hồ sơ liên thông trong trường hợp có cấu hình mappingAction
@@ -1534,7 +1535,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	//Post Action
-	private void processPostAction(String postAction, long groupId, Dossier dossier) throws JSONException {
+	private String processPostAction(String postAction, long groupId, Dossier dossier) throws JSONException {
 		if (Validator.isNotNull(postAction)) {
 			JSONObject jsonPostData = JSONFactoryUtil.createJSONObject(postAction);
 			if (jsonPostData != null) {
@@ -1657,6 +1658,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 										sb.append((char) cp);
 									}
 									_log.debug("RESULT PROXY: " + sb.toString());
+									return sb.toString();
 								} catch (IOException e) {
 									_log.debug(e);
 									//_log.debug("Something went wrong while reading/writing in stream!!");
@@ -1667,6 +1669,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				}
 			}
 		}
+		return StringPool.BLANK;
 	}
 
 	private JSONObject buildNotificationPayload(Dossier dossier, JSONObject payloadObject) {
@@ -2473,7 +2476,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					if (Validator.isNotNull(paymentMethod)) {
 						oldPaymentFile.setPaymentMethod(paymentMethod);
 					}
-					oldPaymentFile.setApproveDatetime(new Date());
+					if (oldPaymentFile.getApproveDatetime() == null)
+						oldPaymentFile.setApproveDatetime(new Date());
 					paymentFileLocalService.updatePaymentFile(oldPaymentFile);
 				}
 			}
@@ -7885,12 +7889,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				referenceUid = PortalUUIDUtil.generate();
 			}
 
+			long paymentAmount = 0;
+			if (Validator.isNull(input.getPaymentAmount()) || input.getPaymentAmount() == 0) {
+				paymentAmount = GetterUtil.getLong(input.getFeeAmount()) + GetterUtil.getLong(input.getServiceAmount()) +
+						GetterUtil.getLong(input.getShipAmount()) - GetterUtil.getLong(input.getAdvanceAmount());
+			} else {
+				paymentAmount = input.getPaymentAmount();
+			}
+
 			if (oldPaymentFile != null) {
 				paymentFile = oldPaymentFile;
 			} else {
 				paymentFile = paymentFileLocalService.createPaymentFiles(userId, groupId, dossierId, referenceUid,
 						input.getPaymentFee(), input.getAdvanceAmount(), input.getFeeAmount(), input.getServiceAmount(),
-						input.getShipAmount(), input.getPaymentAmount(), input.getPaymentNote(),
+						input.getShipAmount(), paymentAmount, input.getPaymentNote(),
 						input.getEpaymentProfile(), input.getBankInfo(), 0, input.getPaymentMethod(), serviceContext);
 			}
 
@@ -7906,8 +7918,10 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (Validator.isNotNull(input.getEinvoice())) {
 				paymentFile.setEinvoice(input.getEinvoice());
 			}
-			if (input.getPaymentAmount() != null) {
+			if (input.getPaymentAmount() != null && input.getPaymentAmount() != 0) {
 				paymentFile.setPaymentAmount(input.getPaymentAmount());
+			} else {
+				paymentFile.setPaymentAmount(paymentAmount);
 			}
 			if (Validator.isNotNull(input.getPaymentMethod())) {
 				paymentFile.setPaymentMethod(input.getPaymentMethod());

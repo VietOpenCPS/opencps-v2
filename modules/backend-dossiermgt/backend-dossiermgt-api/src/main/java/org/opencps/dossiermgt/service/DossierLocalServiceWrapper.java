@@ -948,7 +948,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		java.util.Date dueDate,
+		java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierFull(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -961,7 +961,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, dueDate, serviceContext);
+			fromViaPostal, dueDate, durationCount, serviceContext);
 	}
 
 	@Override
@@ -981,7 +981,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 		String dossierName, String briefNote, Integer delegateType,
 		String documentNo, java.util.Date documentDate, int systemId,
 		Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-		String metaData, java.util.Date dueDate,
+		String metaData, java.util.Date dueDate, int durationCount,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
 		return _dossierLocalService.initUpdateDossierMeta(groupId, id,
 			applicantName, applicantIdType, applicantIdNo, applicantIdDate,
@@ -994,7 +994,7 @@ public class DossierLocalServiceWrapper implements DossierLocalService,
 			delegateCityCode, delegateDistrictCode, delegateWardCode,
 			sampleCount, dossierName, briefNote, delegateType, documentNo,
 			documentDate, systemId, vnpostalStatus, vnpostalProfile,
-			fromViaPostal, metaData, dueDate, serviceContext);
+			fromViaPostal, metaData, dueDate, durationCount, serviceContext);
 	}
 
 	@Override
