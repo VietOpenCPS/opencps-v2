@@ -18,6 +18,7 @@ import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PublishQueueTerm;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PostConnect;
 import org.opencps.dossiermgt.rest.model.ViettelPostUpdateOrder;
 import org.opencps.dossiermgt.service.PostConnectLocalServiceUtil;
@@ -86,34 +87,105 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
         }
     }
 
+    private boolean hasFromViaPostal(JSONObject dossierObj) {
+        try {
+            if(Validator.isNull(dossierObj.getString(DossierTerm.VIETTEL_POST_KEY))) {
+                return false;
+            }
+
+            if(!dossierObj.getString(DossierTerm.VIETTEL_POST_KEY).equals(DossierTerm.VIETTEL_POST_VALUE)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
     @Override
     public void postBill(String token, String orderServiceFromVT, JSONObject dossierObj) throws Exception{
         try {
             if(Validator.isNull(dossierObj)) {
                 throw new Exception("dossierObj null");
             }
+            boolean hasFromViaPostal = this.hasFromViaPostal(dossierObj);
+
+            String senderWard;
+            String senderDistrict;
+            String senderProvince;
+            String senderFullName;
+            String senderAddress;
+            String senderPhone;
+            String senderEmail;
+
+            String receiverFullName;
+            String receiverAddress;
+            String receiverPhone;
+            String receiveWard;
+            String receiveDistrict;
+            String receiveProvince;
+            String receiverEmail;
+
+            if(!hasFromViaPostal) {
+                //case lam tu dau
+                senderFullName  = this.configJson.getString(ViettelPostTerm.SENDER_NAME_CONFIG);
+                senderAddress   = this.configJson.getString(ViettelPostTerm.SENDER_ADDRESS_CONFIG);
+                senderPhone     = this.configJson.getString(ViettelPostTerm.SENDER_PHONE_CONFIG);
+                senderWard      = this.configJson.getString(ViettelPostTerm.SENDER_WARD_CONFIG);
+                senderDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
+                senderProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
+                senderEmail     = this.configJson.getString(ViettelPostTerm.SENDER_EMAIL_CONFIG);
+
+                receiverFullName = dossierObj.getString(DossierTerm.APPLICANT_NAME);
+                receiverAddress  = dossierObj.getString(DossierTerm.POSTAL_ADDRESS);
+                receiverPhone    = dossierObj.getString(DossierTerm.POSTAL_TEL_NO);
+                receiveWard      = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_WARD_CODE))
+                        ? dossierObj.getString(DossierTerm.POSTAL_WARD_CODE) : "0" ;
+                receiveDistrict  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE))
+                        ? dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE) : "0" ;
+                receiveProvince  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_CITY_CODE))
+                        ? dossierObj.getString(DossierTerm.POSTAL_CITY_CODE) : "0" ;
+                receiverEmail = "";
+            } else {
+                //case them vao fromViaPostal
+                String vnPostalProfile = dossierObj.getString(DossierTerm.VNPOSTAL_PROFILE);
+                if (Validator.isNull(vnPostalProfile)) {
+                    throw new Exception("No vn postal profile with case from via postal");
+                }
+                JSONObject profileSenderJson = JSONFactoryUtil.createJSONObject(vnPostalProfile);
+
+                if (Validator.isNull(profileSenderJson)) {
+                    throw new Exception("No vn postal profile with case from via postal");
+                }
+
+                senderFullName = dossierObj.getString(DossierTerm.APPLICANT_NAME);
+                senderAddress  = profileSenderJson.getString(DossierTerm.POSTAL_ADDRESS);
+                senderPhone    = profileSenderJson.getString(DossierTerm.POSTAL_TEL_NO);
+                senderWard     = Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_WARD_CODE))?
+                        profileSenderJson.getString(DossierTerm.POSTAL_WARD_CODE): "0";
+                senderDistrict = Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE))?
+                    profileSenderJson.getString(DossierTerm.POSTAL_DISTRICT_CODE): "0";
+                senderProvince = Validator.isNotNull(profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE))?
+                        profileSenderJson.getString(DossierTerm.POSTAL_CITY_CODE): "0";
+                senderEmail    = "";
+
+                receiverFullName = this.configJson.getString(ViettelPostTerm.SENDER_NAME_CONFIG);
+                receiverAddress  = this.configJson.getString(ViettelPostTerm.SENDER_ADDRESS_CONFIG);
+                receiverPhone    = this.configJson.getString(ViettelPostTerm.SENDER_PHONE_CONFIG);
+                receiveWard      = this.configJson.getString(ViettelPostTerm.SENDER_WARD_CONFIG);
+                receiveDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
+                receiveProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
+                receiverEmail    = this.configJson.getString(ViettelPostTerm.SENDER_EMAIL_CONFIG);
+            }
 
             String apiCreateBill   = this.configJson.getString(ViettelPostTerm.API_POST_ORDER);
             String orderPayment    = this.configJson.getString(ViettelPostTerm.ORDER_PAYMENT_CONFIG);
-            String senderWard      = this.configJson.getString(ViettelPostTerm.SENDER_WARD_CONFIG);
-            String senderDistrict  = this.configJson.getString(ViettelPostTerm.SENDER_DISTRICT_CONFIG);
-            String senderProvince  = this.configJson.getString(ViettelPostTerm.SENDER_PROVINCE_CONFIG);
-            String senderLatitude  = this.configJson.getString(ViettelPostTerm.SENDER_LATITUDE_CONFIG);
-            String senderLongitude = this.configJson.getString(ViettelPostTerm.SENDER_LONGITUDE_CONFIG);
-
-            String receiveWard      = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_WARD_CODE))
-                    ? dossierObj.getString(DossierTerm.POSTAL_WARD_CODE) : "0" ;
-            String receiveDistrict  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE))
-                    ? dossierObj.getString(DossierTerm.POSTAL_DISTRICT_CODE) : "0" ;
-            String receiveProvince  = Validator.isNotNull(dossierObj.getString(DossierTerm.POSTAL_CITY_CODE))
-                    ? dossierObj.getString(DossierTerm.POSTAL_CITY_CODE) : "0" ;
 
             Integer orderPaymentInt = 3;
             Integer senderWardInt = 0;
             Integer senderDistrictInt = 0;
             Integer senderProvinceInt = 0;
-            Integer senderLatitudeInt = 0;
-            Integer senderLongitudeInt = 0;
 
             Integer receiveWardInt = 0;
             Integer receiveDistrictInt = 0;
@@ -123,9 +195,6 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
                 senderWardInt      = Validator.isNotNull(senderWard)? Integer.parseInt(senderWard) : 0;
                 senderDistrictInt  = Validator.isNotNull(senderDistrict)? Integer.parseInt(senderDistrict) : 0;
                 senderProvinceInt  = Validator.isNotNull(senderProvince)? Integer.parseInt(senderProvince) : 0;
-                senderLatitudeInt  = Validator.isNotNull(senderLatitude)? Integer.parseInt(senderLatitude) : 0;
-                senderLongitudeInt = Validator.isNotNull(senderLongitude)? Integer.parseInt(senderLongitude) : 0;
-
                 receiveWardInt = Validator.isNotNull(receiveWard) ? Integer.parseInt(receiveWard) : 0;
                 receiveDistrictInt = Validator.isNotNull(receiveDistrict) ? Integer.parseInt(receiveDistrict) : 0;
                 receiveProvinceInt = Validator.isNotNull(receiveProvince) ? Integer.parseInt(receiveProvince) : 0;
@@ -141,19 +210,19 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
             body.put(ViettelPostTerm.GROUPADDRESS_ID, Integer.valueOf(this.configJson.getString(ViettelPostTerm.GROUP_ADDRESS_ID_CONFIG)));
             body.put(ViettelPostTerm.CUS_ID, Integer.valueOf(this.configJson.getString(ViettelPostTerm.CUS_ID_CONFIG)));
             body.put(ViettelPostTerm.DELIVERY_DATE, "08/08/2020 15:09:52");
-            body.put(ViettelPostTerm.SENDER_FULLNAME, this.configJson.getString(ViettelPostTerm.SENDER_NAME_CONFIG));
-            body.put(ViettelPostTerm.SENDER_ADDRESS, this.configJson.getString(ViettelPostTerm.SENDER_ADDRESS_CONFIG));
-            body.put(ViettelPostTerm.SENDER_PHONE, this.configJson.getString(ViettelPostTerm.SENDER_PHONE_CONFIG));
-            body.put(ViettelPostTerm.SENDER_EMAIL, this.configJson.getString(ViettelPostTerm.SENDER_EMAIL_CONFIG));
+            body.put(ViettelPostTerm.SENDER_FULLNAME, senderFullName);
+            body.put(ViettelPostTerm.SENDER_ADDRESS, senderAddress);
+            body.put(ViettelPostTerm.SENDER_PHONE, senderPhone);
+            body.put(ViettelPostTerm.SENDER_EMAIL, senderEmail);
             body.put(ViettelPostTerm.SENDER_WARD, senderWardInt);
             body.put(ViettelPostTerm.SENDER_DISTRICT, senderDistrictInt);
             body.put(ViettelPostTerm.SENDER_PROVINCE, senderProvinceInt);
-            body.put(ViettelPostTerm.SENDER_LATITUDE, senderLatitudeInt);
-            body.put(ViettelPostTerm.SENDER_LONGITUDE, senderLongitudeInt);
-            body.put(ViettelPostTerm.RECEIVER_FULLNAME, dossierObj.getString(DossierTerm.APPLICANT_NAME));
-            body.put(ViettelPostTerm.RECEIVER_ADDRESS, dossierObj.getString(DossierTerm.POSTAL_ADDRESS));
-            body.put(ViettelPostTerm.RECEIVER_PHONE, dossierObj.getString(DossierTerm.POSTAL_TEL_NO));
-            body.put(ViettelPostTerm.RECEIVER_EMAIL, "");
+            body.put(ViettelPostTerm.SENDER_LATITUDE, 0);
+            body.put(ViettelPostTerm.SENDER_LONGITUDE, 0);
+            body.put(ViettelPostTerm.RECEIVER_FULLNAME, receiverFullName);
+            body.put(ViettelPostTerm.RECEIVER_ADDRESS, receiverAddress);
+            body.put(ViettelPostTerm.RECEIVER_PHONE, receiverPhone);
+            body.put(ViettelPostTerm.RECEIVER_EMAIL, receiverEmail);
             body.put(ViettelPostTerm.RECEIVER_WARD, receiveWardInt);
             body.put(ViettelPostTerm.RECEIVER_DISTRICT, receiveDistrictInt);
             body.put(ViettelPostTerm.RECEIVER_PROVINCE, receiveProvinceInt);
@@ -284,7 +353,7 @@ public class ViettelPostManagementImpl implements ViettelPostManagement {
     public boolean updateBill(ViettelPostUpdateOrder updateInfo) throws Exception{
         try {
             PostConnect result = PostConnectLocalServiceUtil.createOrUpdatePostConnect(0, 0,0, 0, 0,
-                    updateInfo.getORDER_NUMBER(), updateInfo.getTYPE(), "",
+                    updateInfo.getDATA().getORDER_NUMBER(), updateInfo.getDATA().getORDER_STATUS(), "",
                     null, 0);
             if(Validator.isNull(result)){
                 return false;

@@ -1391,7 +1391,11 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
-				vnpostEvent(dossier, dossierAction.getDossierActionId());
+				if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_FROM_VIAPOSTAL)) {
+					viettelPostEvent(dossier, dossierAction.getDossierActionId());
+				} else {
+					vnpostEvent(dossier, dossierAction.getDossierActionId());
+				}
 			}
 			if (proAction.getPreCondition().toLowerCase()
 					.contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {
@@ -4515,6 +4519,18 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		return jsonSequenceArr;
+	}
+
+	private void viettelPostEvent(Dossier dossier, long dossierActionId) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		JSONObject dossierJson = DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId);
+		dossierJson.put(DossierTerm.VIETTEL_POST_KEY, DossierTerm.VIETTEL_POST_VALUE);
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, dossierJson);
+
+		MessageBusUtil.sendMessage(DossierTerm.VNPOST_DOSSIER_DESTINATION, message);
 	}
 
 	private void vnpostEvent(Dossier dossier, long dossierActionId) {

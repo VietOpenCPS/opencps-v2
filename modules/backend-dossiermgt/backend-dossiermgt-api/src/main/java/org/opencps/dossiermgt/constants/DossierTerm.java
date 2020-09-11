@@ -425,4 +425,6 @@ public class DossierTerm {
 	public static final String PROCESS_AGENCY_METADATA = "processAgency";
 	public static final String ACTION_USER_SEARCH = "actionUserSearch";
 	public static final String DATA = "data";
+	public static final String VIETTEL_POST_KEY = "viettelPost";
+	public static final String VIETTEL_POST_VALUE = "1";
 }
