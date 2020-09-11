@@ -10,6 +10,7 @@ package org.opencps.api.serviceprocess.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -59,8 +60,10 @@ import javax.xml.bind.annotation.XmlType;
     "customProcessUrl",
     "editable",
     "lockState",
-    "checkInput"
+    "checkInput",
+    "roleAsStep"
 })
+@XmlRootElement(name = "ProcessStepDataModel")
 public class ProcessStepDataModel {
 
     protected String stepCode;
@@ -77,6 +80,15 @@ public class ProcessStepDataModel {
     protected String editable;
     protected String lockState;
     protected Integer checkInput;
+    protected String roleAsStep;
+
+    public String getRoleAsStep() {
+        return roleAsStep;
+    }
+
+    public void setRoleAsStep(String roleAsStep) {
+        this.roleAsStep = roleAsStep;
+    }
 
     public Integer getCheckInput() {
 		return checkInput;

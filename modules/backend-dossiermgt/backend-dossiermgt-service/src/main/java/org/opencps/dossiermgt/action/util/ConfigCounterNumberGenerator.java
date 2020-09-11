@@ -51,12 +51,146 @@ public class ConfigCounterNumberGenerator {
 	private static final String DAY_PATTERN = "\\{(d{2}|D{2})\\}";
 	private static final String MONTH_PATTERN = "\\{(m{2}|M{2})\\}";
 	private static final String YEAR_PATTERN = "\\{(y+|Y+)\\}";
+	private static final String AGENCY_PATTERN = "\\{(g+|G+)\\}";
 	private static final String DYNAMIC_VARIABLE_PATTERN = "\\{\\$(.*?)\\}";
 	private static final String DEFAULT_VALUE_PATTERN = "^([A-Z]|[a-z])+\\d*\\s";
 	private static final String EXTRACT_VALUE_PATTERN = "\\[\\$(.*?)\\$\\]";
 	private static final String DATE_TIME_PATTERN = "\\{([D|d]{2}[-\\/]{1}[M|m]{2}[-|\\/]{1}[Y|y]{4})\\}";
 	private static final String OK = "OK";
-	
+
+	public static void main(String[] args) {
+		String dossierNumber = StringPool.BLANK;
+		String codeGovAgency = "\\{(g+|G+)\\}";
+		String codePatternYear = CODE_PATTERN_YEAR;
+		String dayPattern = DAY_PATTERN;
+		String monthPattern = MONTH_PATTERN;
+		String yearPattern = YEAR_PATTERN;
+		String dynamicVariablePattern = DYNAMIC_VARIABLE_PATTERN;
+		String defaultValuePattern = DEFAULT_VALUE_PATTERN;
+		String extractValuePattern = EXTRACT_VALUE_PATTERN;
+		String datetimePattern = DATE_TIME_PATTERN;
+			String[] patterns = new String[] {codeGovAgency, codePatternYear,
+					yearPattern };
+
+			Date now = new Date();
+
+			String day = String.valueOf(DateTimeUtils.getDayFromDate(now));
+			String month = String.valueOf(DateTimeUtils.getMonthFromDate(now) + 1);
+			String year = String.valueOf(DateTimeUtils.getYearFromDate(now));
+
+			String govAgencyCode = "CLS";
+			String seriNumberPattern = "{g}{yy}{qqqq}";
+
+			for (String pattern : patterns) {
+				System.out.println("pattern: "+pattern);
+				Pattern r = Pattern.compile(pattern);
+				System.out.println("r: "+r.toString());
+				
+
+				Matcher m = r.matcher(seriNumberPattern);
+
+				while (m.find()) {
+					String tmp = m.group(1);
+					System.out.println("tmp: "+tmp);
+
+					// Pattern follow serviceProcess
+					if (r.toString().equals(codePatternYear)) {
+						String elCounter = seriNumberPattern.replace(m.group(0), String.valueOf(year));
+						String key = CONSTANT_ICREMENT + 124302 + StringPool.POUND + elCounter;
+						String number = countByNumberTest(key, tmp);
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (number.length() < tmp.length()) {
+							number = tmp.substring(0, tmp.length() - number.length()).concat(number);
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), number);
+
+						// Pattern follow GovAgencyCode
+					}
+					else if (r.toString().equals(yearPattern)) {
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						if (year.length() < tmp.length()) {
+							year = tmp.substring(0, tmp.length() - year.length()).concat(year);
+						} else if (year.length() > tmp.length()) {
+							year = year.substring(year.length() - tmp.length(), year.length());
+						}
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), year);
+
+					}
+					else if (r.toString().equals(codeGovAgency)) {
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						govAgencyCode = tmp.replace(tmp, govAgencyCode);
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), govAgencyCode);
+
+					}
+					/*else if (r.toString().equals(dynamicVariablePattern)) {
+						Pattern r1 = Pattern.compile(defaultValuePattern);
+						Matcher m1 = r1.matcher(tmp);
+
+						String defaultValue = (m1.find() ? m1.group() : StringPool.BLANK).trim();
+
+						Pattern r2 = Pattern.compile(extractValuePattern);
+						Matcher m2 = r2.matcher(tmp);
+						String extractContent = (m2.find() ? m2.group(1) : StringPool.BLANK).trim();
+						String key;
+						String param;
+						String value = StringPool.BLANK;
+						String[] textSplit = StringUtil.split(extractContent, StringPool.AT);
+						if (textSplit == null || textSplit.length < 2) {
+							seriNumberPattern = seriNumberPattern.replace(m.group(0), defaultValue);
+						} else {
+							key = textSplit[0];
+							param = textSplit[1];
+
+							DossierFile dossierFile = null;
+							try {
+								dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+										param, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
+
+								String formData = dossierFile.getFormData();
+
+								if (Validator.isNotNull(formData)) {
+									JSONObject object = JSONFactoryUtil.createJSONObject(formData);
+									if (object.has(key)) {
+										value = object.getString(key);
+									}
+								}
+
+							} catch (Exception e) {
+								_log.debug(e);
+								//_log.error(e);
+//								_log.error("Can not get data from online form! ");
+
+								seriNumberPattern = seriNumberPattern.replace(m.group(0), defaultValue);
+							}
+
+							seriNumberPattern = seriNumberPattern.replace(m.group(0), value);
+						}
+
+					}*/
+
+					m = r.matcher(seriNumberPattern);
+
+				}
+			}
+
+			dossierNumber = seriNumberPattern;
+			System.out.println("dossierNumber: "+dossierNumber);
+	}
+
+	private static String countByNumberTest(String pattern, String tmp) {
+		return "0010";
+	}
+
+
 	public static String generateCounterNumber(long groupId, long companyId, long dossierId, long processOtionId,
 			String seriNumberPattern, ConfigCounter configCounter, LinkedHashMap<String, Object> params, SearchContext... searchContext)
 			throws ParseException, SearchException {
@@ -65,6 +199,7 @@ public class ConfigCounterNumberGenerator {
 		String dossierNumber = StringPool.BLANK;
 //		_log.info("seriNumberPattern: "+seriNumberPattern);
 		if (dossier != null) {
+			String agencyPattern = AGENCY_PATTERN;
 			String codePatternGov = CODE_PATTERN_GOV;
 			String codePatternDate = CODE_PATTERN_DATE;
 			String codePatternMonth = CODE_PATTERN_MONTH;
@@ -77,8 +212,8 @@ public class ConfigCounterNumberGenerator {
 			String defaultValuePattern = DEFAULT_VALUE_PATTERN;
 			String extractValuePattern = EXTRACT_VALUE_PATTERN;
 			String datetimePattern = DATE_TIME_PATTERN;
-			String[] patterns = new String[] { codePatternDate, codePatternMonth, codePatternYear, codePatternService,
-					codePatternGov, dayPattern, monthPattern, yearPattern, dynamicVariablePattern, datetimePattern };
+			String[] patterns = new String[]{agencyPattern, dayPattern, monthPattern, yearPattern, codePatternDate, codePatternMonth,
+					codePatternYear, codePatternService, codePatternGov, dynamicVariablePattern, datetimePattern};
 
 			Date now = new Date();
 
@@ -260,7 +395,17 @@ public class ConfigCounterNumberGenerator {
 
 						seriNumberPattern = seriNumberPattern.replace(m.group(0), year);
 
-					} else if (r.toString().equals(dynamicVariablePattern)) {
+					}
+					else if (r.toString().equals(agencyPattern)) {
+
+						tmp = tmp.replaceAll(tmp.charAt(0) + StringPool.BLANK, String.valueOf(0));
+
+						govAgencyCode = tmp.replace(tmp, govAgencyCode);
+
+						seriNumberPattern = seriNumberPattern.replace(m.group(0), govAgencyCode);
+
+					}
+					else if (r.toString().equals(dynamicVariablePattern)) {
 						Pattern r1 = Pattern.compile(defaultValuePattern);
 						Matcher m1 = r1.matcher(tmp);
 

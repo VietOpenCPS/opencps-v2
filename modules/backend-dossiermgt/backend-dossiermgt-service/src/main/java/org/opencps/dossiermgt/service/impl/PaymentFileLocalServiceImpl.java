@@ -530,7 +530,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setPaymentStatus(paymentStatus);
 		paymentFile.setPaymentMethod(paymentMethod);
 		if (paymentStatus == 5) {
-		paymentFile.setApproveDatetime(now);
+			paymentFile.setApproveDatetime(now);
 		}
 
 		paymentFilePersistence.update(paymentFile);
@@ -835,8 +835,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
 			paymentFile.setPaymentStatus(requestPayment);
-			if (paymentFile.getPaymentStatus() == 5) {
-			paymentFile.setApproveDatetime(new Date());
+			if (paymentFile.getPaymentStatus() == 5 && paymentFile.getApproveDatetime() == null) {
+				paymentFile.setApproveDatetime(new Date());
 			}
 			if (Validator.isNotNull(paymentNote))
 				paymentFile.setPaymentNote(paymentNote);
@@ -1006,9 +1006,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setBankInfo(input.getBankInfo());
 		paymentFile.setPaymentStatus(input.getPaymentStatus());
 		paymentFile.setPaymentMethod(input.getPaymentMethod());
-		if (input.getPaymentStatus() == 5) {
-		paymentFile.setApproveDatetime(now);
-		}
+//		if (input.getPaymentStatus() == 5) {
+//			paymentFile.setApproveDatetime(now);
+//		}
 
 		paymentFilePersistence.update(paymentFile);
 		
