@@ -34,12 +34,17 @@ import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
+import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ProcessAction;
 import org.opencps.dossiermgt.model.ProcessOption;
+
+import java.io.*;
+
+import java.text.*;
 
 /**
  * Provides the local service interface for CPSDossierBusiness. Methods of this
@@ -83,6 +88,15 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
 	)
+	public DossierFile addDossierFileFrequency(long groupId,
+		ServiceContext serviceContext, java.io.InputStream inputStream,
+		String referenceUid, Dossier dossier, String displayName,
+		String fileType, String isSync, String formData, String removed,
+		String eForm) throws Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
 	public Dossier addDossierPublish(long groupId, Company company, User user,
 		ServiceContext serviceContext,
 		org.opencps.dossiermgt.input.model.DossierPublishModel input)
@@ -108,6 +122,13 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 	public Dossier addMultipleDossier(long groupId, Company company, User user,
 		ServiceContext serviceContext, DossierMultipleInputModel input)
 		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public Dossier createDossierFrequency(long groupId, Company company,
+		User user, ServiceContext serviceContext, ProfileInModel input)
+		throws Exception;
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
 		SystemException.class, PortalException.class, Exception.class}
@@ -172,4 +193,11 @@ public interface CPSDossierBusinessLocalService extends BaseLocalService {
 		ServiceContext serviceContext, long id, String referenceUid,
 		String formdata)
 		throws UnauthenticationException, PortalException, Exception;
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor =  {
+		SystemException.class, PortalException.class, Exception.class}
+	)
+	public void updateDossierFrequencyAction(long groupId,
+		ServiceContext serviceContext, Dossier dossier, ProfileInModel input,
+		String actionCode) throws Exception;
 }

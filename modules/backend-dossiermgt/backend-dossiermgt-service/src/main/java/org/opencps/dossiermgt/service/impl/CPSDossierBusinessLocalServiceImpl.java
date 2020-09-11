@@ -14,6 +14,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
@@ -53,20 +54,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -138,6 +131,7 @@ import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
+import org.opencps.dossiermgt.input.model.ProfileInModel;
 import org.opencps.dossiermgt.model.ActionConfig;
 import org.opencps.dossiermgt.model.ConfigCounter;
 import org.opencps.dossiermgt.model.Deliverable;
@@ -6823,6 +6817,195 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
 			Exception.class })
+	public Dossier createDossierFrequency(long groupId, Company company, User user,
+										  ServiceContext serviceContext, ProfileInModel input)  throws Exception {
+		//todo add check permission
+		try{
+			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
+					input.getTemplateNo(), groupId);
+
+			long serviceProcessId = 0;
+			final Integer NO_LOGISTIC = 0;
+			if (option != null) {
+				serviceProcessId = option.getServiceProcessId();
+			}
+			_log.info("----Creating dossier info 1...");
+			Dossier dossier = null;
+			String referenceUid = input.getRef_code();
+			Integer viaPostal = NO_LOGISTIC;
+
+			//Get service process
+			ServiceProcess process = null;
+			if (option != null) {
+				process = serviceProcessLocalService.getServiceProcess(serviceProcessId);
+				if (process == null) {
+					throw new NotFoundException("Cant find process");
+				}
+			}
+
+			ServiceInfo service = serviceInfoLocalService.getByCode(groupId, input.getServiceCode());
+			String serviceName = service != null ? service.getServiceName() : StringPool.BLANK;
+
+			String govAgencyName = getDictItemName(groupId, GOVERNMENT_AGENCY, input.getGovAgencyCode());
+			String password = StringPool.BLANK;
+			String postalCityName = StringPool.BLANK;
+
+			int sampleCount = (option != null ? (int) option.getSampleCount() : 1);
+			String registerBookCode = (option != null
+					? (Validator.isNotNull(option.getRegisterBookCode()) ? option.getRegisterBookCode()
+					: StringPool.BLANK)
+					: StringPool.BLANK);
+			String registerBookName = StringPool.BLANK;
+
+			if (Validator.isNotNull(registerBookCode)) {
+				DynamicReport report = DynamicReportLocalServiceUtil.fetchByG_CODE(groupId, registerBookCode);
+				if (report != null) {
+					registerBookName = report.getReportName();
+				}
+			}
+
+			_log.info("----Creating dossier info 2...");
+
+			String applicantName = input.getProfileOwner().getName();
+			String applicantIdType = String.valueOf(input.getApplicants_type());
+			String applicantIdNo = "";
+			String address = input.getProfileOwner().getAddress();
+			String contactName = "";
+			String contactTelNo = input.getProfileOwner().getTel();
+			String contactEmail = "";
+
+			String postalServiceCode = "";
+			String postalServiceName = "";
+			String postalAddress = "";
+			String postalCityCode = "";
+			String postalDistrictCode = "";
+			String postalDistrictName = "";
+			String postalWardCode = "";
+			String postalWardName = "";
+			String postalTelNo = "";
+			String applicantNote = "";
+			String delegateIdNo = input.getProfileApplicant().getIdentify();
+			String delegateName = input.getProfileApplicant().getName();
+			String delegateTelNo = input.getProfileApplicant().getTel();
+			String delegateEmail = input.getProfileApplicant().getEmail();
+			String delegateAddress = input.getProfileApplicant().getAddress();
+			Integer durationCount = 0;
+			String cityCode = StringPool.BLANK;
+			String cityName = StringPool.BLANK;
+			String districtCode = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardCode = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
+			String delegateCityCode = StringPool.BLANK;
+			String delegateCityName = StringPool.BLANK;
+			String delegateDistrictCode = StringPool.BLANK;
+			String delegateDistrictName = StringPool.BLANK;
+			String delegateWardCode = StringPool.BLANK;
+			String delegateWardName = StringPool.BLANK;
+			String dossierName = serviceName;
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date receiveDate = formatter.parse(input.getCreation_date());
+			Date dueDate     = Validator.isNotNull(input.getAccept_date()) ?
+									formatter.parse(input.getAccept_date()) :
+									null;
+			Integer counter = 0;
+			Date appIdDate = null;
+			String metaData = StringPool.BLANK;
+			boolean online = false;
+			Integer originality = DossierTerm.ORIGINALITY_LIENTHONG;
+
+			dossier = dossierLocalService.initMultipleDossier(groupId, 0l, referenceUid, counter,
+					input.getServiceCode(), serviceName, input.getGovAgencyCode(), govAgencyName, applicantName,
+					applicantIdType, applicantIdNo, appIdDate, address, contactName, contactTelNo, contactEmail,
+					input.getTemplateNo(), password, viaPostal, postalServiceCode, postalServiceName,
+					postalAddress, postalCityCode, postalCityName, postalDistrictCode, postalDistrictName,
+					postalWardCode, postalWardName, postalTelNo, online, process.getDirectNotification(), applicantNote,
+					originality, delegateIdNo, delegateName, delegateTelNo, delegateEmail, delegateAddress,
+					delegateCityCode, delegateCityName, delegateDistrictCode, delegateDistrictName, delegateWardCode,
+					delegateWardName, registerBookCode, registerBookName, sampleCount, dossierName, durationCount, service, process,
+					option, serviceContext);
+
+			if (Validator.isNull(dossier)) {
+				throw new NotFoundException("Cant add DOSSIER");
+			}
+
+			if (receiveDate != null)
+				dossier.setReceiveDate(receiveDate);
+			if (dueDate != null)
+				dossier.setDueDate(dueDate);
+			if (Validator.isNotNull(metaData))
+				dossier.setMetaData(metaData);
+			if (Validator.isNotNull(address))
+				dossier.setAddress(address);
+			if (Validator.isNotNull(cityCode))
+				dossier.setCityCode(cityCode);
+			if (Validator.isNotNull(cityName))
+				dossier.setCityName(cityName);
+			if (Validator.isNotNull(districtCode))
+				dossier.setDistrictCode(districtCode);
+			if (Validator.isNotNull(districtName))
+				dossier.setDistrictName(districtName);
+			if (Validator.isNotNull(wardCode))
+				dossier.setWardCode(wardCode);
+			if (Validator.isNotNull(wardName))
+				dossier.setWardName(wardName);
+
+			dossier.setSystemId(0);
+			_log.info("----Creating dossier info 3...");
+			List<DossierUser> lstDus = dossierUserLocalService.findByDID(dossier.getDossierId());
+			List<ServiceProcessRole> lstProcessRoles = serviceProcessRoleLocalService
+					.findByS_P_ID(process.getServiceProcessId());
+			if (lstDus.size() == 0) {
+				DossierUserActions duActions = new DossierUserActionsImpl();
+				duActions.initDossierUser(groupId, dossier, process, lstProcessRoles);
+			}
+
+			_log.info("----Creating dossier info 4...");
+			createDossierUsers(groupId, dossier, process, lstProcessRoles);
+			_log.info("----Creating dossier info 5...");
+			dossierLocalService.updateDossier(dossier);
+			String actionCode = "1100";
+			_log.info("----Creating dossier info 6...");
+			ObjectMapper objMapper = new ObjectMapper();
+			ProcessAction proAction = getProcessAction(user.getUserId(), groupId, dossier, actionCode,
+					serviceProcessId);
+			doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), 0, serviceContext);
+
+			return dossier;
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
+			Exception.class })
+	public void updateDossierFrequencyAction(long groupId, ServiceContext serviceContext, Dossier dossier,
+											 ProfileInModel input, String actionCode) throws Exception{
+		ObjectMapper objMapper = new ObjectMapper();
+		ProcessOption option = getProcessOption(dossier.getServiceCode(), dossier.getGovAgencyCode(),
+				dossier.getDossierTemplateNo(), groupId);
+
+		long serviceProcessId = 0;
+
+		if (option != null) {
+			serviceProcessId = option.getServiceProcessId();
+		}
+
+		ProcessAction proAction = getProcessAction(serviceContext.getUserId(), groupId, dossier, actionCode,
+				serviceProcessId);
+
+		if(Validator.isNull(input.getPayment())) {
+			doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, StringPool.BLANK, null, 0, serviceContext);
+		} else {
+			doAction(groupId, serviceContext.getUserId(), dossier, option, proAction, actionCode, StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK, StringPool.BLANK, objMapper.writeValueAsString(input.getPayment()), 0, serviceContext);
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
+			Exception.class })
 	public Dossier addFullDossier(long groupId, Company company, User user, ServiceContext serviceContext,
 								  DossierMultipleInputModel input) throws UnauthenticationException, PortalException, Exception {
 
@@ -7490,6 +7673,51 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			return StringPool.BLANK;
 		}
 
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,
+			Exception.class })
+	public DossierFile addDossierFileFrequency(long groupId,
+											   ServiceContext serviceContext, InputStream inputStream, String referenceUid, Dossier dossier,
+											   String displayName, String fileType, String isSync,
+											   String formData, String removed, String eForm) throws Exception {
+		try {
+			String dossierPartNo = "TP99";
+			String dossierTemplateNo = dossier.getDossierTemplateNo();
+			String fileTemplateNo = "";
+			List<DossierPart> lstParts = dossierPartLocalService.getByTemplateNo(groupId,
+					dossier.getDossierTemplateNo());
+			DossierPart dossierPart = null;
+			DossierFile dossierFile = null;
+			for (DossierPart dp : lstParts) {
+				if (dp.getPartNo().equals(dossierPartNo)) {
+					fileTemplateNo = dp.getFileTemplateNo();
+					break;
+				}
+			}
+
+			if (inputStream != null) {
+				dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, displayName, 0,
+						inputStream, fileType, isSync, serviceContext);
+			} else {
+				dossierFile = dossierFileLocalService.addDossierFile(groupId, dossier.getDossierId(), referenceUid,
+						dossierTemplateNo, dossierPartNo, fileTemplateNo, displayName, displayName, 0, null,
+						fileType, isSync, serviceContext);
+			}
+			return dossierFile;
+		} catch (Exception e) {
+			_log.error("Error when add dossier file frequency: " + e.getMessage());
+			return null;
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (Exception io) {
+					_log.error(io);
+				}
+			}
+		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { SystemException.class, PortalException.class,

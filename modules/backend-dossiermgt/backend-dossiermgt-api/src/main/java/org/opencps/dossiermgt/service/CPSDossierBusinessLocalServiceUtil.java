@@ -71,6 +71,19 @@ public class CPSDossierBusinessLocalServiceUtil {
 			formData, removed, eForm, modifiedDate);
 	}
 
+	public static org.opencps.dossiermgt.model.DossierFile addDossierFileFrequency(
+		long groupId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		java.io.InputStream inputStream, String referenceUid,
+		org.opencps.dossiermgt.model.Dossier dossier, String displayName,
+		String fileType, String isSync, String formData, String removed,
+		String eForm) throws Exception {
+		return getService()
+				   .addDossierFileFrequency(groupId, serviceContext,
+			inputStream, referenceUid, dossier, displayName, fileType, isSync,
+			formData, removed, eForm);
+	}
+
 	public static org.opencps.dossiermgt.model.Dossier addDossierPublish(
 		long groupId, com.liferay.portal.kernel.model.Company company,
 		com.liferay.portal.kernel.model.User user,
@@ -115,6 +128,17 @@ public class CPSDossierBusinessLocalServiceUtil {
 		return getService()
 				   .addMultipleDossier(groupId, company, user, serviceContext,
 			input);
+	}
+
+	public static org.opencps.dossiermgt.model.Dossier createDossierFrequency(
+		long groupId, com.liferay.portal.kernel.model.Company company,
+		com.liferay.portal.kernel.model.User user,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.input.model.ProfileInModel input)
+		throws Exception {
+		return getService()
+				   .createDossierFrequency(groupId, company, user,
+			serviceContext, input);
 	}
 
 	public static org.opencps.dossiermgt.model.PaymentFile createPaymentFileByDossierId(
@@ -222,6 +246,16 @@ public class CPSDossierBusinessLocalServiceUtil {
 		return getService()
 				   .updateDossierFileFormData(groupId, company, serviceContext,
 			id, referenceUid, formdata);
+	}
+
+	public static void updateDossierFrequencyAction(long groupId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		org.opencps.dossiermgt.model.Dossier dossier,
+		org.opencps.dossiermgt.input.model.ProfileInModel input,
+		String actionCode) throws Exception {
+		getService()
+			.updateDossierFrequencyAction(groupId, serviceContext, dossier,
+			input, actionCode);
 	}
 
 	public static CPSDossierBusinessLocalService getService() {
