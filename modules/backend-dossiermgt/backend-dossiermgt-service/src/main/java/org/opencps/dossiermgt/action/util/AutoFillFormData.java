@@ -1198,7 +1198,7 @@ public class AutoFillFormData {
 						if(Validator.isNotNull(listDossierHS)) {
 							DossierFile model = listDossierHS.get(0);
 							if (Validator.isNotNull(model.getDossierPartType())) {
-								_log.info("DossierFile" + dossierFile.getDossierPartType());
+//								_log.info("DossierFile" + dossierFile.getDossierPartType());
 								if (model.getDossierPartType() == 2) {
 									for (DossierFile item : listDossierHS) {
 										if (Validator.isNotNull(item.getDeliverableCode())) {
@@ -1211,16 +1211,16 @@ public class AutoFillFormData {
 								} else {
 									dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
 											paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
-									_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
+//									_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
 								}
 							}
 						}
-						_log.debug("Log FormData" + dossierFile.getFormData());
+//						_log.debug("Log FormData" + dossierFile.getFormData());
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
-							 _log.debug("JSON other map: " + jsonOtherMap.toString());
+//							 _log.debug("JSON other map: " + jsonOtherMap.toString());
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {

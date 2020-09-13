@@ -58,7 +58,9 @@ import javax.xml.bind.annotation.XmlType;
     "top",
     "agency",
     "mapping",
-    "synced"
+    "synced",
+    "serviceLevel",
+    "isEmployee"
 })
 @XmlRootElement(name = "ServiceInfoSearchModel")
 public class ServiceInfoSearchModel {
@@ -91,7 +93,27 @@ public class ServiceInfoSearchModel {
 	protected String mapping;
 	@QueryParam(value = "synced")
 	protected String synced;
-	
+    @QueryParam(value = "serviceLevel")
+    protected String serviceLevel;
+    @QueryParam(value = "isEmployee")
+    protected boolean isEmployee;
+
+    public boolean isEmployee() {
+        return isEmployee;
+    }
+
+    public void setEmployee(boolean employee) {
+        isEmployee = employee;
+    }
+
+    public String getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(String serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
+
     public String getAgency() {
 		return agency;
 	}

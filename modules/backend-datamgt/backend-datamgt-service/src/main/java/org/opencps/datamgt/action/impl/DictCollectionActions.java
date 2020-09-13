@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 
 public class DictCollectionActions implements DictcollectionInterface {
 
@@ -751,7 +752,6 @@ public class DictCollectionActions implements DictcollectionInterface {
 
 			hits = DictItemLocalServiceUtil.luceneSearchEngine(
 				params, sorts, start, end, searchContext);
-
 			result.put(DataMGTConstants.DATA, hits.toList());
 
 			long total = DictItemLocalServiceUtil.countLuceneSearchEngine(

@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -16,12 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.opencps.api.datamgt.model.DictCollectionModel;
-import org.opencps.api.datamgt.model.DictCollectionShortModel;
-import org.opencps.api.datamgt.model.DictGroupItemModel;
-import org.opencps.api.datamgt.model.DictItemModel;
-import org.opencps.api.datamgt.model.Groups;
-import org.opencps.api.datamgt.model.ParentItem;
+import org.opencps.api.datamgt.model.*;
 import org.opencps.api.dictcollection.model.DictGroupModel;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.datamgt.action.DictcollectionInterface;
@@ -36,6 +32,9 @@ import org.opencps.datamgt.model.DictItemGroup;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictGroupLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.usermgt.model.Employee;
+import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 
 public class DataManagementUtils {
 
@@ -123,49 +122,99 @@ public class DataManagementUtils {
 		return results;
 	}
 
-	public static List<DictItemModel> mapperDictItemModelList(List<Document> listDocument) {
+	public static List<DictItemModel> mapperDictItemModelList(List<Document> listDocument, DataSearchModel query, long groupId, User user) {
 
 		List<DictItemModel> results = new ArrayList<>();
 
 		try {
 
 			DictItemModel ett = null;
-
+			_log.info("Log employee :" + groupId + " userId" +user.getUserId());
+			Employee e = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, user.getUserId());
 			for (Document document : listDocument) {
-				ett = new DictItemModel();
+				if(query.isEmployee()) {
+					String serviceLevelDoc = document.get(ServiceConfigTerm.SERVICE_LEVEL_ROLE);
+					String govAgencyCode = document.get(ServiceConfigTerm.GOVAGENCY_CODE_ROLE);
+					if (Validator.isNotNull(e)) {
+//						if (Validator.isNotNull(serviceLevelDoc)) {
+							if (e != null && (Validator.isNull(e.getScope()))
+									|| (e != null && Validator.isNotNull(e.getScope()) && Validator.isNotNull(govAgencyCode)
+									&& e.getScope().indexOf(govAgencyCode) >= 0)) {
+								ett = new DictItemModel();
 
-				ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
-				ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
-				ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
-				ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
-				ett.setItemDescription(document.get(DictItemTerm.ITEM_DESCRIPTION));
-				ett.setLevel(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
-				ett.setSibling(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
-				ett.setTreeIndex(document.get(DictItemTerm.TREE_INDEX));
+								ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+								ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
+								ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
+								ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
+								ett.setItemDescription(document.get(DictItemTerm.ITEM_DESCRIPTION));
+								ett.setLevel(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+								ett.setSibling(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+								ett.setTreeIndex(document.get(DictItemTerm.TREE_INDEX));
 
-				ett.setCreateDate(Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE)) ? APIDateTimeUtils
-						.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
-						: StringPool.BLANK);
-				ett.setModifiedDate(
-						Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
-								document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+								ett.setCreateDate(Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE)) ? APIDateTimeUtils
+										.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
+										: StringPool.BLANK);
+								ett.setModifiedDate(
+										Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+												document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+								ett.setServiceLevelRole(document.get(ServiceConfigTerm.SERVICE_LEVEL_ROLE));
+								ett.setGovAgencyCodeRole(document.get(ServiceConfigTerm.GOVAGENCY_CODE_ROLE));
+								DictItem parentItem = DictItemLocalServiceUtil
+										.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
 
-				DictItem parentItem = DictItemLocalServiceUtil
-						.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
+								ParentItem parentItemModel = new ParentItem();
 
-				ParentItem parentItemModel = new ParentItem();
+								if (Validator.isNotNull(parentItem)) {
+									parentItemModel.setItemCode(parentItem.getItemCode());
+									parentItemModel.setItemName(parentItem.getItemName());
+									parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+								}
+								ett.getParentItem().add(parentItemModel);
 
-				if (Validator.isNotNull(parentItem)) {
+								results.add(ett);
+							}
+//						}
+					}
+				}else{
+					ett = new DictItemModel();
 
-					parentItemModel.setItemCode(parentItem.getItemCode());
-					parentItemModel.setItemName(parentItem.getItemName());
-					parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+					ett.setDictItemId(Long.valueOf(document.get("entryClassPK")));
+					ett.setItemCode(document.get(DictItemTerm.ITEM_CODE));
+					ett.setItemName(document.get(DictItemTerm.ITEM_NAME));
+					ett.setItemNameEN(document.get(DictItemTerm.ITEM_NAME_EN));
+					ett.setItemDescription(document.get(DictItemTerm.ITEM_DESCRIPTION));
+					ett.setLevel(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+					ett.setSibling(Integer.valueOf(document.get(DictItemTerm.LEVEL)));
+					ett.setTreeIndex(document.get(DictItemTerm.TREE_INDEX));
 
+					ett.setCreateDate(Validator.isNotNull(document.get(DictItemTerm.CREATE_DATE)) ? APIDateTimeUtils
+							.convertDateToString(document.getDate(DictItemTerm.CREATE_DATE), APIDateTimeUtils._TIMESTAMP)
+							: StringPool.BLANK);
+					ett.setModifiedDate(
+							Validator.isNotNull(document.get("modified")) ? APIDateTimeUtils.convertDateToString(
+									document.getDate("modified"), APIDateTimeUtils._TIMESTAMP) : StringPool.BLANK);
+					if(Validator.isNotNull(query.getServiceLevelRole())){
+						ett.setServiceLevelRole(document.get(ServiceConfigTerm.SERVICE_LEVEL_ROLE));
+						ett.setGovAgencyCodeRole(document.get(ServiceConfigTerm.GOVAGENCY_CODE_ROLE));
+					}else {
+						ett.setServiceLevel(document.get(ServiceConfigTerm.SERVICE_LEVEL));
+						ett.setGovAgencyCode(document.get(ServiceConfigTerm.GOVAGENCY_CODE));
+					}
+					DictItem parentItem = DictItemLocalServiceUtil
+							.fetchDictItem(Long.valueOf(document.get(DictItemTerm.PARENT_ITEM_ID)));
+
+					ParentItem parentItemModel = new ParentItem();
+
+					if (Validator.isNotNull(parentItem)) {
+						parentItemModel.setItemCode(parentItem.getItemCode());
+						parentItemModel.setItemName(parentItem.getItemName());
+						parentItemModel.setItemNameEN(parentItem.getItemNameEN());
+					}
+
+					ett.getParentItem().add(parentItemModel);
+
+					results.add(ett);
 				}
-
-				ett.getParentItem().add(parentItemModel);
-
-				results.add(ett);
 			}
 
 		} catch (Exception e) {

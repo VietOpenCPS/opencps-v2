@@ -60,8 +60,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.opencps.api.constants.ConstantUtils;
 import org.opencps.api.controller.OneGateController;
 import org.opencps.api.controller.ServiceInfoManagement;
+import org.opencps.api.controller.util.DataManagementUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.ServiceInfoUtils;
+import org.opencps.api.datamgt.model.DataSearchModel;
+import org.opencps.api.datamgt.model.DictItemResults;
 import org.opencps.api.dossier.model.DossierSearchDetailModel;
 import org.opencps.api.dossier.model.DossierSearchModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
@@ -80,6 +83,8 @@ import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
+import org.opencps.datamgt.action.DictcollectionInterface;
+import org.opencps.datamgt.action.impl.DictCollectionActions;
 import org.opencps.datamgt.constants.DictItemTerm;
 import org.opencps.datamgt.model.FileAttach;
 import org.opencps.datamgt.service.FileAttachLocalServiceUtil;
@@ -90,6 +95,7 @@ import org.opencps.dossiermgt.action.impl.ServiceInfoActionsImpl;
 import org.opencps.dossiermgt.action.util.OpenCPSConfigUtil;
 import org.opencps.dossiermgt.action.util.SpecialCharacterUtils;
 import org.opencps.dossiermgt.constants.DossierTerm;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.model.ServiceFileTemplate;
 import org.opencps.dossiermgt.model.ServiceInfo;
@@ -690,10 +696,21 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
+		serviceContext.setUserId(user.getUserId());
 
 		try {
 			//Sort agency
 			Sort[] sorts = null;
+			LinkedHashMap<String, Object> paramSearch =
+					new LinkedHashMap<String, Object>();
+			if(Validator.isNotNull(search.getServiceLevel())){
+				paramSearch.put(ServiceConfigTerm.SERVICE_LEVEL, search.getServiceLevel());
+			}
+
+//			if(search.isEmployee()){
+//				paramSearch.put(ServiceConfigTerm.IS_EMPLOYEE, search.isEmployee());
+//			}
+
 			JSONObject resultObj = JSONFactoryUtil.createJSONObject();
 			if (Validator.isNull(search.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), DossierTerm.CREATE_DATE);
@@ -706,12 +723,69 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 			}
 			if (Validator.isNotNull(agency)) {
 				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
-			}
-			else {
-				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj);
+			} else {
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj,paramSearch);
 			}
 			
 			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
+		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+	private final String GOVERNMENT_AGENCY = "GOVERNMENT_AGENCY";
+
+	@Override
+	public Response getDictItemsByRoles(HttpServletRequest request, HttpHeaders header, Company company, Locale locale, User user, ServiceContext serviceContext, String code,
+										DataSearchModel query, Request requestCC) {
+		DictcollectionInterface dictItemDataUtil = new DictCollectionActions();
+		DictItemResults result = new DictItemResults();
+		SearchContext searchContext = new SearchContext();
+		searchContext.setCompanyId(company.getCompanyId());
+
+		try {
+
+			if (query.getEnd() == 0) {
+
+				query.setStart(QueryUtil.ALL_POS);
+
+				query.setEnd(QueryUtil.ALL_POS);
+
+			}
+
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+//			if (ADMINISTRATIVE_REGION.equalsIgnoreCase(code))
+			long groupId = 0;
+
+			params.put(Field.GROUP_ID, groupId);
+			params.put(ConstantUtils.API_KEYWORDS_KEY, query.getKeywords());
+			params.put(DictItemTerm.PARENT_ITEM_CODE, query.getParent());
+			params.put(DictItemTerm.DICT_COLLECTION_CODE, GOVERNMENT_AGENCY);
+			if(Validator.isNotNull(query.getServiceLevelRole())) {
+				params.put(ServiceConfigTerm.SERVICE_LEVEL_ROLE, query.getServiceLevelRole());
+			}
+
+			Sort[] sorts = null;
+
+			if (Validator.isNull(query.getSort())) {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DictItemTerm.SIBLING_SEARCH);
+
+				sorts = new Sort[] {
+						SortFactoryUtil.create(querySort, Sort.INT_TYPE, false) };
+			} else {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_SORT), query.getSort());
+
+				sorts = new Sort[] {
+						SortFactoryUtil.create(querySort, Sort.STRING_TYPE, false) };
+			}
+			JSONObject jsonData = dictItemDataUtil.getDictItems(user.getUserId(), company.getCompanyId(), groupId,
+					params, sorts, query.getStart(), query.getEnd(), serviceContext);
+			groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+//			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
+			result.getDictItemModel()
+					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get(ConstantUtils.DATA),query,groupId, user));
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
 		} catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
@@ -726,6 +800,8 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 		JSONObject results = JSONFactoryUtil.createJSONObject();
+		LinkedHashMap<String, Object> paramSearch =
+				new LinkedHashMap<String, Object>();
 
 		try {
 			OneGateController controller = new OneGateControllerImpl();
@@ -750,7 +826,7 @@ public class ServiceInfoManagementImpl implements ServiceInfoManagement {
 				results = actions.getStatisticByDomainFilterAdministration(groupId, sorts, serviceContext, agency);
 			}
 			else {
-				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj);
+				results = actions.getStatisticByDomain(groupId, sorts, serviceContext,resultObj,paramSearch);
 			}
 			return Response.status(HttpURLConnection.HTTP_OK).entity(JSONFactoryUtil.looseSerialize(results)).build();
 		} catch (Exception e) {

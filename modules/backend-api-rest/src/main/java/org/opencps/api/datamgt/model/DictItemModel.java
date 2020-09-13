@@ -60,7 +60,11 @@ import javax.xml.bind.annotation.XmlType;
     "sibling",
     "treeIndex",
     "parentItem",
-    "groups"
+    "groups",
+    "serviceLevel",
+    "govAgencyCode",
+    "serviceLevelRole",
+    "govAgencyCodeRole"
 })
 @XmlRootElement(name = "DictItemModel")
 public class DictItemModel {
@@ -84,6 +88,46 @@ public class DictItemModel {
     protected String treeIndex;
     protected List<ParentItem> parentItem;
     protected List<Groups> groups;
+    @XmlElement(required = true)
+    protected String serviceLevel;
+    @XmlElement(required = true)
+    protected String govAgencyCode;
+    @XmlElement(required = true)
+    protected String serviceLevelRole;
+    @XmlElement(required = true)
+    protected String govAgencyCodeRole;
+
+    public String getServiceLevelRole() {
+        return serviceLevelRole;
+    }
+
+    public void setServiceLevelRole(String serviceLevelRole) {
+        this.serviceLevelRole = serviceLevelRole;
+    }
+
+    public String getGovAgencyCodeRole() {
+        return govAgencyCodeRole;
+    }
+
+    public void setGovAgencyCodeRole(String govAgencyCodeRole) {
+        this.govAgencyCodeRole = govAgencyCodeRole;
+    }
+
+    public String getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(String serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
+
+    public String getGovAgencyCode() {
+        return govAgencyCode;
+    }
+
+    public void setGovAgencyCode(String govAgencyCode) {
+        this.govAgencyCode = govAgencyCode;
+    }
 
     /**
      * Gets the value of the dictItemId property.

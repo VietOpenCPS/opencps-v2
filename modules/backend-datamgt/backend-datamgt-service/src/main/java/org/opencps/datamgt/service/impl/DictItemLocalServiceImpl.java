@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -55,6 +56,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.cxf.service.model.ServiceInfo;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.NotFoundException;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -72,6 +74,7 @@ import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.base.DictItemLocalServiceBaseImpl;
 
 import aQute.bnd.annotation.ProviderType;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 
 /**
  * The implementation of the dict item local service.
@@ -524,6 +527,8 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 		String userId = (String) params.get(DictItemTerm.USER_ID);
 		String itemLv = (String) params.get(DictItemTerm.ITEM_LV);
 		String dictCollectionCode = (String) params.get(DictItemTerm.DICT_COLLECTION_CODE);
+		String serviceLevel = (String) params.get(ServiceConfigTerm.SERVICE_LEVEL);
+		String serviceLevelRole = (String) params.get(ServiceConfigTerm.SERVICE_LEVEL_ROLE);
 
 		BooleanQuery booleanQuery = null;
 
@@ -616,6 +621,41 @@ public class DictItemLocalServiceImpl extends DictItemLocalServiceBaseImpl {
 			query.addFields(DictItemTerm.DICT_COLLECTION_CODE);
 
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+		if (Validator.isNotNull(serviceLevel)) {
+			if(!"0".equals(serviceLevel)) {
+				if (serviceLevel.contains(StringPool.COMMA)) {
+					String[] levelSearch = serviceLevel.split(StringPool.COMMA);
+					BooleanQuery subQuery = new BooleanQueryImpl();
+					for (String key : levelSearch) {
+						MultiMatchQuery query = new MultiMatchQuery(key);
+						query.addField(ServiceConfigTerm.SERVICE_LEVEL);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+					booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				} else {
+					MultiMatchQuery query = new MultiMatchQuery(serviceLevel);
+					query.addField(ServiceConfigTerm.SERVICE_LEVEL);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
+				}
+			}
+		}else if(Validator.isNotNull(serviceLevelRole)){
+			if(!"0".equals(serviceLevelRole)) {
+				if (serviceLevelRole.contains(StringPool.COMMA)) {
+					String[] levelSearchRole = serviceLevelRole.split(StringPool.COMMA);
+					BooleanQuery subQuery = new BooleanQueryImpl();
+					for (String key : levelSearchRole) {
+						MultiMatchQuery query = new MultiMatchQuery(key);
+						query.addField(ServiceConfigTerm.SERVICE_LEVEL_ROLE);
+						subQuery.add(query, BooleanClauseOccur.SHOULD);
+					}
+					booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+				} else {
+					MultiMatchQuery query = new MultiMatchQuery(serviceLevelRole);
+					query.addField(ServiceConfigTerm.SERVICE_LEVEL_ROLE);
+					booleanQuery.add(query, BooleanClauseOccur.MUST);
+				}
+			}
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, DictItem.class.getName());

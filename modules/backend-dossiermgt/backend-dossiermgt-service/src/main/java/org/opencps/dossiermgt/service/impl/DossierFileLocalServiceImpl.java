@@ -15,6 +15,7 @@
 package org.opencps.dossiermgt.service.impl;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import org.apache.commons.io.IOUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
@@ -496,13 +500,27 @@ public class DossierFileLocalServiceImpl
 			if (Validator.isNotNull(dossierPart.getFormReport())) {
 				object.setFormReport(dossierPart.getFormReport());
 			}
-//		}else if(Validator.isNotNull(dossierPart.getFormReport())){
-//			object.setFormReport(dossierPart.getFormReport());
 		}else{
 			DeliverableType dt = DeliverableTypeLocalServiceUtil.getByCode(
 				groupId, dossierPart.getDeliverableType());
 			if (dt != null && Validator.isNotNull(dt.getFormReport())) {
 				object.setFormReport(dt.getFormReport());
+			}else{
+				InputStream is = null;
+				String result = StringPool.BLANK;
+				try {
+
+					DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(dt.getFormReportFileId());
+
+					is = dlFileEntry.getContentStream();
+
+					result = IOUtils.toString(is, StandardCharsets.UTF_8);
+					_log.info("Log FormReport Dbfile" + result.toString());
+					object.setFormReport(result.toString());
+				} catch (Exception e) {
+					_log.debug(e);
+					result = StringPool.BLANK;
+				}
 			}
 		}
 

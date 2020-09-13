@@ -16,12 +16,20 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.dossiermgt.constants.ServiceConfigTerm;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
+import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
+import javax.xml.ws.Service;
 
 import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.backend.datamgt.service.util.ConfigProps;
@@ -61,6 +69,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 	@Override
 	protected Document doGetDocument(DictItem dictItem) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, dictItem);
+//		long groupId = dictItem.getGroupId();
 
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(dictItem.getCompanyId()));
 		document.addDateSortable(Field.MODIFIED_DATE, dictItem.getModifiedDate());
@@ -81,6 +90,25 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addNumberSortable(DictItemTerm.SIBLING_SEARCH, GetterUtil.getInteger(dictItem.getSibling()));
 		document.addTextSortable(DictItemTerm.TREE_INDEX, dictItem.getTreeIndex());
 		document.addNumberSortable(DictItemTerm.LEVEL, dictItem.getLevel());
+//		String strLevel = String.valueOf(dictItem.getLevel());
+//		document.addTextSortable(DictItemTerm.LEVEL, strLevel);
+		String itemCode = dictItem.getItemCode();
+		List<ServiceInfo> lstServiceInfo = ServiceInfoLocalServiceUtil.fetchByDomain(dictItem.getGroupId(), itemCode);
+		if(lstServiceInfo !=null && lstServiceInfo.size() >0){
+			for (ServiceInfo item : lstServiceInfo){
+				if(Validator.isNotNull(item.getServiceInfoId())){
+					List<ServiceConfig> lstServiceConfig = ServiceConfigLocalServiceUtil.getByServiceInfo(item.getGroupId(),item.getServiceInfoId());
+					if(lstServiceConfig !=null && lstServiceConfig.size() >0){
+						for(ServiceConfig serviceConfig : lstServiceConfig){
+							if(Validator.isNotNull(serviceConfig.getServiceLevel())){
+								document.addTextSortable(ServiceConfigTerm.SERVICE_LEVEL, String.valueOf(serviceConfig.getServiceLevel()));
+								document.addTextSortable(ServiceConfigTerm.GOVAGENCY_CODE, String.valueOf(serviceConfig.getGovAgencyCode()));
+							}
+						}
+					}
+				}
+			}
+		}
 		if (Validator.isNotNull(dictItem.getMetaData())) {
 			document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());			
 		}
@@ -114,6 +142,16 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.setSortableTextFields(new String[]{DictItemTerm.TREE_INDEX});
 		
 		document.addNumberSortable(DictItemTerm.ID_LGSP, dictItem.getIdLGSP());
+		List<ServiceConfig> lstServiceConfig = ServiceConfigLocalServiceUtil.getByGovAgencyCode(itemCode);
+		if(lstServiceConfig !=null && lstServiceConfig.size() >0){
+			for(ServiceConfig serviceConfig : lstServiceConfig){
+				if(Validator.isNotNull(serviceConfig.getServiceLevel())){
+					document.addTextSortable(ServiceConfigTerm.SERVICE_LEVEL_ROLE, String.valueOf(serviceConfig.getServiceLevel()));
+					document.addTextSortable(ServiceConfigTerm.GOVAGENCY_CODE_ROLE, String.valueOf(serviceConfig.getGovAgencyCode()));
+				}
+			}
+		}
+
 		
 		return document;
 	}

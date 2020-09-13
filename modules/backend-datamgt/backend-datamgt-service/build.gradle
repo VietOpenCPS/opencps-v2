@@ -10,6 +10,7 @@ dependencies {
 
 	compileOnly project(":modules:backend-datamgt:backend-datamgt-api")
 	compileOnly project(":modules:backend-auth")
+	compileOnly project(":modules:backend-dossiermgt:backend-dossiermgt-api")
 }
 
 buildService {
