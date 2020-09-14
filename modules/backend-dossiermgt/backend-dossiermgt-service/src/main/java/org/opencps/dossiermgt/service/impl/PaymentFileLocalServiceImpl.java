@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
@@ -143,6 +144,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String service = String.valueOf((params.get(PaymentFileTerm.SERVICE)));
 		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
 		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
+		String fromApprovedDate = GetterUtil.getString(params.get(DossierTerm.FROM_APPROVED_DATE));
+		String toApprovedDate = GetterUtil.getString(params.get(DossierTerm.TO_APPROVED_DATE));
+		String paymentMethod = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_METHOD));
 
 		BooleanQuery booleanQuery = null;
 
@@ -241,6 +245,63 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(fromApprovedDate) ||
+				Validator.isNotNull(toApprovedDate)) {
+			String fromApprovedDateFilter = fromApprovedDate + ConstantsTerm.HOUR_START;
+			String toApprovedDateFilter = toApprovedDate + ConstantsTerm.HOUR_END;
+			_log.info("fromApprovedDateFilter: "+fromApprovedDateFilter);
+			_log.info("toApprovedDateFilter: "+toApprovedDateFilter);
+
+			if (Validator.isNotNull(fromApprovedDate)) {
+				if (Validator.isNotNull(toApprovedDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toApprovedDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
+		}
+
+		if (Validator.isNotNull(paymentMethod) && !"total".equalsIgnoreCase(paymentMethod)) {
+			if ("direct".equalsIgnoreCase(paymentMethod)) {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				query.isFieldsEmpty();
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+			else if ("online".equalsIgnoreCase(paymentMethod)) {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				query.isFieldsEmpty();
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -272,6 +333,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String agency = GetterUtil.getString(params.get(PaymentFileTerm.AGENCY));
 		String status = String.valueOf((params.get(PaymentFileTerm.STATUS)));
 		String isNew = (String) params.get(PaymentFileTerm.IS_NEW);
+		String fromApprovedDate = GetterUtil.getString(params.get(DossierTerm.FROM_APPROVED_DATE));
+		String toApprovedDate = GetterUtil.getString(params.get(DossierTerm.TO_APPROVED_DATE));
+		String paymentMethod = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_METHOD));
 
 		BooleanQuery booleanQuery = null;
 
@@ -360,6 +424,61 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
+		if (Validator.isNotNull(fromApprovedDate) ||
+				Validator.isNotNull(toApprovedDate)) {
+			String fromApprovedDateFilter = fromApprovedDate + ConstantsTerm.HOUR_START;
+			String toApprovedDateFilter = toApprovedDate + ConstantsTerm.HOUR_END;
+
+			if (Validator.isNotNull(fromApprovedDate)) {
+				if (Validator.isNotNull(toApprovedDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toApprovedDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							PaymentFileTerm.APPROVE_DATETIME, fromApprovedDateFilter,
+							toApprovedDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
+		}
+
+		if (Validator.isNotNull(paymentMethod) && !"total".equalsIgnoreCase(paymentMethod)) {
+			if ("direct".equalsIgnoreCase(paymentMethod)) {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				query.isFieldsEmpty();
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+			else if ("online".equalsIgnoreCase(paymentMethod)) {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				query.isFieldsEmpty();
+
+				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
+			}
+			else {
+				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+
+				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
+				booleanQuery.add(query, BooleanClauseOccur.MUST);
+			}
+		}
+
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
@@ -411,7 +530,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setPaymentStatus(paymentStatus);
 		paymentFile.setPaymentMethod(paymentMethod);
 		if (paymentStatus == 5) {
-		paymentFile.setApproveDatetime(now);
+			paymentFile.setApproveDatetime(now);
 		}
 
 		paymentFilePersistence.update(paymentFile);
@@ -716,8 +835,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 			paymentFile.setServiceAmount(serviceAmount);
 			paymentFile.setShipAmount(shipAmount);
 			paymentFile.setPaymentStatus(requestPayment);
-			if (paymentFile.getPaymentStatus() == 5) {
-			paymentFile.setApproveDatetime(new Date());
+			if (paymentFile.getPaymentStatus() == 5 && paymentFile.getApproveDatetime() == null) {
+				paymentFile.setApproveDatetime(new Date());
 			}
 			if (Validator.isNotNull(paymentNote))
 				paymentFile.setPaymentNote(paymentNote);
@@ -887,9 +1006,9 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		paymentFile.setBankInfo(input.getBankInfo());
 		paymentFile.setPaymentStatus(input.getPaymentStatus());
 		paymentFile.setPaymentMethod(input.getPaymentMethod());
-		if (input.getPaymentStatus() == 5) {
-		paymentFile.setApproveDatetime(now);
-		}
+//		if (input.getPaymentStatus() == 5) {
+//			paymentFile.setApproveDatetime(now);
+//		}
 
 		paymentFilePersistence.update(paymentFile);
 		

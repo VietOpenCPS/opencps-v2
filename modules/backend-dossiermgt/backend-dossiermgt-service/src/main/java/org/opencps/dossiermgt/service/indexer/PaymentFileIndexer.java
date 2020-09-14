@@ -23,14 +23,17 @@ import java.util.Locale;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.opencps.dossiermgt.action.keypay.util.HashFunction;
 import org.opencps.dossiermgt.constants.ConverterTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.osgi.service.component.annotations.Component;
 
 @Component(
@@ -72,8 +75,15 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 		document.addNumberSortable(PaymentFileTerm.PAYMENT_STATUS, object.getPaymentStatus());
 		document.addNumberSortable(PaymentFileTerm.CONFIRM_FILE_ENTRY_ID, object.getConfirmFileEntryId());
 //		document.addNumberSortable(PaymentFileTerm.INVOICE_FILE_ENTRY_ID, object.getInvoiceFileEntryId());
-		
-		document.addDateSortable(PaymentFileTerm.APPROVE_DATETIME, object.getApproveDatetime());
+
+		if (object.getApproveDatetime() != null) {
+			document.addDateSortable(PaymentFileTerm.APPROVE_DATETIME, object.getApproveDatetime());
+		} else {
+			document.addTextSortable(PaymentFileTerm.APPROVE_DATETIME, StringPool.BLANK);
+		}
+		document.addNumberSortable(PaymentFileTerm.APPROVE_DATE_TIMESTAMP,
+				Validator.isNotNull(object.getApproveDatetime()) ? object.getApproveDatetime().getTime() : 0);
+
 		document.addDateSortable(PaymentFileTerm.CONFIRM_DATETIME, object.getConfirmDatetime());
 
 		// add text fields
@@ -95,46 +105,70 @@ public class PaymentFileIndexer extends BaseIndexer<PaymentFile> {
 		document.addTextSortable(PaymentFileTerm.INVOICE_NO, object.getInvoiceNo());
 
 		// Add text fields of dossierId
-		try {
-			Dossier dossier = DossierLocalServiceUtil.getDossier(object.getDossierId());
+//		try {
+		Dossier dossier = DossierLocalServiceUtil.fetchDossier(object.getDossierId());
+		if (dossier != null) {
 			document.addTextSortable(PaymentFileTerm.APPLICANT_NAME, dossier.getApplicantName());
 			document.addTextSortable(PaymentFileTerm.APPLICANT_ID_NO, dossier.getApplicantIdNo());
 			document.addTextSortable(PaymentFileTerm.SERVICE_CODE, dossier.getServiceCode());
 			document.addTextSortable(PaymentFileTerm.SERVICE_NAME, dossier.getServiceName());
 			document.addTextSortable(PaymentFileTerm.DOSSIER_NO, dossier.getDossierNo());
 			document.addNumberSortable(PaymentFileTerm.COUNTER, dossier.getCounter());
+			document.addTextSortable(DossierTerm.DOSSIER_COUNTER, dossier.getDossierCounter());
+			document.addTextSortable(DossierTerm.SERVICE_CODE, dossier.getServiceCode());
+			document.addTextSortable(DossierTerm.SERVICE_NAME, dossier.getServiceName());
+			document.addTextSortable(DossierTerm.ADDRESS, dossier.getAddress());
+			document.addTextSortable(DossierTerm.META_DATA, dossier.getMetaData());
+			String serviceCode = dossier.getServiceCode();
+			String domainCode = StringPool.BLANK;
+			String domainName = StringPool.BLANK;
+			if (Validator.isNotNull(serviceCode)) {
+				ServiceInfo service = ServiceInfoLocalServiceUtil.getByCode(object.getGroupId(), serviceCode);
+				if (service != null) {
+					domainCode = service.getDomainCode();
+					domainName = service.getDomainName();
+				}
+			}
+			document.addTextSortable(DossierTerm.DOMAIN_CODE, domainCode);
+			document.addTextSortable(DossierTerm.DOMAIN_NAME, domainName);
+		} else {
+			document.addTextSortable(PaymentFileTerm.APPLICANT_NAME, StringPool.BLANK);
+			document.addTextSortable(PaymentFileTerm.APPLICANT_ID_NO, StringPool.BLANK);
+			document.addTextSortable(PaymentFileTerm.SERVICE_CODE, StringPool.BLANK);
+			document.addTextSortable(PaymentFileTerm.SERVICE_NAME, StringPool.BLANK);
+			document.addTextSortable(PaymentFileTerm.DOSSIER_NO, StringPool.BLANK);
+			document.addNumberSortable(PaymentFileTerm.COUNTER, 0);
+			document.addTextSortable(DossierTerm.DOSSIER_COUNTER, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.SERVICE_CODE, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.SERVICE_NAME, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.META_DATA, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.DOMAIN_CODE, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.DOMAIN_NAME, StringPool.BLANK);
+			document.addTextSortable(DossierTerm.ADDRESS, StringPool.BLANK);
+		}
+
 			
 			//binhth index dossierId CTN
 			// TODO
-			
-			MessageDigest md5 = null;
-			
+			/*MessageDigest md5 = null;
 			byte[] ba = null;
-
 			try {
-				
 				md5 = MessageDigest.getInstance(ConverterTerm.SHA_256);
-				
 				ba = md5.digest(dossier.getReferenceUid().getBytes(ConverterTerm.UTF_8));
-				
 			} catch (Exception e) {
 				_log.error(e);
 			} 
 
 			DateFormat df = new SimpleDateFormat(ConverterTerm.YY);
-			
 			String formattedDate = df.format(Calendar.getInstance().getTime());
-			
 			String dossierIDCTN;
-			
 			dossierIDCTN = formattedDate + HashFunction.hexShort(ba);
+			document.addTextSortable(DossierTerm.DOSSIER_ID_CTN, dossierIDCTN);*/
 			
-			document.addTextSortable(DossierTerm.DOSSIER_ID_CTN, dossierIDCTN);
-			
-		} catch (Exception e) {
+//		} catch (Exception e) {
 //			e.printStackTrace();
-			_log.error(e);
-		}
+//			_log.error(e);
+//		}
 
 		return document;
 	}

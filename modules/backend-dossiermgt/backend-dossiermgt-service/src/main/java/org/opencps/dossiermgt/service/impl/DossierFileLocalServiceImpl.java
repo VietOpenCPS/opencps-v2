@@ -1115,7 +1115,14 @@ public class DossierFileLocalServiceImpl
 
 			dossierFile.setFormReport(jrxmlTemplate);
 		}
-		dossierFile.setFormData(formData);
+		/*if(Validator.isNotNull(dossierFile.getFormData())){
+			dossierFile.setFormData(dossierFile.getFormData());
+		}else{
+			dossierFile.setFormData(formData);
+		}*/
+		if(Validator.isNotNull(formData)){
+			dossierFile.setFormData(formData);
+		}
 		dossierFile.setIsNew(true);
 
 		// Binhth add message bus to processing jasper file

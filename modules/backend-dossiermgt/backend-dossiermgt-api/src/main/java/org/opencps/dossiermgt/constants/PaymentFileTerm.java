@@ -23,6 +23,7 @@ public class PaymentFileTerm {
 	public static final String CONFIRM_FILE_ENTRY_ID = "confirmFileEntryId";
 	public static final String CONFIRM_NOTE = "confirmNote";
 	public static final String APPROVE_DATETIME = "approveDatetime";
+	public static final String APPROVE_DATE_TIMESTAMP = "approveDateTimeStamp";
 	public static final String ACCOUNT_USER_NAME = "accountUserName";
 	public static final String GOV_AGENCY_TAX_NO = "govAgencyTaxNo";
 	public static final String INVOICE_TEMPLATE_NO = "invoiceTemplateNo";
@@ -30,6 +31,7 @@ public class PaymentFileTerm {
 	public static final String INVOICE_NO = "invoiceNo";
 	public static final String INVOICE_FILE_ENTRY_ID = "invoiceFileEntryId";
 	public static final String INVOICE_PAYLOAD = "invoicePayload";
+	public static final String TOTAL_AMOUNT = "totalAmount";
 	// Search payment file
 	public static final String SERVICE = "sevice";
 	public static final String AGENCY = "agency";

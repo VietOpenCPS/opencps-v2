@@ -30,6 +30,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 import org.opencps.auth.api.exception.UnauthenticationException;
 
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.input.model.DossierInputModel;
 import org.opencps.dossiermgt.input.model.DossierMultipleInputModel;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;

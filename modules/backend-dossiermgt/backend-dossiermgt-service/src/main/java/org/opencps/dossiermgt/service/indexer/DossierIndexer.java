@@ -220,19 +220,19 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			//
 			if (dueDateTime > 0) {
 				if (releaseTime > 0) {
-					/*
-					long valueCompareRelease = releaseTime - dueDateTime;
-					if (valueCompareRelease > 0) {
+
+					/*long valueStatisticRelease = releaseTime - dueDateTime;
+					if (valueStatisticRelease > 0) {
 						// OverTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
-					} else if (valueCompareRelease > -hourMiliseconds) {
+						document.addNumberSortable(DossierTerm.VALUE_STATISTIC_RELEASE, 1);
+					} else if (valueStatisticRelease  == 0) {
 						// OnTime
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 2);
+						document.addNumberSortable(DossierTerm.VALUE_STATISTIC_RELEASE, 2);
 					} else {
 						// BeTimes
-						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 3);
-					}
-					*/
+						document.addNumberSortable(DossierTerm.VALUE_STATISTIC_RELEASE, 3);
+					}*/
+
 					Integer valueCompareRelease = BetimeUtils.getValueCompareRelease(object.getGroupId(), object.getReleaseDate(), object.getDueDate());
 					if (1 == valueCompareRelease) {
 						document.addNumberSortable(DossierTerm.VALUE_COMPARE_RELEASE, 1);
