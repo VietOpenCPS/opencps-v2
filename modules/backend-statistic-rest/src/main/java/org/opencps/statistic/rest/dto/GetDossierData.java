@@ -21,6 +21,15 @@ public class GetDossierData {
 	private int viaPostal;
 	private int serviceLevel;
 	private int fromViaPostal;
+	private String dossierNo;
+
+	public String getDossierNo() {
+		return dossierNo;
+	}
+
+	public void setDossierNo(String dossierNo) {
+		this.dossierNo = dossierNo;
+	}
 
 	public int getFromViaPostal() {
 		return fromViaPostal;

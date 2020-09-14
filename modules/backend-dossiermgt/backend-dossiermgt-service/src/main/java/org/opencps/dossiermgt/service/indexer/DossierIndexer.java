@@ -840,6 +840,8 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 			document.addNumberSortable(DossierTerm.FROM_VIA_POSTAL, object.getFromViaPostal());
 			document.addTextSortable(DossierTerm.PROCESS_NO, object.getProcessNo());
 			document.addTextSortable(DossierTerm.META_DATA, object.getMetaData());
+			document.addTextSortable(DossierTerm.POSTAL_CODE_RECEIVED, object.getPostalCodeReceived());
+			document.addTextSortable(DossierTerm.POSTAL_CODE_SEND, object.getPostalCodeSend());
 
 			String metaData = object.getMetaData();
 			if (Validator.isNotNull(metaData)) {
@@ -862,8 +864,7 @@ public class DossierIndexer extends BaseIndexer<Dossier> {
 						}
 					}
 				} catch (JSONException e) {
-					_log.debug(e.getMessage());
-					e.printStackTrace();
+					_log.debug(e);
 				}
 			}
 
