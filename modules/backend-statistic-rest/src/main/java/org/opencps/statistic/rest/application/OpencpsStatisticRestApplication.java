@@ -39,6 +39,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.ws.rs.BeanParam;
@@ -952,9 +956,13 @@ public class OpencpsStatisticRestApplication extends Application {
 					}
 					//
 					PersonResponse statisticResponse = new PersonResponse();
-					statisticResponse.setTotal(statisticDataList.size());
-					//statisticResponse.setDossierStatisticData(statisticDataList);
-					statisticResponse.setData(statisticDataList);
+					List<PersonStatisticData> statisticDataDistinct = statisticDataList.stream()
+							.filter( distinctByKey(p -> p.getEmployeeId()) )
+							.sorted(Comparator.comparing(p -> p.getEmployeeId()))
+							.collect(Collectors.toList());
+
+					statisticResponse.setTotal(statisticDataDistinct.size());
+					statisticResponse.setData(statisticDataDistinct);
 					if (statisticResponse != null) {
 						statisticResponse.setAgency(govAgencyCode);
 					}
@@ -1010,6 +1018,13 @@ public class OpencpsStatisticRestApplication extends Application {
 
 		return null;
 	}
+
+	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+	{
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	}
+
 
 
 	private void validInput(int month, int year, int start, int end) {
