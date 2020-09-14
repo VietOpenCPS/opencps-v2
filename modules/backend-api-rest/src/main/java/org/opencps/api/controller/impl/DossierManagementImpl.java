@@ -896,17 +896,68 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				DossierResultsModel results = new DossierResultsModel();
-
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
+				if(Validator.isNotNull(query.getOrigin()) && "9".equals(query.getOrigin())){
 					results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
-
 					results.getData().addAll(
 							DossierUtils.mappingForGetList(
 									(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 									query.getAssigned(), query));
-				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+				}else {
+					List<Dossier> lstNew = new ArrayList<>();
+					List<Dossier> lstDossierId = new ArrayList<>();
+
+					List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA), query.getGroupCongVan());
+					List<Long> lstId = new ArrayList<>();
+					if (ouputs != null) {
+						for (DossierDataModel item : ouputs) {
+							if (Validator.isNotNull(item.getGroupDossierIds())) {
+								String[] groupDossierIds = item.getGroupDossierIds().split(StringPool.COMMA);
+								Integer lastIndex = groupDossierIds.length;
+								if (lastIndex >= 1) {
+									lastIndex--;
+								}
+								Dossier dossier;
+								for (int i = lastIndex; i >= 0; i--) {
+									dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(groupDossierIds[i]));
+									if (Validator.isNotNull(dossier)) {
+										if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+											lstId.add(Long.valueOf(groupDossierIds[i]));
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					if (Validator.isNotNull(lstId)) {
+						long[] dossierIds = new long[lstId.size()];
+						if (lstId != null && !lstId.isEmpty()) {
+							int i = 0;
+							for (Long id : lstId) {
+								dossierIds[i++] = id;
+							}
+							if (Validator.isNotNull(dossierIds)) {
+								if (dossierIds.length > 0) {
+									lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+								}
+								if (Validator.isNotNull(lstDossierId)) {
+									for (Dossier dossier : lstDossierId) {
+										if (dossier.getOriginality() == 9) {
+											lstNew.add(dossier);
+										}
+									}
+								}
+							}
+						}
+					}
+					results.setTotal(lstNew.size());
+					results.getData().addAll(DossierUtils.mappingForListDossier(lstNew));
+					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+				}
 			}
 		}
 		catch (Exception e) {
@@ -8690,29 +8741,6 @@ public class DossierManagementImpl implements DossierManagement {
 			Employee employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
 			//Search công văn theo đơn vị nhận
 			String searchCongVanTheoDonViNhan = query.getSearchCongVanTheoDonViNhan();
-//			if (Validator.isNotNull(searchCongVanTheoDonViNhan)) {
-//				String[] congVanArr = searchCongVanTheoDonViNhan.split(StringPool.COMMA);
-//				boolean firtScope = false;
-//				for (String key : congVanArr) {
-//					if (key.equals(DossierTerm.FIRSTSCOPE)) {
-//						firtScope = true;
-//					}
-//				}
-//				if (firtScope) {
-//					if (Validator.isNotNull(employee.getScope())) {
-//						String[] employeeArr = employee.getScope().split(StringPool.COMMA);
-//						params.put(DossierTerm.DON_VI_NHAN, employeeArr[0]);
-//					}
-//				} else {
-//					if (query.getSearchCongVanTheoDonViNhan().equals(DossierTerm.SCOPE_)) {
-//						if (Validator.isNotNull(employee.getScope())) {
-//							params.put(DossierTerm.DON_VI_NHAN, employee.getScope());
-//						}
-//					} else {
-//						params.put(DossierTerm.DON_VI_NHAN, searchCongVanTheoDonViNhan);
-//					}
-//				}
-//			}
 			Sort[] sorts = null;
 			if (Validator.isNull(query.getSort())) {
 				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
@@ -8736,18 +8764,8 @@ public class DossierManagementImpl implements DossierManagement {
 
 			List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA),query.getGroupCongVan());
 			List<Long> lstId = new ArrayList<>();
-//			List<String> lstDocumentNo = new ArrayList<>();
 			if(ouputs !=null) {
 				for (DossierDataModel item : ouputs) {
-//					if(Validator.isNotNull(item.getDocumentNo())) {
-//						String documentNo = "";
-//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
-//							documentNo += item.getDocumentNo();
-//							if (Validator.isNotNull(documentNo)) {
-//								lstDocumentNo.add(documentNo);
-//							}
-//						}
-//					}else{
 					if(Validator.isNotNull(item.getGroupDossierIds())) {
 //							String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
 //									.lastIndexOf(",") + 1));
