@@ -43,22 +43,13 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
+import org.opencps.dossiermgt.action.util.AutoFillFormData;
 import org.opencps.dossiermgt.constants.DeliverableTerm;
 import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.model.ActionConfig;
-import org.opencps.dossiermgt.model.Deliverable;
-import org.opencps.dossiermgt.model.Dossier;
-import org.opencps.dossiermgt.model.DossierFile;
-import org.opencps.dossiermgt.model.DossierPart;
-import org.opencps.dossiermgt.model.ProcessAction;
-import org.opencps.dossiermgt.model.ProcessOption;
+import org.opencps.dossiermgt.model.*;
 import org.opencps.dossiermgt.scheduler.InvokeREST;
 import org.opencps.dossiermgt.scheduler.RESTFulConfiguration;
-import org.opencps.dossiermgt.service.ActionConfigLocalServiceUtil;
-import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
-import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
+import org.opencps.dossiermgt.service.*;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 import backend.auth.api.exception.ErrorMsgModel;
@@ -1234,6 +1225,19 @@ public class DefaultSignatureManagementImpl
 								DeliverableLocalServiceUtil.getByCode(
 										item.getDeliverableCode());
 						if (Validator.isNotNull(fileEntryId)) {
+							DossierPart dossierPart =
+									DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+											item.getGroupId(), item.getDossierTemplateNo(),
+											item.getDossierPartNo());
+							DeliverableType dlvType =
+									DeliverableTypeLocalServiceUtil.getByCode(
+											item.getGroupId(), dossierPart.getDeliverableType());
+
+							JSONObject formDataContent = JSONFactoryUtil.createJSONObject(item.getFormData());
+							formDataContent =AutoFillFormData.sampleDataBindingDeliverable(
+									dlvType.getMappingData(), dossier.getDossierId(),
+									serviceContext);
+							deliverable.setFormData(formDataContent.toString());
 							_log.info("Deliverable " + JSONFactoryUtil.looseSerialize(deliverable));
 							deliverable.setFileAttachs(String.valueOf(fileEntryId));
 							DeliverableLocalServiceUtil.updateDeliverable(

@@ -699,7 +699,7 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.SERVICE_NAME, serviceName);
 				// Check guest search
 				params.put(DossierTerm.EMAIL_USER_LOGIN, emailLogin);
-				params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+
 				//
 				params.put(DossierTerm.FROM_RELEASE_DATE, fromReleaseDate);
 				params.put(DossierTerm.TO_RELEASE_DATE, toReleaseDate);
@@ -886,69 +886,76 @@ public class DossierManagementImpl implements DossierManagement {
 				}
 
 				results = new DossierResultsModel();
+				if(Validator.isNotNull(query.getOriginality()) && !"9".equals(query.getOriginality())){
+					if (Validator.isNotNull(donvigui)) {
+						params.put(DossierTerm.ORIGINALLITY, DossierTerm.ORIGINALITY_HOSONHOM);
 
-				JSONObject jsonData = actions.getDossiers(
-						user.getUserId(), company.getCompanyId(), groupId, params,
-						sorts, query.getStart(), query.getEnd(), serviceContext);
-				if(Validator.isNotNull(query.getOrigin()) && "9".equals(query.getOrigin())){
+						JSONObject jsonData = actions.getDossiers(
+								user.getUserId(), company.getCompanyId(), groupId, params,
+								sorts, query.getStart(), query.getEnd(), serviceContext);
+						List<Dossier> lstNew = new ArrayList<>();
+						List<Dossier> lstDossierId = new ArrayList<>();
+						_log.info("Vao 22222222222 " + jsonData.get(ConstantUtils.TOTAL));
+						List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA), query.getGroupCongVan());
+						List<Long> lstId = new ArrayList<>();
+						if (ouputs != null) {
+							for (DossierDataModel item : ouputs) {
+								if (Validator.isNotNull(item.getGroupDossierIds())) {
+									String[] groupDossierIds = item.getGroupDossierIds().split(StringPool.COMMA);
+									Integer lastIndex = groupDossierIds.length;
+									if (lastIndex >= 1) {
+										lastIndex--;
+									}
+									Dossier dossier;
+									for (int i = lastIndex; i >= 0; i--) {
+										dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(groupDossierIds[i]));
+										if (Validator.isNotNull(dossier)) {
+											if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
+												lstId.add(Long.valueOf(groupDossierIds[i]));
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+						if (Validator.isNotNull(lstId)) {
+							long[] dossierIds = new long[lstId.size()];
+							if (lstId != null && !lstId.isEmpty()) {
+								int i = 0;
+								for (Long id : lstId) {
+									dossierIds[i++] = id;
+								}
+								if (Validator.isNotNull(dossierIds)) {
+									if (dossierIds.length > 0) {
+										lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
+									}
+									if (Validator.isNotNull(lstDossierId)) {
+										for (Dossier dossier : lstDossierId) {
+											if (dossier.getOriginality() == 9) {
+												lstNew.add(dossier);
+											}
+										}
+									}
+								}
+							}
+						}
+						results.setTotal(lstNew.size());
+						results.getData().addAll(DossierUtils.mappingForListDossier(lstNew));
+					}
+				}else{
+					params.put(DossierTerm.ORIGINALLITY, query.getOriginality());
+					_log.info("Vao 1111111111");
+					JSONObject jsonData = actions.getDossiers(
+							user.getUserId(), company.getCompanyId(), groupId, params,
+							sorts, query.getStart(), query.getEnd(), serviceContext);
 					results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
 					results.getData().addAll(
 							DossierUtils.mappingForGetList(
 									(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
 									query.getAssigned(), query));
-					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
-				}else {
-					List<Dossier> lstNew = new ArrayList<>();
-					List<Dossier> lstDossierId = new ArrayList<>();
-
-					List<DossierDataModel> ouputs = DossierUtils.mappingForListCongVan((List<Document>) jsonData.get(ConstantUtils.DATA), query.getGroupCongVan());
-					List<Long> lstId = new ArrayList<>();
-					if (ouputs != null) {
-						for (DossierDataModel item : ouputs) {
-							if (Validator.isNotNull(item.getGroupDossierIds())) {
-								String[] groupDossierIds = item.getGroupDossierIds().split(StringPool.COMMA);
-								Integer lastIndex = groupDossierIds.length;
-								if (lastIndex >= 1) {
-									lastIndex--;
-								}
-								Dossier dossier;
-								for (int i = lastIndex; i >= 0; i--) {
-									dossier = DossierLocalServiceUtil.fetchDossier(Long.valueOf(groupDossierIds[i]));
-									if (Validator.isNotNull(dossier)) {
-										if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
-											lstId.add(Long.valueOf(groupDossierIds[i]));
-											break;
-										}
-									}
-								}
-							}
-						}
-					}
-					if (Validator.isNotNull(lstId)) {
-						long[] dossierIds = new long[lstId.size()];
-						if (lstId != null && !lstId.isEmpty()) {
-							int i = 0;
-							for (Long id : lstId) {
-								dossierIds[i++] = id;
-							}
-							if (Validator.isNotNull(dossierIds)) {
-								if (dossierIds.length > 0) {
-									lstDossierId = DossierLocalServiceUtil.fetchByD_OR_D(dossierIds);
-								}
-								if (Validator.isNotNull(lstDossierId)) {
-									for (Dossier dossier : lstDossierId) {
-										if (dossier.getOriginality() == 9) {
-											lstNew.add(dossier);
-										}
-									}
-								}
-							}
-						}
-					}
-					results.setTotal(lstNew.size());
-					results.getData().addAll(DossierUtils.mappingForListDossier(lstNew));
-					return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 				}
+				return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 			}
 		}
 		catch (Exception e) {
