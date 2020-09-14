@@ -200,9 +200,9 @@ public class StatisticEngineFetchEntry {
 		Date dueDate = Validator.isNull(dossierData.getDueDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getDueDate());
-//		Date extendDate = Validator.isNull(dossierData.getExtendDate())
-//				? null
-//				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
+		Date extendDate = Validator.isNull(dossierData.getExtendDate())
+				? null
+				: StatisticUtils.convertStringToDate(dossierData.getExtendDate());
 		Date releaseDate = Validator.isNull(dossierData.getReleaseDate())
 				? null
 				: StatisticUtils.convertStringToDate(dossierData.getReleaseDate());
@@ -351,9 +351,33 @@ public class StatisticEngineFetchEntry {
 						}	
 						*/
 						
-						int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
-						
-						if (betimeCal == 3) {
+						//int betimeCal = dueDate != null ? BetimeUtils.getValueCompareRelease(dossierData.getGroupId(), releaseDate, dueDate) : 3;
+						int overdue = 1; // 0: sớm hạn, 1: đúng hạn, 2: quá hạn
+						// Check condition filter betimes
+						if (dueDate != null) {
+							//Check extendDate != null and releaseDate < dueDate
+							if (releaseDate != null && releaseDate.before(dueDate) && extendDate != null) overdue = 0;
+							//Or check finishDate < dueDate
+							if (finishDate != null && finishDate.before(dueDate)) overdue = 0;
+
+							//Check overTime condition releaseDate > dueDate
+							if (releaseDate != null && releaseDate.after(dueDate)) overdue = 2;
+						}
+						if (overdue==0) {
+							statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
+						} else if (overdue==2) {
+//							_log.info("dossierData_No: "+dossierData.getDossierNo());
+							statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
+							boolean isOvertimeInside = true;
+							if (isOvertimeInside) {
+								statisticData.setOvertimeInside(statisticData.getOvertimeInside() + 1);
+							} else {
+								statisticData.setOvertimeOutside(statisticData.getOvertimeOutside() + 1);
+							}
+						} else {
+							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
+						}
+						/*if (betimeCal == 3) {
 							statisticData.setBetimesCount(statisticData.getBetimesCount() + 1);
 						} else if (betimeCal == 1) {
 							statisticData.setOvertimeCount(statisticData.getOvertimeCount() + 1);
@@ -365,14 +389,14 @@ public class StatisticEngineFetchEntry {
 							}
 						} else {
 							statisticData.setOntimeCount(statisticData.getOntimeCount() + 1);
-						}
+						}*/
 						
 						// truc tuyen
 						if (dossierData.getOnline()) {
-							if (betimeCal == 3) {
+							if (overdue==0) {
 								statisticData.setOnlineBetimesCount(statisticData.getOnlineBetimesCount() + 1);
 								statisticData.setOnlineReleaseBetimesCount(statisticData.getOnlineReleaseBetimesCount() + 1);
-							} else if (betimeCal == 1) {
+							} else if (overdue==2) {
 								statisticData.setOnlineOvertimeCount(statisticData.getOnlineOntimeCount() + 1);
 								statisticData.setOnlineReleaseOvertimeCount(statisticData.getOnlineReleaseOvertimeCount() + 1);
 							} else {
@@ -381,10 +405,10 @@ public class StatisticEngineFetchEntry {
 							}
 						} // truc tiep
 						else {
-							if (betimeCal == 3) {
+							if (overdue==0) {
 								statisticData.setOnegateBetimesCount(statisticData.getOnegateBetimesCount() + 1);
 								statisticData.setOnegateReleaseBetimesCount(statisticData.getOnegateReleaseBetimesCount() + 1);
-							} else if (betimeCal == 1) {
+							} else if (overdue==2) {
 								statisticData.setOnegateOvertimeCount(statisticData.getOnegateOvertimeCount() + 1);
 								statisticData.setOnegateReleaseOvertimeCount(statisticData.getOnegateReleaseOvertimeCount() + 1);
 							} else {

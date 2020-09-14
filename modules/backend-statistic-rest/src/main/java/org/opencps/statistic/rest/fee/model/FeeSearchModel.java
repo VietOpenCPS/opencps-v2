@@ -69,7 +69,9 @@ import javax.xml.bind.annotation.XmlType;
     "toStatisticDate",
     "fromApprovedDate",
     "toApprovedDate",
-    "paymentMethod"
+    "paymentMethod",
+    "domainCode",
+    "serviceCode"
 })
 @XmlRootElement(name = "FeeSearchModel")
 public class FeeSearchModel {
@@ -114,6 +116,26 @@ public class FeeSearchModel {
     protected String toApprovedDate;
 	@QueryParam(value="paymentMethod")
     protected String paymentMethod;
+    @QueryParam(value="domainCode")
+    protected String domainCode;
+    @QueryParam(value="serviceCode")
+    protected String serviceCode;
+
+    public String getDomainCode() {
+        return domainCode;
+    }
+
+    public void setDomainCode(String domainCode) {
+        this.domainCode = domainCode;
+    }
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
+    }
 
     /**
      * Gets the value of the keyword property.

@@ -101,7 +101,8 @@ public class PaymentUrlGenerator {
 
 				String merchant_code = epaymentConfigJSON.getString("paymentMerchantCode");
 
-				String good_code = generatorGoodCode(10);
+				//String good_code = generatorGoodCode(10);
+				String good_code = dossier.getDossierNo();
 				
 				String net_cost = String.valueOf(paymentFile.getPaymentAmount());
 				
@@ -436,9 +437,10 @@ public class PaymentUrlGenerator {
 		lsDesc.add(4, StringPool.BLANK);
 
 		List<String> lsMsg = DossierPaymentUtils.getMessagePayment(pattern);
-
-		for (int i = 0; i < lsMsg.size(); i++) {
-			lsDesc.set(1, lsMsg.get(i));
+		if (lsMsg.size() > 0) {
+			for (int i = 0; i < lsMsg.size(); i++) {
+				lsDesc.set(1, lsMsg.get(i));
+			}
 		}
 
 		return lsDesc;

@@ -374,6 +374,7 @@ public class OpencpsStatisticRestApplication extends Application {
 						model.setSystem(doc.get(DossierTerm.SYSTEM_ID));
 						model.setViaPostal(Integer.parseInt(doc.get(DossierTerm.VIA_POSTAL)));
 						model.setFromViaPostal(GetterUtil.getInteger(doc.get(DossierTerm.FROM_VIA_POSTAL)));
+						model.setDossierNo(doc.get(DossierTerm.DOSSIER_NO));
 
 						dossierData.add(model);
 					}
@@ -1673,6 +1674,12 @@ public class OpencpsStatisticRestApplication extends Application {
 		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 		params.put(DossierTerm.SYSTEM_ID, strSystemId);
 		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		params.put(DossierTerm.DOMAIN_CODE, query.getDomainCode());
+		String serviceCodeSearch = StringPool.BLANK;
+		if (Validator.isNotNull(query.getServiceCode())) {
+			serviceCodeSearch = SpecialCharacterUtils.splitSpecial(query.getServiceCode());
+		}
+		params.put(DossierTerm.SERVICE_CODE, serviceCodeSearch);
 
 		try {
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));

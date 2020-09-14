@@ -2591,12 +2591,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	// sondt end
 
 	public Dossier getByRef(long groupId, String refId) {
-
-		try {
-			return dossierPersistence.findByG_REF(groupId, refId);
-		} catch (NoSuchDossierException e) {
-			return null;
-		}
+		return dossierPersistence.fetchByG_REF(groupId, refId);
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -2618,7 +2613,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 		}
 		else {
-			dossier = dossierPersistence.findByG_REF(groupId, refId);
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
 
 		return dossierPersistence.remove(dossier);
@@ -3991,7 +3986,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(dossierNo)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+			String[] subQuerieArr = new String[]{DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH,
+					DossierTerm.POSTAL_CODE_RECEIVED, DossierTerm.POSTAL_CODE_SEND};
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {

@@ -232,32 +232,61 @@ public class DossierManagementImpl implements DossierManagement {
 		long userId = user.getUserId();
 		String emailLogin = user.getEmailAddress();
 		DossierActions actions = new DossierActionsImpl();
+		DossierResultsModel results = null;
 
 		try {
 			boolean isViaPostal = query.isIstheViaPostal();
-            DossierResultsModel results = null;
+			// boolean isCitizen = false;
+			if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
+				query.setStart(QueryUtil.ALL_POS);
+				query.setEnd(QueryUtil.ALL_POS);
+			}
+			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put(Field.GROUP_ID, String.valueOf(groupId));
+
+			Sort[] sorts = null;
+			if (Validator.isNull(query.getSort())) {
+				String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
+				sorts = new Sort[]{ SortFactoryUtil.create(dateSort, Sort.LONG_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			} else {
+				String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
+				sorts = new Sort[]{ SortFactoryUtil.create( querySort, Sort.STRING_TYPE,
+								GetterUtil.getBoolean(query.getOrder()))
+				};
+			}
+			backend.auth.api.BackendAuth auth2 =
+					new backend.auth.api.BackendAuthImpl();
+			if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
+				params.put(DossierTerm.USER_ID, user.getUserId());
+			}
+
             if(isViaPostal){
 				try {
-					DossierDetailModel result = null;
 					String dossierNo = query.getDossierNo();
-					if(Validator.isNotNull(dossierNo)){
-						Dossier dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(dossierNo, groupId);
-						if(Validator.isNotNull(dossier)){
-							result = mappingForGetDetail(dossier, user.getUserId());
-							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-						}
-						Dossier dossierByPostalCodeSend = DossierLocalServiceUtil.fetchByDO_POST_SEND_GROUP(dossierNo, groupId);
-						if(Validator.isNotNull(dossierByPostalCodeSend)){
-							result = mappingForGetDetail(dossierByPostalCodeSend, user.getUserId());
-							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-						}
-						Dossier dossierByPostalCodeReceived = DossierLocalServiceUtil.fetchByDO_POST_RECEIVED_GROUP(dossierNo, groupId);
-						if(Validator.isNotNull(dossierByPostalCodeReceived)){
-							result = mappingForGetDetail(dossierByPostalCodeReceived, user.getUserId());
-							return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-						}
+					 _log.info("dossierIdNo: "+dossierNo);
+					String dossierNoSearch = StringPool.BLANK;
+					if (Validator.isNotNull(dossierNo)) {
+						dossierNoSearch = SpecialCharacterUtils.splitSpecial(dossierNo);
 					}
-					if(Validator.isNull(result)) {
+					params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
+
+					_log.info("params: "+params);
+					JSONObject jsonData = actions.getDossiers(
+							user.getUserId(), company.getCompanyId(), groupId, params,
+							sorts, query.getStart(), query.getEnd(), serviceContext);
+
+					if (jsonData.getInt(ConstantUtils.TOTAL) > 0) {
+						results = new DossierResultsModel();
+						results.setTotal(jsonData.getInt(ConstantUtils.TOTAL));
+						results.getData().addAll(
+								DossierUtils.mappingForGetList(
+										(List<Document>) jsonData.get(ConstantUtils.DATA), userId,
+										query.getAssigned(), query));
+						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+					}
+					else {
 						ServerConfig sc = ServerConfigLocalServiceUtil.getByCode(DossierTerm.VNPOST_CLS);
 						if (Validator.isNotNull(sc)) {
 							JSONObject config = JSONFactoryUtil.createJSONObject(sc.getConfigs());
@@ -267,67 +296,86 @@ public class DossierManagementImpl implements DossierManagement {
 
 							if (Validator.isNotNull(dossierNo)) {
 								//URL + token
-								String urlVnPost = config.getString(DossierTerm.URL_VIA_POST);
+								String urlVNPOST = config.getString(DossierTerm.URL_VIA_POST);
 								//Path : Token + Code
-								String path = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
+								String endPointVNPOST = StringPool.FORWARD_SLASH + config.getString(DossierTerm.TOKEN_VN_POST) + StringPool.FORWARD_SLASH + dossierNo;
 
 								JSONObject resultObj = callRest.callAPI(groupId, HttpMethods.GET, MediaType.APPLICATION_JSON,
-										urlVnPost, path, "",
-										"", properties, serviceContext);
+										urlVNPOST, endPointVNPOST, "", "", properties, serviceContext);
 
-								System.out.println("===========" + urlVnPost + " " + path);
+								_log.info("URLVNPOST===========" + urlVNPOST + " | ENDPOINT: " + endPointVNPOST);
 								if (Validator.isNotNull(resultObj)) {
 									if (GetterUtil.getInteger(resultObj.get(RESTFulConfiguration.STATUS)) != HttpURLConnection.HTTP_OK) {
-										throw new RuntimeException(
-												"Failed : HTTP error code : " + resultObj.get(RESTFulConfiguration.STATUS));
+										results = new DossierResultsModel();
+										results.setTotal(0);
+//										return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 									} else {
 										JSONArray arrayData = JSONFactoryUtil.createJSONArray(resultObj.getString(RESTFulConfiguration.MESSAGE));
+										_log.info("arrayData: "+arrayData);
 
 										for (int i = 0; i < arrayData.length(); i++) {
 											JSONObject object = arrayData.getJSONObject(i);
-											Dossier dossier = null;
 											String soCongvan = object.getString(DossierFileTerm.SO_CONG_VAN);
 											String status = object.getString(DossierFileTerm.STATUS_CONG_VAN);
 											// Trạng thái 1 || 2 || 3 là mã tờ khai
 											// Trạng thái 4 || 5 || 6 || 7 || 8 là mã hồ sơ
+											_log.info("soCongvan: "+soCongvan);
 											if (Validator.isNotNull(status) && Validator.isNotNull(soCongvan)) {
+												String eformCode = SpecialCharacterUtils.splitSpecial(soCongvan);
 												if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
-													dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
-													result = mappingForGetDetail(dossier, user.getUserId());
+													//dossier = DossierLocalServiceUtil.findDossierByDeclarationCode(soCongvan, groupId);
+													_log.info("dossier_1_2_3: ");
+													params.put(DossierTerm.DOSSIER_NO, StringPool.BLANK);
+													params.put(DossierTerm.MA_TO_KHAI, eformCode);
 												} else {
-													dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
-													result = mappingForGetDetail(dossier, user.getUserId());
+													_log.info("!dossier_1_2_3: ");
+													params.put(DossierTerm.DOSSIER_NO, eformCode);
+													//dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(soCongvan, groupId);
+												}
+												_log.info("params: " + params);
+												JSONObject jsonDataEform = actions.getDossiers(
+														user.getUserId(), company.getCompanyId(), groupId, params,
+														sorts, query.getStart(), query.getEnd(), serviceContext);
+
+												_log.info("jsonData11.getInt(ConstantUtils.TOTAL): " + jsonDataEform.getInt(ConstantUtils.TOTAL));
+												if (jsonDataEform.getInt(ConstantUtils.TOTAL) > 0) {
+													results = new DossierResultsModel();
+													results.setTotal(jsonDataEform.getInt(ConstantUtils.TOTAL));
+													List<Document> dataList = (List<Document>) jsonDataEform.get(ConstantUtils.DATA);
+													// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
+													if (dataList != null && dataList.size() > 0) {
+														for (Document doc : dataList) {
+															long dossierId = GetterUtil.getLong(doc.get(DossierTerm.DOSSIER_ID));
+															Dossier dossier = dossierId > 0 ? DossierLocalServiceUtil.fetchDossier(dossierId) : null;
+															if (dossier != null) {
+																dossier.setPostalCodeSend(dossierNo);
+																DossierLocalServiceUtil.updateDossier(dossier);
+															}
+														}
+													}
+													results.getData().addAll(
+															DossierUtils.mappingForGetList(dataList, userId, query.getAssigned(), query));
+													return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
 												}
 											}
+										}
 											// Update Dossier khi truyền mã bưu gửi tìm trên API ==>
-											if(Validator.isNotNull(result)){
+											/*if(Validator.isNotNull(dossier)){
 												dossier.setPostalCodeSend(dossierNo);
 												DossierLocalServiceUtil.updateDossier(dossier);
-											}
-										}
+											}*/
 									}
 								}
 							}
 						}
-					}
-					return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
-				} catch (Exception e) {
-						e.printStackTrace();
-						_log.info("------ Log Exception ------ " + " " + e.getMessage());
-						return BusinessExceptionImpl.processException(e);
-				}
-			}else {
-				// boolean isCitizen = false;
-				if (Validator.isNull(query.getEnd()) || query.getEnd() == 0) {
-					query.setStart(QueryUtil.ALL_POS);
-					query.setEnd(QueryUtil.ALL_POS);
-					// query.setStart(0);
-					// query.setEnd(15);
-				}
 
-				LinkedHashMap<String, Object> params =
-						new LinkedHashMap<String, Object>();
-				params.put(Field.GROUP_ID, String.valueOf(groupId));
+						return Response.status(HttpURLConnection.HTTP_OK).entity(results).build();
+					}
+				} catch (Exception e) {
+					return BusinessExceptionImpl.processException(e);
+				}
+			}
+            else {
 				// LamTV_Process search LIKE
 				String keywordSearch = query.getKeyword();
 				String keySearch = StringPool.BLANK;
@@ -599,11 +647,6 @@ public class DossierManagementImpl implements DossierManagement {
 				params.put(DossierTerm.FOLLOW, follow);
 				params.put(DossierTerm.TOP, top);
 
-				backend.auth.api.BackendAuth auth2 =
-						new backend.auth.api.BackendAuthImpl();
-				if (!auth2.isAdmin(serviceContext, ConstantUtils.ROLE_ADMIN_LOWER)) {
-					params.put(DossierTerm.USER_ID, user.getUserId());
-				}
 				params.put(DossierTerm.SECRET_KEY, query.getSecetKey());
 				params.put(DossierTerm.STATE, state);
 				params.put(DossierTerm.DOSSIER_NO, dossierNoSearch);
@@ -733,22 +776,6 @@ public class DossierManagementImpl implements DossierManagement {
 						}
 					}
 				}
-				Sort[] sorts = null;
-				if (Validator.isNull(query.getSort())) {
-					String dateSort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_NUMBER_SORT), DossierTerm.CREATE_DATE);
-					sorts = new Sort[]{
-							SortFactoryUtil.create(
-									dateSort, Sort.LONG_TYPE,
-									GetterUtil.getBoolean(query.getOrder()))
-					};
-				} else {
-					String querySort = String.format(MessageUtil.getMessage(ConstantUtils.QUERY_STRING_SORT), query.getSort());
-					sorts = new Sort[]{
-							SortFactoryUtil.create(
-									querySort, Sort.STRING_TYPE,
-									GetterUtil.getBoolean(query.getOrder()))
-					};
-				}
 
 				if (Validator.isNotNull(top)) {
 					String querySort;
@@ -800,6 +827,7 @@ public class DossierManagementImpl implements DossierManagement {
 
 				results = new DossierResultsModel();
 
+				_log.info("params: "+params);
 				JSONObject jsonData = actions.getDossiers(
 						user.getUserId(), company.getCompanyId(), groupId, params,
 						sorts, query.getStart(), query.getEnd(), serviceContext);
@@ -817,7 +845,6 @@ public class DossierManagementImpl implements DossierManagement {
 		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
-
 	}
 
 	// LamTV: Process dossierTodo
