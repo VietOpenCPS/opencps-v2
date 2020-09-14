@@ -554,8 +554,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, String registerBookCode,
 		String registerBookName, int sampleCount, String dossierName,
-		ServiceInfo service, ServiceProcess process, ProcessOption option,
-		ServiceContext context) throws PortalException;
+		int durationCount, ServiceInfo service, ServiceProcess process,
+		ProcessOption option, ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
@@ -624,7 +624,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, Date dueDate,
-		ServiceContext serviceContext);
+		int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossierMeta(long groupId, long id,
@@ -643,7 +643,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
-		Date dueDate, ServiceContext serviceContext);
+		Date dueDate, int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,

@@ -774,7 +774,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String delegateDistrictCode, String delegateDistrictName,
 			String delegateWardCode, String delegateWardName,
 			String registerBookCode, String registerBookName, int sampleCount,
-			String dossierName, ServiceInfo service, ServiceProcess process,
+			String dossierName, int durationCount, ServiceInfo service, ServiceProcess process,
 			ProcessOption option, ServiceContext context)
 			throws PortalException {
 
@@ -885,7 +885,11 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier.setServerNo(process.getServerNo());
 			// Update submit date
 			if (process != null) {
-				dossier.setDurationCount(process.getDurationCount());
+				if (durationCount > 0) {
+					dossier.setDurationCount(durationCount);
+				} else {
+					dossier.setDurationCount(process.getDurationCount());
+				}
 				dossier.setDurationUnit(
 						Validator.isNotNull(process.getDurationUnit())
 								? process.getDurationUnit() : 0);
@@ -2935,12 +2939,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
 		String strSystemId =
 				GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
-		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
-				? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
+		String viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
+				? GetterUtil.getString(params.get(DossierTerm.VIA_POSTAL)) : null;
 		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
 		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
-		Integer vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
-				? GetterUtil.getInteger(params.get(DossierTerm.VNPOSTAL_STATUS)) : null;
+		String vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
+				? GetterUtil.getString(params.get(DossierTerm.VNPOSTAL_STATUS)) : null;
 		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
 				? GetterUtil.getInteger(params.get(DossierTerm.FROM_VIA_POSTAL)) : null;
 
@@ -3136,13 +3140,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				GetterUtil.getString(params.get(DossierTerm.DOCUMENT_DATE));
 		String strSystemId =
 				GetterUtil.getString(params.get(DossierTerm.SYSTEM_ID));
-		Integer viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
-				? GetterUtil.getInteger(params.get(DossierTerm.VIA_POSTAL)) : null;
+		String viaPostal = params.get(DossierTerm.VIA_POSTAL) != null
+				? GetterUtil.getString(params.get(DossierTerm.VIA_POSTAL)) : null;
 		String dossierCounterSearch = GetterUtil.getString(params.get(DossierTerm.DOSSIER_COUNTER_SEARCH));
 		String delegate = GetterUtil.getString(params.get(DossierTerm.DELEGATE));
 
-		Integer vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
-				? GetterUtil.getInteger(params.get(DossierTerm.VNPOSTAL_STATUS))
+		String vnpostalStatus = params.get(DossierTerm.VNPOSTAL_STATUS) != null
+				? GetterUtil.getString(params.get(DossierTerm.VNPOSTAL_STATUS))
 				: null;
 
 		Integer fromViaPostal = params.get(DossierTerm.FROM_VIA_POSTAL) != null
@@ -3330,8 +3334,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			Integer originDossierId, String time, String register, int day,
 			String groupDossierId, String assignedUserId, String assignedUserIdSearch, Integer delegateType,
 			String documentNo, String documentDate, String strSystemId,
-			Integer viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
-			String delegate, Integer vnpostalStatus, Integer fromViaPostal,
+			String viaPostal, String backlogDate, Integer backlog, String dossierCounterSearch,
+			String delegate, String vnpostalStatus, Integer fromViaPostal,
 			BooleanQuery booleanQuery,String donvigui, String donvinhan,String groupDossierIdHs,String matokhai)
 			throws ParseException {
 
@@ -3343,33 +3347,38 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 		// viaPostal
+//		if (Validator.isNotNull(viaPostal)) {
+//			String[] viaPostalArr = viaPostal.split(StringPool.COMMA);
+//			BooleanQuery subQuery = new BooleanQueryImpl();
+//			for (String key : viaPostalArr) {
+//				MultiMatchQuery query = new MultiMatchQuery(key);
+//				query.addField(DossierTerm.VIA_POSTAL);
+//				subQuery.add(query, BooleanClauseOccur.SHOULD);
+//			}
+//			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
+//		}
 		if (Validator.isNotNull(viaPostal)) {
-			Integer viaPostalInt = GetterUtil.getInteger(viaPostal);
-			if( viaPostalInt < DossierTerm.VIA_POSTAL_SENDED) {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
-						DossierTerm.VIA_POSTAL,
-						String.valueOf(DossierTerm.VIA_POSTAL_DISABLE),
-						String.valueOf(DossierTerm.VIA_POSTAL_SELECTED),
-						true, true);
 
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
-			}else {
-				TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
-						DossierTerm.VIA_POSTAL,
-						String.valueOf(DossierTerm.VIA_POSTAL_SENDED),
-						String.valueOf(DossierTerm.VIA_POSTAL_RECEIVED),
-						true, true);
-
-				booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+			String[] viaPostalArr = StringUtil.split(viaPostal);
+			BooleanQuery viaPostalSubQuery = new BooleanQueryImpl();
+			for (String gov : viaPostalArr) {
+				MultiMatchQuery query = new MultiMatchQuery(gov);
+				query.addFields(DossierTerm.VIA_POSTAL);
+				viaPostalSubQuery.add(query, BooleanClauseOccur.SHOULD);
 			}
+			booleanQuery.add(viaPostalSubQuery, BooleanClauseOccur.MUST);
 		}
 
 		// vnpostalStatus
 		if (Validator.isNotNull(vnpostalStatus)) {
-			MultiMatchQuery query =
-					new MultiMatchQuery(String.valueOf(vnpostalStatus));
-			query.addField(DossierTerm.VNPOSTAL_STATUS);
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
+			String[] statusArr = vnpostalStatus.split(StringPool.COMMA);
+			BooleanQuery subQuery = new BooleanQueryImpl();
+			for (String key : statusArr) {
+				MultiMatchQuery query = new MultiMatchQuery(key);
+				query.addField(DossierTerm.VNPOSTAL_STATUS);
+				subQuery.add(query, BooleanClauseOccur.SHOULD);
+			}
+			booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
 		}
 		if (Validator.isNotNull(fromViaPostal)) {
 			MultiMatchQuery query =
@@ -3511,6 +3520,9 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
+//		System.out.println("====online 3511==" + online);
+//		_log.info("====online 3511==" + online);
+//		_log.debug("====online 3511==" + online);
 		if (Validator.isNotNull(online)) {
 			MultiMatchQuery query = new MultiMatchQuery(String.valueOf(online));
 			query.addField(DossierTerm.ONLINE);
@@ -3809,7 +3821,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				queryAction.addField(DossierTerm.USER_DOSSIER_ACTION_ID);
 				booleanQuery.add(queryAction, BooleanClauseOccur.MUST);
 
-			}else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
+			}
+			else if(DossierTerm.DANG_XU_LY.equals(top.toLowerCase())){
 				MultiMatchQuery queryAction =
 						new MultiMatchQuery(DossierTerm.DANG_XU_LY  + StringPool.UNDERLINE
 								+ String.valueOf(userId) + StringPool.UNDERLINE + 1);
@@ -3818,11 +3831,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 			else if (!DossierTerm.STATISTIC.equals(top.toLowerCase())) {
 				BooleanQuery subQuery = new BooleanQueryImpl();
-
-				MultiMatchQuery queryRelease =
-						new MultiMatchQuery(String.valueOf(0));
-				queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
-				subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				if (!top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					MultiMatchQuery queryRelease =
+							new MultiMatchQuery(String.valueOf(0));
+					queryRelease.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryRelease, BooleanClauseOccur.MUST);
+				}
 				// Dossier is delay
 				if (top.toLowerCase().equals(DossierTerm.DELAY)) {
 					/** Check condition dueDate != null **/
@@ -3952,6 +3966,23 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 									DossierTerm.DUE_DATE_TIMESTAMP,
 									String.valueOf(nowTime), null, true, true);
 					subQuery.add(termRangeQueryNow, BooleanClauseOccur.MUST);
+				}
+				else if (top.toLowerCase().equals(DossierTerm.OVER_TIME)) {
+					/** Check condition dueDate != null **/
+					MultiMatchQuery querydueDate =
+							new MultiMatchQuery(String.valueOf(0));
+					querydueDate.addField(DossierTerm.DUE_DATE_TIMESTAMP);
+					subQuery.add(querydueDate, BooleanClauseOccur.MUST_NOT);
+					/** Check condition status != waiting **/
+					MultiMatchQuery queryReleaseDate =
+							new MultiMatchQuery(String.valueOf(0));
+					queryReleaseDate.addField(DossierTerm.RELEASE_DATE_TIMESTAMP);
+					subQuery.add(queryReleaseDate, BooleanClauseOccur.MUST_NOT);
+
+					MultiMatchQuery query =
+							new MultiMatchQuery(String.valueOf(1));
+					query.addFields(DossierTerm.VALUE_COMPARE_RELEASE);
+					subQuery.add(query, BooleanClauseOccur.MUST);
 				}
 				//
 				booleanQuery.add(subQuery, BooleanClauseOccur.MUST);
@@ -6911,7 +6942,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			Date dueDate, ServiceContext serviceContext) {
+			Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7084,6 +7115,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}
@@ -7105,7 +7138,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId,
 			Integer vnpostalStatus, String vnpostalProfile, Integer fromViaPostal,
-			String metaData, Date dueDate, ServiceContext serviceContext) {
+			String metaData, Date dueDate, int durationCount, ServiceContext serviceContext) {
 
 		Date now = new Date();
 		long userId = serviceContext.getUserId();
@@ -7281,6 +7314,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		if (dueDate != null)
 			dossier.setDueDate(dueDate);
+		if (durationCount > 0)
+			dossier.setDurationCount(durationCount);
 
 		return dossierPersistence.update(dossier);
 	}

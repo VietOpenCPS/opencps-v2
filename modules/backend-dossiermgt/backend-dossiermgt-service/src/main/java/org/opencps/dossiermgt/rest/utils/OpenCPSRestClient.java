@@ -448,7 +448,7 @@ public class OpenCPSRestClient {
 
 			String requestURL = ConstantUtils.DOSSIERS_BASE_PATH + StringPool.FORWARD_SLASH + id
 					+ StringPool.FORWARD_SLASH + ConstantUtils.VALUE_MARK + StringPool.FORWARD_SLASH + dossierPartNo;
-			
+//			_log.info("requestURL: "+requestURL);
 			HashMap<String, String> properties = new HashMap<String, String>();
 			
 			Map<String, Object> params = OpenCPSConverter.convertDossierMarkInputHttpParams(model);

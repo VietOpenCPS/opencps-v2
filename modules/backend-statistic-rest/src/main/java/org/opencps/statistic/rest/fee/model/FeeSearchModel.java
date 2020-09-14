@@ -67,6 +67,8 @@ import javax.xml.bind.annotation.XmlType;
     "toDueDate",
     "fromStatisticDate",
     "toStatisticDate",
+    "fromApprovedDate",
+    "toApprovedDate",
     "paymentMethod"
 })
 @XmlRootElement(name = "FeeSearchModel")
@@ -106,6 +108,10 @@ public class FeeSearchModel {
     protected String fromStatisticDate;
 	@QueryParam(value="toStatisticDate")
     protected String toStatisticDate;
+    @QueryParam(value="fromApprovedDate")
+    protected String fromApprovedDate;
+    @QueryParam(value="toApprovedDate")
+    protected String toApprovedDate;
 	@QueryParam(value="paymentMethod")
     protected String paymentMethod;
 
@@ -522,6 +528,20 @@ public class FeeSearchModel {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-    
 
+    public String getFromApprovedDate() {
+        return fromApprovedDate;
+    }
+
+    public void setFromApprovedDate(String fromApprovedDate) {
+        this.fromApprovedDate = fromApprovedDate;
+    }
+
+    public String getToApprovedDate() {
+        return toApprovedDate;
+    }
+
+    public void setToApprovedDate(String toApprovedDate) {
+        this.toApprovedDate = toApprovedDate;
+    }
 }

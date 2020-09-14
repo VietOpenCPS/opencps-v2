@@ -501,6 +501,9 @@ public class OpenCPSConverter {
 	    if (Validator.isNotNull(model.getFileComment())) {
 		    params.put(DossierPartTerm.FILE_COMMENT, model.getFileComment());	    	
 	    }
+		if (Validator.isNotNull(model.getRecordCount())) {
+			params.put(DossierPartTerm.RECORD_COUNT, model.getRecordCount());
+		}
 	    return params;
 	}
 	

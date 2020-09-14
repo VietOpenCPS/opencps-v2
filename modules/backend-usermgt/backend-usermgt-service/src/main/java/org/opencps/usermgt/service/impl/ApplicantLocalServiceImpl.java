@@ -211,8 +211,8 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 					ConfigConstants.HEADER_COMPANY);
 			String headerBussiness = MessageUtil.getMessage(
 					ConfigConstants.HEADER_BUSSINESS);
-			String firstName = (applicantTypeCitizen.equals(applicant.getApplicantIdType()) ? headerUser
-					: (applicantTypeBussiness.equals(applicant.getApplicantIdType()) ? headerCompany
+			String firstName = (applicantTypeCitizen.equals(applicantIdType) ? headerUser
+					: (applicantTypeBussiness.equals(applicantIdType) ? headerCompany
 							: headerBussiness));
 			String lastName = applicantName;
 

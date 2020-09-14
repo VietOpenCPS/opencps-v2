@@ -123,6 +123,29 @@ public interface DossierFileManagement {
 		@ApiParam(value = "body params for post") @BeanParam DossierFileCopyInputModel input);
 
 	@GET
+	@Path("/downloadfile/{referenceUid}")
+	@Consumes({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@Produces({
+			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
+			MediaType.APPLICATION_FORM_URLENCODED
+	})
+	@ApiOperation(value = "getDossierFilesByReferenceUid", response = DossierFileResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "downloadByDossierId_ReferenceUid"),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class)
+	})
+	public Response downloadByReferenceUid(
+			@Context HttpServletRequest request, @Context HttpHeaders header,
+			@Context Company company, @Context Locale locale, @Context User user,
+			@Context ServiceContext serviceContext,
+			@ApiParam(value = "referenceUid of dossierfile", required = true) @PathParam("referenceUid") String referenceUid);
+
+
+	@GET
 	@Path("/{id}/files/{referenceUid}")
 	@Consumes({
 		MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,

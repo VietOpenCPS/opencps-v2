@@ -17,15 +17,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencps.api.serviceprocess.model.ProcessActionDataModel;
-import org.opencps.api.serviceprocess.model.ProcessActionReturnModel;
-import org.opencps.api.serviceprocess.model.ProcessStepDataModel;
-import org.opencps.api.serviceprocess.model.ProcessStepInputModel;
-import org.opencps.api.serviceprocess.model.RoleDataModel;
-import org.opencps.api.serviceprocess.model.RoleInputModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessDataModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessInputModel;
+import org.opencps.api.serviceprocess.model.*;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
 import org.opencps.communication.service.ServerConfigLocalServiceUtil;
@@ -225,6 +217,7 @@ public class ServiceProcessUtils {
 			if (Validator.isNotNull(doc.get(ProcessStepTerm.CHECK_INPUT))) {
 				model.setCheckInput(Integer.valueOf(doc.get(ProcessStepTerm.CHECK_INPUT)));
 			}
+			model.setRoleAsStep(doc.get(ProcessStepTerm.ROLE_AS_STEP));
 
 			outputs.add(model);
 		}
@@ -286,9 +279,9 @@ public class ServiceProcessUtils {
 		return outputs;
 	}
 
-	public static ProcessStepInputModel mapptingToStepPOST(ProcessStep step) {
+	public static ProcessStepDataModel mapptingToStepPOST(ProcessStep step) {
 
-		ProcessStepInputModel model = new ProcessStepInputModel();
+		ProcessStepDataModel model = new ProcessStepDataModel();
 
 		model.setProcessStepId(step.getPrimaryKey());
 		model.setStepCode(step.getStepCode());
@@ -304,6 +297,7 @@ public class ServiceProcessUtils {
 		model.setCustomProcessUrl(step.getCustomProcessUrl());
 		model.setEditable(Boolean.toString(step.getEditable()));
 		model.setCheckInput(step.getCheckInput());
+		model.setRoleAsStep(step.getRoleAsStep());
 
 		return model;
 	}
