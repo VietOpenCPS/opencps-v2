@@ -17,5 +17,17 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendProfile();
 
+    @GET
+    @Path("/dossiers")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getListDossierFake();
+
+    @GET
+    @Path("/dossier")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDetailDossierFake();
+
 
 }

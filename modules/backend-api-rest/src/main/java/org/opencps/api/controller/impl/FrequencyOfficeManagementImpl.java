@@ -3,6 +3,7 @@ package org.opencps.api.controller.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -39,56 +40,9 @@ import java.util.List;
 
 public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement {
 
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
     private static final Log _log = LogFactoryUtil.getLog(FrequencyOfficeManagementImpl.class);
     private static final String DOSSIER_BTTTT = "DOSSIER_BTTTT";
-
-    private InputStream base64toFile(byte[] contentDecoded) {
-        try {
-            return new ByteArrayInputStream(contentDecoded);
-        } catch (Exception e) {
-            _log.error("Error when parse file: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private byte[] decodeBase64(String contentEncode) {
-        try {
-            byte[] encbytes = contentEncode.getBytes();
-
-            Base64.Decoder dec = Base64.getDecoder();
-            byte[] decbytes = dec.decode(encbytes);
-            return decbytes;
-        } catch (Exception e) {
-            _log.error("Error when decode: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private String getMimeType(String type) {
-        switch (type) {
-            case FrequencyOfficeConstants.DOC :
-                return FrequencyOfficeConstants.MIME_DOC;
-            case FrequencyOfficeConstants.DOCX :
-                return FrequencyOfficeConstants.MIME_DOCX;
-            case FrequencyOfficeConstants.CSV :
-                return FrequencyOfficeConstants.MIME_CSV;
-            case FrequencyOfficeConstants.JPEG :
-                return FrequencyOfficeConstants.MIME_JPEG;
-            case FrequencyOfficeConstants.JPG :
-                return FrequencyOfficeConstants.MIME_JPG;
-            case FrequencyOfficeConstants.PNG :
-                return FrequencyOfficeConstants.MIME_PNG;
-            case FrequencyOfficeConstants.PDF :
-                return FrequencyOfficeConstants.MIME_PDF;
-            case FrequencyOfficeConstants.XLS :
-                return FrequencyOfficeConstants.MIME_XLS;
-            case FrequencyOfficeConstants.XLSX :
-                return FrequencyOfficeConstants.MIME_XLSX;
-            default:
-                return "";
-        }
-    }
 
     @Override
     public Response sendProfile() {
@@ -115,6 +69,133 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
         } catch (Exception e) {
             _log.error("Error message when call api send file: " + e.getMessage());
            return null;
+        }
+    }
+
+    @Override
+    public Response getListDossierFake() {
+        try {
+            String response = "{\n" +
+                    "    \"status\": \"SUCCESS\",\n" +
+                    "    \"errorCode\": \"0\",\n" +
+                    "    \"errorDesc\": \"\",\n" +
+                    "    \"profileReceivers\": [\n" +
+                    "        {\n" +
+                    "            \"profileId\": 54,\n" +
+                    "            \"fromUnitCode\": \"000.00.00.G14\",\n" +
+                    "            \"toUnitCode\": \"000.00.25.G14\",\n" +
+                    "            \"createTime\": \"2020-06-20T01:08:52.000+0000\",\n" +
+                    "            \"status\": \"TIEPNHAN\",\n" +
+                    "            \"status_profile\": \"5\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}";
+
+            Object responseObj = objectMapper.readValue(response, Object.class);
+            return Response.status(HttpURLConnection.HTTP_OK).entity(objectMapper.writeValueAsString(responseObj)).build();
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Response getDetailDossierFake() {
+        try {
+            String response = "{\n" +
+                    "    \"status\": \"SUCCESS\",\n" +
+                    "    \"errorCode\": \"0\",\n" +
+                    "    \"errorDesc\": \"\",\n" +
+                    "    \"profileInmodel\": {\n" +
+                    "        \"status\": \"TIEPNHAN\",\n" +
+                    "        \"source_id\": \"HS_0154\",\n" +
+                    "        \"ref_code\": \"TC_HS_00223\",\n" +
+                    "        \"procedures_code\": \"TT_HS_1_00443\",\n" +
+                    "        \"system_id\": \"2\",\n" +
+                    "        \"system_received\": \"3\",\n" +
+                    "        \"creation_date\": \"2020-09-09\",\n" +
+                    "        \"applicants_type\": 3,\n" +
+                    "        \"applieants_id\": \"001\",\n" +
+                    "        \"org_impl_code\": \"\",\n" +
+                    "        \"accept_date\": \"2020-09-09\",\n" +
+                    "        \"appointment_date\": \"2020-09-09\",\n" +
+                    "        \"return_type\": 1,\n" +
+                    "        \"note\": \"\",\n" +
+                    "        \"from_unit_code\": \"000.00.03.G33\",\n" +
+                    "        \"to_unit_code\": [\n" +
+                    "            \"000.00.26.G14\"\n" +
+                    "        ],\n" +
+                    "        \"data_eform\": \"ewogICAgICAgICJuYW1lIjoiSOG7kyBzxqEgdsSDbiBi4bqjbiIsXAogICAgICAgIH0=\",\n" +
+                    "        \"profileAttachments\": [\n" +
+                    "            {\n" +
+                    "                \"id\": 256,\n" +
+                    "                \"profile_id\": 37291,\n" +
+                    "                \"content_type\": \"doc\",\n" +
+                    "                \"attachment_name\": \"Văn bản thông báo\",\n" +
+                    "                \"content_transfer_encoded\": null,\n" +
+                    "                \"attachment_file_url\": null,\n" +
+                    "                \"is_verified\": 1,\n" +
+                    "                \"description\": null,\n" +
+                    "                \"is_deleted\": 0\n" +
+                    "            },\n" +
+                    "            {\n" +
+                    "                \"id\": 257,\n" +
+                    "                \"profile_id\": 37291,\n" +
+                    "                \"content_type\": \"doc\",\n" +
+                    "                \"attachment_name\": \"Văn bản báo cáo\",\n" +
+                    "                \"content_transfer_encoded\": null,\n" +
+                    "                \"attachment_file_url\": null,\n" +
+                    "                \"is_verified\": 0,\n" +
+                    "                \"description\": null,\n" +
+                    "                \"is_deleted\": 0\n" +
+                    "            }\n" +
+                    "        ],\n" +
+                    "        \"profileDocFees\": [\n" +
+                    "            {\n" +
+                    "                \"id\": 50,\n" +
+                    "                \"profile_id\": 37291,\n" +
+                    "                \"fee_name\": \"Phí giao dịch\",\n" +
+                    "                \"fee_type\": \"Phí giao dịch\",\n" +
+                    "                \"price\": \"15000\",\n" +
+                    "                \"description\": null\n" +
+                    "            }\n" +
+                    "        ],\n" +
+                    "        \"profileDocPaper\": [\n" +
+                    "            {\n" +
+                    "                \"id\": 328,\n" +
+                    "                \"profile_id\": 37291,\n" +
+                    "                \"paper_name\": \"Giấy khai sinh\",\n" +
+                    "                \"paper_type\": \"Thủ tục\",\n" +
+                    "                \"amount\": 2,\n" +
+                    "                \"description\": null\n" +
+                    "            }\n" +
+                    "        ],\n" +
+                    "        \"profileApplicant\": {\n" +
+                    "            \"id\": 112,\n" +
+                    "            \"name\": \"Nguyễn Văn B\",\n" +
+                    "            \"address\": \"\",\n" +
+                    "            \"email\": \"\",\n" +
+                    "            \"tel\": \"\",\n" +
+                    "            \"identify\": \"\",\n" +
+                    "            \"business_license\": \"\",\n" +
+                    "            \"business_license_date\": null,\n" +
+                    "            \"profile_id\": 37291\n" +
+                    "        },\n" +
+                    "        \"profileOwner\": {\n" +
+                    "            \"id\": 112,\n" +
+                    "            \"profile_id\": 37291,\n" +
+                    "            \"name\": \"Nguyễn văn A\",\n" +
+                    "            \"address\": \"\",\n" +
+                    "            \"tel\": \"\"\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+
+            Object responseObj = objectMapper.readValue(response, Object.class);
+            return Response.status(HttpURLConnection.HTTP_OK).entity(objectMapper.writeValueAsString(responseObj)).build();
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+            return null;
         }
     }
 }

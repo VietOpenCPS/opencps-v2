@@ -237,9 +237,11 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public List<ProfileReceiver> getDossiers(String token) throws Exception {
         try{
-            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
+//            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
+            //todo rollback this url
+            String urlGetDossiers = "127.0.0.1:8080/o/rest/v2/hshc/dossiers";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -267,9 +269,11 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception {
         try{
-            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
-                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
+//            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
+//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
+            //todo rollback this url
+            String urlGetDetailDossier = "127.0.0.1:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
