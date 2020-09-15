@@ -91,10 +91,14 @@ public class BuildEdXMLUtils {
 			//SignerInfo signerInfo = new SignerInfo("TL. Chủ tịch", "Chánh văn phòng UBND thành phố", "Nguyen Thanh");
 			//OtherInfo otherInfo = new OtherInfo(0, "", "", 1, 1, "", false, dossier.getDossierNo());
 
-			MessageHeader headerEd = new MessageHeader(from, toes, code, promulgationInfo, docType,
+			/*MessageHeader headerEd = new MessageHeader(from, toes, code, promulgationInfo, docType,
 					dossier.getServiceCode() + StringPool.FORWARD_SLASH + dossier.getApplicantName()
 							+ StringPool.FORWARD_SLASH + dossierNo,
 					Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
+					null, dossier.getDueDate(), null, null);*/
+			String dossierNote = dossier.getDossierNote();
+			MessageHeader headerEd = new MessageHeader(from, toes, code, promulgationInfo, docType,
+					dossierNote, Validator.isNotNull(dossier.getDossierName()) ? dossier.getDossierName() : dossier.getServiceName(),
 					null, dossier.getDueDate(), null, null);
 			headerEd.setApplicationType("MCDT_DT");
 			headerEd.addToPlace("Cac bo va co quan ngang bo");
