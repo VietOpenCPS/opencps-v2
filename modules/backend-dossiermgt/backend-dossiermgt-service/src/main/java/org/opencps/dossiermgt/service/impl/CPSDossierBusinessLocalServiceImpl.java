@@ -1391,12 +1391,36 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 			//Kiểm tra xem có gửi dịch vụ vận chuyển hay không
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
-				if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_FROM_VIAPOSTAL)) {
-					viettelPostEvent(dossier, dossierAction.getDossierActionId());
-				} else {
-					vnpostEvent(dossier, dossierAction.getDossierActionId());
+				vnpostEvent(dossier, dossierAction.getDossierActionId());
+			}
+
+			if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_VN_POSTAL_STATUS)) {
+				try {
+					String preConditionLower = proAction.getPreCondition().toLowerCase();
+					_log.info("Precondition before  parse: " + preConditionLower);
+					String[] splitCodes = preConditionLower.split(StringPool.COMMA);
+					_log.info("Precondition after parse: " + splitCodes);
+					for(String oneSplitComma : splitCodes) {
+						_log.info("Precondition in loop: " + oneSplitComma);
+						_log.info("splitCodes.length: " + splitCodes.length);
+						if(oneSplitComma.contains(DossierTerm.CONTAIN_POST_STATUS)) {
+							_log.info("oneSplitComma before parse equal: " + oneSplitComma);
+							String[] keyValueVnPostalStatus = oneSplitComma.split(StringPool.EQUAL);
+							_log.info("oneSplitComma after parse equal: " + keyValueVnPostalStatus);
+							if (keyValueVnPostalStatus.length == 2) {
+								Integer vnPostalValue = Validator.isNotNull(keyValueVnPostalStatus[1]) ?
+										Integer.valueOf(keyValueVnPostalStatus[1]) : null;
+								if(Validator.isNotNull(vnPostalValue) && vnPostalValue.equals(dossier.getVnpostalStatus())) {
+									viettelPostEvent(dossier, dossierAction.getDossierActionId());
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error("Error when doAction with precondition viettel: " + e.getMessage());
 				}
 			}
+
 			if (proAction.getPreCondition().toLowerCase()
 					.contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {
 				collectVnpostEvent(dossier, dossierAction.getDossierActionId());
@@ -4522,6 +4546,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	}
 
 	private void viettelPostEvent(Dossier dossier, long dossierActionId) {
+		//case gom ho so tai nha
 		Message message = new Message();
 		JSONObject msgData = JSONFactoryUtil.createJSONObject();
 		JSONObject dossierJson = DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId);
