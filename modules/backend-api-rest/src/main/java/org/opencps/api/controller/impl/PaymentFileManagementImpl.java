@@ -1268,7 +1268,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		String hashCodeUppercase = null;
 		try
 		{
-			MessageDigest crypt = MessageDigest.getInstance(PasswordEncrypt.DIGEST_5);
+			MessageDigest crypt = MessageDigest.getInstance(algorithm);
 			crypt.reset();
 			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();

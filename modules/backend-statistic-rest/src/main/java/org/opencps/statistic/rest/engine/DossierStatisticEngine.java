@@ -103,7 +103,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	private static final Boolean CALCULATE_DOSSIER_STATISTIC_ENABLE = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.enable"))
-					? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : false;
+					? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : true;
 	//Time engine dossier
 	private static int TIME_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
 				? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time")) :45;
@@ -115,6 +115,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 			isRunningDossier = true;
 		}
 		else {
+			_log.info("STOP STATISTIC DOSSIER");
 			return;
 		}
 		long startTime = System.currentTimeMillis();
@@ -681,6 +682,9 @@ public class DossierStatisticEngine extends BaseMessageListener {
 		String listenerClass = getClass().getName();
 		Trigger jobTrigger = _triggerFactory.createTrigger(listenerClass, listenerClass, new Date(), null,
 				TIME_STATISTIC, TimeUnit.MINUTE);
+		if(Validator.isNotNull(jobTrigger)){
+			_log.info("Start đồng bộ tháng 9");
+		}
 
 		_schedulerEntryImpl = new SchedulerEntryImpl(getClass().getName(), jobTrigger);
 		_schedulerEntryImpl = new StorageTypeAwareSchedulerEntryImpl(_schedulerEntryImpl, StorageType.MEMORY_CLUSTERED);
