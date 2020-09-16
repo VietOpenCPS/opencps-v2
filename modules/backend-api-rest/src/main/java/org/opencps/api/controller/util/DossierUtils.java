@@ -1788,42 +1788,6 @@ public class DossierUtils {
 				ouputs.add(model);
 			}
 		}
-//		List<Long> lstId = new ArrayList<>();
-//		List<String> lstDocumentNo = new ArrayList<>();
-//		//Danh sach ho so
-//		if(ouputs !=null) {
-//			if(Validator.isNull(groupCongVan)) {
-//				for (DossierDataModel item : ouputs) {
-					//GroupDossierId : id,id,id
-//					if (Validator.isNotNull(item.getGroupDossierIds())) {
-						// 26/08/2020 DuongNT
-						// Lấy danh sách công văn theo hồ sơ điều kiện là groupDossierId cuối cùng
-//						String groupDossierIds = String.valueOf(item.getGroupDossierIds().substring(item.getGroupDossierIds()
-//						.lastIndexOf(",") + 1));
-//						String[] id = item.getGroupDossierIds().split(StringPool.COMMA);
-//						for(int i = item.getGroupDossierIds().length() - 1; i >=0; i--) {
-//							Dossier dossier = DossierLocalServiceUtil.fetchDossier(i);
-//							if(Validator.isNotNull(dossier)){
-//								if (!String.valueOf(dossier.getDossierId()).contains(lstId.toString())) {
-//									lstId.add(Long.valueOf(dossier.getDossierId()));
-//									break;
-//								}
-//							}
-//						}
-//					}
-					//Lay danh sach cong van theo ho danh sach ho (documentNo)
-//					if(Validator.isNotNull(item.getDocumentNo())) {
-//						String documentNo = "";
-//						if (!lstDocumentNo.contains(item.getDocumentNo())) {
-//							documentNo += item.getDocumentNo();
-//							if (Validator.isNotNull(documentNo)) {
-//								lstDocumentNo.add(documentNo);
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
 
 		return ouputs;
 	}

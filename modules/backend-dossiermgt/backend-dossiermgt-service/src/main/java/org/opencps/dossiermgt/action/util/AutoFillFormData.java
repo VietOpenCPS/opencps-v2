@@ -1193,33 +1193,28 @@ public class AutoFillFormData {
 
 					try {
 						DossierFile dossierFile = null;
-						List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID(dossier.getDossierId());
+						List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO(dossier.getDossierId(),
+								paper, false);
 
 						if(Validator.isNotNull(listDossierHS)) {
-							DossierFile model = listDossierHS.get(0);
-							if (Validator.isNotNull(model.getDossierPartType())) {
-								if (model.getDossierPartType() == 2) {
-									for (DossierFile item : listDossierHS) {
-										if (Validator.isNotNull(item.getDeliverableCode())) {
-											if (Validator.isNotNull(item.getFormData())) {
-												dossierFile = item;
-//												_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
-											}
+							for (DossierFile item : listDossierHS) {
+								if (item.getEForm()) {
+									if (Validator.isNotNull(item.getDeliverableCode())) {
+										if (Validator.isNotNull(item.getFormData())) {
+											dossierFile = item;
+											_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
 										}
 									}
-								} else {
-									dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
-											paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
-//									_log.info("DossierFile" + JSONFactoryUtil.looseSerialize(dossierFile));
 								}
 							}
+//							dossierFile = DossierFileLocalServiceUtil.getDossierFileByDID_FTNO_First(dossierId,
+//											paper, false, new DossierFileComparator(false, Field.CREATE_DATE, Date.class));
 						}
-//						_log.info("Log FormData" + dossierFile.getFormData());
 						if (Validator.isNotNull(dossierFile) && Validator.isNotNull(dossierFile.getFormData())
 								&& dossierFile.getFormData().trim().length() != 0) {
 							JSONObject jsonOtherData = JSONFactoryUtil.createJSONObject(dossierFile.getFormData());
 							Map<String, Object> jsonOtherMap = jsonToMap(jsonOtherData);
-//							 _log.info("JSON other map: " + jsonOtherMap.toString());
+//							 _log.debug("JSON other map: " + jsonOtherMap.toString());
 							// Arrays.toString(jsonOtherMap.entrySet().toArray()));
 							String myCHK = StringPool.BLANK;
 							try {

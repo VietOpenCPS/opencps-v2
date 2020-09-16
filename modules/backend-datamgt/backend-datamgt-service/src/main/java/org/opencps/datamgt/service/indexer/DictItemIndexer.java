@@ -16,12 +16,16 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
+import javax.xml.ws.Service;
 
 import org.opencps.backend.datamgt.service.util.ConfigConstants;
 import org.opencps.backend.datamgt.service.util.ConfigProps;
@@ -61,6 +65,7 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 	@Override
 	protected Document doGetDocument(DictItem dictItem) throws Exception {
 		Document document = getBaseModelDocument(CLASS_NAME, dictItem);
+//		long groupId = dictItem.getGroupId();
 
 		document.addKeywordSortable(Field.COMPANY_ID, String.valueOf(dictItem.getCompanyId()));
 		document.addDateSortable(Field.MODIFIED_DATE, dictItem.getModifiedDate());
@@ -81,6 +86,9 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.addNumberSortable(DictItemTerm.SIBLING_SEARCH, GetterUtil.getInteger(dictItem.getSibling()));
 		document.addTextSortable(DictItemTerm.TREE_INDEX, dictItem.getTreeIndex());
 		document.addNumberSortable(DictItemTerm.LEVEL, dictItem.getLevel());
+//		String strLevel = String.valueOf(dictItem.getLevel());
+//		document.addTextSortable(DictItemTerm.LEVEL, strLevel);
+
 		if (Validator.isNotNull(dictItem.getMetaData())) {
 			document.addTextSortable(DictItemTerm.META_DATA, dictItem.getMetaData());			
 		}
@@ -114,6 +122,8 @@ public class DictItemIndexer extends BaseIndexer<DictItem> {
 		document.setSortableTextFields(new String[]{DictItemTerm.TREE_INDEX});
 		
 		document.addNumberSortable(DictItemTerm.ID_LGSP, dictItem.getIdLGSP());
+
+
 		
 		return document;
 	}

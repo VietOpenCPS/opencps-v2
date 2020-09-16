@@ -51,7 +51,9 @@ import javax.xml.bind.annotation.XmlType;
     "order",
     "start",
     "end",
-    "service"
+    "service",
+    "serviceLevel",
+    "isEmployee"
 })
 @XmlRootElement(name = "DataSearchModel")
 public class DataSearchModel {
@@ -74,6 +76,27 @@ public class DataSearchModel {
     protected int end;
 	@QueryParam(value = "service")
 	protected String service;
+    @QueryParam(value = "serviceLevel")
+    protected String serviceLevel;
+    @QueryParam(value = "isEmployee")
+    protected boolean isEmployee;
+
+    public boolean isEmployee() {
+        return isEmployee;
+    }
+
+    public void setEmployee(boolean employee) {
+        isEmployee = employee;
+    }
+
+
+    public String getServiceLevel() {
+        return serviceLevel;
+    }
+
+    public void setServiceLevel(String serviceLevel) {
+        this.serviceLevel = serviceLevel;
+    }
 
     /**
      * Gets the value of the parent property.

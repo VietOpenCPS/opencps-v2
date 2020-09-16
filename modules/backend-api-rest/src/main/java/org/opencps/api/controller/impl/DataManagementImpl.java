@@ -603,7 +603,7 @@ public class DataManagementImpl implements DataManagement {
 
 			result.setTotal(jsonData.getLong(ConstantUtils.TOTAL));
 			result.getDictItemModel()
-					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get(ConstantUtils.DATA)));
+					.addAll(DataManagementUtils.mapperDictItemModelList((List<Document>) jsonData.get(ConstantUtils.DATA),query, groupId,user));
 
 			EntityTag etag = new EntityTag(Integer.toString(Long.valueOf(groupId).hashCode()));
 			ResponseBuilder builder = requestCC.evaluatePreconditions(etag);

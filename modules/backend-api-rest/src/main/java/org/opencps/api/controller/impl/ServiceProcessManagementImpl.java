@@ -35,19 +35,7 @@ import org.opencps.api.controller.util.ServiceProcessUtils;
 import org.opencps.api.processsequence.model.ProcessSequenceInputModel;
 import org.opencps.api.processsequence.model.ProcessSequenceOutputModel;
 import org.opencps.api.processsequence.model.ProcessSequenceResultModel;
-import org.opencps.api.serviceprocess.model.ProcessActionInputModel;
-import org.opencps.api.serviceprocess.model.ProcessActionResultsModel;
-import org.opencps.api.serviceprocess.model.ProcessActionReturnModel;
-import org.opencps.api.serviceprocess.model.ProcessActionSearchModel;
-import org.opencps.api.serviceprocess.model.ProcessStepInputModel;
-import org.opencps.api.serviceprocess.model.ProcessStepResultsModel;
-import org.opencps.api.serviceprocess.model.ProcessStepSearchModel;
-import org.opencps.api.serviceprocess.model.RoleInputModel;
-import org.opencps.api.serviceprocess.model.RoleResultsModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessDetailModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessInputModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessResultsModel;
-import org.opencps.api.serviceprocess.model.ServiceProcessSearchModel;
+import org.opencps.api.serviceprocess.model.*;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
@@ -530,7 +518,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					customProcessUrl, stepInstruction, briefNote,
 					GetterUtil.getBoolean(editable), lockState, checkInput, serviceContext);
 
-			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
+			ProcessStepDataModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -591,7 +579,10 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 					stepInstruction, briefNote, GetterUtil.getBoolean(editable),
 					lockState, checkInput, serviceContext);
 
-			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(step);
+			step.setRoleAsStep(input.getRoleAsStep());
+			ProcessStepLocalServiceUtil.updateProcessStep(step);
+
+			ProcessStepDataModel result = ServiceProcessUtils.mapptingToStepPOST(step);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -621,7 +612,7 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 
 			ProcessStep serviceProcess = actions.deleteProcessStep(code, groupId, id);
 
-			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(serviceProcess);
+			ProcessStepDataModel result = ServiceProcessUtils.mapptingToStepPOST(serviceProcess);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 
@@ -1275,8 +1266,8 @@ public class ServiceProcessManagementImpl implements ServiceProcessManagement {
 			if (Validator.isNull(foundStep)) {
 				throw new NotFoundException(MessageUtil.getMessage(ConstantUtils.API_MESSAGE_NOTFOUND));
 			}
-			
-			ProcessStepInputModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
+
+			ProcessStepDataModel result = ServiceProcessUtils.mapptingToStepPOST(foundStep);
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
 

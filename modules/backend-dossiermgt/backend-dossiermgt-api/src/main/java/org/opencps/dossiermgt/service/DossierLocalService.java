@@ -42,8 +42,8 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
-
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
+import org.opencps.dossiermgt.input.model.DictItemModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -323,11 +323,17 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<DictItemModel> findDictItemByServiceDomain(
+		String serviceLevel, long groupId);
+
 	public List<Dossier> findDossierByDay(String date);
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
 	public List<Dossier> findDossierByGroup(long groupId);
+
+	public List<DictItemModel> findServiceConfigByServiceLevel(
+		String serviceLevel, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -557,8 +563,8 @@ public interface DossierLocalService extends BaseLocalService,
 		String delegateDistrictName, String delegateWardCode,
 		String delegateWardName, String registerBookCode,
 		String registerBookName, int sampleCount, String dossierName,
-		ServiceInfo service, ServiceProcess process, ProcessOption option,
-		ServiceContext context) throws PortalException;
+		int durationCount, ServiceInfo service, ServiceProcess process,
+		ProcessOption option, ServiceContext context) throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossier(long groupId, long id,
@@ -627,7 +633,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, Date dueDate,
-		ServiceContext serviceContext);
+		int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier initUpdateDossierMeta(long groupId, long id,
@@ -646,7 +652,7 @@ public interface DossierLocalService extends BaseLocalService,
 		String briefNote, Integer delegateType, String documentNo,
 		Date documentDate, int systemId, Integer vnpostalStatus,
 		String vnpostalProfile, Integer fromViaPostal, String metaData,
-		Date dueDate, ServiceContext serviceContext);
+		Date dueDate, int durationCount, ServiceContext serviceContext);
 
 	@Indexable(type = IndexableType.REINDEX)
 	public Dossier postDossier(long groupId, long dossierId,

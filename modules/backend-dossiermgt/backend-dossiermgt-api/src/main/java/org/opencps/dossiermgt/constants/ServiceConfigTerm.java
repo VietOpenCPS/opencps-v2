@@ -26,5 +26,7 @@ public class ServiceConfigTerm {
 	public static final String SERVICE_CONFIGS = "serviceConfigs";
 	public static final String GOV_AGENCYS = "govAgencys";
 	public static final String DOMAINS = "domains";
+	public static final String SERVICE_LEVEL_ROLE = "serviceLevelRole";
+	public static final String GOVAGENCY_CODE_ROLE = "govAgencyCodeRole";
 
 }

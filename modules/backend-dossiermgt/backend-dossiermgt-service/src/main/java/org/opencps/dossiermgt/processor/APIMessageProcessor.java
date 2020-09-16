@@ -15,9 +15,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.communication.model.ServerConfig;
@@ -665,7 +663,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 						}
 					}
 					
-					
+					JSONObject jsonCount = JSONFactoryUtil.createJSONObject();
 					for (int i = 0; i < fileArrs.length(); i++) {
 						JSONObject fileObj = fileArrs.getJSONObject(i);
 						if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
@@ -781,19 +779,29 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 								
 							}
-							
+
 							if (df != null) {
-								DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(dossier.getGroupId(), dossier.getDossierId(), df.getDossierPartNo());
-								if (dossierMark != null) {
-									DossierMarkInputModel markInputModel = new DossierMarkInputModel();
-									markInputModel.setFileCheck(dossierMark.getFileCheck());
-									markInputModel.setFileMark(dossierMark.getFileMark());
-									markInputModel.setFileComment(dossierMark.getFileComment());
-									
-									client.postDossierMark(String.valueOf(dossier.getDossierId()), df.getDossierPartNo(), markInputModel);
-								}		
+								if (jsonCount.has(df.getDossierPartNo())) {
+									jsonCount.put(df.getDossierPartNo(), jsonCount.getInt(df.getDossierPartNo()) + 1);
+								}
+								else {
+									jsonCount.put(df.getDossierPartNo(), 1);
+								}
 							}
 						}
+					}
+					//
+//					_log.info("jsonCount: "+jsonCount);
+					Iterator<String> keys = jsonCount.keys();
+					while(keys.hasNext()) {
+						String key = keys.next();
+						DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+						markInputModel.setFileCheck(0);
+						markInputModel.setFileMark(3);
+						markInputModel.setFileComment(StringPool.BLANK);
+						markInputModel.setRecordCount(String.valueOf(jsonCount.get(key)));
+						//_log.info("markInputModel: "+JSONFactoryUtil.looseSerialize(markInputModel));
+						client.postDossierMark(String.valueOf(result.getDossierId()), key, markInputModel);
 					}
 				}			
 			} catch (JSONException e) {
@@ -826,8 +834,8 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 							
 						}
 					}
-					
-					
+
+					JSONObject jsonCount = JSONFactoryUtil.createJSONObject();
 					for (int i = 0; i < fileArrs.length(); i++) {
 						JSONObject fileObj = fileArrs.getJSONObject(i);
 						if (fileObj.has(DossierFileTerm.REFERENCE_UID)) {
@@ -987,18 +995,28 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 								}
 								
 							}
-							
-							DossierMark dossierMark = DossierMarkLocalServiceUtil.getDossierMarkbyDossierId(df.getGroupId(), dossier.getOriginDossierId(), df.getDossierPartNo());
-							if (dossierMark != null) {
-								DossierMarkInputModel markInputModel = new DossierMarkInputModel();
-								markInputModel.setFileCheck(dossierMark.getFileCheck());
-								markInputModel.setFileMark(dossierMark.getFileMark());
-								markInputModel.setFileComment(dossierMark.getFileComment());
-								
-//								client.postDossierMark(String.valueOf(dossier.getOriginDossierId()), df.getDossierPartNo(), markInputModel);
-								client.postDossierMark(String.valueOf(result.getDossierId()), df.getDossierPartNo(), markInputModel);
+
+							if (df != null) {
+								if (jsonCount.has(df.getDossierPartNo())) {
+									jsonCount.put(df.getDossierPartNo(), jsonCount.getInt(df.getDossierPartNo()) + 1);
+								}
+								else {
+									jsonCount.put(df.getDossierPartNo(), 1);
+								}
 							}							
 						}
+					}
+					//
+					Iterator<String> keys = jsonCount.keys();
+					while(keys.hasNext()) {
+						String key = keys.next();
+						DossierMarkInputModel markInputModel = new DossierMarkInputModel();
+						markInputModel.setFileCheck(0);
+						markInputModel.setFileMark(3);
+						markInputModel.setFileComment(StringPool.BLANK);
+						markInputModel.setRecordCount(String.valueOf(jsonCount.get(key)));
+						//_log.info("markInputModel: "+JSONFactoryUtil.looseSerialize(markInputModel));
+						client.postDossierMark(String.valueOf(result.getDossierId()), key, markInputModel);
 					}
 				}			
 			} catch (JSONException e) {

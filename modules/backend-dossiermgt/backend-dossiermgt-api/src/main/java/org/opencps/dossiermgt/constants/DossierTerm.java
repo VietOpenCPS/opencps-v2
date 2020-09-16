@@ -245,6 +245,8 @@ public class DossierTerm {
 	//
 	public static final String FROM_STATISTIC_DATE = "fromStatisticDate";
 	public static final String TO_STATISTIC_DATE = "toStatisticDate";
+	public static final String FROM_APPROVED_DATE = "fromApprovedDate";
+	public static final String TO_APPROVED_DATE = "toApprovedDate";
 	public static final String ORIGIN = "origin";
 	//
 	public static final String ACTION_CODE_GOTO = "9999";
@@ -285,6 +287,7 @@ public class DossierTerm {
 
 	public static final String VALUE_COMPARE_RELEASE = "compareRelease";
 	public static final String VALUE_COMPARE_FINISH = "compareFinish";
+	public static final String VALUE_STATISTIC_RELEASE = "compareStatisticRelease";
 
 	public static final String PROCESS_NO = "processNo";
 	public static final String REGISTER = "register";

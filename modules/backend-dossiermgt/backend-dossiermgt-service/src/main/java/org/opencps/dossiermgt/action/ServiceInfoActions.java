@@ -57,7 +57,7 @@ public interface ServiceInfoActions {
 	public JSONObject getStatisticByAdministration(long groupId, Sort[] sorts, ServiceContext context)
 			throws ParseException, SearchException;
 
-	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject)
+	public JSONObject getStatisticByDomain(long groupId, Sort[] sorts, ServiceContext context, JSONObject jsonObject,LinkedHashMap<String, Object> paramSearch)
 			throws ParseException, SearchException;
 
 	public JSONObject getStatisticByLevel(ServiceContext context, long groupId) throws ParseException, SearchException;
