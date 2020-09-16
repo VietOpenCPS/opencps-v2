@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -50,6 +51,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -4507,6 +4509,958 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 	private static final String _FINDER_COLUMN_GID_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_GID_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByF_INFO_LEVEL",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
+			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByF_INFO_LEVEL",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Long.class.getName()
+			},
+			ServiceConfigModelImpl.GROUPID_COLUMN_BITMASK |
+			ServiceConfigModelImpl.SERVICELEVEL_COLUMN_BITMASK |
+			ServiceConfigModelImpl.SERVICEINFOID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_F_INFO_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_INFO_LEVEL",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Long.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL =
+		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
+			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_INFO_LEVEL",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Long.class.getName()
+			});
+
+	/**
+	 * Returns all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @return the matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int serviceLevel, long serviceInfoId) {
+		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @return the range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int serviceLevel, long serviceInfoId, int start, int end) {
+		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId, start,
+			end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int serviceLevel, long serviceInfoId, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId, start,
+			end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int serviceLevel, long serviceInfoId, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL;
+			finderArgs = new Object[] { groupId, serviceLevel, serviceInfoId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL;
+			finderArgs = new Object[] {
+					groupId, serviceLevel, serviceInfoId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceConfig>)finderCache.getResult(finderPath,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceConfig serviceConfig : list) {
+					if ((groupId != serviceConfig.getGroupId()) ||
+							(serviceLevel != serviceConfig.getServiceLevel()) ||
+							(serviceInfoId != serviceConfig.getServiceInfoId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				query = new StringBundler(5);
+			}
+
+			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceLevel);
+
+				qPos.add(serviceInfoId);
+
+				if (!pagination) {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByF_INFO_LEVEL_First(long groupId,
+		int serviceLevel, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByF_INFO_LEVEL_First(groupId,
+				serviceLevel, serviceInfoId, orderByComparator);
+
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceLevel=");
+		msg.append(serviceLevel);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByF_INFO_LEVEL_First(long groupId,
+		int serviceLevel, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceLevel,
+				serviceInfoId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config
+	 * @throws NoSuchServiceConfigException if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig findByF_INFO_LEVEL_Last(long groupId,
+		int serviceLevel, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = fetchByF_INFO_LEVEL_Last(groupId,
+				serviceLevel, serviceInfoId, orderByComparator);
+
+		if (serviceConfig != null) {
+			return serviceConfig;
+		}
+
+		StringBundler msg = new StringBundler(8);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", serviceLevel=");
+		msg.append(serviceLevel);
+
+		msg.append(", serviceInfoId=");
+		msg.append(serviceInfoId);
+
+		msg.append("}");
+
+		throw new NoSuchServiceConfigException(msg.toString());
+	}
+
+	/**
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching service config, or <code>null</code> if a matching service config could not be found
+	 */
+	@Override
+	public ServiceConfig fetchByF_INFO_LEVEL_Last(long groupId,
+		int serviceLevel, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		int count = countByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceLevel,
+				serviceInfoId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param serviceConfigId the primary key of the current service config
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next service config
+	 * @throws NoSuchServiceConfigException if a service config with the primary key could not be found
+	 */
+	@Override
+	public ServiceConfig[] findByF_INFO_LEVEL_PrevAndNext(
+		long serviceConfigId, long groupId, int serviceLevel,
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator)
+		throws NoSuchServiceConfigException {
+		ServiceConfig serviceConfig = findByPrimaryKey(serviceConfigId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ServiceConfig[] array = new ServiceConfigImpl[3];
+
+			array[0] = getByF_INFO_LEVEL_PrevAndNext(session, serviceConfig,
+					groupId, serviceLevel, serviceInfoId, orderByComparator,
+					true);
+
+			array[1] = serviceConfig;
+
+			array[2] = getByF_INFO_LEVEL_PrevAndNext(session, serviceConfig,
+					groupId, serviceLevel, serviceInfoId, orderByComparator,
+					false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ServiceConfig getByF_INFO_LEVEL_PrevAndNext(Session session,
+		ServiceConfig serviceConfig, long groupId, int serviceLevel,
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator,
+		boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(5);
+		}
+
+		query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+		query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
+
+		query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(serviceLevel);
+
+		qPos.add(serviceInfoId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(serviceConfig);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ServiceConfig> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevels the service levels
+	 * @param serviceInfoIds the service info IDs
+	 * @return the matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int[] serviceLevels, long[] serviceInfoIds) {
+		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevels the service levels
+	 * @param serviceInfoIds the service info IDs
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @return the range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int[] serviceLevels, long[] serviceInfoIds, int start, int end) {
+		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
+			start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevels the service levels
+	 * @param serviceInfoIds the service info IDs
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int[] serviceLevels, long[] serviceInfoIds, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator) {
+		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
+			start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @param start the lower bound of the range of service configs
+	 * @param end the upper bound of the range of service configs (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the ordered range of matching service configs
+	 */
+	@Override
+	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
+		int[] serviceLevels, long[] serviceInfoIds, int start, int end,
+		OrderByComparator<ServiceConfig> orderByComparator,
+		boolean retrieveFromCache) {
+		if (serviceLevels == null) {
+			serviceLevels = new int[0];
+		}
+		else if (serviceLevels.length > 1) {
+			serviceLevels = ArrayUtil.unique(serviceLevels);
+
+			Arrays.sort(serviceLevels);
+		}
+
+		if (serviceInfoIds == null) {
+			serviceInfoIds = new long[0];
+		}
+		else if (serviceInfoIds.length > 1) {
+			serviceInfoIds = ArrayUtil.unique(serviceInfoIds);
+
+			Arrays.sort(serviceInfoIds);
+		}
+
+		if ((serviceLevels.length == 1) && (serviceInfoIds.length == 1)) {
+			return findByF_INFO_LEVEL(groupId, serviceLevels[0],
+				serviceInfoIds[0], start, end, orderByComparator);
+		}
+
+		boolean pagination = true;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(serviceLevels),
+					StringUtil.merge(serviceInfoIds)
+				};
+		}
+		else {
+			finderArgs = new Object[] {
+					groupId, StringUtil.merge(serviceLevels),
+					StringUtil.merge(serviceInfoIds),
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ServiceConfig> list = null;
+
+		if (retrieveFromCache) {
+			list = (List<ServiceConfig>)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL,
+					finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ServiceConfig serviceConfig : list) {
+					if ((groupId != serviceConfig.getGroupId()) ||
+							!ArrayUtil.contains(serviceLevels,
+								serviceConfig.getServiceLevel()) ||
+							!ArrayUtil.contains(serviceInfoIds,
+								serviceConfig.getServiceInfoId())) {
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
+
+			if (serviceLevels.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7);
+
+				query.append(StringUtil.merge(serviceLevels));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			if (serviceInfoIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_7);
+
+				query.append(StringUtil.merge(serviceInfoIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(ServiceConfigModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				if (!pagination) {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<ServiceConfig>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL,
+					finderArgs, list);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 */
+	@Override
+	public void removeByF_INFO_LEVEL(long groupId, int serviceLevel,
+		long serviceInfoId) {
+		for (ServiceConfig serviceConfig : findByF_INFO_LEVEL(groupId,
+				serviceLevel, serviceInfoId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(serviceConfig);
+		}
+	}
+
+	/**
+	 * Returns the number of service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevel the service level
+	 * @param serviceInfoId the service info ID
+	 * @return the number of matching service configs
+	 */
+	@Override
+	public int countByF_INFO_LEVEL(long groupId, int serviceLevel,
+		long serviceInfoId) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_INFO_LEVEL;
+
+		Object[] finderArgs = new Object[] { groupId, serviceLevel, serviceInfoId };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(serviceLevel);
+
+				qPos.add(serviceInfoId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param serviceLevels the service levels
+	 * @param serviceInfoIds the service info IDs
+	 * @return the number of matching service configs
+	 */
+	@Override
+	public int countByF_INFO_LEVEL(long groupId, int[] serviceLevels,
+		long[] serviceInfoIds) {
+		if (serviceLevels == null) {
+			serviceLevels = new int[0];
+		}
+		else if (serviceLevels.length > 1) {
+			serviceLevels = ArrayUtil.unique(serviceLevels);
+
+			Arrays.sort(serviceLevels);
+		}
+
+		if (serviceInfoIds == null) {
+			serviceInfoIds = new long[0];
+		}
+		else if (serviceInfoIds.length > 1) {
+			serviceInfoIds = ArrayUtil.unique(serviceInfoIds);
+
+			Arrays.sort(serviceInfoIds);
+		}
+
+		Object[] finderArgs = new Object[] {
+				groupId, StringUtil.merge(serviceLevels),
+				StringUtil.merge(serviceInfoIds)
+			};
+
+		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL,
+				finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler();
+
+			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
+
+			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
+
+			if (serviceLevels.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7);
+
+				query.append(StringUtil.merge(serviceLevels));
+
+				query.append(")");
+
+				query.append(")");
+
+				query.append(WHERE_AND);
+			}
+
+			if (serviceInfoIds.length > 0) {
+				query.append("(");
+
+				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_7);
+
+				query.append(StringUtil.merge(serviceInfoIds));
+
+				query.append(")");
+
+				query.append(")");
+			}
+
+			query.setStringAt(removeConjunction(query.stringAt(query.index() -
+						1)), query.index() - 1);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL,
+					finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL,
+					finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ? AND ";
+	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7 = "serviceConfig.serviceLevel IN (";
+	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2 = "serviceConfig.serviceInfoId = ?";
+	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_7 = "serviceConfig.serviceInfoId IN (";
 
 	public ServiceConfigPersistenceImpl() {
 		setModelClass(ServiceConfig.class);
@@ -4929,6 +5883,16 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_LEVEL,
 				args);
 
+			args = new Object[] {
+					serviceConfigModelImpl.getGroupId(),
+					serviceConfigModelImpl.getServiceLevel(),
+					serviceConfigModelImpl.getServiceInfoId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_F_INFO_LEVEL, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL,
+				args);
+
 			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
 			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
 				FINDER_ARGS_EMPTY);
@@ -5069,6 +6033,29 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 				finderCache.removeResult(FINDER_PATH_COUNT_BY_GID_LEVEL, args);
 				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GID_LEVEL,
+					args);
+			}
+
+			if ((serviceConfigModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						serviceConfigModelImpl.getOriginalGroupId(),
+						serviceConfigModelImpl.getOriginalServiceLevel(),
+						serviceConfigModelImpl.getOriginalServiceInfoId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_INFO_LEVEL, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL,
+					args);
+
+				args = new Object[] {
+						serviceConfigModelImpl.getGroupId(),
+						serviceConfigModelImpl.getServiceLevel(),
+						serviceConfigModelImpl.getServiceInfoId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_F_INFO_LEVEL, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL,
 					args);
 			}
 		}

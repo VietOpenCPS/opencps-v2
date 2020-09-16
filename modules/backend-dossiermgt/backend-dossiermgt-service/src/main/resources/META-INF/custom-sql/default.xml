@@ -111,21 +111,4 @@
 				(opencps_paymentfile.groupId = ?)
         ]]>
     </sql>
-    <sql id="org.opencps.dossiermgt.service.persistence.DossierFinder.findServiceConfigByServiceLevel">
-        <![CDATA[
-            select distinct t2.itemName, t2.itemCode, t2.groupId, t1.govAgencyCode, t1.serviceLevel from opencps_serviceConfig t1
-            inner join opencps_dictitem t2 ON t1.govAgencyCode= t2.itemCode
-            inner join opencps_dictcollection t3 ON t2.dictCollectionId = t3.dictCollectionId
-            where t3.collectionCode = 'GOVERNMENT_AGENCY' and t1.serviceLevel in (?) and t1.groupId = ?;
-        ]]>
-    </sql>
-    <sql id="org.opencps.dossiermgt.service.persistence.DictItemFinder.findDictItemByServiceDomain">
-        <![CDATA[
-             select distinct t2.itemName,t2.itemCode, t2.groupId, t1.govAgencyCode, t1.serviceLevel from opencps_dictcollection t1
-            inner join opencps_dictitem t2 ON t1.dictCollectionId = t2.dictCollectionId
-            inner join opencps_serviceinfo t3 on t2.itemCode = t3.domainCode
-			 inner join opencps_serviceconfig t4 ON t3.serviceInfoId = t4.serviceInfoId
-            where t1.collectionCode = 'SERVICE_DOMAIN'  and t4.serviceLevel in(?) and t1.groupId = ?;
-        ]]>
-    </sql>
 </custom-sql>

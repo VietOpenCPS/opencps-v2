@@ -651,6 +651,11 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 		return serviceConfigPersistence.findByGID_LEVEL(groupId, level);
 	}
 
+	@Override
+	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId, int[] serviceLevel, long[] serviceInfoId) {
+		return serviceConfigPersistence.findByF_INFO_LEVEL(groupId,serviceLevel,serviceInfoId);
+	}
+
 	public long countByGovAgency(String keyword, String govAgencyCode, long groupId) {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(ServiceConfigImpl.class);
 		if (Validator.isNotNull(keyword)) {

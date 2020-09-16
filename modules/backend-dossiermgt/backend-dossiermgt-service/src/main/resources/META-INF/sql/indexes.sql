@@ -300,7 +300,7 @@ create unique index IX_22CC0D32 on opencps_registrationtemplate (uuid_[$COLUMN_L
 create index IX_29DADB16 on opencps_serviceconfig (govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_E713E0A0 on opencps_serviceconfig (groupId, govAgencyCode[$COLUMN_LENGTH:128$]);
 create index IX_ABABE3D2 on opencps_serviceconfig (groupId, serviceInfoId, govAgencyCode[$COLUMN_LENGTH:128$]);
-create index IX_195F08D3 on opencps_serviceconfig (groupId, serviceLevel);
+create index IX_1275B97B on opencps_serviceconfig (groupId, serviceLevel, serviceInfoId);
 create index IX_4F240C8E on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_6FC25E90 on opencps_serviceconfig (uuid_[$COLUMN_LENGTH:75$], groupId);
 

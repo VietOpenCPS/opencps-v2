@@ -64,6 +64,7 @@ import org.opencps.communication.service.ServerConfigLocalServiceUtil;
 import org.opencps.datamgt.constants.DataMGTConstants;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemModelInput;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.datamgt.util.HolidayUtils;
@@ -7786,11 +7787,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
 	}
-	public List<DictItemModel> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
-		return dossierFinder.findServiceConfigByServiceLevel(serviceLevel, groupId);
+	public List<DictItemModelInput> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
+//		return dictItemFinder.findServiceConfigByServiceLevel(serviceLevel, groupId);
+		return null;
 
 	}
-	public List<DictItemModel> findDictItemByServiceDomain(String serviceLevel, long groupId) {
-		return dossierFinder.findDictItemByServiceDomain(serviceLevel, groupId);
+	public List<DictItemModelInput> findDictItemByServiceDomain(String serviceLevel, long groupId) {
+		return null;
+//		return dictItemFinder.findDictItemByServiceDomain(serviceLevel, groupId);
 	}
 }

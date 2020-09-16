@@ -621,7 +621,7 @@ public class PersonStatisticSumYearCalcular {
 		votingData.setYear(year);
 		votingData.setVotingCode(votingCode);
 		votingData.setVotingSubject(votingSubject);
-		votingData.setEmployeeId(employeeId);
+		votingData.setEmployeeId(Validator.isNotNull(employeeId) ? employeeId : null);
 		votingData.setGovAgencyCode(govAgencyCode);
 		votingData.setGovAgencyName(govAgencyName);
 		votingData.setCompanyId(companyId);

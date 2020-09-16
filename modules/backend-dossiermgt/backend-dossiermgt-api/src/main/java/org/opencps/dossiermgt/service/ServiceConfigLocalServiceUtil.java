@@ -255,6 +255,10 @@ public class ServiceConfigLocalServiceUtil {
 		long groupId, long serviceInfoId) {
 		return getService().getByServiceInfo(groupId, serviceInfoId);
 	}
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(long groupId,
+			int[] serviceLevel, long[] serviceInfoId) {
+		return getService().fetchByF_INFO_LEVEL(groupId,serviceLevel,serviceInfoId);
+	}
 
 	public static org.opencps.dossiermgt.model.ServiceConfig getBySICodeAndGAC(
 		long groupId, String serviceInfoCode, String govAgencyCode)
