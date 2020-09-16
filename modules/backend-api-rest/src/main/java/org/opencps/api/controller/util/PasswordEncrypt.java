@@ -19,7 +19,7 @@ public class PasswordEncrypt {
 	/** Secret key spec used to generate secret key */
 	private static SecretKeySpec secretKeySpec;
 
-	private static final String DIGEST_5 = "MD5";
+	public static final String DIGEST_5 = "MD5";
 	
 	private static String asHexStr(byte buf[]) {
 		StringBuffer strbuf = new StringBuffer(buf.length * 2);

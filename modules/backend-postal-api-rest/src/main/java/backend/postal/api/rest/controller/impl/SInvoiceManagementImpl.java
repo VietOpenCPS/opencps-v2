@@ -205,7 +205,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 				params.append(StringPool.AMPERSAND);
 			}
 
-			if (RequestMethod.GET.equals(method)) {
+			if (RequestMethod.GET.toString().equals(method)) {
 				// endpoint = endpoint + "?" +
 				// URLEncoder.encode(params.toString(), "UTF-8");
 				endpoint = endpoint + StringPool.QUESTION + params.toString();
@@ -224,7 +224,7 @@ public class SInvoiceManagementImpl implements SInvoiceManagement {
 			conn.setRequestProperty(HttpHeaders.ACCEPT, accept);
 			conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
 
-			if (RequestMethod.POST.equals(method)) {
+			if (RequestMethod.POST.toString().equals(method)) {
 				if (MediaType.APPLICATION_JSON.equals(contentType)) {
 					// body json
 					try (OutputStream os = conn.getOutputStream()) {

@@ -75,7 +75,7 @@ public class AccessTokenLocalServiceImpl extends AccessTokenLocalServiceBaseImpl
 				_log.info(accessToken.getExpireDate());
 				_log.info(now);
 				_log.info(accessToken.getExpireDate().compareTo(now));
-				if (accessToken.getExpireDate().compareTo(now) == 1) {
+				if (accessToken.getExpireDate().compareTo(now) > 0) {
 					return accessToken;
 				}else {
 					return null;

@@ -57,6 +57,7 @@ import org.opencps.api.controller.exception.ErrorMsg;
 import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
+import org.opencps.api.controller.util.PasswordEncrypt;
 import org.opencps.api.controller.util.PaymentFileUtils;
 import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.paymentfile.model.KeyPayResultInput;
@@ -1267,7 +1268,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		String hashCodeUppercase = null;
 		try
 		{
-			MessageDigest crypt = MessageDigest.getInstance(algorithm);
+			MessageDigest crypt = MessageDigest.getInstance(PasswordEncrypt.DIGEST_5);
 			crypt.reset();
 			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();

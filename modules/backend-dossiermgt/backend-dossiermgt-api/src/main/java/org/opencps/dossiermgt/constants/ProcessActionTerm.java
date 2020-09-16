@@ -90,6 +90,7 @@ public class ProcessActionTerm {
 	public static final String PRECONDITION_SEND_INVOICE_1 = "sendinvoice=1";
 	public static final String PROCESS_ACTION = "processAction";
 	public static final String PRECONDITION_SEND_VIAPOSTAL = "sendviapostal=1";
+	public static final String PRECONDITION_VN_POSTAL_STATUS = "vnpostalstatus";
 	public static final String PRECONDITION_SEND_COLLECTION_VNPOST = "sendcollectionvnpost=1";
 	public static final String PRECONDITION_REC_COLLECTION_VNPOST = "receivedcollectionvnpost=1";
 	public static final String PROCESS_STEP_ROLE = "processStepRole";

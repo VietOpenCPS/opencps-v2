@@ -350,6 +350,7 @@ public class APIMessageProcessor extends BaseMessageProcessor {
 									if (retry > N_OF_RETRIES) break;
 								} catch (InterruptedException e) {
 //									e.printStackTrace();
+									Thread.currentThread().interrupt();
 									_log.error(e);
 								}
 								

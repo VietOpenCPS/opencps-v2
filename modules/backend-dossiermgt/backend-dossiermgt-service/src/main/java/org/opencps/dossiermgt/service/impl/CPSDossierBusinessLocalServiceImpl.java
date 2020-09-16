@@ -1405,6 +1405,34 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			if (proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_SEND_VIAPOSTAL)) {
 				vnpostEvent(dossier, dossierAction.getDossierActionId());
 			}
+
+			if(proAction.getPreCondition().toLowerCase().contains(ProcessActionTerm.PRECONDITION_VN_POSTAL_STATUS)) {
+				try {
+					String preConditionLower = proAction.getPreCondition().toLowerCase();
+					_log.info("Precondition before  parse: " + preConditionLower);
+					String[] splitCodes = preConditionLower.split(StringPool.COMMA);
+					_log.info("Precondition after parse: " + splitCodes);
+					for(String oneSplitComma : splitCodes) {
+						_log.info("Precondition in loop: " + oneSplitComma);
+						_log.info("splitCodes.length: " + splitCodes.length);
+						if(oneSplitComma.contains(DossierTerm.CONTAIN_POST_STATUS)) {
+							_log.info("oneSplitComma before parse equal: " + oneSplitComma);
+							String[] keyValueVnPostalStatus = oneSplitComma.split(StringPool.EQUAL);
+							_log.info("oneSplitComma after parse equal: " + keyValueVnPostalStatus);
+							if (keyValueVnPostalStatus.length == 2) {
+								Integer vnPostalValue = Validator.isNotNull(keyValueVnPostalStatus[1]) ?
+										Integer.valueOf(keyValueVnPostalStatus[1]) : null;
+								if(Validator.isNotNull(vnPostalValue) && vnPostalValue.equals(dossier.getVnpostalStatus())) {
+									viettelPostEvent(dossier, dossierAction.getDossierActionId());
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					_log.error("Error when doAction with precondition viettel: " + e.getMessage());
+				}
+			}
+
 			if (proAction.getPreCondition().toLowerCase()
 					.contains(ProcessActionTerm.PRECONDITION_SEND_COLLECTION_VNPOST)) {
 				collectVnpostEvent(dossier, dossierAction.getDossierActionId());
@@ -4541,6 +4569,19 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		}
 
 		return jsonSequenceArr;
+	}
+
+	private void viettelPostEvent(Dossier dossier, long dossierActionId) {
+		//case gom ho so tai nha
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+		JSONObject dossierJson = DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId);
+		dossierJson.put(DossierTerm.VIETTEL_POST_KEY, DossierTerm.VIETTEL_POST_VALUE);
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, dossierJson);
+
+		MessageBusUtil.sendMessage(DossierTerm.VNPOST_DOSSIER_DESTINATION, message);
 	}
 
 	private void vnpostEvent(Dossier dossier, long dossierActionId) {
@@ -8669,8 +8710,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 	public static final String VNPOST_CITY_CODE = ReadFilePropertiesUtils.get(ConstantUtils.VNPOST_CITY_CODE);
 	public static final String REGISTER_BOOK = ReadFilePropertiesUtils.get(ConstantUtils.REGISTER_BOOK);
 
-	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000 * 60 * 60 * 24;
-	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000 * 60 * 60;
+	private static final long VALUE_CONVERT_DATE_TIMESTAMP = 1000L * 60L * 60L * 24L;
+	private static final long VALUE_CONVERT_HOUR_TIMESTAMP = 1000L * 60L * 60L;
 
 	private static ProcessAction getProcessAction(long userId, long groupId, Dossier dossier, String actionCode,
 												  long serviceProcessId) throws PortalException {
