@@ -1,9 +1,12 @@
 package org.opencps.api.controller.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -11,18 +14,22 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusException;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.*;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -51,12 +58,15 @@ import org.opencps.api.controller.util.ConvertDossierFromV1Dot9Utils;
 import org.opencps.api.controller.util.DossierUtils;
 import org.opencps.api.controller.util.MessageUtil;
 import org.opencps.api.controller.util.PaymentFileUtils;
+import org.opencps.api.dossier.model.DossierDetailModel;
 import org.opencps.api.paymentfile.model.KeyPayResultInput;
 import org.opencps.api.paymentfile.model.PaymentFileInputModel;
 import org.opencps.api.paymentfile.model.PaymentFileModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.api.exception.UnauthorizationException;
+import org.opencps.auth.api.keys.ActionKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.PaymentFileActions;
@@ -74,8 +84,11 @@ import org.opencps.dossiermgt.service.CPSDossierBusinessLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ProcessPluginLocalServiceUtil;
+import org.opencps.dossiermgt.service.persistence.DossierUtil;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
+import org.opencps.usermgt.service.impl.WorkingUnitLocalServiceImpl;
 
 import backend.auth.api.exception.BusinessExceptionImpl;
 
@@ -1175,29 +1188,50 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 	{
 		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 		String paymentMerchantSecureKey = StringPool.BLANK;
+		String algorithm = KeyPayTerm.VALUE_MD5;
 
 		try
 		{
 			String dossierId = input.getDossierId();
 			Dossier dossier = DossierUtils.getDossier(dossierId,groupId);
-			String govAgencyCode = dossier.getGovAgencyCode();
-			if (Validator.isNotNull(govAgencyCode))
-			{
-				PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
-				if (Validator.isNotNull(paymentConfig))
-				{
-					String epay = paymentConfig.getEpaymentConfig();
+			if (dossier == null)
+				dossier = DossierLocalServiceUtil.fetchByDO_NO_GROUP(input.getGoodCode(), groupId);
+			//String govAgencyCode = dossier != null ? dossier.getGovAgencyCode() : null;
+			//_log.info("govAgencyCode: "+govAgencyCode);
+			if (dossier != null) {
+				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossier.getDossierId());
+				if (paymentFile != null) {
+					_log.info("PAYMENT FILE NOT NULL: paymentFileId: "+ paymentFile.getPaymentFileId());
+					String epay = paymentFile.getEpaymentProfile();
 					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(epay);
-					//String paymentReturnUrl = StringPool.BLANK;
+//					String paymentReturnUrl = StringPool.BLANK;
 					if (jsonObject.has("paymentMerchantSecureKey"))
 						paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
+					if (jsonObject.has("paymentHashAlgorithm") && Validator.isNotNull(jsonObject.get("paymentHashAlgorithm"))) {
+						algorithm = jsonObject.getString("paymentHashAlgorithm");
+					}
+				} else {
+					String govAgencyCode = dossier.getGovAgencyCode();
+					_log.info("PAYMENT FILE NOT NULL: govAgencyCode: "+ govAgencyCode);
+					if (Validator.isNotNull(govAgencyCode)) {
+						PaymentConfig paymentConfig = PaymentConfigLocalServiceUtil.getPaymentConfigByGovAgencyCode(groupId,govAgencyCode);
+						if (paymentConfig != null) {
+							String ePay = paymentConfig.getEpaymentConfig();
+							JSONObject jsonObject = JSONFactoryUtil.createJSONObject(ePay);
+							if (jsonObject.has("paymentMerchantSecureKey"))
+								paymentMerchantSecureKey = jsonObject.getString("paymentMerchantSecureKey");
+							if (jsonObject.has("paymentHashAlgorithm") && Validator.isNotNull(jsonObject.get("paymentHashAlgorithm")))
+								algorithm = jsonObject.getString("paymentHashAlgorithm");
+						}
+					}
 				}
 			}
 		}
-		catch (Exception e)
-		{
-			_log.error("err",e);
+		catch (JSONException e) {
+			_log.error("err", e);
 		}
+		_log.info("paymentMerchantSecureKey: "+paymentMerchantSecureKey);
+		_log.info("algorithm: "+algorithm);
 
 		Map map = new HashMap();
 
@@ -1214,6 +1248,7 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		map.put("currency_code",input.getCurrencyCode());
 		map.put("bank_code",input.getBankCode());
 
+		_log.info("map: "+ map);
 
 		List list = new ArrayList(map.keySet());
 		Collections.sort(list);
@@ -1232,10 +1267,12 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 		String hashCodeUppercase = null;
 		try
 		{
-			MessageDigest crypt = MessageDigest.getInstance("MD5");
+			MessageDigest crypt = MessageDigest.getInstance(algorithm);
 			crypt.reset();
 			crypt.update(stringBuilder.toString().getBytes("UTF-8"));
 			hashCodeUppercase = (new BigInteger(1,crypt.digest()).toString(16)).toUpperCase();
+			_log.info("hashCodeUppercase: " + hashCodeUppercase);
+			_log.info("input.getSecureHash(): " + input.getSecureHash());
 			JSONObject result = JSONFactoryUtil.createJSONObject();
 			if (hashCodeUppercase.equals(input.getSecureHash()) )
 				result.put("result", true );
@@ -1244,9 +1281,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 
 			return Response.status(200).entity(result.toString()).build();
 		}
-		catch (UnsupportedEncodingException | NoSuchAlgorithmException e)
-		{
-			_log.error("err in checkHashKeyPay",e);
+		catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+			_log.error("err in checkHashKeyPay", e);
 			return BusinessExceptionImpl.processException(e);
 		}
 
@@ -1366,6 +1402,45 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 			}
 
 		} catch (Exception e) {
+			return BusinessExceptionImpl.processException(e);
+		}
+	}
+
+	@Override
+	public Response reindexPaymentFile(
+			HttpServletRequest request, HttpHeaders header, Company company,
+			Locale locale, User user, ServiceContext serviceContext, String id) {
+
+		long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+		BackendAuth auth = new BackendAuthImpl();
+		long paymentFileId = GetterUtil.getLong(id);
+
+		try {
+			if (!auth.isAuth(serviceContext)) {
+				throw new UnauthenticationException();
+			}
+			List<Role> userRoles = user.getRoles();
+			boolean isAdmin = false;
+			for (Role r : userRoles) {
+				if (r.getName().startsWith(ConstantUtils.ROLE_ADMIN)) {
+					isAdmin = true;
+					break;
+				}
+			}
+
+			if (!isAdmin) {
+				throw new UnauthenticationException();
+			}
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.fetchPaymentFile(paymentFileId);
+			Indexer<PaymentFile> indexer = IndexerRegistryUtil.nullSafeGetIndexer(PaymentFile.class);
+			indexer.reindex(paymentFile);
+
+			PaymentFileModel result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
+
+			return Response.status(HttpURLConnection.HTTP_OK).entity(result).build();
+
+		}
+		catch (Exception e) {
 			return BusinessExceptionImpl.processException(e);
 		}
 	}

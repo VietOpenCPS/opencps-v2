@@ -76,6 +76,7 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServiceInfoTerm;
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
+import org.opencps.dossiermgt.input.model.DictItemModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.DossierFile;
@@ -2612,7 +2613,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
 		}
 		else {
-			dossier = dossierPersistence.findByG_REF(groupId, refId);
+			dossier = dossierPersistence.fetchByG_REF(groupId, refId);
 		}
 
 		return dossierPersistence.remove(dossier);
@@ -3997,7 +3998,8 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		if (Validator.isNotNull(dossierNo)) {
 			BooleanQuery queryBool = new BooleanQueryImpl();
-			String[] subQuerieArr = new String[] { DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH };
+			String[] subQuerieArr = new String[]{DossierTerm.DOSSIER_COUNTER_SEARCH, DossierTerm.DOSSIER_NO_SEARCH,
+					DossierTerm.POSTAL_CODE_RECEIVED, DossierTerm.POSTAL_CODE_SEND};
 
 			String[] keyDossier = dossierNo.split(StringPool.SPACE);
 			for (String fieldSearch : subQuerieArr) {
@@ -7783,5 +7785,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 	public Dossier fetchByDO_POST_RECEIVED_GROUP(String postalCodeReceived, long groupId) {
 		return dossierPersistence.fetchByDO_POST_RECEIVED_GROUP(postalCodeReceived, groupId);
+	}
+	public List<DictItemModel> findServiceConfigByServiceLevel(String serviceLevel, long groupId) {
+		return dossierFinder.findServiceConfigByServiceLevel(serviceLevel, groupId);
+
+	}
+	public List<DictItemModel> findDictItemByServiceDomain(String serviceLevel, long groupId) {
+		return dossierFinder.findDictItemByServiceDomain(serviceLevel, groupId);
 	}
 }

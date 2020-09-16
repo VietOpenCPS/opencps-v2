@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.graphql.api.controller.utils.WebKeys;
 import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.util.DeliverableNumberGenerator;
+import org.opencps.dossiermgt.constants.DeliverableTerm;
+import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.model.Deliverable;
 import org.opencps.dossiermgt.model.DeliverableType;
 import org.opencps.dossiermgt.service.DeliverableLocalServiceUtil;
@@ -106,6 +108,21 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 			}
 
 			_log.info("inputObject: "+JSONFactoryUtil.looseSerialize(inputObject));
+			if(Validator.isNotNull(formData)) {
+				if (formData.has(DeliverableTerm.DELIVERABLE_CODE)) {
+					formData.remove(DeliverableTerm.DELIVERABLE_CODE);
+				}
+				if (formData.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+					formData.remove(DeliverableTerm.GOV_AGENCY_CODE);
+				}
+				if (formData.has(DeliverableTerm.DELIVERABLE_STATE)) {
+					formData.remove(DeliverableTerm.DELIVERABLE_STATE);
+				}
+				if (formData.has(DeliverableTerm.ISSUE_DATE)) {
+					formData.remove(DeliverableTerm.ISSUE_DATE);
+				}
+				inputObject.put(DeliverableTerm.FORM_DATA, formData.toString());
+			}
 			result = DeliverableLocalServiceUtil.adminProcessData(inputObject);
 			
 		} catch (JSONException e) {

@@ -52,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
     "start",
     "end",
     "service",
-    "serviceLevelRole",
+    "serviceLevel",
     "isEmployee"
 })
 @XmlRootElement(name = "DataSearchModel")
@@ -76,8 +76,8 @@ public class DataSearchModel {
     protected int end;
 	@QueryParam(value = "service")
 	protected String service;
-    @QueryParam(value = "serviceLevelRole")
-    protected String serviceLevelRole;
+    @QueryParam(value = "serviceLevel")
+    protected String serviceLevel;
     @QueryParam(value = "isEmployee")
     protected boolean isEmployee;
 
@@ -90,12 +90,12 @@ public class DataSearchModel {
     }
 
 
-    public String getServiceLevelRole() {
-        return serviceLevelRole;
+    public String getServiceLevel() {
+        return serviceLevel;
     }
 
-    public void setServiceLevelRole(String serviceLevelRole) {
-        this.serviceLevelRole = serviceLevelRole;
+    public void setServiceLevel(String serviceLevel) {
+        this.serviceLevel = serviceLevel;
     }
 
     /**

@@ -42,8 +42,8 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
-
 import org.opencps.dossiermgt.exception.NoSuchDossierException;
+import org.opencps.dossiermgt.input.model.DictItemModel;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierAction;
 import org.opencps.dossiermgt.model.ProcessOption;
@@ -323,11 +323,17 @@ public interface DossierLocalService extends BaseLocalService,
 
 	public List<Dossier> findByVnpostalStatus(long groupId, int vnpostalStatus);
 
+	public List<DictItemModel> findDictItemByServiceDomain(
+		String serviceLevel, long groupId);
+
 	public List<Dossier> findDossierByDay(String date);
 
 	public Dossier findDossierByDeclarationCode(String code, long groupId);
 
 	public List<Dossier> findDossierByGroup(long groupId);
+
+	public List<DictItemModel> findServiceConfigByServiceLevel(
+		String serviceLevel, long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

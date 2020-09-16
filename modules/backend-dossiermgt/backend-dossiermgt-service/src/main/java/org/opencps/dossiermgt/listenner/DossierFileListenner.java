@@ -721,6 +721,20 @@ public class DossierFileListenner extends BaseModelListener<DossierFile> {
 					formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
 							dlvType.getMappingData(), dossier.getDossierId(),
 							serviceContext);
+					if(Validator.isNotNull(formDataContent)) {
+						if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
+							formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
+						}
+						if (formDataContent.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+							formDataContent.remove(DeliverableTerm.GOV_AGENCY_CODE);
+						}
+						if (formDataContent.has(DeliverableTerm.DELIVERABLE_STATE)) {
+							formDataContent.remove(DeliverableTerm.DELIVERABLE_STATE);
+						}
+						if (formDataContent.has(DeliverableTerm.ISSUE_DATE)) {
+							formDataContent.remove(DeliverableTerm.ISSUE_DATE);
+						}
+					}
 					deliverable.setFormData(formDataContent.toString());
 
 					deliverable.setFileAttachs(fileAttachs);

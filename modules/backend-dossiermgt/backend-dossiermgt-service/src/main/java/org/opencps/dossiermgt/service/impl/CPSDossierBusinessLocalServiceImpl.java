@@ -2716,6 +2716,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 
 					epaymentProfileJSON.put(KeyPayTerm.KEYPAYMERCHANTCODE,
 							epaymentConfigJSON.get("paymentMerchantCode"));
+					epaymentProfileJSON.put("paymentMerchantSecureKey", epaymentConfigJSON.get("paymentMerchantSecureKey"));
+					epaymentProfileJSON.put("paymentHashAlgorithm", epaymentConfigJSON.get("paymentHashAlgorithm"));
 					epaymentProfileJSON.put(KeyPayTerm.BANK, String.valueOf(true));
 					epaymentProfileJSON.put(KeyPayTerm.PAYGATE, String.valueOf(true));
 					epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);

@@ -92,6 +92,21 @@ public interface ServiceInfoManagement {
 			@ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search,
 			@Context Request requestCC);
 	@GET
+	@Path("/statistics/domains/serviceLevel")
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED })
+	@ApiOperation(value = "Get StatisticByLevel", response = StatisticsLevelResultsModel.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns a list of ServiceInfo", response = StatisticsLevelResultsModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Not found", response = ExceptionModel.class),
+			@ApiResponse(code = HttpURLConnection.HTTP_FORBIDDEN, message = "Access denied", response = ExceptionModel.class) })
+	public Response getStatisticByDomainServiceLevel(@Context HttpServletRequest request, @Context HttpHeaders header,
+										 @Context Company company, @Context Locale locale, @Context User user,
+										 @Context ServiceContext serviceContext, @QueryParam("agency") String agency,
+										 @ApiParam(value = "query params for search") @BeanParam ServiceInfoSearchModel search,
+										 @Context Request requestCC);
+
+	@GET
 	@Path("statistics/agency")
 	@Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -103,7 +118,6 @@ public interface ServiceInfoManagement {
 			@ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Internal server problems") })
 	public Response getDictItemsByRoles(@Context HttpServletRequest request, @Context HttpHeaders header,
 										@Context Company company, @Context Locale locale, @Context User user, @Context ServiceContext serviceContext,
-										@ApiParam(value = "code of DictCollection of DictItem that need to be gotten list", required = true) @PathParam("code") String code,
 										@BeanParam DataSearchModel query, @Context Request requestCC);
 
 	@GET

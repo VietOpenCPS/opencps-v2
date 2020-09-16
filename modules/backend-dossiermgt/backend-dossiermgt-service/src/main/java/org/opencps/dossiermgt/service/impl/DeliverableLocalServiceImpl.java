@@ -1684,27 +1684,14 @@ public class DeliverableLocalServiceImpl
 						}
 						booleanQuery.add(queryBool, BooleanClauseOccur.MUST);
 					}else
-					if(entry.getValue().contains(StringPool.SPACE)
-//							|| entry.getValue().contains(StringPool.PERIOD)
-							&& !"".equals(entry.getValue())){
-//						String[] keywordArr = {""};
-//						if(entry.getValue().contains(StringPool.SPACE)){
+					if(entry.getValue().contains(StringPool.SPACE) && !"".equals(entry.getValue())){
 						String[] keywordArr = entry.getValue().split(StringPool.SPACE);
-//						}else if(entry.getValue().contains(StringPool.PERIOD)){
-//							String[] keyArr = entry.getValue().split(StringPool.PERIOD);
-//							for (String keyValue : keyArr) {
-//								WildcardQuery wildQuery = new WildcardQueryImpl(
-//										key.split("@")[0],
-//										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
-////								query.add(wildQuery, BooleanClauseOccur.SHOULD);
-//							}
-//						}
 							BooleanQuery query = new BooleanQueryImpl();
 							for (String keyValue : keywordArr) {
 								WildcardQuery wildQuery = new WildcardQueryImpl(
 										key.split("@")[0],
 										StringPool.STAR + keyValue.toLowerCase() + StringPool.STAR);
-								query.add(wildQuery, BooleanClauseOccur.SHOULD);
+								query.add(wildQuery, BooleanClauseOccur.MUST);
 							}
 						booleanQuery.add(query, BooleanClauseOccur.MUST);
 					}else {

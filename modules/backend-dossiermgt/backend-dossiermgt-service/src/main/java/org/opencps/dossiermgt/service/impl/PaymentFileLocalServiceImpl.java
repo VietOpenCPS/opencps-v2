@@ -65,12 +65,7 @@ import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.dossiermgt.action.FileUploadUtils;
 import org.opencps.dossiermgt.action.keypay.util.KPJsonRest;
 import org.opencps.dossiermgt.action.util.PaymentUrlGenerator;
-import org.opencps.dossiermgt.constants.ConstantsTerm;
-import org.opencps.dossiermgt.constants.DossierTerm;
-import org.opencps.dossiermgt.constants.KeyPayTerm;
-import org.opencps.dossiermgt.constants.PaymentFileTerm;
-import org.opencps.dossiermgt.constants.ProcessActionTerm;
-import org.opencps.dossiermgt.constants.VTPayTerm;
+import org.opencps.dossiermgt.constants.*;
 import org.opencps.dossiermgt.exception.NoSuchPaymentFileException;
 import org.opencps.dossiermgt.input.model.PaymentFileInputModel;
 import org.opencps.dossiermgt.model.Dossier;
@@ -147,6 +142,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String fromApprovedDate = GetterUtil.getString(params.get(DossierTerm.FROM_APPROVED_DATE));
 		String toApprovedDate = GetterUtil.getString(params.get(DossierTerm.TO_APPROVED_DATE));
 		String paymentMethod = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_METHOD));
+		String domainCode = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		String serviceCode = GetterUtil.getString(params.get(DossierTerm.SERVICE_CODE));
 
 		BooleanQuery booleanQuery = null;
 
@@ -279,27 +276,34 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 
 		if (Validator.isNotNull(paymentMethod) && !"total".equalsIgnoreCase(paymentMethod)) {
 			if ("direct".equalsIgnoreCase(paymentMethod)) {
-				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
 
 				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
-				query.isFieldsEmpty();
-
+				//query.isFieldsEmpty();
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
 			else if ("online".equalsIgnoreCase(paymentMethod)) {
-				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
-
+				MultiMatchQuery query = new MultiMatchQuery(String.valueOf(0));
 				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
-				query.isFieldsEmpty();
-
 				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 			else {
 				MultiMatchQuery query = new MultiMatchQuery(paymentMethod);
-
 				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(domainCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(domainCode);
+			query.addFields(DossierTerm.DOMAIN_CODE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(serviceCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(serviceCode);
+			query.addFields(ServiceInfoTerm.SERVICE_CODE_SEARCH);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);
@@ -336,6 +340,8 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		String fromApprovedDate = GetterUtil.getString(params.get(DossierTerm.FROM_APPROVED_DATE));
 		String toApprovedDate = GetterUtil.getString(params.get(DossierTerm.TO_APPROVED_DATE));
 		String paymentMethod = GetterUtil.getString(params.get(PaymentFileTerm.PAYMENT_METHOD));
+		String domainCode = GetterUtil.getString(params.get(DossierTerm.DOMAIN_CODE));
+		String serviceCode = GetterUtil.getString(params.get(DossierTerm.SERVICE_CODE));
 
 		BooleanQuery booleanQuery = null;
 
@@ -477,6 +483,18 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 				query.addFields(PaymentFileTerm.PAYMENT_METHOD);
 				booleanQuery.add(query, BooleanClauseOccur.MUST);
 			}
+		}
+
+		if (Validator.isNotNull(domainCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(domainCode);
+			query.addFields(DossierTerm.DOMAIN_CODE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
+		}
+
+		if (Validator.isNotNull(serviceCode)) {
+			MultiMatchQuery query = new MultiMatchQuery(serviceCode);
+			query.addFields(DossierTerm.SERVICE_CODE);
+			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
 
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, CLASS_NAME);

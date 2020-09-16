@@ -45,7 +45,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.opencps.dossiermgt.constants.ServiceConfigTerm;
 
 public class DictCollectionActions implements DictcollectionInterface {
 

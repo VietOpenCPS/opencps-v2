@@ -176,8 +176,6 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					if (key.equals(DeliverableTerm.NGAY_QD)) {
 						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
-				}else if(jsonObject.getString(key).contains(StringPool.SPACE)){
-					document.addTextSortable(indexKey, jsonObject.getString(key).toLowerCase());
 				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));

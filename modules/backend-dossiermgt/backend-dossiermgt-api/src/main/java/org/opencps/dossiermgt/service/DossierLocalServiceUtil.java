@@ -435,6 +435,11 @@ public class DossierLocalServiceUtil {
 		return getService().findByVnpostalStatus(groupId, vnpostalStatus);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findDictItemByServiceDomain(
+		String serviceLevel, long groupId) {
+		return getService().findDictItemByServiceDomain(serviceLevel, groupId);
+	}
+
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByDay(
 		String date) {
 		return getService().findDossierByDay(date);
@@ -448,6 +453,12 @@ public class DossierLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.Dossier> findDossierByGroup(
 		long groupId) {
 		return getService().findDossierByGroup(groupId);
+	}
+
+	public static java.util.List<org.opencps.dossiermgt.input.model.DictItemModel> findServiceConfigByServiceLevel(
+		String serviceLevel, long groupId) {
+		return getService()
+				   .findServiceConfigByServiceLevel(serviceLevel, groupId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {

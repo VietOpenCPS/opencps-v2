@@ -1225,23 +1225,38 @@ public class DefaultSignatureManagementImpl
 								DeliverableLocalServiceUtil.getByCode(
 										item.getDeliverableCode());
 						if (Validator.isNotNull(fileEntryId)) {
-							DossierPart dossierPart =
-									DossierPartLocalServiceUtil.fetchByTemplatePartNo(
-											item.getGroupId(), item.getDossierTemplateNo(),
-											item.getDossierPartNo());
-							DeliverableType dlvType =
-									DeliverableTypeLocalServiceUtil.getByCode(
-											item.getGroupId(), dossierPart.getDeliverableType());
+							if (deliverable.getDeliverableState() == 1) {
+								DossierPart dossierPart =
+										DossierPartLocalServiceUtil.fetchByTemplatePartNo(
+												item.getGroupId(), item.getDossierTemplateNo(),
+												item.getDossierPartNo());
+								DeliverableType dlvType =
+										DeliverableTypeLocalServiceUtil.getByCode(
+												item.getGroupId(), dossierPart.getDeliverableType());
 
-							JSONObject formDataContent = JSONFactoryUtil.createJSONObject(item.getFormData());
-							formDataContent =AutoFillFormData.sampleDataBindingDeliverable(
-									dlvType.getMappingData(), dossier.getDossierId(),
-									serviceContext);
-							deliverable.setFormData(formDataContent.toString());
-							_log.info("Deliverable " + JSONFactoryUtil.looseSerialize(deliverable));
-							deliverable.setFileAttachs(String.valueOf(fileEntryId));
-							DeliverableLocalServiceUtil.updateDeliverable(
-									deliverable);
+								JSONObject formDataContent = JSONFactoryUtil.createJSONObject(item.getFormData());
+								formDataContent = AutoFillFormData.sampleDataBindingDeliverable(
+										dlvType.getMappingData(), dossier.getDossierId(),
+										serviceContext);
+								if (Validator.isNotNull(formDataContent)) {
+									if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
+										formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
+									}
+									if (formDataContent.has(DeliverableTerm.GOV_AGENCY_CODE)) {
+										formDataContent.remove(DeliverableTerm.GOV_AGENCY_CODE);
+									}
+									if (formDataContent.has(DeliverableTerm.DELIVERABLE_STATE)) {
+										formDataContent.remove(DeliverableTerm.DELIVERABLE_STATE);
+									}
+									if (formDataContent.has(DeliverableTerm.ISSUE_DATE)) {
+										formDataContent.remove(DeliverableTerm.ISSUE_DATE);
+									}
+								}
+								deliverable.setFormData(formDataContent.toString());
+								deliverable.setFileAttachs(String.valueOf(fileEntryId));
+								DeliverableLocalServiceUtil.updateDeliverable(
+										deliverable);
+							}
 						}
 					}
 				}

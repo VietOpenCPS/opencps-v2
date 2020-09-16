@@ -207,7 +207,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("Email", dossier.getContactEmail());
 		object.put("Fax", dossier.getContactTelNo()); // ko bb
 		object.put("SoDienThoai", dossier.getContactTelNo());
-		object.put("TrichYeuHoSo", dossier.getDossierNote());
+		object.put("TrichYeuHoSo", dossier.getDossierName());
 		object.put("NgayTiepNhan", convertDate2String(dossier.getReceiveDate()));
 		object.put("NgayHenTra", convertDate2String(dossier.getDueDate()));
 		object.put("TrangThaiHoSo", getMappingStatus(groupId, dossier));
@@ -386,7 +386,7 @@ public class DVCQGIntegrationActionImpl implements DVCQGIntegrationAction {
 		object.put("Email", dossier.getContactEmail());
 		object.put("Fax", dossier.getContactTelNo()); // ko bb
 		object.put("SoDienThoai", dossier.getContactTelNo());
-		object.put("TrichYeuHoSo", dossier.getDossierNote());
+		object.put("TrichYeuHoSo", dossier.getDossierName());
 		object.put("NgayTiepNhan", convertDate2String(dossier.getReceiveDate()));
 		object.put("NgayHenTra", convertDate2String(dossier.getDueDate()));
 		object.put("TrangThaiHoSo", getMappingStatus(groupId, dossier));
