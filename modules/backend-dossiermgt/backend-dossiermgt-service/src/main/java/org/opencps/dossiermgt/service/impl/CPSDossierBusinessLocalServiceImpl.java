@@ -6819,7 +6819,6 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 			Exception.class })
 	public Dossier createDossierFrequency(long groupId, Company company, User user,
 										  ServiceContext serviceContext, ProfileInModel input)  throws Exception {
-		//todo add check permission
 		try{
 			ProcessOption option = getProcessOption(input.getServiceCode(), input.getGovAgencyCode(),
 					input.getTemplateNo(), groupId);

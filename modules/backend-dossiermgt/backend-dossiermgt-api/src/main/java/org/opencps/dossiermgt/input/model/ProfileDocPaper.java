@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProfileDocPaper {
     public Integer id;
 
-    public String profile_id;
+    public Integer profile_id;
 
     public String paper_name;
 

@@ -54,13 +54,18 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
             List<ProfileReceiver> listDossiers = integrationAction.getDossiers(token);
+            boolean result;
 
             for(ProfileReceiver oneDossier : listDossiers) {
                 if(Validator.isNotNull(oneDossier.getStatus())) {
-                    ProfileInModel profile = integrationAction.getDetailDossier(token,oneDossier.getProfileId());
-                    if(Validator.isNotNull(profile)) {
-                        //todo thong tin ho so
-
+                    ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
+                    if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                        result = integrationAction.crawlDossierLGSP(profile);
+                        if(result) {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
+                        } else {
+                            integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+                        }
                     }
                 }
             }
@@ -115,7 +120,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                     "        \"system_received\": \"3\",\n" +
                     "        \"creation_date\": \"2020-09-09\",\n" +
                     "        \"applicants_type\": 3,\n" +
-                    "        \"applieants_id\": \"001\",\n" +
+                    "        \"applicants_id\": \"001\",\n" +
                     "        \"org_impl_code\": \"\",\n" +
                     "        \"accept_date\": \"2020-09-09\",\n" +
                     "        \"appointment_date\": \"2020-09-09\",\n" +
@@ -133,7 +138,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                     "                \"content_type\": \"doc\",\n" +
                     "                \"attachment_name\": \"Văn bản thông báo\",\n" +
                     "                \"content_transfer_encoded\": null,\n" +
-                    "                \"attachment_file_url\": null,\n" +
+                    "                \"attachment_file_url\": \"https://dichvucong3.mic.gov.vn/documents/10180/810002/13101.docx?version=1.0\",\n" +
                     "                \"is_verified\": 1,\n" +
                     "                \"description\": null,\n" +
                     "                \"is_deleted\": 0\n" +

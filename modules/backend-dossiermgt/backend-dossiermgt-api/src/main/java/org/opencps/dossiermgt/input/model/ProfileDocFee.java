@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProfileDocFee {
     public Integer id;
 
-    public String profile_id;
+    public Integer profile_id;
 
     public String fee_name;
 
@@ -25,11 +25,11 @@ public class ProfileDocFee {
         this.id = id;
     }
 
-    public String getProfile_id() {
+    public Integer getProfile_id() {
         return profile_id;
     }
 
-    public void setProfile_id(String profile_id) {
+    public void setProfile_id(Integer profile_id) {
         this.profile_id = profile_id;
     }
 

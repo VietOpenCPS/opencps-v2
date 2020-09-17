@@ -144,8 +144,8 @@ public class ProfileInModel {
         return applicants_id;
     }
 
-    public void setApplicants_id(String applicants_id) {
-        this.applicants_id = applicants_id;
+    public void setApplicants_id(String applieants_id) {
+        this.applicants_id = applieants_id;
     }
 
     public String getOrg_impl_code() {

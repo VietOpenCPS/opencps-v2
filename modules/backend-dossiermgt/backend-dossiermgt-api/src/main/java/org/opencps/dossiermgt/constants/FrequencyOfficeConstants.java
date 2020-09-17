@@ -29,6 +29,8 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_GET_TOKEN = "getToken";
     public static final String CONFIG_GET_LIST_DOSSIERS = "getListDossier";
     public static final String CONFIG_GET_DETAIL_DOSSIERS = "getDetailDossier";
+    public static final String CONFIG_UPDATE_STATUS_RECEIVER = "updateStatusReceiver";
+    public static final String CONFIG_SEND_STATUS_RECEIVER = "sendStatusProfile";
     public static final String CONFIG_USER_LGSP = "userLGSP";
     public static final String CONFIG_PASS_LGSP = "passLGSP";
     public static final String CONFIG_UNIT_CODE = "madonvi";
@@ -38,5 +40,8 @@ public class FrequencyOfficeConstants {
     public static final String STATUS_PULL_OUT = "RUT";
     public static final String STATUS_DENIED = "TUCHOI";
     public static final String STATUS_RESULT = "KETQUA";
+
+    public static final String STATUS_SUCCESS = "done";
+    public static final String STATUS_FAIL = "fail";
 
 }

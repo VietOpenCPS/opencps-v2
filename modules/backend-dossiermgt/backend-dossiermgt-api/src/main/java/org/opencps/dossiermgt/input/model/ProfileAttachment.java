@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProfileAttachment {
     public Integer id;
 
-    public String profile_id;
+    public Integer profile_id;
 
     public String content_type;
 
@@ -25,6 +25,16 @@ public class ProfileAttachment {
 
     public String stringContent_transfer_encoded;
 
+    public String attachment_file_url;
+
+    public String getAttachment_file_url() {
+        return attachment_file_url;
+    }
+
+    public void setAttachment_file_url(String attachment_file_url) {
+        this.attachment_file_url = attachment_file_url;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -33,11 +43,11 @@ public class ProfileAttachment {
         this.id = id;
     }
 
-    public String getProfile_id() {
+    public Integer getProfile_id() {
         return profile_id;
     }
 
-    public void setProfile_id(String profile_id) {
+    public void setProfile_id(Integer profile_id) {
         this.profile_id = profile_id;
     }
 

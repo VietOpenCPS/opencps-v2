@@ -7,6 +7,15 @@ public class ProfileReceiver {
     private String createTime;
     private String status;
     private String status_profile;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Integer getProfileId() {
         return profileId;

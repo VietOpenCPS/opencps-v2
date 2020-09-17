@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ProfileOwner {
     public Integer id;
-    public String profile_id;
+    public Integer profile_id;
     public String name;
     public String address;
     public String tel;
@@ -19,11 +19,11 @@ public class ProfileOwner {
         this.id = id;
     }
 
-    public String getProfile_id() {
+    public Integer getProfile_id() {
         return profile_id;
     }
 
-    public void setProfile_id(String profile_id) {
+    public void setProfile_id(Integer profile_id) {
         this.profile_id = profile_id;
     }
 

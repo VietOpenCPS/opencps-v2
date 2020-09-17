@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.opencps.backend.dossiermgt.logistic.ViettelPostTerm;
 import org.opencps.backend.dossiermgt.service.util.UtilsFile;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyService;
 import org.opencps.backend.dossiermgt.serviceapi.ApiThirdPartyServiceImpl;
@@ -29,10 +30,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
 
 public class FrequencyIntegrationActionImpl implements FrequencyIntegrationAction {
     private JSONObject configJson;
@@ -58,8 +57,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     }
 
     @Override
-    public void crawlDossierLGSP(ProfileInModel profile) throws Exception{
+    public boolean crawlDossierLGSP(ProfileInModel profile) throws Exception{
         try {
+            _log.info("Crawling dossier: " + profile);
+
             long groupId = serverConfig.getGroupId();
             long companyId = serverConfig.getCompanyId();
             User user = UserLocalServiceUtil.getUserByEmailAddress(companyId,
@@ -82,10 +83,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             String serviceCodeCTS = profile.getProcedures_code();
             JSONArray listServiceConfig = this.configJson.getJSONArray("serviceConfig");
-            if(Validator.isNull(listServiceConfig) || listServiceConfig.length() == 0) {
-                throw new Exception("No service config");
-            }
-
             if(Validator.isNull(listServiceConfig) || listServiceConfig.length() == 0) {
                 throw new Exception("No service config");
             }
@@ -122,6 +119,12 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
             }
 
             if(status.equals(FrequencyOfficeConstants.STATUS_RECEIVE)) {
+                Dossier dossier = null;
+                dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
+                if(Validator.isNotNull(dossier)) {
+                    _log.error("Ho so da duoc tiep nhan: " + dossier.getDossierNo());
+                    return true;
+                }
                 //mapping service config info
                 int length = listServiceConfig.length();
                 JSONObject oneServiceConfig;
@@ -136,31 +139,39 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                     }
                 }
 
-                if(profile.getServiceCode().isEmpty()) {
+                if(Validator.isNull(profile.getServiceCode())
+                        || profile.getServiceCode().isEmpty()
+                        || Validator.isNull(profile.getGovAgencyCode())
+                        || profile.getGovAgencyCode().isEmpty()
+                        || Validator.isNull(profile.getTemplateNo())
+                        || profile.getTemplateNo().isEmpty()
+                ) {
                     throw new Exception("No service code mapped when create dossier");
                 }
 
-                Dossier dossier = CPSDossierBusinessLocalServiceUtil.createDossierFrequency(
+                dossier = CPSDossierBusinessLocalServiceUtil.createDossierFrequency(
                         groupId, company, user, serviceContext, profile);
                 this.addDossierFile(profile, groupId, serviceContext, dossier);
             } else {
                 Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
                 if(Validator.isNull(dossier)) {
-                    throw new Exception("No dossier found to update with referenceId = "+ profile.getRef_code());
+                    throw new Exception("No dossier found to update with referenceId = " + profile.getRef_code());
                 }
                 CPSDossierBusinessLocalServiceUtil.updateDossierFrequencyAction(groupId, serviceContext, dossier, profile, actionCode);
                 if(status.equals(FrequencyOfficeConstants.STATUS_UPDATE)){
                     this.addDossierFile(profile, groupId, serviceContext, dossier);
                 }
             }
+            return true;
         }catch (Exception e) {
-            throw new Exception(e.getMessage());
+            _log.error("Error when crawlDossierLGSP: " + e.getMessage());
+            return false;
         }
     }
 
     private void addDossierFile(ProfileInModel profile, long groupId, ServiceContext serviceContext, Dossier dossier) throws Exception{
         try {
-            String encodeBase64 = "";
+            String urlFile = "";
             String fileType = "";
             String displayName = "";
             String mimeType = "";
@@ -168,10 +179,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 
             if(Validator.isNotNull(listFileAttachment) && listFileAttachment.size() > 0) {
                 for(ProfileAttachment fileAttach: listFileAttachment) {
-                    encodeBase64 = fileAttach.getContent_transfer_encoded();
-                    fileType     = fileAttach.getContent_type();
+                    urlFile  = fileAttach.getAttachment_file_url();
+                    fileType = fileAttach.getContent_type();
 
-                    if(fileType.isEmpty() || encodeBase64.isEmpty()) {
+                    if(Validator.isNull(fileType) || fileType.isEmpty() || urlFile.isEmpty() || Validator.isNull(urlFile)) {
                         continue;
                     }
 
@@ -184,12 +195,8 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                             ? fileAttach.getAttachment_name() + "." + fileType
                             : System.currentTimeMillis() + "." + fileType;
 
-                    byte[] decoded = UtilsFile.decodeBase64(encodeBase64);
-                    if(Validator.isNull(decoded) || decoded.length == 0) {
-                        continue;
-                    }
 
-                    InputStream inputStream = UtilsFile.base64toFile(decoded);
+                    InputStream inputStream = new URL(urlFile).openStream();
                     if(Validator.isNull(inputStream)) {
                         continue;
                     }
@@ -241,7 +248,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 //                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
 //                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
             //todo rollback this url
-            String urlGetDossiers = "127.0.0.1:8080/o/rest/v2/hshc/dossiers";
+            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -253,14 +260,14 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("Response get list dossier null");
             }
 
-            JSONObject profileReceivers = response.getJSONObject("profileReceivers");
+//            JSONObject profileReceivers = response.getJSONObject("profileReceivers");
+            String profileReceivers = response.getString("profileReceivers");
 
             if(Validator.isNull(profileReceivers)) {
                 throw new Exception("Response profileReceivers null");
             }
             objectMapper = new ObjectMapper();
-            String profileReceiversString = objectMapper.writeValueAsString(profileReceivers);
-            return Arrays.asList(objectMapper.readValue(profileReceiversString, ProfileReceiver[].class));
+            return Arrays.asList(objectMapper.readValue(profileReceivers, ProfileReceiver[].class));
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -273,7 +280,7 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
 //                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
 //                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
             //todo rollback this url
-            String urlGetDetailDossier = "127.0.0.1:8080/o/rest/v2/hshc/dossier";
+            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -284,14 +291,37 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("Response get list dossier null");
             }
 
-            JSONObject profileDetail  = response.getJSONObject("profileInmodel");
+            String profileDetail  = response.getString("profileInmodel");
             if(Validator.isNull(profileDetail)) {
                 throw new Exception("Profile in model is null");
             }
 
             objectMapper = new ObjectMapper();
-            String profileDetailJson= objectMapper.writeValueAsString(profileDetail);
-            return objectMapper.readValue(profileDetailJson, ProfileInModel.class);
+            return objectMapper.readValue(profileDetail, ProfileInModel.class);
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateStatusReceiver(String token, Integer profileId, String status) throws Exception {
+        //case 3.7
+        try {
+            String urlUpdateStatusReceiver = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UPDATE_STATUS_RECEIVER) + "?profile_id=" +
+                    profileId + "&status=" + status;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+
+            JSONObject response = apiService.callApi(urlUpdateStatusReceiver, headers, null);
+            if(Validator.isNull(response)) {
+                throw new Exception("Response update status Receiver null");
+            }
+            String statusUpdate = response.getString("status");
+            _log.info("Response update status Receiver: " + statusUpdate);
+
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
