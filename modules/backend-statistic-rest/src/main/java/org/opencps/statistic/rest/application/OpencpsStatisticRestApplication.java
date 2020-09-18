@@ -2279,18 +2279,22 @@ public class OpencpsStatisticRestApplication extends Application {
 		}
 		String fromReceiveDate = query.getFromReceiveDate();
 		String toReceiveDate = query.getToReceiveDate();
-		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromReceiveDate);
-		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toReceiveDate);
 		String serviceLevel = query.getServiceLevel();
+		Date fromDate = null;
+		Date toDate = null;
 			
 		if (Validator.isNotNull(query.getAgency())) {
 			params.put(DossierTerm.AGENCYS, query.getAgency());
 		}
 		if (Validator.isNotNull(fromReceiveDate)) {
+			String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromReceiveDate);
 			params.put(DossierTerm.FROM_RECEIVEDATE, from);
+			fromDate = APIDateTimeUtils.convertStringToDate(fromReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
 		}
 		if (Validator.isNotNull(toReceiveDate)) {
+			String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toReceiveDate);
 			params.put(DossierTerm.TO_RECEIVEDATE, to);
+			toDate = APIDateTimeUtils.convertStringToDate(toReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
 		}
 		if (Validator.isNotNull(serviceLevel)) {
 			params.put(DossierTerm.SERVICE_LEVEL, serviceLevel);
@@ -2299,8 +2303,7 @@ public class OpencpsStatisticRestApplication extends Application {
 		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
 		params.put(DossierTerm.SYSTEM_ID, strSystemId);
 		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
-		Date fromDate = APIDateTimeUtils.convertStringToDate(fromReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
-		Date toDate = APIDateTimeUtils.convertStringToDate(toReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
+		
 		Company company;
 		try {
 			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
@@ -2360,8 +2363,8 @@ public class OpencpsStatisticRestApplication extends Application {
 						data.setServiceName(services.get(serviceCode));
 						
 						List<Document> dossiers = mapResults.get(agency).get(serviceCode);
+						if (dossiers != null && fromDate != null && toDate != null) {
 						updateDossierStatisticData(data, dossiers, fromDate, toDate);
-												
 						obj.put("govAgencyCode", agency);
 						obj.put("govAgencyName", govs.get(agency));
 						obj.put("serviceCode", serviceCode);
@@ -2377,7 +2380,8 @@ public class OpencpsStatisticRestApplication extends Application {
 						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
 						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
 							
-						results.put(obj);											
+						results.put(obj);
+						}																													
 					}
 				}				
 			ResponseBuilder builder = Response.ok(results.toJSONString());
