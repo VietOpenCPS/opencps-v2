@@ -222,4 +222,21 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
+
+    @Override
+    public Response sendStatusProfile(long dossierId) {
+        try {
+            List<ServerConfig> listConfig = ServerConfigLocalServiceUtil.getByServerAndProtocol(DOSSIER_BTTTT, DOSSIER_BTTTT);
+            ServerConfig serverConfig = listConfig.get(0);
+            FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
+            String token = integrationAction.getToken();
+            integrationAction.sendStatusProfile(token, dossierId);
+
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+
+        } catch (Exception e) {
+            _log.error("Error when send status profile: " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
+        }
+    }
 }

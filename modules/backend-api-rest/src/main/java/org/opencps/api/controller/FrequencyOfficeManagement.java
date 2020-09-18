@@ -36,5 +36,9 @@ public interface FrequencyOfficeManagement {
     @Produces(MediaType.APPLICATION_JSON)
     public Response synDossierFake(Object profile);
 
-
+    @POST
+    @Path("/{dossierId}/sendStatusProfile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendStatusProfile(@PathParam("dossierId") long dossierId);
 }

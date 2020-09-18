@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FrequencyIntegrationActionImpl implements FrequencyIntegrationAction {
@@ -353,5 +354,68 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public void sendStatusProfile(String token, long dossierId) throws Exception {
 
+        try {
+            Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+            if(Validator.isNull(dossier)) {
+                throw new Exception("No dossier found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getDossierNo())) {
+                throw new Exception("No dossierNo found with id: " + dossierId);
+            }
+
+            if(Validator.isNull(dossier.getReferenceUid())) {
+                throw new Exception("No ReferenceId found with id: " + dossierId);
+            }
+
+            Integer statusProfile = mappingDossierStatus(dossier.getDossierStatus());
+            if(statusProfile.equals(0)) {
+                throw new Exception("Status profile: 0");
+            }
+
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_SEND_STATUS_RECEIVER);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, Object> body = new HashMap<>();
+            body.put(FrequencyOfficeConstants.TYPE, "status");
+            body.put(FrequencyOfficeConstants.SOURCE_ID, dossier.getDossierNo());
+            body.put(FrequencyOfficeConstants.REF_CODE, dossier.getReferenceUid());
+            body.put(FrequencyOfficeConstants.STATUS_PROFILE, statusProfile);
+            body.put(FrequencyOfficeConstants.PROCESS_OFFICIALS, "Admin");
+            body.put(FrequencyOfficeConstants.TIME_OF_PROCESS, getCurrentDateStr("yyyy-MM-dd", new Date()));
+            body.put(FrequencyOfficeConstants.FROM_UNIT_CODE, this.configJson.get(FrequencyOfficeConstants.CONFIG_FROM_UNIT_CODE));
+            body.put(FrequencyOfficeConstants.TO_UNIT_CODE, this.configJson.get(FrequencyOfficeConstants.CONFIG_TO_UNIT_CODE));
+
+            JSONObject response = apiService.callApi(urlSyncDossier, headers, body);
+            _log.info("Result send dossier status: " + response);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private Integer mappingDossierStatus(String dossierStatus) {
+        //get action code
+        try {
+            JSONArray listDossierStatus = this.configJson.getJSONArray(FrequencyOfficeConstants.CONFIG_STATUS);
+            int lengthListDossierStatus = listDossierStatus.length();
+            JSONObject oneDossierStatus;
+            for(int i = 0; i< lengthListDossierStatus; i ++) {
+                oneDossierStatus = listDossierStatus.getJSONObject(i);
+                if(oneDossierStatus.getString(FrequencyOfficeConstants.CONFIG_STATUS_MCDT).equals(dossierStatus)) {
+                    return Integer.valueOf(oneDossierStatus.getString(FrequencyOfficeConstants.CONFIG_STATUS_LGSP));
+                }
+            }
+            return 0;
+        } catch (Exception e) {
+            _log.info("Error when mapping dossier status: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    private String getCurrentDateStr(String format, Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
     }
 }

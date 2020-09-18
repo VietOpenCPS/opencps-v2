@@ -38,6 +38,8 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_STATUS = "dossierStatus";
     public static final String CONFIG_STATUS_MCDT = "MCDT";
     public static final String CONFIG_STATUS_LGSP = "LGSP";
+    public static final String CONFIG_FROM_UNIT_CODE = "from_unit_code";
+    public static final String CONFIG_TO_UNIT_CODE = "to_unit_code";
 
     //Dossier status
     public static final String STATUS_RECEIVE = "TIEPNHAN";
@@ -49,4 +51,13 @@ public class FrequencyOfficeConstants {
     public static final String STATUS_SUCCESS = "done";
     public static final String STATUS_FAIL = "fail";
 
+    //Field body update Dossier
+    public static final String TYPE = "type";
+    public static final String SOURCE_ID = "source_id";
+    public static final String REF_CODE = "ref_code";
+    public static final String STATUS_PROFILE = "status_profile";
+    public static final String PROCESS_OFFICIALS = "process_officials";
+    public static final String TIME_OF_PROCESS = "time_of_process";
+    public static final String FROM_UNIT_CODE = "from_unit_code";
+    public static final String TO_UNIT_CODE = "to_unit_code";
 }
