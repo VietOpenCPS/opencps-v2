@@ -260,7 +260,7 @@ public class DossierTerm {
 	public static final int DATE_OPTION_FIVE = 5;
 	public static final int DATE_OPTION_RESET_DUE_DATE = 6;
 	public static final int DATE_OPTION_SEVEN = 7;
-	//public static final int DATE_OPTION_RESET_DUE_DATE = 8;
+	public static final int CREATE_SUBMIT_DATE = 8;
 	//PAUSE OVERDUE
 	public static final int DATE_OPTION_PAUSE_OVERDUE = 9;
 	public static final int DATE_OPTION_TEN = 10;
