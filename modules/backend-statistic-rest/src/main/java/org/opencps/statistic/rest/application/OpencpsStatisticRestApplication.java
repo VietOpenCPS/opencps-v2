@@ -84,7 +84,10 @@ import org.opencps.dossiermgt.constants.DossierTerm;
 import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.constants.ServerConfigTerm;
 import org.opencps.dossiermgt.model.PaymentFile;
+import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.model.ServiceInfo;
 import org.opencps.dossiermgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.dossiermgt.service.ServiceInfoLocalServiceUtil;
 import org.opencps.statistic.model.OpencpsDossierStatistic;
 import org.opencps.statistic.model.OpencpsDossierStatisticManual;
 import org.opencps.statistic.rest.dto.DossierSearchModel;
@@ -2259,6 +2262,134 @@ public class OpencpsStatisticRestApplication extends Application {
 		return builder.build();	
 	}
 	
+	@GET
+	@Path("/dossier/summary")
+	public Response dossierReportSummary(@HeaderParam("groupId") long groupId,
+			@BeanParam DossierSearchModel query) {
+		DossierActions actions = new DossierActionsImpl();
+		Sort[] sorts = null;
+		sorts = new Sort[] { SortFactoryUtil.create(DossierTerm.CREATE_DATE + ReadFilePropertiesUtils.get(ConstantUtils.SORT_PATTERN), Sort.STRING_TYPE,
+				true) };
+		LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+		if (groupId > 0) {
+			params.put(Field.GROUP_ID, String.valueOf(groupId));			
+		}
+		else {
+			params.put(Field.GROUP_ID, StringPool.BLANK);
+		}
+		String fromReceiveDate = query.getFromReceiveDate();
+		String toReceiveDate = query.getToReceiveDate();
+		String from = APIDateTimeUtils.convertNormalDateToLuceneDate(fromReceiveDate);
+		String to = APIDateTimeUtils.convertNormalDateToLuceneDate(toReceiveDate);
+		String serviceLevel = query.getServiceLevel();
+			
+		if (Validator.isNotNull(query.getAgency())) {
+			params.put(DossierTerm.AGENCYS, query.getAgency());
+		}
+		if (Validator.isNotNull(fromReceiveDate)) {
+			params.put(DossierTerm.FROM_RECEIVEDATE, from);
+		}
+		if (Validator.isNotNull(toReceiveDate)) {
+			params.put(DossierTerm.TO_RECEIVEDATE, to);
+		}
+		if (Validator.isNotNull(serviceLevel)) {
+			params.put(DossierTerm.SERVICE_LEVEL, serviceLevel);
+		}
+		//Add common params
+		String strSystemId = DossierStatisticConstants.ALL_SYSTEM;
+		params.put(DossierTerm.SYSTEM_ID, strSystemId);
+		params.put(DossierTerm.TOP, DossierStatisticConstants.TOP_STATISTIC);
+		Date fromDate = APIDateTimeUtils.convertStringToDate(fromReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
+		Date toDate = APIDateTimeUtils.convertStringToDate(toReceiveDate + " 00:00:00", APIDateTimeUtils._NORMAL_DATE_TIME);
+		Company company;
+		try {
+			company = CompanyLocalServiceUtil.getCompanyByMx(PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID));
+			long companyId = company.getCompanyId(); 
+			int startOff = QueryUtil.ALL_POS;
+			int endOff = QueryUtil.ALL_POS;
+			
+			JSONObject jsonData = actions.getDossiers(-1, companyId, groupId, params, sorts, startOff, endOff, new ServiceContext());
+			List<Document> datas = (List<Document>) jsonData.get(ConstantUtils.DATA);
+			List<GetDossierData> dossierData = new ArrayList<>();
+			int total = jsonData.getInt(ConstantUtils.TOTAL);
+			Map<String, Map<String, List<Document>>> mapResults = new HashMap<String, Map<String,List<Document>>>();
+			Map<String, String> govs = new HashMap<String, String>();
+			Map<String, String> services = new HashMap<String, String>();
+			
+			for (Document doc : datas) {
+				String agency = doc.get(DossierTerm.GOV_AGENCY_CODE);
+				String agencyName = doc.get(DossierTerm.GOV_AGENCY_NAME);
+				
+				String serviceCode = doc.get(DossierTerm.SERVICE_CODE);
+				String serviceName = doc.get(DossierTerm.SERVICE_NAME);
+				
+				if (!govs.containsKey(agency)) {
+					govs.put(agency, agencyName);
+				}
+				if (!services.containsKey(serviceCode)) {
+					services.put(serviceCode, serviceName);
+				}
+				if (mapResults.get(agency) != null) {
+					Map<String, List<Document>> mapGovs = mapResults.get(agency);
+					List<Document> lstDossiers = null;
+					if (mapGovs.containsKey(serviceCode)) {
+						lstDossiers = mapGovs.get(serviceCode);
+					}
+					else {
+						lstDossiers = new ArrayList<Document>();
+						mapGovs.put(serviceCode, lstDossiers);
+					}
+					lstDossiers.add(doc);
+				}
+				else {
+					Map<String, List<Document>> mapGovs = new HashMap<String, List<Document>>();
+					List<Document> lstDossiers = new ArrayList<Document>();
+					mapGovs.put(serviceCode, lstDossiers);
+					lstDossiers.add(doc);
+					mapResults.put(agency, mapGovs);
+				}
+			}
+			
+			JSONArray results = JSONFactoryUtil.createJSONArray();
+			
+				for (String agency : mapResults.keySet()) {
+					for (String serviceCode : mapResults.get(agency).keySet()) {
+						JSONObject obj = JSONFactoryUtil.createJSONObject();											
+						RealtimeData data = new RealtimeData();
+						data.setServiceCode(serviceCode);
+						data.setServiceName(services.get(serviceCode));
+						
+						List<Document> dossiers = mapResults.get(agency).get(serviceCode);
+						updateDossierStatisticData(data, dossiers, fromDate, toDate);
+												
+						obj.put("govAgencyCode", agency);
+						obj.put("govAgencyName", govs.get(agency));
+						obj.put("serviceCode", serviceCode);
+						obj.put("serviceName", services.get(serviceCode));
+						obj.put("totalCount", data.getTotalCount());
+						obj.put("dossierOnline3Count", data.getDossierOnline3Count());
+						obj.put("dossierOnline4Count", data.getDossierOnline4Count());
+						obj.put("dossierOnegate3Count", data.getDossierOnegate3Count());
+						obj.put("dossierOnegate4Count", data.getDossierOnegate4Count());
+						obj.put("releaseDossierOnline3Count", data.getReleaseDossierOnline3Count());
+						obj.put("releaseDossierOnline4Count", data.getReleaseDossierOnline4Count());
+						obj.put("releaseDossierOnegate3Count", data.getReleaseDossierOnegate3Count());
+						obj.put("releaseDossierOnegate4Count", data.getReleaseDossierOnegate4Count());
+						obj.put("serviceLevel", Integer.valueOf(dossiers.get(0).get(DossierTerm.SERVICE_LEVEL)));
+							
+						results.put(obj);											
+					}
+				}				
+			ResponseBuilder builder = Response.ok(results.toJSONString());
+			return builder.build();
+		} catch (PortalException e) {
+			_log.debug(e);
+		}	
+
+		ResponseBuilder builder = Response.ok("");
+		return builder.build();	
+	}
+	
 	public void updateDossierStatisticData(RealtimeData statisticData, List<Document> dossiers,
 			Date fromStatisticDate, Date toStatisticDate) {
 //		int month = LocalDate.now().getMonthValue();
@@ -2312,11 +2443,21 @@ public class OpencpsStatisticRestApplication extends Application {
 				statisticData.setReleaseDossierSatCount(statisticData.getReleaseDossierSatCount() + 1);
 			}
 			int serviceLevel = GetterUtil.getInteger(dossierData.get(DossierTerm.SERVICE_LEVEL));
-			if (LEVEL_3 == serviceLevel) {
+			// hồ sơ trực tuyến mức 3
+			if (LEVEL_3 == serviceLevel && online) {
 				statisticData.setDossierOnline3Count(statisticData.getDossierOnline3Count() + 1);
 			}
-			if (LEVEL_4 == serviceLevel) {
+			// hồ sơ trực tuyến mức 4
+			if (LEVEL_4 == serviceLevel && online) {
 				statisticData.setDossierOnline4Count(statisticData.getDossierOnline4Count() + 1);
+			}
+			// hồ sơ trực tiếp mức 3
+			if (LEVEL_3 == serviceLevel && !online) {
+				statisticData.setDossierOnegate3Count(statisticData.getDossierOnegate3Count() + 1);
+			}
+			// hồ sơ trực tiếp mức 4
+			if (LEVEL_4 == serviceLevel && !online) {
+				statisticData.setDossierOnegate4Count(statisticData.getDossierOnegate4Count() + 1);
 			}
 			//
 			statisticData.setTotalCount(statisticData.getTotalCount() + 1);
@@ -2378,7 +2519,25 @@ public class OpencpsStatisticRestApplication extends Application {
 						statisticData.setCancelledCount(statisticData.getCancelledCount() + 1);
 					} else {
 						// hồ sơ đã hoàn thành trong tháng	
-						statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);						
+						statisticData.setReleaseCount(statisticData.getReleaseCount() + 1);
+						
+						// hồ sơ trực tuyến mức 3 đã hoàn thành
+						if (LEVEL_3 == serviceLevel && online) {
+							statisticData.setReleaseDossierOnline3Count(statisticData.getReleaseDossierOnline3Count() + 1);
+						}
+						// hồ sơ trực tuyến mức 4 đã hoàn thành
+						if (LEVEL_4 == serviceLevel && online) {
+							statisticData.setReleaseDossierOnline4Count(statisticData.getReleaseDossierOnline4Count() + 1);
+						}
+						// hồ sơ trực tiếp mức 3 đã hoàn thành
+						if (LEVEL_3 == serviceLevel && !online) {
+							statisticData.setReleaseDossierOnegate3Count(statisticData.getReleaseDossierOnegate3Count() + 1);
+						}
+						// hồ sơ trực tiếp mức 4 đã hoàn thành
+						if (LEVEL_4 == serviceLevel && !online) {
+							statisticData.setReleaseDossierOnegate4Count(statisticData.getReleaseDossierOnegate4Count() + 1);
+						}
+						
 						if (dossierStatus.contentEquals(UNRESOLVED)) {
 							// từ chối giải quyết => không tính hạn xử lý
 							statisticData.setUnresolvedCount(statisticData.getUnresolvedCount() + 1);
@@ -2461,6 +2620,8 @@ public class OpencpsStatisticRestApplication extends Application {
 			return Response.status(HttpURLConnection.HTTP_BAD_METHOD).entity(jsonResult.toJSONString()).build();
 		}
 	}
+	
+	
 	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
 	{
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
@@ -2476,5 +2637,5 @@ public class OpencpsStatisticRestApplication extends Application {
 	public static final String PROCESSING = "processing";
 	public static final String CANCELLED = "cancelled";
 	public static final String UNRESOLVED = "unresolved";
-
+	
 }
