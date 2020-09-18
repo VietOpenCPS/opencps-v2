@@ -31,9 +31,14 @@ public class FrequencyOfficeConstants {
     public static final String CONFIG_GET_DETAIL_DOSSIERS = "getDetailDossier";
     public static final String CONFIG_UPDATE_STATUS_RECEIVER = "updateStatusReceiver";
     public static final String CONFIG_SEND_STATUS_RECEIVER = "sendStatusProfile";
+    public static final String CONFIG_SYNC_DOSSIER = "syncDossier";
     public static final String CONFIG_USER_LGSP = "userLGSP";
     public static final String CONFIG_PASS_LGSP = "passLGSP";
     public static final String CONFIG_UNIT_CODE = "madonvi";
+    public static final String CONFIG_STATUS = "dossierStatus";
+    public static final String CONFIG_STATUS_MCDT = "MCDT";
+    public static final String CONFIG_STATUS_LGSP = "LGSP";
+
     //Dossier status
     public static final String STATUS_RECEIVE = "TIEPNHAN";
     public static final String STATUS_UPDATE = "CAPNHAT";

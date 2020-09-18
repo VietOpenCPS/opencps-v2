@@ -52,6 +52,23 @@ public class ApiThirdPartyServiceImpl implements ApiThirdPartyService{
     }
 
     @Override
+    public JSONObject callApi(String url, HttpHeaders headers, Object body) {
+        try {
+            _log.info("Calling api: " + url);
+            HttpEntity<Object> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity( url, entity , String.class);
+            _log.info("Response api: " + response);
+
+            JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.getBody());
+            System.out.println(jsonObject);
+            return jsonObject;
+        } catch (Exception e) {
+            _log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public JSONArray callApiWithResponseArray(String url, HttpHeaders headers, Map<String, Object> body) {
         try {
             _log.info("Calling api: " + url);

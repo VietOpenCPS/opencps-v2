@@ -59,8 +59,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public boolean crawlDossierLGSP(ProfileInModel profile) throws Exception{
         try {
-            _log.info("Crawling dossier: " + profile);
-
             long groupId = serverConfig.getGroupId();
             long companyId = serverConfig.getCompanyId();
             User user = UserLocalServiceUtil.getUserByEmailAddress(companyId,
@@ -244,11 +242,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public List<ProfileReceiver> getDossiers(String token) throws Exception {
         try{
-//            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
-//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
-            //todo rollback this url
-            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
+            String urlGetDossiers = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_LIST_DOSSIERS) + "?unit_code=" +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE);
+//            String urlGetDossiers = "http://localhost:8080/o/rest/v2/hshc/dossiers";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -260,7 +257,6 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
                 throw new Exception("Response get list dossier null");
             }
 
-//            JSONObject profileReceivers = response.getJSONObject("profileReceivers");
             String profileReceivers = response.getString("profileReceivers");
 
             if(Validator.isNull(profileReceivers)) {
@@ -276,11 +272,10 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
     @Override
     public ProfileInModel getDetailDossier(String token, Integer profileId) throws Exception {
         try{
-//            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
-//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
-//                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
-            //todo rollback this url
-            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
+            String urlGetDetailDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_GET_DETAIL_DOSSIERS) + "?unit_code=" +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_UNIT_CODE) + "&profile_id=" + profileId;
+//            String urlGetDetailDossier = "http://localhost:8080/o/rest/v2/hshc/dossier";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -325,5 +320,38 @@ public class FrequencyIntegrationActionImpl implements FrequencyIntegrationActio
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public void syncDossierToLGSP(String token, ProfileInModel profile) throws Exception {
+        try {
+            long groupId = serverConfig.getGroupId();
+            String urlSyncDossier = this.configJson.getString(FrequencyOfficeConstants.CONFIG_URL) +
+                    this.configJson.get(FrequencyOfficeConstants.CONFIG_SYNC_DOSSIER);
+
+//            String urlSyncDossier = "http://localhost:8080/o/rest/v2/hshc/synDossierFake";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Dossier dossier = DossierLocalServiceUtil.getByRef(groupId, profile.getRef_code());
+            if(Validator.isNull(dossier)) {
+                throw new Exception("No dossier found to update with referenceId = " + profile.getRef_code());
+            }
+
+            if(Validator.isNull(dossier.getDossierNo()) || dossier.getDossierNo().isEmpty()) {
+                throw new Exception("DossierNo is null with referenceId = " + profile.getRef_code());
+            }
+            profile.setSource_id(dossier.getDossierNo());
+            JSONObject response = apiService.callApi(urlSyncDossier, headers, profile);
+            _log.info("Result syn dossier: " + response);
+
+        } catch (Exception e) {
+            _log.error("Sync dossier to lgsp error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void sendStatusProfile(String token, long dossierId) throws Exception {
+
     }
 }

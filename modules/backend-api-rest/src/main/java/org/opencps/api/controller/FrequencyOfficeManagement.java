@@ -2,6 +2,7 @@ package org.opencps.api.controller;
 
 import io.swagger.annotations.Api;
 import org.opencps.dossiermgt.input.model.DtoFrequencyOffice;
+import org.opencps.dossiermgt.input.model.FakeModel;
 import org.opencps.dossiermgt.input.model.ProfileInModel;
 
 import javax.ws.rs.*;
@@ -28,6 +29,12 @@ public interface FrequencyOfficeManagement {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDetailDossierFake();
+
+    @POST
+    @Path("/synDossierFake")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response synDossierFake(Object profile);
 
 
 }

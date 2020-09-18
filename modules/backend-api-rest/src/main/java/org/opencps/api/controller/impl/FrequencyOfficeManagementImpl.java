@@ -53,6 +53,7 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
             ServerConfig serverConfig = listConfig.get(0);
             FrequencyIntegrationAction integrationAction = new FrequencyIntegrationActionImpl(serverConfig);
             String token = integrationAction.getToken();
+
             List<ProfileReceiver> listDossiers = integrationAction.getDossiers(token);
             boolean result;
 
@@ -60,11 +61,16 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
                 if(Validator.isNotNull(oneDossier.getStatus())) {
                     ProfileInModel profile = integrationAction.getDetailDossier(token, oneDossier.getProfileId());
                     if(Validator.isNotNull(profile) && Validator.isNotNull(profile.getStatus())) {
+                        _log.info("Handling dossier: " + profile);
                         result = integrationAction.crawlDossierLGSP(profile);
                         if(result) {
                             integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_SUCCESS);
                         } else {
                             integrationAction.updateStatusReceiver(token, oneDossier.getProfileId(), FrequencyOfficeConstants.STATUS_FAIL);
+                        }
+                        //Sync dossier when update dossier
+                        if(!profile.getStatus().equals(FrequencyOfficeConstants.STATUS_RECEIVE) && result) {
+                            integrationAction.syncDossierToLGSP(token, profile);
                         }
                     }
                 }
@@ -201,6 +207,19 @@ public class FrequencyOfficeManagementImpl implements FrequencyOfficeManagement 
         } catch (Exception e) {
             _log.error(e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public Response synDossierFake(Object profile) {
+        try {
+            _log.info(11111);
+            _log.info(profile);
+            return Response.status(HttpURLConnection.HTTP_OK).entity(null).build();
+
+        } catch (Exception e) {
+            _log.error("error when sync with mess: " + e.getMessage());
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(null).build();
         }
     }
 }
