@@ -71,6 +71,7 @@ public class ApplicantSearchModel {
 	@QueryParam(value = "idNo")
     protected String idNo;
 
+
 	public String getLock() {
 		return lock;
 	}
