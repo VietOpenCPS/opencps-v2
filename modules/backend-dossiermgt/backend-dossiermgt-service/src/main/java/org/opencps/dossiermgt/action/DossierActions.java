@@ -196,7 +196,7 @@ public interface DossierActions {
 			String delegateEmail, String delegateAddress, String delegateCityCode, String delegateDistrictCode,
 			String delegateWardCode, Long sampleCount, String dossierName, String briefNote, Integer delegateType,
 			String documentNo, Date documentDate, int systemId, Integer vnpostalStatus, String vnpostalProfile,
-			Integer fromViaPostal, String formMeta, String dueDate, ServiceContext serviceContext);
+			Integer fromViaPostal, String formMeta, String dueDate, int durationCount, ServiceContext serviceContext);
 	public Dossier publishImportDossier(long groupId, long dossierId, String referenceUid, int counter,
 			String serviceCode, String serviceName, String govAgencyCode, String govAgencyName, String applicantName,
 			String applicantType, String applicantIdNo, Date applicantIdDate, String address, String contactName,
