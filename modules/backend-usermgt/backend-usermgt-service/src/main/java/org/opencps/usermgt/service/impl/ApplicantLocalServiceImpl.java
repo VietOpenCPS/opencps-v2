@@ -40,9 +40,11 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MultiMatchQuery;
+import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.Validator;
@@ -704,7 +706,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
-
+		String fromRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.FROM_REGISTRY_DATE));
+		String toRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.TO_REGISTRY_DATE));
+		
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
@@ -775,7 +779,39 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(fromRegistryDate) ||
+				Validator.isNotNull(toRegistryDate)) {
+			String fromRegistryDateFilter = fromRegistryDate + ApplicantTerm.HOUR_START;
+			String toRegistryDateFilter = toRegistryDate + ApplicantTerm.HOUR_END;
+			_log.info("fromRegistryDateFilter: "+fromRegistryDateFilter);
+			_log.info("toRegistryDateFilter: "+toRegistryDateFilter);
 
+			if (Validator.isNotNull(fromRegistryDate)) {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.search(searchContext, booleanQuery);
@@ -790,7 +826,9 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 		String type = String.valueOf(params.get(ApplicantTerm.APPLICANTIDTYPE));
 		String lock = String.valueOf(params.get(ApplicantTerm.LOCK));
 		String idNo = String.valueOf(params.get(ApplicantTerm.APPLICANTIDNO));
-
+		String fromRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.FROM_REGISTRY_DATE));
+		String toRegistryDate = GetterUtil.getString(params.get(ApplicantTerm.TO_REGISTRY_DATE));
+		
 		Indexer<Applicant> indexer = IndexerRegistryUtil.nullSafeGetIndexer(Applicant.class);
 
 		searchContext.addFullQueryEntryClassName(Applicant.class.getName());
@@ -858,7 +896,39 @@ public class ApplicantLocalServiceImpl extends ApplicantLocalServiceBaseImpl {
 			}
 			booleanQuery.add(query, BooleanClauseOccur.MUST);
 		}
+		
+		if (Validator.isNotNull(fromRegistryDate) ||
+				Validator.isNotNull(toRegistryDate)) {
+			String fromRegistryDateFilter = fromRegistryDate + ApplicantTerm.HOUR_START;
+			String toRegistryDateFilter = toRegistryDate + ApplicantTerm.HOUR_END;
+			_log.info("fromRegistryDateFilter: "+fromRegistryDateFilter);
+			_log.info("toRegistryDateFilter: "+toRegistryDateFilter);
 
+			if (Validator.isNotNull(fromRegistryDate)) {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				} else {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, true, false);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			} else {
+				if (Validator.isNotNull(toRegistryDate)) {
+					TermRangeQueryImpl termRangeQuery = new TermRangeQueryImpl(
+							ApplicantTerm.CREATE_DATE, fromRegistryDateFilter,
+							toRegistryDateFilter, false, true);
+
+					booleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+				}
+			}
+		}
+		
 		booleanQuery.addRequiredTerm(Field.ENTRY_CLASS_NAME, Applicant.class.getName());
 
 		return IndexSearcherHelperUtil.searchCount(searchContext, booleanQuery);
