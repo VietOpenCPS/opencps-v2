@@ -65,6 +65,7 @@ import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
 import org.opencps.auth.api.exception.UnauthorizationException;
 import org.opencps.auth.api.keys.ActionKeys;
+import org.opencps.auth.utils.APIDateTimeUtils;
 import org.opencps.auth.utils.DLFolderUtil;
 import org.opencps.communication.constants.NotificationTemplateTerm;
 import org.opencps.communication.model.Notificationtemplate;
@@ -193,7 +194,12 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 				query.setEnd(QueryUtil.ALL_POS);
 
 			}
-
+			
+			String fromRegistryDate = APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getFromRegistryDate());
+			String toRegistryDate = APIDateTimeUtils.convertNormalDateToLuceneDate(
+							query.getToRegistryDate());
+			
 			long groupId = GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
 
 			LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -203,6 +209,8 @@ public class ApplicantManagementImpl implements ApplicantManagement {
 			params.put(ApplicantTerm.APPLICANTIDTYPE, query.getType());
 			params.put(ApplicantTerm.LOCK, query.getLock());
 			params.put(ApplicantTerm.APPLICANTIDNO, query.getIdNo());
+			params.put(ApplicantTerm.FROM_REGISTRY_DATE, fromRegistryDate);
+			params.put(ApplicantTerm.TO_REGISTRY_DATE, toRegistryDate);
 
 			Sort[] sorts = new Sort[] { SortFactoryUtil.create(query.getSort() + "_sortable", Sort.STRING_TYPE,
 					GetterUtil.getBoolean(query.getOrder())) };

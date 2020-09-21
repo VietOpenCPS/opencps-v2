@@ -49,7 +49,9 @@ import javax.xml.bind.annotation.XmlType;
     "end",
     "type",
     "lock",
-    "idNo"
+    "idNo",
+    "fromRegistryDate",
+    "toRegistryDate"  
 })
 @XmlRootElement(name = "ApplicantSearchModel")
 public class ApplicantSearchModel {
@@ -70,6 +72,10 @@ public class ApplicantSearchModel {
     protected String lock;
 	@QueryParam(value = "idNo")
     protected String idNo;
+	@QueryParam(value = "fromRegistryDate")
+	protected String fromRegistryDate;
+	@QueryParam(value = "toRegistryDate")
+	protected String toRegistryDate;
 
 
 	public String getLock() {
@@ -122,6 +128,18 @@ public class ApplicantSearchModel {
 	}
 	public void setIdNo(String idNo) {
 		this.idNo = idNo;
+	}
+	public String getFromRegistryDate() {
+		return fromRegistryDate;
+	}
+	public void setFromRegistryDate(String fromRegistryDate) {
+		this.fromRegistryDate = fromRegistryDate;
+	}
+	public String getToRegistryDate() {
+		return toRegistryDate;
+	}
+	public void setToRegistryDate(String toRegistryDate) {
+		this.toRegistryDate = toRegistryDate;
 	}
 
 }
