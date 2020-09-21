@@ -363,18 +363,20 @@ public class DossierPaymentUtils {
 
 		List<String> msgPayments = new ArrayList<String>();
 		try {
-			pattern = pattern.substring(pattern.indexOf(PAY_MESSAGE), pattern.lastIndexOf(PAY_MESSAGE) + 1);
+			if (Validator.isNotNull(pattern) && pattern.indexOf(PAY_MESSAGE) > -1)
+				pattern = pattern.substring(pattern.indexOf(PAY_MESSAGE), pattern.lastIndexOf(PAY_MESSAGE) + 1);
 
 			String[] splitPattern = StringUtil.split(pattern, PAY_MESSAGE);
 
-			for (String element : splitPattern) {
-				if (!element.trim().contentEquals("")) {
-					msgPayments.add(StringUtil.trimLeading(element));
+			if (splitPattern != null && splitPattern.length > 0) {
+				for (String element : splitPattern) {
+					if (!element.trim().contentEquals("")) {
+						msgPayments.add(StringUtil.trimLeading(element));
+					}
 				}
 			}
 		} catch (Exception e) {
 			_log.debug(e);
-			//_log.error(e);
 		}
 
 		return msgPayments;
