@@ -1174,6 +1174,7 @@ public class UserActions implements UserInterface {
 
 		if (Validator.isNotNull(user)) {
 			Employee employee = EmployeeLocalServiceUtil.fetchByFB_MUID(userId);
+			_log.info("Log Employee : " + JSONFactoryUtil.looseSerialize(employee));
 
 			result.put(UserTerm.CLASS_NAME, User.class.getName());
 			result.put(UserTerm.CLASS_PK, user.getUserId());
@@ -1210,6 +1211,7 @@ public class UserActions implements UserInterface {
 				result.put(UserTerm.CLASS_PK, employee.getEmployeeId());
 
 				result.put(UserTerm.EMPLOYEE_FULLNAME, employee.getFullName());
+				_log.info("Log fullName Employee : " + employee.getFullName());
 				result.put(UserTerm.EMPLOYEE_NO, employee.getEmployeeNo());
 				result.put(UserTerm.EMPLOYEE_GENDER, employee.getGender());
 				if (Validator.isNotNull(employee.getBirthdate())) {

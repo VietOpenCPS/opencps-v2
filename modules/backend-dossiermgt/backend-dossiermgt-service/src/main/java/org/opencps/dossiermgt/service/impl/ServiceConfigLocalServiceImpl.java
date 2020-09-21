@@ -652,8 +652,8 @@ public class ServiceConfigLocalServiceImpl extends ServiceConfigLocalServiceBase
 	}
 
 	@Override
-	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId, int[] serviceLevel, long[] serviceInfoId) {
-		return serviceConfigPersistence.findByF_INFO_LEVEL(groupId,serviceLevel,serviceInfoId);
+	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId, long[] serviceInfoId) {
+		return serviceConfigPersistence.findByF_INFO_LEVEL(groupId,serviceInfoId);
 	}
 
 	public long countByGovAgency(String keyword, String govAgencyCode, long groupId) {

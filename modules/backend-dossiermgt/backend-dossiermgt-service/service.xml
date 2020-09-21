@@ -421,7 +421,6 @@
 		</finder>
 		<finder return-type="Collection" name="F_INFO_LEVEL">
 			<finder-column name="groupId" />
-			<finder-column name="serviceLevel" comparator="=" arrayable-operator="OR"/>
 			<finder-column name="serviceInfoId" comparator="=" arrayable-operator="OR" />
 		</finder>
 

@@ -81,24 +81,31 @@ public class CreateDeliverable implements DataFetcher<Deliverable> {
 				Date sysDate = new Date();
 				String deliverableCode = "";
 				if(Validator.isNotNull(issueDate) ) {
+					_log.info("Vao issueDate : " + issueDate);
 					Date issue = APIDateTimeUtils
 							.convertStringToDate(issueDate, APIDateTimeUtils._NORMAL_DATE);
 					if(Validator.isNotNull(issue)){
 						deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
-								groupId, delType.getCodePattern(), issueDate);
+								groupId, delType.getCodePattern(),  APIDateTimeUtils
+										.convertDateToString(issue, APIDateTimeUtils._NORMAL_DATE));
 					}
 				}else{
 					String dateNow = APIDateTimeUtils
-							.convertDateToString(sysDate, APIDateTimeUtils._NORMAL_PARTTERN);
+							.convertDateToString(sysDate, APIDateTimeUtils._NORMAL_DATE);
+					_log.info("Vao not issueDate : " + dateNow);
 					deliverableCode = DeliverableNumberGenerator.generateDeliverableNumber(
 							groupId, delType.getCodePattern(), dateNow);
 				}
 				inputObject.put("deliverableCode", deliverableCode);
 			}
 			Employee employee = null;
-			if(Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
-				 employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
-				 inputObject.put("userName", employee.getFullName());
+			if(inputObject.has("nguoixuly")){
+				inputObject.put("userName", inputObject.get("nguoixuly"));
+			}else {
+				if (Validator.isNotNull(groupId) && Validator.isNotNull(userId)) {
+					employee = EmployeeLocalServiceUtil.fetchByF_mappingUserId(groupId, userId);
+					inputObject.put("userName", employee.getFullName());
+				}
 			}
 			if(!inputObject.has("govAgencyCode")){
 				if(employee != null){

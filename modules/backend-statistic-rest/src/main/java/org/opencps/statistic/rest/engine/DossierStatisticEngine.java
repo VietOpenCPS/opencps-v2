@@ -103,7 +103,7 @@ public class DossierStatisticEngine extends BaseMessageListener {
 	private OpencpsCallRestFacade<ServiceDomainRequest, ServiceDomainResponse> callServiceDomainService = new OpencpsCallServiceDomainRestFacadeImpl();
 
 	private static final Boolean CALCULATE_DOSSIER_STATISTIC_ENABLE = Validator.isNotNull(PropsUtil.get("org.opencps.statistic.enable"))
-					? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : true;
+					? Boolean.valueOf(PropsUtil.get("org.opencps.statistic.enable")) : false;
 	//Time engine dossier
 	private static int TIME_STATISTIC = Validator.isNotNull(PropsUtil.get("opencps.statistic.dossier.time"))
 				? Integer.valueOf(PropsUtil.get("opencps.statistic.dossier.time")) :45;

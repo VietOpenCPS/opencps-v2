@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opencps.api.datamgt.model.DictItemModel;
 import org.opencps.api.serviceinfo.model.FileTemplateModel;
 import org.opencps.api.serviceinfo.model.FileTemplates;
 import org.opencps.api.serviceinfo.model.ServiceInfoDetailModel;
@@ -23,6 +24,8 @@ import org.opencps.api.serviceinfo.model.ServiceInfoInputModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoModel;
 import org.opencps.api.serviceinfo.model.ServiceInfoServiceConfig;
 import org.opencps.api.serviceinfo.model.ServiceRecentDetailModel;
+import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.DictItemModelInput;
 import org.opencps.dossiermgt.action.ServiceConfigActions;
 import org.opencps.dossiermgt.action.impl.ServiceConfigActionImpl;
 import org.opencps.dossiermgt.constants.ServiceConfigTerm;
@@ -217,6 +220,23 @@ public class ServiceInfoUtils {
 		return model;
 	}
 
+	public static List<DictItemModelInput > mappingDomain(List<DictItemModelInput> lstDict) {
+		List<DictItemModelInput> lstDictResults = new ArrayList<>();
+		if(lstDict !=null && lstDict.size() > 0){
+			for(DictItemModelInput item : lstDict){
+				DictItemModelInput ett = new DictItemModelInput();
+				ett.setItemName(item.getItemName());
+				ett.setServiceLevel(item.getServiceLevel());
+				ett.setGovAgencyCode(item.getGovAgencyCode());
+				ett.setGroupId(item.getGroupId());
+				ett.setDomainCode(item.getDomainCode());
+				ett.setDomainName(item.getDomainName());
+				lstDictResults.add(ett);
+			}
+		}
+		_log.info("MAPPER : " + lstDictResults.size());
+		return lstDictResults;
+	}
 	public static List<FileTemplates> mappingToFileTemplates(List<ServiceFileTemplate> serviceFileTemplates) {
 		List<FileTemplates> fileTemplates = new ArrayList<FileTemplates>();
 

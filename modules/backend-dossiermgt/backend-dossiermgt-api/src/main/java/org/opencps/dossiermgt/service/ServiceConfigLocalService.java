@@ -43,7 +43,6 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.ServiceConfig;
 
 import java.io.Serializable;
@@ -194,6 +193,10 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 		Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId,
+		 long[] serviceInfoId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ServiceConfig fetchServiceConfig(long serviceConfigId);
 
 	/**
@@ -227,9 +230,6 @@ public interface ServiceConfigLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ServiceConfig> getByServiceInfo(long groupId, long serviceInfoId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId,int[] serviceLevel, long[] serviceInfoId);
 
 	@ThreadLocalCachable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

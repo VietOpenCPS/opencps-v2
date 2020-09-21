@@ -55,35 +55,44 @@ import javax.xml.bind.annotation.*;
     "treeIndex",
     "serviceLevel",
     "govAgencyCode",
- "groupId"
+    "groupId",
+    "domainCode",
+    "domainName"
 })
-@XmlRootElement(name = "DictItemModel")
+@XmlRootElement(name = "DictItemModelInput")
 public class DictItemModelInput {
 
     protected long dictItemId;
-    @XmlElement(required = true)
     protected String createDate;
-    @XmlElement(required = true)
     protected String modifiedDate;
-    @XmlElement(required = true)
     protected String itemCode;
-    @XmlElement(required = true)
     protected String itemName;
-    @XmlElement(required = true)
     protected String itemNameEN;
-    @XmlElement(required = true)
     protected String itemDescription;
     protected int level;
     protected int sibling;
-    @XmlElement(required = true)
     protected String treeIndex;
-    @XmlElement(required = true)
     protected int serviceLevel;
-    @XmlElement(required = true)
     protected String govAgencyCode;
-    @XmlElement(required = true)
     protected long groupId;
+    protected String domainCode;
+    protected String domainName;
 
+    public String getDomainCode() {
+        return domainCode;
+    }
+
+    public void setDomainCode(String domainCode) {
+        this.domainCode = domainCode;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
 
     public long getGroupId() {
         return groupId;

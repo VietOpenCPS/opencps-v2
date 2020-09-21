@@ -187,6 +187,8 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 				if (message.getString(TYPE).equals(ADMIN)) {
 
 					String code = message.getString(CODE);
+					String id = message.getString(ID);
+					_log.info("Log ID " + id);
 	
 					AdminConfig adminConfig = AdminConfigLocalServiceUtil.fetchByCode(code);
 	
@@ -433,60 +435,61 @@ public class AdminConfigManagementImpl implements AdminConfigManagement {
 								if(keyColumn.equals(DICT_COLLECTION_ID)){
 									dictCollectionId = valueColumn;
 								}
-								if (code.equals(CLASSNAME_JOBPOS)) {
-									if(keyColumn.equals(JOBPOS_CODE)) {
-										JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId, valueColumn);
-										if (Validator.isNotNull(jobPos)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+								if("0".equals(id)) {
+									if (code.equals(CLASSNAME_JOBPOS)) {
+										if (keyColumn.equals(JOBPOS_CODE)) {
+											JobPos jobPos = JobPosLocalServiceUtil.fetchByF_CODE(groupId, valueColumn);
+											if (Validator.isNotNull(jobPos)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
-									}
-								} else if (code.equals(CLASSNAME_DICTGROUP)) {
-									if (keyColumn.equals(GROUP_CODE)) {
-										DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(valueColumn, groupId);
-										if (Validator.isNotNull(dictGroup)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									} else if (code.equals(CLASSNAME_DICTGROUP)) {
+										if (keyColumn.equals(GROUP_CODE)) {
+											DictGroup dictGroup = DictGroupLocalServiceUtil.fetchByF_DictGroupCode(valueColumn, groupId);
+											if (Validator.isNotNull(dictGroup)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
-									}
-								}else if (code.equals(CLASSNAME_DELIVERABLE)) {
-									if (keyColumn.equals(DELIVERABLE_CODE)) {
-										Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DCODE(groupId,valueColumn);
-										if (Validator.isNotNull(deliverable)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									} else if (code.equals(CLASSNAME_DELIVERABLE)) {
+										if (keyColumn.equals(DELIVERABLE_CODE)) {
+											Deliverable deliverable = DeliverableLocalServiceUtil.getByF_GID_DCODE(groupId, valueColumn);
+											if (Validator.isNotNull(deliverable)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
-									}
-								}else if (code.equals(CLASSNAME_NOTIFICATIONTEMPLATE)) {
-									if (keyColumn.equals(NOTIFICATION_TYPE)) {
-										Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId,valueColumn);
-										if (Validator.isNotNull(notificationtemplate)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									} else if (code.equals(CLASSNAME_NOTIFICATIONTEMPLATE)) {
+										if (keyColumn.equals(NOTIFICATION_TYPE)) {
+											Notificationtemplate notificationtemplate = NotificationtemplateLocalServiceUtil.fetchByF_NotificationtemplateByType(groupId, valueColumn);
+											if (Validator.isNotNull(notificationtemplate)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
-									}
-								}else if (code.equals(CLASSNAME_DICTITEM)) {
-									if (keyColumn.equals(ITEM_CODE)) {
-										DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(valueColumn,Long.valueOf(dictCollectionId),groupId);
-										if (Validator.isNotNull(dictItem)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									} else if (code.equals(CLASSNAME_DICTITEM)) {
+										if (keyColumn.equals(ITEM_CODE)) {
+											DictItem dictItem = DictItemLocalServiceUtil.fetchByF_dictItemCode(valueColumn, Long.valueOf(dictCollectionId), groupId);
+											if (Validator.isNotNull(dictItem)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
-									}
-								}
-								else if (code.equals(CLASSNAME_DICTCOLLECTION)) {
-									if (keyColumn.equals(DICT_COLLECTION_CODE)) {
-										DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(valueColumn,groupId);
-										if (Validator.isNotNull(dictCollection)) {
-											messageError.put(STATUS, NOK);
-											return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+									} else if (code.equals(CLASSNAME_DICTCOLLECTION)) {
+										if (keyColumn.equals(DICT_COLLECTION_CODE)) {
+											DictCollection dictCollection = DictCollectionLocalServiceUtil.fetchByF_dictCollectionCode(valueColumn, groupId);
+											if (Validator.isNotNull(dictCollection)) {
+												messageError.put(STATUS, NOK);
+												return Response.status(HttpURLConnection.HTTP_OK).entity(messageError.toJSONString()).build();
+											}
+											break;
 										}
-										break;
 									}
 								}
 							}

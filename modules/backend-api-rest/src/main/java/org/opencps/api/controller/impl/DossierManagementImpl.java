@@ -6808,23 +6808,35 @@ public class DossierManagementImpl implements DossierManagement {
 			String groupDossierIdNew = "";
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(
 					GetterUtil.getLong(dossierId));
-			if(Validator.isNotNull(dossier)){
+			long groupId =
+					GetterUtil.getLong(header.getHeaderString(Field.GROUP_ID));
+			if(Validator.isNotNull(dossier)) {
 				String[] groupDossierIdArr = dossier.getGroupDossierId().split(StringPool.COMMA);
 				for (String groupDossierIdStr : groupDossierIdArr) {
+//					_log.info("VAO Groupppppp");
 					//Nếu hồ sơ truyền lên đã tồn tại ==> xóa công văn cha đó
 					// ==> cộng lại 1 chuỗi id công văn cha mới nếu có và update hồ sơ
-					if(!groupDossierIdStr.equals(String.valueOf(groupDossierId))){
+					if (!groupDossierIdStr.equals(String.valueOf(groupDossierId))) {
 						groupDossierIdNew += StringPool.COMMA + groupDossierIdStr;
 					}
 				}
-				if(Validator.isNotNull(groupDossierIdNew)) {
+				if (Validator.isNotNull(groupDossierIdNew)) {
 					groupDossierIdNew = groupDossierIdNew.substring(1);
 				}
-				//Update DocumentNo
-//				if(!String.valueOf(groupDossierId).contains(groupDossierIdNew)){
-//					dossier.setDocumentNo(null);
-//				}
 				DossierLocalServiceUtil.updateGroupDossier(dossier, groupDossierIdNew);
+				//Update SampleCount
+				if (Validator.isNotNull(groupDossierId)) {
+					List<Dossier> lstDossier = new ArrayList<>();
+					Dossier dossierGroup = DossierLocalServiceUtil.fetchDossier(
+							GetterUtil.getLong(groupDossierId));
+					lstDossier = DossierLocalServiceUtil.findByG_GDID(groupId, String.valueOf(groupDossierId));
+					if (lstDossier != null && lstDossier.size() > 0) {
+						dossierGroup.setSampleCount(lstDossier.size());
+					} else {
+						dossierGroup.setSampleCount(0);
+					}
+					DossierLocalServiceUtil.updateDossier(dossierGroup);
+				}
 
 				return Response.status(HttpURLConnection.HTTP_OK).entity("OK").build();
 			}
@@ -8560,6 +8572,7 @@ public class DossierManagementImpl implements DossierManagement {
 											long formReportFileId = deliverableType.getFormReportFileId();
 											String formData = "";
 											String deliverableState = "1";
+											String issueDate = "";
 											//Xử lý formData cho ds người có công
 											// Mapping formData --> với cấu hình của deliverableType
 											if (Validator.isNotNull(deliverableType.getMappingData())) {
@@ -8583,6 +8596,8 @@ public class DossierManagementImpl implements DossierManagement {
 													}  else if (key.equals(DossierTerm.GOV_AGENCY_CODE)) {
 														govAgencyCode = value;
 														break;
+													} else if(key.equals(DeliverableTerm.ISSUE_DATE)){
+														issueDate = value;
 													}
 												}
 												if(Validator.isNotNull(dataDeliverable)) {
@@ -8605,7 +8620,7 @@ public class DossierManagementImpl implements DossierManagement {
 													groupId, deliverableTypes, deliverableName,
 													deliverableCode, govAgencyCode, govAgencyName,
 													applicationIdNo, applicationName, "",
-													"", "", "", deliverableState,
+													issueDate, "", "", deliverableState,
 													dosserId, fileEntryId > 0 ? fileEntryId : item.getFileEntryId(), formScriptFileId, formReportFileId,
 													dataDeliverable.toString(), String.valueOf(fileEntryId),
 													serviceContext);

@@ -176,14 +176,22 @@ public class DeliverableIndexer extends BaseIndexer<Deliverable> {
 					if (key.equals(DeliverableTerm.NGAY_QD)) {
 						document.addTextSortable(DeliverableTerm.NGAY_QD_SEARCH, SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
 					}
+					if (key.equals(DeliverableTerm.NGAY_CAP)) {
+						document.addTextSortable(DeliverableTerm.NGAY_CAP_SEARCH , SpecialCharacterUtils.splitSpecial(jsonObject.getString(key)));
+					}
 				}
 				if (indexKey.indexOf("_id") != 0) {
 					document.addTextSortable(indexKey, jsonObject.getString(key));
 				}
+//				if (key.equals(DeliverableTerm.HO_TEN)) {
+//					document.addTextSortable(indexKey, jsonObject.getString(key).toLowerCase());
+//				}
 			}
 		} catch (Exception e) {
 			_log.error(e);
 		}
+		document.addTextSortable(DeliverableTerm.ISSUE_DATE + StringPool.UNDERLINE + ConstantUtils.DATA,
+				APIDateTimeUtils.convertDateToString(object.getIssueDate(),APIDateTimeUtils._NORMAL_DATE));
 
 		return document;
 	}

@@ -171,7 +171,7 @@ public class AutoFillFormData {
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
-					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
+					_employee_userName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());
@@ -277,6 +277,7 @@ public class AutoFillFormData {
 
 					if (value.startsWith(StringPool.UNDERLINE) && value.contains(DossierTerm.META_DATA)){
 						String metaDataV = value.substring(value.indexOf(".") + 1, value.length());
+						_log.info("metaData " + metaDataV);
 						if(Validator.isNotNull(dossier.getMetaData())) {
 							try {
 								JSONObject jsonMetaData = JSONFactoryUtil.createJSONObject(dossier.getMetaData());
@@ -287,6 +288,7 @@ public class AutoFillFormData {
 									String key = keys.next();
 									String valueMeta = jsonMetaData.getString(key);
 									if(key.equals(metaDataV)){
+										_log.info("valueMeta " + valueMeta);
 										jsonMap.put(entry.getKey(), valueMeta);
 										check = false;
 									}
@@ -993,7 +995,7 @@ public class AutoFillFormData {
 					_employee_employeeNo = employeeJSON.getString(EmployeeTerm.EMPLOYEE_NO);
 					_employee_fullName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 					_employee_title = employeeJSON.getString(EmployeeTerm.TITLE);
-					_employee_userName = employeeJSON.getString(EmployeeTerm.USER_NAME);
+					_employee_userName = employeeJSON.getString(EmployeeTerm.FULL_NAME);
 
 				} catch (Exception e) {
 					_log.info("NOT FOUN EMPLOYEE" + serviceContext.getUserId());

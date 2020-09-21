@@ -17,9 +17,6 @@ package org.opencps.dossiermgt.service;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import org.opencps.dossiermgt.model.ServiceConfig;
-
-import java.util.List;
 
 /**
  * Provides a wrapper for {@link ServiceConfigLocalService}.
@@ -218,6 +215,13 @@ public class ServiceConfigLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(
+		long groupId, long[] serviceInfoId) {
+		return _serviceConfigLocalService.fetchByF_INFO_LEVEL(groupId,
+			 serviceInfoId);
+	}
+
+	@Override
 	public org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfig(
 		long serviceConfigId) {
 		return _serviceConfigLocalService.fetchServiceConfig(serviceConfigId);
@@ -276,11 +280,6 @@ public class ServiceConfigLocalServiceWrapper
 		long groupId, long serviceInfoId) {
 		return _serviceConfigLocalService.getByServiceInfo(groupId,
 			serviceInfoId);
-	}
-
-	@Override
-	public List<ServiceConfig> fetchByF_INFO_LEVEL(long groupId, int[] serviceLevel, long[] serviceInfoId) {
-		return _serviceConfigLocalService.fetchByF_INFO_LEVEL(groupId,serviceLevel,serviceInfoId);
 	}
 
 	@Override

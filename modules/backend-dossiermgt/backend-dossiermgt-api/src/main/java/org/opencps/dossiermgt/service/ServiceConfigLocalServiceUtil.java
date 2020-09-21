@@ -206,6 +206,12 @@ public class ServiceConfigLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(
+		long groupId, long[] serviceInfoId) {
+		return getService()
+				   .fetchByF_INFO_LEVEL(groupId, serviceInfoId);
+	}
+
 	public static org.opencps.dossiermgt.model.ServiceConfig fetchServiceConfig(
 		long serviceConfigId) {
 		return getService().fetchServiceConfig(serviceConfigId);
@@ -254,10 +260,6 @@ public class ServiceConfigLocalServiceUtil {
 	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> getByServiceInfo(
 		long groupId, long serviceInfoId) {
 		return getService().getByServiceInfo(groupId, serviceInfoId);
-	}
-	public static java.util.List<org.opencps.dossiermgt.model.ServiceConfig> fetchByF_INFO_LEVEL(long groupId,
-			int[] serviceLevel, long[] serviceInfoId) {
-		return getService().fetchByF_INFO_LEVEL(groupId,serviceLevel,serviceInfoId);
 	}
 
 	public static org.opencps.dossiermgt.model.ServiceConfig getBySICodeAndGAC(

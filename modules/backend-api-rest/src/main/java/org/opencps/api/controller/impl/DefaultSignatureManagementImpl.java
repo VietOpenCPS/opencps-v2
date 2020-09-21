@@ -23,10 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -41,6 +38,8 @@ import org.opencps.api.digitalsignature.model.DigitalSignatureInputModel;
 import org.opencps.auth.api.BackendAuth;
 import org.opencps.auth.api.BackendAuthImpl;
 import org.opencps.auth.api.exception.UnauthenticationException;
+import org.opencps.auth.utils.APIDateTimeUtils;
+import org.opencps.datamgt.util.DateTimeUtils;
 import org.opencps.dossiermgt.action.DossierActions;
 import org.opencps.dossiermgt.action.impl.DossierActionsImpl;
 import org.opencps.dossiermgt.action.util.AutoFillFormData;
@@ -1214,18 +1213,26 @@ public class DefaultSignatureManagementImpl
 
 		// Update fileEntryId == file đính kèm cho QĐ hàng tháng
 		List<DossierFile> listDossierHS = DossierFileLocalServiceUtil.findByDID_GROUP(groupId, dossierId);
+		Deliverable deliverable = null;
+
 		if(listDossierHS.size() >0) {
 			long fileEntryId= 0;
+			for (DossierFile dossierFile : listDossierHS) {
+				if (!dossierFile.getEForm()) {
+					fileEntryId = dossierFile.getFileEntryId();
+					_log.info("LOG dossierFile = false -- log fileEntryId :" + dossierFile.getFileEntryId());
+					break;
+				}
+			}
 			for (DossierFile item : listDossierHS) {
-				if (item.getEForm() == false) {
-					fileEntryId = item.getFileEntryId();
-					_log.info("LOG Eform = false -- log fileEntryId :" + item.getFileEntryId());
+//				if (item.getEForm()) {
 					if(Validator.isNotNull(item.getDeliverableCode())) {
-						Deliverable deliverable =
-								DeliverableLocalServiceUtil.getByCode(
-										item.getDeliverableCode());
+						deliverable = DeliverableLocalServiceUtil.getByCode(
+								item.getDeliverableCode());
 						if (Validator.isNotNull(fileEntryId)) {
-							if (deliverable.getDeliverableState() == 1) {
+							if(Validator.isNotNull(deliverable)) {
+								_log.info("DeliverableState :" + deliverable.getDeliverableState());
+//							if (deliverable.getDeliverableState() == 1) {
 								DossierPart dossierPart =
 										DossierPartLocalServiceUtil.fetchByTemplatePartNo(
 												item.getGroupId(), item.getDossierTemplateNo(),
@@ -1239,6 +1246,23 @@ public class DefaultSignatureManagementImpl
 										dlvType.getMappingData(), dossier.getDossierId(),
 										serviceContext);
 								if (Validator.isNotNull(formDataContent)) {
+									_log.info("Log formData : " + formDataContent.toString());
+									String deliverableCode = "";
+									String issueDate = "";
+									Iterator<String> keys = formDataContent.keys();
+									while (keys.hasNext()) {
+										String key = keys.next();
+										String value = formDataContent.getString(key);
+										if (key.equals(DossierTerm.DELIVERABLE_CODE)) {
+											deliverableCode = value;
+											break;
+										}else if(key.equals(DeliverableTerm.ISSUE_DATE)){
+											issueDate = value;
+											break;
+										}
+									}
+									deliverable.setDeliverableCode(deliverableCode);
+									deliverable.setIssueDate(APIDateTimeUtils.convertStringToDate(issueDate,APIDateTimeUtils._NORMAL_DATE));
 									if (formDataContent.has(DeliverableTerm.DELIVERABLE_CODE)) {
 										formDataContent.remove(DeliverableTerm.DELIVERABLE_CODE);
 									}
@@ -1251,15 +1275,19 @@ public class DefaultSignatureManagementImpl
 									if (formDataContent.has(DeliverableTerm.ISSUE_DATE)) {
 										formDataContent.remove(DeliverableTerm.ISSUE_DATE);
 									}
+									_log.info("Log deliverableCode : " + deliverable.getDeliverableCode());
+									deliverable.setFormData(formDataContent.toString());
+
 								}
-								deliverable.setFormData(formDataContent.toString());
 								deliverable.setFileAttachs(String.valueOf(fileEntryId));
 								DeliverableLocalServiceUtil.updateDeliverable(
 										deliverable);
+								break;
+//							}
 							}
 						}
 					}
-				}
+//				}
 			}
 		}
 

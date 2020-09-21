@@ -4515,8 +4515,7 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 			"findByF_INFO_LEVEL",
 			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Long.class.getName(),
+				Long.class.getName(), Long.class.getName(),
 				
 			Integer.class.getName(), Integer.class.getName(),
 				OrderByComparator.class.getName()
@@ -4526,53 +4525,41 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED,
 			ServiceConfigImpl.class, FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"findByF_INFO_LEVEL",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Long.class.getName()
-			},
+			new String[] { Long.class.getName(), Long.class.getName() },
 			ServiceConfigModelImpl.GROUPID_COLUMN_BITMASK |
-			ServiceConfigModelImpl.SERVICELEVEL_COLUMN_BITMASK |
 			ServiceConfigModelImpl.SERVICEINFOID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_F_INFO_LEVEL = new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_INFO_LEVEL",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Long.class.getName()
-			});
+			new String[] { Long.class.getName(), Long.class.getName() });
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL =
 		new FinderPath(ServiceConfigModelImpl.ENTITY_CACHE_ENABLED,
 			ServiceConfigModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByF_INFO_LEVEL",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Long.class.getName()
-			});
+			new String[] { Long.class.getName(), Long.class.getName() });
 
 	/**
-	 * Returns all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns all the service configs where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @return the matching service configs
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int serviceLevel, long serviceInfoId) {
-		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		long serviceInfoId) {
+		return findByF_INFO_LEVEL(groupId, serviceInfoId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns a range of all the service configs where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -4580,20 +4567,18 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int serviceLevel, long serviceInfoId, int start, int end) {
-		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId, start,
-			end, null);
+		long serviceInfoId, int start, int end) {
+		return findByF_INFO_LEVEL(groupId, serviceInfoId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -4602,21 +4587,20 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int serviceLevel, long serviceInfoId, int start, int end,
+		long serviceInfoId, int start, int end,
 		OrderByComparator<ServiceConfig> orderByComparator) {
-		return findByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId, start,
-			end, orderByComparator, true);
+		return findByF_INFO_LEVEL(groupId, serviceInfoId, start, end,
+			orderByComparator, true);
 	}
 
 	/**
-	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -4626,7 +4610,7 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int serviceLevel, long serviceInfoId, int start, int end,
+		long serviceInfoId, int start, int end,
 		OrderByComparator<ServiceConfig> orderByComparator,
 		boolean retrieveFromCache) {
 		boolean pagination = true;
@@ -4637,12 +4621,12 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				(orderByComparator == null)) {
 			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL;
-			finderArgs = new Object[] { groupId, serviceLevel, serviceInfoId };
+			finderArgs = new Object[] { groupId, serviceInfoId };
 		}
 		else {
 			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_F_INFO_LEVEL;
 			finderArgs = new Object[] {
-					groupId, serviceLevel, serviceInfoId,
+					groupId, serviceInfoId,
 					
 					start, end, orderByComparator
 				};
@@ -4657,7 +4641,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			if ((list != null) && !list.isEmpty()) {
 				for (ServiceConfig serviceConfig : list) {
 					if ((groupId != serviceConfig.getGroupId()) ||
-							(serviceLevel != serviceConfig.getServiceLevel()) ||
 							(serviceInfoId != serviceConfig.getServiceInfoId())) {
 						list = null;
 
@@ -4671,18 +4654,16 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(5 +
+				query = new StringBundler(4 +
 						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
-				query = new StringBundler(5);
+				query = new StringBundler(4);
 			}
 
 			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
-
-			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
 
@@ -4707,8 +4688,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				QueryPos qPos = QueryPos.getInstance(q);
 
 				qPos.add(groupId);
-
-				qPos.add(serviceLevel);
 
 				qPos.add(serviceInfoId);
 
@@ -4743,10 +4722,9 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the first service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching service config
@@ -4754,25 +4732,21 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public ServiceConfig findByF_INFO_LEVEL_First(long groupId,
-		int serviceLevel, long serviceInfoId,
-		OrderByComparator<ServiceConfig> orderByComparator)
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator)
 		throws NoSuchServiceConfigException {
 		ServiceConfig serviceConfig = fetchByF_INFO_LEVEL_First(groupId,
-				serviceLevel, serviceInfoId, orderByComparator);
+				serviceInfoId, orderByComparator);
 
 		if (serviceConfig != null) {
 			return serviceConfig;
 		}
 
-		StringBundler msg = new StringBundler(8);
+		StringBundler msg = new StringBundler(6);
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
 		msg.append("groupId=");
 		msg.append(groupId);
-
-		msg.append(", serviceLevel=");
-		msg.append(serviceLevel);
 
 		msg.append(", serviceInfoId=");
 		msg.append(serviceInfoId);
@@ -4783,20 +4757,18 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the first service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the first service config in the ordered set where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching service config, or <code>null</code> if a matching service config could not be found
 	 */
 	@Override
 	public ServiceConfig fetchByF_INFO_LEVEL_First(long groupId,
-		int serviceLevel, long serviceInfoId,
-		OrderByComparator<ServiceConfig> orderByComparator) {
-		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceLevel,
-				serviceInfoId, 0, 1, orderByComparator);
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator) {
+		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceInfoId,
+				0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -4806,10 +4778,9 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the last service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching service config
@@ -4817,25 +4788,21 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public ServiceConfig findByF_INFO_LEVEL_Last(long groupId,
-		int serviceLevel, long serviceInfoId,
-		OrderByComparator<ServiceConfig> orderByComparator)
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator)
 		throws NoSuchServiceConfigException {
 		ServiceConfig serviceConfig = fetchByF_INFO_LEVEL_Last(groupId,
-				serviceLevel, serviceInfoId, orderByComparator);
+				serviceInfoId, orderByComparator);
 
 		if (serviceConfig != null) {
 			return serviceConfig;
 		}
 
-		StringBundler msg = new StringBundler(8);
+		StringBundler msg = new StringBundler(6);
 
 		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
 
 		msg.append("groupId=");
 		msg.append(groupId);
-
-		msg.append(", serviceLevel=");
-		msg.append(serviceLevel);
 
 		msg.append(", serviceInfoId=");
 		msg.append(serviceInfoId);
@@ -4846,26 +4813,24 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the last service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the last service config in the ordered set where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching service config, or <code>null</code> if a matching service config could not be found
 	 */
 	@Override
 	public ServiceConfig fetchByF_INFO_LEVEL_Last(long groupId,
-		int serviceLevel, long serviceInfoId,
-		OrderByComparator<ServiceConfig> orderByComparator) {
-		int count = countByF_INFO_LEVEL(groupId, serviceLevel, serviceInfoId);
+		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator) {
+		int count = countByF_INFO_LEVEL(groupId, serviceInfoId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceLevel,
-				serviceInfoId, count - 1, count, orderByComparator);
+		List<ServiceConfig> list = findByF_INFO_LEVEL(groupId, serviceInfoId,
+				count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -4875,11 +4840,10 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the service configs before and after the current service config in the ordered set where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param serviceConfigId the primary key of the current service config
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next service config
@@ -4887,8 +4851,8 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public ServiceConfig[] findByF_INFO_LEVEL_PrevAndNext(
-		long serviceConfigId, long groupId, int serviceLevel,
-		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator)
+		long serviceConfigId, long groupId, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator)
 		throws NoSuchServiceConfigException {
 		ServiceConfig serviceConfig = findByPrimaryKey(serviceConfigId);
 
@@ -4900,14 +4864,12 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			ServiceConfig[] array = new ServiceConfigImpl[3];
 
 			array[0] = getByF_INFO_LEVEL_PrevAndNext(session, serviceConfig,
-					groupId, serviceLevel, serviceInfoId, orderByComparator,
-					true);
+					groupId, serviceInfoId, orderByComparator, true);
 
 			array[1] = serviceConfig;
 
 			array[2] = getByF_INFO_LEVEL_PrevAndNext(session, serviceConfig,
-					groupId, serviceLevel, serviceInfoId, orderByComparator,
-					false);
+					groupId, serviceInfoId, orderByComparator, false);
 
 			return array;
 		}
@@ -4920,25 +4882,22 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	protected ServiceConfig getByF_INFO_LEVEL_PrevAndNext(Session session,
-		ServiceConfig serviceConfig, long groupId, int serviceLevel,
-		long serviceInfoId, OrderByComparator<ServiceConfig> orderByComparator,
-		boolean previous) {
+		ServiceConfig serviceConfig, long groupId, long serviceInfoId,
+		OrderByComparator<ServiceConfig> orderByComparator, boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(6 +
+			query = new StringBundler(5 +
 					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			query = new StringBundler(5);
+			query = new StringBundler(4);
 		}
 
 		query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
 
 		query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
-
-		query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
 
 		query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
 
@@ -5012,8 +4971,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 		qPos.add(groupId);
 
-		qPos.add(serviceLevel);
-
 		qPos.add(serviceInfoId);
 
 		if (orderByComparator != null) {
@@ -5035,33 +4992,31 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 * Returns all the service configs where groupId = &#63; and serviceInfoId = any &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevels the service levels
 	 * @param serviceInfoIds the service info IDs
 	 * @return the matching service configs
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int[] serviceLevels, long[] serviceInfoIds) {
-		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		long[] serviceInfoIds) {
+		return findByF_INFO_LEVEL(groupId, serviceInfoIds, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 * Returns a range of all the service configs where groupId = &#63; and serviceInfoId = any &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevels the service levels
 	 * @param serviceInfoIds the service info IDs
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -5069,20 +5024,18 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int[] serviceLevels, long[] serviceInfoIds, int start, int end) {
-		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
-			start, end, null);
+		long[] serviceInfoIds, int start, int end) {
+		return findByF_INFO_LEVEL(groupId, serviceInfoIds, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = any &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevels the service levels
 	 * @param serviceInfoIds the service info IDs
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -5091,21 +5044,20 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int[] serviceLevels, long[] serviceInfoIds, int start, int end,
+		long[] serviceInfoIds, int start, int end,
 		OrderByComparator<ServiceConfig> orderByComparator) {
-		return findByF_INFO_LEVEL(groupId, serviceLevels, serviceInfoIds,
-			start, end, orderByComparator, true);
+		return findByF_INFO_LEVEL(groupId, serviceInfoIds, start, end,
+			orderByComparator, true);
 	}
 
 	/**
-	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;, optionally using the finder cache.
+	 * Returns an ordered range of all the service configs where groupId = &#63; and serviceInfoId = &#63;, optionally using the finder cache.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ServiceConfigModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @param start the lower bound of the range of service configs
 	 * @param end the upper bound of the range of service configs (not inclusive)
@@ -5115,18 +5067,9 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	 */
 	@Override
 	public List<ServiceConfig> findByF_INFO_LEVEL(long groupId,
-		int[] serviceLevels, long[] serviceInfoIds, int start, int end,
+		long[] serviceInfoIds, int start, int end,
 		OrderByComparator<ServiceConfig> orderByComparator,
 		boolean retrieveFromCache) {
-		if (serviceLevels == null) {
-			serviceLevels = new int[0];
-		}
-		else if (serviceLevels.length > 1) {
-			serviceLevels = ArrayUtil.unique(serviceLevels);
-
-			Arrays.sort(serviceLevels);
-		}
-
 		if (serviceInfoIds == null) {
 			serviceInfoIds = new long[0];
 		}
@@ -5136,9 +5079,9 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			Arrays.sort(serviceInfoIds);
 		}
 
-		if ((serviceLevels.length == 1) && (serviceInfoIds.length == 1)) {
-			return findByF_INFO_LEVEL(groupId, serviceLevels[0],
-				serviceInfoIds[0], start, end, orderByComparator);
+		if (serviceInfoIds.length == 1) {
+			return findByF_INFO_LEVEL(groupId, serviceInfoIds[0], start, end,
+				orderByComparator);
 		}
 
 		boolean pagination = true;
@@ -5147,15 +5090,11 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
 			pagination = false;
-			finderArgs = new Object[] {
-					groupId, StringUtil.merge(serviceLevels),
-					StringUtil.merge(serviceInfoIds)
-				};
+			finderArgs = new Object[] { groupId, StringUtil.merge(serviceInfoIds) };
 		}
 		else {
 			finderArgs = new Object[] {
-					groupId, StringUtil.merge(serviceLevels),
-					StringUtil.merge(serviceInfoIds),
+					groupId, StringUtil.merge(serviceInfoIds),
 					
 					start, end, orderByComparator
 				};
@@ -5170,8 +5109,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			if ((list != null) && !list.isEmpty()) {
 				for (ServiceConfig serviceConfig : list) {
 					if ((groupId != serviceConfig.getGroupId()) ||
-							!ArrayUtil.contains(serviceLevels,
-								serviceConfig.getServiceLevel()) ||
 							!ArrayUtil.contains(serviceInfoIds,
 								serviceConfig.getServiceInfoId())) {
 						list = null;
@@ -5188,20 +5125,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			query.append(_SQL_SELECT_SERVICECONFIG_WHERE);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
-
-			if (serviceLevels.length > 0) {
-				query.append("(");
-
-				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7);
-
-				query.append(StringUtil.merge(serviceLevels));
-
-				query.append(")");
-
-				query.append(")");
-
-				query.append(WHERE_AND);
-			}
 
 			if (serviceInfoIds.length > 0) {
 				query.append("(");
@@ -5273,47 +5196,40 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Removes all the service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63; from the database.
+	 * Removes all the service configs where groupId = &#63; and serviceInfoId = &#63; from the database.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 */
 	@Override
-	public void removeByF_INFO_LEVEL(long groupId, int serviceLevel,
-		long serviceInfoId) {
+	public void removeByF_INFO_LEVEL(long groupId, long serviceInfoId) {
 		for (ServiceConfig serviceConfig : findByF_INFO_LEVEL(groupId,
-				serviceLevel, serviceInfoId, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null)) {
+				serviceInfoId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(serviceConfig);
 		}
 	}
 
 	/**
-	 * Returns the number of service configs where groupId = &#63; and serviceLevel = &#63; and serviceInfoId = &#63;.
+	 * Returns the number of service configs where groupId = &#63; and serviceInfoId = &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevel the service level
 	 * @param serviceInfoId the service info ID
 	 * @return the number of matching service configs
 	 */
 	@Override
-	public int countByF_INFO_LEVEL(long groupId, int serviceLevel,
-		long serviceInfoId) {
+	public int countByF_INFO_LEVEL(long groupId, long serviceInfoId) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_INFO_LEVEL;
 
-		Object[] finderArgs = new Object[] { groupId, serviceLevel, serviceInfoId };
+		Object[] finderArgs = new Object[] { groupId, serviceInfoId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler query = new StringBundler(4);
+			StringBundler query = new StringBundler(3);
 
 			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
-
-			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2);
 
@@ -5329,8 +5245,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 				QueryPos qPos = QueryPos.getInstance(q);
 
 				qPos.add(groupId);
-
-				qPos.add(serviceLevel);
 
 				qPos.add(serviceInfoId);
 
@@ -5352,25 +5266,14 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	/**
-	 * Returns the number of service configs where groupId = &#63; and serviceLevel = any &#63; and serviceInfoId = any &#63;.
+	 * Returns the number of service configs where groupId = &#63; and serviceInfoId = any &#63;.
 	 *
 	 * @param groupId the group ID
-	 * @param serviceLevels the service levels
 	 * @param serviceInfoIds the service info IDs
 	 * @return the number of matching service configs
 	 */
 	@Override
-	public int countByF_INFO_LEVEL(long groupId, int[] serviceLevels,
-		long[] serviceInfoIds) {
-		if (serviceLevels == null) {
-			serviceLevels = new int[0];
-		}
-		else if (serviceLevels.length > 1) {
-			serviceLevels = ArrayUtil.unique(serviceLevels);
-
-			Arrays.sort(serviceLevels);
-		}
-
+	public int countByF_INFO_LEVEL(long groupId, long[] serviceInfoIds) {
 		if (serviceInfoIds == null) {
 			serviceInfoIds = new long[0];
 		}
@@ -5381,8 +5284,7 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 		}
 
 		Object[] finderArgs = new Object[] {
-				groupId, StringUtil.merge(serviceLevels),
-				StringUtil.merge(serviceInfoIds)
+				groupId, StringUtil.merge(serviceInfoIds)
 			};
 
 		Long count = (Long)finderCache.getResult(FINDER_PATH_WITH_PAGINATION_COUNT_BY_F_INFO_LEVEL,
@@ -5394,20 +5296,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 			query.append(_SQL_COUNT_SERVICECONFIG_WHERE);
 
 			query.append(_FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2);
-
-			if (serviceLevels.length > 0) {
-				query.append("(");
-
-				query.append(_FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7);
-
-				query.append(StringUtil.merge(serviceLevels));
-
-				query.append(")");
-
-				query.append(")");
-
-				query.append(WHERE_AND);
-			}
 
 			if (serviceInfoIds.length > 0) {
 				query.append("(");
@@ -5457,8 +5345,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 	}
 
 	private static final String _FINDER_COLUMN_F_INFO_LEVEL_GROUPID_2 = "serviceConfig.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_2 = "serviceConfig.serviceLevel = ? AND ";
-	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICELEVEL_7 = "serviceConfig.serviceLevel IN (";
 	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_2 = "serviceConfig.serviceInfoId = ?";
 	private static final String _FINDER_COLUMN_F_INFO_LEVEL_SERVICEINFOID_7 = "serviceConfig.serviceInfoId IN (";
 
@@ -5885,7 +5771,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 			args = new Object[] {
 					serviceConfigModelImpl.getGroupId(),
-					serviceConfigModelImpl.getServiceLevel(),
 					serviceConfigModelImpl.getServiceInfoId()
 				};
 
@@ -6040,7 +5925,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_F_INFO_LEVEL.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						serviceConfigModelImpl.getOriginalGroupId(),
-						serviceConfigModelImpl.getOriginalServiceLevel(),
 						serviceConfigModelImpl.getOriginalServiceInfoId()
 					};
 
@@ -6050,7 +5934,6 @@ public class ServiceConfigPersistenceImpl extends BasePersistenceImpl<ServiceCon
 
 				args = new Object[] {
 						serviceConfigModelImpl.getGroupId(),
-						serviceConfigModelImpl.getServiceLevel(),
 						serviceConfigModelImpl.getServiceInfoId()
 					};
 
