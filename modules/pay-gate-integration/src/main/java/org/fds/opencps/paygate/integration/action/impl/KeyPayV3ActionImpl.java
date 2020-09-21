@@ -29,7 +29,10 @@ import org.fds.opencps.paygate.integration.action.KeyPayV3Action;
 import org.fds.opencps.paygate.integration.util.KeyPayV3Term;
 import org.fds.opencps.paygate.integration.util.KeyPayV3Utils;
 import org.fds.opencps.paygate.integration.util.PayGateUtil;
+import org.opencps.dossiermgt.action.PaymentFileActions;
+import org.opencps.dossiermgt.action.impl.PaymentFileActionsImpl;
 import org.opencps.dossiermgt.constants.KeyPayTerm;
+import org.opencps.dossiermgt.constants.PaymentFileTerm;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.PaymentFile;
 import org.opencps.dossiermgt.model.ServiceInfoMapping;
@@ -72,17 +75,17 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			String client_id = schema.getString(KeyPayV3Term.CLIENT_ID);
 			String addition_fee = String.valueOf(paymentFile.getShipAmount());
 			String trans_amount = String.valueOf(paymentFile.getPaymentAmount());
-			String command = schema.getString(KeyPayV3Term.COMMAND);
+			String command = schema.getString(KeyPayV3Term.COMMAND_PAYLATER);
 			String version = schema.getString(KeyPayV3Term.VERSION);
-			String hash_key_1 = schema.getString(KeyPayV3Term.HASH_KEY_1);
+			String hash_key_1 = schema.getString(KeyPayV3Term.CLIENT_KEY_1);
 
 			JSONObject data = JSONFactoryUtil.createJSONObject();
 			String transactionId = KeyPayV3Utils.encodeTransactionId(dossier.getDossierId());
 			data.put(KeyPayV3Term.CLIENT_ID, schema.getString(KeyPayV3Term.CLIENT_ID));
 			data.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
 			data.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
-			data.put(KeyPayV3Term.COMMAND, schema.getString(KeyPayV3Term.COMMAND));// default PAY
-			data.put(KeyPayV3Term.VERSION, schema.getString(KeyPayV3Term.VERSION));// default "3.0"
+			data.put(KeyPayV3Term.COMMAND, command);// default PAY
+			data.put(KeyPayV3Term.VERSION, version);// default "3.0"
 			data.put(KeyPayV3Term.DESCRIPTION, paymentFile.getPaymentNote());// ?
 			data.put(KeyPayV3Term.LOCALE, schema.getString(KeyPayV3Term.LOCALE));// default vn
 			data.put(KeyPayV3Term.COUNTRY_CODE, schema.getString(KeyPayV3Term.COUNTRY_CODE)); // default vi
@@ -200,9 +203,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 
 			data.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 
-			String check_sum = PayGateUtil.generateChecksum(addition_fee, client_id, trans_amount, command,
-					transactionId, version, hash_key_1);
-
+			String check_sum = KeyPayV3Utils.genCreateChecksum(client_id, command, transactionId, hash_key_1);
 			_log.info("keypay check_sum " + check_sum);
 
 			data.put(KeyPayV3Term.CHECK_SUM, check_sum);
@@ -219,7 +220,9 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 					&& KeyPayV3Term.ERROR_0.equals(response.getString(KeyPayV3Term.ERROR))) {
 				JSONObject epaymentProfile = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile());
 				schema.put(KeyPayV3Term.TRANSACTION_ID, transactionId);
-				schema.put(KeyPayV3Term.TRANSACTION_ID + StringPool.UNDERLINE, transactionId);
+				schema.put(KeyPayV3Term.QRCODE_PAY, response.getString(KeyPayV3Term.QRCODE_PAY));
+				schema.put(KeyPayV3Term.TRANS_AMOUNT, trans_amount);
+				schema.put(KeyPayV3Term.ADDITION_FEE, addition_fee);
 				epaymentProfile.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
 				PaymentFileLocalServiceUtil.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfile.toJSONString(), serviceContext);
@@ -241,7 +244,7 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 			Dossier dossier = DossierLocalServiceUtil.fetchDossier(dossierId);
 			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossierId);
 			JSONObject data = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
-					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG).getJSONObject(KeyPayV3Term.TRANSACTION_ID + StringPool.UNDERLINE);
+					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
 			String imageStr = data.getString(KeyPayV3Term.QRCODE_PAY);
 			// String imageStr = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACqAQMAAAAHuE bBAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAA DN0lEQVRIieWWMWokOxCGSyhQYqTUgUBX6Mk0yegqBl9gGqePbg2bmpkLGPYqcm JlewaBgkm72UQLoutVM8a84HlAna6CDj4aofqr6q8C+DuOw1LNWRVMoxf0VYh3cAcW xuUgoCp/AF4liHa8Q4uJ/XLIEd8DaDnGTZge6AqYqcfA83kjzm+SFYEThWyS3ILXKJ8G wvAy0wPTf4L/H0zC5rf+l73ql/M+6nz50rsB0+FJsmjgHziANv4rnQ3YFZtT/x6v+Pu0QM3T LZxWHLVmiygwnlkxlXnRjhkWnthcEF9BBEzD0bbjDoSpclcSKG8dZJzEHaxCyT/PEh757 0kEjr4v7VhaQD+oAvpBMkx8nmM7dtHBSJIKxMsHQKL42vFBBHimvGJG7xD5ArYdd7 YYP0iq7BcsgieQoh3vYkiaBbiaV7UAtetNqm+wpJSYSUWjKZCY9NCHdtwJkYyXDuqD3 COm47gBHxzmCp1L6NnidAX6oxl3AuhCKUoa5wD0xy07bVhaNNnvQsEfy76g7r1txywG PU6E+XRkMdfjAHcwlVPliwoG65Hq2+CM7VhFCmd8J4c6qo9V48FtwRb90RVBhmcFklF jO94h3d3PwdD02YfK/WA34IjpeQ7CIC6WHojTBtxB4G/jBFes6k/gmp3iHbxDJEAGZepAt sX9rTTbsIpkUJPDK17O+2JAsg3YxaKfL4tA/krprhrGDXgtlJ9n8k5QE9hc2c3w2vDBWcoI w/VuUTKeTqUdKwwJaHiJTGVfDJ9us/gb3AHC6F0QSc00a2D4bO4mLG2gZWFXqEfoPd QvEtpxJ0olMW3CCzlENUuP7ZiFYN56LI/6Qf0pOuPZtuN1EfnhybE0J7dPAMMGDCLS6 kWC6Qe2WAR2CXcweSzwy+Su2dON2Uw3TdqwCkJr0uSaX1XEWscTtmOwjpYmavF19 xFIhhc3YIBMRh3FbfdZfasdk7A0u1S5aio5zPz8pXcDps1UP69jFF5OSDb8efc3mLZe80bTn jaOtb7x0+2bcX2ir1knDl3bz2UTTk9jWOup/3ApjacNmKJELzsA4xUVW6WKa8ckLHpqlU cautZlGC+lHf8N5181EFE1IoKbqgAAAABJRU5ErkJggg==";
 			String imageDataBytes = imageStr.split(",")[1];
@@ -264,4 +267,42 @@ public class KeyPayV3ActionImpl implements KeyPayV3Action {
 		return outputfile;
 	}
 
+	public String paylaterCallback(User user, ServiceContext serviceContext, String body) {
+		JSONObject result = JSONFactoryUtil.createJSONObject();
+
+		try {
+
+			_log.info("=======body========" + body);
+			JSONObject data = JSONFactoryUtil.createJSONObject(body);
+			String transactionId = data.getString(KeyPayV3Term.TRANSACTION_ID);
+			String dossierId = KeyPayV3Utils.decodeTransactionId(transactionId);
+			Dossier dossier = DossierLocalServiceUtil.fetchDossier(Long.parseLong(dossierId));
+			PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(dossier.getGroupId(), dossier.getDossierId());
+			JSONObject schema = JSONFactoryUtil.createJSONObject(paymentFile.getEpaymentProfile())
+					.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+			String check_sum = KeyPayV3Utils.genCallbackChecksumReceived(schema.getString(KeyPayV3Term.ADDITION_FEE), schema.getString(KeyPayV3Term.CLIENT_ID), schema.getString(KeyPayV3Term.COMMAND_PAYLATER), schema.getString(KeyPayV3Term.TRANS_AMOUNT), schema.getString(KeyPayV3Term.TRANSACTION_ID), schema.getString(KeyPayV3Term.VERSION), schema.getString(KeyPayV3Term.CLIENT_KEY_2));
+			
+			if (check_sum.equals(data.getString(KeyPayV3Term.CHECK_SUM)) &&
+					KeyPayV3Term.ERROR_0.equals(data.getString(KeyPayV3Term.ERROR)) &&
+					KeyPayV3Term.STATUS_DONE.equals(data.getJSONObject("data").getString(KeyPayV3Term.STATUS))) {
+
+				PaymentFileActions actions = new PaymentFileActionsImpl();
+				
+				JSONObject confirmPayload = JSONFactoryUtil.createJSONObject(paymentFile.getConfirmPayload());
+				
+				confirmPayload.put(PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE, body);
+				paymentFile = actions.updateFileConfirm(dossier.getGroupId(), dossier.getDossierId(), paymentFile.getReferenceUid(),
+						StringPool.BLANK, PaymentFileTerm.PAYMENT_METHOD_KEYPAY_LATE,
+						confirmPayload.toJSONString(), serviceContext);
+				
+				result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_SUCCESS);
+			}
+		} catch (Exception e) {
+			_log.error(e);
+			result.put(KeyPayV3Term.RETURN_CODE, KeyPayV3Term.RETURN_CODE_ERROR);
+		}
+
+		_log.info("=======result========" + result);
+		return result.toJSONString();
+	}
 }

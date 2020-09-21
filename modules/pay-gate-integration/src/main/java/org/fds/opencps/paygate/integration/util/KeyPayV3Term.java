@@ -8,7 +8,6 @@ package org.fds.opencps.paygate.integration.util;
  *
  */
 public class KeyPayV3Term {
-	
 
 	public static final String KEYPAY_LATE_CREATE_TRANSACTION_ENDPOINT = "keypay_late_create_transaction_endpoint";
 	public static final String KEYPAY_LATE_DETAIL_TRANSACTION_ENDPOINT = "keypay_late_detail_transaction_endpoint";
@@ -17,6 +16,10 @@ public class KeyPayV3Term {
 	public static final String CLIENT_ID = "client_id";
 	public static final String TRANSACTION_ID = "transaction_id";
 	public static final String COMMAND = "command";
+	public static final String COMMAND_PAYLATER_DETAIL = "command_paylater_detail";
+	public static final String COMMAND_PAYLATER_REFUND = "command_paylater_refund";
+	public static final String COMMAND_PAYLATER = "command_paylater";
+	
 	public static final String CHECK_SUM = "check_sum";
 	
 	public static final String ERROR = "error";
@@ -60,7 +63,8 @@ public class KeyPayV3Term {
 	public static final String RETURN_MSG = "return_msg";
 	
 	public static final String VERSION = "version";
-	public static final String HASH_KEY_1 = "hash_key_1";
+	public static final String CLIENT_KEY_2 = "CLIENT_KEY_2";
+	public static final String CLIENT_KEY_1 = "CLIENT_KEY_1";
 	public static final String MADICHVU = "MaDichVu";
 	public static final String BANKINFO = "BankInfo";
 	public static final String DEFAULT = "default";
