@@ -834,7 +834,8 @@ public class PaymentFileManagementImpl implements PaymentFileManagement {
 				PaymentFile paymentFile = PaymentFileLocalServiceUtil.getByDossierId(groupId, dossierId);
 				result = PaymentFileUtils.mappingToPaymentFileModel(paymentFile);
 				if (result != null)
-					result.setAddress(dossier.getAddress() + dossier.getWardName() + dossier.getDistrictName() + dossier.getCityName());
+					result.setAddress(dossier.getAddress() + ", " + dossier.getWardName() +
+							", " + dossier.getDistrictName() + ", " + dossier.getCityName());
 			}
 
 
