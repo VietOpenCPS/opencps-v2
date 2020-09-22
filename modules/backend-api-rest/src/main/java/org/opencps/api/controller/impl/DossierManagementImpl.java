@@ -7806,9 +7806,18 @@ public class DossierManagementImpl implements DossierManagement {
 					groupId, company, user, serviceContext, id,
 					DossierUtils.convertFormModelToPublishModel(input));
 			_log.info("Updated dossier epar with dossierId: "+ dossier.getDossierId() );
-			DVCQGIntegrationActionImpl actionImpl = new DVCQGIntegrationActionImpl();
-			JSONObject result = actionImpl.syncDossierAndDossierStatus(groupId, dossier, null);
-			_log.info("Result epar integration DVCQG: "+result);
+
+			List<ServerConfig> listServerConfig = ServerConfigLocalServiceUtil.getByProtocol(groupId, ServerConfigTerm.DVCQG_INTEGRATION);
+			for (ServerConfig serverConfig : listServerConfig) {
+				List<PublishQueue> lstQueues = PublishQueueLocalServiceUtil.getByG_DID_SN_ST(dossier.getGroupId(),
+						dossier.getDossierId(), serverConfig.getServerNo(),
+						new int[] { PublishQueueTerm.STATE_WAITING_SYNC, PublishQueueTerm.STATE_ALREADY_SENT });
+				if (lstQueues == null || lstQueues.isEmpty()) {
+					PublishQueueLocalServiceUtil.updatePublishQueue(dossier.getGroupId(), 0, dossier.getDossierId(),
+							serverConfig.getServerNo(), PublishQueueTerm.STATE_WAITING_SYNC, 0, serviceContext);
+				}
+			}
+			_log.info("Done saving dossier to queue to integrate to DVCQG");
 
 			return Response.status(HttpURLConnection.HTTP_OK).entity(
 				JSONFactoryUtil.looseSerializeDeep(dossier)).build();
