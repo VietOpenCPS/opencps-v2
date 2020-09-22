@@ -252,6 +252,7 @@ public class DossierTerm {
 	public static final String DATE_OPTION = "dateOption";
 	public static final String DATE_OPTION_RECEIVER = "dateOptionReceiver";
 	public static final String DATE_OPTION_DURATION = "dateOptionDuration";
+	public static final String DUE_DATE_PATTERN = "dueDatePattern";
 	//Constant dateOption
 	public static final int DATE_OPTION_CHANGE_DUE_DATE = 1;
 	public static final int DATE_OPTION_TWO = 2;
