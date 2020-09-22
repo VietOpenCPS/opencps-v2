@@ -2637,6 +2637,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					}
 
 				}
+				if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+					try {
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE, true);
+						JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+						epaymentProfileJsonNew.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+					} catch (Exception e) {
+						_log.error(e);
+					}
+
+				}
 				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
 						epaymentProfileJsonNew.toJSONString(), context);
 			} catch (IOException e) {
@@ -2709,16 +2719,13 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.SERVICEAMOUNT, serviceAmount);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTNOTE, paymentNote);
 					epaymentProfileJSON.put(KeyPayTerm.PAYMENTFEE, paymentFee);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 
 				} catch (IOException e) {
 					_log.error(e);
 				}
 
-			} else {
-				paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-						epaymentProfileJSON.toJSONString(), context);
 			}
 
 			_log.debug("==========VTPayTerm.VTP_CONFIG========" + epaymentConfigJSON);
@@ -2743,8 +2750,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							schema.getJSONObject(VTPayTerm.MERCHANT_CODE).getString(VTPayTerm.VALUE));
 
 					epaymentProfileJSON.put(VTPayTerm.VTPAY_GENQR, data);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2756,8 +2763,8 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KP_DVCQG_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.KP_DVCQG_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
@@ -2768,13 +2775,27 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 					epaymentProfileJSON.put(KeyPayTerm.PP_KPDVCQG, true);
 					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.PP_DVCGQ_CONFIG);
 					epaymentProfileJSON.put(KeyPayTerm.PP_DVCGQ_CONFIG, schema);
-					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
-							epaymentProfileJSON.toJSONString(), context);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
 				} catch (Exception e) {
 					_log.error(e);
 				}
 
 			}
+			if (epaymentConfigJSON.has(KeyPayTerm.KEYPAY_LATE_CONFIG)) {
+				try {
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE, true);
+					JSONObject schema = epaymentConfigJSON.getJSONObject(KeyPayTerm.KEYPAY_LATE_CONFIG);
+					epaymentProfileJSON.put(KeyPayTerm.KEYPAY_LATE_CONFIG, schema);
+//					paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+//							epaymentProfileJSON.toJSONString(), context);
+				} catch (Exception e) {
+					_log.error(e);
+				}
+
+			}
+			paymentFileLocalService.updateEProfile(dossier.getDossierId(), paymentFile.getReferenceUid(),
+					epaymentProfileJSON.toJSONString(), context);
 		}
 		return oldPaymentFile;
 	}
@@ -4540,6 +4561,16 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
 		_log.info("=============create collectVnpostEvent============");
 		MessageBusUtil.sendMessage(DossierTerm.COLLECTION_VNPOST_DOSSIER_DESTINATION, message);
+	}
+
+	private void createTransactionKeypayV3(Dossier dossier, long dossierActionId) {
+		Message message = new Message();
+		JSONObject msgData = JSONFactoryUtil.createJSONObject();
+
+		message.put(ConstantUtils.MSG_ENG, msgData);
+		message.put(DossierTerm.CONSTANT_DOSSIER, DossierMgtUtils.convertDossierToJSON(dossier, dossierActionId));
+		_log.info("=============create keypay v3============");
+		MessageBusUtil.sendMessage(DossierTerm.KEYPAY_V3_DESTINATION, message);
 	}
 
 	private void integrateTTTT(Dossier dossier, ServiceContext context, long dossierActionId) {
@@ -8749,6 +8780,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 				List<DossierFile> dossierFiles = dossierFileLocalService.getDossierFilesByD_DP(dossier.getDossierId(),
 						DossierPartTerm.DOSSIER_PART_TYPE_OUTPUT);
 
+				boolean returnDocument = true;
 				for (DossierFile dossierFile : dossierFiles) {
 					// TODO: xu ly loc dossierFIle de dinh kem mail thong bao bo sung
 					_log.info("================DOSSIERFILE=============" + dossierFile.getFileEntryId());
@@ -8761,10 +8793,20 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 							jsonObject.put("url", "documents/" + fileEntry.getGroupId() + StringPool.FORWARD_SLASH
 									+ fileEntry.getFolderId() + StringPool.FORWARD_SLASH + fileEntry.getTitle());
 							files.put(jsonObject);
+							returnDocument = false;
 						}
 					}
 				}
 
+				if (returnDocument) {
+					jsonObject = JSONFactoryUtil.createJSONObject();
+					jsonObject.put("name", proAction.getActionName());
+					jsonObject.put("url", "o/rest/v2/dossiers/documentpreviews?dossierId=" + dossier.getDossierId() +
+							"&documentTypeCode=" + proAction.getReturnDossierFiles());
+					files.put(jsonObject);
+					returnDocument = true;
+				}
+				/**
 				List<DossierDocument> dossierDocuments = DossierDocumentLocalServiceUtil
 						.getDossierDocumentList(dossier.getDossierId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -8783,6 +8825,7 @@ public class CPSDossierBusinessLocalServiceImpl extends CPSDossierBusinessLocalS
 						}
 					}
 				}
+				*/
 			}
 		} catch (Exception e) {
 			_log.error(e);
